@@ -3,6 +3,9 @@
 A local EVE Online workspace with a separate, transparent OBS output service.
 
 **Version 0.6.0 · Windows first · No cloud deployment**
+
+See the [changelog](CHANGELOG.md) for release notes.
+
 ## Upgrading from an earlier version
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
@@ -260,6 +263,8 @@ Disconnect removes local tokens and per-character ESI snapshots/cache. It preser
 Kairo Intelligence, a fitting simulator, a full EVE encyclopedia, corporation administration, hardcoded coalition lists and unattended Windows service installation are not included. The application works without any AI service.
 
 ## Developer notes
+
+Record completed, user-visible changes under **Unreleased** in [CHANGELOG.md](CHANGELOG.md), grouped as Added, Changed, Fixed, Removed or Security where applicable. When releasing, move those entries under the released version and date (`YYYY-MM-DD`), then start a fresh Unreleased section. Include upgrade steps or data changes where needed; keep planned work outside the changelog.
 
 The source is included alongside the compiled release. The frontend uses the retained React/Vinext Sites starter; the shipped runtime is a standalone Node local service, not a hosted Worker.
 
