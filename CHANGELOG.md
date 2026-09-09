@@ -1,12 +1,12 @@
 # Changelog
 
-Notable changes to Kairo, listed newest first. Release history starts at **0.6.0**. Completed changes for the next release are collected under **Unreleased**.
+Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
 ## Unreleased
 
 ### Added
 
-- Project changelog, linked from the README, with guidance for maintaining future release notes.
+- Project changelog covering releases from 0.1.0 onward, linked from the README, with guidance for maintaining future release notes.
 
 ## 0.6.0
 
@@ -27,3 +27,132 @@ Notable changes to Kairo, listed newest first. Release history starts at **0.6.0
 - No new EVE SSO scopes are introduced. For personalized import calculations, choose a selling character and use **Update trader data** to refresh skills, NPC standings and open orders. Enter a structure's actual total broker fee manually.
 
 See the [Import Analyser guide](docs/IMPORT-ANALYSER.md) for setup, assumptions and fees.
+
+## 0.5.2
+
+### Added
+
+- **Settings → ESI polling:** adjustable intervals for 35 data batches, with discrete sliders, descriptions, recommended defaults, module filtering and search.
+
+### Changed
+
+- Skill queue checks default to one minute, including when the next completion is days away. Slower routine collectors reuse cached data between checks.
+- Per-ID name caching, shared market responses and persistent retry backoff reduce redundant ESI requests while preserving protection priority, freshness checks and rate-limit handling.
+- Modules and Appearance controls now live in Settings.
+
+### Upgrade notes
+
+- Existing data and settings are retained. No new EVE SSO scopes or data reset are required.
+
+## 0.5.1
+
+### Added
+
+- **Market category browser:** expandable EVE market groups, descendant browsing, cached-item counts and breadcrumbs, alongside search across cached offerings.
+- Locally bundled CCP SDE categories immediately organize existing scans without ESI requests. Types missing from the bundled catalog remain available under **Uncategorized**.
+
+## 0.5.0
+
+### Added
+
+- **Shared market desk:** quick and full hub scans, cached buy/sell orders, Jita comparisons and regional market reports.
+- Public station scans and authorized-alt access to private structure markets, with shared local books, scan cancellation and reusable history collection.
+
+### Changed
+
+- Goal widgets return as a dedicated Stream Studio template.
+- Widget surfaces match the compact toast design.
+
+### Fixed
+
+- The Journey region atlas stays within the page while exploring additional regions.
+
+### Upgrade notes
+
+- Existing local data and stream layouts migrate automatically.
+
+## 0.4.0
+
+### Added
+
+- **Public zKillboard participation collection** and durable verified combat history, including late-arriving kills in archived session reports.
+- **Journey connection controls:** hide and restore individual observed travel legs without deleting visits or drawing replacement connections across the gap.
+- **Automatic goals** for wallet balance, ISK received, skill training, item ownership, mining resources, manufacturing runs and kill participation.
+
+### Changed
+
+- Kill credit counts every verified attacker in the killmail, including zero-damage EWAR participation. Fleet or corporation membership alone does not grant credit.
+- Automatic goal progress uses authorized cached data, retains confirmed progress when sources are unavailable and records completion once.
+
+### Upgrade notes
+
+- Existing manual goals, sessions, visits, notes, OPSEC settings and compact toasts are retained. Restart Kairo and refresh the dashboard and OBS browser sources.
+
+## 0.3.1
+
+### Changed
+
+- Stream toasts use a compact **440 × 82 px** layout with an event category, EVE timestamp, up to two lines of message context and a lifetime indicator.
+- Stream Studio previews and OBS output use the same compact layout.
+
+### Removed
+
+- The separate toast title row and title editor. Older title-only rules retain their wording as a message fallback.
+
+### Upgrade notes
+
+- Restart Kairo and refresh the dashboard and OBS browser sources to load the updated layout.
+
+## 0.3.0
+
+### Added
+
+- **Corporation and alliance standings** alongside personal contacts for OPSEC classification, with source availability and membership checks.
+- Expanded space categories: Low-Sec, Neutral, High-Sec, Triglavian Space and Anoikis, alongside Blue, Hostile and Unknown. Manual protection and faction-warfare overrides remain available.
+- Readable sovereignty-owner names resolved through ESI.
+
+### Changed
+
+- Subtle dashboard page transitions and a shared **Signal** frame style for Stream Studio widgets and broadcast output.
+- OBS actions support the expanded space categories, with existing action lists migrated while preserving protection.
+
+### Upgrade notes
+
+- To enable organization standings, add `esi-corporations.read_contacts.v1` and `esi-alliances.read_contacts.v1` to the registered EVE application, then use **Connections → Update access** and authorize again.
+- Refresh the dashboard and OBS browser sources to load the updated interface and renderer.
+
+## 0.2.1
+
+### Fixed
+
+- OPSEC protection flicker during cache refreshes and brief jumps. Recent covered states retain bounded continuity while fresh context is collected, without repeated transition events.
+- Slow background collectors delaying protection telemetry; location and required protection context receive priority within the shared request limit.
+- Rate-limited requests failing to resume correctly after their cooldown.
+
+### Changed
+
+- Activity displays five entries per page, with **Older/Newer** controls, full-history search and export. Existing recorded transitions remain available.
+
+## 0.2.0
+
+### Added
+
+- **Record-linked widgets** for selected goals and ESI-backed information, with unavailable states for missing, stale or disconnected sources.
+- **Contextual event toasts** with template fields, character filters and location redaction while protected.
+- **Local OBS automation** through WebSocket v5, covering source visibility, filters, audio and program scene changes.
+- **Named sessions and reports**, with recorded activity, wallet/SP comparisons, editable names and debriefs.
+- **Visual journey atlas** and editable system, constellation and region notes, tags and personal markers.
+
+### Upgrade notes
+
+- Existing sessions, goals and custom toast wording are preserved. Choose **Use event context** to adopt the contextual toast templates.
+
+## 0.1.0
+
+### Added
+
+- **Initial local EVE Online dashboard**, with EVE SSO integration and authorized ESI data collection.
+- Persistent activity and journey history, sessions and goals.
+- **Stream Studio** with editable overlays, widgets and countdowns, plus separate transparent OBS browser sources.
+- **OPSEC covers** with manual protection, friendly/hostile and faction-warfare handling, and protection for unknown or stale context.
+- Configurable, opt-in event toasts.
