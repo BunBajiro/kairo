@@ -1,0 +1,32 @@
+/* One broadcast language for live widgets and compact notifications. */
+.kairo-widget{--accent:#97ebce;--widget-pad:14px;--widget-label-size:12px;--widget-rail:3px;--widget-opacity:.7;box-sizing:border-box;color:#e0ece9;font-family:'Segoe UI',Arial,sans-serif;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-left:var(--widget-rail) solid var(--accent);padding:var(--widget-pad);isolation:isolate;line-height:1.25;box-shadow:0 6px 18px #0004,inset 0 1px #ffffff07}
+.kairo-widget::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(110deg,#18292d,#0d141a 70%);opacity:var(--widget-opacity)}
+.kairo-widget::after{display:none}
+.kairo-widget .widget-label{position:static;font:var(--widget-label-size)/1.3 Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--accent);margin-bottom:.45em}
+.kairo-widget .widget-label:empty{display:none}
+.kairo-widget .widget-value{position:relative;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;width:100%;font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums}
+.kairo-widget .widget-detail{font-size:.6em;line-height:1.35;color:#9bb5b0;margin-top:.25em;width:100%;text-align:left;overflow-wrap:anywhere}
+.kairo-widget.kairo-widget{align-items:flex-start}
+.kairo-widget .widget-bar{height:.1em;min-height:2px;background:#ffffff17;width:100%;margin-top:.45em;position:relative;overflow:hidden}
+.kairo-widget .widget-fill{display:block;height:100%;background:var(--accent);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.kairo-widget.clock .widget-value,.kairo-widget.countdown .widget-value{letter-spacing:.025em}
+.kairo-widget.divider{padding:0;border:0;box-shadow:none}.kairo-widget.divider::before{display:none}
+.kairo-widget.panel::before,.kairo-widget[data-appearance=minimal]::before{display:none}
+.kairo-widget[data-appearance=minimal]{border-color:transparent;box-shadow:none}
+.kairo-widget.opsec{background:#080b0f!important;border-color:var(--accent);opacity:1!important;animation:none!important;transition:none!important}
+.kairo-widget.opsec[data-context=blue]{--accent:#98c5ff!important}.kairo-widget.opsec[data-context=hostile]{--accent:#f49b99!important}.kairo-widget.opsec[data-context=fw],.kairo-widget.opsec[data-context=lowsec]{--accent:#efc88c!important}.kairo-widget.opsec[data-context=triglavian]{--accent:#ef8b80!important}.kairo-widget.opsec[data-context=anoikis]{--accent:#c2a9f5!important}.kairo-widget.opsec[data-context=neutral],.kairo-widget.opsec[data-context=unknown]{--accent:#b2c0ca!important}
+.kairo-widget.opsec .widget-value{font-weight:400;letter-spacing:0}
+@media(prefers-reduced-motion:reduce){.kairo-widget .widget-fill{transition:none}}
+
+/* Compact notifications share the same layout in Studio and OBS. */
+.kairo-toast{--signal:#97ebce;position:relative;box-sizing:border-box;height:82px;flex:none;min-width:0;padding:10px 14px 11px;background:linear-gradient(110deg,#18292dfc,#0d141afc 70%);border:1px solid color-mix(in srgb,var(--signal) 35%,transparent);border-left:3px solid var(--signal);box-shadow:0 6px 18px #0004,inset 0 1px #ffffff07;font-family:'Segoe UI',Arial,sans-serif;overflow:hidden}
+.kairo-toast[data-tone=danger]{--signal:#f0a099}.kairo-toast[data-tone=warning]{--signal:#efc88c}.kairo-toast[data-tone=info]{--signal:#a9caff}
+.kairo-toast .toast-meta{height:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 5px}
+.kairo-toast .kicker{display:flex;gap:6px;align-items:center;min-width:0;font:10px/14px Consolas,monospace;letter-spacing:.08em;color:var(--signal);white-space:nowrap}
+.kairo-toast .signal-mark{flex:none;font:13px/14px Consolas,monospace}
+.kairo-toast .signal-topic{overflow:hidden;text-overflow:ellipsis}
+.kairo-toast time{flex:none;font:10px/14px Consolas,monospace;letter-spacing:.03em;color:#8aa29f;white-space:nowrap}
+.kairo-toast .toast-message{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;max-height:40px;overflow:hidden;overflow-wrap:anywhere;white-space:normal;font-size:15px;line-height:20px;font-weight:500;letter-spacing:0;color:#e0ece9;margin:0}
+.kairo-toast .lifeline{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--signal);transform-origin:left;opacity:.65}
+
+.kairo-widget.goal .widget-value{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}.kairo-widget.goal .widget-detail{flex:none}

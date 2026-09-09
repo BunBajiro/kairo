@@ -1,0 +1,14 @@
+@import url('/widgets.css?v=0.6.0');
+:root{color-scheme:normal}html,body{margin:0;background:transparent!important;width:100%;height:100%;overflow:hidden}body{font-family:'Segoe UI',Arial,sans-serif;color:#e8f1f0}*{box-sizing:border-box}
+#stage{width:1920px;height:1080px;position:absolute;left:0;top:0;transform-origin:top left;pointer-events:none}
+.element{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.element.widget-enter:not(.opsec){animation:widget-arrive .28s cubic-bezier(.2,.8,.2,1) both}
+#toasts{position:absolute;display:flex;flex-direction:column;gap:10px;width:440px;padding:0;pointer-events:none;--slide:18px}
+#toasts[data-side=left]{--slide:-18px}
+.toast{animation:toast-arrive .3s cubic-bezier(.2,.8,.2,1) both,toast-depart .18s ease-in calc(var(--duration) - .18s) forwards}
+.toast .lifeline{animation:life var(--duration) linear forwards}
+@keyframes widget-arrive{from{transform:translateY(5px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes toast-arrive{from{transform:translateX(var(--slide));opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toast-depart{to{transform:translateX(var(--slide));opacity:0}}
+@keyframes life{to{transform:scaleX(0)}}
+@media(prefers-reduced-motion:reduce){.toast,.element.widget-enter:not(.opsec),.toast .lifeline{animation:none}}

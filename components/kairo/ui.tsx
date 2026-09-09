@@ -1,0 +1,58 @@
+"use client";
+import { useState, type ReactNode } from 'react';
+import { ArrowUpRight, Search, ChevronLeft, ChevronRight, Database, LockKeyhole, Clock, TriangleAlert } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table';
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyMedia } from '@/components/ui/empty';
+import { useKairo } from './context';
+import { stamp, type ModuleState } from './model';
+export function Choice({ value, onChange, options, label, className = '' }: {
+    value: string;
+    onChange: (v: string) => void;
+    options: {
+        value: string;
+        label: string;
+    }[];
+    label: string;
+    className?: string;
+}) { return <Select value={value} onValueChange={onChange}><SelectTrigger aria-label={label} className={'choice ' + className}><SelectValue placeholder={label}/></SelectTrigger><SelectContent>{options.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent></Select>; }
+export function Panel({ title, meta, action, children, className = '' }: {
+    title: string;
+    meta?: ReactNode;
+    action?: () => void;
+    children: ReactNode;
+    className?: string;
+}) { return <section className={'panel ' + className}><div className="panel-head"><h2>{title}</h2><div className="flex items-center gap-3">{meta}{action && <Button variant="ghost" size="icon" onClick={action} aria-label={'Open ' + title}><ArrowUpRight size={17}/></Button>}</div></div>{children}</section>; }
+export function DataStatus({ state }: {
+    state?: ModuleState;
+}) { if (!state || state.status === 'waiting')
+    return <span className="data-status">Awaiting sync</span>; return <span className={'data-status ' + state.status} title={state.error || stamp(state.updatedAt)}>{state.status === 'ready' ? 'Synced' : state.status === 'missing_scope' ? 'Scope needed' : state.status === 'disabled' ? 'Disabled' : state.status === 'stale' ? 'Cached · stale' : 'Sync issue'}</span>; }
+export function NoData({ state, title = 'Nothing here yet', description = 'Your data will appear after the next sync.' }: {
+    state?: ModuleState;
+    title?: string;
+    description?: string;
+}) { const { navigate, character } = useKairo(); const locked = !character || state?.status === 'missing_scope'; return <Empty className="empty-state"><EmptyHeader><EmptyMedia variant="icon">{locked ? <LockKeyhole /> : state?.status === 'error' ? <TriangleAlert /> : <Database />}</EmptyMedia><EmptyTitle>{locked ? 'Connect this data' : state?.status === 'disabled' ? 'Module disabled' : title}</EmptyTitle><EmptyDescription>{state?.error || (locked ? 'Authorize the required ESI scopes in Connections.' : description)}</EmptyDescription></EmptyHeader>{locked && <Button size="sm" variant="outline" onClick={() => navigate('connections')}>Manage connection <ArrowUpRight size={14}/></Button>}{state?.status === 'disabled' && <Button variant="outline" onClick={() => navigate('modules')}>Manage modules</Button>}</Empty>; }
+export type Column = {
+    key: string;
+    label: string;
+    render?: (r: any) => ReactNode;
+};
+export function DataTable({ rows, columns, state, searchable = true, emptyTitle, emptyDescription }: {
+    rows: any[];
+    columns: Column[];
+    state?: ModuleState;
+    searchable?: boolean;
+    emptyTitle?: string;
+    emptyDescription?: string;
+}) { const [query, setQuery] = useState(''); const [page, setPage] = useState(0); const [sort, setSort] = useState<{
+    key: string;
+    asc: boolean;
+} | null>(null); const filtered = rows.filter(r => !query || Object.values(r).filter(v => typeof v !== 'object').join(' ').toLowerCase().includes(query.toLowerCase())); if (sort)
+    filtered.sort((a, b) => { const av = a[sort.key] ?? '', bv = b[sort.key] ?? ''; return (typeof av === 'number' && typeof bv === 'number' ? av - bv : String(av).localeCompare(String(bv))) * (sort.asc ? 1 : -1); }); const pages = Math.max(1, Math.ceil(filtered.length / 30)); const actual = Math.min(page, pages - 1); if (!rows.length)
+    return <NoData state={state} title={emptyTitle} description={emptyDescription}/>; return <><div className="table-toolbar">{searchable && <div className="search-field"><Search size={15}/><Input value={query} aria-label="Filter records" onChange={e => { setQuery(e.target.value); setPage(0); }} placeholder="Filter records…"/></div>}<span className="meta">{filtered.length.toLocaleString()} records {state?.truncated ? '· collection capped' : ''}</span></div><Table><TableHeader><TableRow>{columns.map(c => <TableHead key={c.key}><button className="sort-label" onClick={() => setSort({ key: c.key, asc: sort?.key === c.key ? !sort.asc : true })}>{c.label}{sort?.key === c.key ? (sort.asc ? ' ↑' : ' ↓') : ''}</button></TableHead>)}</TableRow></TableHeader><TableBody>{filtered.slice(actual * 30, (actual + 1) * 30).map((r, i) => <TableRow key={r.id || r.item_id || r.job_id || i}>{columns.map(c => <TableCell key={c.key}>{c.render ? c.render(r) : String(r[c.key] ?? '—')}</TableCell>)}</TableRow>)}</TableBody></Table>{!filtered.length && <p className="muted p-6">No matching records.</p>}{pages > 1 && <div className="pagination"><span className="meta">Page {actual + 1} of {pages}</span><Button size="icon" variant="outline" aria-label="Previous page" disabled={actual === 0} onClick={() => setPage(actual - 1)}><ChevronLeft size={15}/></Button><Button size="icon" variant="outline" aria-label="Next page" disabled={actual === pages - 1} onClick={() => setPage(actual + 1)}><ChevronRight size={15}/></Button></div>}<p className="sync-stamp"><Clock size={12}/> {stamp(state?.updatedAt)}</p></>; }
+export function ItemName({ id, name }: {
+    id: number;
+    name: string;
+}) { return <span className="item-name"><img src={`https://images.evetech.net/types/${id}/icon?size=32`} alt="" loading="lazy" width="30" height="30" onError={e => { e.currentTarget.style.visibility = 'hidden'; }}/>{name}</span>; }
