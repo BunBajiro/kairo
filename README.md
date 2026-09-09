@@ -3,18 +3,6 @@
 A local EVE Online workspace with a separate, transparent OBS output service.
 
 **Version 0.6.0 · Windows first · No cloud deployment**
-
-## Clean rollback from 0.6.1
-
-This rollback starts fresh and discards the previous installation's data and settings.
-
-1. Stop every running copy of Kairo with **Ctrl+C**.
-2. Delete `%LOCALAPPDATA%\Kairo`. If you set `KAIRO_DATA_DIR`, delete that configured data folder instead. This removes connected characters, credentials, settings, scans, plans, goals, notes, journey history and stream layouts.
-3. Extract the original **Kairo-v0.6.0.zip** to a new, empty folder and run **START_KAIRO.bat**. Do not extract over a newer release or copy its data back.
-4. Set up your EVE application connection again, reconnect characters and configure Kairo afresh.
-
-This repository starts from the original v0.6.0 release source. Repository setup changes only add these instructions and ignore local data and generated files. Application behavior remains that of the original v0.6.0 release.
-
 ## Upgrading from an earlier version
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
