@@ -1,0 +1,77 @@
+name: Kairo test build
+
+on:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kairo-test-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and verify downloadable ZIP
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm run install:ci
+
+      - name: Check application types
+        run: npm run check:kairo
+
+      - name: Build the application
+        run: npm run build
+
+      - name: Package the test build
+        run: python3 scripts/package-release.py "$RUNNER_TEMP/Kairo-test-build.zip"
+
+      - name: Extract the packaged build
+        run: python3 -m zipfile -e "$RUNNER_TEMP/Kairo-test-build.zip" "$RUNNER_TEMP/kairo-package-check"
+
+      - name: Test the packaged runtime without source dependencies
+        working-directory: ${{ runner.temp }}/kairo-package-check/Kairo
+        run: npm run test:kairo
+
+      - name: Upload the tested build
+        id: upload
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          path: ${{ runner.temp }}/Kairo-test-build.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Show the download instructions
+        env:
+          KAIRO_ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          text = (
+              f"[Download Kairo-test-build.zip]({os.environ['KAIRO_ARTIFACT_URL']})\n\n"
+              "Sign into GitHub, download the ZIP and extract it into a new folder. "
+              "Stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. "
+              "Node.js 24 or newer is required; no npm install or local build is needed.\n\n"
+              "This is a test build awaiting review. It does not merge into main or publish a release.\n"
+          )
+          with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as summary:
+              summary.write(text)
+          PY

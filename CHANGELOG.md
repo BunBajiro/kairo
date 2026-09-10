@@ -4,9 +4,20 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
+## 0.7.0 — 2026-09-10
+
 ### Added
 
+- **Downloadable test builds:** GitHub Actions packages feature branches into a ready-to-run ZIP after type checks, compilation and tests of the extracted runtime pass, so changes can be reviewed before merging.
+- **Import Analyser buying character:** select a separate Jita buyer or use the selling character, with per-destination preferences, buyer order coverage and both pilots recorded in saved plans. Immediate purchases retain zero buyer fees; resale fees use the selling character’s profile. Existing settings and plans remain compatible.
+- **Downloadable releases:** approved version changes merged into `main` build a versioned application ZIP, verify the extracted runtime and publish the ZIP with a SHA-256 checksum on GitHub Releases.
 - Project changelog covering releases from 0.1.0 onward, linked from the README, with guidance for maintaining future release notes.
+
+### Upgrade notes
+
+- Upgrading from 0.6.0 preserves existing data, market scans, settings and saved import plans. There is no new data reset or EVE SSO scope.
+- Existing destinations default to using the selling character for purchases. To use another buyer, connect that character with access to open orders, choose it under **Buying character**, apply the settings and use **Update trader data**.
+- Older saved plans remain usable and show that the buying character was not recorded. Newly saved plans record both characters.
 
 ## 0.6.0
 

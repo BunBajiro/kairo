@@ -1,11 +1,11 @@
-# Validation — 9 September 2026
+# Validation — 10 September 2026
 
 ## Completed
 
 - Successful production/static export with the retained Vinext build workflow.
-- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 108 tests also run from the extracted package without an npm install.
+- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 113 tests also run from the extracted package without an npm install.
 - Application TypeScript check using `tsconfig.kairo.json`.
-- 108 passing Node contract/integration tests:
+- 113 passing Node contract/integration tests:
   - S256 PKCE generation.
   - JWT issuer, application/EVE audience, expiry and character claim checks.
   - Authenticated vault encryption and tamper detection.
@@ -21,6 +21,12 @@
   - Host and CSRF validation.
   - HTTP serving, compiled asset access, private-session enforcement, cross-origin rejection, stream read-only routes and CSP.
   - Simulated signed SSO → scoped ESI → observed location → SQLite journey → authenticated state API, with no character/location leakage to stream state.
+
+## Added in 0.7.0
+
+- Five additional Import Analyser tests cover buyer defaults and validation, separate buyer order coverage, zero immediate-purchase fees, refresh behavior and saved-plan attribution.
+- Application type checks, compilation and all 113 tests passed in GitHub Actions, including tests run from the extracted test build without source dependencies.
+- The user downloaded the feature-branch build, confirmed it worked and approved merging and publishing the release.
 
 ## Added in 0.2
 

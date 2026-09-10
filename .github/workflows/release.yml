@@ -1,0 +1,134 @@
+name: Kairo release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kairo-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and verify release ZIP
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Check out the approved version
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Prepare version and release notes
+        id: release
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          version = json.loads(Path('package.json').read_text())['version']
+          if not re.fullmatch(r'\d+\.\d+\.\d+', version):
+              raise SystemExit('A stable release version is required')
+          lock = json.loads(Path('package-lock.json').read_text())
+          if lock['version'] != version or lock['packages']['']['version'] != version:
+              raise SystemExit('Package and lockfile versions must match')
+          section = re.search(
+              rf'^## {re.escape(version)}(?: — [^\n]+)?\n(.*?)(?=^## |\Z)',
+              Path('CHANGELOG.md').read_text(), re.MULTILINE | re.DOTALL,
+          )
+          if not section or not section.group(1).strip():
+              raise SystemExit('Release notes are missing from CHANGELOG.md')
+          repository = os.environ['GITHUB_REPOSITORY']
+          notes = (
+              'Download the compiled application below, extract the ZIP into a new folder, '
+              'stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. '
+              'Node.js 24 or newer is required; no npm install or local build is needed.\n\n'
+              f'[Download Kairo-v{version}.zip](https://github.com/{repository}/releases/download/'
+              f'v{version}/Kairo-v{version}.zip)\n\n'
+              + section.group(1).strip() + '\n'
+          )
+          output = Path(os.environ['RUNNER_TEMP']) / 'kairo-release'
+          output.mkdir(parents=True, exist_ok=True)
+          (output / 'release-notes.md').write_text(notes)
+          with Path(os.environ['GITHUB_OUTPUT']).open('a') as stream:
+              stream.write(f'version={version}\n')
+          PY
+
+      - name: Install locked dependencies
+        run: npm run install:ci
+
+      - name: Check application types
+        run: npm run check:kairo
+
+      - name: Build the application
+        run: npm run build
+
+      - name: Package and extract the release
+        env:
+          KAIRO_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          python3 scripts/package-release.py "$RUNNER_TEMP/kairo-release/Kairo-v${KAIRO_VERSION}.zip"
+          python3 -m zipfile -e "$RUNNER_TEMP/kairo-release/Kairo-v${KAIRO_VERSION}.zip" "$RUNNER_TEMP/kairo-package-check"
+
+      - name: Test the packaged runtime without source dependencies
+        working-directory: ${{ runner.temp }}/kairo-package-check/Kairo
+        run: npm run test:kairo
+
+      - name: Record the release checksum
+        working-directory: ${{ runner.temp }}/kairo-release
+        env:
+          KAIRO_VERSION: ${{ steps.release.outputs.version }}
+        run: sha256sum "Kairo-v${KAIRO_VERSION}.zip" > SHA256SUMS.txt
+
+      - name: Pass the verified release to the publishing job
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: kairo-release
+          path: ${{ runner.temp }}/kairo-release/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish downloadable GitHub release
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Download the verified release
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: kairo-release
+          path: release
+
+      - name: Publish the release with its ZIP and checksum
+        working-directory: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KAIRO_VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          sha256sum --check SHA256SUMS.txt
+          gh release create "v${KAIRO_VERSION}" "Kairo-v${KAIRO_VERSION}.zip" SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Kairo v${KAIRO_VERSION}" --notes-file release-notes.md --draft
+          gh release edit "v${KAIRO_VERSION}" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+          gh release view "v${KAIRO_VERSION}" --repo "$GITHUB_REPOSITORY" --json url --jq .url >> "$GITHUB_STEP_SUMMARY"

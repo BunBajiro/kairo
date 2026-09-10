@@ -80,7 +80,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
                 release = await slot(priority);
                 if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
-                const headers = { 'Accept': 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE, 'User-Agent': 'Kairo/0.6.0 (local EVE companion)' };
+                const headers = { 'Accept': 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE, 'User-Agent': 'Kairo/0.7.0 (local EVE companion)' };
                 if (cached?.etag) headers['If-None-Match'] = cached.etag;
                 else if (cached && JSON.parse(cached.headers)['last-modified']) headers['If-Modified-Since'] = JSON.parse(cached.headers)['last-modified'];
                 if (characterId) headers.Authorization = 'Bearer ' + await auth.access(characterId);
