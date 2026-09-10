@@ -6,6 +6,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ### Added
 
+- **Downloadable test builds:** GitHub Actions packages feature branches into a ready-to-run ZIP after type checks, compilation and tests of the extracted runtime pass, so changes can be reviewed before merging.
 - **Import Analyser buying character:** select a separate Jita buyer or use the selling character, with per-destination preferences, buyer order coverage and both pilots recorded in saved plans. Immediate purchases retain zero buyer fees; resale fees use the selling character’s profile. Existing settings and plans remain compatible.
 - Project changelog covering releases from 0.1.0 onward, linked from the README, with guidance for maintaining future release notes.
 

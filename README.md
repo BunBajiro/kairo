@@ -6,6 +6,14 @@ A local EVE Online workspace with a separate, transparent OBS output service.
 
 See the [changelog](CHANGELOG.md) for release notes.
 
+## Download a test build
+
+1. Open [GitHub Actions](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml) and choose the latest successful **Kairo test build** run for the feature branch you want to test.
+2. While signed into GitHub, click **Kairo-test-build.zip** under **Artifacts**, or use the download link in the run summary. Builds are retained for 30 days.
+3. Extract the ZIP into a new folder. Stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. You need Node.js 24 or newer; no npm install or compilation is needed.
+
+The test build uses your existing local Kairo data and settings. **Code → Download ZIP** downloads source code and does not contain the compiled application. Test builds are created on feature-branch pushes after type checks, compilation and tests of the extracted package pass; they do not merge into `main` or publish a release.
+
 ## Upgrading from an earlier version
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
