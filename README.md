@@ -264,6 +264,8 @@ Kairo Intelligence, a fitting simulator, a full EVE encyclopedia, corporation ad
 
 ## Developer notes
 
+Develop changes and new versions on a feature branch and open a draft pull request for review and testing. Do not push directly to `main` or merge until the user explicitly approves after review. See [AGENTS.md](AGENTS.md).
+
 Record completed, user-visible changes under **Unreleased** in [CHANGELOG.md](CHANGELOG.md), grouped as Added, Changed, Fixed, Removed or Security where applicable. When releasing, move those entries under the released version and date (`YYYY-MM-DD`), then start a fresh Unreleased section. Include upgrade steps or data changes where needed; keep planned work outside the changelog.
 
 The source is included alongside the compiled release. The frontend uses the retained React/Vinext Sites starter; the shipped runtime is a standalone Node local service, not a hosted Worker.

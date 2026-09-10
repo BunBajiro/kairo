@@ -1,16 +1,16 @@
 # Import Analyser — Kairo 0.6.0
 
-Import Analyser helps plan purchases at Jita for resale at a saved destination hub. It uses cached books and regional trading history, then applies your selling character’s fee profile, budget and cargo capacity. It never places, edits or cancels EVE market orders.
+Import Analyser helps plan purchases at Jita for resale at a saved destination hub. Choose separate buying and selling characters, or use one pilot for both. It uses cached books and regional trading history, then applies your selling character’s fee profile, budget and cargo capacity. It never places, edits or cancels EVE market orders.
 
 ## Your first import
 
 1. Open **Markets**, select the destination, then **Import Analyser**. Jita is the purchasing reference, so select another hub to see recommendations.
-2. Choose the **selling character**. This can be different from your active pilot or the alt used to scan a structure.
+2. Choose the **buying character** for Jita purchases and the **selling character** for destination listings. Both can differ from your active pilot or the alt used to scan a structure. **Same as selling character** is the default for buying, including existing installations; choose a specific buyer to keep that pilot when you change sellers. Each destination remembers its own selections.
 3. Enter available cargo in m³ and your capital budget. Open **Demand, hauling & fee assumptions** to set the estimated share of regional trade, target turnover, trips per item, hauling costs and minimum return.
-4. Use **Update trader data**. The selected character needs skills, open orders and, for NPC stations, NPC standings. The interface explains missing scopes/modules. Connected alts’ available order snapshots are also checked.
+4. Use **Update trader data**. The seller needs skills, open orders and, for NPC stations, NPC standings. The buyer needs open orders to exclude their own Jita listings, but does not need trading skills or standings for immediate purchases. The interface explains missing scopes/modules or a character that needs reconnecting. Connected alts’ available order snapshots are also checked. When one pilot fills both roles, their data is requested once.
 5. Use **Full scan + Jita reference** for broad coverage. Quick scans support the same analyser but cover fewer goods. The first EVE Ref import can take longer; progress appears above the tabs and the rest of Kairo remains usable.
 6. Compare the category cards. Open a card to inspect source dates, demand windows, purchase tiers, alternative strategies and editable quantities/prices/durations.
-7. Add a chosen option to the draft manifest. **Review & save plan** recomputes costs, combines whole items into loads and saves a named snapshot. Open it later, or use it as a draft to reprice against your current scans.
+7. Add a chosen option to the draft manifest. **Review & save plan** recomputes costs, combines whole items into loads and saves a named snapshot with both characters. Open it later, or use it as a draft to restore its character selections and reprice against your current scans. Use **Apply & analyse** if the restored selections differ from the current ones. Older plans remain readable and show that their buyer was not recorded; loading one as a draft defaults buying to the saved seller.
 
 Plans support up to 100 different items and 100 saved plans per hub. Saving a plan does not reserve stock. An over-budget combined plan is clearly flagged for adjustment. The maximum-trip setting applies per item; the manifest shows the combined trip count separately.
 
@@ -73,7 +73,9 @@ For otherwise comparable options, ranking rewards net profit and return on capit
 
 Procurement fills the cheapest eligible cached Jita sell levels in order, displaying quantity, total cost, weighted purchase price and the highest required price. **Buy the displayed price batches separately.** EVE’s immediate matching uses the buyer’s offered price; placing one large purchase at the highest required price can overpay cheaper units. The expanded card includes these batches. Actual prices and remaining quantities can change after scanning. See CCP’s [buy and sell order guide](https://support.eveonline.com/hc/en-us/articles/203218932-Buy-and-Sell-Orders).
 
-The selected seller’s active skill levels and raw NPC standings determine the fee profile. Missing required data blocks a personalized recommendation; older usable profiles retain their sample times and an update prompt. Refresh trader data after training, clone/account changes or standing changes.
+The selected seller’s active skill levels and raw NPC standings determine the fee profile. The buying character’s skills and standings do not reduce the cost of an immediate Jita purchase: there is no buyer sales tax or broker fee for this purchase mode. Buy orders that wait on the market are not modelled by the analyser. See CCP’s [broker fee and sales tax guide](https://support.eveonline.com/hc/en-us/articles/203218962-Broker-Fee-and-Sales-Tax).
+
+Missing required data blocks a personalized recommendation; older usable profiles retain their sample times and an update prompt. Refresh trader data after training, clone/account changes or standing changes. Changing the buyer does not change the seller’s fee profile or the manually entered capital budget. Own-order exclusions still cover all connected characters with authorized order data.
 
 | Cost | Calculation |
 | --- | --- |

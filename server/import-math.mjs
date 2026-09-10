@@ -11,13 +11,14 @@ export const IMPORT_CATEGORIES=[
  {id:'misc',name:'Misc',roots:[],minimum:5}
 ];
 export const importCategory=root=>IMPORT_CATEGORIES.find(g=>g.roots.includes(root))||IMPORT_CATEGORIES.at(-1);
-export const DEFAULT_IMPORT_SETTINGS={characterId:0,cargo:10000,budget:1000000000,maxTrips:3,turnoverDays:7,demandShare:10,minROI:15,minProfit:500000,haulPerTrip:0,relistCount:1,structureBroker:null};
+// A zero buyingCharacterId follows the seller, including settings saved before this field existed.
+export const DEFAULT_IMPORT_SETTINGS={characterId:0,buyingCharacterId:0,cargo:10000,budget:1000000000,maxTrips:3,turnoverDays:7,demandShare:10,minROI:15,minProfit:500000,haulPerTrip:0,relistCount:1,structureBroker:null};
 export function validateImportSettings(value){
  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!(k in DEFAULT_IMPORT_SETTINGS)))throw new Error('Invalid import settings.');
  const r={...DEFAULT_IMPORT_SETTINGS,...value};
- const ranges={characterId:[0,1e12],cargo:[1,10000000],budget:[1000,1e15],maxTrips:[1,50],turnoverDays:[1,90],demandShare:[.1,100],minROI:[0,1000],minProfit:[0,1e12],haulPerTrip:[0,1e12],relistCount:[0,20],structureBroker:[.5,50]};
+ const ranges={characterId:[0,1e12],buyingCharacterId:[0,1e12],cargo:[1,10000000],budget:[1000,1e15],maxTrips:[1,50],turnoverDays:[1,90],demandShare:[.1,100],minROI:[0,1000],minProfit:[0,1e12],haulPerTrip:[0,1e12],relistCount:[0,20],structureBroker:[.5,50]};
  for(const [key,[min,max]] of Object.entries(ranges)){if(key==='structureBroker'&&r[key]===null)continue;if(typeof r[key]!=='number'||!Number.isFinite(r[key])||r[key]<min||r[key]>max)throw new Error('Check the '+key+' value.');}
- for(const key of ['characterId','maxTrips','turnoverDays','relistCount'])if(!Number.isSafeInteger(r[key]))throw new Error(key+' must be a whole number.');return r;
+ for(const key of ['characterId','buyingCharacterId','maxTrips','turnoverDays','relistCount'])if(!Number.isSafeInteger(r[key]))throw new Error(key+' must be a whole number.');return r;
 }
 export function tradingRates({accounting,brokerRelations,advancedBrokerRelations=0,faction=0,corporation=0,kind='station',structureBroker=null}){
  for(const n of [accounting,brokerRelations,advancedBrokerRelations])if(!Number.isInteger(n)||n<0||n>5)throw new Error('Trading skill level is unavailable.');
