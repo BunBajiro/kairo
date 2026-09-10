@@ -2,9 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.6.0 · Windows first · No cloud deployment**
+**Version 0.7.0 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
+
+## Download the latest release
+
+Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.0.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -18,9 +22,11 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version 0.6.0 adds **Markets → Import Analyser**, shared EVE Ref regional histories for Jita, Amarr, Dodixie and Hek, and saved import plans. Recommendations use Jita sell depth, the selected trader’s fee profile, estimated demand and your cargo capacity. Market comparisons now use the lowest local and Jita sell prices; scan reminders wait at least 24 hours.
+Version 0.7.0 adds a separate **Buying character** to **Markets → Import Analyser**. Choose a connected Jita buyer or keep **Same as selling character**, apply the settings and use **Update trader data**. Immediate purchases have no buyer tax or broker fee; resale fees still use the selling character. New saved plans record both pilots, and older plans remain usable. Upgrading from 0.6.0 preserves market scans and other local data, with no new scopes or data reset.
 
-**This upgrade deliberately retires previous market scans and their cached order/history responses once.** Kairo automatically queues fresh books for previously scanned, enabled hubs, with the Jita reference first. It preserves your hub list, quick-scan basket, characters, polling preferences and other player data. Previously full-scanned hubs receive a full refresh; others receive a quick refresh. Follow the progress banner in Markets. Failed or cancelled refreshes pause with a **Resume fresh scans** control; private structures may require reconnecting an authorized alt. Disabling Markets pauses this work. Future restarts retain the newly scanned data. Refresh the dashboard after starting the new release.
+Version 0.6.0 added **Markets → Import Analyser**, shared EVE Ref regional histories for Jita, Amarr, Dodixie and Hek, and saved import plans. Recommendations use Jita sell depth, the selected trader’s fee profile, estimated demand and your cargo capacity. Market comparisons now use the lowest local and Jita sell prices; scan reminders wait at least 24 hours.
+
+**When upgrading from a version older than 0.6.0, Kairo retires previous market scans and their cached order/history responses once.** Kairo automatically queues fresh books for previously scanned, enabled hubs, with the Jita reference first. It preserves your hub list, quick-scan basket, characters, polling preferences and other player data. Previously full-scanned hubs receive a full refresh; others receive a quick refresh. Follow the progress banner in Markets. Failed or cancelled refreshes pause with a **Resume fresh scans** control; private structures may require reconnecting an authorized alt. Disabling Markets pauses this work. Future restarts retain the newly scanned data. Refresh the dashboard after starting the new release.
 
 No new scopes are introduced, but the analyser requires the chosen selling character’s skills, NPC standings and open orders. Use **Update trader data** after choosing that character. A structure’s actual total broker fee must be entered because ESI does not expose it. See [the Import Analyser guide](docs/IMPORT-ANALYSER.md) for assumptions, fees and a first import.
 
@@ -122,7 +128,7 @@ The browser opens with an expandable category tree matching EVE’s market group
 
 **Hub report** screens for high lowest local sell prices versus the lowest Jita sell price, thin supply, prices below Jita’s best sell, and large local bid/ask spreads. The browser uses the same lowest-price comparison. Thresholds are editable; unscanned prices are never zero. Both EVE Ref and ESI trading histories cover the **region**, not the station. Thin supply is station quantity divided by the region’s daily average volume, using at least seven reported trading days and a current history response. This is a screening ratio, not a prediction of local sellout time. Scan dates and missing coverage remain visible. Listing averages remain descriptive only. Browser/report price differences exclude taxes, fees and hauling; the Import Analyser models these costs separately.
 
-**Import Analyser** groups up to ten qualifying imports per category, including Ships, Ship Equipment & Drones (with rigs/subsystems), and Ammunition. Choose the **selling character**, enter your cargo capacity and purchasing budget, and apply. Update trader data, scan the destination with a Jita reference, then analyse. Cards compare **Anchoring Price** and **Profiteering Price** with quantities, durations, net returns, supply signals and trips. Open a card for regional volume windows, alternative quantities/prices, fee breakdowns and real Jita price tiers. Add choices to a draft, review the combined loads and save a named plan. Saved plans retain their dated inputs; use one as a draft to reprice it.
+**Import Analyser** groups up to ten qualifying imports per category, including Ships, Ship Equipment & Drones (with rigs/subsystems), and Ammunition. Choose the **selling character** and **buying character** (or use the seller for both), enter your cargo capacity and purchasing budget, and apply. Update trader data, scan the destination with a Jita reference, then analyse. Cards compare **Anchoring Price** and **Profiteering Price** with quantities, durations, net returns, supply signals and trips. Open a card for regional volume windows, alternative quantities/prices, fee breakdowns and real Jita price tiers. Add choices to a draft, review the combined loads and save a named plan. Saved plans retain both pilots and their dated inputs; use one as a draft to reprice it.
 
 Activity screens use regional trading volume multiplied by an editable assumed hub share. There is no station-level executed-volume feed. Cargo uses repackaged item volume; large hulls cannot be split across trips. Connected characters’ active local sell listings are excluded when their authorized order snapshots are available; the interface shows missing alt coverage. Neither recommendations nor plans place orders. Existing market data scanned by an alt remains usable by every local character.
 
