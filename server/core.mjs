@@ -7,6 +7,8 @@ import {rememberSystem} from './places.mjs';
 import {bindingProjection} from './projections.mjs';
 import {createOBS} from './obs.mjs';
 import {createCombat} from './combat.mjs';
+import {createSessionCombat} from './session-combat.mjs';
+import {reconcileSessionLoyalty} from './session-details.mjs';
 import {createMarkets} from './markets.mjs';
 import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
@@ -42,6 +44,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         goals.refresh(id,'killmails');updateBindings();
         send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
     }});
+    const sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,onChange:id=>send('changed',{characterId:id})});
     function combatSnapshot(id){const s=store.snapshot(id,'killmails')||{status:'waiting',data:null},records=combat.recent(id);return {...s,data:records.length?records:s.data,participation:combat.coverage(id)};}
     const enabled = m => store.get('module:' + m.id, true);
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));
@@ -203,6 +206,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             if (!r.stale) snapshot.refreshAt = new Date(refreshDeadline(pollingPolicy(d, id), r, d.key === 'queue' ? data : store.snapshot(id, 'queue')?.data)).toISOString();
             delete snapshot.headers;
             store.saveSnapshot(id, d.key, snapshot);
+            if(d.key==='loyalty'&&!r.stale)reconcileSessionLoyalty(store,id);
             goals.refresh(id,d.key);
             nextRun.set(key, r.stale ? retryDeadline(d, r.retryAt) : Math.max(Date.now() + 3000, Date.parse(snapshot.refreshAt)));
             if (!r.stale) {
@@ -309,7 +313,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     function updateBindings(){stream.setBindings(Object.fromEntries(stream.config().elements.map(e=>[e.id,bindingProjection(store,auth,e)])));}
     const ticker = setInterval(() => { if (!options.noSync) { syncProtection(); sync(0); for (const c of auth.characters())
         if (!c.needsReauth){
-            sync(c.id);combat.syncPublic(c.id);
+            sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
         } } refreshOPSEC(); }, 3000);
     ticker.unref();
     const heartbeat = setInterval(() => { for (const c of [...uiClients, ...stream.clients]) {
@@ -320,7 +324,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     } updateBindings(); }, 10000);
     heartbeat.unref();
     refreshOPSEC();updateBindings();
-    return { bus, registry, stream, obs, combat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
+    return { bus, registry, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
         }
         else
@@ -328,6 +332,6 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             for (const m of catalog) if ((m.id === 'universe') === (id === 0)) for (const d of m.datasets) requested.add(id + ':' + d.key);
             esi.clearAccessFailures?.(id);
             syncProtection(); return Promise.allSettled([sync(id), ...(!options.noSync && id ? [combat.syncPublic(id)] : [])]);
-        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health() }), async close() { stopped = true; clearInterval(ticker); clearInterval(heartbeat); registry.close();stream.close();await markets.close();await combat.close();await obs.close(); for (const c of uiClients)
+        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health() }), async close() { stopped = true; clearInterval(ticker); clearInterval(heartbeat); registry.close();stream.close();await markets.close();await sessionCombat.close();await combat.close();await obs.close(); for (const c of uiClients)
             c.end(); await Promise.allSettled([...syncing.values(), ...datasetSync.values()]); } };
 }

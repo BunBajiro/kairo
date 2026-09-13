@@ -39,6 +39,20 @@ jobs:
       - name: Build the application
         run: npm run build
 
+      - name: Verify session cards in Chrome
+        env:
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-session-ui
+        run: node tests/session-ui.mjs
+
+      - name: Upload session interface screenshots
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: session-interface-check
+          path: ${{ runner.temp }}/kairo-session-ui/*.png
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Package the test build
         run: python3 scripts/package-release.py "$RUNNER_TEMP/Kairo-test-build.zip"
 
