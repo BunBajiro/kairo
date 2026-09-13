@@ -13,7 +13,7 @@ import {allScopes} from '../server/modules/catalog.mjs';
 
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(existsSync);
 if(!chrome)throw new Error('Chrome is required for the browser smoke test. Set KAIRO_CHROME_PATH.');
-const dir=await mkdtemp(join(tmpdir(),'kairo-session-ui-')),output=process.env.KAIRO_BROWSER_OUTPUT||join(dir,'screenshots');
+const dir=await mkdtemp(join(tmpdir(),'kairo-session-ui-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-screenshots';
 await mkdir(output,{recursive:true});
 const iso=ms=>new Date(ms).toISOString(),epoch=Date.now()-5*3600000,at=m=>iso(epoch+m*60000);
 const store=openStore(join(dir,'data'));
@@ -42,8 +42,15 @@ let app,proc,ws;const pending=new Map(),errors=[];let sequence=0;
 function call(method,params={}){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params}));});}
 async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+': '+r.exceptionDetails.exception?.description);return r.result.value;}
 async function waitFor(expression){for(let i=0;i<200;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Condition not met: '+expression);}
-async function click(selector){await waitFor('!!document.querySelector('+JSON.stringify(selector)+')');await evaluate('document.querySelector('+JSON.stringify(selector)+').click()');}
-async function card(title){await evaluate(`Array.from(document.querySelectorAll('.session-detail-card > summary')).find(s=>s.querySelector('strong')?.textContent===${JSON.stringify(title)}).click()`);}
+async function clickElement(expression){
+ await waitFor('!!('+expression+')');
+ const point=await evaluate(`(()=>{const e=(${expression});e.scrollIntoView({block:'center',inline:'nearest'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...point});
+ await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1});
+ await call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1});
+}
+async function click(selector){await clickElement('document.querySelector('+JSON.stringify(selector)+')');}
+async function card(title){await clickElement(`Array.from(document.querySelectorAll('.session-detail-card > summary')).find(s=>s.querySelector('strong')?.textContent===${JSON.stringify(title)})`);}
 async function screenshot(name){await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
 async function fill(selector,text){await evaluate('document.querySelector('+JSON.stringify(selector)+').focus()');await call('Input.dispatchKeyEvent',{type:'keyDown',modifiers:2,key:'a',code:'KeyA',windowsVirtualKeyCode:65});await call('Input.dispatchKeyEvent',{type:'keyUp',modifiers:2,key:'a',code:'KeyA',windowsVirtualKeyCode:65});await call('Input.insertText',{text});}
 try{
@@ -55,7 +62,7 @@ try{
  ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);});
  await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1600,height:1050,deviceScaleFactor:1,mobile:false});
  await call('Page.navigate',{url:app.origin+'/#journey'});await waitFor("!!document.querySelector('[role=tab][data-state]')");
- await evaluate("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions').click()");
+ await clickElement("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions')");
  await waitFor("document.querySelectorAll('.session-card').length===2");await click('.session-card');await waitFor("document.querySelectorAll('.session-detail-card').length===9");
  await screenshot('sessions-desktop');
  await card('Route & visits');assert.equal(await evaluate("document.querySelectorAll('.session-route-list > li').length"),4);assert.equal(await evaluate("document.querySelectorAll('.session-buffer-badge').length"),3);assert.ok(await evaluate("document.querySelector('.session-route-list').textContent.includes('Quiet transit')"));
@@ -63,10 +70,10 @@ try{
  await card('Loyalty points');assert.equal(await evaluate("document.querySelectorAll('.session-lp-table tbody tr').length"),2);assert.ok(await evaluate("document.querySelector('.session-lp-table').textContent.includes('+18,200')"));
  await evaluate("document.querySelector('.session-lp-table').scrollIntoView({block:'center'})");await screenshot('sessions-loyalty');await card('Loyalty points');
  await card('Activity timeline');assert.equal(await evaluate("document.querySelectorAll('.report-events article').length"),100);
- await evaluate("Array.from(document.querySelectorAll('.session-v2 button')).find(b=>b.textContent.includes('Load more session events')).click()");await waitFor("document.querySelectorAll('.report-events article').length===135");
+ await clickElement("Array.from(document.querySelectorAll('.session-v2 button')).find(b=>b.textContent.includes('Load more session events'))");await waitFor("document.querySelectorAll('.report-events article').length===135");
  await card('Activity timeline');
  await fill('.session-v2 .report-title input','Session UI verified');await fill('.session-v2 textarea','Saved in the browser smoke test.');
- await evaluate("Array.from(document.querySelectorAll('.session-v2 button')).find(b=>b.textContent.includes('Save session details')).click()");
+ await clickElement("Array.from(document.querySelectorAll('.session-v2 button')).find(b=>b.textContent.includes('Save session details'))");
  await waitFor("document.querySelector('[data-sonner-toast]')?.textContent.includes('Session details saved')");
  const db=openStore(join(dir,'data'));try{const saved=db.db.prepare('SELECT label,notes FROM sessions WHERE id=?').get('preview');assert.equal(saved.label,'Session UI verified');assert.equal(saved.notes,'Saved in the browser smoke test.');}finally{db.close();}
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});await evaluate("document.querySelector('.session-v2').scrollTop=0");await screenshot('sessions-mobile');
@@ -75,8 +82,17 @@ try{
  // Real keyboard interaction: summary toggles and dialog closes with Escape.
  await evaluate("document.querySelector('.session-detail-card > summary').focus()");await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});assert.equal(await evaluate("document.querySelector('.session-detail-card').open"),true);
  await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await waitFor("!document.querySelector('.session-v2')");
- await evaluate("Array.from(document.querySelectorAll('.session-card')).find(s=>s.textContent.includes('Earlier session')).click()");await waitFor("document.querySelectorAll('.session-detail-card').length===9");assert.ok(await evaluate("document.querySelector('.session-v2').textContent.includes('Alliance was not recorded')"));
+ await clickElement("Array.from(document.querySelectorAll('.session-card')).find(s=>s.textContent.includes('Earlier session'))");await waitFor("document.querySelectorAll('.session-detail-card').length===9");assert.ok(await evaluate("document.querySelector('.session-v2').textContent.includes('Alliance was not recorded')"));
  assert.deepEqual(errors,[],'No uncaught browser errors');
  console.log(JSON.stringify({ok:true,cards:9,visits:4,bufferedVisits:3,timelineEvents:135,mobileWidth:390,screenshots:output}));
-}catch(error){if(ws?.readyState===1)await screenshot('sessions-failure').catch(()=>{});throw error;}
-finally{ws?.close();proc?.kill('SIGTERM');await app?.close();await rm(dir,{recursive:true,force:true});}
+}catch(error){
+ console.error('Session browser check failed:',error.stack||error.message);
+ const state=ws?.readyState===1?await evaluate("({url:location.href,tabs:Array.from(document.querySelectorAll('[role=tab]')).map(t=>({text:t.textContent,selected:t.getAttribute('aria-selected')})),cards:document.querySelectorAll('.session-card').length,details:document.querySelectorAll('.session-detail-card').length,body:document.body.innerText.slice(-12000)})").catch(()=>null):null;
+ await writeFile(join(output,'failure.json'),JSON.stringify({error:error.stack||error.message,errors,state},null,2));
+ if(ws?.readyState===1)await screenshot('sessions-failure').catch(()=>{});throw error;
+}finally{
+ ws?.close();
+ if(proc&&proc.exitCode===null&&proc.signalCode===null){const exited=new Promise(resolve=>proc.once('exit',resolve));proc.kill('SIGTERM');await Promise.race([exited,delay(3000)]);if(proc.exitCode===null&&proc.signalCode===null){proc.kill('SIGKILL');await Promise.race([exited,delay(1000)]);}}
+ await app?.close();
+ await rm(dir,{recursive:true,force:true,maxRetries:5,retryDelay:100}).catch(error=>console.warn('Temporary browser cleanup:',error.message));
+}
