@@ -2,7 +2,7 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.1 · Windows first · No cloud deployment**
+**Version 0.7.2 · Review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
@@ -175,6 +175,8 @@ A scene switch changes the live program output, including when OBS Studio Mode i
 On upgrade, Low-Sec, Neutral, Triglavian and Anoikis inherit your previous Unknown actions. High-Sec inherits Safe actions if high-sec cover release was already enabled; otherwise it retains Unknown actions. In that case the old Safe rules remain available through **Use previous Safe actions** in the High-Sec editor. Existing Blue, Hostile, FW and Manual rules are preserved. Saving an empty list later is intentional and does not trigger inheritance again.
 
 ## Sessions, reports and your New Eden atlas
+
+Version **0.7.2** adds a summary card for the session’s duration, travel, personal/alliance combat, wallet and LP changes, with missing or delayed data clearly labelled. It highlights the most active system by unique personal/alliance killmails, falling back to the most total observed time for quiet sessions. It aligns the activity cards into consistent rows and brings their typography, metric sections, status footers and detail panels in line with the Import Analyser. Opening a card shows its detail across the full row; narrow screens stack the cards and show LP values without sideways scrolling. This version is awaiting in-app review. Use the feature branch’s successful **Kairo test build** in [GitHub Actions](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml); the stable release above remains v0.7.1.
 
 Version **0.7.1** expands the session overview into clickable cards for **all observed visits**, ships flown, personal combat, alliance combat, personal LP changes, wallet activity, milestones and the timeline. Alliance combat only adds a ±10-minute tracking buffer to a visit when an alliance kill or loss occurs during that visit. Every other visit stays in the route. [Sessions guide and collection rules](docs/SESSIONS.md).
 

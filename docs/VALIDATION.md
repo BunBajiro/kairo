@@ -22,6 +22,13 @@
   - HTTP serving, compiled asset access, private-session enforcement, cross-origin rejection, stream read-only routes and CSP.
   - Simulated signed SSO → scoped ESI → observed location → SQLite journey → authenticated state API, with no character/location leakage to stream state.
 
+## Added in 0.7.2 (review build)
+
+- The Sessions browser fixture includes both populated sessions and the reported mixed legacy state: ship images, a long route, valued personal kills and a wallet change alongside missing alliance/LP baselines.
+- Browser assertions compare card borders and heading/preview/footer positions at 1600, 1024 and 820px. They also check full-width expanded panels, 390px wrapping, LP cells, disclosure state and keyboard focus restoration.
+- Summary assertions check the six recorded values for populated and legacy sessions, missing-alliance/LP and delayed-estimate labels, its position above the activity cards, and aligned tiles without horizontal overflow. Four focused tests cover unique personal/alliance killmails, combat ranking, total time across return visits, stable ties and missing observations.
+- Application TypeScript checks, the production/static build and all 129 Node tests pass locally. Compiled browser screenshots and the extracted review package are pending CI verification. Main remains gated on the user's own end-use review and explicit merge approval.
+
 ## Added in 0.7.1
 
 - Twelve Sessions regression tests cover all visits (including quiet and repeated visits), exact presence boundaries, buffer qualification before expansion, overlapping windows, deduplication, independent alliance sides and missing/zero valuations.

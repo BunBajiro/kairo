@@ -4,6 +4,28 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
+## 0.7.2 — In review
+
+### Added
+
+- A full-width session summary above the activity cards: duration, systems and visits, personal/alliance kills and losses, wallet change and LP change, plus the most active system by unique personal/alliance killmails. Quiet sessions show the system with the most total observed time. Missing baselines and delayed LP estimates retain their status labels.
+
+### Fixed
+
+- Sessions cards align their borders, headings, metric areas and footers across each row, including cards with ship images, extra status text or missing legacy data.
+- Long names and unavailable values wrap within their cards. On narrow screens, LP corporations show labelled start/end/change values without requiring horizontal scrolling.
+
+### Changed
+
+- Sessions adopts the Import Analyser's clearer section backgrounds, larger figures, grouped values, category accents and status/action footers.
+- Opening a card reveals a full-width detail panel below its row. Explicit close controls return keyboard focus to the card; Enter and Space open cards, and Escape closes the report.
+- The Chrome smoke check covers populated and legacy layouts at multiple widths, actual card/section alignment, expanded panel width and keyboard focus.
+
+### Upgrade notes
+
+- This is a presentation update using the existing v0.7.1 records and collection rules. Existing data, visits and combat/LP accounting are preserved.
+- Prepared on a feature branch for in-app review before merging. Battle Reports remain reserved for v0.8.
+
 ## 0.7.1 — 2026-09-13
 
 ### Added
