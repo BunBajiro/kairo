@@ -4,6 +4,28 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
+## 0.7.1 — 2026-09-13
+
+### Added
+
+- **Expandable session overview cards** for route and visits, ships flown, personal combat, alliance combat, personal LP changes, wallet activity, progress, coverage and the activity timeline.
+- **Complete observed visit history within each session**, including order, entry/exit times, durations, regions, repeated systems and quiet transits. Starting and ending visits are clipped to the session window.
+- **Alliance combat around qualifying visits:** an alliance kill/loss during a visit enables its ±10-minute buffer in that system. Overlapping same-system windows merge and killmails are deduplicated. This rule only affects alliance combat tracking; every visit remains visible.
+- **Separate personal and alliance ISK destroyed/lost**, using available zKillboard totalValue estimates. Unknown values are labelled unpriced.
+- **Personal LP changes by NPC corporation**, with saved start/end balances, sample timestamps, delayed reconciliation and explicit uncertainty when samples overlap adjacent sessions.
+- **Ships flown and change history**, including swaps between ships of the same hull type.
+
+### Changed
+
+- Public combat collection retains valuations even when a killmail was already received through ESI.
+- Cached, rate-limited alliance collection uses supported system/month queries, verifies killmail details with ESI and retains records locally. Recent sessions continue collecting delayed public records; opening older sessions resumes checks.
+
+### Upgrade notes
+
+- Existing local data, settings, market scans and session history are preserved. New tables migrate once; no additional SSO scope is introduced.
+- Enable the combat module and its existing loyalty-point permission before starting a session to capture LP. Historic sessions cannot recreate uncaptured LP, ship or alliance baselines.
+- Battle Reports and public sharing are deferred to v0.8 or later.
+
 ## 0.7.0 — 2026-09-10
 
 ### Added

@@ -77,6 +77,12 @@ export function openStore(dir) {
             db.prepare("INSERT INTO migrations VALUES('market-rebuild-v6',datetime('now'))").run();db.exec('COMMIT');
         }catch(e){db.exec('ROLLBACK');throw e;}
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='sessions-v071'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+        CREATE TABLE alliance_combat_records(alliance_id INTEGER NOT NULL,killmail_id INTEGER NOT NULL,system_id INTEGER NOT NULL,at TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(alliance_id,killmail_id));
+        CREATE INDEX idx_alliance_combat_system_at ON alliance_combat_records(alliance_id,system_id,at);
+        INSERT INTO migrations VALUES('sessions-v071',datetime('now')); COMMIT;`);
+    }
     try {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);
     }

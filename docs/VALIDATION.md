@@ -1,11 +1,11 @@
-# Validation — 10 September 2026
+# Validation — 13 September 2026
 
 ## Completed
 
 - Successful production/static export with the retained Vinext build workflow.
-- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 113 tests also run from the extracted package without an npm install.
+- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 125 tests also run from the extracted package without an npm install.
 - Application TypeScript check using `tsconfig.kairo.json`.
-- 113 passing Node contract/integration tests:
+- 125 passing Node contract/integration tests:
   - S256 PKCE generation.
   - JWT issuer, application/EVE audience, expiry and character claim checks.
   - Authenticated vault encryption and tamper detection.
@@ -21,6 +21,18 @@
   - Host and CSRF validation.
   - HTTP serving, compiled asset access, private-session enforcement, cross-origin rejection, stream read-only routes and CSP.
   - Simulated signed SSO → scoped ESI → observed location → SQLite journey → authenticated state API, with no character/location leakage to stream state.
+
+## Added in 0.7.1
+
+- Twelve Sessions regression tests cover all visits (including quiet and repeated visits), exact presence boundaries, buffer qualification before expansion, overlapping windows, deduplication, independent alliance sides and missing/zero valuations.
+- Ships of the same hull retain separate changes. Personal public valuations enrich earlier ESI records without duplicate activity events.
+- Per-corporation LP accounting includes spent/removed balances, missing snapshots, first-sample reconciliation, persistence and uncertainty across adjacent sessions.
+- The collector is tested against supported system/month requests, UTC month/year boundaries, cached repeat requests, resumable detail budgets, character isolation, rate-limit failures and retained historical totals.
+- Legacy session data remains readable, and the new SQLite migration runs only once.
+- Type checks, production compilation and all 125 Node tests passed locally and in [GitHub Actions](https://github.com/BunBajiro/kairo/actions/runs/34765639230), including from the extracted standalone ZIP without source dependencies.
+- The Chrome smoke test passed for nine overview cards, opening/closing details, four visits including a quiet transit, three qualifying combat badges, per-corporation LP, 100-to-135 event pagination, persisted names/notes, Enter/Escape controls and legacy reports. No uncaught browser exceptions occurred.
+- Five captured screenshots were visually inspected at 1600×1050 and 390×844. The report stacks its cards on narrow screens, and the LP table scrolls within its card. The fixture uses synthetic local data; it does not validate live EVE collection or the user's machine.
+- On 13 September 2026, the user reviewed the test build, asked about missing new data in legacy sessions and approved merging once that expected limitation was confirmed against the implementation. This approval is separate from the automated checks and screenshot inspection.
 
 ## Added in 0.7.0
 
@@ -108,7 +120,7 @@ These were not performed and are not represented as passing:
 - EVE SSO sign-in using the user's actual registered application and Bun Bajiro's authorization.
 - Authenticated ESI responses for the user's actual scopes, assets, permissions and account.
 - Windows DPAPI encryption/decryption under the user's Windows login.
-- Visual/browser interaction tests, including responsive rendering at real viewport sizes.
+- Comprehensive live-session and browser coverage beyond the user's review of the v0.7.1 test build. Automated browser coverage above is limited to the synthetic Sessions fixture.
 - OBS/Streamlabs browser-source rendering, audio, exact cover placement, startup/reload handling and scene transitions.
 - Long-duration collection during an actual play session.
 

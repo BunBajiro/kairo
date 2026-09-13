@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.0 · Windows first · No cloud deployment**
+**Version 0.7.1 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
 ## Download the latest release
 
-Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.0.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.1.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -22,7 +22,7 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version 0.7.0 adds a separate **Buying character** to **Markets → Import Analyser**. Choose a connected Jita buyer or keep **Same as selling character**, apply the settings and use **Update trader data**. Immediate purchases have no buyer tax or broker fee; resale fees still use the selling character. New saved plans record both pilots, and older plans remain usable. Upgrading from 0.6.0 preserves market scans and other local data, with no new scopes or data reset.
+Version 0.7.0 added a separate **Buying character** to **Markets → Import Analyser**. Choose a connected Jita buyer or keep **Same as selling character**, apply the settings and use **Update trader data**. Immediate purchases have no buyer tax or broker fee; resale fees still use the selling character. New saved plans record both pilots, and older plans remain usable. Upgrading from 0.6.0 preserves market scans and other local data, with no new scopes or data reset.
 
 Version 0.6.0 added **Markets → Import Analyser**, shared EVE Ref regional histories for Jita, Amarr, Dodixie and Hek, and saved import plans. Recommendations use Jita sell depth, the selected trader’s fee profile, estimated demand and your cargo capacity. Market comparisons now use the lowest local and Jita sell prices; scan reminders wait at least 24 hours.
 
@@ -175,6 +175,10 @@ A scene switch changes the live program output, including when OBS Studio Mode i
 On upgrade, Low-Sec, Neutral, Triglavian and Anoikis inherit your previous Unknown actions. High-Sec inherits Safe actions if high-sec cover release was already enabled; otherwise it retains Unknown actions. In that case the old Safe rules remain available through **Use previous Safe actions** in the High-Sec editor. Existing Blue, Hostile, FW and Manual rules are preserved. Saving an empty list later is intentional and does not trigger inheritance again.
 
 ## Sessions, reports and your New Eden atlas
+
+Version **0.7.1** expands the session overview into clickable cards for **all observed visits**, ships flown, personal combat, alliance combat, personal LP changes, wallet activity, milestones and the timeline. Alliance combat only adds a ±10-minute tracking buffer to a visit when an alliance kill or loss occurs during that visit. Every other visit stays in the route. [Sessions guide and collection rules](docs/SESSIONS.md).
+
+Existing sessions retain their saved visits and events, but uncaptured alliance, LP and starting-ship baselines cannot be reconstructed. New sessions capture these baselines when the relevant modules and permissions are available. Battle Reports are reserved for v0.8.
 
 **Journey → Start session** asks for a name. **End session** opens its report. Open any entry in **Sessions** to revisit it, rename it or add a debrief. The report includes recorded events, combat counts, goal completions, training levels, ready industry jobs, ship changes, observed travel, journal inflows/outflows and a wallet/SP comparison when start/end samples are available. A live session also has **Live report** and **Refresh report** controls.
 
