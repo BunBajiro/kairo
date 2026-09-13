@@ -4,7 +4,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
-## 0.7.1 — In review
+## 0.7.1 — 2026-09-13
 
 ### Added
 
@@ -24,7 +24,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 - Existing local data, settings, market scans and session history are preserved. New tables migrate once; no additional SSO scope is introduced.
 - Enable the combat module and its existing loyalty-point permission before starting a session to capture LP. Historic sessions cannot recreate uncaptured LP, ship or alliance baselines.
-- Battle Reports and public sharing are deferred to v0.8 or later. This build remains on a feature branch pending review.
+- Battle Reports and public sharing are deferred to v0.8 or later.
 
 ## 0.7.0 — 2026-09-10
 

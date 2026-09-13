@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.1 · Review build · Windows first · No cloud deployment**
+**Version 0.7.1 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
 ## Download the latest release
 
-Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.0.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.1.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -178,7 +178,7 @@ On upgrade, Low-Sec, Neutral, Triglavian and Anoikis inherit your previous Unkno
 
 Version **0.7.1** expands the session overview into clickable cards for **all observed visits**, ships flown, personal combat, alliance combat, personal LP changes, wallet activity, milestones and the timeline. Alliance combat only adds a ±10-minute tracking buffer to a visit when an alliance kill or loss occurs during that visit. Every other visit stays in the route. [Sessions guide and collection rules](docs/SESSIONS.md).
 
-This version is awaiting review. Use the ZIP from the feature branch’s successful **Kairo test build** in [GitHub Actions](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml); the stable release download above remains v0.7.0. Battle Reports are reserved for v0.8.
+Existing sessions retain their saved visits and events, but uncaptured alliance, LP and starting-ship baselines cannot be reconstructed. New sessions capture these baselines when the relevant modules and permissions are available. Battle Reports are reserved for v0.8.
 
 **Journey → Start session** asks for a name. **End session** opens its report. Open any entry in **Sessions** to revisit it, rename it or add a debrief. The report includes recorded events, combat counts, goal completions, training levels, ready industry jobs, ship changes, observed travel, journal inflows/outflows and a wallet/SP comparison when start/end samples are available. A live session also has **Live report** and **Refresh report** controls.
 

@@ -35,8 +35,8 @@ Start/end samples keep their original timestamps. A completed session initially 
 
 If another session starts before the fresh end sample, or the new session's LP baseline overlaps a previous session, the overview labels the result **Uncertain** and retains the original observed balances. Kairo does not assign the shared change to both sessions. Missing historical samples cannot be reconstructed.
 
-## Compatibility and review
+## Compatibility
 
 The migration adds an alliance combat ledger without resetting sessions, settings, markets or existing history. Old sessions still show their observed visits/events; uncaptured alliance, LP and ship baselines remain unavailable. JSON history exports include the retained alliance ledger and the session snapshots.
 
-Battle Reports, engagements and public sharing are outside v0.7.1. The version is prepared on a feature branch with a draft PR and test ZIP for in-app review before merging or releasing.
+Battle Reports, engagements and public sharing are outside v0.7.1. The user reviewed the test build, accepted the legacy-session baseline limitation and approved merging on 13 September 2026.
