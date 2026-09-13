@@ -50,9 +50,19 @@ async function clickElement(expression){
  await call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1});
 }
 async function click(selector){await clickElement('document.querySelector('+JSON.stringify(selector)+')');}
-async function card(title){await clickElement(`Array.from(document.querySelectorAll('.session-detail-card > summary')).find(s=>s.querySelector('strong')?.textContent===${JSON.stringify(title)})`);}
+async function card(title){
+ const summary=`Array.from(document.querySelectorAll('.session-detail-card > summary')).find(s=>s.querySelector('strong')?.textContent===${JSON.stringify(title)})`;
+ const open=await evaluate(`(${summary}).parentElement.open`);
+ await clickElement(summary);await waitFor(`(${summary}).parentElement.open===${!open}`);
+}
 async function screenshot(name){await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
 async function fill(selector,text){await evaluate('document.querySelector('+JSON.stringify(selector)+').focus()');await call('Input.dispatchKeyEvent',{type:'keyDown',modifiers:2,key:'a',code:'KeyA',windowsVirtualKeyCode:65});await call('Input.dispatchKeyEvent',{type:'keyUp',modifiers:2,key:'a',code:'KeyA',windowsVirtualKeyCode:65});await call('Input.insertText',{text});}
+async function pressKey(key,code,windowsVirtualKeyCode,text=''){
+ // Enter needs its carriage-return text for Chrome to dispatch keypress and
+ // perform native summary activation, as a physical key press does.
+ await call('Input.dispatchKeyEvent',{type:text?'keyDown':'rawKeyDown',modifiers:0,key,code,windowsVirtualKeyCode,text,unmodifiedText:text});
+ await call('Input.dispatchKeyEvent',{type:'keyUp',modifiers:0,key,code,windowsVirtualKeyCode});
+}
 try{
  app=await startKairo({port:18580,streamPort:18581,dataDir:join(dir,'data'),noSync:true});
  proc=spawn(chrome,['--headless','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--no-first-run','--remote-debugging-port=0','--user-data-dir='+join(dir,'chrome'),'about:blank'],{stdio:['ignore','ignore','pipe']});
@@ -80,8 +90,9 @@ try{
  assert.ok(await evaluate("document.documentElement.scrollWidth<=innerWidth && document.querySelector('.session-v2').scrollWidth<=document.querySelector('.session-v2').clientWidth+1"),'Mobile dialog must not overflow horizontally');
  await card('Loyalty points');await evaluate("document.querySelector('.session-lp-table').scrollIntoView({block:'center'})");await screenshot('sessions-mobile-loyalty');
  // Real keyboard interaction: summary toggles and dialog closes with Escape.
- await evaluate("document.querySelector('.session-detail-card > summary').focus()");await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});assert.equal(await evaluate("document.querySelector('.session-detail-card').open"),true);
- await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await waitFor("!document.querySelector('.session-v2')");
+ assert.equal(await evaluate("document.querySelector('.session-detail-card').open"),false);
+ await evaluate("document.querySelector('.session-detail-card > summary').focus()");await pressKey('Enter','Enter',13,'\r');await waitFor("document.querySelector('.session-detail-card').open===true");
+ await pressKey('Escape','Escape',27);await waitFor("!document.querySelector('.session-v2')");
  await clickElement("Array.from(document.querySelectorAll('.session-card')).find(s=>s.textContent.includes('Earlier session'))");await waitFor("document.querySelectorAll('.session-detail-card').length===9");assert.ok(await evaluate("document.querySelector('.session-v2').textContent.includes('Alliance was not recorded')"));
  assert.deepEqual(errors,[],'No uncaught browser errors');
  console.log(JSON.stringify({ok:true,cards:9,visits:4,bufferedVisits:3,timelineEvents:135,mobileWidth:390,screenshots:output}));
