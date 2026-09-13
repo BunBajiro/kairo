@@ -44,7 +44,18 @@ async function evaluate(expression){const r=await call('Runtime.evaluate',{expre
 async function waitFor(expression){for(let i=0;i<200;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Condition not met: '+expression);}
 async function clickElement(expression){
  await waitFor('!!('+expression+')');
- const point=await evaluate(`(()=>{const e=(${expression});e.scrollIntoView({block:'center',inline:'nearest'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+ const point=await evaluate(`(async()=>{
+  const e=(${expression});e.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
+  let previous,stable=0;
+  for(let frame=0;frame<180;frame++){
+   await new Promise(requestAnimationFrame);
+   const r=e.getBoundingClientRect(),point={x:r.x+r.width/2,y:r.y+r.height/2},hit=document.elementFromPoint(point.x,point.y);
+   const ready=e.isConnected&&!e.disabled&&r.width>0&&r.height>0&&e.contains(hit);
+   stable=ready&&previous&&Math.abs(point.x-previous.x)<.25&&Math.abs(point.y-previous.y)<.25?stable+1:0;
+   if(stable>=3)return point;previous=point;
+  }
+  throw new Error('Click target did not become stable and unobstructed');
+ })()`);
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',...point});
  await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1});
  await call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1});
@@ -71,7 +82,9 @@ try{
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
  ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);});
  await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1600,height:1050,deviceScaleFactor:1,mobile:false});
- await call('Page.navigate',{url:app.origin+'/#journey'});await waitFor("!!document.querySelector('[role=tab][data-state]')");
+ await call('Page.navigate',{url:app.origin+'/#journey'});
+ // Journey data loads after its tabs mount and changes their screen position.
+ await waitFor("document.querySelectorAll('.route-stop').length===3 && !!document.querySelector('.connection-status.online')");
  await clickElement("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions')");
  await waitFor("document.querySelectorAll('.session-card').length===2");await click('.session-card');await waitFor("document.querySelectorAll('.session-detail-card').length===9");
  await screenshot('sessions-desktop');

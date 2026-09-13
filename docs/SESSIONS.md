@@ -21,7 +21,7 @@ The alliance current at session start is saved with that session, so later membe
 
 The public collector uses the supported `allianceID`, `solarSystemID`, `year/month` and `page` modifiers. It applies exact visit windows locally, verifies killmail bodies using their ESI hash and retains verified records in SQLite. It shares the existing zKillboard queue and cache, sends no EVE credentials to zKillboard, respects source cache deadlines and rate-limit cooldowns, and caps each pass to six pages and 100 new detail verifications. Incomplete collection and API page limits are visible in the card.
 
-The most recent eight active/recent sessions are checked automatically while Kairo runs; completed sessions stay in that automatic set for 24 hours. Opening an older session resumes collection for it. Public publication delays and unpublished killmails mean **collected** does not guarantee that every in-game loss is public. Closing or disabling the combat module pauses further collection; retained records remain available.
+The most recent eight active/recent sessions are checked automatically while Kairo runs; completed sessions stay in that automatic set for 24 hours. Opening an older session resumes collection for it. Public publication delays and unpublished killmails mean **collected** does not guarantee that every in-game loss is public. Closing Kairo or disabling the combat module pauses further collection; retained records remain available.
 
 The current public API documents up to 200 results per page, a one-hour client cache, and a five-minute delay for new records. It disables the old start/end timestamp filters. Reference: [zKillboard API documentation](https://zkillboard.com/api/docs/), checked 13 September 2026.
 
