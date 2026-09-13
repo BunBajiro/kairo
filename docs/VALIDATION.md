@@ -29,8 +29,10 @@
 - Per-corporation LP accounting includes spent/removed balances, missing snapshots, first-sample reconciliation, persistence and uncertainty across adjacent sessions.
 - The collector is tested against supported system/month requests, UTC month/year boundaries, cached repeat requests, resumable detail budgets, character isolation, rate-limit failures and retained historical totals.
 - Legacy session data remains readable, and the new SQLite migration runs only once.
-- Type checks, production compilation and all 125 Node tests passed locally. GitHub Actions and user in-app review are separate gates; no approval or live-client validation is implied by the local fixtures.
-- A Chrome smoke test is prepared in the test-build workflow for card expansion, retaining quiet visits, LP detail, timeline pagination, saving notes, keyboard controls and a 390px layout. It has not yet run: the feature commit is awaiting approval for the GitHub push. No browser screenshots or visual approval are claimed.
+- Type checks, production compilation and all 125 Node tests passed locally and in [GitHub Actions](https://github.com/BunBajiro/kairo/actions/runs/34765639230), including from the extracted standalone ZIP without source dependencies.
+- The Chrome smoke test passed for nine overview cards, opening/closing details, four visits including a quiet transit, three qualifying combat badges, per-corporation LP, 100-to-135 event pagination, persisted names/notes, Enter/Escape controls and legacy reports. No uncaught browser exceptions occurred.
+- Five captured screenshots were visually inspected at 1600×1050 and 390×844. The report stacks its cards on narrow screens, and the LP table scrolls within its card. The fixture uses synthetic local data; it does not validate live EVE collection or the user's machine.
+- The draft PR remains gated on the user's human end-use tests and explicit approval before merging into `main`. Automated checks and screenshot inspection do not satisfy that review gate.
 
 ## Added in 0.7.0
 
@@ -118,7 +120,7 @@ These were not performed and are not represented as passing:
 - EVE SSO sign-in using the user's actual registered application and Bun Bajiro's authorization.
 - Authenticated ESI responses for the user's actual scopes, assets, permissions and account.
 - Windows DPAPI encryption/decryption under the user's Windows login.
-- Visual/browser interaction tests, including responsive rendering at real viewport sizes.
+- Human end-use testing of v0.7.1 on the user's machine, including real EVE sessions and the user's browser/window sizes. Automated browser coverage above is limited to the synthetic Sessions fixture.
 - OBS/Streamlabs browser-source rendering, audio, exact cover placement, startup/reload handling and scene transitions.
 - Long-duration collection during an actual play session.
 
