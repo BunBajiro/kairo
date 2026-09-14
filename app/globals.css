@@ -219,6 +219,7 @@ h1,h2,h3,p{margin-top:0}h3{font-size:15px;font-weight:600}button,input,textarea{
 .session-v2 .combat-coverage{padding:15px;font-size:13px}
 .session-v2 .combat-coverage p{line-height:1.75}
 .session-v2 .combat-coverage .meta{font-size:12px}
+@supports (grid-template-rows:subgrid){.session-metric-pair{grid-template-rows:auto auto;row-gap:5px}.session-metric-pair>.session-mini-metric{display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:5px}}
 @supports not (grid-template-rows:subgrid){.session-detail-row{grid-template-rows:auto}.session-detail-card{grid-row:auto;grid-template-rows:auto 1fr auto}.session-summary-grid{grid-template-rows:auto}.session-summary-stat{grid-row:auto;grid-template-rows:auto auto 1fr}}
 @media(max-width:1200px){.session-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:750px){
@@ -241,7 +242,7 @@ h1,h2,h3,p{margin-top:0}h3{font-size:15px;font-weight:600}button,input,textarea{
  .session-v2 .report-title input{font-size:17px;min-width:0}
  .session-v2 .report-events article{grid-template-columns:1fr;gap:6px}
  .session-v2 .report-events .event-dot{display:none}
- .session-metric-pair{gap:14px}
+ .session-metric-pair{column-gap:14px}
  .session-mini-metric>strong{font-size:27px}
  .session-metric-state>strong{font-size:20px}
  .session-lp-table thead{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

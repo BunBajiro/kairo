@@ -94,9 +94,13 @@ async function summaryValues(expected){
  const values=await evaluate("Object.fromEntries(Array.from(document.querySelectorAll('.session-summary-stat')).map(s=>[s.dataset.summary,s.querySelector('.session-mini-metric>strong').textContent.replace(/\\s/g,'')]))");
  assert.deepEqual(values,expected,'Summary reflects this session’s own recorded values');
 }
+async function metricLabels(){
+ assert.ok(await evaluate("Array.from(document.querySelectorAll('.session-metric-pair')).every(pair=>{const labels=Array.from(pair.querySelectorAll('.session-mini-metric>small')).map(e=>e.getBoundingClientRect().top);return labels.every(top=>Math.abs(top-labels[0])<=1)})"),'Paired metric labels align when unavailable values or units wrap');
+}
 async function alignment(label){
  await evaluate('document.fonts.ready');
  await summaryLayout();
+ await metricLabels();
  const rows=await evaluate(`Array.from(document.querySelectorAll('.session-detail-row')).map(row=>Array.from(row.querySelectorAll(':scope > .session-detail-card')).map(card=>{
   const rect=e=>{const r=e.getBoundingClientRect();return {top:r.top,bottom:r.bottom,width:r.width}};
   return {card:rect(card),heading:rect(card.querySelector('.session-detail-heading')),preview:rect(card.querySelector('.session-detail-preview')),footer:rect(card.querySelector('.session-card-bottom')),overflow:card.scrollWidth>card.clientWidth+1};
@@ -113,6 +117,7 @@ async function detailWidth(){
 }
 async function narrowLayout(){
  await summaryLayout();
+ await metricLabels();
  const bounds=await evaluate("(()=>{const r=document.querySelector('.session-v2').getBoundingClientRect();return {left:r.left,right:r.right,width:innerWidth};})()");
  assert.ok(bounds.left>=0&&bounds.right<=bounds.width,'Resized report stays inside the viewport: '+JSON.stringify(bounds));
  assert.ok(await evaluate("document.documentElement.scrollWidth<=innerWidth && document.querySelector('.session-v2').scrollWidth<=document.querySelector('.session-v2').clientWidth+1 && Array.from(document.querySelectorAll('.session-detail-card')).every(c=>c.scrollWidth<=c.clientWidth+1)"),'Narrow report and cards must not overflow horizontally');
