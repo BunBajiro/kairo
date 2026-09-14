@@ -6,6 +6,10 @@
     "node": ">=24.0.0"
   },
   "scripts": {
+    "test:perf": "node --test tests/performance/harness.test.mjs",
+    "bench:backend": "node tests/performance/backend.mjs",
+    "bench:browser": "node tests/performance/browser.mjs",
+    "bench:compare": "node tests/performance/compare.mjs",
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
     "build": "bash scripts/build-verified.sh",
