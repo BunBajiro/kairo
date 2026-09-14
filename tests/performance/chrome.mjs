@@ -16,7 +16,14 @@ export async function connect(url){
   });
   async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;}
   async function waitFor(expression){for(let i=0;i<300;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Browser condition failed: '+expression);}
-  return {call,evaluate,waitFor,on:fn=>listeners.add(fn),close:()=>ws.close()};
+  async function click(expression){
+    await waitFor('!!('+expression+')');
+    const point=await evaluate(`(async()=>{const e=(${expression});e.scrollIntoView({block:'center',behavior:'instant'});let previous,stable=0;for(let i=0;i<180;i++){await new Promise(requestAnimationFrame);const r=e.getBoundingClientRect(),p={x:r.x+r.width/2,y:r.y+r.height/2};const ready=e.isConnected&&!e.disabled&&r.width>0&&r.height>0&&e.contains(document.elementFromPoint(p.x,p.y));stable=ready&&previous&&Math.abs(p.x-previous.x)<.25&&Math.abs(p.y-previous.y)<.25?stable+1:0;if(stable>=3)return p;previous=p;}throw new Error('Click target did not settle');})()`);
+    await call('Input.dispatchMouseEvent',{type:'mouseMoved',...point});
+    await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1});
+    await call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1});
+  }
+  return {call,evaluate,waitFor,click,on:fn=>listeners.add(fn),close:()=>ws.close()};
 }
 export async function chromeProcess(){
   const binary=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(existsSync);

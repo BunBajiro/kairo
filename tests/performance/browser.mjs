@@ -15,10 +15,10 @@ const scenarios=[
   {name:'assets',hash:'assets',ready:"document.querySelectorAll('tbody tr').length>0"},
   {name:'markets',hash:'markets',ready:"document.body.innerText.includes('Amarr')"},
   {name:'archived_session',hash:'journey',setup:async p=>{
-    await p.waitFor("Array.from(document.querySelectorAll('[role=tab]')).some(e=>e.textContent==='Sessions')");
-    await p.evaluate("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions').click()");
+    await p.waitFor("document.querySelectorAll('.route-stop').length===7 && Array.from(document.querySelectorAll('[role=tab]')).some(e=>e.textContent==='Sessions')");
+    await p.click("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions')");
     await p.waitFor("document.querySelector('.session-card')?.textContent.includes('Benchmark populated session')");
-    await p.evaluate("document.querySelector('.session-card').click()");
+    await p.click("document.querySelector('.session-card')");
   },ready:"document.querySelectorAll('.session-detail-card').length===9"},
   {name:'stream_empty',widgets:0,ready:"document.readyState==='complete'"},
   {name:'stream_widgets',widgets:10,ready:"document.querySelectorAll('.element').length===10"},
@@ -66,7 +66,7 @@ try{
       assert.ok(!responses.some(r=>r.status>=400&&new URL(r.url).pathname!=='/favicon.ico'),'Local requests must succeed');
       const screenshot=await p.call('Page.captureScreenshot',{format:'png'});await writeFile(join(out,scenario.name+'.png'),Buffer.from(screenshot.data,'base64'));
       console.log(`${scenario.name}: renderer ${result.rendererBusyPercent.toFixed(2)}%; server ${server.cpuPercentOneCore.toFixed(2)}%; ${result.requests} requests / ${elapsedSeconds.toFixed(1)} s`);
-    }catch(error){report.failure={scenario:scenario.name,error:error.stack,errors,unexpected};const shot=await p.call('Page.captureScreenshot',{format:'png'}).catch(()=>null);if(shot)await writeFile(join(out,'failure.png'),Buffer.from(shot.data,'base64'));throw error;}
+    }catch(error){const state=await p.evaluate("({tabs:Array.from(document.querySelectorAll('[role=tab]')).map(e=>({text:e.textContent,selected:e.getAttribute('aria-selected')})),body:document.body.innerText.slice(-5000)})").catch(()=>null);report.failure={scenario:scenario.name,error:error.stack,errors,unexpected,state};console.error(JSON.stringify(report.failure));const shot=await p.call('Page.captureScreenshot',{format:'png'}).catch(()=>null);if(shot)await writeFile(join(out,'failure.png'),Buffer.from(shot.data,'base64'));throw error;}
     finally{await Promise.allSettled(intercepts);await chrome.closePage(p);}
   }
   report.complete=true;
