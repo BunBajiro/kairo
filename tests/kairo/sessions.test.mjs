@@ -37,11 +37,51 @@ test('only in-visit alliance combat qualifies a buffer; same-system windows merg
  assert.deepEqual(a.items.map(k=>k.killmailId).sort((a,b)=>a-b),[1,2,3,5,7]);assert.equal(a.kills,5);assert.equal(a.destroyed,1800);
 });
 
-test('entry is inclusive, departure is exclusive, and alliance kills/losses keep independent valuations',()=>{
+test('entry is inclusive, departure is exclusive, and alliance losses never add destroyed or unpriced-kill value',()=>{
  assert.equal(allianceSummary([visit(1,1,0,10)],[mail(1,10)],77).windows.length,0);
  const a=allianceSummary([visit(1,1,0,10)],[mail(1,0),mail(2,4,1,{victim:{ship_type_id:587,alliance_id:77},zkb:{totalValue:null}}),mail(3,5,1,{victim:{ship_type_id:587,alliance_id:77},attackers:[{alliance_id:88}],zkb:{totalValue:0}})],77);
- assert.equal(a.kills,2);assert.equal(a.losses,2);assert.equal(a.destroyed,100);assert.equal(a.lost,0);assert.equal(a.missingDestroyed,1);assert.equal(a.missingLost,1);
+ assert.equal(a.kills,1);assert.equal(a.losses,2);assert.equal(a.destroyed,100);assert.equal(a.lost,0);assert.equal(a.missingDestroyed,0);assert.equal(a.missingLost,1);
  assert.equal(allianceSummary([visit(1,1,0,10)],[mail(1,0)],88).kills,0);
+});
+
+test('friendly attackers on alliance victims produce losses only, with each value counted on one side',()=>{
+ const route=[visit(1,1,0,10),visit(2,2,10,15),visit(3,1,15,20)];
+ const ownLoss=(id,m,value,attackers)=>mail(id,m,1,{victim:{character_id:90+id,ship_type_id:587,alliance_id:77},attackers,zkb:{totalValue:value}});
+ const loss1=ownLoss(1,5,175960000,[{alliance_id:88,final_blow:true},{alliance_id:77,damage_done:0}]);
+ const loss2=ownLoss(2,6,15720000,[{alliance_id:77,final_blow:true}]);
+ const loss3=ownLoss(3,17,177170000,[{alliance_id:77,damage_done:10},{alliance_id:88,final_blow:true}]);
+ const kill=mail(4,18,1,{attackers:[{character_id:42,alliance_id:77},{character_id:43,alliance_id:77}],zkb:{totalValue:123000000}});
+ const unrelated=mail(5,7,1,{attackers:[{alliance_id:88}],zkb:{totalValue:9000000000}});
+ const r=allianceSummary(route,[loss1,loss2,loss3,kill,unrelated,loss1],77,epoch+60*60000);
+ assert.equal(r.kills,1);assert.equal(r.losses,3);assert.equal(r.destroyed,123000000);assert.equal(r.lost,368850000);
+ assert.equal(r.items.length,4);assert.ok(r.items.every(k=>k.kill!==k.loss));
+ assert.deepEqual(r.items.filter(k=>k.kill).map(k=>k.killmailId),[4]);
+ assert.equal(r.kills+r.losses,r.items.length);assert.equal(r.missingDestroyed,0);assert.equal(r.missingLost,0);
+ assert.deepEqual(r.visits.map(v=>v.combatActive),[true,false,true]);assert.equal(r.windows.length,1);
+});
+
+test('saved v0.7.1 killmails recalculate exclusively on reopen and retain personal participation in alliance totals',async t=>{
+ const {store,dir}=await storage(t),s=session(store),emit=publish(store);
+ const records=[
+  {...mail(1,5,1,{attackers:[{character_id:42,alliance_id:77}],zkb:{totalValue:50000000}}),result:'kill'},
+  {...mail(2,10,1,{victim:{character_id:42,ship_type_id:587,alliance_id:77},attackers:[{character_id:43,alliance_id:77,damage_done:0},{character_id:99,alliance_id:88}],zkb:{totalValue:200000000}}),result:'loss'}
+ ];
+ for(const k of records){
+  store.db.prepare('INSERT INTO alliance_combat_records VALUES(?,?,?,?,?)').run(77,k.killmail_id,1,k.killmail_time,JSON.stringify(k));
+  store.db.prepare('INSERT INTO combat_records VALUES(?,?,?,?,?,?)').run(42,k.killmail_id,k.result,k.killmail_time,JSON.stringify(k),'fixture');
+  emit({characterId:42,type:'killmail.'+k.result,at:k.killmail_time,payload:{killmail_id:k.killmail_id}});
+ }
+ const before=store.db.prepare('SELECT body FROM alliance_combat_records ORDER BY killmail_id').all();
+ const reopened=openStore(dir);
+ try{
+  const r=sessionReport(reopened,s.id,42);
+  assert.equal(r.stats.kills,1);assert.equal(r.stats.losses,1);
+  assert.equal(r.personalCombat.destroyed,50000000);assert.equal(r.personalCombat.lost,200000000);
+  assert.equal(r.allianceCombat.kills,1);assert.equal(r.allianceCombat.losses,1);
+  assert.equal(r.allianceCombat.destroyed,50000000);assert.equal(r.allianceCombat.lost,200000000);
+  assert.ok(r.allianceCombat.items.every(k=>k.kill!==k.loss));
+  assert.deepEqual(reopened.db.prepare('SELECT body FROM alliance_combat_records ORDER BY killmail_id').all(),before,'Recalculation needs no rewrite or recollection of retained killmails');
+ }finally{reopened.close();}
 });
 
 test('ships preserve changes between two ships of the same hull and exclude other pilots and end boundary',async t=>{

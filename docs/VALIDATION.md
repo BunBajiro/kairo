@@ -1,11 +1,11 @@
-# Validation — 13 September 2026
+# Validation — 14 September 2026
 
 ## Completed
 
 - Successful production/static export with the retained Vinext build workflow.
-- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 125 tests also run from the extracted package without an npm install.
+- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data. CI runs the Node suite again from the extracted package without an npm install.
 - Application TypeScript check using `tsconfig.kairo.json`.
-- 125 passing Node contract/integration tests:
+- 144 passing Node tests, including four session-summary checks and fifteen new alliance-classification/feed-lifecycle regressions:
   - S256 PKCE generation.
   - JWT issuer, application/EVE audience, expiry and character claim checks.
   - Authenticated vault encryption and tamper detection.
@@ -21,6 +21,18 @@
   - Host and CSRF validation.
   - HTTP serving, compiled asset access, private-session enforcement, cross-origin rejection, stream read-only routes and CSP.
   - Simulated signed SSO → scoped ESI → observed location → SQLite journey → authenticated state API, with no character/location leakage to stream state.
+
+## Added in 0.7.2
+
+- The Sessions browser fixture includes both populated sessions and the reported mixed legacy state: ship images, a long route, valued personal kills and a wallet change alongside missing alliance/LP baselines.
+- Browser assertions compare card borders and heading/preview/footer positions at 1600, 1024 and 820px. They also check full-width expanded panels, 390px wrapping, LP cells, disclosure state and keyboard focus restoration.
+- Summary assertions check the six recorded values for populated and legacy sessions, missing-alliance/LP and delayed-estimate labels, its position above the activity cards, and aligned tiles without horizontal overflow. Four focused tests cover unique personal/alliance killmails, combat ranking, total time across return visits, stable ties and missing observations.
+- All 144 Node tests pass locally and from the standalone ZIP in the [approved review workflow](https://github.com/BunBajiro/kairo/actions/runs/34823930536), which also passed TypeScript, production compilation and Chrome checks. All nine captured screenshots were inspected, including aligned populated and legacy cards, the live summary, full-width details and mobile LP rows. The downloaded package matched the Actions checksum and reviewed source files.
+- New regressions cover exclusive alliance sides, friendly attackers, unequal destroyed/lost totals, raw v0.7.1 record reuse and full personal participation in alliance totals. The browser fixture renders a friendly-fire loss and checks that its value appears only under lost ISK.
+- Thirteen feed/lifecycle tests cover the two-minute cadence, shared cursor and restart, live-only targets, ending during a request or spacing delay, other live pilots, paused combat, unrelated packet filtering, ESI verification, duplicate packets, bounded/oversized/malformed responses, 404/429 delays, shutdown, end-triggered cached rechecks, all recent sessions and the exact 24-hour cutoff, including in-flight work.
+- Browser checks now distinguish live, ended and archived sessions, show delayed checks after ending, and retain archived status after manual refresh. Public R2Z2 sequence/packet responses were inspected successfully; an actual long-running player session remains a human review check.
+- Visual review caught clipping during a window resize. Sessions now disables the dialog's width transition, and the browser check requires both dialog edges to remain inside the viewport. It also explicitly confirms that personal kills and losses remain included in alliance totals; deduplication is confined to the most-active-system ranking.
+- On 14 September 2026, the user approved merging v0.7.2 after receiving the reviewed build and requested the final release ZIP. See [PR #3](https://github.com/BunBajiro/kairo/pull/3) for the verification results and approval record. This approval is separate from the automated checks above.
 
 ## Added in 0.7.1
 
@@ -120,7 +132,7 @@ These were not performed and are not represented as passing:
 - EVE SSO sign-in using the user's actual registered application and Bun Bajiro's authorization.
 - Authenticated ESI responses for the user's actual scopes, assets, permissions and account.
 - Windows DPAPI encryption/decryption under the user's Windows login.
-- Comprehensive live-session and browser coverage beyond the user's review of the v0.7.1 test build. Automated browser coverage above is limited to the synthetic Sessions fixture.
+- Comprehensive live-session and browser coverage beyond the user's review of the v0.7.1 and v0.7.2 test builds. Automated browser coverage above is limited to the synthetic Sessions fixture.
 - OBS/Streamlabs browser-source rendering, audio, exact cover placement, startup/reload handling and scene transitions.
 - Long-duration collection during an actual play session.
 

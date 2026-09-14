@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.1 · Windows first · No cloud deployment**
+**Version 0.7.2 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
 ## Download the latest release
 
-Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.1.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.2.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -176,6 +176,10 @@ On upgrade, Low-Sec, Neutral, Triglavian and Anoikis inherit your previous Unkno
 
 ## Sessions, reports and your New Eden atlas
 
+Version **0.7.2** adds a summary card for the session’s duration, travel, personal/alliance combat, wallet and LP changes, with missing or delayed data clearly labelled. It highlights the most active system by unique personal/alliance killmails, falling back to the most total observed time for quiet sessions. It aligns the activity cards into consistent rows and brings their typography, metric sections, status footers and detail panels in line with the Import Analyser. Opening a card shows its detail across the full row; narrow screens stack the cards and show LP values without sideways scrolling. The [v0.7.2 release](https://github.com/BunBajiro/kairo/releases/tag/v0.7.2) was approved after review of its feature-branch test build.
+
+Alliance killmails now count as **either a kill or a loss**. An alliance victim is a loss even when friendly attackers appear; its value never adds to destroyed ISK. Other victims count as kills when your alliance appears among their attackers. Your own kills/losses remain included in alliance totals. Existing saved killmails use the corrected calculation automatically.
+
 Version **0.7.1** expands the session overview into clickable cards for **all observed visits**, ships flown, personal combat, alliance combat, personal LP changes, wallet activity, milestones and the timeline. Alliance combat only adds a ±10-minute tracking buffer to a visit when an alliance kill or loss occurs during that visit. Every other visit stays in the route. [Sessions guide and collection rules](docs/SESSIONS.md).
 
 Existing sessions retain their saved visits and events, but uncaptured alliance, LP and starting-ship baselines cannot be reconstructed. New sessions capture these baselines when the relevant modules and permissions are available. Battle Reports are reserved for v0.8.
@@ -184,7 +188,7 @@ Existing sessions retain their saved visits and events, but uncaptured alliance,
 
 **Kills mean participation**, including zero-damage EWAR entries in the killmail’s attacker list. Personal ESI only supplies losses and final blows, so Kairo supplements it with public zKillboard references and verifies the full killmail through ESI. It never infers credit solely from fleet/corporation membership. Private killmails are not uploaded to zKillboard.
 
-The public API withholds records under five minutes old and has a one-hour client cache. Kairo respects that cache and rate limits, retains confirmed records during outages, and backfills archived reports by the kill’s occurrence time. Reopen a report or use **Refresh report** to see arrivals. Unpublished kills and logistics/fleet contributions absent from the attacker list remain unavailable. Source status and timing appear beside the combat record and inside each report. Initial historical imports do not replay old kill toasts.
+The public history API withholds records under five minutes old and has a one-hour client cache. **Live sessions** also check zKillboard's incremental feed about every **two minutes**. That fast feed stops for a session when it ends; pending and delayed history checks continue under source cache/rate limits until **24 hours after session end**. After that, opening or refreshing the report reads saved records without starting collection. The summary identifies live, settling and archived sessions. Unpublished kills and logistics/fleet contributions absent from the attacker list remain unavailable. Source status and timing appear beside the combat record and inside each report. Initial historical imports do not replay old kill toasts.
 
 Personal ESI references are paged across its 90-day window. Public backfill also covers up to 90 days, within zKillboard’s 100-page API limit. At most 100 unseen details are verified per pass; an initial backlog continues from cached references. A partial/source error is shown rather than claiming a complete combat record. The recent table shows up to 200 records; previously collected session events remain in local history.
 

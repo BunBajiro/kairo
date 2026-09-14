@@ -4,6 +4,32 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
+## 0.7.2 — 2026-09-14
+
+### Added
+
+- A full-width session summary above the activity cards: duration, systems and visits, personal/alliance kills and losses, wallet change and LP change, plus the most active system by unique personal/alliance killmails. Quiet sessions show the system with the most total observed time. Missing baselines and delayed LP estimates retain their status labels.
+- A shared, persistent zKill incremental feed checks about every two minutes **only while sessions are live**, verifies relevant records with ESI and shows source timing, catch-up and failure status.
+
+### Fixed
+
+- Sessions cards align their borders, headings, metric areas and footers across each row, including cards with ship images, extra status text or missing legacy data.
+- Long names and unavailable values wrap within their cards. On narrow screens, LP corporations show labelled start/end/change values without requiring horizontal scrolling.
+- Resizing an open session keeps its dialog within the window instead of briefly clipping its sides during a width transition.
+- Alliance victims always count as losses, including killmails with friendly attackers. Other victims count as kills only when the tracked alliance is among the attackers. This removes `K + L` entries and excludes alliance losses from destroyed ISK. Saved v0.7.1 killmails recalculate correctly on reopen.
+
+### Changed
+
+- Sessions adopts the Import Analyser's clearer section backgrounds, larger figures, grouped values, category accents and status/action footers.
+- Opening a card reveals a full-width detail panel below its row. Explicit close controls return keyboard focus to the card; Enter and Space open cards, and Escape closes the report.
+- The Chrome smoke check covers populated and legacy layouts at multiple widths, actual card/section alignment, expanded panel width and keyboard focus.
+- Ending a session stops its incremental feed and triggers pending history checks. Delayed history checks obey source caches and finish within 24 hours after session end. Older sessions no longer collect on open or refresh; the former eight-session automatic-check cap is removed.
+
+### Upgrade notes
+
+- Existing data, visits and LP samples are retained. The corrected alliance classification is applied to saved records. Personal kills/losses remain included in alliance totals; deduplication across the two lists is only used to rank the summary's most active system.
+- Approved for release after the user's review of the feature-branch build. Battle Reports remain reserved for v0.8.
+
 ## 0.7.1 — 2026-09-13
 
 ### Added

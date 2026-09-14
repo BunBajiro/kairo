@@ -44,7 +44,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         goals.refresh(id,'killmails');updateBindings();
         send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
     }});
-    const sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,onChange:id=>send('changed',{characterId:id})});
+    const sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:options.sessionFeedFetcher,onChange:id=>send('changed',{characterId:id})});
     function combatSnapshot(id){const s=store.snapshot(id,'killmails')||{status:'waiting',data:null},records=combat.recent(id);return {...s,data:records.length?records:s.data,participation:combat.coverage(id)};}
     const enabled = m => store.get('module:' + m.id, true);
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));

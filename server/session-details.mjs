@@ -1,4 +1,5 @@
 import {snapshotFresh} from './polling.mjs';
+import {sessionCollection} from './session-policy.mjs';
 
 export const COMBAT_BUFFER_MS = 10 * 60 * 1000;
 const iso = at => new Date(at).toISOString();
@@ -77,7 +78,10 @@ export function sessionShips(store, session, start, end, names) {
 }
 
 export function allianceSides(k, allianceId) {
-    return {kill:!!allianceId && !!k.attackers?.some(a=>a.alliance_id===allianceId), loss:!!allianceId && k.victim?.alliance_id===allianceId};
+    // A friendly attacker can appear on an alliance member's loss. The victim
+    // determines the side first, so that ship never also adds destroyed ISK.
+    const loss=!!allianceId && k.victim?.alliance_id===allianceId;
+    return {kill:!!allianceId && !loss && !!k.attackers?.some(a=>a.alliance_id===allianceId),loss};
 }
 
 export function mergeCombatWindows(windows) {
@@ -126,5 +130,6 @@ export function sessionDetails(store, session, start, finish, end) {
     allianceCombat.coverage=store.get('session:combat:'+session.id,{status:allianceId?'waiting':start.coverage?.profile==='ready'?'no_alliance':'unavailable'});
     if(!store.get('module:combat',true))allianceCombat.coverage={...allianceCombat.coverage,status:'disabled'};
     const recordNames=Object.fromEntries([...new Set([...personalCombat.items,...allianceCombat.items].flatMap(k=>[k.systemId,k.shipTypeId]))].filter(id=>names[id]).map(id=>[id,names[id]]));
-    return {route:allianceCombat.visits,ships:sessionShips(store,session,start,end,names),loyalty:loyaltyReport(start,finish,!!session.ended,names),personalCombat,allianceCombat,names:recordNames};
+    const collection=sessionCollection(session),feed=collection.phase==='live'?store.get('session:live-feed',null):null;
+    return {route:allianceCombat.visits,ships:sessionShips(store,session,start,end,names),loyalty:loyaltyReport(start,finish,!!session.ended,names),personalCombat,allianceCombat,names:recordNames,collection,liveFeed:feed?{status:feed.status,checkedAt:feed.checkedAt,nextCheckAt:feed.nextCheckAt,error:feed.error}:null};
 }
