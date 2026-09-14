@@ -4,7 +4,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
-## 0.7.2 — In review
+## 0.7.2 — 2026-09-14
 
 ### Added
 
@@ -28,7 +28,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 ### Upgrade notes
 
 - Existing data, visits and LP samples are retained. The corrected alliance classification is applied to saved records. Personal kills/losses remain included in alliance totals; deduplication across the two lists is only used to rank the summary's most active system.
-- Prepared on a feature branch for in-app review before merging. Battle Reports remain reserved for v0.8.
+- Approved for release after the user's review of the feature-branch build. Battle Reports remain reserved for v0.8.
 
 ## 0.7.1 — 2026-09-13
 

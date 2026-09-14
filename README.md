@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.2 · Review build · Windows first · No cloud deployment**
+**Version 0.7.2 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
 ## Download the latest release
 
-Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.1.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.2.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -176,7 +176,7 @@ On upgrade, Low-Sec, Neutral, Triglavian and Anoikis inherit your previous Unkno
 
 ## Sessions, reports and your New Eden atlas
 
-Version **0.7.2** adds a summary card for the session’s duration, travel, personal/alliance combat, wallet and LP changes, with missing or delayed data clearly labelled. It highlights the most active system by unique personal/alliance killmails, falling back to the most total observed time for quiet sessions. It aligns the activity cards into consistent rows and brings their typography, metric sections, status footers and detail panels in line with the Import Analyser. Opening a card shows its detail across the full row; narrow screens stack the cards and show LP values without sideways scrolling. This version is awaiting in-app review. Use the feature branch’s successful **Kairo test build** in [GitHub Actions](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml); the stable release above remains v0.7.1.
+Version **0.7.2** adds a summary card for the session’s duration, travel, personal/alliance combat, wallet and LP changes, with missing or delayed data clearly labelled. It highlights the most active system by unique personal/alliance killmails, falling back to the most total observed time for quiet sessions. It aligns the activity cards into consistent rows and brings their typography, metric sections, status footers and detail panels in line with the Import Analyser. Opening a card shows its detail across the full row; narrow screens stack the cards and show LP values without sideways scrolling. The [v0.7.2 release](https://github.com/BunBajiro/kairo/releases/tag/v0.7.2) was approved after review of its feature-branch test build.
 
 Alliance killmails now count as **either a kill or a loss**. An alliance victim is a loss even when friendly attackers appear; its value never adds to destroyed ISK. Other victims count as kills when your alliance appears among their attackers. Your own kills/losses remain included in alliance totals. Existing saved killmails use the corrected calculation automatically.
 

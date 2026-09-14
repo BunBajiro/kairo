@@ -53,4 +53,4 @@ The migration adds an alliance combat ledger without resetting sessions, setting
 
 Battle Reports, engagements and public sharing are outside v0.7.1. The user reviewed the test build, accepted the legacy-session baseline limitation and approved merging on 13 September 2026.
 
-Version 0.7.2 refines the cards and summary, corrects alliance kill/loss classification, and adds the live/ended collection lifecycle above. It preserves visits, existing samples and personal participation in alliance totals. Its feature-branch build awaits separate user review and merge approval. Battle Reports remain reserved for v0.8.
+Version 0.7.2 refines the cards and summary, corrects alliance kill/loss classification, and adds the live/ended collection lifecycle above. It preserves visits, existing samples and personal participation in alliance totals. The user approved merging the reviewed feature-branch build on 14 September 2026. Battle Reports remain reserved for v0.8.
