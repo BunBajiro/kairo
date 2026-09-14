@@ -64,6 +64,15 @@ process.on('message',async message=>{
       app=await startKairo({port:port1,streamPort:port2,dataDir:join(dir,'data'),noSync:!message.scheduler,fetcher:blockedFetch,combatFetcher:blockedFetch,sessionFeedFetcher:blockedFetch,markets:{historyFetcher:blockedFetch}});
       result={origin:app.origin,streamOrigin:app.streamOrigin,spec,startupMs:performance.now()-t};
     }else if(message.action==='bench')result=await bench(message);
+    else if(message.action==='probe'){
+      const original=app.store.snapshot,reads={};
+      app.store.snapshot=(id,key)=>{const value=original(id,key),row=reads[key]??={calls:0,jsonBytes:0};row.calls++;row.jsonBytes+=Buffer.byteLength(JSON.stringify(value));return value;};
+      try{
+        if(message.scheduler){const tasks=[app.core.syncProtection(),app.core.sync(0),...app.auth.characters().map(c=>app.core.sync(c.id))];app.core.refreshOPSEC();await Promise.all(tasks);}
+        else app.core.refreshOPSEC();
+        result={snapshotReads:reads,networkAttempts};
+      }finally{app.store.snapshot=original;}
+    }
     else if(message.action==='meter_start'){assert.ok(!meter);meter=startMeter();result={};}
     else if(message.action==='meter_stop'){assert.ok(meter);result={...meter(),networkAttempts};meter=null;}
     else if(message.action==='stream'){

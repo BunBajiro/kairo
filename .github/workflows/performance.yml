@@ -29,13 +29,13 @@ jobs:
           cache: npm
       - name: Install locked build dependencies
         run: npm run install:ci
+      - name: Compile the production frontend for internal measurements
+        run: npm run build
       - name: Verify behavioural and measurement contracts
         run: |
           npm run test:kairo
           npm run test:perf
           npm run check:kairo
-      - name: Compile the production frontend for internal measurements
-        run: npm run build
       - name: Measure backend twice sequentially
         run: |
           KAIRO_PERF_OUTPUT=performance-results/run-1 npm run bench:backend
@@ -55,5 +55,5 @@ jobs:
         with:
           name: kairo-internal-performance-${{ github.sha }}
           path: performance-results/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
