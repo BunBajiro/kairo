@@ -24,6 +24,7 @@ const start={capturedAt:at(0),system:{id:1,name:'UALX-3'},shipTypeId:609,ship:{i
 const finish={...start,capturedAt:at(120),system:{id:3,name:'C-J6MT'},wallet:{value:5158500000,sampledAt:at(119)},skillpoints:12510000,loyalty:lp,loyaltyReconciliation:{status:'delayed',sample:{balances:[{corporation_id:1000182,loyalty_points:60200},{corporation_id:1000035,loyalty_points:1000}],sampledAt:at(130)}}};
 store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context,notes) VALUES(?,?,?,?,?,?,?,?)').run('preview',42,'Saturday roam · Tenerifis',at(0),at(120),JSON.stringify(start),JSON.stringify(finish),'Keep the next hull ready.');
 store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context) VALUES(?,?,?,?,?,?,?)').run('legacy',42,'Earlier session',at(-300),at(-200),JSON.stringify({capturedAt:at(-300),wallet:{value:5000000,sampledAt:at(-301)}}),JSON.stringify({capturedAt:at(-200),wallet:{value:4826390.39,sampledAt:at(-201)}}));
+store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context) VALUES(?,?,?,?,?,?,?)').run('archived',42,'Archived session',at(-2000),at(-1900),JSON.stringify({...start,capturedAt:at(-2000)}),JSON.stringify({...finish,capturedAt:at(-1900)}));
 // Match the reported mixed legacy state: route, hull, personal combat and
 // wallet data alongside missing alliance/LP baselines, with long saved names.
 for(let i=0;i<30;i++)store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,7000+i%6,i%6===0?'A long saved system name for layout coverage':'Transit '+(i%6+1),at(-300+i*3));
@@ -40,7 +41,7 @@ emit('ship.changed',40,{ship_type_id:588,ship_id:200},'Changed ship to Reaper');
 emit('wallet.entry',50,{amount:60000000},'Bounty payment received');emit('wallet.entry',65,{amount:-1500000},'Paid repair bill');
 emit('skill.completed',35,{},'Long Range Targeting IV completed');emit('goal.completed',115,{},'Fleet preparation complete');
 for(const [id,m,system] of [[1,5,1],[2,30,1],[3,75,3]]){
- const k={killmail_id:id,killmail_time:at(m),solar_system_id:system,victim:{character_id:id===3?42:99,ship_type_id:587,alliance_id:id===3?77:88},attackers:[{character_id:id===3?99:42,alliance_id:id===3?88:77}],zkb:{totalValue:id*12500000},result:id===3?'loss':'kill'};
+ const k={killmail_id:id,killmail_time:at(m),solar_system_id:system,victim:{character_id:id===3?42:99,ship_type_id:587,alliance_id:id===3?77:88},attackers:id===3?[{character_id:99,alliance_id:88},{character_id:43,alliance_id:77,damage_done:0}]:[{character_id:42,alliance_id:77}],zkb:{totalValue:id===3?175960000:id*12500000},result:id===3?'loss':'kill'};
  store.db.prepare('INSERT INTO alliance_combat_records VALUES(?,?,?,?,?)').run(77,id,system,k.killmail_time,JSON.stringify(k));store.db.prepare('INSERT INTO combat_records VALUES(?,?,?,?,?,?)').run(42,id,k.result,k.killmail_time,JSON.stringify(k),'fixture');emit('killmail.'+k.result,m,{killmail_id:id},id===3?'Lost Rifter':'Participated in Rifter kill');
 }
 for(let i=0;i<126;i++)emit('session.note',70+i*.1,{},'Recorded activity '+(i+1));
@@ -142,7 +143,8 @@ try{
  // Journey data loads after its tabs mount and changes their screen position.
  await waitFor("document.querySelectorAll('.route-stop').length===7 && !!document.querySelector('.connection-status.online')");
  await clickElement("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions')");
- await waitFor("document.querySelectorAll('.session-card').length===2");await click('.session-card');await waitFor("document.querySelectorAll('.session-detail-card').length===9");
+ await waitFor("document.querySelectorAll('.session-card').length===3");await click('.session-card');await waitFor("document.querySelectorAll('.session-detail-card').length===9");
+ assert.equal(await evaluate("document.querySelector('.session-collection-status').textContent"),'Session ended · delayed zKill checks');
  await summaryValues({duration:'2h0m',travel:'3',personal:'2/1',alliance:'2/1',wallet:'+58.5mISK',loyalty:'+18,000LP'});
  assert.ok(await evaluate("document.querySelector('.session-summary-stat[data-summary=loyalty]').textContent.includes('Delayed estimate')"));
  assert.ok(await evaluate("document.querySelector('.session-summary-activity').textContent.includes('Most active systemUALX-32 recorded killmails')"),'Highlight deduplicates personal and alliance records');
@@ -150,7 +152,11 @@ try{
  await alignment('populated desktop');await screenshot('sessions-desktop');
  await card('Route & visits');assert.equal(await evaluate("document.querySelectorAll('.session-route-list > li').length"),4);assert.equal(await evaluate("document.querySelectorAll('.session-buffer-badge').length"),3);assert.ok(await evaluate("document.querySelector('.session-route-list').textContent.includes('Quiet transit')"));
  await detailWidth();await alignment('expanded route');await screenshot('sessions-route');await click('.session-expanded-heading button');await waitFor("!document.querySelector('.session-expanded-panel')");assert.equal(await evaluate("document.activeElement?.getAttribute('data-card')"),'route');
- await card('Alliance combat');await detailWidth();assert.equal(await evaluate("document.querySelectorAll('.session-kill-list > a').length"),3);await screenshot('sessions-alliance');await card('Alliance combat');
+ await card('Alliance combat');await detailWidth();assert.equal(await evaluate("document.querySelectorAll('.session-kill-list > a').length"),3);
+ assert.ok(await evaluate("document.querySelector('.session-expanded-panel').textContent.includes('The live feed has stopped for this session')"));
+ assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.session-kill-list .session-result')).map(e=>e.textContent)"),['LOSS','KILL','KILL'],'Alliance victim with a friendly attacker is shown only as a loss');
+ assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.session-detail-card[data-card=alliance] .session-value-line b')).map(e=>e.textContent)"),['37.5m ISK','175.96m ISK'],'Destroyed ISK excludes alliance ships lost');
+ await screenshot('sessions-alliance');await card('Alliance combat');
  await card('Loyalty points');assert.equal(await evaluate("document.querySelectorAll('.session-lp-table tbody tr').length"),2);assert.ok(await evaluate("document.querySelector('.session-lp-table').textContent.includes('+18,200')"));
  await evaluate("document.querySelector('.session-lp-table').scrollIntoView({block:'center'})");await screenshot('sessions-loyalty');await card('Loyalty points');
  await card('Activity timeline');assert.equal(await evaluate("document.querySelectorAll('.report-events article').length"),100);
@@ -179,6 +185,19 @@ try{
  assert.ok(await evaluate("document.querySelector('.session-detail-card[data-card=personal]').textContent.includes('10.43bn')"));
  await card('Loyalty points');assert.ok(await evaluate("document.querySelector('.session-expanded-panel').textContent.includes('Missing historical samples cannot be reconstructed')"));await card('Loyalty points');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});await narrowLayout();await evaluate("document.querySelector('.session-detail-card[data-card=loyalty]').scrollIntoView({block:'start'})");await screenshot('sessions-mobile-legacy');
+ await pressKey('Escape','Escape',27);await waitFor("!document.querySelector('.session-v2')");
+ await clickElement("Array.from(document.querySelectorAll('.session-card')).find(s=>s.textContent.includes('Archived session'))");await waitFor("!!document.querySelector('.session-collection-status')");
+ assert.equal(await evaluate("document.querySelector('.session-collection-status').textContent"),'Session archived · zKill checks finished');
+ await card('Alliance combat');assert.ok(await evaluate("document.querySelector('.session-expanded-panel').textContent.includes('without restarting collection')"));
+ assert.equal(await evaluate("document.querySelector('.session-expanded-panel').textContent.includes('next history check:')"),false);
+ await card('Alliance combat');await click('.session-summary-heading button');await waitFor("!document.querySelector('.session-summary-heading button').disabled");
+ assert.equal(await evaluate("document.querySelector('.session-collection-status').textContent"),'Session archived · zKill checks finished');
+ await pressKey('Escape','Escape',27);await waitFor("!document.querySelector('.session-v2')");
+ const liveDb=openStore(join(dir,'data'));try{liveDb.db.prepare('UPDATE sessions SET ended=NULL WHERE id=?').run('preview');liveDb.set('session:live-feed',{status:'ready',checkedAt:iso(Date.now()),nextCheckAt:iso(Date.now()+120000)});}finally{liveDb.close();}
+ await clickElement("Array.from(document.querySelectorAll('.session-card')).find(s=>s.textContent.includes('Session UI verified'))");await waitFor("!!document.querySelector('.session-collection-status')");
+ assert.equal(await evaluate("document.querySelector('.session-collection-status').textContent"),'Live session · zKill checks every 2 minutes');
+ await card('Alliance combat');assert.ok(await evaluate("document.querySelector('.session-expanded-panel').textContent.includes('latest published records checked')"));
+ await call('Emulation.setDeviceMetricsOverride',{width:1600,height:1050,deviceScaleFactor:1,mobile:false});await evaluate("document.querySelector('.session-v2').scrollTop=0");await screenshot('sessions-live');
  await writeFile(join(output,'layout-checks.json'),JSON.stringify({layoutChecks,cardCount:9,summaryMetrics:6,mobileWidth:390},null,2));
  assert.deepEqual(errors,[],'No uncaught browser errors');
  console.log(JSON.stringify({ok:true,cards:9,visits:4,bufferedVisits:3,timelineEvents:135,mobileWidth:390,layoutChecks,screenshots:output}));

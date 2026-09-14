@@ -15,7 +15,7 @@ The alliance combat rule only controls the **extra combat window**:
 3. Merge overlapping buffered windows in the same system. Deduplicate killmail IDs before totalling them. Kills within the buffer never recursively qualify other visits or expand the window further.
 4. Preserve every visit in the route, whether it receives a buffer or not.
 
-Personal kills/losses use only the session's actual start/end times and the pilot's own presence on the killmail. Alliance totals remain separate and do not imply that the pilot participated. The full available `zkb.totalValue` contributes to the appropriate destroyed/lost total; it is not divided among attackers. Unknown prices are marked **unpriced**. A killmail can count once on each side when the alliance attacks its own member.
+Personal kills/losses use only the session's actual start/end times and the pilot's own presence on the killmail. Alliance totals remain separate and include the pilot's participation. Each alliance killmail is **either a kill or a loss**: an alliance victim is always a loss, even with friendly attackers; otherwise, a victim counts as a kill only when the tracked alliance appears among the attackers. The full available `zkb.totalValue` contributes to that one destroyed/lost total; it is not divided among attackers. Unknown prices are marked **unpriced**. Saved v0.7.1 killmails recalculate under this corrected rule without requiring new collection.
 
 The alliance current at session start is saved with that session, so later membership changes do not rewrite its history. A session without that baseline reports alliance data as unavailable rather than guessing from today's membership.
 
@@ -23,9 +23,19 @@ The alliance current at session start is saved with that session, so later membe
 
 The public collector uses the supported `allianceID`, `solarSystemID`, `year/month` and `page` modifiers. It applies exact visit windows locally, verifies killmail bodies using their ESI hash and retains verified records in SQLite. It shares the existing zKillboard queue and cache, sends no EVE credentials to zKillboard, respects source cache deadlines and rate-limit cooldowns, and caps each pass to six pages and 100 new detail verifications. Incomplete collection and API page limits are visible in the card.
 
-The most recent eight active/recent sessions are checked automatically while Kairo runs; completed sessions stay in that automatic set for 24 hours. Opening an older session resumes collection for it. Public publication delays and unpublished killmails mean **collected** does not guarantee that every in-game loss is public. Closing Kairo or disabling the combat module pauses further collection; retained records remain available.
+Collection follows the session's state:
 
-The current public API documents up to 200 results per page, a one-hour client cache, and a five-minute delay for new records. It disables the old start/end timestamp filters. Reference: [zKillboard API documentation](https://zkillboard.com/api/docs/), checked 13 September 2026.
+| Session state | zKill collection |
+| --- | --- |
+| Live | Check the incremental R2Z2 feed about every two minutes, alongside cached history checks. |
+| Ended less than 24 hours ago | Stop using the incremental feed for this session. Trigger its pending history check on end, then finish delayed rechecks as cache deadlines and cooldowns allow. |
+| Ended at least 24 hours ago | Stop session-specific collection. Opening or refreshing the report reads saved records and does not restart requests. |
+
+The 24-hour window begins at **session end**; a long-running live session remains live. All eligible recent sessions receive history checks, without the former eight-session cap. If another pilot still has a live session, the shared incremental feed continues only for live sessions. Closing Kairo, pausing combat or losing authorization stops collection; saved records remain available. Restart resumes eligible work, but does not reopen the collection window of archived sessions.
+
+The incremental feed uses one persistent sequence cursor per installation. It discards unrelated packets, verifies matching killmails with ESI and retains only relevant personal/alliance records. Each pass is bounded to 300 packets or 45 seconds, requests are spaced by at least 200ms, and failures retain the cursor with backoff. A 404 waits at least six seconds; normal checks still follow the two-minute cadence. A cursor older than 24 hours restarts from the current feed pointer, with history checks covering earlier records. Collection status and last/next check times appear in the report; source cooldowns and catch-up work can delay updates.
+
+The history search API documents up to 200 results per page, a one-hour client cache, and a five-minute delay for new records. Shortening that cache timer would not provide fresh results, so the live-only incremental feed is separate. Public publication delays and unpublished killmails mean **collected** does not guarantee every in-game kill or loss is available. Archived reports remain based on saved records; independently collected shared records or corrected calculations may still change what they display. Reference: [zKillboard API and R2Z2 documentation](https://zkillboard.com/api/docs/), checked 14 September 2026. The live sequence/packet responses were also checked for their wrapper shape and `no-store` headers.
 
 ## Ships and LP
 
@@ -43,4 +53,4 @@ The migration adds an alliance combat ledger without resetting sessions, setting
 
 Battle Reports, engagements and public sharing are outside v0.7.1. The user reviewed the test build, accepted the legacy-session baseline limitation and approved merging on 13 September 2026.
 
-Version 0.7.2 refines the presentation of these same records and rules. Its feature-branch build awaits separate user review and merge approval.
+Version 0.7.2 refines the cards and summary, corrects alliance kill/loss classification, and adds the live/ended collection lifecycle above. It preserves visits, existing samples and personal participation in alliance totals. Its feature-branch build awaits separate user review and merge approval. Battle Reports remain reserved for v0.8.
