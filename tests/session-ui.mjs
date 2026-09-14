@@ -113,6 +113,8 @@ async function detailWidth(){
 }
 async function narrowLayout(){
  await summaryLayout();
+ const bounds=await evaluate("(()=>{const r=document.querySelector('.session-v2').getBoundingClientRect();return {left:r.left,right:r.right,width:innerWidth};})()");
+ assert.ok(bounds.left>=0&&bounds.right<=bounds.width,'Resized report stays inside the viewport: '+JSON.stringify(bounds));
  assert.ok(await evaluate("document.documentElement.scrollWidth<=innerWidth && document.querySelector('.session-v2').scrollWidth<=document.querySelector('.session-v2').clientWidth+1 && Array.from(document.querySelectorAll('.session-detail-card')).every(c=>c.scrollWidth<=c.clientWidth+1)"),'Narrow report and cards must not overflow horizontally');
 }
 async function screenshot(name){await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
@@ -139,6 +141,7 @@ try{
  await summaryValues({duration:'2h0m',travel:'3',personal:'2/1',alliance:'2/1',wallet:'+58.5mISK',loyalty:'+18,000LP'});
  assert.ok(await evaluate("document.querySelector('.session-summary-stat[data-summary=loyalty]').textContent.includes('Delayed estimate')"));
  assert.ok(await evaluate("document.querySelector('.session-summary-activity').textContent.includes('Most active systemUALX-32 recorded killmails')"),'Highlight deduplicates personal and alliance records');
+ for(const key of ['personal','alliance'])assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('.session-detail-card[data-card=${key}] .session-mini-metric>strong')).map(v=>v.textContent)`),['2','1'],'The '+key+' card retains both kills and the loss; personal participation is never subtracted from alliance totals');
  await alignment('populated desktop');await screenshot('sessions-desktop');
  await card('Route & visits');assert.equal(await evaluate("document.querySelectorAll('.session-route-list > li').length"),4);assert.equal(await evaluate("document.querySelectorAll('.session-buffer-badge').length"),3);assert.ok(await evaluate("document.querySelector('.session-route-list').textContent.includes('Quiet transit')"));
  await detailWidth();await alignment('expanded route');await screenshot('sessions-route');await click('.session-expanded-heading button');await waitFor("!document.querySelector('.session-expanded-panel')");assert.equal(await evaluate("document.activeElement?.getAttribute('data-card')"),'route');

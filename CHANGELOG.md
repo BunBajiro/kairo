@@ -14,6 +14,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 - Sessions cards align their borders, headings, metric areas and footers across each row, including cards with ship images, extra status text or missing legacy data.
 - Long names and unavailable values wrap within their cards. On narrow screens, LP corporations show labelled start/end/change values without requiring horizontal scrolling.
+- Resizing an open session keeps its dialog within the window instead of briefly clipping its sides during a width transition.
 
 ### Changed
 

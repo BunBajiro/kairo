@@ -1,11 +1,11 @@
-# Validation — 13 September 2026
+# Validation — 14 September 2026
 
 ## Completed
 
 - Successful production/static export with the retained Vinext build workflow.
-- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 125 tests also run from the extracted package without an npm install.
+- Release ZIP includes compiled assets and source, excludes dependencies and local credentials/data; the same 129 tests also run from the extracted package without an npm install.
 - Application TypeScript check using `tsconfig.kairo.json`.
-- 125 passing Node contract/integration tests:
+- 129 passing Node tests (125 contract/integration checks plus four session-summary checks):
   - S256 PKCE generation.
   - JWT issuer, application/EVE audience, expiry and character claim checks.
   - Authenticated vault encryption and tamper detection.
@@ -27,7 +27,9 @@
 - The Sessions browser fixture includes both populated sessions and the reported mixed legacy state: ship images, a long route, valued personal kills and a wallet change alongside missing alliance/LP baselines.
 - Browser assertions compare card borders and heading/preview/footer positions at 1600, 1024 and 820px. They also check full-width expanded panels, 390px wrapping, LP cells, disclosure state and keyboard focus restoration.
 - Summary assertions check the six recorded values for populated and legacy sessions, missing-alliance/LP and delayed-estimate labels, its position above the activity cards, and aligned tiles without horizontal overflow. Four focused tests cover unique personal/alliance killmails, combat ranking, total time across return visits, stable ties and missing observations.
-- Application TypeScript checks, the production/static build and all 129 Node tests pass locally. Compiled browser screenshots and the extracted review package are pending CI verification. Main remains gated on the user's own end-use review and explicit merge approval.
+- Application TypeScript checks, the production/static build and all 129 Node tests pass locally. The [initial review workflow](https://github.com/BunBajiro/kairo/actions/runs/34786785532) also passed Chrome checks and all 129 tests from the extracted standalone ZIP. Desktop screenshots confirm aligned populated and legacy cards and full-width detail panels.
+- Visual review caught clipping during a window resize. Sessions now disables the dialog's width transition, and the browser check requires both dialog edges to remain inside the viewport. It also explicitly confirms that personal kills and losses remain included in alliance totals; deduplication is confined to the most-active-system ranking.
+- See [draft PR #3](https://github.com/BunBajiro/kairo/pull/3) for current verification results and the reviewed download. Main remains gated on the user's own end-use review and explicit merge approval.
 
 ## Added in 0.7.1
 
