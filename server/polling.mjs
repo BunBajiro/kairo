@@ -9,13 +9,13 @@ export const pollIntervals = Object.freeze({
     killmails: 300, standings: 3600, loyalty: 3600,
     contacts: 0, corporation_contacts: 0, alliance_contacts: 0,
     calendar: 900, notifications: 600, mail: 300,
-    status: 60, prices: 3600, sovereignty: 0, fw: 0, kills: 3600, jumps: 3600,
+    status: 60, prices: 3600, sovereignty: 0, fw: 0, kills: 3600, jumps: 3600, sovereignty_structures: 600, incursions: 300, industry_systems: 3600,
 });
 
 const b = (label, choices, description) => ({ label, choices, description });
 export const pollingBatches = Object.freeze({
     profile: b('Pilot & membership', [0, 3600, 21600, 86400], 'Your character profile, corporation and alliance. Supplies pilot details and the membership behind standing checks.'),
-    location: b('Location & system context', [5, 10, 15], 'Tracks systems, docking and undocking for Journey and OPSEC. Slower checks can miss short visits. Kept below the 30-second protection freshness limit.'),
+    location: b('Location & system context', [5, 10, 15], 'Tracks systems, docking and undocking for Universe and OPSEC. Slower checks can miss short visits. Kept below the 30-second protection freshness limit.'),
     ship: b('Current ship', [30, 60, 120, 300, 600], 'Updates your hull, ship-change events and linked stream widgets. Docking, undocking and logging in can bring a check forward.'),
     online: b('Online status', [60, 120, 300, 600], 'Checks whether your pilot is online and updates login statistics. Also helps detect when to check your ship again.'),
     skills: b('Trained skills', [60, 300, 600, 1800, 3600], 'Refreshes trained levels and skill points for pilot details, session reports and skill goals. A known completion can bring a check forward.'),
@@ -48,6 +48,9 @@ export const pollingBatches = Object.freeze({
     sovereignty: b('Sovereignty & holder names', [0, 300, 600, 1800, 3600], 'Refreshes system sovereignty and resolves holder names for System intelligence and OPSEC. One shared collection serves all pilots.'),
     fw: b('Faction warfare context', [0, 1800, 3600, 7200], 'Refreshes warzone systems used by System intelligence and the faction-warfare protection override. Shared across pilots.'),
     kills: b('System kill statistics', [3600, 7200, 21600], 'Refreshes public ship, pod and NPC kill counts in System intelligence. ESI reports a cached window, rather than live combat.'),
+    sovereignty_structures: b('Sovereignty structures', [300, 600, 1800, 3600], 'Refreshes public sovereignty structures and vulnerability windows for Universe. This is not a complete list of player structures.'),
+    incursions: b('Incursions', [300, 600, 1800, 3600], 'Refreshes public incursion systems, influence and staging information for Universe.'),
+    industry_systems: b('Industry cost indices', [3600, 7200, 21600], 'Refreshes shared system industry cost indices. Your own mining activity uses the separate mining ledger.'),
     jumps: b('System traffic', [3600, 7200, 21600], 'Refreshes public gate-jump counts for System intelligence. Your own travel history uses the separate location checks.'),
 });
 

@@ -139,9 +139,9 @@ try{
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
  ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);});
  await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1600,height:1050,deviceScaleFactor:1,mobile:false});
- await call('Page.navigate',{url:app.origin+'/#journey'});
- // Journey data loads after its tabs mount and changes their screen position.
- await waitFor("document.querySelectorAll('.route-stop').length===7 && !!document.querySelector('.connection-status.online')");
+ await call('Page.navigate',{url:app.origin+'/#sessions'});
+ // The independent Sessions workspace loads its archive after bootstrap.
+ await waitFor("document.querySelectorAll('.session-card').length===3 && !!document.querySelector('.connection-status.online')");
  await clickElement("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions')");
  await waitFor("document.querySelectorAll('.session-card').length===3");await click('.session-card');await waitFor("document.querySelectorAll('.session-detail-card').length===9");
  assert.equal(await evaluate("document.querySelector('.session-collection-status').textContent"),'Session ended · delayed zKill checks');

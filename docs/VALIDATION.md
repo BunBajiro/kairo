@@ -1,4 +1,19 @@
-# Validation — 14 September 2026
+# Validation — 18 September 2026
+
+## Universe 0.8.0-rc.1
+
+This candidate adds a complete local SDE atlas, independent Sessions navigation and session-bound map replay. Validation includes every bundled system detail and gate reference, exact EVE distance units, local graph routes, source freshness/standings, pilot isolation, CSRF, dynamic-connection expiry/access, session event boundaries and legacy gaps. Live authenticated structure access and the user's own imported network require in-app review.
+
+- Backend: 203 tests passed in the workspace and extracted standalone ZIP, including static checks across all 8,490 systems and session recording with Universe disabled.
+- Existing Sessions browser suite passed: nine report cards, full event pagination, legacy sessions and 390–1600px layouts.
+- Universe core browser checks passed: full public atlas, system search, pan/zoom, named views, standing filters, real local routes, private connection/pin isolation, import/toggle/delete, wormhole expiry and 390–1600px layouts.
+- Session replay browser checks passed: report → Show on Map, playback/pause, time and event scrubbing, measured intermediate camera positions during smooth follow, manual drag/resume, event popups, mobile layout and clean exit. The combined Universe/replay harness has 15 acceptance/layout checks and made no external ESI requests.
+- Idle map sample (three seconds): zero canvas redraws; about 6 ms of renderer tasks. This is a focused idle sample, not a claim about every computer or playback workload.
+- Route timings and dataset provenance are recorded in [UNIVERSE-ROUTING-VALIDATION.md](UNIVERSE-ROUTING-VALIDATION.md) and [UNIVERSE-DATA.md](UNIVERSE-DATA.md).
+- The feature-branch GitHub Actions build repeats type checking, compiled-browser checks, packaging and the backend suite against the extracted ZIP without development dependencies.
+
+The browser harness uses synthetic pilots and records. No instrumentation is included in the production runtime. This candidate still awaits the user's human review and is not merged into main.
+
 
 ## Completed
 

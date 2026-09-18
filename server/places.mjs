@@ -1,9 +1,12 @@
+import { getUniverseSystem } from './universe-static.mjs';
 export function rememberSystem(store, system, constellation, region) {
  if (!system?.system_id) return;
  const p=system.position||{};
  store.db.prepare(`INSERT INTO universe_systems VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(system_id) DO UPDATE SET name=excluded.name,constellation_id=excluded.constellation_id,constellation_name=COALESCE(excluded.constellation_name,constellation_name),region_id=COALESCE(excluded.region_id,region_id),region_name=COALESCE(excluded.region_name,region_name),security=excluded.security,x=COALESCE(excluded.x,x),y=COALESCE(excluded.y,y),z=COALESCE(excluded.z,z)`).run(system.system_id,system.name||String(system.system_id),system.constellation_id||null,constellation?.name||null,constellation?.region_id||region?.region_id||null,region?.name||null,system.security_status??null,p.x??null,p.y??null,p.z??null);
 }
 export async function getSystem(store,esi,id) {
+ const local=getUniverseSystem(id,{celestials:false});
+ if(local){const result={...local,security_status:local.security,position:{x:local.x,y:local.y,z:local.z}};rememberSystem(store,result,local.constellation,local.region);return result;}
  const system=(await esi.request('/universe/systems/'+id,{ttl:86400})).data;let constellation,region;
  if(system.constellation_id){constellation=(await esi.request('/universe/constellations/'+system.constellation_id,{ttl:86400})).data;region=(await esi.request('/universe/regions/'+constellation.region_id,{ttl:86400})).data;}
  const result={...system,system_id:id,constellation,region};rememberSystem(store,result,constellation,region);return result;

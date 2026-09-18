@@ -56,7 +56,7 @@ function RouteVisits({route}:{route:any[]}){
 }
 
 export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;onSaved:()=>void}){
- const {boot,character}=useKairo();
+ const {boot,character,navigate}=useKairo();
  const summaryId=useId();
  const [report,setReport]=useState<any>(null),[name,setName]=useState(''),[notes,setNotes]=useState(''),[busy,setBusy]=useState(false),[refreshing,setRefreshing]=useState(false),[loadingMore,setLoadingMore]=useState(false),[error,setError]=useState('');
  const generation=useRef(0),reportRef=useRef<any>(null),requestVersion=useRef(0),requestingMore=useRef(false);
@@ -103,6 +103,7 @@ export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;o
  return <Dialog open={!!id} onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="session-report-dialog session-v2"><DialogHeader><p className="eyebrow">KAIRO / FLIGHT RECORD</p><DialogTitle>Session overview</DialogTitle><DialogDescription>{report?pilot+' · '+stamp(report.session.started)+' → '+(report.session.ended?stamp(report.session.ended):'In progress'):'Loading your session…'}</DialogDescription></DialogHeader>
   {error&&<p role="alert" className="inline-error">{error}</p>}
   {report&&<div className="stack">
+   <div className="flex justify-end"><Button variant="outline" onClick={()=>{sessionStorage.setItem('kairo-universe-replay',JSON.stringify({sessionId:id,characterId:character}));onClose();navigate('universe');}}><MapPin size={15}/> Show on Map</Button></div>
    <div className="report-title"><label className="field-label flex-1">Session name<Input value={name} onChange={e=>setName(e.target.value)} maxLength={100}/></label><span className={'tag '+(!report.session.ended?'positive':'')}>{report.session.ended?'COMPLETE':'ACTIVE'}</span></div>
    <section className="session-summary" aria-labelledby={summaryId}>
     <div className="session-summary-heading"><div><h2 id={summaryId}><Clock size={19}/> Session summary</h2><p className="session-collection-status">{collectionLabel}</p></div><Button size="sm" variant="outline" disabled={refreshing} onClick={refreshReport}><RefreshCw size={14} className={refreshing?'animate-spin':''}/> Refresh</Button></div>

@@ -84,8 +84,8 @@ export type Bootstrap = {
 export const routes = [
     { id: 'overview', name: 'Command centre', group: 'OPERATIONS' }, { id: 'character', name: 'Pilot & training', group: 'OPERATIONS' },
     { id: 'wallet', name: 'Wallet & trade', group: 'OPERATIONS' }, { id: 'assets', name: 'Hangar & assets', group: 'OPERATIONS' },
-    { id: 'markets', name: 'Markets', group: 'OPERATIONS' }, { id: 'industry', name: 'Industry & planets', group: 'OPERATIONS' }, { id: 'journey', name: 'Journey & activity', group: 'INTELLIGENCE' },
-    { id: 'universe', name: 'New Eden', group: 'INTELLIGENCE' }, { id: 'goals', name: 'Goals & notes', group: 'INTELLIGENCE' },
+    { id: 'markets', name: 'Markets', group: 'OPERATIONS' }, { id: 'industry', name: 'Industry & planets', group: 'OPERATIONS' }, { id: 'sessions', name: 'Sessions', group: 'OPERATIONS' },
+    { id: 'universe', name: 'Universe', group: 'INTELLIGENCE' }, { id: 'goals', name: 'Goals & notes', group: 'INTELLIGENCE' },
     { id: 'studio', name: 'Stream studio', group: 'BROADCAST' }, { id: 'opsec', name: 'OPSEC control', group: 'BROADCAST' },
     { id: 'modules', name: 'Settings', group: 'SYSTEM' }, { id: 'connections', name: 'Connections', group: 'SYSTEM' },
 ];

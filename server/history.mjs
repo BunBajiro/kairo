@@ -14,9 +14,9 @@ export function changeSession(store,publish,characterId,input){
   const context=captureContext(store,characterId);
   if(context.loyalty)context.loyaltyBaselineOverlap=!!store.db.prepare('SELECT id FROM sessions WHERE character_id=? AND ended>? AND ended<=? LIMIT 1').get(characterId,context.loyalty.sampledAt,at);
   store.db.prepare('INSERT INTO sessions(id,character_id,label,started,start_context) VALUES(?,?,?,?,?)').run(id,characterId,label,at,JSON.stringify(context));
-  publish({type:'session.started',module:'journey',characterId,at,summary:'Session started: '+label,payload:{session_id:id,session_name:label}});return {id};
+  publish({type:'session.started',module:'sessions',characterId,at,summary:'Session started: '+label,payload:{session_id:id,session_name:label}});return {id};
  }
- if(input.action==='end'&&active){store.db.prepare('UPDATE sessions SET ended=?,end_context=? WHERE id=?').run(at,JSON.stringify(captureContext(store,characterId)),active.id);publish({type:'session.ended',module:'journey',characterId,at,summary:'Session ended: '+active.label,payload:{session_id:active.id,session_name:active.label,duration_minutes:Math.floor((Date.parse(at)-Date.parse(active.started))/60000)}});return {id:active.id};}
+ if(input.action==='end'&&active){store.db.prepare('UPDATE sessions SET ended=?,end_context=? WHERE id=?').run(at,JSON.stringify(captureContext(store,characterId)),active.id);publish({type:'session.ended',module:'sessions',characterId,at,summary:'Session ended: '+active.label,payload:{session_id:active.id,session_name:active.label,duration_minutes:Math.floor((Date.parse(at)-Date.parse(active.started))/60000)}});return {id:active.id};}
  throw new Error('There is no active session to end.');
 }
 export function sessionReport(store,id,characterId,offset=0){

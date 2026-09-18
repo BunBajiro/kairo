@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.3 · Windows first · No cloud deployment**
+**Version 0.8.0-rc.1 · Universe review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
 ## Download the latest release
 
-Use the provided **Kairo-v0.7.3.zip** for this build. Approved releases are also available under **Assets** on [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest). Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Download **Kairo-test-build.zip** from the successful feature-branch GitHub Actions run linked in the draft PR. This release candidate awaits in-app review; the approved stable release remains available on [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest). Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -21,6 +21,10 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 ## Upgrading from an earlier version
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
+
+Version **0.8.0-rc.1** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md).
+
+Existing visits, sessions and notes are retained. The old Journey navigation opens **Universe → Journey**. Its separate module and map are retired; observed travel is never imported as a verified routing network. There is no data reset in this build.
 
 Version 0.7.3 includes the optimisation/refactoring pass and its database follow-up. No data reset is required when upgrading from 0.7.2 or the earlier 0.7.3 review build. The first start adds a session-query index and trims the derived market-history cache to its saved 30-day analysis window; daily archive rows and player data are retained. A large existing cache can make this first start take longer. Upgrading from the approved 0.7.3-rc.1 retains its completed database migration.
 
@@ -92,14 +96,14 @@ The Client ID and callback must belong to the same EVE application. If you chang
 | Wallet & markets | Wallet balance, journal, recent transactions, open orders, loyalty points and NPC standings |
 | Hangar & assets | Searchable inventory, nested asset location resolution, ESI reference valuations, saved fittings and contracts |
 | Industry & planets | Manufacturing/research jobs, planetary colonies and extractor expiry, mining ledger and blueprints |
-| Journey & activity | Persisted system observations, ship-change events, timeline, recent kill/loss records, named sessions with activity reports, debriefs and JSON history export |
-| New Eden | Live public server status; system security, sovereignty, faction warfare, cached kills/traffic; public stargate route planning; system, constellation and region notes, tags and personal markers |
+| Sessions | Independent operation recording, archived reports, combat records, debriefs and session-bound map replay with smooth camera follow and a scrubbable event timeline |
+| Universe | Full local New Eden atlas; sovereignty/standings and activity layers; saved views; local routes and jump planning; private Ansiblex/wormhole networks; system details, notes, pins and observed travel history |
 | Goals & notes | Manual and ESI-tracked objectives, completion events and private notes |
 | Markets | Shared hub caches, category browser, quick/full scans, alt access, EVE Ref history, Jita comparisons, Import Analyser and saved hauling plans |
 | Stream studio | Canvas editor, drag/keyboard positioning, element properties, layer visibility, duplication, record-specific module bindings, individual widget source URLs and live saved-output preview |
 | Notification rules | Explicit opt-in events, context templates, character filters, location redaction, custom wording, duration, cooldown, delay, position, sound and test controls |
 | OPSEC | Manual cover override; character selection; friendly/hostile sovereignty policies; FW detection; unknown/stale context stays hidden; OBS state actions for sources, filters, audio and program scenes |
-| Settings | Enable/disable modules; 35 adjustable ESI polling batches with recommended defaults; three interface accents |
+| Settings | Enable/disable modules; adjustable ESI polling batches with recommended defaults; three interface accents |
 | Connections | PKCE SSO, character selection, scope controls, encrypted persistence, automatic refresh and disconnect |
 
 Use the sidebar or **Ctrl+K** to jump between modules. Tables support filtering, sorting and paging. All times labelled EVE are UTC.
@@ -184,9 +188,9 @@ Alliance killmails now count as **either a kill or a loss**. An alliance victim 
 
 Version **0.7.1** expands the session overview into clickable cards for **all observed visits**, ships flown, personal combat, alliance combat, personal LP changes, wallet activity, milestones and the timeline. Alliance combat only adds a ±10-minute tracking buffer to a visit when an alliance kill or loss occurs during that visit. Every other visit stays in the route. [Sessions guide and collection rules](docs/SESSIONS.md).
 
-Existing sessions retain their saved visits and events, but uncaptured alliance, LP and starting-ship baselines cannot be reconstructed. New sessions capture these baselines when the relevant modules and permissions are available. Battle Reports are reserved for v0.8.
+Existing sessions retain their saved visits and events, but uncaptured alliance, LP and starting-ship baselines cannot be reconstructed. New sessions capture these baselines when the relevant modules and permissions are available. Battle Reports remain separate future work.
 
-**Journey → Start session** asks for a name. **End session** opens its report. Open any entry in **Sessions** to revisit it, rename it or add a debrief. The report includes recorded events, combat counts, goal completions, training levels, ready industry jobs, ship changes, observed travel, journal inflows/outflows and a wallet/SP comparison when start/end samples are available. A live session also has **Live report** and **Refresh report** controls.
+**Sessions → Start session** asks for a name. **End session** opens its report. Open any entry in **Sessions** to revisit it, rename it or add a debrief. The report includes recorded events, combat counts, goal completions, training levels, ready industry jobs, ship changes, observed travel, journal inflows/outflows and a wallet/SP comparison when start/end samples are available. A live session also has **Live report** and **Refresh report** controls.
 
 **Kills mean participation**, including zero-damage EWAR entries in the killmail’s attacker list. Personal ESI only supplies losses and final blows, so Kairo supplements it with public zKillboard references and verifies the full killmail through ESI. It never infers credit solely from fleet/corporation membership. Private killmails are not uploaded to zKillboard.
 
@@ -196,11 +200,9 @@ Personal ESI references are paged across its 90-day window. Public backfill also
 
 Reports are based on observations and event timestamps. Missing scopes, disabled modules, ESI cache delays and time spent with Kairo closed limit coverage. Events that arrive late can enter an earlier report if their occurrence time is inside that session. Existing 0.1 sessions retain historical events and visits, but cannot reconstruct start/end wallet or SP samples that were never captured.
 
-**Systems visited** provides a zoomable, pannable X–Z universe map, a bounded region atlas, search, time filters, visit counts and a ledger. The atlas shows four leading regions and an **Explore regions** directory with search and proportional system counts; adding regions never widens the page. Select a node to inspect its history or open **System details & notes**. Dashed links connect observed consecutive locations, not verified stargates. Earlier records can gain public coordinates and region details through **Map earlier visits**, 25 systems at a time. No travel is fabricated.
+**Universe → Journey → Systems visited** retains the observed system ledger. Use the **My footprint** map preset or **Your visits** indicator to explore this history on the full atlas. ESI can miss brief transits; visits are observations and do not establish usable connections. The earlier Journey connection-pruning data is retained for compatibility but does not affect the new routing graph.
 
-ESI does not report whether a location change used a filament, gate, bridge or wormhole. On the map, **select a dashed connection → Hide connection** to prune it. A selected system also lists its latest connections. Use **Show hidden connections**, or the system’s connection list, to select it again and **Restore connection**. Hiding affects only that exact observed leg, persists per character, keeps both visits and all session events, and does not create a replacement line across the gap.
-
-In **New Eden → Your field notes**, choose the system, constellation or region. Save notes, tags and a personal marker such as Home, Staging, Watch or Avoid. These details are shared across your local characters and never projected to OBS. Personal markers do not automatically alter OPSEC policy. Unsaved edits stay attached to their selected place if your live location changes.
+In a selected Universe system, open **Field notes** to edit system, constellation or region notes, tags and personal markers. Notes remain local and never appear in OBS automatically. They do not change OPSEC policy.
 
 ## Automatic goals
 

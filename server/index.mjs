@@ -1,3 +1,5 @@
+import { gzipSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
 import { readFile, stat } from 'node:fs/promises';
@@ -15,6 +17,7 @@ import { allScopes, catalog } from './modules/catalog.mjs';
 import {sanitizeConfig} from './stream.mjs';
 import {bindingProjection,toastContexts} from './projections.mjs';
 import {changeSession,sessionReport} from './history.mjs';
+import {sessionReplay} from './session-replay.mjs';
 import {getSystem,journeyData,savePlaceNote,setJourneyConnection} from './places.mjs';
 import {listGoals,goalSourceOptions,lookupGoalType} from './goals.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,6 +33,12 @@ export async function startKairo(options = {}) {
     const store = openStore(dir), vault = openVault(dir), auth = createAuth(store, vault, { origin, fetcher: options.fetcher }), esi = createESI(store, auth, { fetcher: options.fetcher });
     const core = await createCore(store, auth, esi, join(root, 'server', 'modules'),{vault,noSync:options.noSync,obs:options.obs,markets:options.markets,combatFetcher:options.combatFetcher||options.fetcher,sessionFeedFetcher:options.sessionFeedFetcher});
     const sessions = new Map();
+    let universeAtlasResponse;
+    async function universeDetail(characterId, systemId) {
+        const owner=store.snapshot(0,'sovereignty')?.data?.find(row=>row.system_id===systemId);
+        if(owner && store.get('module:universe',true)) await core.resolveNames({alliance_id:owner.alliance_id,corporation_id:owner.corporation_id,faction_id:owner.faction_id});
+        return {...await core.universe.detail(characterId,systemId),names:core.names()};
+    }
     const json = (res, status, data) => { res.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(data)); };
     function session(req) { const key = (req.headers.cookie || '').split('; ').find(c => c.startsWith('kairo_session='))?.split('=')[1]; const s = sessions.get(key); if (!s || s.expires < Date.now()) {
         sessions.delete(key);
@@ -38,16 +47,16 @@ export async function startKairo(options = {}) {
     function establish(res) { for (const [key, s] of sessions)
         if (s.expires < Date.now())
             sessions.delete(key); const key = randomBytes(32).toString('base64url'); sessions.set(key, { csrf: randomBytes(32).toString('base64url'), expires: Date.now() + 86400000 }); res.setHeader('Set-Cookie', `kairo_session=${key}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400`); }
-    async function body(req) { if (!req.headers['content-type']?.startsWith('application/json'))
+    async function body(req, maximum = 150000) { if (!req.headers['content-type']?.startsWith('application/json'))
         throw new Error('JSON is required.'); let size = 0, out = ''; for await (const part of req) {
         size += part.length;
-        if (size > 150000)
+        if (size > maximum)
             throw new Error('Request is too large.');
         out += part;
     } return JSON.parse(out || '{}'); }
     const isOwn = req => (!req.headers.origin || req.headers.origin === origin) && req.headers['sec-fetch-site'] !== 'cross-site';
     const pageHeaders = res => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.evetech.net https://web.ccpgamescdn.com; connect-src 'self'; font-src 'self' data:; frame-src ${streamOrigin}; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://login.eveonline.com`); };
-    const checkedChar = url => { const id = Number(url.searchParams.get('character') || 0); if (id && !auth.characters().some(c => c.id === id))
+    const checkedChar = url => { const id = Number(url.searchParams.get('character') || 0); if (!Number.isSafeInteger(id) || id < 0) throw new Error('Choose a valid character.'); if (id && !auth.characters().some(c => c.id === id))
         throw new Error('This character is not connected.'); return id; };
     async function api(req, res, url, s) {
         const path = url.pathname.slice(4);
@@ -57,7 +66,7 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.7.3', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.1', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
         if (path === '/state' && read) {
             const id = checkedChar(url);
             return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
@@ -236,33 +245,39 @@ export async function startKairo(options = {}) {
         }
         if(path==='/session'&&req.method==='POST'){const characterId=checkedChar(url),r=changeSession(store,core.publish,characterId,await body(req));core.updateBindings();if(!options.noSync)core.sessionCombat.sessionChanged(r.id,characterId).catch(()=>{});return json(res,200,r);}
         if(path==='/sessions'&&read){const offset=Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))),rows=store.db.prepare('SELECT id,character_id,label,started,ended FROM sessions WHERE character_id=? ORDER BY started DESC,id DESC LIMIT 31 OFFSET ?').all(checkedChar(url),offset);return json(res,200,{items:rows.slice(0,30),more:rows.length>30});}
+        if(/^\/sessions\/[^/]+\/replay$/.test(path) && read) return json(res,200,sessionReplay(store,decodeURIComponent(path.split('/')[2]),checkedChar(url)));
         if(path.startsWith('/sessions/')){const id=path.split('/')[2],characterId=checkedChar(url);if(read){const report=sessionReport(store,id,characterId,Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))));if(!options.noSync)core.sessionCombat.sync(id,characterId).catch(()=>{});const coverage=store.get('session:combat:'+id,null);if(coverage&&store.get('module:combat',true))report.allianceCombat.coverage=coverage;return json(res,200,report);}
             if(req.method==='PUT'){const b=await body(req),label=String(b.label||'').trim().slice(0,100);if(!label)throw new Error('Give this session a name.');const r=store.db.prepare('UPDATE sessions SET label=?,notes=? WHERE id=? AND character_id=?').run(label,String(b.notes||'').slice(0,12000),id,characterId);if(!r.changes)throw new Error('Session not found for this character.');core.updateBindings();return json(res,200,{ok:true});}}
-        if (path === '/universe/search' && req.method === 'POST') {
-            const b = await body(req);
-            const name = String(b.name || '').trim().slice(0, 100);
-            if (!name)
-                throw new Error('Enter a system name.');
-            const r = await esi.request('/universe/ids', { method: 'POST', body: [name], ttl: 86400 });
-            const systemId = r.data.systems?.[0]?.id;
-            if (!systemId)
-                throw new Error('No solar system with that name was found.');
-            const system = await getSystem(store,esi,systemId), sov = core.snapshots(0, false).sovereignty?.data?.find(s => s.system_id === systemId);
-            if (sov) await core.resolveNames({ alliance_id: sov.alliance_id, corporation_id: sov.corporation_id, faction_id: sov.faction_id });
-            return json(res,200,{...system,names:core.names()});
+        if (path === '/universe/static' && read) {
+            if (!universeAtlasResponse) {
+                const raw=Buffer.from(JSON.stringify(core.universe.static()));
+                universeAtlasResponse={raw,gzip:gzipSync(raw),etag:'"'+createHash('sha256').update(raw).digest('hex')+'"'};
+            }
+            const headers={'Content-Type':'application/json','Cache-Control':'private, max-age=3600',ETag:universeAtlasResponse.etag,Vary:'Accept-Encoding'};
+            if(req.headers['if-none-match']===universeAtlasResponse.etag){res.writeHead(304,headers);return res.end();}
+            const compressed=/\bgzip\b/.test(req.headers['accept-encoding']||'');
+            res.writeHead(200,{...headers,...(compressed?{'Content-Encoding':'gzip'}:{})});
+            return res.end(compressed?universeAtlasResponse.gzip:universeAtlasResponse.raw);
         }
-        if (path === '/universe/route' && req.method === 'POST') {
-            const b = await body(req);
-            const start = Number(b.origin), end = Number(b.destination);
-            if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start < 1 || end < 1)
-                throw new Error('Choose valid origin and destination systems.');
-            const r = await esi.request(`/route/${start}/${end}`, { method: 'POST', body: { preference: ['Shorter', 'Safer', 'LessSecure'].includes(b.preference) ? b.preference : 'Shorter' }, ttl: 300 });
-            const routeNames = await esi.names(r.data.route || []);
-            return json(res, 200, { ...r, names: routeNames });
+        if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));
+        if (/^\/universe\/systems\/\d+$/.test(path) && read) return json(res, 200, await universeDetail(checkedChar(url), Number(path.split('/')[3])));
+        if (path === '/universe/search' && req.method === 'POST') {
+            const { name } = await body(req);
+            const system = core.universe.static().systems.find(s => s.name.toLowerCase() === String(name || '').trim().toLowerCase());
+            if (!system) throw new Error('No solar system with that name was found.');
+            return json(res, 200, await universeDetail(checkedChar(url), system.system_id));
+        }
+        if (path === '/universe/route' && req.method === 'POST') return json(res, 200, core.universe.route(checkedChar(url), await body(req)));
+        if (path === '/universe/jump-plan' && req.method === 'POST') return json(res, 200, core.universe.jump(checkedChar(url), await body(req)));
+        if (path === '/universe/links/prune-expired' && req.method === 'POST') return json(res,200,core.universe.pruneExpired(checkedChar(url)));
+        if (path === '/universe/structures/verify' && req.method === 'POST') return json(res, 200, await core.universe.verifyStructure(checkedChar(url), (await body(req)).structureId));
+        for (const [collection, save, remove] of [['views', 'saveView', 'deleteView'], ['links', 'saveLink', 'deleteLink'], ['link-lists', 'saveLinkList', 'deleteLinkList'], ['pins', 'savePin', 'deletePin']]) {
+            if (path === '/universe/' + collection && req.method === 'POST') return json(res, 200, core.universe[save](checkedChar(url), await body(req, collection==='link-lists'?2_000_000:150000)));
+            if (path.startsWith('/universe/' + collection + '/') && req.method === 'DELETE') return json(res, 200, core.universe[remove](checkedChar(url), decodeURIComponent(path.split('/')[3])));
         }
         if (path === '/export' && read) {
             res.setHeader('Content-Disposition', 'attachment; filename="kairo-history.json"');
-            return json(res, 200, { exportedAt: new Date().toISOString(), version:7,allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),hiddenJourneyLinks:store.db.prepare('SELECT * FROM journey_hidden_links').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
+            return json(res, 200, { exportedAt: new Date().toISOString(), version:8,universe:core.universe.exportUserData(),allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),hiddenJourneyLinks:store.db.prepare('SELECT * FROM journey_hidden_links').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
         }
         if (path.startsWith('/modules/') && read) {
             const m = core.registry.modules.find(m => m.id === path.split('/')[2]);

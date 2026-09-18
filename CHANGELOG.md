@@ -2,6 +2,18 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.1 — Universe review build
+
+- Replaces the earlier New Eden lookup and Journey atlas with the full offline New Eden map, sovereignty territories, selected-pilot standings, configurable layers and saved views.
+- Adds local gate routing, pilot-specific imported/manual Ansiblex networks, confirmed expiring wormholes, persistent discoveries and physical XYZ jump planning.
+- Adds system details, static celestials/NPC stations, public sovereignty structures, structure visibility checks, incursions, industry/mining overlays and calendar-linked event pins with source status.
+- Keeps **Sessions** as its own workspace. Session reports can open a session-bound Universe replay with timeline scrubbing, event context and smooth follow-player panning.
+- Retains existing sessions, visits and notes while retiring the separate Journey module. Observed travel never becomes a routing connection automatically.
+- Bundles official SDE build 3503375, adds explicit data provenance, bounded lazy system detail loading and redraw-on-demand map rendering.
+- Ansiblex zone calculations are labelled as the announced 22 September model; ship-specific capacitor modelling is not included.
+
+This release candidate awaits human review. It is not merged into `main`.
+
 ## Unreleased
 
 ## 0.7.3 — 2026-09-18
