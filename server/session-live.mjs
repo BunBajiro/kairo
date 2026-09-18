@@ -14,7 +14,7 @@ export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,on
   if(pause>0)await delay(pause,undefined,{signal:controller.signal});
   if(!active())return null;
   lastRequest=now();
-  const response=await fetcher(origin+path,{headers:{Accept:'application/json','Accept-Encoding':'gzip','User-Agent':'Kairo/0.7.2 (https://github.com/BunBajiro/kairo)'},redirect:'error',signal:AbortSignal.any([controller.signal,AbortSignal.timeout(15000)])});
+  const response=await fetcher(origin+path,{headers:{Accept:'application/json','Accept-Encoding':'gzip','User-Agent':'Kairo/0.7.3 (https://github.com/BunBajiro/kairo)'},redirect:'error',signal:AbortSignal.any([controller.signal,AbortSignal.timeout(15000)])});
   if(response.status===404)return null;
   if(!response.ok){
    const error=new Error('Live killmail feed unavailable (HTTP '+response.status+').');

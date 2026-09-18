@@ -17,3 +17,11 @@ Verification gates:
 3. Require consistent improvement in idle CPU/stalls, import analysis after unrelated writes and large-session latency; investigate material regressions in other operations. Compare data outputs as well as timings. Preserve the full response data rather than shrinking workloads.
 4. After verification, set the application version to 0.7.3, build the production frontend, package the standalone runtime and test the extracted ZIP without development dependencies. Confirm that profiling tools, fixtures, traces and workflows are absent.
 5. Hand over a draft review PR and the verified build. Keep `main` unchanged pending human review.
+
+## Implementation verification
+
+The measured candidate is `d57cda3b44b34aa207407848eb14acab846b05cb`. The [retained comparison evidence](https://github.com/BunBajiro/kairo/tree/perf/benchmark-baseline/docs/v073-comparison) stays on the internal investigation branch. Both workspace repetitions and both GitHub repetitions pass the three conservative performance gates; all 150 behaviour tests and full response equivalence pass. A further 250 old/new combat-matching comparisons preserve boundary and deduplication behaviour.
+
+In the larger workspace fixture, idle CPU drops from 14.66–15.27% to 1.26–1.40% of one logical core, session p50 drops from 181–189 ms to 110–112 ms, and imports after unrelated writes drop from 469–483 ms to below 1 ms. These are synthetic measurements, not a guarantee about physical fans, GPU work or every user workload. Small warm-cache validation adds about 0.05–0.10 ms in some repetitions.
+
+Version identifiers and package exclusions are applied after the backend comparisons pass. The five optimised runtime modules are checked byte-for-byte against the measured candidate when verifying the extracted production ZIP. Profiling code is never copied into the implementation checkout.

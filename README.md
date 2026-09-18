@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.2 · Windows first · No cloud deployment**
+**Version 0.7.3 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
 ## Download the latest release
 
-Open [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest) and download **Kairo-v0.7.2.zip** under **Assets**. Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Use the provided **Kairo-v0.7.3.zip** for this build. Approved releases are also available under **Assets** on [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest). Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
