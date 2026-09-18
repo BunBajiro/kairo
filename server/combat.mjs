@@ -64,7 +64,7 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
    if(!active(id))throw new Error('Combat collection is paused.');
    const cooldown=store.get('combat.public.cooldown',0);if(cooldown>now())throw new Error('zKillboard is cooling down; saved kills are retained.');
    nextRequest=now()+spacingMs;
-   const response=await fetcher('https://zkillboard.com/api/'+path,{headers:{Accept:'application/json','Accept-Encoding':'gzip','User-Agent':'Kairo/0.7.3 (https://github.com/BunBajiro/kairo)'},signal:AbortSignal.timeout(15000),redirect:'error'});
+   const response=await fetcher('https://zkillboard.com/api/'+path,{headers:{Accept:'application/json','Accept-Encoding':'gzip','User-Agent':'Kairo/0.7.3-rc.1 (https://github.com/BunBajiro/kairo)'},signal:AbortSignal.timeout(15000),redirect:'error'});
    if(!response.ok){
     const retry=response.headers.get('retry-after'),ms=retry?(Number.isFinite(Number(retry))?Number(retry)*1000:Date.parse(retry)-now()):HOUR;
     if([403,420,429,503].includes(response.status))store.set('combat.public.cooldown',now()+Math.max(HOUR,Number.isFinite(ms)?ms:HOUR));

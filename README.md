@@ -2,13 +2,13 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.7.3 · Windows first · No cloud deployment**
+**Version 0.7.3-rc.1 · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
-## Download the latest release
+## Download this release candidate
 
-Use the provided **Kairo-v0.7.3.zip** for this build. Approved releases are also available under **Assets** on [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest). Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
+Use the provided **Kairo-v0.7.3-rc.1.zip** for this build. Approved releases are also available under **Assets** on [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest). Extract it into a new folder, stop any running Kairo instance, then open **Kairo/START_KAIRO.bat**. Node.js 24 or newer is required; the ZIP contains the compiled application and needs no npm install or local build. A SHA-256 checksum is included alongside the ZIP.
 
 ## Download a test build
 
@@ -21,6 +21,8 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 ## Upgrading from an earlier version
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
+
+Version 0.7.3-rc.1 includes the optimisation/refactoring pass and its database follow-up. No data reset is required when upgrading from 0.7.2 or the earlier 0.7.3 review build. The first start adds a session-query index and trims the derived market-history cache to its saved 30-day analysis window; daily archive rows and player data are retained. A large existing cache can make this first start take longer. This is a release candidate awaiting review.
 
 Version 0.7.0 added a separate **Buying character** to **Markets → Import Analyser**. Choose a connected Jita buyer or keep **Same as selling character**, apply the settings and use **Update trader data**. Immediate purchases have no buyer tax or broker fee; resale fees still use the selling character. New saved plans record both pilots, and older plans remain usable. Upgrading from 0.6.0 preserves market scans and other local data, with no new scopes or data reset.
 

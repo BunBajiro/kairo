@@ -1,6 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
+import { compactHistoryCache } from './market-history-store.mjs';
 export function openStore(dir) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
     const db = new DatabaseSync(join(dir, 'kairo.sqlite'));
@@ -82,6 +83,15 @@ export function openStore(dir) {
         CREATE TABLE alliance_combat_records(alliance_id INTEGER NOT NULL,killmail_id INTEGER NOT NULL,system_id INTEGER NOT NULL,at TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(alliance_id,killmail_id));
         CREATE INDEX idx_alliance_combat_system_at ON alliance_combat_records(alliance_id,system_id,at);
         INSERT INTO migrations VALUES('sessions-v071',datetime('now')); COMMIT;`);
+    }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='database-v073'").get()) {
+        db.exec('BEGIN IMMEDIATE');
+        try {
+            db.exec('CREATE INDEX IF NOT EXISTS idx_events_character_type_at ON events(character_id,type,at)');
+            compactHistoryCache(db);
+            db.prepare("INSERT INTO migrations VALUES('database-v073',datetime('now'))").run();
+            db.exec('COMMIT');
+        } catch (error) { db.exec('ROLLBACK'); db.close(); throw error; }
     }
     try {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);

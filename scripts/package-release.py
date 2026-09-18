@@ -22,6 +22,6 @@ with zipfile.ZipFile(out) as archive:
     assert archive.testzip() is None
     assert 'Kairo/server/import-cache.mjs' in archive.namelist()
     assert not any('/tests/performance/' in p or '/performance-results/' in p or '/.github/' in p or p=='Kairo/.git' or p.endswith(('.cpuprofile','.heapsnapshot')) for p in archive.namelist())
-    for name in ['START_KAIRO.bat','server/index.mjs','server/obs.mjs','server/projections.mjs','dist/client/index.html','public/stream/render.js','docs/VALIDATION.md','docs/IMPORT-ANALYSER.md','server/imports.mjs','server/import-math.mjs','server/market-history-worker.mjs','server/vendor/seek-bzip/LICENSE','server/vendor/seek-bzip/lib/index.js','server/data/npc-market-owners.json','tests/kairo/fixtures/market-history-archives.json']:
+    for name in ['START_KAIRO.bat','server/index.mjs','server/obs.mjs','server/projections.mjs','dist/client/index.html','public/stream/render.js','docs/VALIDATION.md','docs/IMPORT-ANALYSER.md','server/imports.mjs','server/market-history-store.mjs','server/import-math.mjs','server/market-history-worker.mjs','server/vendor/seek-bzip/LICENSE','server/vendor/seek-bzip/lib/index.js','server/data/npc-market-owners.json','tests/kairo/fixtures/market-history-archives.json']:
         assert 'Kairo/'+name in archive.namelist(),name
     print(json.dumps({'file':str(out),'version':version,'bytes':out.stat().st_size,'files':len(archive.namelist())}))
