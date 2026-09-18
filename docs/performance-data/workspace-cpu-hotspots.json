@@ -1,0 +1,316 @@
+{
+  "description": "Separate diagnostic profiles of three operations each, outside baseline timing. Self-sample counts locate hot frames; they are not portable CPU percentages. Native frames can appear without source URLs. Raw profiles retain all nodes and timing deltas.",
+  "environment": {
+    "commit": "ec26c4f36238954227cb2af9d0f8bf330fd4a182",
+    "dirty": false,
+    "node": "v24.19.0",
+    "platform": "linux",
+    "release": "6.18.44",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "totalMemoryBytes": 16793280512,
+    "runner": "local",
+    "runUrl": null
+  },
+  "workload": {
+    "version": 1,
+    "profile": "stress",
+    "characters": 4,
+    "assets": 20000,
+    "events": 50000,
+    "visits": 2000,
+    "combat": 4000,
+    "sessions": 200,
+    "marketTypes": 5000,
+    "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+    "now": 1789431487114
+  },
+  "profiles": [
+    {
+      "operation": "imports_after_write",
+      "rawProfile": "workspace-imports_after_write.cpuprofile",
+      "samples": 1252,
+      "topFrames": [
+        {
+          "function": "historyWindow",
+          "source": "server/market-history.mjs",
+          "line": 5,
+          "selfSamples": 192
+        },
+        {
+          "function": "(idle)",
+          "source": "",
+          "line": 0,
+          "selfSamples": 162
+        },
+        {
+          "function": "calculate",
+          "source": "server/imports.mjs",
+          "line": 51,
+          "selfSamples": 141
+        },
+        {
+          "function": "buildOpportunity",
+          "source": "server/import-math.mjs",
+          "line": 51,
+          "selfSamples": 128
+        },
+        {
+          "function": "marketPrice",
+          "source": "server/import-math.mjs",
+          "line": 30,
+          "selfSamples": 100
+        },
+        {
+          "function": "iso",
+          "source": "server/market-history.mjs",
+          "line": 4,
+          "selfSamples": 99
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "line": 0,
+          "selfSamples": 90
+        },
+        {
+          "function": "calculate",
+          "source": "server/imports.mjs",
+          "line": 51,
+          "selfSamples": 57
+        },
+        {
+          "function": "all",
+          "source": "",
+          "line": 0,
+          "selfSamples": 53
+        },
+        {
+          "function": "scenario",
+          "source": "server/import-math.mjs",
+          "line": 43,
+          "selfSamples": 52
+        },
+        {
+          "function": "all",
+          "source": "",
+          "line": 0,
+          "selfSamples": 31
+        },
+        {
+          "function": "marketPrice",
+          "source": "server/import-math.mjs",
+          "line": 30,
+          "selfSamples": 24
+        },
+        {
+          "function": "scenario",
+          "source": "server/import-math.mjs",
+          "line": 43,
+          "selfSamples": 16
+        },
+        {
+          "function": "demandEvidence",
+          "source": "server/import-math.mjs",
+          "line": 35,
+          "selfSamples": 15
+        },
+        {
+          "function": "marketPrice",
+          "source": "server/import-math.mjs",
+          "line": 30,
+          "selfSamples": 13
+        },
+        {
+          "function": "levelMap",
+          "source": "server/imports.mjs",
+          "line": 48,
+          "selfSamples": 9
+        },
+        {
+          "function": "historyWindow",
+          "source": "server/market-history.mjs",
+          "line": 5,
+          "selfSamples": 8
+        },
+        {
+          "function": "snapshot",
+          "source": "server/store.mjs",
+          "line": 90,
+          "selfSamples": 7
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/import-math.mjs",
+          "line": 36,
+          "selfSamples": 6
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/market-history.mjs",
+          "line": 8,
+          "selfSamples": 4
+        }
+      ]
+    },
+    {
+      "operation": "opsec",
+      "rawProfile": "workspace-opsec.cpuprofile",
+      "samples": 30,
+      "topFrames": [
+        {
+          "function": "snapshot",
+          "source": "server/store.mjs",
+          "line": 90,
+          "selfSamples": 25
+        },
+        {
+          "function": "get",
+          "source": "",
+          "line": 0,
+          "selfSamples": 3
+        },
+        {
+          "function": "post",
+          "source": "node:inspector",
+          "line": 115,
+          "selfSamples": 1
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/combat.mjs",
+          "line": 15,
+          "selfSamples": 1
+        }
+      ]
+    },
+    {
+      "operation": "session",
+      "rawProfile": "workspace-session.cpuprofile",
+      "samples": 529,
+      "topFrames": [
+        {
+          "function": "all",
+          "source": "",
+          "line": 0,
+          "selfSamples": 77
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 103,
+          "selfSamples": 75
+        },
+        {
+          "function": "get",
+          "source": "",
+          "line": 0,
+          "selfSamples": 61
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 103,
+          "selfSamples": 41
+        },
+        {
+          "function": "prepare",
+          "source": "",
+          "line": 0,
+          "selfSamples": 39
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 107,
+          "selfSamples": 29
+        },
+        {
+          "function": "get",
+          "source": "",
+          "line": 0,
+          "selfSamples": 27
+        },
+        {
+          "function": "(garbage collector)",
+          "source": "",
+          "line": 0,
+          "selfSamples": 26
+        },
+        {
+          "function": "all",
+          "source": "",
+          "line": 0,
+          "selfSamples": 19
+        },
+        {
+          "function": "sessionDetails",
+          "source": "server/session-details.mjs",
+          "line": 116,
+          "selfSamples": 14
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 125,
+          "selfSamples": 14
+        },
+        {
+          "function": "all",
+          "source": "",
+          "line": 0,
+          "selfSamples": 12
+        },
+        {
+          "function": "allianceSummary",
+          "source": "server/session-details.mjs",
+          "line": 99,
+          "selfSamples": 10
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 123,
+          "selfSamples": 9
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 104,
+          "selfSamples": 9
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 58,
+          "selfSamples": 8
+        },
+        {
+          "function": "all",
+          "source": "",
+          "line": 0,
+          "selfSamples": 7
+        },
+        {
+          "function": "(anonymous)",
+          "source": "server/session-details.mjs",
+          "line": 105,
+          "selfSamples": 7
+        },
+        {
+          "function": "sessionReport",
+          "source": "server/history.mjs",
+          "line": 22,
+          "selfSamples": 5
+        },
+        {
+          "function": "sessionRoute",
+          "source": "server/session-details.mjs",
+          "line": 42,
+          "selfSamples": 5
+        }
+      ]
+    }
+  ]
+}

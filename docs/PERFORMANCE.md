@@ -10,10 +10,10 @@ Requires Node 24.19.0, locked project build dependencies and Chrome for browser 
 
 ```sh
 npm run install:ci
+npm run build
 npm run test:kairo
 npm run test:perf
 npm run check:kairo
-npm run build
 KAIRO_PERF_OUTPUT=performance-results/run-1 npm run bench:backend
 KAIRO_PERF_OUTPUT=performance-results/run-2 npm run bench:backend
 npm run bench:compare -- performance-results/run-1/backend.json performance-results/run-2/backend.json
@@ -39,7 +39,7 @@ Run measurements sequentially on a quiet worker. Do not overlap a benchmark with
 
 These labels describe smaller and larger synthetic fixtures, not claims about typical player history. Stress deliberately concentrates events and repeated visits into one six-hour session to reveal scaling problems. The committed taxonomy supplies real type IDs; all prices, orders, histories, characters and activity are invented. Sessions are archived; live feed lifecycle behaviour is covered by existing `session-live` correctness tests, not an external network load test.
 
-Backend runs use a separate observer process and temporary SQLite data directories. Fresh snapshots exercise the **real three-second scheduler** while preventing network collection. Measurements cover idle process CPU/RSS/event loop, OPSEC evaluation, state projection, journey, session reports, market browsing, supply reports, cached imports, imports after an unrelated database write, and authenticated loopback `/api/state` requests. Direct operation timings include JSON serialization. The HTTP measurement additionally includes transfer and parsing, and is reported separately. Three warmups precede ten samples; p50/p95 use nearest-rank percentiles. At ten samples p95 is the maximum, not a robust estimate of rare tail events.
+Backend runs use a separate observer process and temporary SQLite data directories. Future dataset refresh dates exercise the **real three-second scheduler** while preventing network collection. Protection independently limits location evidence to 30 seconds, so the first idle window includes the expected transition to unknown as that evidence ages. Measurements cover idle process CPU/RSS/event loop, OPSEC evaluation, state projection, journey, session reports, market browsing, supply reports, cached imports, imports after an unrelated database write, and authenticated loopback `/api/state` requests. Direct operation timings include JSON serialization. The HTTP measurement additionally includes transfer and parsing, and is reported separately. Three warmups precede ten samples; p50/p95 use nearest-rank percentiles. At ten samples p95 is the maximum, not a robust estimate of rare tail events.
 
 Browser runs use compiled production assets, the real local server, and headless Chrome's DevTools protocol with a 1600×1050 viewport. They record load-to-ready, idle renderer main-thread busy time, script/layout work, DOM size, heap snapshots of usage, long tasks, request cadence, received body bytes, and separate Node server CPU/RSS. Each idle window lasts 35 seconds after two seconds of settling, spanning the dashboard's 30-second fallback refresh. Page timers are not accelerated. Page setup/condition checks finish before the idle interval; there is no continuous `requestAnimationFrame` measurement loop.
 
@@ -58,7 +58,17 @@ Browser scenarios cover overview, assets, market overview, an archived session r
 | `KAIRO_CHROME_PATH` | system Chrome | Explicit Chrome executable |
 | `KAIRO_PERF_CPU_PROFILE` | unset | `1` writes separate V8 CPU profiles after timed samples |
 
-Short windows and three-sample runs are harness smoke checks only. They do not establish a baseline. Diagnostic CPU profiles are collected outside timed samples; run them separately from the clean baseline. Open `.cpuprofile` files in Chrome DevTools' Performance panel. Process RSS before/after and observed peak RSS are allocations, not proof of a memory leak; the 250ms peak sampler can miss short spikes. Event-loop delay has a 10ms sampling resolution. CPU percentage uses one logical core, so 100% means one core fully occupied, not the entire machine.
+Short windows and three-sample runs are harness smoke checks only. They do not establish a baseline. Diagnostic CPU profiles are collected outside timed samples; run them separately from the clean baseline. Open `.cpuprofile` files in Chrome DevTools' Performance panel. Process RSS before/after and observed peak RSS describe process memory, not proof of a memory leak; the 250ms peak sampler can miss short spikes. Event-loop delay has a 10ms sampling resolution. CPU percentage uses one logical core, so 100% means one core fully occupied, not the entire machine.
+
+For isolated snapshot-read counts and CPU profiles of the identified hotspots:
+
+```sh
+KAIRO_PERF_OUTPUT=performance-results/diagnostic node tests/performance/diagnose.mjs
+```
+
+This temporarily counts reads at the store boundary in a disposable worker, including one explicit scheduling wave. Reported JSON bytes are the payloads returned through that boundary, not physical disk I/O. The extra instrumentation is not active during the baseline. The populated combat tables and generic activity-event stream are independent synthetic inputs; use the existing correctness tests for accounting semantics.
+
+The completed baseline, retained raw evidence and prioritised follow-up work are in [PERFORMANCE-FINDINGS.md](PERFORMANCE-FINDINGS.md). For later comparisons, run this harness only in disposable measurement checkouts, recording both application and harness revisions. Keep the subsequent implementation branch based on clean v0.7.2 without these profiling files.
 
 ## Limits and preservation requirements
 

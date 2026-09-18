@@ -34,8 +34,11 @@ try{
 }finally{
   let md='# Kairo backend performance\n\nSynthetic data; Node CPU is expressed as a percentage of one logical core.\n\n';
   md+=`Commit: ${report.environment.commit} (dirty: ${report.environment.dirty}). Node ${report.environment.node}; ${report.environment.cpu}.\n\n`;
-  md+='| Profile / operation | p50 ms | p95 ms | Response KiB |\n|---|---:|---:|---:|\n';
-  for(const p of report.profiles){for(const op of p.operations)md+=`| ${p.profile} / ${op.name} | ${op.latencyMs.p50.toFixed(2)} | ${op.latencyMs.p95.toFixed(2)} | ${(op.responseBytes/1024).toFixed(1)} |\n`;if(p.idle)md+=`\n${p.profile} idle: ${p.idle.cpuPercentOneCore.toFixed(2)}% of one core over ${(p.idle.elapsedMs/1000).toFixed(1)} s; RSS ${(p.idle.rssAfterBytes/1048576).toFixed(1)} MiB; event loop p95 ${p.idle.eventLoopDelayP95Ms?.toFixed(2)} ms.\n\n`;}
+  for(const p of report.profiles){
+    md+='| Profile / operation | p50 ms | p95 ms | Response KiB |\n|---|---:|---:|---:|\n';
+    for(const op of p.operations)md+=`| ${p.profile} / ${op.name} | ${op.latencyMs.p50.toFixed(2)} | ${op.latencyMs.p95.toFixed(2)} | ${(op.responseBytes/1024).toFixed(1)} |\n`;
+    if(p.idle)md+=`\n${p.profile} idle: ${p.idle.cpuPercentOneCore.toFixed(2)}% of one core over ${(p.idle.elapsedMs/1000).toFixed(1)} s; RSS ${(p.idle.rssAfterBytes/1048576).toFixed(1)} MiB; event loop p95 ${p.idle.eventLoopDelayP95Ms?.toFixed(2)} ms.\n\n`;
+  }
   md+='\nElapsed timings are observations, not portable hardware budgets. RSS is process memory, not a leak diagnosis. Raw samples and workload sizes are in the JSON.\n';
   await writeReport('backend',report,md,out);
 }
