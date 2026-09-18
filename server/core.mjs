@@ -331,7 +331,11 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         return Promise.allSettled(tasks);
     }
     function updateBindings(){stream.setBindings(Object.fromEntries(stream.config().elements.map(e=>[e.id,bindingProjection(store,auth,e)])));}
-    const ticker = setInterval(() => { if (!options.noSync) { syncProtection(); sync(0); for (const c of auth.characters())
+    function refreshPolitics() {
+        if (!store.get('module:universe', true)) return;
+        try { universe.refreshPolitics(); } catch (error) { console.warn('Universe relationship refresh deferred:', error.message); }
+    }
+    const ticker = setInterval(() => { if (!options.noSync) { refreshPolitics(); syncProtection(); sync(0); for (const c of auth.characters())
         if (!c.needsReauth){
             sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
         } } refreshOPSEC(); }, 3000);
@@ -344,7 +348,8 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     } updateBindings(); }, 10000);
     heartbeat.unref();
     refreshOPSEC();updateBindings();
-    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
+    if (!options.noSync) refreshPolitics();
+    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
         }
         else

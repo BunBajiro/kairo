@@ -1,5 +1,17 @@
 # Validation — 18 September 2026
 
+## Universe 0.8.0-rc.2
+
+This candidate adds configured power blocs, an explicitly uncertain inferred fallback, vector political borders, separate space tabs and a more readable Universe/replay interface.
+
+- All 236 Node tests pass, including configured/independent precedence, duplicate evidence, sustained hostility, ambiguous relationship bridges, inference expiry, bounded ingestion, cached reads, settings revisions, verified alliance lookup, session/CSRF enforcement and stream isolation.
+- Twelve map geometry/camera checks cover invariant ownership under filtering, shared boundaries, disconnected holdings, minimum zoom, edge bounds and resize behaviour. The territory partition runs in a worker and is reused while panning and zooming.
+- TypeScript and the production build pass. The existing Sessions Chrome suite passes its nine-card, pagination, report and 390–1600px layout checks.
+- The compiled Universe suite passes 22 acceptance/layout checks: bloc creation, colour selection, explicit move to independence, save/reopen, remaining inferred fallback, both space tabs, bounded zoom, routes/connections, replay event filtering and smooth camera follow. Desktop and 390px settings, atlas and replay screenshots were inspected; key body/control text is 14–15px or larger.
+- A dense synthetic sovereignty fixture verifies grouped borders while preserving four distinct owner-dot colours. Fit and zoom screenshots were inspected. The instrumented redraw recorded vector fills/strokes with zero bitmap influence draws and zero radial gradients. A three-second idle sample recorded zero canvas redraws and about 6 ms of renderer tasks; this is a focused local measurement, not a hardware guarantee.
+
+Inference uses a bounded sample of locally collected pilot/session killmails. These checks establish implementation behaviour with synthetic evidence, not real-world coalition accuracy or complete New Eden coverage. Configured memberships remain authoritative, and the feature does not alter OPSEC, standings or transit access. This remains a draft candidate awaiting the user's review.
+
 ## Universe 0.8.0-rc.1
 
 This candidate adds a complete local SDE atlas, independent Sessions navigation and session-bound map replay. Validation includes every bundled system detail and gate reference, exact EVE distance units, local graph routes, source freshness/standings, pilot isolation, CSRF, dynamic-connection expiry/access, session event boundaries and legacy gaps. Live authenticated structure access and the user's own imported network require in-app review.

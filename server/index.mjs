@@ -66,7 +66,7 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.1', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.2', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
         if (path === '/state' && read) {
             const id = checkedChar(url);
             return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
@@ -260,6 +260,36 @@ export async function startKairo(options = {}) {
             return res.end(compressed?universeAtlasResponse.gzip:universeAtlasResponse.raw);
         }
         if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));
+        if (path === '/universe/politics/config' && read) return json(res, 200, core.universe.politicsConfig());
+        if (path === '/universe/politics/config' && req.method === 'PUT') {
+            const config = core.universe.savePoliticsConfig(await body(req));
+            core.publish({ type: 'universe.politics_configured', module: 'universe', summary: 'Updated Universe power blocs', payload: { revision: config.revision } });
+            return json(res, 200, config);
+        }
+        if (path === '/universe/politics' && read) return json(res, 200, core.universe.politicsState());
+        if (path === '/universe/politics' && req.method === 'POST') {
+            const result = core.universe.refreshPolitics({ force: true });
+            return json(res, 200, result);
+        }
+        if (path === '/universe/politics/alliances' && read) return json(res, 200, { items: core.universe.politicsAlliances(String(url.searchParams.get('q') || '').slice(0, 150)) });
+        if (path === '/universe/politics/alliances/resolve' && req.method === 'POST') {
+            const input = await body(req), query = typeof input.query === 'string' ? input.query.trim() : '';
+            if (!query || query.length > 150) throw new Error('Enter an exact alliance name or alliance ID.');
+            const known = core.universe.politicsAlliances(query).find(alliance => String(alliance.alliance_id) === query || alliance.name.toLowerCase() === query.toLowerCase());
+            if (known) return json(res, 200, known);
+            let allianceId;
+            if (/^\d+$/.test(query)) allianceId = Number(query);
+            else {
+                const result = await esi.request('/universe/ids', { method: 'POST', body: [query], ttl: 86400 });
+                if (result.stale) throw new Error('Alliance lookup is temporarily unavailable. Try again once ESI is reachable.');
+                allianceId = result.data.alliances?.find(item => item.name?.toLowerCase() === query.toLowerCase())?.id;
+            }
+            if (!Number.isSafeInteger(allianceId) || allianceId <= 0 || allianceId >= 2147483647) throw new Error('No alliance matched. Use its full in-game name or alliance ID.');
+            const result = await esi.request('/alliances/' + allianceId, { ttl: 86400 });
+            if (result.stale || typeof result.data?.name !== 'string' || !result.data.name.trim()) throw new Error('The alliance could not be verified. Try again once ESI is reachable.');
+            core.rememberNames({ [allianceId]: result.data.name });
+            return json(res, 200, { alliance_id: allianceId, name: result.data.name, ticker: result.data.ticker || null });
+        }
         if (/^\/universe\/systems\/\d+$/.test(path) && read) return json(res, 200, await universeDetail(checkedChar(url), Number(path.split('/')[3])));
         if (path === '/universe/search' && req.method === 'POST') {
             const { name } = await body(req);

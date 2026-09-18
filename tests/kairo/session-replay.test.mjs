@@ -136,6 +136,52 @@ test('replay includes more than one report page and clearly bounds huge event hi
     assert.equal(new Set(result.events.map(e => e.id)).size, result.events.length);
 });
 
+test('replay suppresses routine location and protection events while preserving movement and source reports', async t => {
+    const store = await storage(t); session(store);
+    visit(store, 30000144, 10); visit(store, 30000142, 20);
+    const routineTypes = ['system.entered', 'location.changed', 'opsec.changed', 'opsec.policy.changed', 'opsec.state.changed'];
+    const routineIds = routineTypes.map((type, index) => emit(store, type, 10 + index, { system_id: 1 }));
+    const moduleEvent = emit(store, 'policy.changed', 16, { system_id: 1 });
+    store.db.prepare('UPDATE events SET module=? WHERE id=?').run('opsec', moduleEvent);
+    routineIds.push(moduleEvent);
+    const activityIds = [emit(store, 'killmail.kill', 15, { system_id: 30000144 }), emit(store, 'ship.changed', 25)];
+    const reportBefore = sessionReport(store, 'replay', 42);
+    const result = sessionReplay(store, 'replay', 42);
+    assert.deepEqual(result.events.map(e => e.id), activityIds);
+    assert.deepEqual(result.visits.map(v => v.systemId), [30000142, 30000144, 30000142]);
+    assert.deepEqual(result.travel.map(e => [e.from_system_id, e.to_system_id]), [[30000142, 30000144], [30000144, 30000142]]);
+    assert.equal(result.coverage.totalEvents, 2);
+    assert.equal(result.coverage.suppressedRoutineEvents, routineIds.length);
+    assert.equal(result.coverage.omittedEvents, 0);
+    assert.equal(result.coverage.truncated, false);
+    assert.deepEqual(result.coverage.missingCoordinateSystemIds, [], 'Suppressed activity does not add spurious missing locations');
+    assert.deepEqual(sessionReport(store, 'replay', 42).events, reportBefore.events);
+    assert.ok(routineIds.every(id => reportBefore.events.some(event => event.id === id)), 'The full session report retains the source events');
+});
+
+test('routine events cannot crowd meaningful activity out of the cap or inflate incomplete coverage', async t => {
+    const store = await storage(t); session(store, { start: { capturedAt: at(0) } });
+    for (let index = 0; index < 30; index++) emit(store, index % 2 ? 'opsec.changed' : 'location.changed', index / 10);
+    const meaningful = [emit(store, 'killmail.kill', 5, { system_id: 30000142 }), emit(store, 'goal.completed', 6, { system_id: 30000144 })];
+    visit(store, 30000142, 10); visit(store, 30000144, 50);
+    let result = sessionReplay(store, 'replay', 42, { eventLimit: 2 });
+    assert.deepEqual(result.events.map(e => e.id), meaningful);
+    assert.equal(result.coverage.suppressedRoutineEvents, 30);
+    assert.equal(result.coverage.totalEvents, 2);
+    assert.equal(result.coverage.returnedEvents, 2);
+    assert.equal(result.coverage.omittedEvents, 0);
+    assert.equal(result.coverage.truncated, false);
+    assert.equal(result.coverage.unlocatedEvents, 0, 'Hidden routine events have no effect on event location coverage');
+    emit(store, 'skill.completed', 7);
+    result = sessionReplay(store, 'replay', 42, { eventLimit: 2 });
+    assert.deepEqual(result.events.map(e => e.id), meaningful);
+    assert.equal(result.coverage.totalEvents, 3);
+    assert.equal(result.coverage.omittedEvents, 1);
+    assert.equal(result.coverage.truncated, true);
+    assert.equal(result.visits.at(-1).systemId, 30000144);
+    assert.equal(result.travel.length, 1, 'All visits and transitions remain available after the event limit');
+});
+
 test('live replay snapshots its end once, performs no writes and enforces pilot ownership', async t => {
     const store = await storage(t); session(store, { ended: null });
     visit(store, 30000144, 10); emit(store, 'goal.completed', 15); emit(store, 'goal.completed', 25);

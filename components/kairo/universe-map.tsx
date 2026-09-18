@@ -5,6 +5,8 @@ import {Crosshair, LocateFixed, Maximize2, Minus, Plus, Type} from 'lucide-react
 import {Button} from '@/components/ui/button';
 import type {UniverseAtlas, UniverseBackground, UniverseIndicator, UniverseIntel, UniverseOverlay, UniverseStandingFilter, UniverseSystem} from './universe-types';
 import type {ReplayMapFrame} from './session-replay';
+import {projectKnownSystems, pointBounds, fitCamera, clampCamera, zoomCamera, resizeCamera, geometryRevision, paintRevision, createTerritoryGeometry, territoryComponents, territoryOwnerAt} from './universe-map-math.mjs';
+import type {Geometry, TerritoryStyle} from './universe-map-math.mjs';
 
 type Point = {system: UniverseSystem; x: number; y: number};
 type View = {x: number; y: number; scale: number};
@@ -17,7 +19,6 @@ type MapProps = {
   space?: 'known' | 'wormhole'; standingFilter?: UniverseStandingFilter;
   replay?: ReplayMapFrame | null; onReplayManualPan?: () => void;
 };
-type RGB = [number, number, number];
 const PALETTE = {
   excellent: '#78acf8', good: '#76d4e9', neutral: '#9ba4b0', bad: '#edb071', terrible: '#eb7984', unknown: '#606d7d',
 };
@@ -25,14 +26,8 @@ const INDICATOR_LABELS: Record<UniverseIndicator, string> = {
   none: 'No indicators', ship_kills: 'Ship kills', pod_kills: 'Pod kills', npc_kills: 'NPC kills', jumps: 'Gate jumps',
   mining: 'Your mining ledger', industry: 'Manufacturing cost index', fw: 'Faction warfare', incursions: 'Incursions', visits: 'Your visits',
 };
-const LAYERS: Record<UniverseBackground, string> = {sovereignty: 'Sovereignty', standings: 'Pilot standings', security: 'Security status', activity: 'Ship & pod kills', none: 'Unshaded'};
+const LAYERS: Record<UniverseBackground, string> = {power_blocs: 'Power blocs', sovereignty: 'Sovereignty', standings: 'Pilot standings', security: 'Security status', activity: 'Ship & pod kills', none: 'Unshaded'};
 const EMPTY: number[] = [];
-const RGB_CACHE = new Map<string, RGB>();
-function rgb(hex: string): RGB {
-  let result = RGB_CACHE.get(hex);
-  if (!result) {result = [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]; RGB_CACHE.set(hex, result);}
-  return result;
-}
 function ownerColour(id: number): string {
   // Stable colours across sessions and filters. Coordinates always come from the SDE.
   const hue = ((id * 137.508) % 360) / 60, chroma = 0.43, minimum = 0.32;
@@ -73,7 +68,9 @@ function reportedIndicator(overlay: UniverseOverlay | undefined, indicator: Univ
   if (indicator === 'incursions') return overlay?.incursions?.length || (intel?.sources.incursions?.status === 'ready' ? 0 : null);
   return null;
 }
-function layerStyle(point: Point, overlay: UniverseOverlay | undefined, layer: UniverseBackground): {colour: string; key: string; strength: number} {
+function layerStyle(point: Point, overlay: UniverseOverlay | undefined, layer: UniverseBackground): TerritoryStyle {
+  const bloc = overlay?.power_bloc;
+  if (layer === 'power_blocs' && bloc?.group_id) return {colour: bloc.color, key: `bloc:${bloc.group_id}`, strength: 1, name: bloc.name, source: bloc.source};
   if (layer === 'standings') {const label = standingLabel(overlay); return {colour: PALETTE[label], key: label, strength: label === 'unknown' ? .25 : 1};}
   if (layer === 'security' && point.system.security_known === false) return {colour: '#718397', key: 'unknown', strength: .25};
   if (layer === 'security') return {colour: securityColour(point.system.security), key: point.system.security >= .45 ? 'high' : point.system.security > 0 ? 'low' : 'null', strength: .8};
@@ -83,7 +80,7 @@ function layerStyle(point: Point, overlay: UniverseOverlay | undefined, layer: U
   }
   const sov = overlay?.sovereignty;
   const id = sov?.alliance_id || sov?.faction_id || sov?.corporation_id;
-  return {colour: id ? ownerColour(id) : '#77879a', key: id ? `${sov?.alliance_id ? 'a' : sov?.faction_id ? 'f' : 'c'}${id}` : 'unknown', strength: id ? 1 : .16};
+  return {colour: id ? ownerColour(id) : '#77879a', key: id ? `${sov?.alliance_id ? 'a' : sov?.faction_id ? 'f' : 'c'}${id}` : 'unknown', strength: id ? 1 : 0, name: sov?.alliance_name || sov?.faction_name || sov?.corporation_name, source: layer === 'power_blocs' ? bloc?.source || 'unassigned' : 'sovereignty'};
 }
 
 function activeLink(link: NonNullable<UniverseIntel['links']>[number]) {
@@ -135,41 +132,23 @@ function discoveryPoints(atlas: UniverseAtlas, intel: UniverseIntel | null, sele
   return result;
 }
 
-/** Cached low-resolution influence field. Rebuilt for data/layer changes, never for camera movement. */
-function createTerritories(points: Point[], overlays: Map<number, UniverseOverlay>, layer: UniverseBackground) {
-  if (!points.length || layer === 'none') return null;
-  const padding = 40, minX = Math.min(...points.map(p => p.x)) - padding, minY = Math.min(...points.map(p => p.y)) - padding;
-  const width = Math.max(...points.map(p => p.x)) - minX + padding, height = Math.max(...points.map(p => p.y)) - minY + padding;
-  const ratio = 780 / Math.max(width, height), canvas = document.createElement('canvas');
-  canvas.width = Math.max(1, Math.ceil(width * ratio)); canvas.height = Math.max(1, Math.ceil(height * ratio));
-  const context = canvas.getContext('2d'); if (!context) return null;
-  const pixels = context.createImageData(canvas.width, canvas.height), owners = new Int32Array(canvas.width * canvas.height).fill(-1);
-  const styles = points.map(point => {const style = layerStyle(point, overlays.get(point.system.system_id), layer); return {...style, rgb: rgb(style.colour)};});
-  const radius = 32 * ratio, radiusSquared = radius * radius, distances = new Float32Array(owners.length).fill(radiusSquared);
-  // Splat each system into its small pixel neighbourhood. This avoids millions
-  // of hash lookups or a systems × whole-image nearest-neighbour scan.
-  points.forEach((point, index) => {
-    const cx = (point.x - minX) * ratio, cy = (point.y - minY) * ratio;
-    const left = Math.max(0, Math.floor(cx - radius)), right = Math.min(canvas.width - 1, Math.ceil(cx + radius));
-    const top = Math.max(0, Math.floor(cy - radius)), bottom = Math.min(canvas.height - 1, Math.ceil(cy + radius));
-    for (let y = top; y <= bottom; y++) {
-      const vertical = (y - cy) ** 2, row = y * canvas.width;
-      for (let x = left; x <= right; x++) {const squared = (x - cx) ** 2 + vertical, pixel = row + x; if (squared < distances[pixel]) {distances[pixel] = squared; owners[pixel] = index;}}
-    }
-  });
-  for (let index = 0; index < owners.length; index++) {
-    const nearest = owners[index]; if (nearest < 0) continue;
-    const offset = index * 4, style = styles[nearest];
-    pixels.data[offset] = style.rgb[0]; pixels.data[offset + 1] = style.rgb[1]; pixels.data[offset + 2] = style.rgb[2];
-    pixels.data[offset + 3] = Math.round(66 * style.strength * (1 - distances[index] / radiusSquared) ** 2);
+/** World-space vector paths: flat fills and true bisector edges stay crisp at any zoom. */
+function createTerritories(geometry: Geometry, styles: TerritoryStyle[]) {
+  const groups = new Map<string, {style: TerritoryStyle; fill: Path2D; border: Path2D}>();
+  for (const cell of geometry.cells) {
+    const style = styles[cell.index]; if (!cell.polygon.length || !style.strength) continue;
+    const key = `${style.key}:${style.dim ? 1 : 0}:${style.strength}`;
+    let group = groups.get(key);
+    if (!group) {group = {style, fill: new Path2D(), border: new Path2D()}; groups.set(key, group);}
+    cell.polygon.forEach((vertex, i) => {
+      if (i === 0) group!.fill.moveTo(vertex.x, vertex.y); else group!.fill.lineTo(vertex.x, vertex.y);
+      const previous = cell.polygon[(i + cell.polygon.length - 1) % cell.polygon.length], neighbour = vertex.from >= 0 ? styles[vertex.from] : null;
+      // Hidden neighbours retain their own cells. They cannot donate land to visible allies.
+      if (!neighbour || neighbour.key !== style.key) {group!.border.moveTo(previous.x, previous.y); group!.border.lineTo(vertex.x, vertex.y);}
+    });
+    group.fill.closePath();
   }
-  if (layer !== 'activity') for (let y = 1; y < canvas.height; y++) for (let x = 1; x < canvas.width; x++) {
-    const index = y * canvas.width + x, point = owners[index]; if (point < 0 || styles[point].key === 'unknown') continue;
-    const above = owners[index - canvas.width], left = owners[index - 1];
-    if ((above >= 0 && styles[above].key !== styles[point].key) || (left >= 0 && styles[left].key !== styles[point].key)) pixels.data[index * 4 + 3] = Math.min(130, pixels.data[index * 4 + 3] * 2);
-  }
-  context.putImageData(pixels, 0, 0);
-  return {canvas, x: minX, y: minY, width, height};
+  return {geometry, styles, groups: [...groups.values()], labels: territoryComponents(geometry, styles)};
 }
 
 export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, showConnections = true, showSpecialLinks = true, visitedSystemIds = EMPTY, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan}: MapProps) {
@@ -177,21 +156,22 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const view = useRef<View>({x: 0, y: 0, scale: 1}), dimensions = useRef({width: 900, height: 570, dpr: 1});
   const pendingFrame = useRef<number | null>(null), paintRef = useRef<() => void>(() => {});
   const cameraFrame = useRef<number | null>(null);
-  const territory = useRef<ReturnType<typeof createTerritories>>(null);
+  const territory = useRef<ReturnType<typeof createTerritories> | null>(null);
+  const geometryCache = useRef<{key: string; geometry: Geometry} | null>(null);
+  const lastTerritoryKey = useRef('');
   const pointer = useRef<{id: number; x: number; y: number; originX: number; originY: number; moved: boolean} | null>(null);
   const hoveredRef = useRef<number | null>(null), [hovered, setHovered] = useState<number | null>(null);
   const [labels, setLabels] = useState(true), [zoom, setZoom] = useState(1), [dragging, setDragging] = useState(false);
   const baseScale = useRef(1), overlays = useMemo(() => new Map((intel?.systems || []).map(value => [value.system_id, value])), [intel?.systems]);
-  const allPoints = useMemo(() => {
-    if (space === 'wormhole') return discoveryPoints(atlas, intel, selectedSystemId, replay);
-    const systems = atlas.systems.filter(system => system.space === space && Number.isFinite(system.map_x) && Number.isFinite(system.map_y));
-    if (!systems.length) return [];
-    const minX = Math.min(...systems.map(s => s.map_x)), maxX = Math.max(...systems.map(s => s.map_x)), minY = Math.min(...systems.map(s => s.map_y)), maxY = Math.max(...systems.map(s => s.map_y));
-    const scale = 1000 / Math.max(1, maxX - minX, maxY - minY);
-    return systems.map(system => ({system, x: (system.map_x - minX) * scale, y: (system.map_y - minY) * scale}));
-  }, [atlas.systems, space, intel?.pins, intel?.links, intel?.journey?.systems, intel?.location?.system_id, space === 'wormhole' ? selectedSystemId : null, replay?.discoveredSystemIds, replay?.allTravel]);
-  const geometryKey = useMemo(() => allPoints.map(point => `${point.system.system_id}:${point.x}:${point.y}`).join('|'), [allPoints]);
-  const points = useMemo(() => allPoints.filter(point => passesStanding(overlays.get(point.system.system_id), standingFilter)), [allPoints, overlays, standingFilter]);
+  const knownPoints = useMemo(() => projectKnownSystems(atlas.systems), [atlas.systems]);
+  const allPoints = useMemo(() => space === 'known' ? knownPoints : discoveryPoints(atlas, intel, selectedSystemId, replay), [knownPoints, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null]);
+  const geometryPoints = useMemo(() => allPoints.map(point => ({id: point.system.system_id, x: point.x, y: point.y})), [allPoints]);
+  const geometryKey = useMemo(() => geometryRevision(geometryPoints), [geometryPoints]);
+  const points = allPoints;
+  const bounds = useMemo(() => {const matching = focusedRegionId ? allPoints.filter(point => point.system.region_id === focusedRegionId) : allPoints; return pointBounds(matching.length ? matching : allPoints);}, [allPoints, focusedRegionId]);
+  const boundsRef = useRef(bounds); boundsRef.current = bounds;
+  const territoryStyles = useMemo(() => allPoints.map(point => ({...layerStyle(point, overlays.get(point.system.system_id), background), dim: !passesStanding(overlays.get(point.system.system_id), standingFilter) || Boolean(focusedRegionId && focusedRegionId !== point.system.region_id)})), [allPoints, overlays, background, standingFilter, focusedRegionId]);
+  const territoryKey = useMemo(() => `${geometryKey}#${background}#${paintRevision(territoryStyles)}`, [geometryKey, background, territoryStyles]);
   const byId = useMemo(() => new Map(points.map(point => [point.system.system_id, point])), [points]);
   const regionPoints = useMemo(() => {
     const groups = new Map<number, {name: string; x: number; y: number; count: number}>();
@@ -211,44 +191,63 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const manualMovement = useCallback(() => {cancelCameraMotion(); if (replay) onReplayManualPan?.();}, [cancelCameraMotion, Boolean(replay), onReplayManualPan]);
   const updateZoom = useCallback(() => setZoom(view.current.scale / baseScale.current), []);
   const fit = useCallback(() => {
-    const matching = focusedRegionId ? points.filter(point => point.system.region_id === focusedRegionId) : points;
-    const fitted = matching.length ? matching : allPoints; if (!fitted.length) {redraw(); return;}
-    const minX = Math.min(...fitted.map(p => p.x)), maxX = Math.max(...fitted.map(p => p.x)), minY = Math.min(...fitted.map(p => p.y)), maxY = Math.max(...fitted.map(p => p.y));
-    const {width, height} = dimensions.current, scale = Math.min(Math.max(80, width - 110) / Math.max(20, maxX - minX), Math.max(80, height - 120) / Math.max(20, maxY - minY));
-    view.current = {x: width / 2 - (minX + maxX) / 2 * scale, y: height / 2 - (minY + maxY) / 2 * scale, scale};
-    baseScale.current = scale; updateZoom(); redraw();
-  }, [allPoints, points, focusedRegionId, redraw, updateZoom]);
+    view.current = fitCamera(boundsRef.current, dimensions.current);
+    baseScale.current = view.current.scale; updateZoom(); redraw();
+  }, [redraw, updateZoom]);
   const fitRef = useRef(fit); fitRef.current = fit;
+  const constrainView = useCallback(() => {view.current = clampCamera(view.current, boundsRef.current, dimensions.current);}, []);
   const zoomAt = useCallback((factor: number, x = dimensions.current.width / 2, y = dimensions.current.height / 2) => {
     manualMovement();
-    const current = view.current, next = Math.max(baseScale.current * .35, Math.min(baseScale.current * 75, current.scale * factor));
-    const ratio = next / current.scale;
-    view.current = {x: x - (x - current.x) * ratio, y: y - (y - current.y) * ratio, scale: next}; updateZoom(); redraw();
+    view.current = zoomCamera(view.current, factor, {x, y}, boundsRef.current, dimensions.current);
+    updateZoom(); redraw();
   }, [redraw, updateZoom, manualMovement]);
   const focusSystem = useCallback((id: number | null | undefined, magnify = true) => {
     const point = id ? byId.get(id) : undefined; if (!point) return;
     const {width, height} = dimensions.current, scale = magnify ? Math.max(view.current.scale, Math.min(7, baseScale.current * 8)) : view.current.scale;
-    view.current = {x: width / 2 - point.x * scale, y: height / 2 - point.y * scale, scale}; updateZoom(); redraw();
+    view.current = clampCamera({x: width / 2 - point.x * scale, y: height / 2 - point.y * scale, scale}, boundsRef.current, dimensions.current); updateZoom(); redraw();
   }, [byId, redraw, updateZoom]);
 
   useEffect(() => {
     const element = wrapper.current; if (!element) return;
+    let initial = true;
     const resize = () => {
       const rect = element.getBoundingClientRect(), prior = dimensions.current;
       dimensions.current = {width: Math.max(1, rect.width), height: Math.max(1, rect.height), dpr: Math.min(2, window.devicePixelRatio || 1)};
       if (canvas.current) {canvas.current.width = Math.round(dimensions.current.width * dimensions.current.dpr); canvas.current.height = Math.round(dimensions.current.height * dimensions.current.dpr);}
-      if (prior.width === 900 && prior.height === 570) fitRef.current();
-      else {view.current.x += (dimensions.current.width - prior.width) / 2; view.current.y += (dimensions.current.height - prior.height) / 2; redraw();}
+      if (initial) {initial = false; fitRef.current();}
+      else {cancelCameraMotion(); view.current = resizeCamera(view.current, prior, dimensions.current, boundsRef.current); baseScale.current = fitCamera(boundsRef.current, dimensions.current).scale; updateZoom(); redraw();}
     };
     const observer = new ResizeObserver(resize); observer.observe(element); resize();
     return () => observer.disconnect();
-  }, [redraw]);
-  useEffect(() => {fitRef.current();}, [geometryKey, focusedRegionId, standingFilter]);
+  }, [redraw, cancelCameraMotion, updateZoom]);
+  useEffect(() => {cancelCameraMotion(); fitRef.current();}, [geometryKey, focusedRegionId, cancelCameraMotion]);
   useEffect(() => {
-    territory.current = null; redraw();
-    const timer = window.setTimeout(() => {territory.current = space === 'known' ? createTerritories(points, overlays, background) : null; redraw();}, 0);
-    return () => window.clearTimeout(timer);
-  }, [points, overlays, background, space, redraw]);
+    if (space !== 'known' || background === 'none' || replay) {territory.current = null; lastTerritoryKey.current = ''; redraw(); return;}
+    if (lastTerritoryKey.current === territoryKey) return;
+    // Keep the last complete generation visible while preparing the replacement.
+    // Ownership cells survive layer/filter/standing changes and unrelated ESI refreshes.
+    let cancelled = false, worker: Worker | null = null;
+    const publish = (geometry: Geometry) => {
+      if (cancelled) return;
+      geometryCache.current = {key: geometryKey, geometry};
+      territory.current = createTerritories(geometry, territoryStyles);
+      lastTerritoryKey.current = territoryKey; redraw();
+    };
+    const timer = window.setTimeout(() => {
+      if (geometryCache.current?.key === geometryKey) {publish(geometryCache.current.geometry); return;}
+      if (typeof Worker === 'undefined') {publish(createTerritoryGeometry(geometryPoints)); return;}
+      try {worker = new Worker(new URL('./universe-map-worker.mjs', import.meta.url), {type: 'module'});}
+      catch {publish(createTerritoryGeometry(geometryPoints)); return;}
+      worker.onmessage = ({data}: MessageEvent<{geometry?: Geometry; error?: string}>) => {
+        if (data.geometry) publish(data.geometry);
+        else publish(createTerritoryGeometry(geometryPoints));
+        worker?.terminate();
+      };
+      worker.onerror = () => {worker?.terminate(); if (!cancelled) publish(createTerritoryGeometry(geometryPoints));};
+      worker.postMessage({points: geometryPoints});
+    }, 0);
+    return () => {cancelled = true; window.clearTimeout(timer); worker?.terminate();};
+  }, [territoryKey, geometryKey, space, background, Boolean(replay), redraw]);
   useEffect(() => {
     if (!selectedSystemId || replay) return;
     const point = byId.get(selectedSystemId); if (!point) return;
@@ -262,7 +261,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     const point = byId.get(replay.systemId); if (!point) return;
     const {width, height} = dimensions.current, current = {...view.current};
     const scale = Math.max(current.scale, Math.min(3.5, baseScale.current * 7));
-    const target = {x: width / 2 - point.x * scale, y: height / 2 - point.y * scale, scale};
+    const target = clampCamera({x: width / 2 - point.x * scale, y: height / 2 - point.y * scale, scale}, boundsRef.current, dimensions.current);
     if (!replay.smooth || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {view.current = target; updateZoom(); redraw(); return;}
     const started = performance.now(), duration = 700;
     const advance = (now: number) => {
@@ -288,18 +287,27 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     const {width, height, dpr} = dimensions.current, camera = view.current;
     const screen = (point: Point) => ({x: point.x * camera.scale + camera.x, y: point.y * camera.scale + camera.y});
     context.setTransform(dpr, 0, 0, dpr, 0, 0); context.clearRect(0, 0, width, height);
-    context.fillStyle = '#0b1119'; context.fillRect(0, 0, width, height);
+    context.fillStyle = space === 'wormhole' ? '#11101d' : '#0b1119'; context.fillRect(0, 0, width, height);
     const grid = 54; context.strokeStyle = '#18222e'; context.lineWidth = .5; context.beginPath();
     for (let x = ((camera.x % grid) + grid) % grid; x < width; x += grid) {context.moveTo(x, 0); context.lineTo(x, height);}
     for (let y = ((camera.y % grid) + grid) % grid; y < height; y += grid) {context.moveTo(0, y); context.lineTo(width, y);} context.stroke();
-    const field = territory.current;
-    if (field) {context.imageSmoothingEnabled = true; context.drawImage(field.canvas, field.x * camera.scale + camera.x, field.y * camera.scale + camera.y, field.width * camera.scale, field.height * camera.scale);}
+    const field = !replay && space === 'known' && background !== 'none' ? territory.current : null;
+    if (field) {
+      context.save(); context.translate(camera.x, camera.y); context.scale(camera.scale, camera.scale);
+      for (const {style, fill, border} of field.groups) {
+        context.fillStyle = style.colour; context.globalAlpha = (style.dim ? .025 : .14) * style.strength; context.fill(fill);
+        context.strokeStyle = style.colour; context.globalAlpha = style.dim ? .07 : .57;
+        context.lineWidth = .85 / camera.scale; context.lineJoin = 'round';
+        context.setLineDash(style.source === 'inferred' ? [5 / camera.scale, 4 / camera.scale] : []); context.stroke(border);
+      }
+      context.restore();
+    }
     const visible = points.filter(point => {const p = screen(point); return p.x > -35 && p.x < width + 35 && p.y > -35 && p.y < height + 35;});
     if (showConnections && space === 'known') {
       context.strokeStyle = camera.scale > 2 ? '#8391a539' : '#8391a521'; context.lineWidth = .65; context.beginPath();
       for (const gate of atlas.gates) {const from = byId.get(gate.from_system_id), to = byId.get(gate.to_system_id); if (!from || !to) continue; const a = screen(from), b = screen(to); if ((a.x < 0 && b.x < 0) || (a.y < 0 && b.y < 0) || (a.x > width && b.x > width) || (a.y > height && b.y > height)) continue; context.moveTo(a.x, a.y); context.lineTo(b.x, b.y);} context.stroke();
     }
-    if (showSpecialLinks) for (const link of intel?.links || []) {
+    if (showSpecialLinks && !replay) for (const link of intel?.links || []) {
       if (!activeLink(link) || (space === 'wormhole' && link.kind !== 'wormhole')) continue;
       const from = byId.get(link.from_system_id), to = byId.get(link.to_system_id); if (!from || !to) continue;
       const a = screen(from), b = screen(to); context.strokeStyle = link.kind === 'wormhole' ? '#c1a0ebad' : '#80dddead'; context.setLineDash(link.kind === 'wormhole' ? [3, 5] : [7, 4]); context.lineWidth = 1.35; context.beginPath(); context.moveTo(a.x, a.y); context.lineTo(b.x, b.y); context.stroke();
@@ -331,10 +339,10 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     context.textAlign = 'left';
     for (const point of visible) {
       const id = point.system.system_id, p = screen(point), overlay = overlays.get(id), active = id === selectedSystemId, hover = id === hoveredRef.current, current = id === (replay ? replay.systemId : intel?.location?.system_id);
-      const highlighted = active || hover || current || route.has(id), dim = Boolean(focusedRegionId && point.system.region_id !== focusedRegionId && !highlighted);
-      context.globalAlpha = dim ? .28 : 1;
-      const colour = point.system.security_known === false ? '#718397' : background === 'none' || background === 'activity' ? securityColour(point.system.security) : layerStyle(point, overlay, background).colour;
-      const radius = highlighted ? 3.4 : Math.max(1.05, Math.min(2.4, camera.scale * .45));
+      const highlighted = active || hover || current || route.has(id), dim = !highlighted && (!passesStanding(overlay, standingFilter) || Boolean(focusedRegionId && point.system.region_id !== focusedRegionId));
+      context.globalAlpha = dim ? .16 : 1;
+      const colour = point.system.security_known === false ? '#718397' : background === 'none' || background === 'activity' ? securityColour(point.system.security) : layerStyle(point, overlay, background === 'power_blocs' ? 'sovereignty' : background).colour;
+      const radius = highlighted ? 3.8 : Math.max(1.25, Math.min(2.6, camera.scale * .45));
       context.fillStyle = highlighted ? '#d2fae9' : colour; context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill();
       if (active || current || hover || visits.has(id) || pins.has(id)) {
         context.strokeStyle = current ? '#f2cb8b' : pins.has(id) ? '#bea3e8' : active || hover ? '#abf1d7' : '#89ceb78c'; context.lineWidth = active || current ? 1.6 : .8; context.beginPath(); context.arc(p.x, p.y, active || current ? 8 : 5.5, 0, Math.PI * 2); context.stroke();
@@ -346,22 +354,40 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     }
     context.globalAlpha = 1;
     for (const label of systemLabels.sort((a, b) => b.priority - a.priority)) {
-      context.font = `${label.priority ? '600 ' : ''}11px "Cascadia Code", Consolas, monospace`;
+      context.font = `${label.priority ? '600 ' : ''}13px "Cascadia Code", Consolas, monospace`;
       const textWidth = context.measureText(label.name).width;
       const placements = [{x: label.x + 10, y: label.y - 8}, {x: label.x + 10, y: label.y + 20}, {x: label.x - textWidth - 10, y: label.y - 8}, {x: label.x - textWidth - 10, y: label.y + 20}];
-      const placement = placements.find(position => claimLabel(position.x, position.y, textWidth, 11)); if (!placement) continue;
+      const placement = placements.find(position => claimLabel(position.x, position.y, textWidth, 13)); if (!placement) continue;
       context.globalAlpha = label.dim ? .4 : 1; context.strokeStyle = '#0b1119'; context.lineWidth = 4; context.strokeText(label.name, placement.x, placement.y); context.fillStyle = label.priority ? '#def8ed' : '#bac9d8'; context.fillText(label.name, placement.x, placement.y);
     }
     context.globalAlpha = 1;
-    if (labels && space === 'known') {
-      context.font = '10px "Cascadia Code", Consolas, monospace';
+    if (labels && field && (background === 'sovereignty' || background === 'power_blocs')) {
+      context.font = '600 14px "Cascadia Code", Consolas, monospace';
+      for (const label of field.labels) {
+        if (label.count < 3) continue;
+        const text = label.name || '', textWidth = context.measureText(text).width;
+        for (const candidate of label.candidates) {
+          const x = candidate.x * camera.scale + camera.x - textWidth / 2, y = candidate.y * camera.scale + camera.y - 8;
+          // Check the label footprint, not just a centroid: pockets and enclaves keep their own names.
+          const fits = [-1, 0, 1].every(dx => [-1, 1].every(dy => {
+            const owner = territoryOwnerAt(field.geometry, candidate.x + dx * (textWidth / 2 + 3) / camera.scale, candidate.y + (-15 + dy * 8) / camera.scale);
+            return owner >= 0 && field.styles[owner].key === label.key && !field.styles[owner].dim;
+          }));
+          if (!fits || !claimLabel(x, y, textWidth, 14)) continue;
+          context.strokeStyle = '#0b1119'; context.lineWidth = 4; context.strokeText(text, x, y);
+          context.fillStyle = label.colour; context.fillText(text, x, y); break;
+        }
+      }
+    }
+    if (labels && space === 'known' && (background !== 'power_blocs' && background !== 'sovereignty' || camera.scale > 1.7)) {
+      context.font = '12px "Cascadia Code", Consolas, monospace';
       const limit = width < 500 && camera.scale < 1.2 ? 9 : width < 800 && camera.scale < .9 ? 16 : 45;
       let drawn = 0;
       for (const region of [...regionPoints].sort((a, b) => Number(b.id === focusedRegionId) - Number(a.id === focusedRegionId) || b.count - a.count)) {
         if (drawn >= limit) break;
         const text = region.name.toUpperCase(), textWidth = context.measureText(text).width;
         const x = region.x * camera.scale + camera.x - textWidth / 2, y = region.y * camera.scale + camera.y - 12;
-        if ((camera.scale > 3 && region.id !== focusedRegionId) || !claimLabel(x, y, textWidth, 10)) continue;
+        if ((camera.scale > 3 && region.id !== focusedRegionId) || !claimLabel(x, y, textWidth, 12)) continue;
         drawn++; context.fillStyle = region.id === focusedRegionId ? '#d6e5e9' : '#a2b1c497'; context.strokeStyle = '#0b1119'; context.lineWidth = 3;
         context.strokeText(text, x, y); context.fillText(text, x, y);
       }
@@ -374,17 +400,17 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         const p = screen(point); if (p.x < 0 || p.x > width || p.y < 0 || p.y > height) continue;
         const text = event.summary.length > 42 ? event.summary.slice(0, 40) + '…' : event.summary;
         const caption = event.locationBasis === 'observed_visit' ? 'PILOT CONTEXT · LOCATION UNCONFIRMED' : event.locationBasis.includes('inferred') ? 'INFERRED PILOT CONTEXT' : 'RECORDED EVENT';
-        context.font = '11px "Cascadia Code", Consolas, monospace'; const textWidth = context.measureText(text).width;
-        context.font = '9px "Cascadia Code", Consolas, monospace'; const captionWidth = context.measureText(caption).width;
+        context.font = '13px "Cascadia Code", Consolas, monospace'; const textWidth = context.measureText(text).width;
+        context.font = '11px "Cascadia Code", Consolas, monospace'; const captionWidth = context.measureText(caption).width;
         const boxWidth = Math.min(width - 24, Math.max(180, textWidth + 24, captionWidth + 24)), x = Math.min(width - boxWidth - 10, Math.max(10, p.x + 20)), y = Math.max(44, p.y - 66);
-        context.fillStyle = '#241d32f2'; context.strokeStyle = '#af88c58c'; context.lineWidth = .8; context.fillRect(x, y, boxWidth, 43); context.strokeRect(x, y, boxWidth, 43);
-        context.font = '11px "Cascadia Code", Consolas, monospace'; context.fillStyle = '#e5c6eb'; context.fillText(text, x + 11, y + 17, boxWidth - 22);
-        context.font = '9px "Cascadia Code", Consolas, monospace'; context.fillStyle = '#b09bbd';
-        context.fillText(caption, x + 11, y + 32, boxWidth - 22);
+        context.fillStyle = '#241d32f2'; context.strokeStyle = '#af88c58c'; context.lineWidth = .8; context.fillRect(x, y, boxWidth, 51); context.strokeRect(x, y, boxWidth, 51);
+        context.font = '13px "Cascadia Code", Consolas, monospace'; context.fillStyle = '#e5c6eb'; context.fillText(text, x + 11, y + 20, boxWidth - 22);
+        context.font = '11px "Cascadia Code", Consolas, monospace'; context.fillStyle = '#b09bbd';
+        context.fillText(caption, x + 11, y + 40, boxWidth - 22);
       }
     }
   };
-  useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, route, showConnections, showSpecialLinks, focusedRegionId, space, visits, pins, replay, redraw]);
+  useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, route, showConnections, showSpecialLinks, focusedRegionId, space, visits, pins, replay, standingFilter, redraw]);
 
   function nearest(clientX: number, clientY: number) {
     const rect = canvas.current?.getBoundingClientRect(); if (!rect) return null;
@@ -397,19 +423,20 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const selectedPoint = selectedSystemId ? byId.get(selectedSystemId) : null;
   const locationId = replay ? replay.systemId : intel?.location?.system_id;
   const hud = hoverPoint || selectedPoint;
+  const hudBloc = hud && !replay ? overlays.get(hud.system.system_id)?.power_bloc : null;
   const hudValue = hud ? reportedIndicator(overlays.get(hud.system.system_id), indicator, intel) : null;
   return <div className="universe-canvas-shell" style={{border: '1px solid #2a3542', background: '#0b1119', overflow: 'hidden'}}>
     <div className="universe-map-toolbar" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '9px 13px', borderBottom: '1px solid #25303d', flexWrap: 'wrap'}}>
-      <div><span className="eyebrow" style={{fontSize: 9, color: '#8aa2b7', margin: 0}}>{space === 'known' ? 'NEW EDEN / X–Z PROJECTION' : 'J-SPACE / DISCOVERY GRAPH'}</span><span style={{fontSize: 10, color: '#687f94', marginLeft: 12}}>{points.length.toLocaleString()} systems</span></div>
+      <div><span className="eyebrow" style={{fontSize: 12, color: '#8aa2b7', margin: 0}}>{space === 'known' ? 'NEW EDEN / X–Z PROJECTION' : 'J-SPACE / DISCOVERY GRAPH'}</span><span style={{fontSize: 13, color: '#687f94', marginLeft: 12}}>{points.length.toLocaleString()} systems</span></div>
       <div style={{display: 'flex', alignItems: 'center', gap: 2}}>
-        <Button variant="ghost" size="icon" title="Toggle map labels" aria-label="Toggle map labels" aria-pressed={labels} onClick={() => setLabels(value => !value)}><Type size={15}/></Button>
-        <Button variant="ghost" size="icon" title={replay ? 'Centre on replay location' : 'Centre on current location'} aria-label={replay ? 'Centre on replay location' : 'Centre on current location'} disabled={!locationId || !byId.has(locationId)} onClick={() => {manualMovement(); focusSystem(locationId);}}><LocateFixed size={15}/></Button>
-        <Button variant="ghost" size="icon" title="Focus selected system" aria-label="Focus selected system" disabled={!selectedPoint} onClick={() => {manualMovement(); focusSystem(selectedSystemId);}}><Crosshair size={15}/></Button>
+        <Button variant="ghost" size="icon" title="Toggle map labels" aria-label="Toggle map labels" aria-pressed={labels} onClick={() => setLabels(value => !value)}><Type size={17}/></Button>
+        <Button variant="ghost" size="icon" title={replay ? 'Centre on replay location' : 'Centre on current location'} aria-label={replay ? 'Centre on replay location' : 'Centre on current location'} disabled={!locationId || !byId.has(locationId)} onClick={() => {manualMovement(); focusSystem(locationId);}}><LocateFixed size={17}/></Button>
+        <Button variant="ghost" size="icon" title="Focus selected system" aria-label="Focus selected system" disabled={!selectedPoint} onClick={() => {manualMovement(); focusSystem(selectedSystemId);}}><Crosshair size={17}/></Button>
         <span style={{height: 17, width: 1, background: '#2b3948', margin: '0 5px'}}/>
-        <Button variant="ghost" size="icon" aria-label="Zoom out" onClick={() => zoomAt(1 / 1.4)}><Minus size={15}/></Button>
-        <span style={{fontSize: 10, fontFamily: 'var(--font-mono)', color: '#899eaf', width: 42, textAlign: 'center'}}>{zoom.toFixed(1)}×</span>
-        <Button variant="ghost" size="icon" aria-label="Zoom in" onClick={() => zoomAt(1.4)}><Plus size={15}/></Button>
-        <Button variant="ghost" size="icon" title="Fit map (Home)" aria-label="Fit map" onClick={() => {manualMovement(); fit();}}><Maximize2 size={15}/></Button>
+        <Button variant="ghost" size="icon" aria-label="Zoom out" disabled={zoom <= 1.001} onClick={() => zoomAt(1 / 1.4)}><Minus size={17}/></Button>
+        <span style={{fontSize: 13, fontFamily: 'var(--font-mono)', color: '#899eaf', width: 48, textAlign: 'center'}}>{zoom.toFixed(1)}×</span>
+        <Button variant="ghost" size="icon" aria-label="Zoom in" onClick={() => zoomAt(1.4)}><Plus size={17}/></Button>
+        <Button variant="ghost" size="icon" title="Fit map (Home)" aria-label="Fit map" onClick={() => {manualMovement(); fit();}}><Maximize2 size={17}/></Button>
       </div>
     </div>
     <div ref={wrapper} className="universe-map-viewport" style={{position: 'relative', width: '100%', height: 'clamp(420px, 64vh, 780px)', minHeight: 360}}>
@@ -417,13 +444,13 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         style={{display: 'block', width: '100%', height: '100%', touchAction: 'none', cursor: dragging ? 'grabbing' : hovered ? 'pointer' : 'grab'}}
         onKeyDown={event => {
           if (event.key === '+' || event.key === '=') {event.preventDefault(); zoomAt(1.4);} else if (event.key === '-') {event.preventDefault(); zoomAt(1 / 1.4);} else if (event.key === 'Home') {event.preventDefault(); manualMovement(); fit();}
-          else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {event.preventDefault(); manualMovement(); view.current.x += event.key === 'ArrowLeft' ? 60 : event.key === 'ArrowRight' ? -60 : 0; view.current.y += event.key === 'ArrowUp' ? 60 : event.key === 'ArrowDown' ? -60 : 0; redraw();}
+          else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {event.preventDefault(); manualMovement(); view.current.x += event.key === 'ArrowLeft' ? 60 : event.key === 'ArrowRight' ? -60 : 0; view.current.y += event.key === 'ArrowUp' ? 60 : event.key === 'ArrowDown' ? -60 : 0; constrainView(); redraw();}
           else if (event.key === 'Enter' && selectedSystemId) {manualMovement(); focusSystem(selectedSystemId);}
         }}
         onPointerDown={event => {if (event.button !== 0) return; pointer.current = {id: event.pointerId, x: event.clientX, y: event.clientY, originX: event.clientX, originY: event.clientY, moved: false}; event.currentTarget.setPointerCapture(event.pointerId); setDragging(true);}}
         onPointerMove={event => {
           const held = pointer.current;
-          if (held && held.id === event.pointerId) {const dx = event.clientX - held.x, dy = event.clientY - held.y; if (!held.moved && Math.hypot(event.clientX - held.originX, event.clientY - held.originY) > 4) {held.moved = true; manualMovement();} held.x = event.clientX; held.y = event.clientY; view.current.x += dx; view.current.y += dy; redraw(); return;}
+          if (held && held.id === event.pointerId) {const dx = event.clientX - held.x, dy = event.clientY - held.y; if (!held.moved && Math.hypot(event.clientX - held.originX, event.clientY - held.originY) > 4) {held.moved = true; manualMovement();} held.x = event.clientX; held.y = event.clientY; view.current.x += dx; view.current.y += dy; constrainView(); redraw(); return;}
           const id = nearest(event.clientX, event.clientY); if (id !== hoveredRef.current) {hoveredRef.current = id; setHovered(id); redraw();}
         }}
         onPointerUp={event => {const held = pointer.current; if (!held || held.id !== event.pointerId) return; if (!held.moved) {const id = nearest(event.clientX, event.clientY); if (id) onSelectSystem(id);} pointer.current = null; setDragging(false); if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);}}
@@ -433,22 +460,23 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         onDoubleClick={event => {const rect = event.currentTarget.getBoundingClientRect(); zoomAt(1.8, event.clientX - rect.left, event.clientY - rect.top);}}
       >Use the system search and system list to select a system without the visual map.</canvas>
       {!points.length && <div style={{position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', pointerEvents: 'none', color: '#8ca2b4', fontSize: 13, padding: 30, textAlign: 'center'}}>{space === 'wormhole' && !allPoints.length ? 'Visit or pin a J-space system, or add a discovered wormhole, to build your connection map.' : 'No systems match this map filter.'}</div>}
-      <div style={{position: 'absolute', top: 14, left: 16, pointerEvents: 'none', fontSize: 9, fontFamily: 'var(--font-mono)', color: '#89a0b8', letterSpacing: '1px'}}>{replay ? 'RECORDED SESSION · ' + (space === 'known' ? 'OBSERVED TRAVEL' : 'DISCOVERY GRAPH · NOT TO SCALE') : space === 'known' ? LAYERS[background].toUpperCase() : 'DISCOVERED CONNECTIONS · NOT TO SCALE'}{indicator !== 'none' && <span style={{color: '#c9bda4'}}> + {INDICATOR_LABELS[indicator].toUpperCase()}</span>}</div>
+      <div style={{position: 'absolute', top: 14, left: 16, pointerEvents: 'none', fontSize: 12, fontFamily: 'var(--font-mono)', color: '#89a0b8', letterSpacing: '1px'}}>{replay ? 'RECORDED SESSION · ' + (space === 'known' ? 'OBSERVED TRAVEL' : 'DISCOVERY GRAPH · NOT TO SCALE') : space === 'known' ? LAYERS[background].toUpperCase() : 'DISCOVERED CONNECTIONS · NOT TO SCALE'}{indicator !== 'none' && <span style={{color: '#c9bda4'}}> + {INDICATOR_LABELS[indicator].toUpperCase()}</span>}</div>
       {hud && <div style={{position: 'absolute', bottom: 17, left: 17, maxWidth: 'calc(100% - 34px)', pointerEvents: 'none', padding: '11px 15px', background: '#101b27ed', border: '1px solid #3b5265', borderLeft: '2px solid #97ebce'}}>
-        <div style={{display: 'flex', alignItems: 'baseline', gap: 12}}><strong style={{fontSize: 14, color: '#dcefe9'}}>{hud.system.name}</strong><span style={{fontSize: 11, color: hud.system.security_known === false ? '#718397' : securityColour(hud.system.security), fontFamily: 'var(--font-mono)'}}>{hud.system.security_known === false ? '?' : hud.system.security.toFixed(1)}</span>{hud.system.system_id === locationId && <span style={{color: '#e8c485', fontSize: 9}}>{replay ? 'REPLAY LOCATION' : 'YOU ARE HERE'}</span>}</div>
-        <div style={{color: '#89a0b4', fontSize: 10, marginTop: 4}}>{hud.system.region_name}{replay ? ' · Static system profile' : ' · ' + (overlays.get(hud.system.system_id)?.sovereignty?.alliance_name || overlays.get(hud.system.system_id)?.sovereignty?.faction_name || (hud.system.space === 'wormhole' ? `Wormhole space${hud.system.wormhole_class ? ' · C' + hud.system.wormhole_class : ''}` : 'No sovereignty owner reported'))}</div>
-        {indicator !== 'none' && <div style={{color: '#b3c4d1', fontSize: 10, marginTop: 5}}>{INDICATOR_LABELS[indicator]}: {hudValue === null ? 'Unavailable' : indicator === 'industry' ? hudValue.toFixed(2) + '%' : hudValue.toLocaleString()}</div>}
+        <div style={{display: 'flex', alignItems: 'baseline', gap: 12}}><strong style={{fontSize: 16, color: '#dcefe9'}}>{hud.system.name}</strong><span style={{fontSize: 13, color: hud.system.security_known === false ? '#718397' : securityColour(hud.system.security), fontFamily: 'var(--font-mono)'}}>{hud.system.security_known === false ? '?' : hud.system.security.toFixed(1)}</span>{hud.system.system_id === locationId && <span style={{color: '#e8c485', fontSize: 12}}>{replay ? 'REPLAY LOCATION' : 'YOU ARE HERE'}</span>}</div>
+        <div style={{color: '#89a0b4', fontSize: 13, marginTop: 4}}>{hud.system.region_name}{replay ? ' · Static system profile' : ' · ' + (overlays.get(hud.system.system_id)?.sovereignty?.alliance_name || overlays.get(hud.system.system_id)?.sovereignty?.faction_name || (hud.system.space === 'wormhole' ? `Wormhole space${hud.system.wormhole_class ? ' · C' + hud.system.wormhole_class : ''}` : 'No sovereignty owner reported'))}</div>
+        {background === 'power_blocs' && hudBloc && <div style={{color: hudBloc.color, fontSize: 13, marginTop: 5}}>{hudBloc.name} · {hudBloc.source === 'configured' ? 'User configured' : hudBloc.source === 'inferred' ? 'Inferred · may differ from formal coalitions' : hudBloc.source === 'independent' ? 'Kept independent' : 'Insufficient evidence'}</div>}
+        {indicator !== 'none' && <div style={{color: '#b3c4d1', fontSize: 13, marginTop: 5}}>{INDICATOR_LABELS[indicator]}: {hudValue === null ? 'Unavailable' : indicator === 'industry' ? hudValue.toFixed(2) + '%' : hudValue.toLocaleString()}</div>}
       </div>}
     </div>
-    <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px 16px', alignItems: 'center', padding: '11px 15px', borderTop: '1px solid #25303d', fontSize: 10, color: '#89a0b4'}}>
-      {space === 'wormhole' ? <span>Only discovered systems and their known-space exits. Disconnected discoveries stay on the map.</span> : background === 'standings' ? <><Legend colour={PALETTE.excellent} label="Excellent"/><Legend colour={PALETTE.good} label="Good"/><Legend colour={PALETTE.neutral} label="Neutral"/><Legend colour={PALETTE.bad} label="Bad"/><Legend colour={PALETTE.terrible} label="Terrible"/><Legend colour={PALETTE.unknown} label="Unknown"/></> : background === 'security' || background === 'none' ? <><Legend colour="#85dcb5" label="High security"/><Legend colour="#dfb975" label="Low security"/><Legend colour="#d68092" label="Null / wormhole"/></> : <span>{background === 'sovereignty' ? 'Colour identifies an alliance or faction; shading follows nearby systems.' : 'Brighter shading means more reported ship and pod kills.'}</span>}
-      {routeSystemIds.length > 1 && <Legend colour="#a4f1d4" label="Planned route"/>}{showSpecialLinks && <><Legend colour="#80ddde" label="Ansiblex" dashed/><Legend colour="#c1a0eb" label="Wormhole" dashed/></>}
+    <div className="universe-map-legend" style={{display: 'flex', flexWrap: 'wrap', gap: '8px 16px', alignItems: 'center', padding: '11px 15px', borderTop: '1px solid #25303d', fontSize: 13, color: '#89a0b4'}}>
+      {space === 'wormhole' ? <span>Only discovered systems and their known-space exits. Disconnected discoveries stay on the map.</span> : background === 'power_blocs' ? <><Legend colour="#b7c8d8" label="Configured bloc" line/><Legend colour="#b7c8d8" label="Inferred group" dashed/><span>Dots show actual owners · unassigned alliances remain separate.</span></> : background === 'standings' ? <><Legend colour={PALETTE.excellent} label="Excellent"/><Legend colour={PALETTE.good} label="Good"/><Legend colour={PALETTE.neutral} label="Neutral"/><Legend colour={PALETTE.bad} label="Bad"/><Legend colour={PALETTE.terrible} label="Terrible"/><Legend colour={PALETTE.unknown} label="Unknown"/></> : background === 'security' || background === 'none' ? <><Legend colour="#85dcb5" label="High security"/><Legend colour="#dfb975" label="Low security"/><Legend colour="#d68092" label="Null / wormhole"/></> : <span>{background === 'sovereignty' ? 'Colour identifies the owning alliance or faction. Borders separate neighbouring territories.' : 'Brighter shading means more reported ship and pod kills.'}</span>}
+      {routeSystemIds.length > 1 && <Legend colour="#a4f1d4" label="Planned route"/>}{showSpecialLinks && !replay && <><Legend colour="#80ddde" label="Ansiblex" dashed/><Legend colour="#c1a0eb" label="Wormhole" dashed/></>}
       {replay && <><Legend colour="#e1bb87" label="Recorded transitions" dashed/><Legend colour="#e6a6cb" label="Recent recorded event"/></>}
     </div>
-    <p id={helpId} style={{margin: 0, padding: '0 15px 12px', color: '#677e92', fontSize: 10, lineHeight: 1.6}}>Drag to pan · scroll or +/− to zoom · Home to fit · select a system to inspect. Arrow keys pan when the map is focused. Use system search for keyboard selection.{space === 'wormhole' ? ' This topological layout does not represent physical distances. Only active connections are drawn.' : ' Territory shading is a visual guide, not a claim of borders in empty space.'}</p>
+    <p id={helpId} style={{margin: 0, padding: '0 15px 12px', color: '#677e92', fontSize: 13, lineHeight: 1.6}}>Drag to pan · scroll or +/− to zoom · Home to fit · select a system to inspect. Arrow keys pan when the map is focused. Use system search for keyboard selection.{space === 'wormhole' ? ' This topological layout does not represent physical distances. Only active connections are drawn.' : ' Borders are a map guide around sovereign systems, not a claim of control over empty space.'}</p>
   </div>;
 }
 
-function Legend({colour, label, dashed = false}: {colour: string; label: string; dashed?: boolean}) {
-  return <span style={{display: 'inline-flex', gap: 6, alignItems: 'center'}}><i style={dashed ? {width: 13, borderTop: `1px dashed ${colour}`} : {width: 5, height: 5, borderRadius: '50%', background: colour}}/>{label}</span>;
+function Legend({colour, label, dashed = false, line = false}: {colour: string; label: string; dashed?: boolean; line?: boolean}) {
+  return <span style={{display: 'inline-flex', gap: 6, alignItems: 'center'}}><i style={dashed || line ? {width: 19, borderTop: `2px ${dashed ? 'dashed' : 'solid'} ${colour}`} : {width: 9, height: 9, borderRadius: '50%', background: colour}}/>{label}</span>;
 }

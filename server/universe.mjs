@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { journeyData } from './places.mjs';
 import { getUniverseStatic, getUniverseSystem } from './universe-static.mjs';
 import { planRoute, planJumpRoute } from './universe-routing.mjs';
+import { createUniversePolitics } from './universe-politics.mjs';
 
 const PUBLIC_SOURCES = ['sovereignty', 'kills', 'jumps', 'fw', 'incursions', 'industry_systems', 'sovereignty_structures'];
 const PRIVATE_SOURCES = ['profile', 'location', 'contacts', 'corporation_contacts', 'alliance_contacts', 'calendar', 'mining'];
@@ -60,6 +61,7 @@ export function standingForAlliance(allianceId, snapshots, now = Date.now()) {
 export function createUniverse(store, auth, esi, options = {}) {
     const now = options.now || Date.now;
     const atlas = options.staticData || getUniverseStatic();
+    const politicsService = createUniversePolitics(store, auth, { now, atlas });
     const byId = atlas.bySystemId || new Map(atlas.systems.map(system => [system.system_id, system]));
     const byName = new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
     const neighbors = atlas.neighbors || new Map();
@@ -108,6 +110,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     function liveContext(id) {
         const currentTime = now(), samples = snapshots(id), sources = Object.fromEntries(Object.entries(samples).map(([key, value]) => [key, sourceMetadata(value, currentTime)]));
         const names = store.get('names', {}), owners = new Map(), kills = new Map(), jumps = new Map(), fw = new Map(), incursions = new Map(), industry = new Map(), sovStructures = new Map(), mining = new Map(), standings = new Map();
+        const politics = politicsService.read(names), resolveBloc = politicsService.resolver(politics, names), blocByAlliance = new Map();
         for (const row of sourceRows(samples, 'sovereignty')) owners.set(row.system_id || row.solar_system_id, row);
         for (const row of sourceRows(samples, 'kills')) kills.set(row.system_id, row);
         for (const row of sourceRows(samples, 'jumps')) jumps.set(row.system_id, row.ship_jumps);
@@ -135,17 +138,19 @@ export function createUniverse(store, auth, esi, options = {}) {
         function overlay(system) {
             const sovereignty = owners.get(system), visit = visits.get(system);
             const allianceId = sovereignty?.alliance_id;
+            if (!blocByAlliance.has(allianceId)) blocByAlliance.set(allianceId, resolveBloc(allianceId));
             if (!standings.has(allianceId)) standings.set(allianceId, sources.sovereignty.status === 'ready' ? standingForAlliance(allianceId, samples, currentTime) :
                 { value: null, label: 'unknown', source: null, status: 'unavailable', reason: 'Current sovereignty is unavailable.' });
             return { system_id: system,
                 sovereignty: sovereignty ? { ...sovereignty, alliance_name: names[sovereignty.alliance_id] || null, corporation_name: names[sovereignty.corporation_id] || null, faction_name: names[sovereignty.faction_id] || null } : null,
                 standing: standings.get(allianceId),
+                power_bloc: blocByAlliance.get(allianceId),
                 kills: kills.get(system) || (complete('kills') ? { ship_kills: 0, pod_kills: 0, npc_kills: 0 } : null),
                 jumps: jumps.get(system) ?? (complete('jumps') ? 0 : null), faction_warfare: fw.get(system) || null,
                 incursions: incursions.get(system) || [], industry: industry.get(system) || null, mining: mining.get(system) || null,
                 structures: sovStructures.get(system) || [], visits: visit?.visits || 0, first_visit: visit?.first_visit || null, last_visit: visit?.last_visit || null, note: notes.get(system) || null };
         }
-        return { samples, sources, ids, overlay, defaults: { kills: complete('kills') ? { ship_kills: 0, pod_kills: 0, npc_kills: 0 } : null, jumps: complete('jumps') ? 0 : null } };
+        return { samples, sources, ids, overlay, politics, defaults: { kills: complete('kills') ? { ship_kills: 0, pod_kills: 0, npc_kills: 0 } : null, jumps: complete('jumps') ? 0 : null } };
     }
     function links(id) {
         const lists = new Map(records(id, 'list').map(list => [list.id, list]));
@@ -176,7 +181,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     function state(characterId) {
         const id = pilotId(characterId), context = liveContext(id), location = context.samples.location;
         return { character_id: id, generated_at: iso(), location: { system_id: location?.data?.solar_system_id || null, ...context.sources.location },
-            systems: [...context.ids].filter(system => byId.has(system)).map(context.overlay), sources: context.sources, defaults: context.defaults,
+            systems: [...context.ids].filter(system => byId.has(system)).map(context.overlay), sources: context.sources, defaults: context.defaults, politics: context.politics,
             links: links(id), link_lists: records(id, 'list'), pins: pinsFor(id, context.samples), views: records(id, 'view'),
             structures: records(id, 'structure').map(currentStructure), journey: journeyData(store, id),
             calendar: sourceRows(context.samples, 'calendar').filter(event => Date.parse(event.event_date) >= now()).map(event => ({ ...event, source: 'calendar', status: context.sources.calendar.status, stale: context.sources.calendar.stale })) };
@@ -343,7 +348,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         // ESI calendar titles do not reliably identify systems or moon extractions.
         // Only explicit system links are mapped; manual pins can record known moon times.
         const events = calendar.filter(event => event.solar_system_id === system || event.system_id === system).map(event => ({ ...event, source: 'calendar' }));
-        return { ...base, overlay: context.overlay(system), sources: context.sources,
+        return { ...base, overlay: context.overlay(system), sources: context.sources, politics: context.politics,
             neighbors: [...(neighbors.get(system) || [])].map(id => byId.get(id)).filter(Boolean), notes,
             structures: [...context.overlay(system).structures, ...structures], events: [...events, ...pins.filter(pin => pin.event_at)],
             pins, links: links(id).filter(link => link.from_system_id === system || link.to_system_id === system) };
@@ -402,9 +407,11 @@ export function createUniverse(store, auth, esi, options = {}) {
     function exportUserData(characterId) {
         const rows = characterId == null ? store.db.prepare('SELECT character_id,kind,id,body FROM universe_records ORDER BY character_id,kind,id').all() :
             store.db.prepare('SELECT character_id,kind,id,body FROM universe_records WHERE character_id=? ORDER BY kind,id').all(pilotId(characterId));
-        return { version: 1, records: rows.map(({ body, ...row }) => ({ ...row, data: parse(body) })) };
+        return { version: 1, records: rows.map(({ body, ...row }) => ({ ...row, data: parse(body) })), ...(characterId == null ? { politics: politicsService.exportData() } : {}) };
     }
     return { static: staticData, state, detail, route, jump, saveView, deleteView: (id, key) => deleteRecord(id, 'view', key),
         saveLinkList, deleteLinkList, saveLink, deleteLink: (id, key) => deleteRecord(id, 'link', key), savePin, deletePin: (id, key) => deleteRecord(id, 'pin', key),
-        verifyStructure, observeTravel, pruneExpired, exportUserData };
+        verifyStructure, observeTravel, pruneExpired, exportUserData,
+        politicsConfig: politicsService.config, savePoliticsConfig: politicsService.saveConfig, politicsState: politicsService.read,
+        refreshPolitics: politicsService.refresh, politicsAlliances: politicsService.alliances };
 }

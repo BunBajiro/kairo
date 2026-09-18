@@ -2,6 +2,15 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.2 — Power blocs and Universe readability
+
+- Added user-configured power blocs in Settings → Universe, with named colours, alliance membership and explicit independence. Configured memberships take priority over inferred groups.
+- Added an evidence-based inferred fallback from locally collected combat records, showing coverage and uncertainty without changing standings, OPSEC or connection access.
+- Replaced the soft territory raster with crisp vector segments, removed per-system glows, and preserved territorial ownership when filtering visible systems.
+- Bounded zoom and panning to the active space, with separate K-Space and J-Space tabs.
+- Increased Universe and replay readability with larger text, clearer controls, visual summaries and political legends.
+- Removed routine system-entry and OPSEC events from replay presentation while retaining recorded movement and session history.
+
 ## 0.8.0-rc.1 — Universe review build
 
 - Replaces the earlier New Eden lookup and Journey atlas with the full offline New Eden map, sovereignty territories, selected-pilot standings, configurable layers and saved views.

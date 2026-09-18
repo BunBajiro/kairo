@@ -1,2 +1,94 @@
-.session-replay{border:1px solid #385647;background:#12221f;margin:0 0 16px;overflow:hidden}.session-replay-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid #2a423b}.session-replay-title{display:flex;align-items:center;gap:12px;color:#97ebce;flex-wrap:wrap}.session-replay-title .eyebrow{font-size:9px;letter-spacing:1.4px;color:#82ad9e;margin:0}.session-replay-title h3{font-size:15px;color:#d9eee5;font-weight:500;margin:3px 0 0}.session-replay-status{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 19px 8px;flex-wrap:wrap}.session-replay-status>div{display:flex;align-items:center;gap:8px;color:#8cc5ad}.session-replay-status strong{font-size:14px;color:#dcece4;font-weight:500}.session-replay-status time{font-family:var(--font-mono);font-size:12px;color:#c9ddd3}.session-replay-status time span{color:#80978c;font-size:10px}.session-replay-timeline{position:relative;padding:10px 20px 0}.session-replay-timeline input{display:block;appearance:none;width:100%;height:4px;border-radius:2px;position:relative;z-index:1;cursor:pointer}.session-replay-timeline input:focus-visible{outline:2px solid #a8f2d7;outline-offset:7px}.session-replay-timeline input::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:#bbf4dc;border:2px solid #1b4436}.session-replay-timeline input::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#bbf4dc;border:2px solid #1b4436}.session-replay-ticks{position:absolute;left:20px;right:20px;top:6px;height:12px;pointer-events:none}.session-replay-ticks i{position:absolute;display:block;height:12px;width:1px;background:#527e69}.session-replay-time-labels{display:flex;justify-content:space-between;font:10px var(--font-mono);color:#8ca399;margin-top:10px}.session-replay-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px 14px;flex-wrap:wrap}.session-replay-transport{display:flex;align-items:center;gap:3px;flex-wrap:wrap}.session-replay-play{min-width:86px}.session-replay-transport label{display:flex;align-items:center;gap:7px;font-size:10px;color:#8fa79b;margin-left:12px}.session-replay-transport select{background:#142922;border:1px solid #3c584a;border-radius:3px;color:#c7e7d9;padding:6px 8px;font:11px var(--font-mono)}.session-replay-events{padding:13px 18px;background:#102019;border-top:1px solid #2a423b;display:grid;gap:5px}.session-replay-events>.eyebrow{font-size:9px;color:#779a8b;margin-bottom:4px}.session-replay-events button{display:grid;grid-template-columns:66px minmax(0,1fr) auto;align-items:baseline;gap:12px;text-align:left;font-size:11px;color:#bbd3c7;padding:4px;border-radius:2px;min-width:0}.session-replay-events button:hover,.session-replay-events button:focus-visible{background:#203c2e;outline:1px solid #476554}.session-replay-events time{font:10px var(--font-mono);color:#82a491}.session-replay-events small{color:#789687;font-size:10px}.session-replay-events p,.session-replay-note{font-size:11px;color:#829f90;margin:4px 0}.session-replay-note{padding:14px 18px}.session-replay-footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:11px 18px;font-size:10px;color:#739080;border-top:1px solid #263e31}.session-replay-gap{margin:0 18px 12px;padding:10px;border-left:2px solid #d2b075;background:#332d1e;color:#cfba90;font-size:11px}.session-replay-error{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;font-size:12px;color:#eea7ab}.session-replay-coverage{border-top:1px solid #2c4538;padding:11px 18px;color:#89a896;font-size:10px}.session-replay-coverage summary{cursor:pointer;color:#b1ccbd}.session-replay-coverage p{margin:8px 0 0;line-height:1.6}@media(max-width:760px){.session-replay-heading{padding:12px}.session-replay-title .tag{display:none}.session-replay-status{padding:14px 13px 8px}.session-replay-events button{grid-template-columns:62px 1fr;gap:5px 8px}.session-replay-events small{grid-column:2}.session-replay-transport label{margin-left:4px}.session-replay-footer{font-size:9px}.session-replay-controls{padding:10px}}
-.session-replay-event-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.session-replay-event-heading .eyebrow{font-size:9px;color:#779a8b;margin:0}.session-replay-event-heading>div{display:flex;gap:4px}.session-replay-events .session-replay-event-heading button{display:inline-flex;padding:3px 6px;font-size:10px;gap:3px}
+.session-replay {
+  border: 1px solid #385048;
+  border-radius: 5px;
+  background: #131f25;
+  color: #cbdcd9;
+  margin: 0 0 20px;
+  overflow: hidden;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.session-replay-heading {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;border-bottom:1px solid #2d4146;background:#18272b}
+.session-replay-title {display:flex;align-items:center;gap:12px;color:#97ebce;min-width:0}
+.session-replay-title>svg {flex-shrink:0}
+.session-replay-title .eyebrow {font:14px var(--font-mono);letter-spacing:1.2px;color:#9bbab1;margin:0}
+.session-replay-title h3 {font-size:18px;line-height:1.4;color:#e1eeeb;font-weight:500;margin:4px 0 0;overflow-wrap:anywhere}
+.session-replay [data-slot=button] {min-height:42px;font-size:14px;border-radius:4px}
+.session-replay [data-slot=button][data-size=icon] {width:42px;height:42px}
+.session-replay [data-slot=button] svg {width:18px;height:18px}
+.session-replay-status {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 18px 12px;flex-wrap:wrap}
+.session-replay-status>div {display:flex;align-items:center;gap:9px;color:#9bc8b6;min-width:0}
+.session-replay-status strong {font-size:22px;color:#e1eeeb;font-weight:500;overflow-wrap:anywhere}
+.session-replay-status time {font:15px var(--font-mono);color:#cbded5;line-height:1.6}
+.session-replay-status time span {color:#a0b4ba;font-size:14px}
+.session-replay-status .session-replay-badges {flex-basis:100%;flex-wrap:wrap}
+.session-replay .session-replay-badges .tag {font-size:14px;padding:3px 7px;letter-spacing:.3px}
+.session-replay-stats {display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:0 18px 16px;color:#a0b4ba;font-size:14px}
+.session-replay-stats>span {display:flex;align-items:center;gap:6px}
+.session-replay-stats svg {color:#80b5a0}
+.session-replay-stats strong {font-weight:500;color:#d1e1dc}
+.session-replay-timeline {position:relative;padding:10px 20px 0}
+.session-replay-timeline input {display:block;appearance:none;width:100%;height:8px;border-radius:4px;position:relative;z-index:1;cursor:pointer;margin:0}
+.session-replay-timeline input:focus-visible {outline:2px solid #a8f2d7;outline-offset:7px}
+.session-replay-timeline input::-webkit-slider-thumb {appearance:none;width:20px;height:20px;border-radius:50%;background:#bbf4dc;border:3px solid #315544;cursor:grab}
+.session-replay-timeline input::-moz-range-thumb {width:16px;height:16px;border-radius:50%;background:#bbf4dc;border:3px solid #315544;cursor:grab}
+.session-replay-ticks {position:absolute;left:20px;right:20px;top:5px;height:18px;pointer-events:none}
+.session-replay-ticks i {position:absolute;display:block;height:18px;width:2px;background:#537d6c}
+.session-replay-time-labels {display:flex;justify-content:space-between;font:14px var(--font-mono);color:#a3bcb0;margin-top:14px}
+.session-replay-controls {display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px 18px;flex-wrap:wrap}
+.session-replay-transport {display:flex;align-items:center;gap:5px}
+.session-replay-play {min-width:98px}
+.session-replay-options {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.session-replay-options label {display:flex;align-items:center;gap:8px;font-size:14px;color:#a2b9b2}
+.session-replay-options select {background:#18272d;border:1px solid #40584d;border-radius:4px;color:#d7e9e0;min-height:42px;padding:8px;font:14px var(--font-mono);cursor:pointer}
+.session-replay-options select:focus-visible {outline:2px solid #a8f2d7;outline-offset:2px}
+.session-replay-events {padding:14px 18px 18px;background:#111d22;border-top:1px solid #2d4146}
+.session-replay-event-heading {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.session-replay-event-heading .eyebrow {font:14px var(--font-mono);letter-spacing:1px;color:#a1bdb1;margin:0}
+.session-replay-event-heading>div {display:flex;gap:4px}
+.session-replay-event-list {display:grid;gap:9px}
+.session-replay-event {--event-color:#9abbb4;display:grid;grid-template-columns:36px minmax(0,1fr);align-items:start;gap:12px;text-align:left;border:1px solid #30464c;border-left:3px solid var(--event-color);border-radius:4px;background:#17262c;padding:12px;width:100%;min-width:0;cursor:pointer}
+.session-replay-event:hover,.session-replay-event:focus-visible {background:#1e3238;border-color:#648c80;outline:1px solid #648c80;outline-offset:1px}
+.session-replay-event-icon {display:grid;place-items:center;width:36px;height:36px;color:var(--event-color);border:1px solid #3a5154;border-radius:5px;background:#122128}
+.session-replay-event-content {display:flex;flex-direction:column;gap:5px;min-width:0}
+.session-replay-event-meta {display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--event-color);flex-wrap:wrap}
+.session-replay-event-meta time {font:14px var(--font-mono);color:#a3b7bc}
+.session-replay-event-content strong {font-size:15px;font-weight:500;line-height:1.5;color:#dbe8e5;overflow-wrap:anywhere}
+.session-replay-event-location {display:flex;align-items:baseline;gap:5px;color:#a2b5b9;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.session-replay-event-location svg {flex-shrink:0;align-self:flex-start;margin-top:3px}
+.session-replay-event.tone-combat {--event-color:#f1c77e}
+.session-replay-event.tone-loss {--event-color:#f2979d}
+.session-replay-event.tone-success,.session-replay-event.tone-wallet {--event-color:#9fe1b9}
+.session-replay-event.tone-training {--event-color:#bbacf1}
+.session-replay-event.tone-industry,.session-replay-event.tone-ship {--event-color:#9bcbea}
+.session-replay-empty {display:flex;align-items:center;gap:12px;padding:16px 4px;color:#a3b9bd;font-size:14px;margin:0;line-height:1.6}
+.session-replay-empty svg {flex-shrink:0;color:#7ea49a}
+.session-replay-note {font-size:15px;color:#a3b9bd;padding:16px 18px;margin:0}
+.session-replay-footer {display:flex;align-items:center;gap:8px;padding:14px 18px;font-size:14px;color:#9bb4ac;border-top:1px solid #2d4146}
+.session-replay-footer svg {flex-shrink:0}
+.session-replay-gap {margin:0 18px 16px;padding:12px;border-left:3px solid #d2b075;background:#332d1e;color:#e0c798;font-size:14px}
+.session-replay-error {display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px;font-size:15px;color:#eea7ab}
+.session-replay-coverage {border-top:1px solid #2d4146;padding:14px 18px;color:#a2b8ad;font-size:14px}
+.session-replay-coverage summary {cursor:pointer;color:#c1d6c9;min-height:24px}
+.session-replay-coverage summary:focus-visible {outline:2px solid #a8f2d7;outline-offset:4px}
+.session-replay-coverage p {margin:12px 0 0;line-height:1.6}
+@media(min-width:1400px) {
+  .is-replaying .session-replay-status>time {width:100%}
+  .is-replaying .session-replay-status>time span {display:block;margin-top:3px}
+  .is-replaying .session-replay-controls {display:block}
+  .is-replaying .session-replay-transport {justify-content:center;margin-bottom:12px}
+  .is-replaying .session-replay-options {width:100%}
+  .is-replaying .session-replay-event-list {max-height:430px;overflow:auto;padding:2px;scrollbar-width:thin;scrollbar-color:#496a64 transparent}
+}
+@media(max-width:650px) {
+  .session-replay-heading,.session-replay-status,.session-replay-events {padding-inline:14px}
+  .session-replay-status {gap:9px}
+  .session-replay-status>time {width:100%}
+  .session-replay-status>time span {display:block}
+  .session-replay-controls {display:block;padding-inline:14px}
+  .session-replay-transport {justify-content:center;margin-bottom:12px}
+  .session-replay-options {width:100%}
+  .session-replay-event {gap:9px;padding:10px}
+  .session-replay-footer,.session-replay-coverage {padding-inline:14px}
+}

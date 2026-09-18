@@ -38,11 +38,18 @@ export function sessionReplay(store, id, characterId, { now = Date.now, eventLim
         AND (e.at<? OR e.id<=? OR json_extract(e.payload,'$.session_id')=?)))`;
     const params = [characterId, startedAt, endedAt, eventCursor, session.id, endedAt, startedAt,
         start.eventCursor ?? 0, endedAt, session.ended ? (finish.eventCursor ?? Number.MAX_SAFE_INTEGER) : eventCursor, session.id];
-    const totalEvents = store.db.prepare(`SELECT COUNT(*) count FROM events e WHERE ${where}`).get(...params).count;
+    // Visits already describe movement. Routine location/protection changes
+    // should neither clutter replay nor consume its meaningful-event budget.
+    // This affects only this snapshot; the source history and reports are intact.
+    const visibleEvent = `e.type NOT IN ('system.entered','location.changed') AND e.type NOT GLOB 'opsec.*' AND e.module!='opsec'`;
+    const counts = store.db.prepare(`SELECT COUNT(*) sourceEvents,
+        COALESCE(SUM(CASE WHEN ${visibleEvent} THEN 1 ELSE 0 END),0) totalEvents
+        FROM events e WHERE ${where}`).get(...params);
+    const totalEvents = counts.totalEvents, suppressedRoutineEvents = counts.sourceEvents - totalEvents;
     const rows = store.db.prepare(`SELECT e.*,c.body combat_body FROM events e
         LEFT JOIN combat_records c ON e.type IN ('killmail.kill','killmail.loss')
         AND c.character_id=e.character_id AND c.killmail_id=json_extract(e.payload,'$.killmail_id')
-        WHERE ${where} ORDER BY e.at,e.id LIMIT ?`).all(...params, limit);
+        WHERE ${where} AND (${visibleEvent}) ORDER BY e.at,e.id LIMIT ?`).all(...params, limit);
     const graph = getUniverseStatic(), names = store.get('names', {}), systems = new Map();
     const storedSystem = store.db.prepare('SELECT * FROM universe_systems WHERE system_id=?');
     const missingCoordinates = new Set();
@@ -109,7 +116,7 @@ export function sessionReplay(store, id, characterId, { now = Date.now, eventLim
         session: { id: session.id, label: session.label, character_id: session.character_id, started: session.started, ended: session.ended, live: !session.ended },
         startedAt, endedAt, snapshotAt, durationMs: Math.max(0, to - from), eventCursor,
         visits, events, systems: [...systems.values()], travel,
-        coverage: { totalEvents, returnedEvents: events.length, truncated, omittedEvents: totalEvents - events.length, eventLimit: limit,
+        coverage: { totalEvents, returnedEvents: events.length, truncated, omittedEvents: totalEvents - events.length, eventLimit: limit, suppressedRoutineEvents,
             missingCoordinateSystemIds: [...missingCoordinates].sort((a, b) => a - b), unlocatedEvents, contextualEvents,
             inferredVisitCount: visits.filter(v => v.inferred).length, gaps,
             notes: [
