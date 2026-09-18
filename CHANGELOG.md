@@ -4,7 +4,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
-## 0.7.3-rc.1 — 2026-09-18
+## 0.7.3 — 2026-09-18
 
 ### Changed
 
@@ -21,7 +21,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 ### Verification
 
 - 155 behaviour tests, full before/after response comparisons and 250 deterministic combat-matching cases pass. Repeated comparisons against clean v0.7.2 demonstrate lower idle CPU, faster session reports and faster imports after unrelated writes; see [the implementation and verification notes](docs/OPTIMISATION-v0.7.3.md).
-- Prepared as a production-mode release candidate for review. The implementation branch remains separate from `main` until human approval.
+- Approved for release after the user tested 0.7.3-rc.1 and confirmed it runs well. Stable 0.7.3 promotes that reviewed implementation with version labels and release documentation updated.
 
 ## 0.7.2 — 2026-09-14
 

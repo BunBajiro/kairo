@@ -18,7 +18,7 @@ Verification gates:
 2. Use the same external fixture/harness for baseline and candidate in disposable measurement checkouts. Run sequentially in both the workspace and one GitHub runner, with repeated backend observations and browser scenarios. Record both application and harness revisions.
 3. Require consistent improvement in idle CPU/stalls, import analysis after unrelated writes and large-session latency; investigate material regressions in other operations. Compare data outputs as well as timings. Preserve the full response data rather than shrinking workloads.
 4. After verification, set the application version to 0.7.3-rc.1, build the production frontend, package the standalone runtime and test the extracted ZIP without development dependencies. Confirm that profiling tools, fixtures, traces and workflows are absent.
-5. Hand over a draft review PR and the verified build. Keep `main` unchanged pending human review.
+5. Hand over a draft review PR and the verified build. Merge only after the user approves following in-app review.
 
 ## Implementation verification
 
@@ -35,3 +35,9 @@ The RC combines all of the original optimisations above with the approved databa
 Five additional regression tests cover bounded/sparse/duplicate history, paired history/source rollback inside an outer transaction, non-destructive/idempotent startup compaction, atomic migration failure/retry, and archive interruption/resume across the 100-type batch boundary. All 155 behaviour tests pass locally. Normal application startup does not run these tests.
 
 The external RC verification compares three pinned builds: clean 0.7.2 (`b151125`), pre-database 0.7.3 (`ff8bbc5`), and this RC. Repeated sequential backend runs and aged-history/write-cost probes run both in the workspace and on GitHub. Full results and provenance are retained on the internal [database investigation branch](https://github.com/BunBajiro/kairo/tree/perf/database-review-v0.7.3/docs/rc-v0.7.3); its harness and raw measurements are excluded from the RC.
+
+## Approved stable release
+
+The user tested 0.7.3-rc.1 (`5a58faff44e6292705550ea5e3994d341b748455`), confirmed it runs well, and approved merging it into `main` on 2026-09-18. Stable 0.7.3 changes only version labels and release documentation relative to that reviewed RC; application logic, dependency versions, regression tests and database migrations remain identical.
+
+Both repetitions in both the workspace and GitHub pass all ten required three-build performance gates per environment. The [full RC report](https://github.com/BunBajiro/kairo/tree/perf/database-review-v0.7.3/docs/rc-v0.7.3) retains raw results, full-output comparisons, index/write costs and package provenance. Only the implementation PR is merged; the investigation branches remain separate.
