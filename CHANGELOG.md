@@ -4,6 +4,25 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
+## 0.7.3 — 2026-09-18
+
+### Changed
+
+- Reduce background work by reading only protection evidence during OPSEC evaluation and using lightweight metadata for scheduler decisions. Protection cadence, freshness checks and OBS behaviour remain unchanged.
+- Keep import analysis cached after unrelated settings/activity writes. Relevant books, history, character access, orders, fees and expiry still invalidate it; concurrent changes and transaction rollback cannot leave a stale result cached.
+- Refactor session combat matching into per-system time indexes and reuse joined system metadata, reducing report work while preserving visits, combat windows, accounting, ordering and cards.
+- Reuse prepared SQLite store statements.
+- Bound the market-analysis history cache to its 30-day calendar window while retaining the daily archive separately. Compact existing projections once at startup, preserving their saved dates, summary values and freshness.
+- Add a selective character/type/time index for session event queries.
+- Save history and source metadata atomically in prepared, bounded batches, with event-loop yields between archive batches. Failed batches roll back together; interrupted refreshes can resume.
+- Existing player data and settings are preserved; no data reset is required.
+- Keep the production package free of profiling tools, synthetic performance fixtures, traces and CI workflows.
+
+### Verification
+
+- 155 behaviour tests, full before/after response comparisons and 250 deterministic combat-matching cases pass. Repeated comparisons against clean v0.7.2 demonstrate lower idle CPU, faster session reports and faster imports after unrelated writes; see [the implementation and verification notes](docs/OPTIMISATION-v0.7.3.md).
+- Approved for release after the user tested 0.7.3-rc.1 and confirmed it runs well. Stable 0.7.3 promotes that reviewed implementation with version labels and release documentation updated.
+
 ## 0.7.2 — 2026-09-14
 
 ### Added

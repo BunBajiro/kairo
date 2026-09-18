@@ -1,6 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
+import { compactHistoryCache } from './market-history-store.mjs';
 export function openStore(dir) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
     const db = new DatabaseSync(join(dir, 'kairo.sqlite'));
@@ -83,9 +84,36 @@ export function openStore(dir) {
         CREATE INDEX idx_alliance_combat_system_at ON alliance_combat_records(alliance_id,system_id,at);
         INSERT INTO migrations VALUES('sessions-v071',datetime('now')); COMMIT;`);
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='database-v073'").get()) {
+        db.exec('BEGIN IMMEDIATE');
+        try {
+            db.exec('CREATE INDEX IF NOT EXISTS idx_events_character_type_at ON events(character_id,type,at)');
+            compactHistoryCache(db);
+            db.prepare("INSERT INTO migrations VALUES('database-v073',datetime('now'))").run();
+            db.exec('COMMIT');
+        } catch (error) { db.exec('ROLLBACK'); db.close(); throw error; }
+    }
     try {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);
     }
     catch { }
-    return { db, get: (key, fallback) => { const r = db.prepare('SELECT value FROM settings WHERE key=?').get(key); return r ? JSON.parse(r.value) : fallback; }, set: (key, value) => db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(key, JSON.stringify(value)), snapshot: (id, key) => { const r = db.prepare('SELECT body FROM snapshots WHERE character_id=? AND key=?').get(id, key); return r ? JSON.parse(r.body) : null; }, saveSnapshot: (id, key, value) => db.prepare('INSERT INTO snapshots VALUES(?,?,?) ON CONFLICT(character_id,key) DO UPDATE SET body=excluded.body').run(id, key, JSON.stringify(value)), close: () => db.close() };
+    const setting = db.prepare('SELECT value FROM settings WHERE key=?');
+    const saveSetting = db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value');
+    const snapshot = db.prepare('SELECT body FROM snapshots WHERE character_id=? AND key=?');
+    // Scheduling never needs the potentially large data array. Read metadata
+    // directly so callers retain fresh values even after raw SQL or rollback.
+    const metadata = db.prepare(`SELECT json_extract(body,'$.status') status,
+        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,
+        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,
+        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?`);
+    const saveSnapshot = db.prepare('INSERT INTO snapshots VALUES(?,?,?) ON CONFLICT(character_id,key) DO UPDATE SET body=excluded.body');
+    return {
+        db,
+        get(key, fallback) { const row = setting.get(key); return row ? JSON.parse(row.value) : fallback; },
+        set: (key, value) => saveSetting.run(key, JSON.stringify(value)),
+        snapshot(id, key) { const row = snapshot.get(id, key); return row ? JSON.parse(row.body) : null; },
+        snapshotMetadata: (id, key) => metadata.get(id, key) || null,
+        saveSnapshot: (id, key, value) => saveSnapshot.run(id, key, JSON.stringify(value)),
+        close: () => db.close(),
+    };
 }
