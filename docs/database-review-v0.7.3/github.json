@@ -1,0 +1,1542 @@
+{
+  "schemaVersion": 1,
+  "application": "ff8bbc530ce278a883f8b1831407095a14d3277d",
+  "harnessBase": "6cb8f4d151b60cb0afb20a252908edfbbdfac49d",
+  "environment": {
+    "node": "v24.19.0",
+    "sqlite": "3.53.3",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 2,
+    "totalMemoryBytes": 8328302592,
+    "runner": "github-actions",
+    "runUrl": "https://github.com/BunBajiro/kairo/actions/runs/35337389294"
+  },
+  "fixedTime": "2026-09-18T12:00:00.000Z",
+  "notes": [
+    "Synthetic review probes, not a replacement for the full app performance suite.",
+    "The baseline fixture creates the unchanged persistent v0.7.2/v0.7.3 schema; all measured functions come from the specified application checkout.",
+    "SQL profiling is diagnostic and separate from timed comparisons. Experimental database objects exist only in the disposable fixture."
+  ],
+  "database": {
+    "pragmas": {
+      "journal_mode": "wal",
+      "synchronous": 2,
+      "foreign_keys": 1,
+      "busy_timeout": 3000,
+      "page_size": 4096,
+      "wal_autocheckpoint": 1000
+    },
+    "schema": [
+      {
+        "type": "index",
+        "name": "idx_alliance_combat_system_at",
+        "tbl_name": "alliance_combat_records",
+        "sql": "CREATE INDEX idx_alliance_combat_system_at ON alliance_combat_records(alliance_id,system_id,at)"
+      },
+      {
+        "type": "index",
+        "name": "idx_combat_character_at",
+        "tbl_name": "combat_records",
+        "sql": "CREATE INDEX idx_combat_character_at ON combat_records(character_id,at DESC)"
+      },
+      {
+        "type": "index",
+        "name": "idx_events_character_at",
+        "tbl_name": "events",
+        "sql": "CREATE INDEX idx_events_character_at ON events(character_id,at DESC)"
+      },
+      {
+        "type": "index",
+        "name": "idx_market_history_date",
+        "tbl_name": "market_history_days",
+        "sql": "CREATE INDEX idx_market_history_date ON market_history_days(date)"
+      },
+      {
+        "type": "index",
+        "name": "idx_market_import_plans_hub",
+        "tbl_name": "market_import_plans",
+        "sql": "CREATE INDEX idx_market_import_plans_hub ON market_import_plans(hub_id,updated DESC)"
+      },
+      {
+        "type": "index",
+        "name": "idx_market_orders_type",
+        "tbl_name": "market_orders",
+        "sql": "CREATE INDEX idx_market_orders_type ON market_orders(hub_id,type_id,buy,price)"
+      },
+      {
+        "type": "index",
+        "name": "idx_market_stage_type",
+        "tbl_name": "market_stage",
+        "sql": "CREATE INDEX idx_market_stage_type ON market_stage(job_id,hub_id,type_id)"
+      },
+      {
+        "type": "index",
+        "name": "idx_sessions_character_started",
+        "tbl_name": "sessions",
+        "sql": "CREATE INDEX idx_sessions_character_started ON sessions(character_id,started DESC)"
+      },
+      {
+        "type": "index",
+        "name": "idx_visits_character_at",
+        "tbl_name": "visits",
+        "sql": "CREATE INDEX idx_visits_character_at ON visits(character_id,at DESC)"
+      },
+      {
+        "type": "table",
+        "name": "alliance_combat_records",
+        "tbl_name": "alliance_combat_records",
+        "sql": "CREATE TABLE alliance_combat_records(alliance_id INTEGER NOT NULL,killmail_id INTEGER NOT NULL,system_id INTEGER NOT NULL,at TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(alliance_id,killmail_id))"
+      },
+      {
+        "type": "table",
+        "name": "cache",
+        "tbl_name": "cache",
+        "sql": "CREATE TABLE cache(key TEXT PRIMARY KEY,body TEXT NOT NULL,etag TEXT,expires INTEGER NOT NULL,updated INTEGER NOT NULL,headers TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "characters",
+        "tbl_name": "characters",
+        "sql": "CREATE TABLE characters(id INTEGER PRIMARY KEY,name TEXT NOT NULL,scopes TEXT NOT NULL,tokens TEXT NOT NULL,owner TEXT,reauth INTEGER DEFAULT 0)"
+      },
+      {
+        "type": "table",
+        "name": "combat_records",
+        "tbl_name": "combat_records",
+        "sql": "CREATE TABLE combat_records(character_id INTEGER NOT NULL,killmail_id INTEGER NOT NULL,result TEXT NOT NULL,at TEXT NOT NULL,body TEXT NOT NULL,source TEXT NOT NULL,PRIMARY KEY(character_id,killmail_id))"
+      },
+      {
+        "type": "table",
+        "name": "events",
+        "tbl_name": "events",
+        "sql": "CREATE TABLE events(id INTEGER PRIMARY KEY AUTOINCREMENT,character_id INTEGER,type TEXT NOT NULL,module TEXT NOT NULL,summary TEXT NOT NULL,payload TEXT NOT NULL,at TEXT NOT NULL,dedupe TEXT UNIQUE)"
+      },
+      {
+        "type": "table",
+        "name": "goal_progress_entries",
+        "tbl_name": "goal_progress_entries",
+        "sql": "CREATE TABLE goal_progress_entries(goal_id TEXT NOT NULL REFERENCES goals(id) ON DELETE CASCADE,entry_key TEXT NOT NULL,observed REAL NOT NULL,credited REAL NOT NULL DEFAULT 0,PRIMARY KEY(goal_id,entry_key))"
+      },
+      {
+        "type": "table",
+        "name": "goal_tracking",
+        "tbl_name": "goal_tracking",
+        "sql": "CREATE TABLE goal_tracking(goal_id TEXT PRIMARY KEY REFERENCES goals(id) ON DELETE CASCADE,source TEXT NOT NULL,type_id INTEGER,state TEXT NOT NULL DEFAULT '{}',status TEXT NOT NULL DEFAULT 'waiting',detail TEXT NOT NULL DEFAULT '',updated_at TEXT,completed_at TEXT)"
+      },
+      {
+        "type": "table",
+        "name": "goals",
+        "tbl_name": "goals",
+        "sql": "CREATE TABLE goals(id TEXT PRIMARY KEY,character_id INTEGER,title TEXT NOT NULL,target REAL NOT NULL,progress REAL NOT NULL,kind TEXT NOT NULL,done INTEGER NOT NULL DEFAULT 0,created TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "journey_hidden_links",
+        "tbl_name": "journey_hidden_links",
+        "sql": "CREATE TABLE journey_hidden_links(character_id INTEGER NOT NULL,from_visit_id INTEGER NOT NULL REFERENCES visits(id) ON DELETE CASCADE,to_visit_id INTEGER NOT NULL REFERENCES visits(id) ON DELETE CASCADE,hidden_at TEXT NOT NULL,PRIMARY KEY(character_id,from_visit_id,to_visit_id))"
+      },
+      {
+        "type": "table",
+        "name": "market_history",
+        "tbl_name": "market_history",
+        "sql": "CREATE TABLE market_history(region_id INTEGER NOT NULL,type_id INTEGER NOT NULL,body TEXT NOT NULL,updated TEXT NOT NULL,expires TEXT NOT NULL,daily_volume REAL,average REAL,reported_days INTEGER,period_from TEXT,period_to TEXT,PRIMARY KEY(region_id,type_id))"
+      },
+      {
+        "type": "table",
+        "name": "market_history_archives",
+        "tbl_name": "market_history_archives",
+        "sql": "CREATE TABLE market_history_archives(date TEXT PRIMARY KEY,total INTEGER NOT NULL,records INTEGER NOT NULL,updated TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "market_history_days",
+        "tbl_name": "market_history_days",
+        "sql": "CREATE TABLE market_history_days(region_id INTEGER NOT NULL,type_id INTEGER NOT NULL,date TEXT NOT NULL,average REAL NOT NULL,highest REAL NOT NULL,lowest REAL NOT NULL,volume INTEGER NOT NULL,order_count INTEGER NOT NULL,modified TEXT NOT NULL,PRIMARY KEY(region_id,type_id,date))"
+      },
+      {
+        "type": "table",
+        "name": "market_history_meta",
+        "tbl_name": "market_history_meta",
+        "sql": "CREATE TABLE market_history_meta(region_id INTEGER NOT NULL,type_id INTEGER NOT NULL,source TEXT NOT NULL,PRIMARY KEY(region_id,type_id))"
+      },
+      {
+        "type": "table",
+        "name": "market_hubs",
+        "tbl_name": "market_hubs",
+        "sql": "CREATE TABLE market_hubs(id INTEGER PRIMARY KEY,name TEXT NOT NULL,station_name TEXT NOT NULL,kind TEXT NOT NULL,system_id INTEGER NOT NULL,system_name TEXT NOT NULL,region_id INTEGER NOT NULL,region_name TEXT NOT NULL,enabled INTEGER NOT NULL DEFAULT 1,builtin INTEGER NOT NULL DEFAULT 0,last_scan TEXT,last_full_scan TEXT)"
+      },
+      {
+        "type": "table",
+        "name": "market_import_plans",
+        "tbl_name": "market_import_plans",
+        "sql": "CREATE TABLE market_import_plans(id TEXT PRIMARY KEY,hub_id INTEGER NOT NULL,updated TEXT NOT NULL,body TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "market_items",
+        "tbl_name": "market_items",
+        "sql": "CREATE TABLE market_items(hub_id INTEGER NOT NULL,type_id INTEGER NOT NULL,buy REAL,sell REAL,sell_average REAL,sell_volume INTEGER NOT NULL,buy_volume INTEGER NOT NULL,sell_orders INTEGER NOT NULL,buy_orders INTEGER NOT NULL,observed TEXT NOT NULL,expires TEXT NOT NULL,scan_id TEXT NOT NULL,PRIMARY KEY(hub_id,type_id))"
+      },
+      {
+        "type": "table",
+        "name": "market_jobs",
+        "tbl_name": "market_jobs",
+        "sql": "CREATE TABLE market_jobs(id TEXT PRIMARY KEY,body TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "market_orders",
+        "tbl_name": "market_orders",
+        "sql": "CREATE TABLE market_orders(hub_id INTEGER NOT NULL,order_id INTEGER NOT NULL,type_id INTEGER NOT NULL,buy INTEGER NOT NULL,price REAL NOT NULL,volume INTEGER NOT NULL,minimum INTEGER NOT NULL,range TEXT NOT NULL,issued TEXT NOT NULL,duration INTEGER NOT NULL,PRIMARY KEY(hub_id,order_id))"
+      },
+      {
+        "type": "table",
+        "name": "market_stage",
+        "tbl_name": "market_stage",
+        "sql": "CREATE TABLE market_stage(job_id TEXT NOT NULL,hub_id INTEGER NOT NULL,order_id INTEGER NOT NULL,type_id INTEGER NOT NULL,buy INTEGER NOT NULL,price REAL NOT NULL,volume INTEGER NOT NULL,minimum INTEGER NOT NULL,range TEXT NOT NULL,issued TEXT NOT NULL,duration INTEGER NOT NULL,PRIMARY KEY(job_id,hub_id,order_id))"
+      },
+      {
+        "type": "table",
+        "name": "market_types",
+        "tbl_name": "market_types",
+        "sql": "CREATE TABLE market_types(type_id INTEGER PRIMARY KEY,name TEXT NOT NULL,group_name TEXT,volume REAL)"
+      },
+      {
+        "type": "table",
+        "name": "migrations",
+        "tbl_name": "migrations",
+        "sql": "CREATE TABLE migrations(id TEXT PRIMARY KEY, applied_at TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "module_data",
+        "tbl_name": "module_data",
+        "sql": "CREATE TABLE module_data(module TEXT NOT NULL,key TEXT NOT NULL,value TEXT NOT NULL,PRIMARY KEY(module,key))"
+      },
+      {
+        "type": "table",
+        "name": "notes",
+        "tbl_name": "notes",
+        "sql": "CREATE TABLE notes(id TEXT PRIMARY KEY,character_id INTEGER,body TEXT NOT NULL,created TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "place_notes",
+        "tbl_name": "place_notes",
+        "sql": "CREATE TABLE place_notes(kind TEXT NOT NULL,entity_id INTEGER NOT NULL,name TEXT NOT NULL,body TEXT NOT NULL,tags TEXT NOT NULL,status TEXT NOT NULL,updated TEXT NOT NULL,PRIMARY KEY(kind,entity_id))"
+      },
+      {
+        "type": "table",
+        "name": "sessions",
+        "tbl_name": "sessions",
+        "sql": "CREATE TABLE sessions(id TEXT PRIMARY KEY,character_id INTEGER NOT NULL,label TEXT NOT NULL,started TEXT NOT NULL,ended TEXT, start_context TEXT NOT NULL DEFAULT '{}', end_context TEXT NOT NULL DEFAULT '{}', notes TEXT NOT NULL DEFAULT '')"
+      },
+      {
+        "type": "table",
+        "name": "settings",
+        "tbl_name": "settings",
+        "sql": "CREATE TABLE settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)"
+      },
+      {
+        "type": "table",
+        "name": "snapshots",
+        "tbl_name": "snapshots",
+        "sql": "CREATE TABLE snapshots(character_id INTEGER NOT NULL,key TEXT NOT NULL,body TEXT NOT NULL,PRIMARY KEY(character_id,key))"
+      },
+      {
+        "type": "table",
+        "name": "universe_systems",
+        "tbl_name": "universe_systems",
+        "sql": "CREATE TABLE universe_systems(system_id INTEGER PRIMARY KEY,name TEXT NOT NULL,constellation_id INTEGER,constellation_name TEXT,region_id INTEGER,region_name TEXT,security REAL,x REAL,y REAL,z REAL)"
+      },
+      {
+        "type": "table",
+        "name": "visits",
+        "tbl_name": "visits",
+        "sql": "CREATE TABLE visits(id INTEGER PRIMARY KEY AUTOINCREMENT,character_id INTEGER NOT NULL,system_id INTEGER NOT NULL,name TEXT NOT NULL,ship_type_id INTEGER,at TEXT NOT NULL)"
+      }
+    ],
+    "tables": [
+      {
+        "name": "alliance_combat_records",
+        "rows": 4000
+      },
+      {
+        "name": "cache",
+        "rows": 0
+      },
+      {
+        "name": "characters",
+        "rows": 4
+      },
+      {
+        "name": "combat_records",
+        "rows": 4000
+      },
+      {
+        "name": "events",
+        "rows": 50000
+      },
+      {
+        "name": "goal_progress_entries",
+        "rows": 0
+      },
+      {
+        "name": "goal_tracking",
+        "rows": 0
+      },
+      {
+        "name": "goals",
+        "rows": 0
+      },
+      {
+        "name": "journey_hidden_links",
+        "rows": 0
+      },
+      {
+        "name": "market_history",
+        "rows": 5000
+      },
+      {
+        "name": "market_history_archives",
+        "rows": 0
+      },
+      {
+        "name": "market_history_days",
+        "rows": 0
+      },
+      {
+        "name": "market_history_meta",
+        "rows": 0
+      },
+      {
+        "name": "market_hubs",
+        "rows": 4
+      },
+      {
+        "name": "market_import_plans",
+        "rows": 0
+      },
+      {
+        "name": "market_items",
+        "rows": 10000
+      },
+      {
+        "name": "market_jobs",
+        "rows": 0
+      },
+      {
+        "name": "market_orders",
+        "rows": 10000
+      },
+      {
+        "name": "market_stage",
+        "rows": 0
+      },
+      {
+        "name": "market_types",
+        "rows": 5000
+      },
+      {
+        "name": "migrations",
+        "rows": 7
+      },
+      {
+        "name": "module_data",
+        "rows": 0
+      },
+      {
+        "name": "notes",
+        "rows": 0
+      },
+      {
+        "name": "place_notes",
+        "rows": 0
+      },
+      {
+        "name": "sessions",
+        "rows": 200
+      },
+      {
+        "name": "settings",
+        "rows": 5
+      },
+      {
+        "name": "snapshots",
+        "rows": 126
+      },
+      {
+        "name": "universe_systems",
+        "rows": 100
+      },
+      {
+        "name": "visits",
+        "rows": 2000
+      }
+    ],
+    "integrity": "ok"
+  },
+  "sqlProfiles": {
+    "session": [
+      {
+        "sql": "SELECT type,COUNT(*) count FROM events WHERE character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) GROUP BY type",
+        "prepares": 1,
+        "prepareMs": 0.08070900000006986,
+        "executions": 1,
+        "executeMs": 40.45191900000009,
+        "rows": 2,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "benchmark-session",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0,
+          "2026-09-16T18:00:00.000Z",
+          9007199254740991,
+          "benchmark-session"
+        ],
+        "plan": [
+          {
+            "id": 7,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX idx_events_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 51,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR GROUP BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT COALESCE(SUM(CASE WHEN json_extract(payload,'$.amount')>0 THEN json_extract(payload,'$.amount') ELSE 0 END),0) income,COALESCE(SUM(CASE WHEN json_extract(payload,'$.amount')<0 THEN -json_extract(payload,'$.amount') ELSE 0 END),0) expenses FROM events WHERE character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) AND type='wallet.entry'",
+        "prepares": 1,
+        "prepareMs": 0.061894999999822176,
+        "executions": 1,
+        "executeMs": 28.948920000000044,
+        "rows": 1,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "benchmark-session",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0,
+          "2026-09-16T18:00:00.000Z",
+          9007199254740991,
+          "benchmark-session"
+        ],
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX idx_events_character_at (character_id=? AND at>? AND at<?)"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) ORDER BY at,id",
+        "prepares": 1,
+        "prepareMs": 0.06944900000007692,
+        "executions": 1,
+        "executeMs": 9.54709600000001,
+        "rows": 0,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0
+        ],
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX idx_events_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 35,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT body FROM combat_records WHERE character_id=? AND at>=? AND at<? ORDER BY at DESC,killmail_id DESC",
+        "prepares": 1,
+        "prepareMs": 0.03692799999998897,
+        "executions": 1,
+        "executeMs": 4.231672000000117,
+        "rows": 4000,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH combat_records USING INDEX idx_combat_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 28,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security FROM visits v\n        LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<? ORDER BY at,id",
+        "prepares": 1,
+        "prepareMs": 0.0504439999999704,
+        "executions": 1,
+        "executeMs": 3.6144540000000234,
+        "rows": 2000,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 17,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 46,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT body FROM alliance_combat_records WHERE alliance_id=? AND system_id=? AND at>=? AND at<?",
+        "prepares": 1,
+        "prepareMs": 0.051735999999891646,
+        "executions": 100,
+        "executeMs": 3.3800370000019484,
+        "rows": 4000,
+        "args": [
+          77,
+          30000001,
+          "2026-09-16T11:50:00.000Z",
+          "2026-09-16T18:10:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 3,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH alliance_combat_records USING INDEX idx_alliance_combat_system_at (alliance_id=? AND system_id=? AND at>? AND at<?)"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT v.*,u.region_name,u.region_id,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<=? ORDER BY at,id",
+        "prepares": 1,
+        "prepareMs": 0.041807000000062544,
+        "executions": 1,
+        "executeMs": 3.274492999999893,
+        "rows": 2000,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 17,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 45,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT * FROM events WHERE character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) ORDER BY at,id LIMIT 101 OFFSET ?",
+        "prepares": 1,
+        "prepareMs": 0.08196300000008705,
+        "executions": 1,
+        "executeMs": 0.22490800000014133,
+        "rows": 101,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "benchmark-session",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0,
+          "2026-09-16T18:00:00.000Z",
+          9007199254740991,
+          "benchmark-session",
+          0
+        ],
+        "plan": [
+          {
+            "id": 8,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX idx_events_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 76,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT * FROM sessions WHERE id=? AND character_id=?",
+        "prepares": 1,
+        "prepareMs": 0.06088300000010349,
+        "executions": 1,
+        "executeMs": 0.032641000000012355,
+        "rows": 1,
+        "args": [
+          "benchmark-session",
+          42
+        ],
+        "plan": [
+          {
+            "id": 3,
+            "parent": 0,
+            "notused": 39,
+            "detail": "SEARCH sessions USING INDEX sqlite_autoindex_sessions_1 (id=?)"
+          }
+        ]
+      }
+    ],
+    "journey": [
+      {
+        "sql": "SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? GROUP BY v.system_id ORDER BY last DESC",
+        "prepares": 1,
+        "prepareMs": 0.0629069999999956,
+        "executions": 1,
+        "executeMs": 2.2409130000000914,
+        "rows": 100,
+        "args": [
+          42
+        ],
+        "plan": [
+          {
+            "id": 11,
+            "parent": 0,
+            "notused": 62,
+            "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=?)"
+          },
+          {
+            "id": 18,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 23,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH n USING INDEX sqlite_autoindex_place_notes_1 (kind=? AND entity_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 32,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR GROUP BY"
+          },
+          {
+            "id": 122,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT v.*,u.region_id,u.region_name,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? ORDER BY at DESC,id DESC LIMIT 500",
+        "prepares": 1,
+        "prepareMs": 0.035425000000032014,
+        "executions": 1,
+        "executeMs": 0.9350870000000668,
+        "rows": 500,
+        "args": [
+          42
+        ],
+        "plan": [
+          {
+            "id": 6,
+            "parent": 0,
+            "notused": 62,
+            "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=?)"
+          },
+          {
+            "id": 13,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 47,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT from_visit_id,to_visit_id FROM journey_hidden_links WHERE character_id=?",
+        "prepares": 1,
+        "prepareMs": 0.01443699999981618,
+        "executions": 1,
+        "executeMs": 0.008205000000089058,
+        "rows": 0,
+        "args": [
+          42
+        ],
+        "plan": [
+          {
+            "id": 2,
+            "parent": 0,
+            "notused": 54,
+            "detail": "SEARCH journey_hidden_links USING COVERING INDEX sqlite_autoindex_journey_hidden_links_1 (character_id=?)"
+          }
+        ]
+      }
+    ],
+    "marketReport": [
+      {
+        "sql": "SELECT COUNT(*) items,SUM(CASE WHEN jita_sell>0 AND sell>0 THEN 1 ELSE 0 END) comparable,SUM(CASE WHEN history_updated IS NOT NULL THEN 1 ELSE 0 END) historyCount,SUM(CASE WHEN observed<=? THEN 1 ELSE 0 END) stale FROM (SELECT i.*,COALESCE(t.name,'Item '||i.type_id) name,t.group_name,j.sell jita_sell,j.buy jita_buy,j.sell_average jita_average,j.observed jita_observed,j.expires jita_expires,v.daily_volume,v.average history_average,v.reported_days,v.period_from,v.period_to,v.updated history_updated,v.expires history_expires FROM market_items i LEFT JOIN market_hubs mh ON mh.id=i.hub_id LEFT JOIN market_types t ON t.type_id=i.type_id LEFT JOIN market_items j ON j.hub_id=60003760 AND j.type_id=i.type_id LEFT JOIN market_history v ON v.region_id=mh.region_id AND v.type_id=i.type_id WHERE i.hub_id=?)",
+        "prepares": 1,
+        "prepareMs": 0.09556700000007368,
+        "executions": 1,
+        "executeMs": 12.262781000000132,
+        "rows": 1,
+        "args": [
+          "2026-09-17T12:00:00.000Z",
+          60008494
+        ],
+        "plan": [
+          {
+            "id": 10,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH i USING INDEX sqlite_autoindex_market_items_1 (hub_id=?)"
+          },
+          {
+            "id": 17,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH mh USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 22,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH t USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 27,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH j USING INDEX sqlite_autoindex_market_items_1 (hub_id=? AND type_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 36,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH v USING INDEX sqlite_autoindex_market_history_1 (region_id=? AND type_id=?) LEFT-JOIN"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT COUNT(*) n FROM (SELECT i.*,COALESCE(t.name,'Item '||i.type_id) name,t.group_name,j.sell jita_sell,j.buy jita_buy,j.sell_average jita_average,j.observed jita_observed,j.expires jita_expires,v.daily_volume,v.average history_average,v.reported_days,v.period_from,v.period_to,v.updated history_updated,v.expires history_expires FROM market_items i LEFT JOIN market_hubs mh ON mh.id=i.hub_id LEFT JOIN market_types t ON t.type_id=i.type_id LEFT JOIN market_items j ON j.hub_id=60003760 AND j.type_id=i.type_id LEFT JOIN market_history v ON v.region_id=mh.region_id AND v.type_id=i.type_id WHERE i.hub_id=? AND v.expires>? AND v.reported_days>=7 AND v.daily_volume>=1 AND i.sell_volume/v.daily_volume<?)",
+        "prepares": 1,
+        "prepareMs": 0.08103099999993901,
+        "executions": 1,
+        "executeMs": 11.278503,
+        "rows": 1,
+        "args": [
+          60008494,
+          "2026-09-18T12:00:00.000Z",
+          1
+        ],
+        "plan": [
+          {
+            "id": 9,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH i USING INDEX sqlite_autoindex_market_items_1 (hub_id=?)"
+          },
+          {
+            "id": 16,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH mh USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 21,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH v USING INDEX sqlite_autoindex_market_history_1 (region_id=? AND type_id=?)"
+          },
+          {
+            "id": 41,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH t USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 46,
+            "parent": 0,
+            "notused": 44,
+            "detail": "SEARCH j USING COVERING INDEX sqlite_autoindex_market_items_1 (hub_id=? AND type_id=?) LEFT-JOIN"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT i.*,COALESCE(t.name,'Item '||i.type_id) name,t.group_name,j.sell jita_sell,j.buy jita_buy,j.sell_average jita_average,j.observed jita_observed,j.expires jita_expires,v.daily_volume,v.average history_average,v.reported_days,v.period_from,v.period_to,v.updated history_updated,v.expires history_expires FROM market_items i LEFT JOIN market_hubs mh ON mh.id=i.hub_id LEFT JOIN market_types t ON t.type_id=i.type_id LEFT JOIN market_items j ON j.hub_id=60003760 AND j.type_id=i.type_id LEFT JOIN market_history v ON v.region_id=mh.region_id AND v.type_id=i.type_id WHERE i.hub_id=? AND (i.sell / NULLIF(j.sell,0)-1)*100>=? ORDER BY i.sell / NULLIF(j.sell,0) DESC LIMIT 40 OFFSET ?",
+        "prepares": 1,
+        "prepareMs": 0.08083999999985281,
+        "executions": 1,
+        "executeMs": 5.9730339999998705,
+        "rows": 40,
+        "args": [
+          60008494,
+          20,
+          0
+        ],
+        "plan": [
+          {
+            "id": 14,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH i USING INDEX sqlite_autoindex_market_items_1 (hub_id=?)"
+          },
+          {
+            "id": 21,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH mh USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 26,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH t USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 31,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH j USING INDEX sqlite_autoindex_market_items_1 (hub_id=? AND type_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 50,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH v USING INDEX sqlite_autoindex_market_history_1 (region_id=? AND type_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 126,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT COUNT(*) n FROM (SELECT i.*,COALESCE(t.name,'Item '||i.type_id) name,t.group_name,j.sell jita_sell,j.buy jita_buy,j.sell_average jita_average,j.observed jita_observed,j.expires jita_expires,v.daily_volume,v.average history_average,v.reported_days,v.period_from,v.period_to,v.updated history_updated,v.expires history_expires FROM market_items i LEFT JOIN market_hubs mh ON mh.id=i.hub_id LEFT JOIN market_types t ON t.type_id=i.type_id LEFT JOIN market_items j ON j.hub_id=60003760 AND j.type_id=i.type_id LEFT JOIN market_history v ON v.region_id=mh.region_id AND v.type_id=i.type_id WHERE i.hub_id=? AND (i.sell / NULLIF(j.sell,0)-1)*100>=?)",
+        "prepares": 1,
+        "prepareMs": 0.08625099999994745,
+        "executions": 1,
+        "executeMs": 5.576469999999972,
+        "rows": 1,
+        "args": [
+          60008494,
+          20
+        ],
+        "plan": [
+          {
+            "id": 9,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH i USING INDEX sqlite_autoindex_market_items_1 (hub_id=?)"
+          },
+          {
+            "id": 16,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH mh USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 21,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH t USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 26,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH j USING INDEX sqlite_autoindex_market_items_1 (hub_id=? AND type_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 45,
+            "parent": 0,
+            "notused": 44,
+            "detail": "SEARCH v USING COVERING INDEX sqlite_autoindex_market_history_1 (region_id=? AND type_id=?) LEFT-JOIN"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT COUNT(*) n FROM (SELECT i.*,COALESCE(t.name,'Item '||i.type_id) name,t.group_name,j.sell jita_sell,j.buy jita_buy,j.sell_average jita_average,j.observed jita_observed,j.expires jita_expires,v.daily_volume,v.average history_average,v.reported_days,v.period_from,v.period_to,v.updated history_updated,v.expires history_expires FROM market_items i LEFT JOIN market_hubs mh ON mh.id=i.hub_id LEFT JOIN market_types t ON t.type_id=i.type_id LEFT JOIN market_items j ON j.hub_id=60003760 AND j.type_id=i.type_id LEFT JOIN market_history v ON v.region_id=mh.region_id AND v.type_id=i.type_id WHERE i.hub_id=? AND (i.sell-i.buy)/NULLIF(i.sell,0)*100>=?)",
+        "prepares": 1,
+        "prepareMs": 0.07191400000010617,
+        "executions": 1,
+        "executeMs": 4.49450899999988,
+        "rows": 1,
+        "args": [
+          60008494,
+          20
+        ],
+        "plan": [
+          {
+            "id": 8,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH i USING INDEX sqlite_autoindex_market_items_1 (hub_id=?)"
+          },
+          {
+            "id": 27,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH mh USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 32,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH t USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 37,
+            "parent": 0,
+            "notused": 44,
+            "detail": "SEARCH j USING COVERING INDEX sqlite_autoindex_market_items_1 (hub_id=? AND type_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 45,
+            "parent": 0,
+            "notused": 44,
+            "detail": "SEARCH v USING COVERING INDEX sqlite_autoindex_market_history_1 (region_id=? AND type_id=?) LEFT-JOIN"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT COUNT(*) n FROM (SELECT i.*,COALESCE(t.name,'Item '||i.type_id) name,t.group_name,j.sell jita_sell,j.buy jita_buy,j.sell_average jita_average,j.observed jita_observed,j.expires jita_expires,v.daily_volume,v.average history_average,v.reported_days,v.period_from,v.period_to,v.updated history_updated,v.expires history_expires FROM market_items i LEFT JOIN market_hubs mh ON mh.id=i.hub_id LEFT JOIN market_types t ON t.type_id=i.type_id LEFT JOIN market_items j ON j.hub_id=60003760 AND j.type_id=i.type_id LEFT JOIN market_history v ON v.region_id=mh.region_id AND v.type_id=i.type_id WHERE i.hub_id=? AND (i.sell / NULLIF(j.sell,0)-1)*100<=?)",
+        "prepares": 1,
+        "prepareMs": 0.09022800000002462,
+        "executions": 1,
+        "executeMs": 4.089277000000038,
+        "rows": 1,
+        "args": [
+          60008494,
+          -20
+        ],
+        "plan": [
+          {
+            "id": 9,
+            "parent": 0,
+            "notused": 61,
+            "detail": "SEARCH i USING INDEX sqlite_autoindex_market_items_1 (hub_id=?)"
+          },
+          {
+            "id": 16,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH mh USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 21,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH t USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 26,
+            "parent": 0,
+            "notused": 46,
+            "detail": "SEARCH j USING INDEX sqlite_autoindex_market_items_1 (hub_id=? AND type_id=?) LEFT-JOIN"
+          },
+          {
+            "id": 45,
+            "parent": 0,
+            "notused": 44,
+            "detail": "SEARCH v USING COVERING INDEX sqlite_autoindex_market_history_1 (region_id=? AND type_id=?) LEFT-JOIN"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT * FROM market_hubs WHERE id=?",
+        "prepares": 1,
+        "prepareMs": 0.02083900000002359,
+        "executions": 1,
+        "executeMs": 0.020307999999886306,
+        "rows": 1,
+        "args": [
+          60008494
+        ],
+        "plan": [
+          {
+            "id": 2,
+            "parent": 0,
+            "notused": 33,
+            "detail": "SEARCH market_hubs USING INTEGER PRIMARY KEY (rowid=?)"
+          }
+        ]
+      }
+    ]
+  },
+  "eventIndex": {
+    "index": "CREATE INDEX review_events_character_type_at ON events(character_id,type,at)",
+    "runs": [
+      {
+        "mode": "existing",
+        "ms": {
+          "samples": [
+            150.82669699999997,
+            148.65844900000002,
+            138.92920900000013,
+            171.26504,
+            150.33297700000003
+          ],
+          "p50": 150.33297700000003,
+          "max": 171.26504
+        },
+        "responseBytes": 2675825
+      },
+      {
+        "mode": "experimental-index",
+        "ms": {
+          "samples": [
+            107.54714400000012,
+            120.14418800000021,
+            108.72864700000036,
+            108.80168300000014,
+            118.35142600000017
+          ],
+          "p50": 108.80168300000014,
+          "max": 120.14418800000021
+        },
+        "responseBytes": 2675825
+      },
+      {
+        "mode": "experimental-index",
+        "ms": {
+          "samples": [
+            110.23648899999989,
+            111.77178099999992,
+            109.85422900000003,
+            109.06872900000008,
+            111.23091699999986
+          ],
+          "p50": 110.23648899999989,
+          "max": 111.77178099999992
+        },
+        "responseBytes": 2675825
+      },
+      {
+        "mode": "existing",
+        "ms": {
+          "samples": [
+            133.15390799999977,
+            140.0340299999998,
+            132.48534500000005,
+            132.9343799999997,
+            140.64289100000042
+          ],
+          "p50": 133.15390799999977,
+          "max": 140.64289100000042
+        },
+        "responseBytes": 2675825
+      }
+    ],
+    "queryPlans": [
+      {
+        "sql": "SELECT type,COUNT(*) count FROM events WHERE character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) GROUP BY type",
+        "prepares": 1,
+        "prepareMs": 0.061965000000327564,
+        "executions": 1,
+        "executeMs": 33.66659899999968,
+        "rows": 2,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "benchmark-session",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0,
+          "2026-09-16T18:00:00.000Z",
+          9007199254740991,
+          "benchmark-session"
+        ],
+        "plan": [
+          {
+            "id": 7,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX idx_events_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 51,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR GROUP BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT COALESCE(SUM(CASE WHEN json_extract(payload,'$.amount')>0 THEN json_extract(payload,'$.amount') ELSE 0 END),0) income,COALESCE(SUM(CASE WHEN json_extract(payload,'$.amount')<0 THEN -json_extract(payload,'$.amount') ELSE 0 END),0) expenses FROM events WHERE character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) AND type='wallet.entry'",
+        "prepares": 1,
+        "prepareMs": 0.06531100000029255,
+        "executions": 1,
+        "executeMs": 9.661440000000312,
+        "rows": 1,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "benchmark-session",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0,
+          "2026-09-16T18:00:00.000Z",
+          9007199254740991,
+          "benchmark-session"
+        ],
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX review_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT body FROM alliance_combat_records WHERE alliance_id=? AND system_id=? AND at>=? AND at<?",
+        "prepares": 1,
+        "prepareMs": 0.02563800000007177,
+        "executions": 100,
+        "executeMs": 7.613214000003154,
+        "rows": 4000,
+        "args": [
+          77,
+          30000001,
+          "2026-09-16T11:50:00.000Z",
+          "2026-09-16T18:10:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 3,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH alliance_combat_records USING INDEX idx_alliance_combat_system_at (alliance_id=? AND system_id=? AND at>? AND at<?)"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT body FROM combat_records WHERE character_id=? AND at>=? AND at<? ORDER BY at DESC,killmail_id DESC",
+        "prepares": 1,
+        "prepareMs": 0.034615000000030705,
+        "executions": 1,
+        "executeMs": 4.337319000000207,
+        "rows": 4000,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH combat_records USING INDEX idx_combat_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 28,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security FROM visits v\n        LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<? ORDER BY at,id",
+        "prepares": 1,
+        "prepareMs": 0.078125,
+        "executions": 1,
+        "executeMs": 4.169716999999764,
+        "rows": 2000,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 17,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 46,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT v.*,u.region_name,u.region_id,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<=? ORDER BY at,id",
+        "prepares": 1,
+        "prepareMs": 0.03849099999979444,
+        "executions": 1,
+        "executeMs": 3.6481579999999667,
+        "rows": 2000,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z"
+        ],
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 17,
+            "parent": 0,
+            "notused": 45,
+            "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+          },
+          {
+            "id": 45,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT * FROM events WHERE character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) ORDER BY at,id LIMIT 101 OFFSET ?",
+        "prepares": 1,
+        "prepareMs": 0.07644200000004275,
+        "executions": 1,
+        "executeMs": 0.24319199999990815,
+        "rows": 101,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "benchmark-session",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0,
+          "2026-09-16T18:00:00.000Z",
+          9007199254740991,
+          "benchmark-session",
+          0
+        ],
+        "plan": [
+          {
+            "id": 8,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX idx_events_character_at (character_id=? AND at>? AND at<?)"
+          },
+          {
+            "id": 76,
+            "parent": 0,
+            "notused": 0,
+            "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT * FROM sessions WHERE id=? AND character_id=?",
+        "prepares": 1,
+        "prepareMs": 0.05770699999993667,
+        "executions": 1,
+        "executeMs": 0.047198000000207685,
+        "rows": 1,
+        "args": [
+          "benchmark-session",
+          42
+        ],
+        "plan": [
+          {
+            "id": 3,
+            "parent": 0,
+            "notused": 39,
+            "detail": "SEARCH sessions USING INDEX sqlite_autoindex_sessions_1 (id=?)"
+          }
+        ]
+      },
+      {
+        "sql": "SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) ORDER BY at,id",
+        "prepares": 1,
+        "prepareMs": 0.04951200000004974,
+        "executions": 1,
+        "executeMs": 0.017923000000337197,
+        "rows": 0,
+        "args": [
+          42,
+          "2026-09-16T12:00:00.000Z",
+          "2026-09-16T18:00:00.000Z",
+          "2026-09-16T12:00:00.000Z",
+          0
+        ],
+        "plan": [
+          {
+            "id": 4,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH events USING INDEX review_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+          }
+        ]
+      }
+    ],
+    "outputsEqual": true
+  },
+  "snapshotMetadata": {
+    "assets": 20000,
+    "bodyBytes": 3109032,
+    "currentMs": {
+      "samples": [
+        4.6006680000000415,
+        4.888372000000345,
+        4.556926000000203,
+        4.51233400000001,
+        4.5655219999998735,
+        4.501994999999624,
+        4.599796000000424,
+        4.5197070000003805,
+        4.5683570000001055,
+        4.49758600000041,
+        4.577755000000252,
+        4.5129450000004,
+        4.552918000000318,
+        4.498948999999811,
+        4.563098000000537
+      ],
+      "p50": 4.556926000000203,
+      "max": 4.888372000000345
+    },
+    "experimentalSeparateMetadataMs": {
+      "samples": [
+        0.005059999999502907,
+        0.0029149999991204822,
+        0.0024549999998271232,
+        0.0023240000000441796,
+        0.002434999999422871,
+        0.0023039999996399274,
+        0.002283999999235675,
+        0.005420000000412983,
+        0.008256000000073982,
+        0.002335000000130094,
+        0.002334000000701053,
+        0.0022739999994882965,
+        0.002344999999877473,
+        0.002304000000549422,
+        0.0145169999996142
+      ],
+      "p50": 0.002344999999877473,
+      "max": 0.0145169999996142
+    },
+    "outputsEqual": true,
+    "note": "Read microbenchmark only. No synchronisation/invalidation or migration implemented; not an end-to-end idle-CPU claim."
+  },
+  "historyGrowth": {
+    "types": 5000,
+    "runs": [
+      {
+        "days": 30,
+        "storedJsonBytes": 16355000,
+        "coldAnalysisMs": {
+          "samples": [
+            701.4444880000001,
+            762.2201209999994,
+            1348.5037430000002
+          ],
+          "p50": 762.2201209999994,
+          "max": 1348.5037430000002
+        },
+        "responseBytes": 201044
+      },
+      {
+        "days": 365,
+        "storedJsonBytes": 198930000,
+        "coldAnalysisMs": {
+          "samples": [
+            2180.262973000001,
+            2349.6871530000008,
+            2026.87889
+          ],
+          "p50": 2180.262973000001,
+          "max": 2349.6871530000008
+        },
+        "responseBytes": 201044
+      },
+      {
+        "days": 30,
+        "storedJsonBytes": 16355000,
+        "coldAnalysisMs": {
+          "samples": [
+            562.198040000003,
+            670.8301210000027,
+            584.4933930000007
+          ],
+          "p50": 584.4933930000007,
+          "max": 670.8301210000027
+        },
+        "responseBytes": 201044
+      }
+    ],
+    "outputsEqual": true
+  },
+  "historyWrites": {
+    "types": 1000,
+    "daysPerType": 30,
+    "runs": [
+      {
+        "mode": "existing",
+        "totalMs": 412.180343,
+        "synchronousBlockMs": {
+          "samples": [
+            43.00132999999914,
+            52.72248500000205,
+            37.97606199999791,
+            33.653881000002,
+            36.132684000000154,
+            36.933223,
+            36.7528029999994,
+            44.564761999998154,
+            40.221331000000646,
+            39.21559300000081
+          ],
+          "p50": 39.21559300000081,
+          "max": 52.72248500000205
+        }
+      },
+      {
+        "mode": "experimental-batch",
+        "totalMs": 87.06652899999972,
+        "synchronousBlockMs": {
+          "samples": [
+            6.356712000000698,
+            6.4326360000013665,
+            6.344980000001669,
+            5.921480000000884,
+            7.373552000000927,
+            6.76774800000203,
+            6.418789999999717,
+            6.496835999998439,
+            6.329721000001882,
+            6.105338000001211
+          ],
+          "p50": 6.418789999999717,
+          "max": 7.373552000000927
+        }
+      },
+      {
+        "mode": "experimental-batch",
+        "totalMs": 72.91825600000084,
+        "synchronousBlockMs": {
+          "samples": [
+            6.356502000002365,
+            6.286079000001337,
+            6.133581000001868,
+            6.115426000000298,
+            6.133520999999746,
+            6.38861199999883,
+            6.139561999996658,
+            6.198081999998976,
+            6.1898870000004536,
+            6.023352000000159
+          ],
+          "p50": 6.1898870000004536,
+          "max": 6.38861199999883
+        }
+      },
+      {
+        "mode": "existing",
+        "totalMs": 99.55271300000095,
+        "synchronousBlockMs": {
+          "samples": [
+            8.912567999999737,
+            8.88497599999755,
+            8.75550099999964,
+            8.802349000001414,
+            9.142762999999832,
+            8.847905999999057,
+            8.816976999998587,
+            8.719893999998021,
+            8.821615999997448,
+            8.902618000000075
+          ],
+          "p50": 8.847905999999057,
+          "max": 9.142762999999832
+        }
+      }
+    ],
+    "note": "Same saveHistory function in both cases; each run yields every 100 types. Current code autocommits both rows per type; experimental batches use a transaction around each 100-type group. No durability settings changed.",
+    "outputsEqual": true
+  },
+  "complete": true
+}
