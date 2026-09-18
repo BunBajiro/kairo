@@ -87,3 +87,54 @@ test('upgrade invalidates legacy market responses once and queues fresh scans wh
  const next=openStore(dir);try{assert.equal(next.db.prepare('SELECT COUNT(*) n FROM market_items').get().n,0);assert.equal(next.db.prepare('SELECT COUNT(*) n FROM market_history').get().n,0);assert.equal(next.db.prepare('SELECT COUNT(*) n FROM cache').get().n,2);assert.equal(next.db.prepare('SELECT progress FROM goals WHERE id=?').get('kept').progress,3);assert.equal(next.get('market:imports:'+AMARR).cargo,32100);assert.deepEqual(next.get('market:upgrade').queue.map(q=>q.hubId),[JITA,AMARR]);const calls=[];const refreshed=createMarkets(next,auth,{request:async path=>{calls.push(path);const at=iso(NOW);return {data:path.includes('/history?')?history():[{order_id:777,type_id:1403,location_id:path.includes('10000002')?JITA:AMARR,price:1000,volume_remain:50,is_buy_order:false,min_volume:1,issued:at,duration:90}],headers:{},updatedAt:at,expiresAt:iso(NOW+300000)};}},{now:()=>NOW,spacingMs:0,historySource:'esi'});try{assert.throws(()=>refreshed.start({hubId:JITA,mode:'quick',internalReference:true}),/Restore/);refreshed.resumeUpgrade();await refreshed.idle();refreshed.resumeUpgrade();await refreshed.idle();assert.equal(next.get('market:upgrade').queue.length,0);assert.equal(next.db.prepare('SELECT enabled FROM market_hubs WHERE id=?').get(JITA).enabled,0);assert.ok(!refreshed.overview().hubs.some(h=>h.id===JITA));assert.equal(refreshed.browse(AMARR).rows[0].sell,1000);assert.ok(calls.filter(p=>p.includes('/orders')).length>=2);const again=openStore(dir);assert.equal(again.db.prepare('SELECT COUNT(*) n FROM market_items').get().n,2);again.close();}finally{await refreshed.close();}}finally{next.close();}});
 test('upgrade refresh explains missing structure access without exposing or silently dropping the pending hub',async t=>{const {store}=await storage(t),m=createMarkets(store,{characters:()=>[]},{request(){throw new Error('Must not request unauthorized structure data');}},{now:()=>NOW});t.after(()=>m.close());const id=1040000000001;store.db.prepare('INSERT INTO market_hubs(id,name,station_name,kind,system_id,system_name,region_id,region_name) VALUES(?,?,?,?,?,?,?,?)').run(id,'Staging','Fortizar','structure',30000001,'Home',10000099,'Region');store.set('market:upgrade',{queue:[{hubId:id,mode:'full',characterId:99}],total:1,completed:0,paused:false});const status=m.resumeUpgrade();assert.equal(status.upgrade.queue.length,1);assert.match(status.upgrade.detail,/connected alt/);assert.equal(status.job,null);});
 test('import endpoints and saved plans require private sessions and CSRF and never appear on the OBS service',async t=>{const {dir}=await storage(t);const app=await startKairo({port:18460,streamPort:18461,dataDir:dir,noSync:true,fetcher:async()=>new Response('[]')});t.after(()=>app.close());for(const path of ['/api/markets/imports?hub='+AMARR,'/api/markets/imports/analyse?hub='+AMARR,'/api/markets/imports/plans?hub='+AMARR+'&id=missing']){assert.equal((await fetch(app.origin+path)).status,401);assert.equal((await fetch(app.streamOrigin+path)).status,404);}const page=await fetch(app.origin+'/'),cookie=page.headers.get('set-cookie').split(';')[0],boot=await(await fetch(app.origin+'/api/bootstrap',{headers:{cookie}})).json();assert.equal((await fetch(app.origin+'/api/markets/imports?hub='+AMARR,{headers:{cookie}})).status,200);const input=JSON.stringify({hubId:AMARR,settings:DEFAULT_IMPORT_SETTINGS});assert.equal((await fetch(app.origin+'/api/markets/imports/settings',{method:'PUT',headers:{cookie,'Content-Type':'application/json'},body:input})).status,403);const valid=await fetch(app.origin+'/api/markets/imports/settings',{method:'PUT',headers:{cookie,origin:app.origin,'X-Kairo-CSRF':boot.csrf,'Content-Type':'application/json'},body:input});assert.equal(valid.status,200);assert.equal((await valid.json()).settings.cargo,10000);assert.equal((await fetch(app.streamOrigin+'/api/markets/upgrade',{method:'POST'})).status,405);});
+
+test('import cache ignores unrelated writes but follows books, profiles, plans and access changes',async t=>{
+ const {store,imports}=await desk(t);seedItem(store,1403);
+ const first=await imports.analyse(AMARR);
+ store.set('ui:theme','mint');store.saveSnapshot(42,'assets',{status:'ready',data:[]});
+ assert.strictEqual(await imports.analyse(AMARR),first);
+ store.db.prepare('UPDATE market_orders SET price=? WHERE hub_id=?').run(1200000,JITA);
+ const changed=await imports.analyse(AMARR);assert.notStrictEqual(changed,first);assert.equal(changed.groups.flatMap(g=>g.items)[0].jita,1200000);
+ const orders=store.snapshot(43,'orders');store.saveSnapshot(43,'orders',{...orders,data:[{order_id:1403,type_id:1403,location_id:JITA,is_buy_order:false,volume_remain:1,issued:iso(NOW),duration:90}]});
+ assert.equal((await imports.analyse(AMARR)).groups.flatMap(g=>g.items).length,0);
+ store.saveSnapshot(43,'orders',orders);
+ const restored=await imports.analyse(AMARR),item=restored.groups.flatMap(g=>g.items)[0];
+ const plan=await imports.savePlan(AMARR,{name:'Cache freshness',lines:[{typeId:item.typeId,...item.best.profiteering}]});
+ assert.equal((await imports.analyse(AMARR)).plans[0].id,plan.id);
+ imports.removePlan(AMARR,plan.id);assert.equal((await imports.analyse(AMARR)).plans.length,0);
+ store.set('module:training',false);assert.equal((await imports.analyse(AMARR)).fees.ready,false);
+ store.set('module:training',true);assert.equal((await imports.analyse(AMARR)).fees.ready,true);
+ let connected=chars;const service=createImports(store,{characters:()=>connected},{now:()=>NOW});
+ await service.analyse(AMARR);connected=chars.map(c=>c.id===42?{...c,needsReauth:true}:c);
+ assert.equal((await service.analyse(AMARR)).buyer.ready,false);
+});
+
+test('import revisions cannot reuse rolled-back data and observe other database connections',async t=>{
+ const {store,dir,imports}=await desk(t);seedItem(store,1403);await imports.analyse(AMARR);
+ store.db.exec('BEGIN');store.db.prepare('UPDATE market_orders SET price=? WHERE hub_id=?').run(1100000,JITA);
+ assert.equal((await imports.analyse(AMARR)).groups.flatMap(g=>g.items)[0].jita,1100000);
+ store.db.exec('ROLLBACK');store.db.prepare('UPDATE market_orders SET price=? WHERE hub_id=?').run(1250000,JITA);
+ assert.equal((await imports.analyse(AMARR)).groups.flatMap(g=>g.items)[0].jita,1250000);
+ const other=openStore(dir);try{other.db.prepare('UPDATE market_orders SET price=? WHERE hub_id=?').run(1300000,JITA);}finally{other.close();}
+ assert.equal((await imports.analyse(AMARR)).groups.flatMap(g=>g.items)[0].jita,1300000);
+});
+
+test('import cache expires at freshness and order deadlines before its thirty-second ceiling',async t=>{
+ const {store}=await desk(t);seedItem(store,1403);let clock=NOW;
+ const sample=store.snapshot(42,'skills');store.saveSnapshot(42,'skills',{...sample,expiresAt:iso(NOW+500)});
+ store.db.prepare('UPDATE market_orders SET issued=?,duration=1 WHERE hub_id=?').run(iso(NOW-DAY+1000),JITA);
+ const service=createImports(store,auth,{now:()=>clock});
+ assert.equal((await service.analyse(AMARR)).fees.stale,false);
+ clock+=500;assert.equal((await service.analyse(AMARR)).fees.stale,true);
+ clock+=500;assert.equal((await service.analyse(AMARR)).groups.flatMap(g=>g.items).length,0);
+});
+
+test('import single-flight retries when a book changes during a yielded calculation',async t=>{
+ const {store,imports}=await desk(t),catalog=JSON.parse(readFileSync(new URL('../../server/data/market-categories.json',import.meta.url),'utf8')),index=createMarketCategories();
+ const ids=[...new Set(catalog.groups.flatMap(g=>g.types))].filter(id=>index.type(id).root===9&&index.type(id).volume>0&&index.type(id).volume<=100).slice(0,120);
+ assert.equal(ids.length,120);for(const id of ids)seedItem(store,id);
+ const pending=imports.analyse(AMARR),second=imports.analyse(AMARR);
+ store.db.prepare('UPDATE market_orders SET price=? WHERE hub_id=?').run(1300000,JITA);
+ const [a,b]=await Promise.all([pending,second]);assert.strictEqual(a,b);
+ assert.ok(a.groups.flatMap(g=>g.items).length>0);assert.ok(a.groups.flatMap(g=>g.items).every(item=>item.jita===1300000));
+});

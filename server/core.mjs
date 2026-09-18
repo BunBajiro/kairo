@@ -17,6 +17,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     let stopped = false;
     const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
     const protectionKeys = new Set(['location', 'fw', 'sovereignty', 'profile', 'contacts', 'corporation_contacts', 'alliance_contacts']);
+    const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
     let polling = pollingValues(store.get('esi:polling', {}));
     const protection = createProtectionTracker();
     function send(type, data) { for (const c of uiClients) {
@@ -162,11 +163,11 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     }
     async function runDataset(character, m, d) {
         const id = character?.id || 0;
-        const prior = store.snapshot(id, d.key);
         if (!enabled(m) || character?.needsReauth)
             return;
+        const metadata = store.snapshotMetadata(id, d.key);
         if (d.scope && !character?.scopes.includes(d.scope)) {
-            if (prior?.status !== 'missing_scope' || prior.scope !== d.scope)
+            if (metadata?.status !== 'missing_scope' || metadata.scope !== d.scope)
                 store.saveSnapshot(id, d.key, { status: 'missing_scope', data: null, scope: d.scope });
             return;
         }
@@ -185,15 +186,16 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 store.saveSnapshot(id, d.key, { status: 'not_applicable', data: [], ownerId: null });
                 return;
             }
-            if (prior?.ownerId !== ownerId) { nextRun.delete(key); requested.add(key); }
+            if (metadata?.ownerId !== ownerId) { nextRun.delete(key); requested.add(key); }
         }
         const forced = requested.delete(key);
         // Restore schedules from durable samples after a restart. Scope and
         // organization checks above must always precede reuse.
-        let scheduled = nextRun.get(key) ?? (prior?.status === 'ready' ? Date.parse(prior.refreshAt) : Date.parse(prior?.retryAt));
-        if (protectionEvidence(d.key, id) && prior?.status === 'ready') scheduled = Math.min(scheduled, Date.parse(prior.expiresAt));
+        let scheduled = nextRun.get(key) ?? (metadata?.status === 'ready' ? Date.parse(metadata.refreshAt) : Date.parse(metadata?.retryAt));
+        if (protectionEvidence(d.key, id) && metadata?.status === 'ready') scheduled = Math.min(scheduled, Date.parse(metadata.expiresAt));
         if (!forced && scheduled > Date.now())
             return;
+        const prior = store.snapshot(id, d.key);
         nextRun.set(key, Date.now() + 60000);
         try {
             const options = { characterId: d.scope ? id : 0, ttl: d.ttl, priority: protectionKeys.has(d.key) };
@@ -292,7 +294,11 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     function protectedCharacter() { const chars = auth.characters(); return { chars, id: store.get('opsec', {}).characterId || chars[0]?.id || 0 }; }
     function refreshOPSEC() {
         const settings = store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] });
-        const { chars, id } = protectedCharacter(), character = chars.find(c => c.id === id), s = snapshots(id, false);
+        const { chars, id } = protectedCharacter(), character = chars.find(c => c.id === id), s = {};
+        for (const key of protectionKeys) {
+            const {module} = datasets.get(key);
+            s[key] = enabled(module) ? store.snapshot(module.id === 'universe' ? 0 : id, key) || {status:'waiting', data:null} : {status:'disabled', data:null};
+        }
         const next = { ...protection({ manual: settings.manual, location: s.location, system: s.location?.data?.system, constellation: s.location?.data?.constellation, region: s.location?.data?.region, fw: s.fw, sovereignty: s.sovereignty, contacts: s.contacts, corporation_contacts: s.corporation_contacts, alliance_contacts: s.alliance_contacts, profile: s.profile, settings, characterId: id, available: !!character && !character.needsReauth && character.scopes.includes('esi-location.read_location.v1') }), characterId: id };
         const previous = stream.getOPSEC();
         next.standingSources = ['contacts', 'corporation_contacts', 'alliance_contacts'].map(key => ({ key, status: s[key]?.status || 'waiting', updatedAt: s[key]?.updatedAt, expiresAt: s[key]?.expiresAt, error: s[key]?.error, scope: catalog.find(m => m.id === 'opsec').datasets.find(d => d.key === key).scope, count: Array.isArray(s[key]?.data) ? s[key].data.filter(c => c.contact_type === 'alliance').length : 0 }));

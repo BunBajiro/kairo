@@ -39,10 +39,9 @@ export function loyaltyReport(start, finish, ended, names={}) {
     return {status, rows, delta:rows.reduce((n,r)=>n+r.delta,0), startSampledAt:a.sampledAt, endSampledAt:b.sampledAt, sameSample:a.sampledAt===b.sampledAt, scope:'esi-characters.read_loyalty.v1'};
 }
 
-export function sessionRoute(store, session, start, end) {
+export function sessionRoute(store, session, start, end, names=store.get('names',{})) {
     const from = Date.parse(session.started), to = Date.parse(end);
-    const names = store.get('names',{});
-    const rows = store.db.prepare(`SELECT v.*,u.region_id,u.region_name,u.security FROM visits v
+    const rows = store.db.prepare(`SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security FROM visits v
         LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<? ORDER BY at,id`).all(session.character_id,session.started,end);
     let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, clipped:true} : null;
     if (!initial && !start.capturedAt) {
@@ -51,9 +50,12 @@ export function sessionRoute(store, session, start, end) {
     }
     const points = [];
     if(initial&&rows[0]?.system_id===initial.system_id&&Date.parse(rows[0].at)===from)initial=null;
+    if(initial){
+        const system=store.db.prepare('SELECT name,region_id,region_name,security FROM universe_systems WHERE system_id=?').get(initial.system_id);
+        if(system)initial={...initial,system_name:system.name,region_id:system.region_id??initial.region_id,region_name:system.region_name??initial.region_name,security:system.security??initial.security};
+    }
     for (const row of [...(initial?[initial]:[]), ...rows]) {
-        const system = store.db.prepare('SELECT * FROM universe_systems WHERE system_id=?').get(row.system_id);
-        points.push({...row, name:row.name||system?.name||names[row.system_id]||String(row.system_id), region_id:system?.region_id??row.region_id, region_name:system?.region_name??row.region_name, security:system?.security??row.security});
+        points.push({...row, name:row.name||row.system_name||names[row.system_id]||String(row.system_id)});
     }
     return points.map((v,i) => {
         const entered = Math.max(from,Date.parse(v.at)), exited = Math.min(to,Date.parse(points[i+1]?.at||end));
@@ -98,13 +100,36 @@ export function mergeCombatWindows(windows) {
 
 export function allianceSummary(route, records, allianceId, now=Date.now()) {
     const relevant = [...new Map(records.filter(k=>{const s=allianceSides(k,allianceId);return s.kill||s.loss;}).map(k=>[k.killmail_id,k])).values()];
+    const indexed = relevant.map(record=>({record,at:Date.parse(record.killmail_time)}));
+    const times = new Map();
+    for(const {record,at} of indexed){
+        if(!Number.isFinite(at))continue;
+        if(!times.has(record.solar_system_id))times.set(record.solar_system_id,[]);
+        times.get(record.solar_system_id).push(at);
+    }
+    for(const values of times.values())values.sort((a,b)=>a-b);
+    const lowerBound=(values,at)=>{let lo=0,hi=values.length;while(lo<hi){const mid=(lo+hi)>>>1;if(values[mid]<at)lo=mid+1;else hi=mid;}return lo;};
     // Presence qualifies the visit FIRST. A buffered kill must never qualify a
     // quiet transit or recursively extend a window into another engagement.
-    const visits = route.map(v=>({...v, combatActive:relevant.some(k=>k.solar_system_id===v.systemId && Date.parse(k.killmail_time)>=Date.parse(v.entered) && Date.parse(k.killmail_time)<Date.parse(v.exited))}));
+    const visits = route.map(v=>{
+        const values=times.get(v.systemId)||[],from=Date.parse(v.entered),to=Date.parse(v.exited);
+        return {...v,combatActive:Number.isFinite(from)&&Number.isFinite(to)&&values[lowerBound(values,from)]<to};
+    });
     const windows = mergeCombatWindows(visits.filter(v=>v.combatActive).map(v=>({systemId:v.systemId,name:v.name,from:iso(Date.parse(v.entered)-COMBAT_BUFFER_MS),to:iso(Date.parse(v.exited)+COMBAT_BUFFER_MS),visitIds:[v.id]})));
-    const matches = relevant.filter(k=>Date.parse(k.killmail_time)<=now && windows.some(w=>w.systemId===k.solar_system_id && Date.parse(k.killmail_time)>=Date.parse(w.from) && Date.parse(k.killmail_time)<Date.parse(w.to)));
+    const ranges = new Map();
+    for(const w of windows){
+        if(!ranges.has(w.systemId))ranges.set(w.systemId,{starts:[],ends:[]});
+        const group=ranges.get(w.systemId);group.starts.push(Date.parse(w.from));group.ends.push(Date.parse(w.to));
+    }
+    const matches = indexed.filter(({record,at})=>{
+        if(!(at<=now))return false;
+        const group=ranges.get(record.solar_system_id);if(!group)return false;
+        let index=lowerBound(group.starts,at);
+        if(group.starts[index]!==at)index--;
+        return index>=0&&at<group.ends[index];
+    });
     let kills=0,losses=0,destroyed=0,lost=0,missingDestroyed=0,missingLost=0;
-    const items = matches.sort((a,b)=>Date.parse(b.killmail_time)-Date.parse(a.killmail_time)||b.killmail_id-a.killmail_id).map(k=>{
+    const items = matches.sort((a,b)=>b.at-a.at||b.record.killmail_id-a.record.killmail_id).map(({record:k})=>{
         const sides=allianceSides(k,allianceId),value=killValue(k);
         if(sides.kill){kills++;if(value===null)missingDestroyed++;else destroyed+=value;}
         if(sides.loss){losses++;if(value===null)missingLost++;else lost+=value;}
@@ -114,13 +139,15 @@ export function allianceSummary(route, records, allianceId, now=Date.now()) {
 }
 
 export function sessionDetails(store, session, start, finish, end) {
-    const names=store.get('names',{}),route=sessionRoute(store,session,start,end);
+    const names=store.get('names',{}),route=sessionRoute(store,session,start,end,names);
     // The alliance current at session start stays attached to the historical
     // flight. Older sessions without this evidence cannot reconstruct it.
     const allianceId=start.alliance?.id||null;
     const records=[];
-    if(allianceId)for(const systemId of new Set(route.map(v=>v.systemId))){
-        records.push(...store.db.prepare('SELECT body FROM alliance_combat_records WHERE alliance_id=? AND system_id=? AND at>=? AND at<?').all(allianceId,systemId,iso(Date.parse(session.started)-COMBAT_BUFFER_MS),iso(Date.parse(end)+COMBAT_BUFFER_MS)).map(r=>JSON.parse(r.body)));
+    if(allianceId){
+        const query=store.db.prepare('SELECT body FROM alliance_combat_records WHERE alliance_id=? AND system_id=? AND at>=? AND at<?');
+        const from=iso(Date.parse(session.started)-COMBAT_BUFFER_MS),to=iso(Date.parse(end)+COMBAT_BUFFER_MS);
+        for(const systemId of new Set(route.map(v=>v.systemId)))records.push(...query.all(allianceId,systemId,from,to).map(r=>JSON.parse(r.body)));
     }
     const personal=store.db.prepare('SELECT body FROM combat_records WHERE character_id=? AND at>=? AND at<? ORDER BY at DESC,killmail_id DESC').all(session.character_id,session.started,end).map(r=>JSON.parse(r.body));
     const personalCombat={items:personal.map(k=>({killmailId:k.killmail_id,at:k.killmail_time,systemId:k.solar_system_id,shipTypeId:k.victim.ship_type_id,result:k.result,value:killValue(k)})),destroyed:0,lost:0,missingDestroyed:0,missingLost:0};

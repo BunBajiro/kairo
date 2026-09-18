@@ -3,12 +3,15 @@ import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createMarketCategories} from './market-categories.mjs';
 import {DAY} from './market-history.mjs';
+import {importRevision} from './import-cache.mjs';
 import {IMPORT_CATEGORIES,DEFAULT_IMPORT_SETTINGS,validateImportSettings,tradingRates,importCategory,buildOpportunity,scenario,packCargo,marketPrice} from './import-math.mjs';
 const owners=JSON.parse(readFileSync(new URL('./data/npc-market-owners.json',import.meta.url),'utf8')).corporations;
 const taxonomy=createMarketCategories(),JITA=60003760,iso=n=>new Date(n).toISOString();
 const privateKeys={skills:['training','esi-skills.read_skills.v1'],standings:['combat','esi-characters.read_standings.v1'],orders:['wallet','esi-markets.read_character_orders.v1']};
 export function createImports(store,auth,{now=()=>Date.now(),request,refreshCharacter}={}){
  const db=store.db;let memo=null,flight=null,refreshFlight=null;
+ const revision=importRevision(db);
+ const cacheKey=id=>JSON.stringify([id,revision(),auth.characters().map(c=>[c.id,c.name,!!c.needsReauth,c.scopes])]);
  const hub=id=>{const h=db.prepare('SELECT * FROM market_hubs WHERE id=?').get(Number(id));if(!h)throw new Error('Choose a saved trade hub.');return h;};
  const settings=id=>({...DEFAULT_IMPORT_SETTINGS,characterId:auth.characters()[0]?.id||0,...store.get('market:imports:'+id,{})});
  function snapshot(c,key){const [module,scope]=privateKeys[key];if(!c||c.needsReauth||!c.scopes.includes(scope)||!store.get('module:'+module,true))return null;return store.snapshot(c.id,key);}
@@ -45,24 +48,48 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
   })().finally(()=>{refreshFlight=null;});return refreshFlight;
  }
  function ownership(id){const ownIds=new Set(),ownTypes=new Set();for(const c of auth.characters()){const sample=snapshot(c,'orders');if(!Array.isArray(sample?.data))continue;for(const o of sample.data){if(Number.isSafeInteger(o.order_id))ownIds.add(o.order_id);if(o.location_id===id&&!o.is_buy_order&&o.volume_remain>0&&Date.parse(o.issued)+o.duration*DAY>now())ownTypes.add(o.type_id);}}return {ownIds,ownTypes};}
- function levelMap(id,typeIds,ownIds){const map=new Map();if(!typeIds.length)return map;const rows=db.prepare('SELECT type_id,order_id,price,volume,issued,duration FROM market_orders WHERE hub_id=? AND buy=0 AND volume>0 AND type_id IN (SELECT value FROM json_each(?)) ORDER BY type_id,price,order_id').all(id,JSON.stringify(typeIds));
-  for(const r of rows){if(ownIds.has(r.order_id)||Date.parse(r.issued)+r.duration*DAY<=now())continue;if(!map.has(r.type_id))map.set(r.type_id,[]);const levels=map.get(r.type_id),last=levels.at(-1);if(last?.price===r.price)last.volume+=r.volume;else levels.push({price:r.price,volume:r.volume});}return map;
+ function levelMap(id,typeIds,ownIds,expires){const map=new Map();if(!typeIds.length)return map;const rows=db.prepare('SELECT type_id,order_id,price,volume,issued,duration FROM market_orders WHERE hub_id=? AND buy=0 AND volume>0 AND type_id IN (SELECT value FROM json_each(?)) ORDER BY type_id,price,order_id').all(id,JSON.stringify(typeIds));
+  for(const r of rows){const end=Date.parse(r.issued)+r.duration*DAY;expires(end);if(ownIds.has(r.order_id)||end<=now())continue;if(!map.has(r.type_id))map.set(r.type_id,[]);const levels=map.get(r.type_id),last=levels.at(-1);if(last?.price===r.price)last.volume+=r.volume;else levels.push({price:r.price,volume:r.volume});}return map;
  }
  async function calculate(id){const context=state(id),h=context.hub,s=context.settings,empty=()=>({...context,groups:context.categories.map(g=>({...g,items:[],qualified:0})),screened:0,excluded:{},generatedAt:iso(now()),dataStamp:null});
-  if(h.id===JITA||!context.fees.ready||!context.ordersReady||!context.buyer.ready)return {result:{...empty(),reason:h.id===JITA?'Choose the destination hub. Jita is the purchasing market.':!context.ordersReady?'Update your selling character’s orders in Wallet & trade, so existing listings can be excluded.':!context.fees.ready?'Update trader data to calculate fees for your selling character.':context.buyer.issues[0]},models:new Map()};
+  const started=now();let until=Math.min(started+30000,(Math.floor(started/DAY)+1)*DAY);
+  const expires=at=>{if(Number.isFinite(at)&&at>started)until=Math.min(until,at);};
+  expires(store.get('market:owner:'+h.id,null)?.expires);
+  for(const c of auth.characters())for(const key of Object.keys(privateKeys)){
+   const sample=snapshot(c,key);expires(Date.parse(sample?.refreshAt||sample?.expiresAt));
+   if(key==='orders'&&Array.isArray(sample?.data))for(const order of sample.data)expires(Date.parse(order.issued)+order.duration*DAY);
+  }
+  if(h.id===JITA||!context.fees.ready||!context.ordersReady||!context.buyer.ready)return {result:{...empty(),reason:h.id===JITA?'Choose the destination hub. Jita is the purchasing market.':!context.ordersReady?'Update your selling character’s orders in Wallet & trade, so existing listings can be excluded.':!context.fees.ready?'Update trader data to calculate fees for your selling character.':context.buyer.issues[0]},models:new Map(),until};
   const own=ownership(h.id),full=h.last_full_scan?JSON.parse(h.last_full_scan):null;
   const rows=db.prepare(`SELECT j.type_id,t.name,j.observed jitaObserved,j.scan_id jitaScan,i.observed localObserved,i.buy localBuy,i.scan_id localScan,v.body history,v.updated historyUpdated,v.expires historyExpires,COALESCE(m.source,'ESI') historySource FROM market_items j JOIN market_types t ON t.type_id=j.type_id LEFT JOIN market_items i ON i.hub_id=? AND i.type_id=j.type_id LEFT JOIN market_history v ON v.region_id=? AND v.type_id=j.type_id LEFT JOIN market_history_meta m ON m.region_id=v.region_id AND m.type_id=v.type_id WHERE j.hub_id=? AND j.sell>0 AND (i.type_id IS NOT NULL OR ?=1)`).all(h.id,h.region_id,JITA,full?1:0);
   const excluded={ownOrders:0,noHistory:0,noCargo:0,inactive:0,noReturn:0},inputs=[];
   for(const r of rows){if(own.ownTypes.has(r.type_id)){excluded.ownOrders++;continue;}const info=taxonomy.type(r.type_id);if(!info.volume||info.volume>s.cargo){excluded.noCargo++;continue;}if(!r.history){excluded.noHistory++;continue;}inputs.push({...r,info});}
-  const ids=inputs.map(r=>r.type_id),source=levelMap(JITA,ids,own.ownIds),destination=levelMap(h.id,ids,own.ownIds),models=new Map(),all=new Map(IMPORT_CATEGORIES.map(g=>[g.id,[]]));let i=0;
+  const ids=inputs.map(r=>r.type_id),source=levelMap(JITA,ids,own.ownIds,expires),destination=levelMap(h.id,ids,own.ownIds,expires),models=new Map(),all=new Map(IMPORT_CATEGORIES.map(g=>[g.id,[]]));let i=0;
   for(const r of inputs){const levels=source.get(r.type_id)||[],local=destination.get(r.type_id)||[],model={typeId:r.type_id,name:r.name,category:importCategory(r.info.root),volume:r.info.volume,levels,localSell:local[0]?.price||null,localBuy:r.localBuy||0,localSupply:local.reduce((n,l)=>n+l.volume,0),history:JSON.parse(r.history),rates:context.fees.rates,settings:s,now:now()};
-   const item=buildOpportunity(model);if(item){const localAt=r.localObserved||full?.observed;Object.assign(item,{jitaObserved:r.jitaObserved,localObserved:localAt,historyUpdated:r.historyUpdated,historySource:r.historySource,region:h.region_name,stale:Date.parse(r.jitaObserved)+DAY<=now()||Date.parse(localAt)+DAY<=now()||Date.parse(r.historyExpires)<=now(),feesStale:context.fees.stale});all.get(item.category).push(item);models.set(item.typeId,{model,item});}else excluded.noReturn++;
+   const localAt=r.localObserved||full?.observed;
+   expires(Date.parse(r.jitaObserved)+DAY);expires(Date.parse(localAt)+DAY);expires(Date.parse(r.historyExpires));
+   const item=buildOpportunity(model);if(item){Object.assign(item,{jitaObserved:r.jitaObserved,localObserved:localAt,historyUpdated:r.historyUpdated,historySource:r.historySource,region:h.region_name,stale:Date.parse(r.jitaObserved)+DAY<=now()||Date.parse(localAt)+DAY<=now()||Date.parse(r.historyExpires)<=now(),feesStale:context.fees.stale});all.get(item.category).push(item);models.set(item.typeId,{model,item});}else excluded.noReturn++;
    if(++i%100===0)await delay(0);
   }
   const groups=context.categories.map(g=>{const items=all.get(g.id).sort((a,b)=>b.score-a.score||a.typeId-b.typeId);return {...g,qualified:items.length,items:items.slice(0,10)};});
-  return {result:{...context,groups,screened:rows.length,excluded,generatedAt:iso(now()),dataStamp:{local:h.last_scan?JSON.parse(h.last_scan).observed:null,jita:db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA)?.last_scan?JSON.parse(db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA).last_scan).observed:null},reason:!rows.length?'Scan this hub and Jita to build a comparison.':null},models};
+  return {result:{...context,groups,screened:rows.length,excluded,generatedAt:iso(now()),dataStamp:{local:h.last_scan?JSON.parse(h.last_scan).observed:null,jita:db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA)?.last_scan?JSON.parse(db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA).last_scan).observed:null},reason:!rows.length?'Scan this hub and Jita to build a comparison.':null},models,until};
  }
- async function cached(id){id=Number(id);const version=db.prepare('SELECT total_changes() n').get().n;const key=id+':'+version;if(memo?.key===key&&memo.until>now())return memo.value;if(flight){await flight;return cached(id);}flight=calculate(id);try{const value=await flight;memo={key,value,until:now()+30000};return value;}finally{flight=null;}}
+ async function cached(id){
+  id=Number(id);
+  for(;;){
+   const key=cacheKey(id);
+   if(memo?.key===key&&memo.until>now())return memo.value;
+   if(flight){await flight;continue;}
+   const task=calculate(id);flight=task;
+   try{
+    const value=await task;
+    // Calculation yields between batches. Never publish an obsolete mix if a
+    // book, access state or expiry changed while that calculation was running.
+    if(key!==cacheKey(id)||value.until<=now())continue;
+    memo={key,value,until:value.until};return value;
+   }finally{if(flight===task)flight=null;}
+  }
+ }
  async function analyse(id){return (await cached(id)).result;}
  async function detail(id,typeId){const found=(await cached(id)).models.get(Number(typeId));if(!found)throw new Error('This item no longer qualifies with your current cache and import settings.');return {...buildOpportunity({...found.model,detail:true}),...Object.fromEntries(Object.entries(found.item).filter(([k])=>['jitaObserved','localObserved','historyUpdated','historySource','region','stale','feesStale'].includes(k)))};}
  function quoteFrom(cache,input){const found=cache.models.get(Number(input.typeId));if(!found)throw new Error('This item no longer qualifies, or is already listed by one of your characters.');if(!['anchoring','profiteering'].includes(input.strategy))throw new Error('Choose an import strategy.');if(typeof input.price!=='number'||input.price>1e15||input.price!==marketPrice(input.price))throw new Error('Listing prices must use EVE’s four-significant-digit price ticks.');

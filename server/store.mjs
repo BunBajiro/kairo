@@ -87,5 +87,23 @@ export function openStore(dir) {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);
     }
     catch { }
-    return { db, get: (key, fallback) => { const r = db.prepare('SELECT value FROM settings WHERE key=?').get(key); return r ? JSON.parse(r.value) : fallback; }, set: (key, value) => db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(key, JSON.stringify(value)), snapshot: (id, key) => { const r = db.prepare('SELECT body FROM snapshots WHERE character_id=? AND key=?').get(id, key); return r ? JSON.parse(r.body) : null; }, saveSnapshot: (id, key, value) => db.prepare('INSERT INTO snapshots VALUES(?,?,?) ON CONFLICT(character_id,key) DO UPDATE SET body=excluded.body').run(id, key, JSON.stringify(value)), close: () => db.close() };
+    const setting = db.prepare('SELECT value FROM settings WHERE key=?');
+    const saveSetting = db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value');
+    const snapshot = db.prepare('SELECT body FROM snapshots WHERE character_id=? AND key=?');
+    // Scheduling never needs the potentially large data array. Read metadata
+    // directly so callers retain fresh values even after raw SQL or rollback.
+    const metadata = db.prepare(`SELECT json_extract(body,'$.status') status,
+        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,
+        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,
+        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?`);
+    const saveSnapshot = db.prepare('INSERT INTO snapshots VALUES(?,?,?) ON CONFLICT(character_id,key) DO UPDATE SET body=excluded.body');
+    return {
+        db,
+        get(key, fallback) { const row = setting.get(key); return row ? JSON.parse(row.value) : fallback; },
+        set: (key, value) => saveSetting.run(key, JSON.stringify(value)),
+        snapshot(id, key) { const row = snapshot.get(id, key); return row ? JSON.parse(row.body) : null; },
+        snapshotMetadata: (id, key) => metadata.get(id, key) || null,
+        saveSnapshot: (id, key, value) => saveSnapshot.run(id, key, JSON.stringify(value)),
+        close: () => db.close(),
+    };
 }
