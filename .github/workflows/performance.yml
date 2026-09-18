@@ -1,59 +1,86 @@
 name: Kairo internal performance
-
 on:
   push:
     branches: ['perf/**']
   workflow_dispatch:
-
 permissions:
   contents: read
-
 concurrency:
   group: kairo-performance-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   benchmark:
-    name: Measure internal synthetic workloads
+    name: Compare clean v0.7.2 and the v0.7.3 candidate
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    env:
-      KAIRO_PERF_OUTPUT: performance-results
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: b151125cd7b26611364923f00683b1c6f1c1bdd6
+          path: baseline
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: d57cda3b44b34aa207407848eb14acab846b05cb
+          path: candidate
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '24.19.0'
           cache: npm
-      - name: Install locked build dependencies
-        run: npm run install:ci
-      - name: Compile the production frontend for internal measurements
-        run: npm run build
-      - name: Verify behavioural and measurement contracts
+      - name: Install locked dependencies and prepare disposable measurement checkouts
         run: |
-          npm run test:kairo
+          npm run install:ci
+          for checkout in baseline candidate; do
+            cmp package-lock.json "$checkout/package-lock.json"
+            ln -s "$GITHUB_WORKSPACE/node_modules" "$checkout/node_modules"
+            cp -R tests/performance "$checkout/tests/performance"
+            git -C "$checkout" diff --exit-code
+          done
+          mkdir -p performance-results
+          python3 - <<'PY'
+          import json,os,subprocess
+          from pathlib import Path
+          data={'harnessCommit':os.environ['GITHUB_SHA'],'checkouts':{}}
+          for p in ['baseline','candidate']:
+              data['checkouts'][p]={'commit':subprocess.check_output(['git','-C',p,'rev-parse','HEAD'],text=True).strip(),'tree':subprocess.check_output(['git','-C',p,'rev-parse','HEAD^{tree}'],text=True).strip()}
+          data['note']='Application tracked files are clean. Report dirty flags reflect only the untracked external harness in disposable measurement checkouts.'
+          Path('performance-results/provenance.json').write_text(json.dumps(data,indent=2)+'\n')
+          PY
+      - name: Compile and verify both applications
+        run: |
+          for checkout in baseline candidate; do
+            (cd "$checkout" && npm run build && npm run test:kairo && npm run check:kairo)
+          done
           npm run test:perf
-          npm run check:kairo
-      - name: Measure backend twice sequentially
+      - name: Verify complete response equivalence
+        run: node tests/performance/equivalence.mjs baseline candidate performance-results
+      - name: Measure backend sequentially in ABBA order
         run: |
-          KAIRO_PERF_OUTPUT=performance-results/run-1 npm run bench:backend
-          KAIRO_PERF_OUTPUT=performance-results/run-2 npm run bench:backend
-          node tests/performance/compare.mjs performance-results/run-1/backend.json performance-results/run-2/backend.json > performance-results/repeatability.md
-      - name: Measure compiled frontend and stream renderer
-        run: npm run bench:browser
+          (cd baseline && KAIRO_PERF_OUTPUT="$GITHUB_WORKSPACE/performance-results/baseline-1" node tests/performance/backend.mjs)
+          (cd candidate && KAIRO_PERF_OUTPUT="$GITHUB_WORKSPACE/performance-results/candidate-1" node tests/performance/backend.mjs)
+          (cd candidate && KAIRO_PERF_OUTPUT="$GITHUB_WORKSPACE/performance-results/candidate-2" node tests/performance/backend.mjs)
+          (cd baseline && KAIRO_PERF_OUTPUT="$GITHUB_WORKSPACE/performance-results/baseline-2" node tests/performance/backend.mjs)
+          node tests/performance/verify-improvements.mjs performance-results
+      - name: Compare compiled frontend and stream renderer
+        run: |
+          (cd baseline && KAIRO_PERF_OUTPUT="$GITHUB_WORKSPACE/performance-results/baseline-browser" node tests/performance/browser.mjs)
+          (cd candidate && KAIRO_PERF_OUTPUT="$GITHUB_WORKSPACE/performance-results/candidate-browser" node tests/performance/browser.mjs)
+          node tests/performance/compare.mjs performance-results/baseline-browser/browser.json performance-results/candidate-browser/browser.json > performance-results/browser-comparison.md
       - name: Summarise measurements
         if: always()
         run: |
-          for report in performance-results/run-1/backend.md performance-results/repeatability.md performance-results/browser.md; do
+          for report in performance-results/comparison.md performance-results/browser-comparison.md; do
             if test -f "$report"; then cat "$report" >> "$GITHUB_STEP_SUMMARY"; fi
           done
-      - name: Preserve internal reports and diagnostics
+      - name: Preserve internal comparison evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: kairo-internal-performance-${{ github.sha }}
+          name: kairo-v073-comparison-${{ github.sha }}
           path: performance-results/
           if-no-files-found: warn
           retention-days: 30
