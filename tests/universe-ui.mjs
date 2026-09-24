@@ -14,7 +14,8 @@ const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/
 if(!chrome)throw new Error('Chrome is required for the browser smoke test. Set KAIRO_CHROME_PATH.');
 const dir=await mkdtemp(join(tmpdir(),'kairo-universe-ui-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-screenshots';
 await mkdir(output,{recursive:true});
-let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[];let sequence=0;
+let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[],contrastChecks=[],motionChecks=[],mapLayouts=[],paletteChecks=[];let sequence=0;
+const empireColours={500001:'#4f88c6',500004:'#3da891',500003:'#c7a44b',500002:'#b86b4b'};
 const externalCalls=[];
 const appOptions={port:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590),streamPort:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590)+1,dataDir:join(dir,'data'),noSync:true,fetcher:async url=>{externalCalls.push(String(url));throw new Error('External ESI access is disabled in this synthetic browser test');}};
 function call(method,params={}){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params}));});}
@@ -77,31 +78,107 @@ async function readability(label,selectors){
  for(const item of sizes){assert.ok(item.count,label+': expected readable content '+item.selector);assert.ok(item.sizes.every(size=>size>=item.minimum),label+': text size '+JSON.stringify(item));}
  typeChecks.push({label,sizes});
 }
+async function contrast(label,selectors){
+ const results=await evaluate(`(()=>{
+  const context=document.createElement('canvas').getContext('2d');context.canvas.width=1;context.canvas.height=1;
+  const rgba=value=>{context.clearRect(0,0,1,1);context.fillStyle=value;context.fillRect(0,0,1,1);return Array.from(context.getImageData(0,0,1,1).data).map((v,i)=>i===3?v/255:v);};
+  const composite=(front,back)=>front.slice(0,3).map((v,i)=>v*front[3]+back[i]*(1-front[3])).concat(1);
+  const luminance=rgb=>rgb.slice(0,3).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);
+  return ${JSON.stringify(selectors)}.flatMap(selector=>Array.from(document.querySelectorAll(selector)).filter(e=>e.getClientRects().length).map(element=>{
+   let background=[255,255,255,1];const lineage=[];for(let e=element;e;e=e.parentElement)lineage.unshift(e);
+   for(const e of lineage)background=composite(rgba(getComputedStyle(e).backgroundColor),background);
+   const foreground=composite(rgba(getComputedStyle(element).color),background),a=luminance(foreground),b=luminance(background);
+   return {selector,text:element.textContent.trim().slice(0,70),ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
+  }));
+ })()`);
+ assert.ok(results.length,label+': expected readable text');
+ for(const item of results)assert.ok(item.ratio>=4.5,label+': text meets 4.5:1 contrast against composed solid background '+JSON.stringify(item));
+ contrastChecks.push({label,results});
+}
+async function mapFirstLayout(label){
+ await evaluate("window.scrollTo({top:0,behavior:'instant'})");await delay(100);
+ const value=await evaluate("(()=>{const map=document.querySelector('.universe-module canvas').getBoundingClientRect();return {top:map.top,bottom:map.bottom,width:map.width,height:map.height,viewportWidth:innerWidth,viewportHeight:innerHeight};})()");
+ assert.ok(value.top>=0&&value.top<=400,label+': map begins within the first400 desktop pixels '+JSON.stringify(value));
+ assert.ok(value.height>=450&&value.width>=700,label+': map remains the dominant useful workspace '+JSON.stringify(value));
+ mapLayouts.push({label,...value});checks.push(label+' puts the map within the first400px');
+}
+async function navigationMotion(){
+ await click('[aria-label="Fit map"]');await delay(900);
+ await evaluate(`(()=>{window.__motion={draws:0,points:[]};window.__motionOriginals={clearRect:CanvasRenderingContext2D.prototype.clearRect,fillText:CanvasRenderingContext2D.prototype.fillText};CanvasRenderingContext2D.prototype.clearRect=function(...args){if(this.canvas.closest('.universe-module'))window.__motion.draws++;return window.__motionOriginals.clearRect.apply(this,args);};CanvasRenderingContext2D.prototype.fillText=function(text,x,y,...args){if(this.canvas.closest('.universe-module')&&text==='Jita')window.__motion.points.push({x,y,at:performance.now()});return window.__motionOriginals.fillText.call(this,text,x,y,...args);};})()`);
+ const reset=()=>evaluate('window.__motion={draws:0,points:[]}');
+ const capture=async(label,minimum=3,maximum=Infinity)=>{
+  await delay(1100);const sample=await evaluate('window.__motion'),positions=new Set(sample.points.map(p=>p.x.toFixed(2)+':'+p.y.toFixed(2))).size,spanMs=sample.points.length?sample.points.at(-1).at-sample.points[0].at:0;
+  assert.ok(positions>=minimum&&positions<=maximum,label+': expected camera positions '+JSON.stringify({positions,draws:sample.draws}));
+  if(minimum>=3)assert.ok(spanMs>=150,label+': intermediate positions are painted over time, not synchronous snaps');
+  const before=sample.draws;await delay(250);assert.equal(await evaluate('window.__motion.draws'),before,label+': animation ends without a continuing canvas loop');
+  motionChecks.push({label,positions,samples:sample.points.length,spanMs,draws:sample.draws});
+ };
+ try{
+  await click('[aria-label="Zoom in"]');await capture('Smooth button zoom');
+  await reset();await click('[aria-label="Focus selected system"]');await capture('Smooth selected-system focus');
+  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});await delay(50);
+  await reset();await click('[aria-label="Zoom in"]');await capture('Reduced-motion zoom',1,2);
+  assert.equal(await evaluate("document.querySelector('.universe-module').getAnimations({subtree:true}).filter(a=>a.playState==='running'&&a.effect.getTiming().duration>0).length"),0,'Reduced motion disables decorative and acquisition animations');
+  await call('Emulation.setEmulatedMedia',{features:[]});await delay(50);
+  await reset();await click('[aria-label="Zoom out"]');
+  await evaluate("Object.defineProperty(document,'hidden',{configurable:true,value:true});Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});document.dispatchEvent(new Event('visibilitychange'))");
+  await delay(100);const hiddenDraws=await evaluate('window.__motion.draws');await delay(400);
+  assert.equal(await evaluate('window.__motion.draws'),hiddenDraws,'A simulated hidden page cancels the active camera animation');
+  await evaluate("delete document.hidden;delete document.visibilityState;document.dispatchEvent(new Event('visibilitychange'))");await delay(150);
+  motionChecks.push({label:'Simulated hidden-page camera pause',drawsDuringHidden:0});
+ }finally{
+  await evaluate("delete document.hidden;delete document.visibilityState;document.dispatchEvent(new Event('visibilitychange'));for(const [name,original] of Object.entries(window.__motionOriginals))CanvasRenderingContext2D.prototype[name]=original");
+  await call('Emulation.setEmulatedMedia',{features:[]});
+ }
+ await click('[aria-label="Fit map"]');await delay(900);
+ checks.push('Finite smooth zoom/focus, reduced motion and simulated hidden-page cancellation');
+}
+function politicalPalette(state,label){
+ const colours=state.politics.territory_colours,entries=Object.entries(colours);
+ assert.ok(entries.length>=9,label+': full owner, empire and bloc roster has a shared palette');
+ for(const channel of ['fill','outline'])assert.equal(new Set(entries.map(([,paint])=>paint[channel])).size,entries.length,label+': every distinct territory has a unique '+channel);
+ for(const [id,fill] of Object.entries(empireColours)){
+  assert.equal(colours['f'+id]?.fill,fill,label+': canonical empire colour '+id);
+  const territory=state.systems.find(system=>system.sovereignty?.faction_id===Number(id));
+  assert.ok(territory,label+': empire fixture is in the active map state');
+  assert.equal(territory.sovereignty.color,fill,label+': rendered ownership uses canonical empire colour');
+ }
+ for(const group of state.politics.groups){assert.equal(group.color,colours['bloc:'+group.id].fill);assert.equal(group.outline,colours['bloc:'+group.id].outline);}
+ paletteChecks.push({label,colours});
+}
 async function minimumZoom(label){
- await click('[aria-label="Fit map"]');await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(250);
+ await click('[aria-label="Fit map"]');await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(900);
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Zoom out\"]').disabled"),true,label+': fit is the minimum zoom');
  const fitted=await canvasHash();
  const point=await evaluate("(()=>{const e=document.querySelector('.universe-module canvas');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width*.57,y:r.y+r.height*.41};})()");
  for(let i=0;i<5;i++)await call('Input.dispatchMouseEvent',{type:'mouseWheel',...point,deltaX:0,deltaY:200});
- await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(250);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(750);
  assert.equal(await canvasHash(),fitted,label+': repeated wheel zoom cannot recede beyond padded space bounds');
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Zoom out\"]').disabled"),true);
  checks.push(label+' bounded minimum zoom');
 }
-async function vectorRendering(){
+async function vectorRendering(state,source='inferred'){
  // Browser-only instrumentation verifies the visible territory redraw uses
  // geometry, not a magnified bitmap or per-system radial halo texture.
- await evaluate(`(()=>{window.__mapPaint={raster:0,radial:0,vectorFills:0,vectorStrokes:0};window.__paintOriginals={};for(const name of ['drawImage','createRadialGradient','fill','stroke']){const original=CanvasRenderingContext2D.prototype[name];window.__paintOriginals[name]=original;CanvasRenderingContext2D.prototype[name]=function(...args){if(this.canvas.closest('.universe-module')){if(name==='drawImage')window.__mapPaint.raster++;if(name==='createRadialGradient')window.__mapPaint.radial++;if(args[0] instanceof Path2D)window.__mapPaint[name==='fill'?'vectorFills':'vectorStrokes']++;}return original.apply(this,args);};}})()`);
+ await evaluate(`(()=>{window.__mapPaint={raster:0,radial:0,vectorFills:0,vectorStrokes:0,fillColours:{}};window.__paintOriginals={};for(const name of ['drawImage','createRadialGradient','fill','stroke']){const original=CanvasRenderingContext2D.prototype[name];window.__paintOriginals[name]=original;CanvasRenderingContext2D.prototype[name]=function(...args){if(this.canvas.closest('.universe-module')){if(name==='drawImage')window.__mapPaint.raster++;if(name==='createRadialGradient')window.__mapPaint.radial++;if(args[0] instanceof Path2D){window.__mapPaint[name==='fill'?'vectorFills':'vectorStrokes']++;if(name==='fill')window.__mapPaint.fillColours[this.fillStyle]=true;}}return original.apply(this,args);};}})()`);
  try{
-  await click('[aria-label="Fit map"]');await waitFor('window.__mapPaint.vectorStrokes>0');
-  await evaluate("document.querySelector('.universe-canvas-shell').scrollIntoView({block:'center'})");await screenshot('universe-vector-borders-fit');
-  await click('[aria-label="Zoom in"]');await click('[aria-label="Zoom in"]');await delay(100);
-  await evaluate("document.querySelector('.universe-canvas-shell').scrollIntoView({block:'center'})");await screenshot('universe-vector-borders-zoom');
+  await click('[aria-label="Fit map"]');await waitFor('window.__mapPaint.vectorStrokes>0');await delay(900);
+  await evaluate("document.querySelector('.universe-canvas-shell').scrollIntoView({block:'center'})");await screenshot('universe-vector-borders-fit-'+source);
+  await click('[aria-label="Zoom in"]');await click('[aria-label="Zoom in"]');await delay(750);
+  await evaluate("document.querySelector('.universe-canvas-shell').scrollIntoView({block:'center'})");await screenshot('universe-vector-borders-zoom-'+source);
   const paints=await evaluate('window.__mapPaint');
   assert.equal(paints.raster,0,'Territory is not enlarged from a raster influence texture');
   assert.equal(paints.radial,0,'Ordinary map systems do not generate radial glow fields');
   assert.ok(paints.vectorFills>0&&paints.vectorStrokes>0,'Territories redraw as filled and stroked vector paths: '+JSON.stringify(paints));
-  renderChecks.push(paints);
+  for(const colour of Object.values(empireColours))assert.ok(paints.fillColours[colour],'Canvas territory paths paint the canonical empire colour '+colour);
+  const expectedTerritories=new Map();
+  for(const system of state.systems){
+   const sov=system.sovereignty,bloc=system.power_bloc;if(!sov)continue;
+   const key=['configured','inferred'].includes(bloc?.source)?'bloc:'+bloc.group_id:sov.alliance_id?'a'+sov.alliance_id:sov.faction_id?'f'+sov.faction_id:sov.corporation_id?'c'+sov.corporation_id:null;
+   if(key)expectedTerritories.set(key,state.politics.territory_colours[key].fill);
+  }
+  for(const [key,colour] of expectedTerritories)assert.ok(paints.fillColours[colour],source+': actual territory rendering uses the resolved '+key+' colour '+colour);
+  renderChecks.push({source,...paints,expectedTerritories:Object.fromEntries(expectedTerritories)});
  }finally{await evaluate("for(const [name,original] of Object.entries(window.__paintOriginals))CanvasRenderingContext2D.prototype[name]=original");}
  checks.push('Territory redraw uses vector borders without scaled bitmap influence or system glow');
 }
@@ -116,7 +193,7 @@ async function idleMetrics(){
  const draws=await evaluate('window.__universeDraws');
  await evaluate('CanvasRenderingContext2D.prototype.clearRect=window.__originalClear');
  const result={windowMs:Date.now()-start,canvasDraws:draws,taskMs:1000*(after.TaskDuration-before.TaskDuration),layoutMs:1000*(after.LayoutDuration-before.LayoutDuration),layouts:after.LayoutCount-before.LayoutCount};
- assert.ok(draws<=3,'An idle map must not run a perpetual animation loop: '+JSON.stringify(result));
+ assert.equal(draws,0,'A settled idle map must not redraw: '+JSON.stringify(result));
  return result;
 }
 async function startBrowser(){
@@ -134,7 +211,7 @@ try{
  await call('Page.navigate',{url:app.origin+'/#universe'});
  // Acceptance scenarios follow the same public controls a pilot uses.
  await waitFor("!!document.querySelector('.universe-module canvas') && !!document.querySelector('.connection-status.online')");
- const atlas=await evaluate("(async()=>{const a=await(await fetch('/api/universe/static')).json(),origin=a.systems.find(s=>s.name==='UALX-3'),nearby=a.systems.find(s=>s.space==='known'&&s.security<.45&&s.system_id!==origin.system_id&&Math.hypot(s.x-origin.x,s.y-origin.y,s.z-origin.z)/9460730472580800<5);return {systems:a.systems.length,known:a.systems.filter(s=>s.space==='known').length,gates:a.gates.length,territory:a.systems.filter(s=>s.space==='known'&&s.security<.45).sort((a,b)=>a.map_x-b.map_x).map(s=>({system_id:s.system_id,map_x:s.map_x,map_y:s.map_y})),systemsByName:Object.fromEntries(a.systems.filter(s=>['Jita','Amarr','Perimeter','UALX-3','C-J6MT'].includes(s.name)).map(s=>[s.name,s.system_id])),wormhole:a.systems.find(s=>s.space==='wormhole'&&s.name.startsWith('J')&&s.wormhole_class<=6),nearby};})()");
+ const atlas=await evaluate("(async()=>{const a=await(await fetch('/api/universe/static')).json(),origin=a.systems.find(s=>s.name==='UALX-3'),nearby=a.systems.find(s=>s.space==='known'&&s.security<.45&&s.system_id!==origin.system_id&&Math.hypot(s.x-origin.x,s.y-origin.y,s.z-origin.z)/9460730472580800<5);return {systems:a.systems.length,known:a.systems.filter(s=>s.space==='known').length,gates:a.gates.length,territory:a.systems.filter(s=>s.space==='known'&&s.security<.45).sort((a,b)=>a.map_x-b.map_x).map(s=>({system_id:s.system_id,map_x:s.map_x,map_y:s.map_y})),systemsByName:Object.fromEntries(a.systems.filter(s=>['Jita','Amarr','Perimeter','Dodixie','Penirgman','Rens','Hek','UALX-3','C-J6MT'].includes(s.name)).map(s=>[s.name,s.system_id])),wormhole:a.systems.find(s=>s.space==='wormhole'&&s.name.startsWith('J')&&s.wormhole_class<=6),nearby};})()");
  assert.ok(atlas.systems>8000&&atlas.known>5000&&atlas.gates>6000,'Full bundled universe is available without EVE authentication');
  assert.ok((await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label')")).includes(atlas.known.toLocaleString('en-US')+' systems'));
  assert.equal((await api('/bootstrap')).characters.length,0);
@@ -144,7 +221,9 @@ try{
  assert.ok(await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label').startsWith('Wormhole space')"));
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Territory view\"]')"),null,'J-space has its own discovery controls');
  await screenshot('universe-jspace-empty');await space('K-Space');
- await readability('Public atlas', [['.universe-heading p',14],['.universe-tabs button',14],['.universe-space-switch strong',15],['[aria-label="Find a solar system"]',14]]);
+ await readability('Public atlas', [['.universe-tabs button',16],['.universe-space-switch strong',16],['[aria-label="Find a solar system"]',16],['.universe-map-footnote',14]]);
+ await mapFirstLayout('Desktop public atlas');await screenshot('universe-map-first-desktop');
+ await contrast('Atlas controls',['.universe-tabs button','.universe-space-switch strong','.universe-map-footnote']);
  checks.push('Distinct K-space and J-space tabs with a dedicated wormhole discovery context');
  await layout('Public atlas desktop');await screenshot('universe-public-atlas');
  await search('Jita');
@@ -155,6 +234,7 @@ try{
  await clickElement("Array.from(document.querySelectorAll('.universe-celestial-group summary')).find(e=>e.textContent.startsWith('NPC stations'))");
  assert.ok(await evaluate("Array.from(document.querySelectorAll('.universe-celestial-list strong')).some(e=>e.textContent.includes('Caldari Navy Assembly Plant'))"),'Jita NPC station names render from bundled detail data');
  await disclosure('Celestials & NPC stations');
+ await navigationMotion();
  await click('[aria-label="Zoom in"]');await delay(100);const zoomed=await canvasHash();
  const point=await evaluate("(()=>{const e=document.querySelector('.universe-module canvas');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()");
  await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1});
@@ -187,10 +267,12 @@ try{
    db.saveSnapshot(id,'corporation_contacts',{status:'missing_scope',data:null});db.saveSnapshot(id,'alliance_contacts',{status:'missing_scope',data:null});
    db.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(id,atlas.systemsByName[id===42?'Jita':'Amarr'],id===42?'Jita':'Amarr',new Date(now).toISOString());
   }
-  db.set('names',{77:'Synthetic sovereignty alliance',78:'Synthetic independent alliance',79:'Synthetic fallback one',80:'Synthetic fallback two',88:'Synthetic pilot alliance',99:'Synthetic corporation',999:'Synthetic opponent'});
+  db.set('names',{77:'Synthetic sovereignty alliance',78:'Synthetic independent alliance',79:'Synthetic fallback one',80:'Synthetic fallback two',88:'Synthetic pilot alliance',99:'Synthetic corporation',999:'Synthetic opponent',500001:'Caldari State',500004:'Gallente Federation',500003:'Amarr Empire',500002:'Minmatar Republic'});
   const owners=new Map(atlas.territory.map((system,index)=>[system.system_id,77+Math.min(3,Math.floor(index/atlas.territory.length*4))]));
-  for(const [name,alliance] of [['UALX-3',77],['C-J6MT',78],['Jita',79],['Amarr',80]])owners.set(atlas.systemsByName[name],alliance);
-  db.saveSnapshot(0,'sovereignty',ready([...owners].map(([system_id,alliance_id])=>({system_id,alliance_id}))));
+  for(const [name,alliance] of [['UALX-3',77],['C-J6MT',78],['Jita',79],['Amarr',80],['Hek',999]])owners.set(atlas.systemsByName[name],alliance);
+  const empires=[['Perimeter',500001],['Dodixie',500004],['Penirgman',500003],['Rens',500002]];
+  for(const [name] of empires)owners.delete(atlas.systemsByName[name]);
+  db.saveSnapshot(0,'sovereignty',ready([...owners].map(([system_id,alliance_id])=>({system_id,alliance_id})).concat(empires.map(([name,faction_id])=>({system_id:atlas.systemsByName[name],faction_id})))));
   db.saveSnapshot(0,'kills',{status:'error',error:'Synthetic ESI feed unavailable',data:null,updatedAt:new Date(now).toISOString()});
   db.saveSnapshot(0,'jumps',ready([{system_id:atlas.systemsByName['UALX-3'],ship_jumps:123}]));
   let killmailId=7000;
@@ -210,7 +292,8 @@ try{
  const inferred=await api('/universe/politics','POST');
  assert.deepEqual(inferred.groups.filter(g=>g.source==='inferred').map(g=>g.alliance_ids).sort((a,b)=>a[0]-b[0]),[[77,78],[79,80]],'Repeated local cooperation supports separate inferred groups');
  await button('Refresh','.universe-heading');await waitFor("!!document.querySelector('.universe-membership.inferred')");
- await vectorRendering();
+ const inferredMap=await api('/universe?character=42');politicalPalette(inferredMap,'Inferred political map');
+ await vectorRendering(inferredMap);
  assert.ok(await evaluate("document.querySelector('.universe-owner').textContent.includes('Synthetic sovereignty alliance')"));
  assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-metric-grid strong')).map(e=>e.textContent)"),['—','—','—','123']);
  await preset('My standings');
@@ -238,6 +321,11 @@ try{
  await button('Create your first power bloc','.power-bloc-settings');await fill('[aria-label="Power bloc name"]','Test Expedition Bloc');
  await click('[aria-label="Use colour #91b2f6"]');
  for(const id of ['77','78']){await fill('[aria-label="Find alliance by name or ID"]',id);await button('Find & add','.power-bloc-settings');await waitFor(`document.querySelector('.power-bloc-members')?.textContent.includes(${JSON.stringify(id)})`);}
+ await click('[aria-label="Create power bloc"]');
+ assert.equal(await evaluate("document.querySelector('[aria-label^=\"Use colour #91b2f6\"]').disabled"),true,'A new configured bloc cannot reuse the first bloc colour');
+ assert.notEqual(await evaluate("document.querySelector('#power-bloc-colour').value"),'#91b2f6','New blocs receive an unused initial colour');
+ await click('[aria-label="Delete new power bloc"]');await button('Delete from draft','[role=alertdialog]');
+ await waitFor("document.querySelector('[aria-label=\"Power bloc name\"]')?.value==='Test Expedition Bloc'");
  await click('.power-bloc-independent');await fill('[aria-label="Find alliance by name or ID"]','78');await button('Find & add','.power-bloc-settings');
  await waitFor("!!document.querySelector('[role=alertdialog]')");await button('Move alliance','[role=alertdialog]');
  await waitFor("document.querySelector('.power-bloc-members')?.textContent.includes('Synthetic independent alliance')");
@@ -247,7 +335,8 @@ try{
  await api('/universe/politics','POST');
  await layout('Power bloc settings desktop','.power-bloc-settings');await screenshot('universe-power-bloc-settings');
  await viewport(390,844);await layout('Power bloc settings 390','.power-bloc-settings');
- await readability('Power bloc settings 390',[['.power-bloc-intro p',14],['.power-bloc-fallback p',14],['.power-bloc-member strong',14]]);
+ await readability('Power bloc settings 390',[['.power-bloc-intro p',16],['.power-bloc-fallback p',16],['.power-bloc-member strong',16]]);
+ await contrast('Power bloc settings',['.power-bloc-intro p','.power-bloc-member strong']);
  await screenshot('universe-power-bloc-settings-mobile');await viewport(1600);
  await clickElement("Array.from(document.querySelectorAll('[data-sidebar=menu-button]')).find(e=>e.textContent.trim()==='Universe')");
  await waitFor("!!document.querySelector('.universe-module canvas')");
@@ -255,6 +344,8 @@ try{
  assert.ok(await evaluate("document.querySelector('.universe-owner').textContent.includes('Synthetic sovereignty alliance')"),'Configured bloc does not replace actual sovereign ownership');
  assert.ok(await evaluate("document.querySelector('.universe-standing').textContent.includes('good standing')"),'Configured bloc does not replace the pilot standing');
  const configured=await api('/universe?character=42');
+ politicalPalette(configured,'Configured and inferred political map');
+ await vectorRendering(configured,'configured');
  assert.equal(configured.systems.find(s=>s.system_id===atlas.systemsByName['UALX-3']).power_bloc.source,'configured');
  assert.equal(configured.systems.find(s=>s.system_id===atlas.systemsByName['C-J6MT']).power_bloc.source,'independent');
  assert.deepEqual(configured.politics.groups.filter(g=>g.source==='inferred').map(g=>g.alliance_ids),[[79,80]],'Configuring one group preserves inferred fallback elsewhere');
@@ -262,8 +353,10 @@ try{
  await search('C-J6MT');await waitFor("document.querySelector('.universe-membership.independent')?.textContent.includes('Independent alliance')");
  await search('Jita');await waitFor("!!document.querySelector('.universe-membership.inferred')");
  await click('.universe-member-link');await waitFor("!!document.querySelector('.universe-bloc-focus.inferred')");
- assert.ok(await evaluate("document.querySelector('.universe-inference-note').textContent.includes('estimate')"),'Inferred group carries a visible uncertainty explanation');
+ assert.ok(await evaluate("/estimated?.*may not/i.test(document.querySelector('.universe-inference-note').textContent)"),'Inferred group carries a visible uncertainty explanation');
  assert.ok(await evaluate("document.querySelector('.universe-bloc-members').textContent.includes('Synthetic fallback one') && document.querySelector('.universe-bloc-members').textContent.includes('Synthetic fallback two')"),'Inferred members resolve to readable alliance names');
+ await readability('Political explorer',[['.universe-bloc-members strong',16],['.universe-inference-note',16],['.universe-source-badge',14]]);
+ await contrast('Political explorer',['.universe-bloc-members strong','.universe-inference-note']);
  await screenshot('universe-inferred-membership');
  await click('[aria-label="Configure Universe power blocs"]');await waitFor("document.querySelector('[aria-label=\"Power bloc name\"]')?.value==='Test Expedition Bloc'");
  assert.ok(await evaluate("document.querySelector('.power-bloc-members').textContent.includes('Synthetic sovereignty alliance')"),'Saved settings re-open with exact memberships');
@@ -334,7 +427,8 @@ try{
  await button('Atlas','.universe-tabs');await preset('Geopolitics');await search('UALX-3');await click('[aria-label="Fit map"]');
  for(const width of [1600,1024,820,390]){
   await viewport(width,width===390?844:1050);await layout('Atlas '+width);
-  await readability('Atlas '+width,[['.universe-heading p',14],['.universe-tabs button',14],['.universe-system-title h3',22],['.universe-membership p',13],['[aria-label="Find a solar system"]',14]]);
+  await readability('Atlas '+width,[['.universe-tabs button',16],['.universe-system-title h3',22],['.universe-owner strong',16],['.universe-membership p',14],['.universe-breadcrumb',14],['[aria-label="Find a solar system"]',16]]);
+  if(width===1600){await mapFirstLayout('Desktop pilot atlas');await contrast('System inspector',['.universe-owner strong','.universe-membership p','.universe-breadcrumb']);}
   await evaluate("document.querySelector('.universe-module').scrollIntoView({block:'start'})");await screenshot('universe-atlas-'+width);
  }
  await button('Layers & views');await layout('Layers 390');await screenshot('universe-mobile-layers');await click('[aria-label="Close layers"]');
@@ -349,7 +443,8 @@ try{
  await waitFor("!!document.querySelector('.universe-module canvas') && !!document.querySelector('[aria-label=\"Play session replay\"]')");
  assert.equal(await evaluate("document.querySelector('.session-replay-status strong').textContent"),'Jita');
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Session replay time\"]').max"),'1800000');
- assert.ok(await evaluate("document.querySelector('.universe-canvas-shell').textContent.includes('RECORDED SESSION')"));
+ assert.equal(await evaluate("document.querySelector('.universe-map-layer-plaque').textContent.trim().toLowerCase()"),'session replay','The map explicitly identifies its recorded replay context');
+ assert.ok(await evaluate("document.querySelector('.universe-map-footnote').textContent.includes('Current sovereignty and activity are hidden')"),'Replay separates historical observations from current geopolitical data');
  assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Play session replay\"]')"),true,'Replay opens paused');
  const replayViewport=await evaluate("(()=>{const map=document.querySelector('.universe-module canvas').getBoundingClientRect(),play=document.querySelector('[aria-label=\"Play session replay\"]').getBoundingClientRect();return {width:innerWidth,height:innerHeight,centre:{x:map.x+map.width/2,y:map.y+map.height/2},play:{top:play.top,bottom:play.bottom,left:play.left,right:play.right}};})()");
  assert.ok(replayViewport.centre.x>0&&replayViewport.centre.x<replayViewport.width&&replayViewport.centre.y>0&&replayViewport.centre.y<replayViewport.height-50&&replayViewport.play.top>=0&&replayViewport.play.bottom<=replayViewport.height&&replayViewport.play.left>=0&&replayViewport.play.right<=replayViewport.width,'Desktop replay keeps the followed pilot/map centre and playback controls visible together: '+JSON.stringify(replayViewport));
@@ -366,6 +461,14 @@ try{
  assert.ok(new Set(camera.map(p=>p.x.toFixed(2)+':'+p.y.toFixed(2))).size>=3,'Following the next recorded system paints intermediate camera positions');
  assert.ok(await evaluate("document.querySelector('.session-replay button[aria-pressed]')?.getAttribute('aria-pressed')==='true'"));
  const pausedTime=await evaluate("document.querySelector('[aria-label=\"Session replay time\"]').value");await delay(250);assert.equal(await evaluate("document.querySelector('[aria-label=\"Session replay time\"]').value"),pausedTime,'Pause freezes the timeline');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(100);
+ const replayZoomBefore=await evaluate("parseFloat(document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent)"),replayImageBefore=await canvasHash();
+ await click('[aria-label="Zoom in"]');await delay(900);
+ await waitFor("document.querySelector('.session-replay button[aria-pressed]')?.textContent.includes('Resume follow')");
+ const replayZoomAfter=await evaluate("parseFloat(document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent)");
+ assert.ok(Math.abs(replayZoomAfter-replayZoomBefore*1.4)<.2,'Manual replay zoom finishes its intended zoom after stopping follow');
+ assert.notEqual(await canvasHash(),replayImageBefore,'Manual replay zoom changes the rendered view');
+ await button('Resume follow','.session-replay');await delay(900);
  const replayCanvas=await evaluate("(()=>{const e=document.querySelector('.universe-module canvas');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()");
  await call('Input.dispatchMouseEvent',{type:'mousePressed',...replayCanvas,button:'left',clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:replayCanvas.x+75,y:replayCanvas.y+40,button:'left',buttons:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:replayCanvas.x+75,y:replayCanvas.y+40,button:'left',clickCount:1});
  await waitFor("document.querySelector('.session-replay button[aria-pressed]')?.textContent.includes('Resume follow')");await button('Resume follow','.session-replay');
@@ -378,7 +481,8 @@ try{
  await waitFor("document.querySelector('.session-replay-events')?.textContent.includes('Synthetic ship change')");
  assert.ok(await evaluate("document.querySelector('.session-replay-event strong')?.textContent.includes('Synthetic ship change')"),'Meaningful events render as prominent visual cards');
  assert.ok(await evaluate("!!document.querySelector('.session-replay-event-icon svg')"),'Replay activity has a recognisable event icon');
- await readability('Session event cards',[['.session-replay-event strong',14],['.session-replay-event-meta',13]]);
+ await readability('Session event cards',[['.session-replay-event strong',16],['.session-replay-event-meta',14],['.session-replay-play',16],['.session-replay-options button',16]]);
+ await contrast('Replay event',['.session-replay-event strong','.session-replay-event-meta time']);
  await waitFor('window.__replayEventDraws>0');
  await screenshot('universe-session-replay-event');
  await evaluate('CanvasRenderingContext2D.prototype.fillText=window.__originalText');
@@ -387,16 +491,16 @@ try{
  const replayData=await api('/sessions/universe-browser-replay/replay?character=42');
  assert.ok(replayData.visits.length>=3&&replayData.travel.length>=2,'Routine-event suppression preserves movement history');
  assert.ok(replayData.events.every(event=>!['location.changed','system.entered'].includes(event.type)&&!event.type.startsWith('opsec.')&&event.module!=='opsec'));
- await viewport(390,844);await layout('Session replay 390');await evaluate("document.querySelector('.session-replay').scrollIntoView({block:'start'})");await screenshot('universe-session-replay-mobile');
+ await viewport(390,844);await layout('Session replay 390');await readability('Mobile replay',[['.session-replay-event strong',16],['.session-replay-event-meta',14],['.session-replay-play',16],['.session-replay-options button',16]]);await evaluate("document.querySelector('.session-replay').scrollIntoView({block:'start'})");await screenshot('universe-session-replay-mobile');
  await click('[aria-label="Close session replay"]');await waitFor("!document.querySelector('.session-replay')");
- assert.equal(await evaluate("document.querySelector('.universe-canvas-shell').textContent.includes('RECORDED SESSION')"),false,'Exiting replay restores the normal atlas');
- await viewport(1600);await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(800);
+ assert.notEqual(await evaluate("document.querySelector('.universe-map-layer-plaque').textContent.trim().toLowerCase()"),'session replay','Exiting replay restores the normal atlas');
+ await viewport(1600);await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(1100);
  checks.push('Session Show on Map, timeline/play/pause, smooth follow, manual pan, event popup and clean exit');
 
  const metrics=await idleMetrics();
  assert.deepEqual(errors,[],'No uncaught browser errors');
  assert.deepEqual(externalCalls,[],'No external ESI or login requests from synthetic fixtures');
- await writeFile(join(output,'universe-checks.json'),JSON.stringify({checks,metrics,renderChecks,typeChecks,atlas:{systems:atlas.systems,known:atlas.known,gates:atlas.gates},routeHops:route.length-1},null,2));
+ await writeFile(join(output,'universe-checks.json'),JSON.stringify({checks,metrics,renderChecks,typeChecks,contrastChecks,motionChecks,mapLayouts,paletteChecks,atlas:{systems:atlas.systems,known:atlas.known,gates:atlas.gates},routeHops:route.length-1},null,2));
  await rm(join(output,'failure.json'),{force:true});await rm(join(output,'universe-failure.png'),{force:true});
  console.log(JSON.stringify({ok:true,checks,metrics,screenshots:output}));
 }catch(error){

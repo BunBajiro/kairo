@@ -1,10 +1,12 @@
-# Universe · 0.8.0-rc.2
+# Universe · 0.8.0-rc.3
 
 Universe replaces the earlier New Eden lookup and separate Journey atlas with a complete local map. **Sessions remains a separate workspace** for starting and ending operations, reviewing reports and reading combat records. Universe contains geographic exploration and travel history.
 
 ## Explore the atlas
 
 The default view is a two-dimensional X–Z projection of the actual New Eden coordinates, with power bloc borders and stargates. **K-Space** and the violet **J-Space** tab have separate extents. Drag to pan, wheel or use the buttons to zoom, and search or select a system to inspect it. Zooming out stops at the active space or selected region with a small margin. J-space positions provide a schematic of discoveries, not physical distances or proof of connections.
+
+The map now leads the workspace, with a compact command area, larger text and a brighter inspector. Selecting a system, zooming and fitting the map use smooth camera movement. A brief targeting cue identifies a selection; panels and replay events enter with finite transitions. The quiet background moves only with the camera. Motion settles when idle and respects the operating system's reduced-motion preference. **Map key & controls** expands the legend and navigation help.
 
 **Layers & views** separates the territory background from system indicators. Choose power blocs, sovereignty, selected-pilot standings, security or activity as the background. Indicators include ship, pod and NPC kills, gate traffic, faction warfare, incursions, manufacturing cost index, personal mining and visits. Save named configurations per pilot or start from the supplied presets. Map filters do not change route preferences or move territory borders. Borders use cached vector geometry and quiet flat fills; individual systems no longer have influence glows.
 
@@ -13,6 +15,8 @@ The default view is a two-dimensional X–Z projection of the actual New Eden co
 Open **Settings → Universe → Power blocs** to create a named bloc, choose its colour and add alliances by known name or verified alliance ID. Changes remain a draft until saved. Membership is exclusive: moving an alliance requires an explicit action. Mark an alliance **Keep independent** to exclude it from the inferred fallback. These settings apply across the local Universe module; pilot standings and private travel records retain their existing scope.
 
 Configured membership is authoritative. Alliances without a configured membership can appear in **Inferred Coalitions**, unless kept independent or inference is disabled. Solid borders identify configured groups; dashed borders identify inferred groups. System dots and detail cards retain the actual sovereignty owner. The bloc inspector shows member alliances, provenance, evidence and coverage. Removing a configured membership returns that alliance to fallback eligibility.
+
+The political palette assigns a distinct colour to every alliance, corporation, faction and bloc in the complete ownership roster before region or standings filters apply. Caldari blue, Gallente teal, Amarr gold and Minmatar rust are reserved for their factions. Settings flag duplicate or reserved bloc colours and offer an available alternative. Older conflicting configurations remain loadable and receive distinct display colours until corrected. Colour works alongside names, outlines and membership-source labels; a dense map cannot rely on colour alone. Security, activity and standings retain their category-based legends.
 
 Inference is an assessment, not a declaration of diplomacy. It uses combat records already collected by this Kairo installation: repeated cooperation across distinct days is the main signal, direct fighting provides counterevidence, and shared opponents and neighbouring sovereignty provide supporting context. Neighbouring territory alone cannot establish a coalition. Groups require agreement between their members, preventing a single connecting alliance from joining unrelated blocs. Kairo uses a bounded 60-day local evidence window with age weighting and freshness limits, and records assessment/configuration snapshots. Missing evidence stays unresolved. It does not download a complete New Eden combat dataset or claim global coverage.
 

@@ -18,7 +18,7 @@ export type UniverseAtlas = {
 export type UniverseOverlay = {
  system_id:number;
  power_bloc?: UniversePowerBlocMembership | null;
- sovereignty?: {alliance_id?:number;alliance_name?:string;corporation_id?:number;corporation_name?:string;faction_id?:number;faction_name?:string;[key:string]:unknown}|null;
+ sovereignty?: {alliance_id?:number;alliance_name?:string;corporation_id?:number;corporation_name?:string;faction_id?:number;faction_name?:string;color?:string;outline?:string;[key:string]:unknown}|null;
  standing?: {value:number|null;label:string;source?:string;status?:string};
  kills?: {ship_kills:number;pod_kills:number;npc_kills:number}|null;
  mining?:{quantity:number;entries:number;last_date:string}|null; jumps?:number|null; faction_warfare?:any|null; incursions?:any[]; industry?:any[]|null;
@@ -32,7 +32,7 @@ export type PowerBlocConfig = {
  blocs:{id:string;name:string;color:string;alliance_ids:number[]}[];independent_alliance_ids:number[];
 };
 export type UniversePowerBlocMembership = {
- alliance_id:number;group_id:string|null;name:string;color:string;
+ alliance_id:number;group_id:string|null;name:string;color:string;outline?:string|null;
  source:'configured'|'inferred'|'independent'|'unassigned';
  evidence?:Record<string,any>;[key:string]:any;
 };

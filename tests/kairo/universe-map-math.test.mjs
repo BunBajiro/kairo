@@ -114,6 +114,7 @@ test('relevant revisions ignore object replacement and unrelated refreshes but d
   assert.equal(paintRevision(styles), paintRevision(styles.map(s => ({...s, kills: 100, refreshedAt: 'later'}))));
   assert.notEqual(paintRevision(styles), paintRevision(styles.map(s => ({...s, key: 'bloc:b'}))));
   assert.notEqual(paintRevision(styles), paintRevision(styles.map(s => ({...s, source: 'inferred'}))));
+  assert.notEqual(paintRevision(styles), paintRevision(styles.map(s => ({...s, outlineColour: '#cbddec'}))));
   assert.notEqual(geometryRevision(points), geometryRevision([{id: 1, x: 0, y: 6}]));
 });
 

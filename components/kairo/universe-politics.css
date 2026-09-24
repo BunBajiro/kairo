@@ -1,0 +1,93 @@
+/* Political cards share Kairo's type scale; source and freshness stay visible. */
+.universe-bloc-explorer { font-size: 16px; line-height: 1.55; }
+.universe-bloc-explorer .universe-tool-heading h3 { font-size: 22px; letter-spacing: -.3px; }
+.universe-bloc-explorer .universe-tool-heading p { font-size: 16px; color: #b5c6bc; line-height: 1.5; }
+.universe-bloc-explorer .universe-source-badge,
+.universe-membership .universe-source-badge { font-size: 14px; padding: 3px 8px; line-height: 1.45; }
+.universe-bloc-explorer .universe-assessment-notice { padding: 16px; border-left-width: 3px; box-shadow: inset 0 1px #ffffff05; }
+.universe-bloc-explorer .universe-assessment-notice strong { font-size: 16px; }
+.universe-bloc-explorer .universe-assessment-notice p { font-size: 16px; line-height: 1.55; margin-top: 6px; color: #d3c7a8; }
+.universe-bloc-explorer .universe-assessment-notice small { font-size: 14px; line-height: 1.55; }
+.universe-bloc-explorer .universe-assessment-notice.disabled p { color: #b6cdbd; }
+.universe-bloc-explorer .universe-bloc-source-counts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.universe-bloc-explorer .universe-bloc-source-counts > div { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 7px; padding: 14px; border: 1px solid #405449; background: #1a2a22; border-radius: 5px; }
+.universe-bloc-explorer .universe-bloc-source-counts > div:last-child { background: #282a20; border-color: #5d5942; border-style: dashed; }
+.universe-bloc-explorer .universe-bloc-source-counts svg { color: #b0d6bc; }
+.universe-bloc-explorer .universe-bloc-source-counts > div:last-child svg { color: #dac183; }
+.universe-bloc-explorer .universe-bloc-source-counts strong { font-size: 27px; line-height: 1.1; font-weight: 500; font-variant-numeric: tabular-nums; color: #e1ede6; }
+.universe-bloc-explorer .universe-bloc-source-counts span { grid-column: 1 / -1; font-size: 14px; color: #bdcfc2; }
+.universe-bloc-explorer .universe-bloc-search { min-height: 46px; border-color: #4e6256; }
+.universe-bloc-explorer .universe-bloc-search input { font-size: 16px; height: 44px; }
+.universe-bloc-explorer .universe-bloc-filters { gap: 7px; padding-bottom: 18px; flex-wrap: wrap; }
+.universe-bloc-explorer .universe-bloc-filters button { font-size: 16px; min-height: 42px; padding: 7px 11px; }
+.universe-bloc-explorer .universe-bloc-row { gap: 13px; padding: 17px 14px; position: relative; overflow: hidden; }
+.universe-bloc-explorer .universe-bloc-row strong { font-size: 18px; color: #e1eee6; font-weight: 550; line-height: 1.4; }
+.universe-bloc-explorer .universe-bloc-row small { font-size: 14px; color: #bbcebf; margin: 10px 0; }
+.universe-bloc-explorer .universe-bloc-row .universe-bloc-row-metrics { display: flex; flex-wrap: wrap; gap: 5px 14px; }
+.universe-bloc-explorer .universe-bloc-row-metrics > span { display: inline-flex; align-items: center; gap: 6px; }
+.universe-bloc-explorer .universe-bloc-row-metrics svg { color: #9ab8a4; flex-shrink: 0; }
+.universe-bloc-explorer .universe-bloc-swatch { width: 6px; min-height: 54px; opacity: 1; }
+.universe-bloc-explorer .universe-bloc-row > svg { width: 20px; height: 20px; flex-shrink: 0; }
+.universe-bloc-explorer .universe-bloc-back { min-height: 42px; font-size: 16px; margin-bottom: 12px; }
+.universe-bloc-explorer .universe-bloc-focus { position: relative; padding: 20px 18px; overflow: hidden; background: radial-gradient(ellipse at top right, #456b4c33, transparent 75%), #192b24; }
+.universe-bloc-explorer .universe-bloc-focus.inferred { background: radial-gradient(ellipse at top right, #89744e33, transparent 75%), #242b21; }
+.universe-bloc-explorer .universe-bloc-focus .universe-source-badge { position: relative; max-width: calc(100% - 44px); white-space: normal; }
+.universe-bloc-explorer .universe-bloc-focus-mark { position: absolute; display: grid; place-items: center; top: 19px; right: 17px; color: var(--bloc-colour, #97ebce); opacity: .8; }
+.universe-bloc-explorer .universe-bloc-focus h3 { font-size: 27px; line-height: 1.25; margin: 17px 0 23px; color: #e5f0e8; }
+.universe-bloc-explorer .universe-bloc-stats { gap: 16px; padding-top: 16px; border-top: 1px solid #5c6b493b; }
+.universe-bloc-explorer .universe-bloc-stats > span { font-size: 14px; color: #bdd0c2; }
+.universe-bloc-explorer .universe-bloc-stats strong { font-family: var(--font-sans); font-size: 31px; line-height: 1.1; font-weight: 500; }
+.universe-bloc-explorer .universe-inference-note { font-size: 16px; line-height: 1.55; color: #e1c78e; padding: 12px; border-radius: 4px; background: #342e203d; }
+.universe-bloc-explorer .universe-inference-note svg { flex-shrink: 0; margin-top: 3px; }
+.universe-bloc-explorer .universe-small-note { font-size: 16px; line-height: 1.55; color: #b8cbbd; }
+.universe-bloc-explorer .universe-evidence-grid { gap: 10px; margin-top: 14px; }
+.universe-bloc-explorer .universe-evidence-grid > div { padding: 15px 12px; border-radius: 4px; }
+.universe-bloc-explorer .universe-evidence-grid strong { font-family: var(--font-sans); font-size: 28px; font-weight: 500; line-height: 1.1; }
+.universe-bloc-explorer .universe-evidence-grid span { font-size: 14px; color: #becbb7; line-height: 1.45; }
+.universe-bloc-explorer .universe-evidence-label { font-size: 14px; color: #bfcdb3; line-height: 1.55; }
+.universe-bloc-explorer .universe-bloc-member-heading { margin: 25px 0 12px; }
+.universe-bloc-explorer .universe-bloc-member-heading h4 { font-size: 18px; }
+.universe-bloc-explorer .universe-bloc-member-heading > span { padding: 2px 9px; border-radius: 4px; font-size: 14px; background: #263b2e; color: #c7e0cd; }
+.universe-bloc-explorer .universe-bloc-members { display: grid; gap: 8px; }
+.universe-bloc-explorer .universe-bloc-members > div { padding: 13px 11px; border: 1px solid #374c3f; border-radius: 4px; background: #19271f; }
+.universe-bloc-explorer .universe-bloc-members .universe-alliance-mark { flex-shrink: 0; background: #263c2e; color: #b7d2bf; width: 33px; height: 38px; display: grid; place-items: center; border-radius: 3px; }
+.universe-bloc-explorer .universe-bloc-members strong { font-size: 16px; line-height: 1.4; color: #d4e5d8; }
+.universe-bloc-explorer .universe-bloc-members small { font-size: 14px; line-height: 1.4; color: #aebfad; }
+.universe-bloc-explorer .universe-bloc-members button { width: 39px; height: 40px; display: grid; place-items: center; flex-shrink: 0; border-radius: 3px; }
+.universe-bloc-explorer .universe-bloc-members button:hover { background: #294131; }
+.universe-bloc-explorer .universe-wide { font-size: 16px; min-height: 44px; margin-top: 15px; }
+.universe-bloc-explorer .universe-unassigned-key { padding-block: 20px 5px; }
+.universe-bloc-explorer .universe-unassigned-key strong { font-size: 16px; color: #d1dfd5; }
+.universe-bloc-explorer .universe-unassigned-key small { font-size: 14px; color: #b0c1b4; line-height: 1.55; }
+.universe-bloc-explorer .universe-bloc-empty p { font-size: 16px; line-height: 1.6; color: #b8ccbe; }
+.universe-bloc-explorer .universe-bloc-empty button { font-size: 16px; min-height: 44px; }
+.universe-bloc-explorer .universe-evidence-coverage > summary { font-size: 16px; }
+.universe-bloc-explorer .universe-evidence-coverage > summary > span { font-size: 14px; }
+.universe-bloc-explorer .universe-evidence-coverage > p { font-size: 16px; line-height: 1.55; color: #b7cabd; }
+.universe-bloc-explorer .universe-evidence-coverage dl { font-size: 14px; line-height: 1.55; }
+.universe-membership .universe-membership-heading { font-size: 14px; color: #c0d7c7; }
+.universe-membership .universe-member-link { min-height: 44px; }
+.universe-membership .universe-member-link strong { font-size: 18px; color: #e1eee5; }
+.universe-membership.universe-membership > strong { font-size: 16px; color: #d0dfd5; }
+.universe-membership.universe-membership p { font-size: 16px; line-height: 1.55; color: #b9cdbf; }
+.universe-membership.inferred p { color: #d4c69e; }
+
+/* Finite compositor-only entrances. The last card settles within half a second. */
+.universe-bloc-explorer .universe-bloc-selection,
+.universe-bloc-explorer .universe-bloc-source-counts,
+.universe-bloc-explorer .universe-bloc-row,
+.universe-bloc-explorer .universe-bloc-members > div,
+.universe-membership.universe-membership {
+ animation: universe-bloc-enter .3s cubic-bezier(.2,.75,.3,1) both;
+ animation-delay: var(--bloc-entry-delay, 0ms);
+}
+.universe-bloc-explorer .universe-bloc-row,
+.universe-bloc-explorer .universe-bloc-filters button,
+.universe-bloc-explorer .universe-bloc-members button { transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease; }
+.universe-bloc-explorer .universe-bloc-row:hover { box-shadow: inset 3px 0 #9fd1ae; }
+.universe-bloc-explorer .universe-bloc-row.inferred:hover { box-shadow: inset 3px 0 #d6bc83; }
+@keyframes universe-bloc-enter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+ .universe-bloc-explorer *, .universe-bloc-explorer *::before, .universe-bloc-explorer *::after,
+ .universe-membership, .universe-membership *, .universe-membership::before, .universe-membership::after { animation: none !important; transition: none !important; }
+}

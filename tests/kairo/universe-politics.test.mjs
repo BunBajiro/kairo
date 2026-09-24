@@ -154,3 +154,27 @@ test('inference-off retains manual blocs and leaves unknown alliances separate',
     service.refresh({ force: true });
     assert.equal(service.read().status, 'disabled'); assert.equal(service.resolver()(77).source, 'configured'); assert.equal(service.resolver()(78).source, 'unassigned');
 });
+
+test('configured colours reject duplicates and empire reservations before persisting settings', async t => {
+    const { service } = await fixture(t), first = { id: 'one', name: 'First', color: '#abcdef', alliance_ids: [77] };
+    assert.throws(() => service.saveConfig({ ...blank(), blocs: [first, { ...first, id: 'two', name: 'Second', alliance_ids: [78], color: '#ABCDEF' }] }), /already used/);
+    assert.throws(() => service.saveConfig({ ...blank(), blocs: [{ ...first, color: '#4f88c6' }] }), /reserved.*Caldari/);
+    assert.equal(service.config().revision, 0);
+});
+
+test('a memoized full-roster palette keeps map memberships, empire fills and groups consistent', async t => {
+    const { service, store, reopen } = await fixture(t);
+    store.saveSnapshot(0, 'sovereignty', { status: 'ready', data: [{ system_id: 1, alliance_id: 77 }, { system_id: 2, alliance_id: 78 }, { system_id: 3, faction_id: 500001 }] });
+    service.saveConfig({ ...blank(), blocs: [{ id: 'one', name: 'First', color: '#abcdef', alliance_ids: [77] }] });
+    const state = service.read(), again = service.read(), membership = service.resolver(state)(77);
+    assert.strictEqual(state.territory_colours, again.territory_colours);
+    assert.equal(state.groups[0].color, '#abcdef'); assert.equal(state.groups[0].color, membership.color);
+    assert.equal(state.groups[0].outline, membership.outline); assert.equal(state.territory_colours.f500001.fill, '#4f88c6');
+    assert.equal(service.resolver(state)(78).color, state.territory_colours.a78.fill);
+    assert.equal(new Set(Object.values(state.territory_colours).map(row => row.fill)).size, Object.keys(state.territory_colours).length);
+    // Previously saved duplicates remain readable without silently rewriting config.
+    const legacy = service.config(); legacy.blocs.push({ id: 'two', name: 'Second', color: '#abcdef', alliance_ids: [78] });
+    store.set('universe:politics:config', legacy);
+    const restored = reopen(), groups = restored.read().groups;
+    assert.notEqual(groups[0].color, groups[1].color); assert.deepEqual(restored.config(), legacy);
+});

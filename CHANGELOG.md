@@ -2,6 +2,13 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.3 — Immersive Universe and distinct territories
+
+- Reshaped Universe around a larger map with a compact command area, clearer contrast, larger type and visual system/bloc cards.
+- Added smooth navigation and finite selection, view and replay-event transitions. Reduced-motion preferences are respected, and map rendering settles when idle.
+- Reserved Caldari blue, Gallente teal, Amarr gold and Minmatar rust for their factions. Distinct political territories receive unique colours; configured colour conflicts are flagged.
+- Kept crisp vector borders, actual sovereignty ownership, inferred-membership provenance and all existing routing, discovery and replay tools.
+
 ## 0.8.0-rc.2 — Power blocs and Universe readability
 
 - Added user-configured power blocs in Settings → Universe, with named colours, alliance membership and explicit independence. Configured memberships take priority over inferred groups.

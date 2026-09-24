@@ -1,11 +1,11 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { allocateTerritoryColours, territoryColourEntities, configuredTerritoryColourConflict } from '../lib/universe-territory-colours.mjs';
 
 const DAY = 86400000, WINDOW = 60 * DAY, HALF_LIFE = 14 * DAY, REFRESH = 5 * 60000;
 const MAX_EVENTS = 20000, BATCH = 1000, BOOTSTRAP = 2000;
 const MAX_PAIRS = 12000, MAX_ALLIANCES = 2000;
 const METHOD = 'observed-cooperation-v1';
 const CONFIG_KEY = 'universe:politics:config', SNAPSHOT_KEY = 'universe:politics:snapshot';
-const PALETTE = ['#65b7e8', '#e5ad62', '#bd90ea', '#6dd0b0', '#ec8399', '#a7bf69', '#88a5ef', '#d2996b'];
 const validId = id => Number.isSafeInteger(id) && id > 0;
 const array = value => Array.isArray(value) ? value : [];
 const parse = value => { try { return JSON.parse(value); } catch { return null; } };
@@ -14,7 +14,7 @@ const unique = values => [...new Set(values)].sort((a, b) => a - b);
 const iso = value => new Date(value).toISOString();
 const pairKey = (a, b) => a < b ? a + ':' + b : b + ':' + a;
 const nameFor = (id, names) => names[id] || 'Alliance ' + id;
-const colorFor = id => PALETTE[parseInt(hash(id).slice(0, 8), 16) % PALETTE.length];
+const colorFor = id => allocateTerritoryColours([{ key: String(id) }]).get(String(id)).fill;
 const defaultConfig = () => ({ version: 1, revision: 0, updated_at: null, inference_enabled: true, blocs: [], independent_alliance_ids: [] });
 
 /** A complete replacement makes moves explicit and rejects duplicate assignments. */
@@ -49,6 +49,10 @@ export function validatePoliticsConfig(input, previous = defaultConfig(), now = 
     });
     const independent_alliance_ids = ids(input.independent_alliance_ids ?? [], 'Independent alliances');
     if (independent_alliance_ids.some(id => assigned.has(id))) throw new Error('A configured bloc member cannot also be kept independent.');
+    for (const bloc of blocs) {
+        const conflict = configuredTerritoryColourConflict(bloc.color, blocs, bloc.id);
+        if (conflict) throw new Error(bloc.name + ': ' + conflict);
+    }
     return { version: 1, revision: previous.revision + 1, updated_at: iso(now), inference_enabled: input.inference_enabled ?? previous.inference_enabled, blocs, independent_alliance_ids };
 }
 
@@ -209,6 +213,7 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
         store.db.exec(`CREATE TRIGGER IF NOT EXISTS politics_${table}_${operation.toLowerCase()} AFTER ${operation} ON ${table}
             BEGIN INSERT OR IGNORE INTO universe_politics_queue VALUES('${table}',NEW.rowid); END;`);
     let config = store.get(CONFIG_KEY, defaultConfig()), snapshot = store.get(SNAPSHOT_KEY, null), nextRefresh = 0, lastError = null, lastInputSignature = null;
+    let paletteSignature = null, paletteRevision = null, palette = new Map(), paletteObject = {};
     const eventPut = store.db.prepare('INSERT INTO universe_politics_events VALUES(?,?,?) ON CONFLICT(killmail_id) DO UPDATE SET at=excluded.at,body=excluded.body WHERE body<>excluded.body');
     const queueRead = store.db.prepare('SELECT source,row_id FROM universe_politics_queue ORDER BY row_id DESC,source LIMIT ?');
     const queueDelete = store.db.prepare('DELETE FROM universe_politics_queue WHERE source=? AND row_id=?');
@@ -288,20 +293,37 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
         }
         return read();
     }
-    function read(names = store.get('names', {})) {
+    function read(names = store.get('names', {}), sovereigntyRows = null) {
         const enabled = store.get('module:universe', true), collectionInfo = collection();
         const matching = snapshot && snapshot.config_revision === config.revision;
         const current = matching && Date.parse(snapshot.expires_at) > now();
         const inferred = config.inference_enabled && matching ? snapshot.groups.filter(group => Date.parse(group.valid_until || snapshot.expires_at) > now()) : [];
-        const groups = config.blocs.map(bloc => ({ ...bloc, source: 'configured', config_revision: config.revision,
+        const rawGroups = config.blocs.map(bloc => ({ ...bloc, source: 'configured', config_revision: config.revision,
             member_names: bloc.alliance_ids.map(id => ({ alliance_id: id, name: nameFor(id, names) })), evidence: { label: 'User configured' } })).concat(inferred);
+        if (sovereigntyRows == null) {
+            const sovereignty = enabled ? store.snapshot(0, 'sovereignty') : null;
+            sovereigntyRows = ['ready', 'stale'].includes(sovereignty?.status) ? array(sovereignty.data) : [];
+        }
+        const entities = territoryColourEntities(sovereigntyRows, rawGroups).sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
+        const signature = JSON.stringify(entities);
+        if (signature !== paletteSignature) {
+            palette = allocateTerritoryColours(entities); paletteObject = Object.freeze(Object.fromEntries(palette));
+            paletteSignature = signature; paletteRevision = hash(signature);
+        }
+        // Decoration leaves persisted user configuration and assessment history
+        // untouched, including old configurations which reused a colour.
+        const groups = rawGroups.map(group => {
+            const paint = palette.get('bloc:' + group.id);
+            return paint ? { ...group, color: paint.fill, outline: paint.outline, configured_color: group.source === 'configured' ? group.color : undefined } : group;
+        });
         const coverage = { scope: 'local_cached_combat', label: 'Observed local pilot and session killmails · incomplete New Eden coverage',
             killmails: 0, alliance_count: 0, system_count: 0, oldest_at: null, newest_at: null, truncated: false,
             ...(snapshot?.coverage || {}), ...collectionInfo };
         const status = !enabled || !config.inference_enabled ? 'disabled' : !snapshot || !coverage.killmails ? 'unavailable' :
             !current || lastError || coverage.collection_status === 'stale' || coverage.collection_status === 'disabled' ? 'stale' : 'limited';
-        return { snapshot_id: 'resolved-' + hash([config.revision, config.inference_enabled && matching ? snapshot?.id : null, inferred.map(group => group.id), status]),
+        return { snapshot_id: 'resolved-' + hash([config.revision, config.inference_enabled && matching ? snapshot?.id : null, inferred.map(group => group.id), status, paletteRevision]),
             config_revision: config.revision, inference_snapshot_id: snapshot?.id || null, generated_at: snapshot?.generated_at || null,
+            territory_colours: paletteObject, colour_revision: paletteRevision,
             method_version: METHOD, status, inference_enabled: config.inference_enabled, coverage, groups,
             independent_alliance_ids: config.independent_alliance_ids, unresolved: current ? snapshot.unresolved : [],
             window_from: snapshot?.window_from || null, window_to: snapshot?.window_to || null, criteria: snapshot?.criteria || null,
@@ -316,8 +338,10 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
             const group = memberships.get(allianceId), unresolvedEvidence = unresolved.get(allianceId);
             const { relations: _relations, relationships: _relationships, ...evidence } = group?.evidence || unresolvedEvidence || {};
             const source = group?.source || (independent.has(allianceId) ? 'independent' : 'unassigned');
+            const paint = politics.territory_colours?.[group ? 'bloc:' + group.id : 'a' + allianceId];
             return { alliance_id: allianceId, group_id: group?.id || 'alliance-' + allianceId, name: group?.name || nameFor(allianceId, names),
-                color: group?.color || colorFor(allianceId), source, evidence_label: group?.evidence?.label || (source === 'independent' ? 'Kept independent' : unresolvedEvidence?.evidence_label || 'Insufficient evidence'),
+                color: paint?.fill || group?.color || colorFor('a' + allianceId), outline: paint?.outline || group?.outline || null,
+                source, evidence_label: group?.evidence?.label || (source === 'independent' ? 'Kept independent' : unresolvedEvidence?.evidence_label || 'Insufficient evidence'),
                 reason: group ? source === 'configured' ? 'Assigned in Universe settings.' : 'Repeated observed cooperation with sustained internal support.' :
                     source === 'independent' ? 'Excluded from inference in Universe settings.' : unresolvedEvidence?.reason || (config.inference_enabled ? 'No usable inferred membership is available.' : 'Inferred fallback is disabled.'),
                 evidence: Object.keys(evidence).length ? evidence : null, snapshot_id: politics.snapshot_id };

@@ -3,7 +3,7 @@ export type Bounds = {minX: number; minY: number; maxX: number; maxY: number};
 export type Size = {width: number; height: number};
 export type Camera = XY & {scale: number};
 export type GeometryPoint = XY & {id: number};
-export type TerritoryStyle = {key: string; colour: string; strength: number; dim?: boolean; name?: string; source?: string};
+export type TerritoryStyle = {key: string; colour: string; outlineColour?: string; strength: number; dim?: boolean; name?: string; source?: string};
 export type Geometry = {points: GeometryPoint[]; cells: {index: number; polygon: (XY & {from: number})[]}[]; buckets: Map<string, number[]>; radius: number};
 export function projectKnownSystems<T extends {space: string; map_x: number; map_y: number}>(systems: T[]): (XY & {system: T})[];
 export function pointBounds(points: XY[]): Bounds;

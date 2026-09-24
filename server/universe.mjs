@@ -110,7 +110,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     function liveContext(id) {
         const currentTime = now(), samples = snapshots(id), sources = Object.fromEntries(Object.entries(samples).map(([key, value]) => [key, sourceMetadata(value, currentTime)]));
         const names = store.get('names', {}), owners = new Map(), kills = new Map(), jumps = new Map(), fw = new Map(), incursions = new Map(), industry = new Map(), sovStructures = new Map(), mining = new Map(), standings = new Map();
-        const politics = politicsService.read(names), resolveBloc = politicsService.resolver(politics, names), blocByAlliance = new Map();
+        const politics = politicsService.read(names, sourceRows(samples, 'sovereignty')), resolveBloc = politicsService.resolver(politics, names), blocByAlliance = new Map();
         for (const row of sourceRows(samples, 'sovereignty')) owners.set(row.system_id || row.solar_system_id, row);
         for (const row of sourceRows(samples, 'kills')) kills.set(row.system_id, row);
         for (const row of sourceRows(samples, 'jumps')) jumps.set(row.system_id, row.ship_jumps);
@@ -138,11 +138,14 @@ export function createUniverse(store, auth, esi, options = {}) {
         function overlay(system) {
             const sovereignty = owners.get(system), visit = visits.get(system);
             const allianceId = sovereignty?.alliance_id;
+            const ownerKey = sovereignty?.alliance_id ? 'a' + sovereignty.alliance_id : sovereignty?.faction_id ? 'f' + sovereignty.faction_id : sovereignty?.corporation_id ? 'c' + sovereignty.corporation_id : null;
+            const ownerPaint = ownerKey ? politics.territory_colours[ownerKey] : null;
             if (!blocByAlliance.has(allianceId)) blocByAlliance.set(allianceId, resolveBloc(allianceId));
             if (!standings.has(allianceId)) standings.set(allianceId, sources.sovereignty.status === 'ready' ? standingForAlliance(allianceId, samples, currentTime) :
                 { value: null, label: 'unknown', source: null, status: 'unavailable', reason: 'Current sovereignty is unavailable.' });
             return { system_id: system,
-                sovereignty: sovereignty ? { ...sovereignty, alliance_name: names[sovereignty.alliance_id] || null, corporation_name: names[sovereignty.corporation_id] || null, faction_name: names[sovereignty.faction_id] || null } : null,
+                sovereignty: sovereignty ? { ...sovereignty, alliance_name: names[sovereignty.alliance_id] || null, corporation_name: names[sovereignty.corporation_id] || null, faction_name: names[sovereignty.faction_id] || null,
+                    ...(ownerPaint ? { color: ownerPaint.fill, outline: ownerPaint.outline } : {}) } : null,
                 standing: standings.get(allianceId),
                 power_bloc: blocByAlliance.get(allianceId),
                 kills: kills.get(system) || (complete('kills') ? { ship_kills: 0, pod_kills: 0, npc_kills: 0 } : null),

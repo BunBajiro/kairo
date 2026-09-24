@@ -131,7 +131,7 @@ export function SessionReplayControls({replay}: {replay: ReturnType<typeof useSe
   const ticks = timeline.events.filter((_, index) => index % Math.max(1, Math.ceil(timeline.events.length / 120)) === 0);
   const currentAt = timeline.start + replay.elapsedMs;
   const gap = data?.coverage?.gaps?.find(item => Date.parse(item.from) <= currentAt && Date.parse(item.to) > currentAt);
-  return <section className="session-replay" aria-label="Session replay">
+  return <section className={'session-replay'+(playing?' is-playing':'')} aria-label="Session replay">
     <div className="session-replay-heading">
       <div className="session-replay-title"><Film size={22} aria-hidden="true"/><div><span className="eyebrow">SESSION REPLAY</span><h3>{data?.session.label || (replay.loading ? 'Loading recorded session…' : 'Recorded session')}</h3></div></div>
       <Button variant="ghost" size="icon" aria-label="Close session replay" onClick={replay.close}><X size={20}/></Button>
@@ -140,7 +140,7 @@ export function SessionReplayControls({replay}: {replay: ReturnType<typeof useSe
     {replay.loading && <p className="session-replay-note">Loading your recorded visits and events.</p>}
     {data && <>
       <div className="session-replay-status">
-        <div><MapPin size={20} aria-hidden="true"/><strong>{currentVisit?.name || 'Location not recorded'}</strong></div>
+        <div className="session-replay-location" key={currentVisit?.id || 'gap'}><MapPin size={22} aria-hidden="true"/><strong>{currentVisit?.name || 'Location not recorded'}</strong></div>
         {(data.session.live || currentVisit?.inferred || currentVisit?.coordinates_available === false) && <div className="session-replay-badges">
           {data.session.live && <span className="tag">Live snapshot</span>}
           {currentVisit?.inferred && <span className="tag">Inferred location</span>}
@@ -149,12 +149,14 @@ export function SessionReplayControls({replay}: {replay: ReturnType<typeof useSe
         <time dateTime={new Date(currentAt).toISOString()}>{timeLabel(currentAt)}<span> EVE / UTC · {UTC_DATE.format(new Date(currentAt))}</span></time>
       </div>
       <div className="session-replay-stats">
+        <span className="session-replay-state">{playing?<Play size={15} aria-hidden="true"/>:<Pause size={15} aria-hidden="true"/>}{playing?'Playing':'Paused'}</span>
         <span><MapPin size={16} aria-hidden="true"/><strong>{replay.frame?.discoveredSystemIds.length || 0}</strong> {replay.frame?.discoveredSystemIds.length === 1 ? 'system' : 'systems'}</span>
         <span><Activity size={16} aria-hidden="true"/><strong>{timeline.events.length.toLocaleString()}</strong> {timeline.events.length === 1 ? 'event' : 'events'}</span>
       </div>
       <div className="session-replay-timeline">
+        <div className="session-replay-progress" aria-hidden="true"><span style={{transform:`scaleX(${percent / 100})`}}/></div>
         <div className="session-replay-ticks" aria-hidden="true">{ticks.map((event, index) => <i key={String(event.id) + ':' + index} style={{left: `${Math.max(0, Math.min(100, duration ? (event.time - timeline.start) / duration * 100 : 0))}%`}}/>)}</div>
-        <input aria-label="Session replay time" aria-valuetext={`${elapsedLabel(replay.elapsedMs)} of ${elapsedLabel(duration)}${currentVisit ? ', ' + currentVisit.name : ', location unavailable'}`} type="range" min={0} max={Math.max(1, duration)} step={1000} value={replay.elapsedMs} onChange={event => replay.seek(Number(event.target.value))} style={{background: `linear-gradient(to right, #97ebce 0%, #97ebce ${percent}%, #2a3a49 ${percent}%, #2a3a49 100%)`}}/>
+        <input aria-label="Session replay time" aria-valuetext={`${elapsedLabel(replay.elapsedMs)} of ${elapsedLabel(duration)}${currentVisit ? ', ' + currentVisit.name : ', location unavailable'}`} type="range" min={0} max={Math.max(1, duration)} step={1000} value={replay.elapsedMs} onChange={event => replay.seek(Number(event.target.value))}/>
         <div className="session-replay-time-labels"><span>{elapsedLabel(replay.elapsedMs)}</span><span>{elapsedLabel(duration)}</span></div>
       </div>
       <div className="session-replay-controls">
@@ -176,9 +178,9 @@ export function SessionReplayControls({replay}: {replay: ReturnType<typeof useSe
           <Button variant="ghost" size="icon" aria-label="Next recorded event" title="Next event" disabled={!replay.nextEvent} onClick={() => replay.nextEvent && replay.seek(replay.nextEvent.time - timeline.start)}><ChevronRight size={20}/></Button>
         </div></div>
         <div className="session-replay-event-list">
-          {replay.recentEvents.length ? replay.recentEvents.map((event, index) => {
+          {replay.recentEvents.length ? replay.recentEvents.map(event => {
             const {Icon, tone, label} = eventPresentation(event.type);
-            return <button className={`session-replay-event tone-${tone}`} key={String(event.id) + ':' + index} onClick={() => replay.seek(event.time - timeline.start)} aria-label={`Replay ${label.toLowerCase()} at ${timeLabel(event.at)}: ${event.summary || event.type}`}>
+            return <button className={`session-replay-event tone-${tone}`} key={String(event.id)} onClick={() => replay.seek(event.time - timeline.start)} aria-label={`Replay ${label.toLowerCase()} at ${timeLabel(event.at)}: ${event.summary || event.type}`}>
               <span className="session-replay-event-icon"><Icon size={20} aria-hidden="true"/></span>
               <span className="session-replay-event-content">
                 <span className="session-replay-event-meta"><span>{label}</span><time dateTime={event.at}>{timeLabel(event.at)}</time></span>

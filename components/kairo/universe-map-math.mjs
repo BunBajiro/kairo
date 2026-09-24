@@ -48,7 +48,7 @@ export function resizeCamera(camera, previous, size, bounds) {
 }
 
 export function geometryRevision(points) {return points.map(p => `${p.id}:${p.x}:${p.y}`).join('|');}
-export function paintRevision(styles) {return styles.map(s => `${s.key}:${s.colour}:${s.strength}:${s.dim ? 1 : 0}:${s.name || ''}:${s.source || ''}`).join('|');}
+export function paintRevision(styles) {return styles.map(s => `${s.key}:${s.colour}:${s.outlineColour || s.colour}:${s.strength}:${s.dim ? 1 : 0}:${s.name || ''}:${s.source || ''}`).join('|');}
 
 function clip(polygon, nx, ny, limit, neighbour) {
   const result = [];

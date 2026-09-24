@@ -1,4 +1,16 @@
-# Validation — 18 September 2026
+# Validation — 24 September 2026
+
+## Universe 0.8.0-rc.3
+
+This candidate raises Universe's map and simplifies its command area, enlarges controls and inspector text, adds finite navigation/replay transitions, and assigns distinct territorial colours with fixed empire shades.
+
+- All 246 Node tests pass. New palette checks cover 1,200 owners plus blocs, input-order stability, reserved empire colours, unique fills/outlines, readable outlines for dark custom colours, legacy conflict handling and reuse of unchanged palettes.
+- TypeScript and production compilation pass. The existing Sessions browser suite passes its nine-card, event pagination, legacy report and 390–1600px layout checks.
+- The compiled Universe browser suite passes 26 acceptance/layout checks, including map-first desktop framing, 16px primary and 14px supporting text, sampled text contrast of at least 4.5:1, smooth camera movement, reduced motion and simulated hidden-page cancellation. These are focused checks, not a complete accessibility audit.
+- Canvas instrumentation checks actual configured, inferred, independent and unassigned territory paints against the shared palette, including all four empire shades. It also checks vector borders without bitmap influence draws or radial gradients. Settings checks cover unused new-bloc colours and disabled conflicting colour choices.
+- Desktop and mobile map, settings and replay captures were inspected. Smooth zoom/focus produced intermediate positions across roughly 0.5/0.74 seconds; reduced-motion zoom produced one position. A three-second idle sample recorded zero canvas redraws and about 12 ms of renderer tasks. These local timings are not hardware guarantees.
+
+The fixtures use synthetic pilots, sovereignty and combat evidence. They verify rendering and application behaviour, not live political accuracy. Configured memberships remain authoritative; unchanged saved settings and historical data require no reset. This candidate remains on the draft feature branch for the user's review.
 
 ## Universe 0.8.0-rc.2
 
