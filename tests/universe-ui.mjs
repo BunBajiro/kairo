@@ -361,10 +361,19 @@ async function portalMapAcceptance(atlas,cached){
  await moveTo(stale);await waitFor("document.querySelector('.universe-map-context[role=tooltip]')?.textContent.includes('Stale report')");
  await clickAt(stale);await waitFor("document.querySelector('.universe-map-context[role=dialog]')?.textContent.includes('Stale report')");
  await screenshot('universe-portal-stale-report');await key('Escape','Escape',27);await moveTo({x:10,y:10});
- app.store.set('universe:feeds:thera',cached([{...second,expires_at:new Date(Date.now()+5000).toISOString()}]));
- await click('[aria-label="Refresh Universe data"]');await click('[aria-label="Explore Thera connections"]');await delay(950);
+ // First render and pin the actual new report. Arm its short deadline only
+ // after setup, so asynchronous refresh or camera framing cannot consume it.
+ app.store.set('universe:feeds:thera',cached([second]));
+ await click('[aria-label="Refresh Universe data"]');
+ await waitFor("document.querySelector('[aria-label=\"Explore Thera connections\"] small')?.textContent.startsWith('1 fresh')");
+ await click('[aria-label="Explore Thera connections"]');await delay(950);
  const expiring=await mapSymbolPoint('symbol=>symbol.kind===\'portal\'&&symbol.id.includes(\'ui-network\')');
  await clickAt(expiring);await waitFor("!!document.querySelector('.universe-map-context[role=dialog]')");
+ const armedExpiry=new Date(Date.now()+3000).toISOString();
+ app.store.set('universe:feeds:thera',cached([{...second,expires_at:armedExpiry}]));
+ await click('[aria-label="Refresh Universe data"]');
+ await waitFor('document.querySelector(".universe-map-context[role=dialog] .universe-map-context-facts time[datetime]")?.getAttribute("datetime")==='+JSON.stringify(armedExpiry));
+ assert.ok(Date.parse(armedExpiry)>Date.now(),'The pinned report visibly receives its revised future deadline before expiry');
  await waitFor("!JSON.parse(document.querySelector('.universe-module canvas').dataset.mapSymbols||'[]').some(symbol=>symbol.id.includes('ui-network'))");
  assert.equal(await evaluate("!!document.querySelector('.universe-map-context[role=dialog]')"),false,'A pinned public entrance is dismissed when its report expires without a manual refresh');
  app.store.set('universe:feeds:thera',original);await click('[aria-label="Refresh Universe data"]');
