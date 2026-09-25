@@ -1,6 +1,7 @@
 import { createUniverse } from './universe.mjs';
 import { registerUniverseHistory } from './universe-history.mjs';
 import { getUniverseSystem } from './universe-static.mjs';
+import { normalizeSovereignty, sovereigntyStructures } from './universe-sovereignty.mjs';
 import { catalog } from './modules/catalog.mjs';
 import { createBus } from './bus.mjs';
 import { createRegistry } from './registry.mjs';
@@ -35,7 +36,8 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         bus.emit({ ...e, at });
         send('changed', { characterId: e.characterId });
     } }
-    const universe = createUniverse(store, auth, esi);
+    const universe = createUniverse(store, auth, esi, {...options.universe, noSync: options.noSync,
+        publish, onChange: characterId => send('universe', {characterId: characterId || 0})});
     const stopUniverseHistory = registerUniverseHistory({store, bus, esi, publish});
     const registry = await createRegistry(moduleDir, { store, db: store.db, bus, esi, publish });
     const stream=createStream(store,bus,publish);
@@ -77,8 +79,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         rememberNames(await esi.names(ids, { priority }));
     } }
     async function enrich(key, data, id) {
-        if (key === 'sovereignty')
-            return (data.solar_systems || []).map(s => ({ system_id: s.solar_system_id, alliance_id: s.claim?.alliance?.alliance_id, corporation_id: s.claim?.alliance?.corporation_id, faction_id: s.claim?.faction?.faction_id, development: s.claim?.alliance?.development }));
+        if (key === 'sovereignty') return normalizeSovereignty(data);
         if (key === 'location' && data.solar_system_id) {
             // Instanced space may not expose system details. Keep the observed ID
             // so documented Abyssal / Anoikis ID ranges can still be classified.
@@ -218,9 +219,14 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts', 'industry_systems'].includes(d.key))
                 await resolveNames(data, protectionKeys.has(d.key));
             const snapshot = { ...r, data, status: r.stale ? 'stale' : 'ready', ...(d.owner ? { ownerId } : {}) };
+            snapshot.sourceModifiedAt = r.headers?.['last-modified'] || null;
             if (!r.stale) snapshot.refreshAt = new Date(refreshDeadline(pollingPolicy(d, id), r, d.key === 'queue' ? data : store.snapshot(id, 'queue')?.data)).toISOString();
             delete snapshot.headers;
             store.saveSnapshot(id, d.key, snapshot);
+            if (d.key === 'kills') universe.feeds.observeNpc();
+            if (d.key === 'sovereignty' && Array.isArray(r.data?.solar_systems))
+                store.saveSnapshot(0, 'sovereignty_structures', {...snapshot, data: sovereigntyStructures(data), derivedFrom: 'sovereignty'});
+            if (d.key === 'location' && !r.stale && store.get('module:universe', true)) universe.observeSelectedLocation(id);
             if(d.key==='location' && !r.stale && store.get('module:universe',true)) universe.observeTravel(id, prior, snapshot);
             if(d.key==='loyalty'&&!r.stale)reconcileSessionLoyalty(store,id);
             goals.refresh(id,d.key);
@@ -252,6 +258,10 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             const retained = d.owner && prior?.ownerId !== ownerId ? null : prior;
             const retryAt = new Date(retryDeadline(d, e.retryAt)).toISOString();
             store.saveSnapshot(id, d.key, { ...retained, data: retained?.data ?? null, status: retained?.data != null ? 'stale' : 'error', error: e.message, errorStatus: e.status, retryAt, ...(d.owner ? { ownerId } : {}) });
+            if (d.key === 'sovereignty') {
+                const hubs=store.snapshot(0,'sovereignty_structures');
+                if(hubs?.derivedFrom==='sovereignty') store.saveSnapshot(0,'sovereignty_structures',{...hubs,status:'stale',error:e.message,errorStatus:e.status,retryAt});
+            }
             nextRun.set(key, Date.parse(retryAt));
         }
         send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):store.snapshot(id, d.key), names: namesMap });
@@ -335,7 +345,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         if (!store.get('module:universe', true)) return;
         try { universe.refreshPolitics(); } catch (error) { console.warn('Universe relationship refresh deferred:', error.message); }
     }
-    const ticker = setInterval(() => { if (!options.noSync) { refreshPolitics(); syncProtection(); sync(0); for (const c of auth.characters())
+    const ticker = setInterval(() => { if (!options.noSync) { universe.tick().catch(error => console.warn('Universe collection deferred:', error.message)); refreshPolitics(); syncProtection(); sync(0); for (const c of auth.characters())
         if (!c.needsReauth){
             sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
         } } refreshOPSEC(); }, 3000);
@@ -353,10 +363,10 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             store.set('module:' + id, value);
         }
         else
-            registry.toggle(id, value); refreshOPSEC(); updateBindings(); send('changed', {}); }, requestSync(id) {
+            registry.toggle(id, value); if (id === 'universe') universe.tick().catch(() => {}); refreshOPSEC(); updateBindings(); send('changed', {}); }, requestSync(id) {
             for (const m of catalog) if ((m.id === 'universe') === (id === 0)) for (const d of m.datasets) requested.add(id + ':' + d.key);
             esi.clearAccessFailures?.(id);
             syncProtection(); return Promise.allSettled([sync(id), ...(!options.noSync && id ? [combat.syncPublic(id)] : [])]);
-        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health() }), async close() { stopped = true; clearInterval(ticker); clearInterval(heartbeat); registry.close();stopUniverseHistory();stream.close();await markets.close();await sessionCombat.close();await combat.close();await obs.close(); for (const c of uiClients)
+        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health() }), async close() { stopped = true; clearInterval(ticker); clearInterval(heartbeat); registry.close();stopUniverseHistory();stream.close();await universe.close();await markets.close();await sessionCombat.close();await combat.close();await obs.close(); for (const c of uiClients)
             c.end(); await Promise.allSettled([...syncing.values(), ...datasetSync.values()]); } };
 }

@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {existsSync} from 'node:fs';
-import {mkdtemp,mkdir,rm,writeFile} from 'node:fs/promises';
+import {mkdtemp,mkdir,readFile,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -17,9 +17,10 @@ const dir=await mkdtemp(join(tmpdir(),'kairo-universe-ui-')),output=process.env.
 await mkdir(output,{recursive:true});
 let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[],contrastChecks=[],motionChecks=[],mapLayouts=[],paletteChecks=[],territoryChecks=[];let sequence=0;
 const empireColours={500001:'#4f88c6',500004:'#3da891',500003:'#c7a44b',500002:'#b86b4b'};
-const externalCalls=[];
-const appOptions={port:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590),streamPort:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590)+1,dataDir:join(dir,'data'),noSync:true,fetcher:async url=>{externalCalls.push(String(url));throw new Error('External ESI access is disabled in this synthetic browser test');}};
-function call(method,params={}){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params}));});}
+const externalCalls=[],recentUniverseRequests=[];
+const denyExternal=async url=>{externalCalls.push(String(url));throw new Error('External access is disabled in this synthetic browser test');};
+const appOptions={port:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590),streamPort:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590)+1,dataDir:join(dir,'data'),noSync:true,fetcher:denyExternal,universe:{operations:{noSync:true,fetcher:denyExternal},feeds:{noSync:true,fetcher:denyExternal}}};
+function call(method,params={},sessionId){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params,...(sessionId?{sessionId}:{})}));});}
 async function evaluate(expression){let r;try{r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});}catch(error){throw new Error(error.message+'; expression: '+expression.slice(0,500));}if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+': '+r.exceptionDetails.exception?.description);return r.result.value;}
 async function waitFor(expression){for(let i=0;i<300;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Condition not met: '+expression);}
 async function clickElement(expression){
@@ -27,7 +28,9 @@ async function clickElement(expression){
  const point=await evaluate(`(async()=>{
   const e=(${expression});e.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
   let previous,stable=0;
-  for(let frame=0;frame<180;frame++){
+  // Short-lived application notices can cover a bottom-edge pager. Wait for
+  // the real hit target instead of clicking through a toast or bypassing UI.
+  for(let frame=0;frame<600;frame++){
    await new Promise(requestAnimationFrame);
    const r=e.getBoundingClientRect(),point={x:r.x+r.width/2,y:r.y+r.height/2},hit=document.elementFromPoint(point.x,point.y);
    const ready=e.isConnected&&!e.disabled&&r.width>0&&r.height>0&&e.contains(hit);
@@ -47,6 +50,14 @@ async function fill(selector,text){await click(selector);await call('Input.dispa
 async function choose(label,text){
  await click('[aria-label='+JSON.stringify(label)+']');
  await clickElement(`Array.from(document.querySelectorAll('[role=option]')).find(e=>e.textContent.trim()===${JSON.stringify(text)})`);
+}
+async function inspector(tool){
+ if(await evaluate("!!document.querySelector('[aria-label=\"Open details\"]')"))await click('[aria-label="Open details"]');
+ await choose('Operations tool',tool);
+}
+async function openDisclosure(label){
+ const target=`Array.from(document.querySelectorAll('.universe-disclosure summary')).find(e=>e.textContent.startsWith(${JSON.stringify(label)}))`;
+ if(!await evaluate(`(${target})?.parentElement.open`))await clickElement(target);
 }
 async function preset(name){
  const open=await evaluate("!!document.querySelector('[aria-label=\"Map view\"]')");
@@ -248,6 +259,182 @@ async function overviewNavigation(){
  motionChecks.push({label:'Overview click navigation',before,after});
  await click('[aria-label="Fit map"]');await delay(900);checks.push('Clickable and keyboard overview navigation with projected K-space scale');
 }
+
+async function operationalAcceptance(atlas){
+ const now=Date.now(),iso=offset=>new Date(now+offset).toISOString(),ualx=atlas.systemsByName['UALX-3'];
+ const fullAtlas=await api('/universe/static'),thera=fullAtlas.systems.find(system=>system.name==='Thera').system_id,turnur=fullAtlas.systems.find(system=>system.name==='Turnur').system_id;
+ // Normalized provider fixtures: provider parsing has separate injected-network
+ // tests. Here the browser must explain cached freshness and safe user actions.
+ const cached=data=>({status:'ready',data,updated_at:iso(0),expires_at:iso(3600000)});
+ app.store.set('universe:feeds:thera',cached([{id:'thera:ui-fixture',source:'thera',from_system_id:thera,to_system_id:ualx,from_signature:'THR-123',to_signature:'UAL-123',wh_type:'Z999',expires_at:iso(3600000),completed:true,max_ship_size:'large',reported:true,stale:false}]));
+ app.store.set('universe:feeds:wormhole_types',cached([{identifier:'Z999',max_jump_mass_kg:100000000,max_stable_mass_kg:1000000000,nominal_lifetime_minutes:1440}]));
+ app.store.set('universe:feeds:turnur',{...cached([{id:'turnur:ui-fixture',source:'turnur',from_system_id:turnur,to_system_id:ualx,from_signature:'TRN-123',to_signature:'UAL-456',expires_at:iso(3600000),completed:true,max_ship_size:'medium',reported:true}]),status:'stale',error:'Synthetic provider temporarily unavailable'});
+ app.store.set('universe:feeds:combat',cached([{killmail_id:770099,system_id:ualx,time:iso(-60000),victim_ship_type_id:587,total_value:25000000,source:'zkillboard'}]));
+ app.store.saveSnapshot(0,'sovereignty_campaigns',{status:'ready',data:[{campaign_id:770099,solar_system_id:ualx,event_type:'ihub_defense',start_time:iso(3600000),defender_id:77,defender_score:.75,attackers_score:.25}],updatedAt:iso(0),expiresAt:iso(3600000)});
+ app.store.db.prepare('UPDATE characters SET scopes=? WHERE id=42').run(JSON.stringify(['esi-location.read_location.v1','esi-fleets.read_fleet.v1']));
+ app.store.saveSnapshot(42,'universe_fleet',{status:'ready',data:{fleet_id:100000000001,role:'fleet_commander',members:[{character_id:4201,name:'Synthetic scout',system_id:ualx,system_name:'UALX-3',ship_type_id:587,ship_name:'Rifter'},{character_id:4202,name:'Synthetic wingmate',system_id:atlas.systemsByName['C-J6MT'],system_name:'C-J6MT',ship_name:'Heron'}]},updatedAt:iso(0),expiresAt:iso(3600000)});
+ const config=await api('/universe/operations/config?character=42');
+ await api('/universe/operations/config?character=42','PUT',{...config,fleet_enabled:true,watched_system_ids:[ualx]});
+ await api('/universe/feeds/import','POST',{kind:'storms',items:[{id:'ui-storm',system_id:ualx,name:'Synthetic electric storm',type:'Electric',observed_at:iso(-300000),expires_at:iso(3600000)}]});
+ await search('UALX-3');await inspector('Live intel');
+ await fill('[aria-label="Intel report text"]','Jita hostile · Synthetic fresh tactical report');
+ await fill('[aria-label="Intel source label"]','Synthetic watch channel');await button('Record report','.universe-operations-tool');
+ await waitFor("document.querySelector('.universe-intel-reports')?.textContent.includes('Synthetic fresh tactical report')");
+ const state=await api('/universe/operations?character=42'),report=state.intel.find(item=>item.text.includes('Synthetic fresh tactical report'));
+ assert.equal(report.source,'manual');assert.ok(report.system_ids.includes(ualx));assert.ok(report.system_ids.includes(atlas.systemsByName.Jita),'A named system remains resolved alongside the explicitly selected context');assert.equal(report.expired,false);
+ assert.deepEqual((await api('/universe/operations?character=43')).intel,[]);
+ const alert=state.alerts.find(item=>item.intel_id===report.id);assert.ok(alert);
+ await click('[aria-label="Acknowledge alert '+alert.id+'"]');
+ assert.ok((await api('/universe/operations?character=42')).alerts.find(item=>item.id===alert.id).acknowledged_at);
+ await delay(1850);assert.equal(await evaluate("document.querySelectorAll('.universe-map-intel-pulse').length"),0,'A report pulse finishes even when acknowledgement refreshes intel during the animation');
+ await api('/universe/intel?character=42','POST',{text:'UALX-3 expired · Synthetic old tactical report',channel:'Synthetic old channel',observed_at:iso(-3600000)});
+ await click('[aria-label="Refresh Universe data"]');
+ assert.equal(await evaluate("document.querySelector('.universe-intel-reports').textContent.includes('Synthetic old tactical report')"),false);
+ await checkLabel('Include history','.universe-operations-tool');
+ await waitFor("document.querySelector('.universe-intel-reports .is-history')?.textContent.includes('expired')");
+ const collectionLayout=await evaluate("(()=>{const e=document.querySelector('.universe-operations-tool .universe-operational-status'),r=e.getBoundingClientRect(),prior=e.previousElementSibling.getBoundingClientRect();return {position:getComputedStyle(e).position,top:r.top,previousBottom:prior.bottom,width:r.width,parentWidth:e.parentElement.clientWidth};})()");
+ assert.notEqual(collectionLayout.position,'absolute','Dock collection controls do not inherit the map overlay position');
+ assert.ok(collectionLayout.top>=collectionLayout.previousBottom-1&&collectionLayout.width<=collectionLayout.parentWidth,'Collection controls stay in normal flow below the prior operational section: '+JSON.stringify(collectionLayout));
+ await readability('Intel reports',[['.universe-intel-reports p',16],['.universe-intel-reports footer',14]]);
+ await contrast('Intel reports',['.universe-intel-reports p','.universe-intel-reports footer']);
+ await screenshot('universe-live-intel');
+ await choose('Active character','Atlas Beta');await inspector('Live intel');
+ await waitFor("!document.querySelector('.universe-operations-tool')?.textContent.includes('Synthetic fresh tactical report')");
+ assert.equal(await evaluate("document.querySelector('.universe-operations-tool').textContent.includes('Synthetic watch channel')"),false,'Pilot switching removes the previous pilot’s private report content');
+ await choose('Active character','Atlas Alpha');await search('UALX-3');await inspector('Live intel');
+ await waitFor("document.querySelector('.universe-intel-reports')?.textContent.includes('Synthetic fresh tactical report')");
+ await button('Pilots','.universe-operations-tool');
+ await waitFor("document.querySelector('.universe-pilot-list')?.textContent.includes('Atlas Alpha') && document.querySelector('.universe-operations-tool').textContent.includes('Synthetic scout')");
+ assert.ok(await evaluate("document.querySelector('.universe-operations-tool').textContent.includes('missing scope')"),'Unauthorized pilot locations keep their scope status');
+ await screenshot('universe-pilots-fleet');
+ await button('Signals','.universe-operations-tool');
+ const reportCard=source=>`Array.from(document.querySelectorAll('.universe-public-signals article')).find(e=>e.textContent.includes(${JSON.stringify(source+' connection')}))`;
+ await waitFor(`!!(${reportCard('thera')}) && !!(${reportCard('turnur')})`);
+ await choose('Wormhole hub','Thera');assert.equal(await evaluate("document.querySelectorAll('.universe-public-signals article').length"),1);
+ await choose('Wormhole hub','Thera & Turnur');
+ assert.equal(await evaluate(`Array.from((${reportCard('turnur')}).querySelectorAll('button')).find(e=>e.textContent==='Use as a private connection').disabled`),true,'A stale public report cannot be promoted to a private route connection');
+ await clickElement(`Array.from((${reportCard('thera')}).querySelectorAll('button')).find(e=>e.textContent==='Use as a private connection')`);
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-connection-confirm button')).find(e=>e.textContent==='Record confirmed connection').disabled"),true);
+ await checkLabel('I have verified this connection for my route','.universe-connection-confirm');await button('Record confirmed connection','.universe-connection-confirm');
+ const promoted=(await api('/universe?character=42')).links.find(link=>link.label==='Reported thera · THR-123');
+ assert.ok(promoted&&promoted.confirmed&&promoted.accessible);assert.equal(promoted.expires_at,iso(3600000));
+ assert.equal(promoted.max_ship_size,'large');assert.equal(promoted.from_signature,'THR-123');assert.equal(promoted.to_signature,'UAL-123');assert.equal(promoted.reported_source,'thera');
+ assert.equal(promoted.max_jump_mass_kg,100000000);assert.equal(promoted.type_status,'ready','Promotion preserves the known nominal type limit separately from unknown remaining mass');
+ assert.equal((await api('/universe?character=43')).links.some(link=>link.id===promoted.id),false);
+ await api('/universe/links/'+promoted.id+'?character=42','DELETE');
+ await screenshot('universe-public-connections');
+ await choose('Public signal type','Metaliminal storms');
+ await waitFor("document.querySelector('.universe-public-signals')?.textContent.includes('Synthetic electric storm')");await screenshot('universe-storm-observations');
+ await choose('Public signal type','Sovereignty campaigns');
+ await waitFor("!!document.querySelector('[aria-label=\"Defender campaign score\"]')");
+ assert.ok(await evaluate("document.querySelector('.universe-public-signals').textContent.includes('75%')"));await screenshot('universe-campaign-timers');
+ await choose('Public signal type','Public combat reports');
+ assert.ok(await evaluate("document.querySelector('.universe-operation-empty').textContent.includes('disabled')"));
+ await api('/universe/feeds/config','PUT',{combat_enabled:true});await click('[aria-label="Refresh Universe data"]');
+ await waitFor("!!document.querySelector('.universe-public-signals a[href=\"https://zkillboard.com/kill/770099/\"]')");
+ assert.ok(await evaluate("document.querySelector('.universe-feed-source').textContent.includes('incomplete')"));
+ await choose('Public signal type','Points of interest');
+ assert.ok(await evaluate("document.querySelectorAll('.universe-public-signals article').length>0"));
+ await button('Next','[aria-label="Public signal pages"]');
+ assert.ok(await evaluate("document.querySelector('[aria-label=\"Public signal pages\"] [role=status]').textContent.startsWith('31–')"),'Public landmarks remain accessible beyond the first page');
+ await choose('Landmark category','market hub');assert.ok(await evaluate("document.querySelector('.universe-public-signals').textContent.includes('Jita')"));
+ await choose('Public signal type','NPC activity changes');
+ assert.ok(await evaluate("document.querySelector('.universe-feed-source').textContent.includes('not the number')"),'Rolling-window delta is not mislabeled as newly killed NPCs');
+
+ await inspector('Exploration');
+ await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\tWormhole\tSynthetic entrance\t100.0%\t1.2 AU\nDEF-456\tCosmic Signature\tRelic Site\tSynthetic relic\t100.0%\t2 AU');
+ await button('Review scan','.universe-operations-tool');
+ assert.equal((await api('/universe/operations?character=42')).signatures.length,0,'Scanner review does not save until explicitly imported');
+ await button('Import signatures','.universe-scan-review');await waitFor("document.querySelectorAll('.universe-signature-list article').length===2");
+ await openDisclosure('Import scanner results');await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\t\t\t20.0%\t1 AU');
+ await button('Review scan','.universe-operations-tool');await button('Import signatures','.universe-scan-review');
+ let signatures=(await api('/universe/operations?character=42')).signatures;
+ assert.equal(signatures.find(item=>item.signature_id==='ABC-123').name,'Synthetic entrance');
+ assert.ok(signatures.every(item=>!item.missing),'A partial scan preserves unseen signatures');
+ await openDisclosure('Import scanner results');await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\tWormhole\tSynthetic entrance\t100%\t1 AU');
+ await checkLabel('This is a complete scan of UALX-3','.universe-operations-tool');await button('Review scan','.universe-operations-tool');await button('Import signatures','.universe-scan-review');
+ await waitFor("document.querySelector('.universe-signature-list .is-missing')?.textContent.includes('DEF-456')");
+ assert.deepEqual((await api('/universe/operations?character=43')).signatures,[]);
+ await screenshot('universe-exploration-signatures');
+ await openDisclosure('Import scanner results');await fill('[aria-label="Scanner clipboard text"]','This is not scanner data');await button('Review scan','.universe-operations-tool');
+ await waitFor("document.querySelector('.universe-scan-review')?.textContent.includes('notebook is unchanged')");
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-scan-review button')).find(e=>e.textContent.trim()==='Import signatures').disabled"),true);
+ assert.equal((await api('/universe/operations?character=42')).signatures.length,2);
+ await click('[aria-label="Select signature DEF-456"]');await button('Delete selected','.universe-operations-tool');
+ assert.equal((await api('/universe/operations?character=42')).signatures.length,2,'Bulk signature deletion waits for its explicit confirmation');
+ await button('Confirm delete selected','.universe-operations-tool');await waitFor("document.querySelectorAll('.universe-signature-list article').length===1");
+ assert.equal((await api('/universe/operations?character=42')).signatures[0].signature_id,'ABC-123');
+ await button('Infrastructure','.universe-operations-tool');await fill('[aria-label="Upgrade name"]','Synthetic logistics observation');await fill('[aria-label="Upgrade level"]','2');await button('Save infrastructure record','.universe-operations-tool');
+ await waitFor("document.querySelector('.universe-upgrade-list')?.textContent.includes('Synthetic logistics observation')");
+ assert.equal((await api('/universe/operations?character=42')).upgrades[0].level,2);assert.deepEqual((await api('/universe/operations?character=43')).upgrades,[]);
+ await openDisclosure('Import or export infrastructure');await fill('[aria-label="Infrastructure import text"]','UALX-3\n2\tSynthetic imported infrastructure 3\tOnline');await button('Preview infrastructure import','.universe-operations-tool');
+ await waitFor("document.querySelector('.universe-import-preview')?.textContent.includes('Synthetic imported infrastructure')");
+ assert.equal((await api('/universe/operations?character=42')).upgrades.length,1,'Infrastructure preview is read-only');
+ await button('Import infrastructure observations','.universe-operations-tool');await waitFor("document.querySelectorAll('.universe-upgrade-list article').length===2");
+ await button('Copy JSON infrastructure','.universe-operations-tool');await waitFor("!!document.querySelector('[aria-label=\"Notebook export text\"]')");
+ const infrastructureExport=JSON.parse(await evaluate("document.querySelector('[aria-label=\"Notebook export text\"]').value"));
+ assert.equal(infrastructureExport.upgrades.find(row=>row.slot===2).name,'Synthetic imported infrastructure');
+ assert.deepEqual((await api('/universe/operations?character=43')).upgrades,[]);
+ await screenshot('universe-infrastructure-notebook');
+ await viewport(390,844);await layout('Operational notebook 390');await screenshot('universe-operations-mobile');await viewport(1600);
+
+ // Projections have clear distance semantics and bounded local graph coverage.
+ if(await evaluate("!!document.querySelector('[aria-label=\"Collapse details\"]')"))await click('[aria-label="Collapse details"]');
+ await button('Layers & views');await button('Schematic','.universe-tactical-controls');await click('[aria-label="Close layers"]');
+ await waitFor("document.querySelector('[data-map-projection]')?.dataset.mapProjection==='schematic'");
+ assert.equal(await evaluate("!!document.querySelector('.universe-map-scale-bar')"),false);await screenshot('universe-schematic-network');
+ await button('Layers & views');await button('Local radar','.universe-tactical-controls');await choose('Local radar hops','2 jumps');await click('[aria-label="Close layers"]');
+ await waitFor("document.querySelector('[data-map-projection]')?.dataset.mapProjection==='radar'");
+ const neighbors=new Map(fullAtlas.systems.map(system=>[system.system_id,[]]));for(const gate of fullAtlas.gates){neighbors.get(gate.from_system_id)?.push(gate.to_system_id);neighbors.get(gate.to_system_id)?.push(gate.from_system_id);}
+ let frontier=[ualx];const localIds=new Set(frontier);for(let depth=0;depth<2;depth++){const next=[];for(const id of frontier)for(const other of neighbors.get(id)||[])if(!localIds.has(other)){localIds.add(other);next.push(other);}frontier=next;}
+ assert.ok((await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label')")).includes('showing '+localIds.size.toLocaleString('en-US')+' systems'),'Local radar includes exactly the two-hop stargate neighborhood');
+ assert.equal(await evaluate("!!document.querySelector('.universe-map-scale-bar')"),false);await screenshot('universe-local-radar');
+ await button('Layers & views');await button('Physical','.universe-tactical-controls');await click('[aria-label="Close layers"]');await waitFor("document.querySelector('[data-map-projection]')?.dataset.mapProjection==='physical'");
+ await inspector('System');
+ // Remove public wormhole fixtures before the existing private-discovery check.
+ app.store.set('universe:feeds:thera',cached([]));app.store.set('universe:feeds:turnur',cached([]));
+ await click('[aria-label="Refresh Universe data"]');
+ checks.push('Private intel, alert acknowledgement, expired history, authorized pilots/fleet and source-aware public observations');
+ checks.push('Scanner review/import, partial-versus-complete scans, private infrastructure and responsive notebook');
+ checks.push('Physical, schematic and exact two-hop local radar projections retain honest distance semantics');
+}
+
+async function tacticalWindowAcceptance(){
+ await search('UALX-3');await click('[aria-label="Zoom in"]');await delay(1000);
+ const before=await evaluate(`(()=>{window.__tacticalCanvas=document.querySelector('.universe-module canvas');window.__originalOpen=window.open;window.__originalPip=Object.getOwnPropertyDescriptor(window,'documentPictureInPicture');Object.defineProperty(window,'documentPictureInPicture',{configurable:true,value:undefined});window.open=function(...args){window.__tacticalChild=window.__originalOpen.apply(this,args);return window.__tacticalChild;};return {zoom:parseFloat(document.querySelector('[aria-label="Zoom in"]').previousElementSibling.textContent),selected:document.querySelector('.universe-system-title h3').textContent};})()`);
+ await click('[aria-label="Open tactical window"]');
+ await waitFor("!!window.__tacticalChild?.document.querySelector('canvas') && !!document.querySelector('[aria-label=\"Return tactical map\"]')");await delay(1100);
+ const detached=await evaluate(`(()=>{const child=window.__tacticalChild;return {sameCanvas:child.document.querySelector('canvas')===window.__tacticalCanvas,title:child.document.title,zoom:parseFloat(child.document.querySelector('[aria-label="Zoom in"]').previousElementSibling.textContent),fallback:child.document.querySelector('.tactical-window-bar').textContent,mainCanvas:!!document.querySelector('.universe-module canvas'),width:child.innerWidth,scrollWidth:child.document.documentElement.scrollWidth};})()`);
+ assert.equal(detached.sameCanvas,true,'The private tactical window moves the existing renderer rather than creating a second map');
+ assert.match(detached.title,/Private tactical map/);assert.match(detached.fallback,/always-on-top unavailable/);assert.equal(detached.mainCanvas,false);
+ assert.ok(Math.abs(detached.zoom-before.zoom)<.15,'Detaching retains relative camera zoom: '+JSON.stringify({before,detached}));
+ assert.ok(detached.scrollWidth<=detached.width+1,'The private tactical window has no horizontal overflow');
+ const target=(await call('Target.getTargets')).targetInfos.find(target=>target.title===detached.title);
+ assert.ok(target,'The native fallback window is an actual browser target');
+ const attached=await call('Target.attachToTarget',{targetId:target.targetId,flatten:true});
+ await call('Page.enable',{},attached.sessionId);await call('Runtime.enable',{},attached.sessionId);
+ const zoomPoint=(await call('Runtime.evaluate',{expression:`(()=>{const r=document.querySelector('[aria-label="Zoom in"]').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`,returnByValue:true},attached.sessionId)).result.value;
+ await call('Input.dispatchMouseEvent',{type:'mousePressed',...zoomPoint,button:'left',clickCount:1},attached.sessionId);
+ await call('Input.dispatchMouseEvent',{type:'mouseReleased',...zoomPoint,button:'left',clickCount:1},attached.sessionId);await delay(1000);
+ const changedZoom=await evaluate("parseFloat(window.__tacticalChild.document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent)");
+ assert.ok(Math.abs(changedZoom-before.zoom*1.4)<.2,'Transferred map controls remain interactive in the child document');
+ await evaluate("Object.defineProperty(document,'hidden',{configurable:true,value:true});Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});document.dispatchEvent(new Event('visibilitychange'))");await delay(600);
+ const report=await api('/universe/intel?character=42','POST',{text:'UALX-3 hostile · Synthetic detached-window update',channel:'Private tactical window fixture'});
+ await waitFor("window.__tacticalChild.document.querySelector('.universe-operational-hud')?.textContent.includes('Synthetic detached-window update')");
+ assert.equal(await evaluate('document.hidden'),true,'The detached map receives SSE changes while its main document is hidden');
+ await call('Runtime.evaluate',{expression:'document.fonts.ready',awaitPromise:true},attached.sessionId);await delay(500);
+ const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false},attached.sessionId);
+ await writeFile(join(output,'universe-private-tactical-window.png'),Buffer.from(shot.data,'base64'));
+ await evaluate("delete document.hidden;delete document.visibilityState;document.dispatchEvent(new Event('visibilitychange'))");
+ await call('Page.bringToFront');await click('[aria-label="Return tactical map"]');
+ await waitFor("document.querySelector('.universe-module canvas')===window.__tacticalCanvas && window.__tacticalChild.closed");await delay(1100);
+ const restored=await evaluate(`({zoom:parseFloat(document.querySelector('[aria-label="Zoom in"]').previousElementSibling.textContent),selected:document.querySelector('.universe-system-title h3').textContent})`);
+ assert.equal(restored.selected,before.selected);assert.ok(Math.abs(restored.zoom-changedZoom)<.15,'Restoring retains the camera adjustment made in the tactical window');
+ await evaluate("(()=>{window.open=window.__originalOpen;if(window.__originalPip)Object.defineProperty(window,'documentPictureInPicture',window.__originalPip);else delete window.documentPictureInPicture;})()");
+ await api('/universe/intel/'+report.id+'?character=42','DELETE');
+ mapLayouts.push({label:'Native private tactical popup fallback',before,detached,changedZoom,restored});
+ checks.push('Private tactical popup keeps the same map/camera, receives hidden-parent SSE updates and restores without claiming always-on-top');
+}
 async function searchAtlasContexts(){
  await click('[aria-label="Fit map"]');await key('/','Slash',191,'/');
  assert.equal(await evaluate("document.activeElement?.getAttribute('aria-label')"),'Find a solar system','Slash focuses the unified atlas search outside editable fields');
@@ -328,7 +515,7 @@ async function minimumZoom(label){
 async function vectorRendering(state,source='inferred'){
  // Browser-only instrumentation verifies the visible territory redraw uses
  // geometry, not a magnified bitmap or per-system radial halo texture.
- await evaluate(`(()=>{window.__mapPaint={raster:0,radial:0,vectorFills:0,vectorStrokes:0,fillColours:{}};window.__paintOriginals={};for(const name of ['drawImage','createRadialGradient','fill','stroke']){const original=CanvasRenderingContext2D.prototype[name];window.__paintOriginals[name]=original;CanvasRenderingContext2D.prototype[name]=function(...args){if(this.canvas.closest('.universe-module')){if(name==='drawImage')window.__mapPaint.raster++;if(name==='createRadialGradient')window.__mapPaint.radial++;if(args[0] instanceof Path2D){window.__mapPaint[name==='fill'?'vectorFills':'vectorStrokes']++;if(name==='fill')window.__mapPaint.fillColours[this.fillStyle]=true;}}return original.apply(this,args);};}})()`);
+ await evaluate(`(()=>{window.__mapPaint={raster:0,radial:0,vectorFills:0,vectorStrokes:0,fillColours:{},textOutlines:0,textStyles:{},textPairMismatches:0};window.__mapLabels={};window.__paintOriginals={};let outlined;for(const name of ['drawImage','createRadialGradient','fill','stroke','strokeText','fillText']){const original=CanvasRenderingContext2D.prototype[name];window.__paintOriginals[name]=original;CanvasRenderingContext2D.prototype[name]=function(...args){if(this.canvas.closest('.universe-module')){if(name==='drawImage')window.__mapPaint.raster++;if(name==='createRadialGradient')window.__mapPaint.radial++;if(args[0] instanceof Path2D){window.__mapPaint[name==='fill'?'vectorFills':'vectorStrokes']++;if(name==='fill')window.__mapPaint.fillColours[this.fillStyle]=true;}if(name==='strokeText'||name==='fillText'){const [text,x,y]=args,metrics=this.measureText(text),sample={text,x,y,width:metrics.width,right:x+metrics.actualBoundingBoxRight+1.5,alpha:this.globalAlpha,font:this.font};if(name==='strokeText'){window.__mapPaint.textOutlines++;window.__mapPaint.textStyles[[this.lineJoin,this.lineCap,this.miterLimit,this.lineWidth].join(':')]=true;outlined=sample;}else{window.__mapLabels[text]=sample;if(outlined?.text===text&&outlined.x===x&&outlined.y===y){if(outlined.alpha!==sample.alpha||outlined.font!==sample.font)window.__mapPaint.textPairMismatches++;outlined=null;}}}}return original.apply(this,args);};}})()`);
  try{
   await click('[aria-label="Fit map"]');await waitFor('window.__mapPaint.vectorStrokes>0');await delay(900);
   await evaluate("document.querySelector('.universe-canvas-shell').scrollIntoView({block:'center'})");await screenshot('universe-vector-borders-fit-'+source);
@@ -346,11 +533,38 @@ async function vectorRendering(state,source='inferred'){
    if(key)expectedTerritories.set(key,state.politics.territory_colours[key].fill);
   }
   for(const [key,colour] of expectedTerritories)assert.ok(paints.fillColours[colour],source+': actual territory rendering uses the resolved '+key+' colour '+colour);
+  assert.ok(paints.textOutlines>0,'Map names paint text outlines');
+  assert.deepEqual(Object.keys(paints.textStyles),['round:round:1.5:2.5'],'Map label halos use thin rounded joins and bounded mitres');
+  assert.equal(paints.textPairMismatches,0,'Text fill and outline share exactly the same alpha, font and position');
   renderChecks.push({source,...paints,expectedTerritories:Object.fromEntries(expectedTerritories)});
+  if(source==='inferred'){
+   const selected=await evaluate("document.querySelector('.universe-system-title h3').textContent");
+   await search('Jita');await delay(1100);
+   const centre=await evaluate('window.__mapLabels.Jita');assert.equal(centre.alpha,1,'An interior system label remains fully readable');
+   const bounds=await evaluate("(()=>{const r=document.querySelector('.universe-module canvas').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};})()");
+   const start={x:bounds.x+bounds.width*.3,y:bounds.y+bounds.height*.5},end={x:bounds.x+bounds.width*.3+bounds.width-26-centre.right,y:start.y};
+   await call('Input.dispatchMouseEvent',{type:'mouseMoved',...start});await call('Input.dispatchMouseEvent',{type:'mousePressed',...start,button:'left',buttons:1,clickCount:1});
+   await call('Input.dispatchMouseEvent',{type:'mouseMoved',...end,button:'left',buttons:1});await delay(130);
+   await call('Input.dispatchMouseEvent',{type:'mouseReleased',...end,button:'left',clickCount:1});await delay(350);
+   const edge=await evaluate('window.__mapLabels.Jita');
+   assert.ok(edge.alpha>0&&edge.alpha<.95,'A system name near the viewport boundary fades smoothly: '+JSON.stringify({centre,edge,bounds}));
+   assert.ok(Math.abs(bounds.width-edge.right-26)<3,'Edge fade is measured from the actual full glyph boundary');
+   renderChecks.push({source:'Viewport label fade',centre,edge,rightClearance:bounds.width-edge.right});
+   await screenshot('universe-label-edge-fade');await search(selected);await delay(1000);
+   checks.push('Viewport names fade at their glyph bounds and retain matching rounded outlines');
+  }
  }finally{await evaluate("for(const [name,original] of Object.entries(window.__paintOriginals))CanvasRenderingContext2D.prototype[name]=original");}
  checks.push('Territory redraw uses vector borders without scaled bitmap influence or system glow');
 }
 async function idleMetrics(){
+ // Finite age/expiry updates are meaningful data changes, not an animation
+ // loop. Measure a settled window that does not straddle one of those updates.
+ const state=await api('/universe?character=42'),time=Date.now(),deadlines=[Math.floor(time/60000)*60000+60000];
+ for(const row of [...state.operations?.intel||[],...state.operations?.pilots||[],...state.feeds?.connections||[]]){
+  const observed=Date.parse(row.observed_at||row.updated_at||'');
+  for(const deadline of [observed+30000,observed+150000,Date.parse(row.expires_at||'')])if(Number.isFinite(deadline)&&deadline>time)deadlines.push(deadline);
+ }
+ const soon=Math.min(...deadlines)-time;if(soon<4000)await delay(soon+350);
  await call('Performance.enable');await delay(300);
  // Instrument only this disposable browser after interacting. This is never
  // compiled into the app, and distinguishes event-driven draws from a loop.
@@ -369,8 +583,8 @@ async function startBrowser(){
  const browserURL=await new Promise((resolve,reject)=>{let log='';const timer=setTimeout(()=>reject(new Error('Chrome did not start: '+log.slice(-1000))),20000);proc.stderr.on('data',b=>{log+=b;const m=log.match(/DevTools listening on (ws:\/\/[^\s]+)/);if(m){clearTimeout(timer);resolve(m[1]);}});proc.on('error',reject);proc.on('exit',code=>{clearTimeout(timer);reject(new Error('Chrome exited: '+code+' '+log.slice(-1000)));});});
  const endpoint=new URL(browserURL),target=await(await fetch('http://'+endpoint.host+'/json/new?about:blank',{method:'PUT'})).json();
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
- ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);});
- await call('Page.enable');await call('Runtime.enable');await viewport(1600);
+ ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);else if(m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/universe')&&m.params.request.method!=='GET'){const {url,method,postData}=m.params.request;recentUniverseRequests.push({url,method,postData});if(recentUniverseRequests.length>20)recentUniverseRequests.shift();}});
+ await call('Page.enable');await call('Runtime.enable');await call('Network.enable');await viewport(1600);
 }
 
 try{
@@ -489,7 +703,7 @@ try{
  // Configure through Settings, then verify the resolved political map. Manual
  // membership and explicit independence override only those alliances; another
  // supported group continues using inference.
- await button('Blocs','.universe-inspector-tabs');await click('[aria-label="Configure Universe power blocs"]');
+ await inspector('Politics');await click('[aria-label="Configure Universe power blocs"]');
  await waitFor("!!document.querySelector('.power-bloc-settings') && !!document.querySelector('[aria-label=\"Create power bloc\"]')");
  await button('Create your first power bloc','.power-bloc-settings');await fill('[aria-label="Power bloc name"]','Test Expedition Bloc');
  await click('[aria-label="Use colour #91b2f6"]');
@@ -544,19 +758,46 @@ try{
  await search('Amarr');await click('[aria-label="Set route destination"]');
  assert.deepEqual(await evaluate("['Route origin','Route destination'].map(label=>document.querySelector('[aria-label=\"'+label+'\"]').value)"),['Jita','Amarr'],'Selected-system route actions preserve the other endpoint');
  await button('Calculate route');
- await waitFor("document.querySelector('.universe-route-result .eyebrow')?.textContent==='CALCULATED ROUTE'");
- const route=await evaluate("Array.from(document.querySelectorAll('.universe-route-result ol strong')).map(e=>e.textContent)");
+ await waitFor("document.querySelectorAll('.universe-navigation-route strong').length>2");
+ const route=await evaluate("Array.from(document.querySelectorAll('.universe-navigation-route strong')).map(e=>e.textContent)");
  assert.equal(route[0],'Jita');assert.equal(route.at(-1),'Amarr');assert.ok(route.length>2,'Route uses multiple actual stargates');
  assert.ok(await evaluate("document.querySelector('.universe-canvas-shell').textContent.includes('Planned route')"),'Calculated route is passed to the map');
  await delay(900);const beforeRouteFit=await canvasHash();await click('[aria-label="Fit route"]');await delay(900);assert.notEqual(await canvasHash(),beforeRouteFit,'Fit route reframes the drawn route');
  await screenshot('universe-gate-route');
- await button('Jump range','.universe-inspector-tabs');
+ await fill('[aria-label="Route destination"]','Rens');await button('Add waypoint','.universe-navigation-tool');
+ await click('[aria-label="Move Rens up"]');
+ assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-itinerary-stops .universe-stop-name')).map(e=>e.textContent)"),['Rens','Amarr'],'Ordered waypoints move through actual user controls');
+ await button('Calculate route','.universe-navigation-tool');
+ await waitFor("document.querySelector('.universe-navigation-route')?.textContent.includes('Rens')");
+ const savedItinerary=await api('/universe/navigation?character=42');
+ assert.deepEqual(savedItinerary.itinerary.stops.map(stop=>stop.systemId),[atlas.systemsByName.Rens,atlas.systemsByName.Amarr]);
+ assert.deepEqual((await api('/universe/navigation?character=43')).itinerary.stops,[]);
+ await button('Send to EVE','.universe-navigation-tool');
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-send-waypoints button')).find(e=>e.textContent.trim()==='Append EVE waypoints').disabled"),true,'A pilot without waypoint permission cannot send the planned route');
+ await screenshot('universe-ordered-itinerary');
+ await button('Clear saved itinerary','.universe-navigation-tool');
+ await button('Jump route','.universe-navigation-tool');
+ assert.ok(await evaluate("document.querySelector('[aria-label=\"Jump ship preset\"]').textContent.includes('My effective range')"),'Switching from gate to jump navigation keeps the custom range preset valid');
  assert.ok(atlas.nearby,'Static data supplies an actual nullsec target within range');
- await fill('[list="universe-system-jump-origin"]','UALX-3');await fill('[list="universe-system-jump-destination"]',atlas.nearby.name);await button('Calculate jump route');
- await waitFor("document.querySelector('.universe-route-result .eyebrow')?.textContent==='CALCULATED ROUTE'");
- assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-route-result ol strong')).map(e=>e.textContent)"),['UALX-3',atlas.nearby.name]);
- assert.ok(await evaluate("document.querySelector('.universe-range-stat strong').textContent.endsWith(' LY')"));
- checks.push('Jita–Amarr local gate route and actual 3D jump-drive route');
+ await fill('[aria-label="Jump origin"]','UALX-3');await fill('[aria-label="Jump destination"]',atlas.nearby.name);await button('Calculate jump route');
+ await waitFor("document.querySelectorAll('.universe-navigation-route strong').length===2");
+ assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-navigation-route strong')).map(e=>e.textContent)"),['UALX-3',atlas.nearby.name]);
+ assert.ok(await evaluate("document.querySelector('.universe-navigation-route').textContent.includes('LY')"));
+ await choose('Jump ship preset','Carrier / force auxiliary / dreadnought');await choose('Jump Drive Calibration','Level 4');
+ assert.ok(Math.abs(Number(await evaluate("document.querySelector('[aria-label=\"Jump range in light years\"]').value"))-6.3)<.001,'Hull and calibration update the effective range');
+ await button('Calculate jump route');await waitFor("document.querySelectorAll('.universe-navigation-route strong').length===2");
+ const jumpItinerary=(await api('/universe/navigation?character=42')).itinerary;
+ assert.equal(jumpItinerary.rangePreset.shipClass,'carrier');assert.equal(jumpItinerary.rangePreset.jumpDriveCalibration,4);
+ await button('Range','.universe-navigation-tool');
+ await fill('[aria-label="Range origin 1"]','UALX-3');await button('Add range origin','.universe-navigation-tool');
+ await fill('[aria-label="Range origin 2"]',atlas.nearby.name);await button('Show reachable systems','.universe-navigation-tool');
+ await waitFor("document.querySelectorAll('.universe-navigation-metrics strong').length===2");
+ const reach=await api('/universe/navigation/reachability?character=42','POST',{origins:[{systemId:atlas.systemsByName['UALX-3'],rangeLy:5},{systemId:atlas.nearby.system_id,rangeLy:5}]});
+ assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-navigation-metrics strong')).map(e=>Number(e.textContent))"),[reach.unionSystemIds.length,reach.overlapSystemIds.length]);
+ assert.ok(reach.overlapSystemIds.length>0&&reach.unionSystemIds.length>=reach.overlapSystemIds.length);
+ assert.ok(await evaluate("document.querySelector('.universe-navigation-tool').textContent.includes('does not establish cyno availability')"));
+ await screenshot('universe-range-intersection');await button('Clear range highlights','.universe-navigation-tool');
+ checks.push('Gate and jump itineraries, ordered private waypoints, explicit scope-gated EVE send and exact XYZ range intersection');
 
  await clickElement("Array.from(document.querySelectorAll('.universe-tabs button')).find(e=>e.textContent.startsWith('Connections & pins'))");
  await button('Ansiblex','.universe-connection-form');
@@ -570,7 +811,9 @@ try{
  await clickElement('('+connection('Manual test bridge')+').querySelector("input[type=checkbox]")');await waitFor('('+connection('Manual test bridge')+').textContent.includes("ACTIVE")');
  await button('Import','.universe-connection-form');
  await fill('input[placeholder="Alliance bridges · September"]','Synthetic bridge network');
- await fill('[aria-label="Bridge import data"]','from_system,to_system,label\nJita,Perimeter,Imported bridge one\nAmarr,Jita,Imported bridge two');await button('Import bridge list');
+ await fill('[aria-label="Bridge import data"]','from_system,to_system,label\nJita,Perimeter,Imported bridge one\nAmarr,Jita,Imported bridge two');await button('Preview bridge list');
+ await waitFor("document.querySelector('.universe-import-preview strong')?.textContent.startsWith('2 connections')");
+ assert.equal((await api('/universe?character=42')).link_lists.length,0,'Bridge preview does not persist the network');await button('Import bridge list');
  await waitFor("document.querySelector('.universe-import-list')?.textContent.includes('Synthetic bridge network')");
  assert.equal((await api('/universe?character=42')).link_lists.length,1);
  await click('.universe-import-list input[type=checkbox]');
@@ -581,6 +824,25 @@ try{
  await waitFor("!document.querySelector('.universe-import-list')");assert.equal((await api('/universe?character=42')).links.filter(l=>l.source==='import').length,0);
  await click('[aria-label="Delete connection Manual test bridge"]');await waitFor('!('+connection('Manual test bridge')+')');
  checks.push('Manual Ansiblex add/toggle/delete and CSV bridge-list import/toggle/delete');
+
+ const smtText=await readFile(new URL('./fixtures/smt-user-ansiblex.txt',import.meta.url),'utf8');
+ await fill('input[placeholder="Alliance bridges · September"]','Exact SMT network');
+ await fill('[aria-label="Bridge import data"]',smtText);await button('Preview bridge list');
+ await waitFor("document.querySelector('.universe-import-preview strong')?.textContent.includes('11 reciprocal pairs')");await screenshot('universe-smt-import-preview');await button('Import bridge list');
+ await waitFor("document.querySelector('.universe-import-list')?.textContent.includes('Exact SMT network')");
+ const smtState=await api('/universe?character=42'),smtList=smtState.link_lists.find(list=>list.name==='Exact SMT network'),smtLinks=smtState.links.filter(link=>link.list_id===smtList.id);
+ assert.equal(smtLinks.length,11,'Twenty-two supplied directed lines retain eleven reciprocal connections');
+ assert.ok(smtLinks.every(link=>link.structure_id===null&&link.reverse_structure_id===null),'Unknown zero structure IDs remain unknown at both ends');
+ assert.deepEqual((await api('/universe?character=43')).link_lists,[]);
+ const smtExport=await evaluate(`(async()=>{const response=await fetch('/api/universe/link-lists/'+${JSON.stringify(smtList.id)}+'/export?character=42');if(!response.ok)throw new Error('SMT export failed');return response.text();})()`);
+ const directed=text=>text.split(/\r?\n/).map(line=>line.trim()).filter(line=>/^0\s/.test(line)).map(line=>line.replace(/\s+/g,' ')).sort();
+ assert.deepEqual(directed(smtExport),directed(smtText),'SMT export preserves every supplied direction and unknown structure ID');
+ await screenshot('universe-smt-exact-import');await click('[aria-label="Delete imported list Exact SMT network"]');
+ await waitFor("!document.querySelector('.universe-import-list')");
+ checks.push('Unchanged user SMT list imports eleven reciprocal pairs and round-trips all twenty-two unknown-ID directions');
+
+ await button('Atlas','.universe-tabs');await operationalAcceptance(atlas);await tacticalWindowAcceptance();
+ await clickElement("Array.from(document.querySelectorAll('.universe-tabs button')).find(e=>e.textContent.startsWith('Connections & pins'))");
 
  // An observed, unconfirmed passage cannot enter routes until explicitly
  // confirmed. Expiry preserves the discovered destination and its private pin.
@@ -626,6 +888,7 @@ try{
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Session replay time\"]').max"),'1800000');
  assert.equal(await evaluate("document.querySelector('.universe-map-layer-plaque').textContent.trim().toLowerCase()"),'session replay','The map explicitly identifies its recorded replay context');
  assert.ok(await evaluate("document.querySelector('.universe-map-footnote').textContent.includes('Current sovereignty and activity are hidden')"),'Replay separates historical observations from current geopolitical data');
+ assert.equal(await evaluate("!!document.querySelector('.universe-map-intel-pulse,.universe-operational-hud,.universe-map-operational-status')"),false,'Historical replay hides current operational intel, fleet and public-feed markers');
  assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Play session replay\"]')"),true,'Replay opens paused');
  const replayViewport=await evaluate("(()=>{const map=document.querySelector('.universe-module canvas').getBoundingClientRect(),play=document.querySelector('[aria-label=\"Play session replay\"]').getBoundingClientRect();return {width:innerWidth,height:innerHeight,centre:{x:map.x+map.width/2,y:map.y+map.height/2},play:{top:play.top,bottom:play.bottom,left:play.left,right:play.right}};})()");
  assert.ok(replayViewport.centre.x>0&&replayViewport.centre.x<replayViewport.width&&replayViewport.centre.y>0&&replayViewport.centre.y<replayViewport.height-50&&replayViewport.play.top>=0&&replayViewport.play.bottom<=replayViewport.height&&replayViewport.play.left>=0&&replayViewport.play.right<=replayViewport.width,'Desktop replay keeps the followed pilot/map centre and playback controls visible together: '+JSON.stringify(replayViewport));
@@ -687,7 +950,7 @@ try{
 }catch(error){
  console.error('Universe browser check failed:',error.stack||error.message);
  const state=ws?.readyState===1?await evaluate("({url:location.href,focus:{tag:document.activeElement?.tagName,text:document.activeElement?.textContent?.slice(0,100),aria:document.activeElement?.getAttribute('aria-label')},tabs:Array.from(document.querySelectorAll('[role=tab]')).map(t=>({text:t.textContent,selected:t.getAttribute('aria-selected')})),body:document.body.innerText.slice(-16000)})").catch(()=>null):null;
- await writeFile(join(output,'failure.json'),JSON.stringify({error:error.stack||error.message,errors,checks,motionChecks,mapLayouts,territoryChecks,state},null,2));
+ await writeFile(join(output,'failure.json'),JSON.stringify({error:error.stack||error.message,errors,checks,renderChecks,motionChecks,mapLayouts,territoryChecks,recentUniverseRequests,state},null,2));
  if(ws?.readyState===1)await screenshot('universe-failure').catch(()=>{});throw error;
 }finally{
  ws?.close();

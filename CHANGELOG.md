@@ -2,6 +2,16 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.5 — Operational Universe
+
+- Integrates SMT-inspired intelligence, pilot/fleet context, signatures, infrastructure notes, tactical map projections, itinerary and capital planning into the normal Universe workspace.
+- Accepts unmodified SMT Ansiblex lists with comments, `0` structure IDs, directed entries and reciprocal endpoints; previews errors before atomic import and exports compatible lists.
+- Integrates EVE-Scout Thera/Turnur connections and wormhole type details, with source age, expiry, routing limits and explicit private confirmation. Uses its structured storm API instead of webpage scraping.
+- Adds attributed historical reference markers, public sovereignty campaign/development context, opt-in bounded public combat observations and correctly labeled NPC window changes.
+- Adds optional local EVE log ingestion, private alerts, scope-aware fleet collection and explicit EVE waypoint export. Replays and OBS output exclude current private operational overlays.
+- Adds smooth viewport-edge label fading and thinner rounded text halos, removing pointed outline artifacts over territory fills.
+- Preserves existing local history and settings. This remains a draft review candidate; detached tactical windows use browser capabilities, while native Windows tray/global-hotkey/click-through behavior is not duplicated.
+
 ## 0.8.0-rc.4 — Explore the political atlas
 
 - Added an immersive map workspace, linked territory selection and richer regional context.

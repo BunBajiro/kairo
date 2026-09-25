@@ -1,0 +1,32 @@
+# Third-party notices
+
+## Slazanger’s EVE Map Tool (SMT)
+
+Universe’s operational feature design and compatible Ansiblex interchange were studied against [SMT](https://github.com/Slazanger/SMT), commit `6b3b4c6a213a349549ef737c89584fc3f048033b`. Attributed static landmark, ice and historical invasion data adapted from that repository retain their original provenance. Kairo uses its own application, storage, service and rendering implementation.
+
+MIT License
+
+Copyright (c) 2023 Slazanger
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+## EVE universe data and public observations
+
+Official EVE static data and ESI provenance are documented in [UNIVERSE-DATA.md](UNIVERSE-DATA.md). The 358 A0 star reference markers are derived from existing official SDE star type records (build 3503375), not from SMT, and retain their separate source attribution. EVE-Scout observations and wormhole reports remain attributed to EVE-Scout; public combat records remain attributed to zKillboard and ESI. Sources have independent coverage, expiry and availability.

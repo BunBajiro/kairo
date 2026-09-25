@@ -31,7 +31,7 @@ export async function startKairo(options = {}) {
     const origin = `http://127.0.0.1:${port}`, streamOrigin = `http://127.0.0.1:${streamPort}`;
     const dir = options.dataDir || process.env.KAIRO_DATA_DIR || join(process.env.LOCALAPPDATA || process.env.XDG_DATA_HOME || join(homedir(), '.local', 'share'), 'Kairo');
     const store = openStore(dir), vault = openVault(dir), auth = createAuth(store, vault, { origin, fetcher: options.fetcher }), esi = createESI(store, auth, { fetcher: options.fetcher });
-    const core = await createCore(store, auth, esi, join(root, 'server', 'modules'),{vault,noSync:options.noSync,obs:options.obs,markets:options.markets,combatFetcher:options.combatFetcher||options.fetcher,sessionFeedFetcher:options.sessionFeedFetcher});
+    const core = await createCore(store, auth, esi, join(root, 'server', 'modules'),{vault,noSync:options.noSync,obs:options.obs,markets:options.markets,combatFetcher:options.combatFetcher||options.fetcher,sessionFeedFetcher:options.sessionFeedFetcher,universe:options.universe});
     const sessions = new Map();
     let universeAtlasResponse;
     async function universeDetail(characterId, systemId) {
@@ -66,7 +66,7 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.4', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.5', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
         if (path === '/state' && read) {
             const id = checkedChar(url);
             return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
@@ -260,6 +260,46 @@ export async function startKairo(options = {}) {
             return res.end(compressed?universeAtlasResponse.gzip:universeAtlasResponse.raw);
         }
         if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));
+        if (path === '/universe/operations' && read) return json(res,200,core.universe.operations.state(checkedChar(url)));
+        if (path === '/universe/operations/config' && read) return json(res,200,core.universe.operations.config(checkedChar(url)));
+        if (path === '/universe/operations/config' && req.method === 'PUT') return json(res,200,core.universe.operations.saveConfig(checkedChar(url),await body(req)));
+        if (path === '/universe/log-directories' && read) return json(res,200,await core.universe.operations.defaultLogDirectories());
+        if (path === '/universe/intel' && req.method === 'POST') return json(res,200,core.universe.operations.ingestIntel(checkedChar(url),await body(req)));
+        if (/^\/universe\/intel\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.operations.removeIntel(checkedChar(url),decodeURIComponent(path.split('/')[3])));
+        if (/^\/universe\/alerts\/[^/]+\/ack$/.test(path) && req.method === 'POST') return json(res,200,core.universe.operations.acknowledge(checkedChar(url),decodeURIComponent(path.split('/')[3])));
+        if (path === '/universe/signatures/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewSignatures(checkedChar(url),await body(req)));
+        if (path === '/universe/signatures/import' && req.method === 'POST') return json(res,200,core.universe.operations.importSignatures(checkedChar(url),await body(req)));
+        if (path === '/universe/upgrades/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewUpgrades(checkedChar(url),await body(req,1_000_000)));
+        if (path === '/universe/upgrades/import' && req.method === 'POST') return json(res,200,core.universe.operations.importUpgrades(checkedChar(url),await body(req,1_000_000)));
+        if (path === '/universe/upgrades/export' && read) {
+            const result=core.universe.operations.exportUpgrades(checkedChar(url),{format:url.searchParams.get('format')||'smt',system_id:url.searchParams.get('system')||undefined});
+            res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Content-Disposition':'attachment; filename="kairo-infrastructure.'+(result.format==='json'?'json':'txt')+'"','Cache-Control':'no-store'});
+            return res.end(result.text);
+        }
+        for (const [collection,save,remove] of [['signatures','saveSignature','removeSignature'],['upgrades','saveUpgrade','removeUpgrade']]) {
+            if (path === '/universe/'+collection && req.method === 'POST') return json(res,200,core.universe.operations[save](checkedChar(url),await body(req)));
+            if (path.startsWith('/universe/'+collection+'/') && req.method === 'DELETE') return json(res,200,core.universe.operations[remove](checkedChar(url),decodeURIComponent(path.split('/')[3])));
+        }
+        if (path === '/universe/operations/refresh' && req.method === 'POST') return json(res,200,await core.universe.operations.refresh(checkedChar(url)));
+        if (path === '/universe/feeds' && read) return json(res,200,core.universe.feeds.state());
+        if (path === '/universe/feeds/config' && read) return json(res,200,core.universe.feeds.config());
+        if (path === '/universe/feeds/config' && req.method === 'PUT') return json(res,200,core.universe.feeds.saveConfig(await body(req)));
+        if (path === '/universe/feeds/refresh' && req.method === 'POST') return json(res,200,await core.universe.feeds.refresh(await body(req)));
+        if (path === '/universe/feeds/import' && req.method === 'POST') return json(res,200,core.universe.feeds.importData(await body(req)));
+        if (path === '/universe/feeds/storms' && req.method === 'PUT') { const input=await body(req); return json(res,200,core.universe.feeds.saveStorms(Array.isArray(input)?input:input.items)); }
+        if (path === '/universe/navigation' && read) return json(res,200,core.universe.navigation.state(checkedChar(url)));
+        if (path === '/universe/navigation/itinerary' && req.method === 'PUT') return json(res,200,core.universe.navigation.saveItinerary(checkedChar(url),await body(req)));
+        if (path === '/universe/navigation/itinerary' && req.method === 'DELETE') return json(res,200,core.universe.navigation.clearItinerary(checkedChar(url)));
+        if (/^\/universe\/navigation\/stops\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.navigation.removeStop(checkedChar(url),decodeURIComponent(path.split('/')[4])));
+        for (const [action,method] of [['reorder','reorderStops'],['plan','plan'],['waypoints','sendWaypoints'],['bridges','discoverBridges'],['reachability','reachability']]) {
+            if (path === '/universe/navigation/'+action && req.method === 'POST') return json(res,200,await core.universe.navigation[method](checkedChar(url),await body(req)));
+        }
+        if (path === '/universe/links/preview' && req.method === 'POST') return json(res,200,core.universe.previewLinks(checkedChar(url),await body(req,2_000_000)));
+        if (/^\/universe\/link-lists\/[^/]+\/export$/.test(path) && read) {
+            const result=core.universe.exportLinks(checkedChar(url),decodeURIComponent(path.split('/')[3]));
+            res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Content-Disposition':'attachment; filename="kairo-ansiblex-smt.txt"','Cache-Control':'no-store'});
+            return res.end(result.text);
+        }
         if (path === '/universe/politics/config' && read) return json(res, 200, core.universe.politicsConfig());
         if (path === '/universe/politics/config' && req.method === 'PUT') {
             const config = core.universe.savePoliticsConfig(await body(req));
@@ -375,7 +415,7 @@ export async function startKairo(options = {}) {
         }
         catch (e) {
             if (!res.headersSent)
-                json(res, 400, { error: e.message || 'Kairo could not complete the request.' });
+                json(res, e.status === 409 ? 409 : 400, { error: e.message || 'Kairo could not complete the request.' });
             else
                 res.end();
         }

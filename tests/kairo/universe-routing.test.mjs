@@ -1,11 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { LY_METRES, ANSIBLEX_RULES, distanceLy, ansiblexZone, buildTravelGraph, planRoute, planJumpRoute } from '../../server/universe-routing.mjs';
+import {getUniverseStatic} from '../../server/universe-static.mjs';
 
 const system = (id, x = 0, y = 0, z = 0, more = {}) => ({ system_id: id, name: `System ${id}`, x: x * LY_METRES, y: y * LY_METRES, z: z * LY_METRES, security: 0.8, standing: 0, space: 'known', ...more });
 const gate = (from, to) => ({ from_system_id: from, to_system_id: to });
 const now = Date.parse('2026-09-18T19:00:00Z');
 const wormhole = (more = {}) => ({ id: 'hole', kind: 'wormhole', ...gate(1, 4), enabled: true, accessible: true, expires_at: '2026-09-18T20:00:00Z', ...more });
+
+test('Zarzakh routing is explicitly opt-in for the actual four-gate catalogue hub',()=>{
+    const atlas=getUniverseStatic(),hub=atlas.systems.find(s=>s.name==='Zarzakh');assert.equal(hub.system_id,30100000);
+    const gates=atlas.gates.filter(edge=>edge.from_system_id===hub.system_id||edge.to_system_id===hub.system_id);assert.equal(gates.length,4);
+    const neighbors=gates.map(edge=>edge.from_system_id===hub.system_id?edge.to_system_id:edge.from_system_id),ids=new Set([hub.system_id,...neighbors]);
+    const input={systems:atlas.systems.filter(s=>ids.has(s.system_id)),gates,originId:neighbors[0],destinationId:neighbors[1]};
+    const off=planRoute(input);assert.equal(off.status,'no_route');assert.ok(off.excluded.every(edge=>edge.reason==='Zarzakh routing is off'));
+    assert.deepEqual(planRoute({...input,preferences:{useZarzakh:true}}).systemIds,[neighbors[0],hub.system_id,neighbors[1]]);
+    assert.equal(planRoute({...input,preferences:{useZarzakh:false}}).status,'no_route');
+});
 
 test('shortest routing chooses exact mixed edges and does not use journey or visual coordinates', () => {
     const systems = [1, 2, 3, 4].map(id => system(id, 0, 0, 0, { map_x: 0, map_y: 0 }));
@@ -59,6 +70,21 @@ test('safer routing favours highsec without labelling zero data as safe', () => 
     const result = planRoute({ systems, gates, originId: 1, destinationId: 5, preferences: { mode: 'safer' } });
     assert.deepEqual(result.systemIds, [1, 3, 4, 5]);
     assert.ok(result.warnings.some(w => w.includes('do not guarantee safe')));
+});
+test('prefer-low routing chooses the lowsec branch without overriding hard security exclusions',()=>{
+    const systems=[system(1),system(2),system(3,0,0,0,{security:.2}),system(4)];
+    const gates=[gate(1,2),gate(2,4),gate(1,3),gate(3,4)];
+    assert.deepEqual(planRoute({systems,gates,originId:1,destinationId:4,preferences:{mode:'prefer_low'}}).systemIds,[1,3,4]);
+    assert.deepEqual(planRoute({systems,gates,originId:1,destinationId:4,preferences:{mode:'prefer_low',highSecOnly:true}}).systemIds,[1,2,4]);
+});
+test('live Ansiblex rules require current sovereign membership and retain allowed industrial exceptions',()=>{
+    const systems=[system(1,0,0,0,{sovereignty_alliance_id:100}),system(2,8,0,0,{sovereignty_alliance_id:100}),system(3)];
+    const connections=[{id:'bridge',kind:'ansiblex',...gate(1,2),enabled:true,accessible:true,owner_alliance_id:100,capital_system_id:1}];
+    const input={systems,connections,originId:1,destinationId:2,preferences:{useAnsiblex:true,ansiblexRules:'live',pilotAllianceId:100,shipClass:'rorqual'}};
+    const result=planRoute(input);assert.equal(result.status,'ok');assert.equal(result.edges[0].capacitor_cost_tj,38);
+    for(const shipClass of ['carrier','dreadnought','titan'])assert.equal(planRoute({...input,preferences:{...input.preferences,shipClass}}).status,'no_route');
+    for(const shipClass of ['freighter','jump_freighter','subcapital'])assert.equal(planRoute({...input,preferences:{...input.preferences,shipClass}}).status,'ok');
+    assert.equal(planRoute({...input,preferences:{...input.preferences,pilotAllianceId:101}}).status,'no_route');
 });
 
 test('safer routing prefers a friendly nullsec detour over neutral nullsec', () => {

@@ -154,6 +154,53 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         inflight.set(key, task);
         return task;
     }
+    /** An explicit command. Never cached, coalesced, or replayed after an uncertain network failure. */
+    async function mutate(path, { characterId, method = 'POST', body, priority = true } = {}) {
+        if (typeof path !== 'string' || !path.startsWith('/') || path.startsWith('//') || path.includes('\\')) throw new Error('Invalid ESI path.');
+        method = method.toUpperCase();
+        if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) throw new Error('Choose a mutation HTTP method.');
+        if (!Number.isSafeInteger(characterId) || characterId <= 0) throw new Error('An ESI command needs a connected pilot.');
+        const url = new URL('https://esi.evetech.net' + path);
+        if (url.origin !== 'https://esi.evetech.net') throw new Error('Invalid ESI origin.');
+        url.searchParams.sort();
+        const pathname = url.pathname.replace(/\/$/, '') || '/', route = method + ':' + pathname.replace(/\/\d+(?=\/|$)/g, '/{id}');
+        const blockedUntil = () => Math.max(errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
+        let release, attempted = false, response;
+        try {
+            if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
+            release = await slot(priority);
+            if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
+            const headers = { Accept: 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE,
+                'User-Agent': 'Kairo/0.8 (local EVE companion)', Authorization: 'Bearer ' + await auth.access(characterId) };
+            if (body !== undefined) headers['Content-Type'] = 'application/json';
+            const send = () => { attempted = true; counters.requests++; return fetcher(url.href, { method, headers,
+                body: body === undefined ? undefined : JSON.stringify(body), redirect: 'error', signal: AbortSignal.timeout(15000) }); };
+            response = await send();
+            // An explicit 401 guarantees rejection; it is the only automatic command retry.
+            if (response.status === 401) { headers.Authorization = 'Bearer ' + await auth.access(characterId, true); response = null; response = await send(); }
+            const now = Date.now(), retry = response.headers.get('retry-after');
+            const parsed = retry ? Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - now : NaN;
+            const retryMs = Number.isFinite(parsed) ? Math.max(1000, parsed) : 60000;
+            const group = response.headers.get('x-ratelimit-group'); if (group) routeGroups.set(route, group);
+            const errorsLeft = response.headers.get('x-esi-error-limit-remain'), remaining = response.headers.get('x-ratelimit-remaining');
+            if (errorsLeft !== null && Number(errorsLeft) < 10) errorUntil = now + Math.max(10000, Number(response.headers.get('x-esi-error-limit-reset') || 60) * 1000);
+            if ([420, 429].includes(response.status) || remaining !== null && Number(remaining) < 10) {
+                blocks.set(characterId + ':' + (group || '*'), now + Math.max(10000, retryMs));
+                if (response.status === 420) errorUntil = now + Math.max(60000, retryMs);
+            }
+            saveLimits();
+            if (!response.ok) throw Object.assign(new Error(response.status === 403 ? 'ESI command denied. Check pilot scopes and access.' : 'ESI command failed (HTTP ' + response.status + ').'),
+                { status: response.status, ...(retry || [420, 429].includes(response.status) ? { retryAt: iso(now + retryMs) } : {}) });
+            const raw = response.status === 204 || response.status === 205 ? '' : await response.text();
+            let data = null; if (raw) { try { data = JSON.parse(raw); } catch { data = raw; } }
+            return { data, status: response.status, updatedAt: iso(now), cached: false };
+        } catch (error) {
+            if (attempted) counters.failed++;
+            // A timeout/transport failure may happen after the server applied the command.
+            if (attempted && (!response || response.ok)) error.uncertain = true;
+            throw error;
+        } finally { release?.(); }
+    }
     async function paged(path, options = {}) {
         const first = await request(path + (path.includes('?') ? '&' : '?') + 'page=1', options);
         const pages = Math.min(250, Number(first.headers['x-pages'] || 1));
@@ -191,5 +238,5 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         // Explicit refresh / renewed SSO may fix access. Keep server cooldowns.
         store.db.prepare("DELETE FROM cache WHERE key LIKE ? AND json_extract(body,'$.status') IN (401,403) AND COALESCE(json_extract(body,'$.serverRetryAfter'),0)=0").run('esi-retry:' + characterId + ':%');
     }
-    return { request, paged, names, cachedNames, clearAccessFailures, health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters }) };
+    return { request, mutate, paged, names, cachedNames, clearAccessFailures, health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters }) };
 }

@@ -2,7 +2,7 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.8.0-rc.4 · Universe review build · Windows first · No cloud deployment**
+**Version 0.8.0-rc.5 · Universe review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
@@ -22,7 +22,7 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version **0.8.0-rc.4** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md).
+Version **0.8.0-rc.5** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
 
 Configure named power blocs and their member alliances in **Settings → Universe**. Unconfigured alliances can use **Inferred Coalitions**, an explicitly uncertain fallback from combat evidence collected locally. Crisp vector borders, distinct K-Space/J-Space tabs, bounded zoom and larger visual controls make the political map easier to read. Replay keeps recorded travel while hiding routine system-entry and OPSEC event cards.
 
@@ -72,7 +72,7 @@ The release includes the compiled website. **No npm install or frontend build is
 - Toasts only: <http://127.0.0.1:4381/stream/toasts>
 - OPSEC covers only: <http://127.0.0.1:4381/stream/opsec>
 
-Both services bind to `127.0.0.1`. No public or LAN listener is created. Kairo makes outbound HTTPS requests to EVE SSO, ESI and EVE’s image service when needed, plus public zKillboard participation requests while Combat is enabled, and EVE Ref daily history downloads during core-hub market refreshes.
+Both services bind to `127.0.0.1`. No public or LAN listener is created. Kairo makes outbound HTTPS requests to EVE SSO, ESI and EVE’s image service when needed, plus public zKillboard participation requests while Combat is enabled, and EVE Ref daily history downloads during core-hub market refreshes. Universe also reads EVE-Scout public connection/storm reports and, when explicitly enabled, the public zKillboard R2Z2 stream.
 
 On Linux/macOS, use `./start-kairo.sh` with Node.js 24+. Windows credential protection is the primary target; see the storage notes below for other platforms.
 
@@ -82,7 +82,7 @@ Open **Connections** inside Kairo. The page walks through the same setup:
 
 1. Visit EVE's [developer applications](https://developers.eveonline.com/applications) and create an application using **Authentication & API Access**.
 2. Set its callback URL to exactly `http://127.0.0.1:4380/auth/eve/callback`.
-3. Add the scopes for the modules you want. Kairo lists the precise scopes and their purpose; **Pilot essentials** selects pilot telemetry and training scopes, and **All modules** selects everything this release reads.
+3. Add the scopes for the modules you want. Kairo lists the precise scopes and their purpose; **Pilot essentials** selects pilot telemetry and training scopes, and **All modules** selects the supported module scopes, including optional Universe fleet/structure access and EVE waypoint commands. Waypoint commands are sent only through **Send to EVE**.
 4. Paste the application's **Client ID** into Kairo. The PKCE flow does **not** need your Client Secret.
 5. Choose the scopes you want to authorize and click **Log in with EVE Online**. Sign in on EVE's own website, select the character and approve access.
 6. Kairo verifies the returned identity, stores the tokens in its local vault, and starts collecting the authorized data. Repeat for additional characters or additional scopes.
@@ -101,7 +101,7 @@ The Client ID and callback must belong to the same EVE application. If you chang
 | Hangar & assets | Searchable inventory, nested asset location resolution, ESI reference valuations, saved fittings and contracts |
 | Industry & planets | Manufacturing/research jobs, planetary colonies and extractor expiry, mining ledger and blueprints |
 | Sessions | Independent operation recording, archived reports, combat records, debriefs and session-bound map replay with smooth camera follow and a scrubbable event timeline |
-| Universe | Full local New Eden atlas; sovereignty/standings and activity layers; saved views; local routes and jump planning; private Ansiblex/wormhole networks; system details, notes, pins and observed travel history |
+| Universe | Full New Eden atlas; configured/inferred power blocs; gate/capital itineraries; SMT Ansiblex import/export; EVE-Scout connections; private intel, fleet and local logs; signatures/infrastructure notebook; public signals; tactical window and historical replay |
 | Goals & notes | Manual and ESI-tracked objectives, completion events and private notes |
 | Markets | Shared hub caches, category browser, quick/full scans, alt access, EVE Ref history, Jita comparisons, Import Analyser and saved hauling plans |
 | Stream studio | Canvas editor, drag/keyboard positioning, element properties, layer visibility, duplication, record-specific module bindings, individual widget source URLs and live saved-output preview |

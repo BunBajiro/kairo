@@ -9,7 +9,7 @@ export const pollIntervals = Object.freeze({
     killmails: 300, standings: 3600, loyalty: 3600,
     contacts: 0, corporation_contacts: 0, alliance_contacts: 0,
     calendar: 900, notifications: 600, mail: 300,
-    status: 60, prices: 3600, sovereignty: 0, fw: 0, kills: 3600, jumps: 3600, sovereignty_structures: 600, incursions: 300, industry_systems: 3600,
+    status: 60, prices: 3600, sovereignty: 0, fw: 0, kills: 3600, jumps: 3600, sovereignty_campaigns: 30, incursions: 300, industry_systems: 3600,
 });
 
 const b = (label, choices, description) => ({ label, choices, description });
@@ -48,7 +48,7 @@ export const pollingBatches = Object.freeze({
     sovereignty: b('Sovereignty & holder names', [0, 300, 600, 1800, 3600], 'Refreshes system sovereignty and resolves holder names for System intelligence and OPSEC. One shared collection serves all pilots.'),
     fw: b('Faction warfare context', [0, 1800, 3600, 7200], 'Refreshes warzone systems used by System intelligence and the faction-warfare protection override. Shared across pilots.'),
     kills: b('System kill statistics', [3600, 7200, 21600], 'Refreshes public ship, pod and NPC kill counts in System intelligence. ESI reports a cached window, rather than live combat.'),
-    sovereignty_structures: b('Sovereignty structures', [300, 600, 1800, 3600], 'Refreshes public sovereignty structures and vulnerability windows for Universe. This is not a complete list of player structures.'),
+    sovereignty_campaigns: b('Sovereignty campaigns', [30, 60, 300, 600, 1800, 3600], 'Refreshes public sovereignty campaign timers and progress. Hub structures, development and vulnerability windows share the sovereignty collection.'),
     incursions: b('Incursions', [300, 600, 1800, 3600], 'Refreshes public incursion systems, influence and staging information for Universe.'),
     industry_systems: b('Industry cost indices', [3600, 7200, 21600], 'Refreshes shared system industry cost indices. Your own mining activity uses the separate mining ledger.'),
     jumps: b('System traffic', [3600, 7200, 21600], 'Refreshes public gate-jump counts for System intelligence. Your own travel history uses the separate location checks.'),

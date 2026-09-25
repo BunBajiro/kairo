@@ -1,5 +1,19 @@
 # Validation — 25 September 2026
 
+## Universe 0.8.0-rc.5
+
+This candidate integrates SMT-reviewed navigation, local intelligence and exploration workflows into the existing Universe workspace, with EVE-Scout Thera/Turnur details and public operational signals. The [feature matrix](SMT-INTEGRATION.md) distinguishes workflow parity, Kairo improvements and browser adaptations; the [source audit](SMT-SOURCE-AUDIT.md) records provider contracts and attribution.
+
+- All 380 Node tests pass in the workspace and extracted standalone ZIP without development dependencies. New coverage includes exact SMT Ansiblex and infrastructure formats, gate/capital itineraries, live rule restrictions, waypoint mutation semantics, local log rotation and encoding, canonical location/progress, fleet permissions, private intel and alerts, signatures, public-feed cache/expiry/mass semantics, FW classification and HTTP session/CSRF/OBS isolation.
+- TypeScript and production compilation pass. The existing Sessions browser suite passes its nine-card, 135-event and 390–1600px layout checks.
+- The compiled Universe suite passes 39 acceptance/layout groups. It exercises configured/inferred territories and actual paints; gate and capital planning; the user's exact 22-direction Ansiblex list (11 reciprocal pairs) and compatible export; legacy CSV imports; private intel/alerts/fleet; EVE-Scout report promotion with exact expiry and nominal limits; public-source filters; complete/partial/malformed scanner previews; infrastructure import/export; mobile notebooks; and physical/schematic/two-hop radar views.
+- The detached tactical popup retains the same canvas, selection and camera. A fresh private report arrives through SSE while the parent document is simulated hidden, and restoring the map retains the adjusted camera. Historical replay excludes current operational overlays and continues to omit routine entry/OPSEC event cards.
+- Canvas instrumentation verifies zero bitmap influence draws or radial system glows, rounded 2.5px text outlines and matching fill/outline opacity. A label moved to 26px from the viewport edge fades to approximately 0.48 opacity instead of disappearing or changing anchor. Four focused label tests cover the underlying geometry.
+- Desktop, 390px notebook, political, route, intel, infrastructure, tactical-window and replay screenshots were inspected. The final visual pass corrected an absolute-position CSS collision in the intel status row and separated adjacent signature actions. Sampled primary text remains at least 16px and supporting text at least 14px, with sampled contrast exceeding 4.5:1. Reduced-motion and hidden-page camera checks pass. A three-second idle sample recorded zero canvas redraws and about 10 ms of renderer tasks; these are focused local checks, not a full accessibility audit or hardware guarantees.
+- The full browser pass also caught and corrected lifetime-edit precedence: an explicit wormhole duration overrides an echoed old expiry, while ordinary edits preserve exact reported expiry, including already-expired records. The composed HTTP regression covers four-hour, immediate-expiry and invalid-duration requests.
+
+Automated fixtures make no external ESI or login requests. No private live EVE waypoint command, authenticated fleet response or structure discovery was performed for parity verification. The user's actual permissions, Windows log paths, browser notification/audio support and live operational use still require in-app review. Public observations and nominal mass remain incomplete evidence, not guarantees of access or remaining mass. Existing local history and settings require no reset. This remains a draft feature-branch candidate awaiting the user's review.
+
 ## Universe 0.8.0-rc.4
 
 This candidate makes the immersive map workspace Universe's default layout. It adds direct territory exploration, regional holdings, real stargate frontiers, unified search, route endpoints and framing, an interactive overview, bounded drag inertia and touch pinch navigation.
@@ -182,7 +196,7 @@ These were not performed and are not represented as passing:
 - EVE SSO sign-in using the user's actual registered application and Bun Bajiro's authorization.
 - Authenticated ESI responses for the user's actual scopes, assets, permissions and account.
 - Windows DPAPI encryption/decryption under the user's Windows login.
-- Comprehensive live-session and browser coverage beyond the user's review of the v0.7.1 and v0.7.2 test builds. Automated browser coverage above is limited to the synthetic Sessions fixture.
+- Comprehensive live-session and browser coverage beyond the user's review of the v0.7.1 and v0.7.2 test builds. Automated browser coverage uses synthetic Sessions and Universe fixtures; it does not replace long-running player sessions.
 - OBS/Streamlabs browser-source rendering, audio, exact cover placement, startup/reload handling and scene transitions.
 - Long-duration collection during an actual play session.
 

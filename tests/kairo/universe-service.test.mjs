@@ -109,7 +109,7 @@ test('Ansiblex list import is atomic, explicitly accessible, directional and iso
     service.saveLink(42, { id: list.links[0].id, accessible: true });
     assert.equal(service.route(42, { originId: A, destinationId: C, preferences: { useAnsiblex: true } }).status, 'ok');
     assert.equal(service.route(43, { originId: A, destinationId: C, preferences: { useAnsiblex: true } }).status, 'no_route');
-    assert.throws(() => service.saveLinkList(42, { id: list.id, links: [{ from: 'Alpha', to: 'Unknown' }] }), /bundled universe/);
+    assert.throws(() => service.saveLinkList(42, { id: list.id, links: [{ from: 'Alpha', to: 'Unknown' }] }), /Unknown system/);
     assert.equal(service.state(42).links.length, 1);
     service.saveLinkList(42, { id: list.id, enabled: false });
     assert.equal(service.route(42, { originId: A, destinationId: C, preferences: { useAnsiblex: true } }).status, 'no_route');
@@ -117,7 +117,10 @@ test('Ansiblex list import is atomic, explicitly accessible, directional and iso
         { from: 'Alpha', to: 'Gamma', directional: true, accessible: true, owner_alliance_id: 5 },
         { from: 'Gamma', to: 'Alpha', directional: true, accessible: true, owner_alliance_id: 6 },
     ] });
-    assert.equal(directed.imported, 2);
+    assert.equal(directed.imported, 1);
+    assert.equal(directed.links[0].directional, false);
+    assert.equal(directed.links[0].owner_alliance_id, 5);
+    assert.equal(directed.links[0].reverse_owner_alliance_id, 6);
     service.deleteLinkList(42, directed.id); assert.equal(service.state(42).links.length, 1);
     service.deleteLinkList(42, list.id); assert.equal(service.state(42).links.length, 0);
 });
@@ -199,4 +202,16 @@ test('route and physical jump use server pilot standings and reject client evide
     assert.equal(service.jump(42, input).status, 'invalid');
     assert.equal(service.route(43, input).status, 'ok');
     assert.equal(service.jump(43, input).status, 'ok');
+});
+
+test('reported wormhole promotion preserves expiry, provenance and endpoint restrictions', async t => {
+    const {service}=await fixture(t),expiry=new Date(AT+3600000).toISOString();
+    const link=service.saveLink(42,{kind:'wormhole',from_system_id:A,to_system_id:W,expires_at:expiry,
+        max_ship_size:'large',max_jump_mass_kg:375000000,wh_type:'N110',from_signature:'ABC-123',to_signature:'DEF-456',
+        reported_source:'thera',report_id:'thera:123',observed_at:new Date(AT-60000).toISOString()});
+    assert.equal(link.expires_at,expiry);assert.equal(link.max_jump_mass_kg,375000000);assert.equal(link.from_signature,'ABC-123');
+    assert.equal(link.reported_source,'thera');assert.equal(service.saveLink(42,{id:link.id,mass:'reduced'}).expires_at,expiry);
+    assert.throws(()=>service.saveLink(42,{kind:'wormhole',from_system_id:A,to_system_id:W,expires_at:new Date(AT-1).toISOString()}),/expiry/);
+    assert.throws(()=>service.saveLink(42,{id:link.id,max_ship_size:'anything'}),/ship size/);
+    assert.throws(()=>service.saveLink(42,{id:link.id,observed_at:'tomorrow'}),/observation time/);
 });

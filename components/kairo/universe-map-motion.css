@@ -65,6 +65,30 @@
 .universe-map-scale-bar:after{content:"";display:block;height:0;width:100%}
 .universe-map-scale-bar+span{flex-basis:auto}
 .universe-map-overview:not(.is-open) .universe-map-scale{display:none}
+.universe-map-operational-status{position:absolute;top:68px;left:18px;max-width:min(440px,calc(100% - 220px));display:grid;gap:7px;pointer-events:none;font-size:14px;line-height:1.4;color:#d2dfeb}
+.universe-map-operational-status>span,.universe-map-operational-status>button{padding:8px 11px;border:1px solid #4d5a6b;background:#122332ed;text-align:left}
+.universe-map-operational-status>button{display:flex;align-items:center;gap:9px;color:#f3c4b6;border-color:#875c54;cursor:pointer;pointer-events:auto;font-size:14px;line-height:1.4}
+.universe-map-operational-status>button:hover{background:#372a30}
+.universe-map-operational-status>button:focus-visible{outline:2px solid #f5c5a7;outline-offset:2px}
+.universe-operational-dot{width:8px;height:8px;border:1px solid #f29b91;transform:rotate(45deg);flex:none}
+.universe-operational-hud{font-size:14px;line-height:1.4;color:#c7d9e6}
+.universe-map-hud>.universe-operational-hud{margin-top:9px;padding-top:9px;border-top:1px solid #425967;max-height:min(30vh,230px);overflow:auto;pointer-events:auto;scrollbar-width:thin}
+.universe-map-report{border-left:2px solid #dcaa8d;padding-left:9px;margin:0 0 10px}
+.universe-map-report.is-clear{border-color:#86d8b7}
+.universe-map-report>div{display:flex;justify-content:space-between;gap:12px}
+.universe-map-report strong,.universe-map-pilot strong,.universe-map-feed strong{font-weight:600;color:#e4edf2;font-size:14px}
+.universe-map-report p{margin:4px 0;color:#cfdeea;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.universe-map-report small{font-size:14px;color:#a7c0d0}
+.universe-map-pilot,.universe-map-feed{display:flex;gap:3px;flex-direction:column;margin-top:8px}
+.universe-map-pilot span,.universe-map-feed span{font-size:14px;color:#afc4d3}
+.universe-operational-distance{margin-bottom:9px;color:#b6d9e8;font-variant-numeric:tabular-nums}
+.universe-map-fw-state{display:flex;gap:5px 12px;flex-wrap:wrap;margin-top:10px;font-size:14px;line-height:1.5}.universe-map-fw-state strong{font-weight:650;color:#e3edf4}.universe-map-fw-state small{flex-basis:100%;font-size:14px;color:#adc3d2}
+.universe-map-intel-pulse-anchor{position:absolute;left:0;top:0;z-index:1;pointer-events:none;visibility:hidden}
+.universe-map-intel-pulse{position:absolute;left:-21px;top:-21px;display:block;width:42px;height:42px;border:2px solid #d4e9ef;clip-path:polygon(0 0,30% 0,30% 8%,8% 8%,8% 30%,0 30%,0 0,100% 0,100% 30%,92% 30%,92% 8%,70% 8%,70% 0,100% 0,100% 100%,70% 100%,70% 92%,92% 92%,92% 70%,100% 70%,100% 100%,0 100%,0 70%,8% 70%,8% 92%,30% 92%,30% 100%,0 100%);animation:kairo-intel-arrival 1500ms ease-out both}
+@keyframes kairo-intel-arrival{0%{opacity:0;transform:scale(1.7)}15%{opacity:.95}75%{opacity:.85;transform:scale(1)}100%{opacity:0;transform:scale(.85)}}
+[data-map-projection="radar"] .universe-map-layer-mark{border-radius:50%;transform:none}
+[data-map-projection="schematic"] .universe-map-atmosphere{opacity:.5}
 @media(max-width:760px){.universe-map-overview{right:12px;top:72px;bottom:auto;width:150px}.universe-map-overview>svg{height:94px}.universe-map-overview .universe-map-scale{font-size:14px;padding:6px}.universe-territory-hud .universe-map-hud-heading>strong{font-size:16px}}
 @media(max-width:600px){.universe-map-immersive .universe-map-toolbar{gap:8px;padding:10px!important}.universe-map-coordinate-title{width:100%;justify-content:space-between}.universe-map-layer-plaque{left:12px;top:12px;max-width:calc(100% - 24px)}.universe-map-hud{left:12px;bottom:12px;max-width:calc(100% - 24px);padding:10px 12px}}
-@media(prefers-reduced-motion:reduce){.universe-map-acquisition,.universe-map-hud{animation:none}.universe-map-guide>summary>svg:last-child{transition:none}}
+@media(max-width:760px){.universe-map-operational-status{left:12px;max-width:calc(100% - 182px);top:74px}.universe-map-hud>.universe-operational-hud{max-height:150px}}
+@media(prefers-reduced-motion:reduce){.universe-map-acquisition,.universe-map-hud,.universe-map-intel-pulse{animation:none}.universe-map-guide>summary>svg:last-child{transition:none}}

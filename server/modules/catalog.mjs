@@ -30,11 +30,11 @@ export const catalog = [
         d('calendar', '/characters/{id}/calendar', 'esi-calendar.read_calendar_events.v1', 300), d('notifications', '/characters/{id}/notifications', 'esi-characters.read_notifications.v1', 300), d('mail', '/characters/{id}/mail', 'esi-mail.read_mail.v1', 300)
     ]),
     module('universe', 'Universe', 'Local New Eden atlas, flight history, route planning, sovereignty, structures, standings and activity.', [
-        d('status', '/status', null, 60), d('prices', '/markets/prices', null, 3600), d('sovereignty', '/sovereignty/systems', null, 300), d('fw', '/fw/systems', null, 600), d('kills', '/universe/system_kills', null, 600), d('jumps', '/universe/system_jumps', null, 600), d('sovereignty_structures', '/sovereignty/structures', null, 300), d('incursions', '/incursions', null, 300), d('industry_systems', '/industry/systems', null, 3600)
+        d('status', '/status', null, 60), d('prices', '/markets/prices', null, 3600), d('sovereignty', '/sovereignty/systems', null, 300), d('fw', '/fw/systems', null, 600), d('kills', '/universe/system_kills', null, 600), d('jumps', '/universe/system_jumps', null, 600), d('sovereignty_campaigns', '/sovereignty/campaigns', null, 5), d('incursions', '/incursions', null, 300), d('industry_systems', '/industry/systems', null, 3600)
     ]),
 ];
 // Optional structure visibility resolves authorized asset, market and map locations.
 catalog.find(m => m.id === 'hangar').scopes.push('esi-universe.read_structures.v1');
 catalog.find(m => m.id === 'markets').scopes.push('esi-markets.structure_markets.v1','esi-universe.read_structures.v1','esi-location.read_location.v1');
-catalog.find(m => m.id === 'universe').scopes.push('esi-universe.read_structures.v1');
+catalog.find(m => m.id === 'universe').scopes.push('esi-universe.read_structures.v1', 'esi-fleets.read_fleet.v1', 'esi-ui.write_waypoint.v1', 'esi-search.search_structures.v1');
 export const allScopes = [...new Set(catalog.flatMap(m => m.scopes))];

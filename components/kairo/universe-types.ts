@@ -1,5 +1,5 @@
 export type UniverseBackground = 'power_blocs' | 'sovereignty' | 'standings' | 'security' | 'activity' | 'none';
-export type UniverseIndicator = 'none' | 'ship_kills' | 'pod_kills' | 'npc_kills' | 'jumps' | 'mining' | 'industry' | 'fw' | 'incursions' | 'visits';
+export type UniverseIndicator = 'none' | 'ship_kills' | 'pod_kills' | 'npc_kills' | 'npc_delta' | 'adm' | 'jumps' | 'mining' | 'industry' | 'fw' | 'incursions' | 'visits';
 export type UniverseStandingFilter = 'all' | 'friendly' | 'hostile' | 'neutral' | 'unknown';
 export type UniverseTerritoryFocus = {
  key:string;label:string;color:string;systemIds:number[];
@@ -42,7 +42,7 @@ export type UniversePowerBlocMembership = {
  evidence?:Record<string,any>;[key:string]:any;
 };
 export type UniverseIntel = {
- character_id:number;location?:{system_id?:number;status?:string;updatedAt?:string};systems:UniverseOverlay[];
+ character_id:number;location?:{system_id?:number;status?:string;updatedAt?:string;expiresAt?:string;source?:string};systems:UniverseOverlay[];
  sources:Record<string,UniverseSource>;links:UniverseLink[];link_lists:any[];pins:any[];views:UniverseView[];
  journey:{visits:any[];connections:any[];systems:any[]};structures:any[];[key:string]:any;
 };

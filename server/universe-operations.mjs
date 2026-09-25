@@ -1,0 +1,396 @@
+import { createHash, randomUUID } from 'node:crypto';
+import { isAbsolute } from 'node:path';
+import { createIntelParser, gateDistances, parseSignatureClipboard } from './universe-intel.mjs';
+import { createUniverseLogTail } from './universe-log-tail.mjs';
+import { parseUpgradeImport, exportUpgrades as formatUpgradeExport } from './universe-upgrades.mjs';
+
+const FLEET_SCOPE = 'esi-fleets.read_fleet.v1';
+const DEFAULTS = { version: 1, enabled: true, logs_enabled: false, log_directory: '', intel_channels: ['Int'], ignore_keywords: ['status'],
+    alert_keywords: [], clear_keywords: ['clear', 'clr'], alerts_enabled: true, alert_combat: true, alert_decloak: true, alert_decloak_observatory: true, alert_decloak_gate: true, alert_unknown: false,
+    danger_jumps: 5, watched_system_ids: [], intel_expiry_minutes: 15, alert_cooldown_seconds: 60, fleet_enabled: false, location_source: 'esi' };
+const arr = value => Array.isArray(value) ? value : [];
+const clean = (value, max = 240) => String(value ?? '').trim().slice(0, max);
+const validId = value => Number.isSafeInteger(value) && value > 0 && value < 2147483647;
+const hash = value => createHash('sha256').update(value).digest('hex').slice(0, 24);
+const finiteDate = value => Number.isFinite(Date.parse(value));
+const clone = value => JSON.parse(JSON.stringify(value));
+
+export function createUniverseOperations(store, auth, esi, options = {}) {
+    const { atlas, publish = () => {}, onChange = () => {} } = options, now = options.now || Date.now;
+    if (!atlas?.systems) throw new Error('Universe operations require a static atlas.');
+    const byId = atlas.bySystemId || new Map(atlas.systems.map(system => [system.system_id, system]));
+    const byName = new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
+    const parseIntel = createIntelParser(atlas), cooldowns = new Map(), fleetNext = new Map(), fleetBusy = new Set(), fleetFlights = new Map(), logPilots = new Set();
+    let closed = false, ticking = false, fleetCursor = 0, tickFlight = null;
+    store.db.exec(`CREATE TABLE IF NOT EXISTS universe_operations_records(
+        character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,
+        PRIMARY KEY(character_id,kind,id));
+        CREATE INDEX IF NOT EXISTS idx_universe_operations_records ON universe_operations_records(character_id,kind,updated_at DESC);`);
+    const getRows = store.db.prepare('SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001');
+    const getRow = store.db.prepare('SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?');
+    const putRow = store.db.prepare('INSERT INTO universe_operations_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at');
+    const delRow = store.db.prepare('DELETE FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?');
+    const trimRows = store.db.prepare('DELETE FROM universe_operations_records WHERE character_id=? AND kind=? AND id NOT IN (SELECT id FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT ?)');
+    const parse = row => row ? JSON.parse(row.body) : null;
+    const rows = (id, kind) => getRows.all(id, kind).map(parse);
+    const row = (id, kind, key) => parse(getRow.get(id, kind, String(key)));
+    const iso = () => new Date(now()).toISOString();
+    const character = id => auth.characters().find(pilot => pilot.id === id);
+    function pilotId(value) {
+        const id = Number(value ?? 0);
+        if (!Number.isSafeInteger(id) || id < 0 || id && !character(id)) throw new Error('Choose a connected pilot.');
+        return id;
+    }
+    function systemId(value) {
+        const id = Number(value); if (!byId.has(id)) throw new Error('Choose a system in the universe map.'); return id;
+    }
+    function put(id, kind, record, limit = 1000) {
+        putRow.run(id, kind, record.id, JSON.stringify(record), record.updated_at || record.received_at || record.created_at || iso());
+        trimRows.run(id, kind, id, kind, limit); return record;
+    }
+    function changed(id) { onChange(id); }
+    function config(characterId) {
+        const id = pilotId(characterId);
+        return { ...clone(DEFAULTS), ...store.get('universe:operations:config:' + id, {}) };
+    }
+    function validateConfig(id, input) {
+        const out = clone(DEFAULTS);
+        if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('Choose valid Universe operations settings.');
+        for (const key of ['enabled', 'logs_enabled', 'fleet_enabled', 'alerts_enabled', 'alert_combat', 'alert_decloak', 'alert_decloak_observatory', 'alert_decloak_gate', 'alert_unknown']) {
+            if (input[key] !== undefined && typeof input[key] !== 'boolean') throw new Error(key + ' must be enabled or disabled.');
+            if (input[key] !== undefined) out[key] = input[key];
+        }
+        out.log_directory = clean(input.log_directory, 1500);
+        if (out.log_directory && (!isAbsolute(out.log_directory) || out.log_directory.includes('\0'))) throw new Error('Choose an absolute EVE log directory.');
+        if (out.logs_enabled && !out.log_directory) throw new Error('Choose the EVE log directory before enabling log monitoring.');
+        if (!id && (out.logs_enabled || out.fleet_enabled)) throw new Error('Connect a pilot before enabling logs or fleet access.');
+        if (input.location_source !== undefined && !['esi', 'logs', 'prefer_esi'].includes(input.location_source)) throw new Error('Choose ESI, logs, or ESI with a log fallback for location.');
+        out.location_source = input.location_source || 'esi';
+        for (const key of ['intel_channels', 'ignore_keywords', 'alert_keywords', 'clear_keywords']) {
+            if (input[key] !== undefined && (!Array.isArray(input[key]) || input[key].length > 32)) throw new Error('Use at most 32 ' + key.replaceAll('_', ' ') + '.');
+            out[key] = input[key] === undefined ? out[key] : [...new Set(input[key].map(item => clean(item, 100)).filter(Boolean))];
+        }
+        if (out.logs_enabled && !out.intel_channels.length) throw new Error('Choose at least one intel channel.');
+        for (const [key, min, max] of [['danger_jumps', 0, 20], ['intel_expiry_minutes', 1, 1440], ['alert_cooldown_seconds', 0, 3600]]) {
+            if (input[key] !== undefined && (!Number.isInteger(input[key]) || input[key] < min || input[key] > max)) throw new Error(key.replaceAll('_', ' ') + ' must be between ' + min + ' and ' + max + '.');
+            if (input[key] !== undefined) out[key] = input[key];
+        }
+        if (input.watched_system_ids !== undefined && (!Array.isArray(input.watched_system_ids) || input.watched_system_ids.length > 100)) throw new Error('Watch at most 100 systems.');
+        out.watched_system_ids = [...new Set(arr(input.watched_system_ids).map(systemId))].sort((a, b) => a - b);
+        return out;
+    }
+    function configureLogs(id, cfg) {
+        const pilot = character(id);
+        logPilots.add(id);
+        tail.configure(id, { enabled: store.get('module:universe', true) && !!pilot && !pilot.needsReauth && cfg.enabled && cfg.logs_enabled,
+            directory: cfg.log_directory, channels: cfg.location_source === 'esi' ? cfg.intel_channels : [...new Set([...cfg.intel_channels, 'Local'])], characterName: pilot?.name || '' });
+    }
+    function saveConfig(characterId, input) {
+        const id = pilotId(characterId), cfg = validateConfig(id, input), old = config(id);
+        store.set('universe:operations:config:' + id, cfg); configureLogs(id, cfg);
+        if (!old.fleet_enabled && cfg.fleet_enabled) fleetNext.delete(id);
+        changed(id); return cfg;
+    }
+    function fresh(sample) {
+        return sample?.status === 'ready' && sample.stale !== true && finiteDate(sample.updatedAt) && Date.parse(sample.updatedAt) <= now() + 1000 && Date.parse(sample.expiresAt) > now();
+    }
+    function location(id) {
+        const pilot = character(id), cfg = config(id);
+        const empty = (status, source = 'esi') => ({ system_id: null, system_name: null, status, source, updated_at: null, expires_at: null });
+        if (!pilot) return empty('disconnected');
+        if (!cfg.enabled || !store.get('module:universe', true)) return empty('disabled');
+        if (pilot.needsReauth) return empty('reauth_required');
+        const sample = store.snapshot(id, 'location'), allowed = store.get('module:pilot', true) && arr(pilot.scopes).includes('esi-location.read_location.v1');
+        const system = allowed && ['ready', 'stale'].includes(sample?.status) ? byId.get(Number(sample.data?.solar_system_id)) : null;
+        const api = system ? { system_id: system.system_id, system_name: system.name, source: 'esi', status: fresh(sample) ? 'ready' : 'stale', updated_at: sample.updatedAt || null, expires_at: sample.expiresAt || null } : empty(!allowed ? 'missing_scope' : sample?.status || 'waiting');
+        if (cfg.location_source === 'esi') return api;
+        const logSample = cfg.logs_enabled ? store.snapshot(id, 'universe_log_location') : null;
+        const logSystem = byId.get(logSample?.data?.system_id);
+        const log = logSystem ? { system_id: logSystem.system_id, system_name: logSystem.name, source: 'chat_log', status: fresh(logSample) ? 'ready' : 'stale', updated_at: logSample.updatedAt, expires_at: logSample.expiresAt } : empty(cfg.logs_enabled ? 'waiting' : 'disabled', 'chat_log');
+        if (cfg.location_source === 'logs') return log;
+        return api.status === 'ready' ? api : log.status === 'ready' ? log : api.system_id ? api : log;
+    }
+    function observeLogLocation(id, text) {
+        const cfg = config(id);
+        if (cfg.location_source === 'esi') return false;
+        const match = text.match(/^\[\s*(\d{4}\.\d{2}\.\d{2}\s+\d{2}:\d{2}:\d{2})\s*\]\s*EVE System\s*>\s*Channel changed to Local\s*:\s*(.+?)\s*$/i);
+        if (!match) return false;
+        const observed = Date.parse(match[1].replaceAll('.', '-').replace(' ', 'T') + 'Z'), system = byName.get(match[2].trim().toLowerCase());
+        if (!system || !Number.isFinite(observed) || observed > now() + 1000 || observed + 300000 <= now()) return true;
+        const old = store.snapshot(id, 'universe_log_location');
+        if (Date.parse(old?.updatedAt) >= observed) return true;
+        store.saveSnapshot(id, 'universe_log_location', { status: 'ready', data: { system_id: system.system_id }, updatedAt: new Date(observed).toISOString(), expiresAt: new Date(observed + 300000).toISOString() });
+        options.onLocation?.(id); changed(id); return true;
+    }
+    function pilots(id) {
+        if (!id) return [];
+        return auth.characters().slice(0, 100).map(pilot => {
+            const position = location(pilot.id), online = store.snapshot(pilot.id, 'online'), ship = store.snapshot(pilot.id, 'ship');
+            const allowed = store.get('module:pilot', true) && !pilot.needsReauth && config(pilot.id).enabled;
+            return { character_id: pilot.id, name: pilot.name, ...position,
+                ship_type_id: allowed && arr(pilot.scopes).includes('esi-location.read_ship_type.v1') && fresh(ship) ? ship.data?.ship_type_id || null : null,
+                online: allowed && arr(pilot.scopes).includes('esi-location.read_online.v1') && fresh(online) && typeof online.data?.online === 'boolean' ? online.data.online : null };
+        });
+    }
+    function emptyFleet(status, error = null) { return { status, scope: FLEET_SCOPE, fleet_id: null, role: null, members: [], updated_at: null, expires_at: null, error }; }
+    function fleetState(id, cfg) {
+        const pilot = character(id);
+        if (!cfg.enabled || !cfg.fleet_enabled || !store.get('module:universe', true)) return emptyFleet('disabled');
+        if (!pilot) return emptyFleet('disconnected');
+        if (pilot.needsReauth) return emptyFleet('reauth_required');
+        if (!arr(pilot.scopes).includes(FLEET_SCOPE)) return emptyFleet('missing_scope');
+        const sample = store.snapshot(id, 'universe_fleet');
+        if (!sample) return emptyFleet('waiting');
+        const value = { ...emptyFleet(sample.status), ...sample.data, status: sample.status, updated_at: sample.updatedAt || null, expires_at: sample.expiresAt || null, error: sample.error || null };
+        if (value.status === 'ready' && !fresh(sample)) value.status = 'stale';
+        return value;
+    }
+    function maybeAlert(id, item, cfg) {
+        if (!cfg.enabled || !cfg.alerts_enabled || ['clear', 'question'].includes(item.kind) || Date.parse(item.expires_at) <= now()) return;
+        if (item.kind === 'combat' && !cfg.alert_combat || item.kind === 'decloak' && !cfg.alert_decloak) return;
+        if (item.decloak_cause === 'observatory' && !cfg.alert_decloak_observatory || item.decloak_cause === 'gate' && !cfg.alert_decloak_gate) return;
+        const own = pilots(id).find(pilot => pilot.character_id === id && pilot.status === 'ready' && pilot.online !== false);
+        const distances = own?.system_id ? gateDistances(atlas, [own.system_id], cfg.danger_jumps) : new Map();
+        const nearby = item.system_ids.filter(system => distances.has(system));
+        const watched = item.system_ids.filter(system => cfg.watched_system_ids.includes(system));
+        const keywords = cfg.alert_keywords.filter(keyword => item.text.toLowerCase().includes(keyword.toLowerCase()));
+        const game = item.source === 'game_log' && ['combat', 'decloak'].includes(item.kind);
+        const unknown = cfg.alert_unknown && !item.system_ids.length && item.source !== 'game_log';
+        if (!nearby.length && !watched.length && !keywords.length && !game && !unknown) return;
+        const key = [id, item.kind, item.decloak_cause || '', item.system_ids.join(','), keywords.join(',')].join(':');
+        const since = cooldowns.get(key) || 0;
+        if (now() - since < cfg.alert_cooldown_seconds * 1000) return;
+        cooldowns.set(key, now());
+        if (cooldowns.size > 2000) for (const [old, at] of cooldowns) if (now() - at > 3600000) cooldowns.delete(old);
+        while (cooldowns.size > 2000) cooldowns.delete(cooldowns.keys().next().value);
+        const distance = nearby.length ? Math.min(...nearby.map(system => distances.get(system))) : null;
+        const reason = game ? (item.kind === 'decloak' ? 'Local game log reports decloaking.' : 'Local game log reports combat.') :
+            watched.length ? 'Report mentions a watched system.' : nearby.length ? 'Report is within ' + distance + ' gate jumps of your latest position.' : keywords.length ? 'Report contains an alert keyword: ' + keywords.join(', ') : 'Report location could not be resolved.';
+        const alert = put(id, 'alert', { id: randomUUID(), intel_id: item.id, kind: item.kind, decloak_cause: item.decloak_cause, reason, system_ids: item.system_ids,
+            distance, created_at: iso(), expires_at: item.expires_at, acknowledged_at: null }, 250);
+        publish({ type: 'universe.operational_alert', module: 'universe', characterId: id, summary: reason,
+            payload: { private: true, alert_id: alert.id, kind: item.kind, system_ids: item.system_ids, distance }, at: alert.created_at });
+    }
+    function ingest(characterId, input, trustedSource = 'manual') {
+        const id = pilotId(characterId), cfg = config(id);
+        if (!cfg.enabled || !store.get('module:universe', true)) throw new Error('Universe operations are disabled for this pilot.');
+        if (!input || typeof input.text !== 'string' || !input.text.trim() || input.text.length > 16000) throw new Error('Enter an intel report of up to 16,000 characters.');
+        const parsed = parseIntel({ ...input, source: trustedSource, clear_keywords: cfg.clear_keywords }, now());
+        if (!parsed) return { ignored: true, reason: 'This line has no usable report or source timestamp.' };
+        if (cfg.ignore_keywords.some(keyword => parsed.text.toLowerCase().includes(keyword.toLowerCase()))) return { ignored: true, reason: 'Report matches an ignored keyword.' };
+        if (trustedSource === 'manual' && input.system_ids != null) {
+            if (!Array.isArray(input.system_ids) || input.system_ids.length > 100) throw new Error('Choose at most 100 report systems.');
+            parsed.system_ids = [...new Set([...parsed.system_ids, ...input.system_ids.map(systemId)])].sort((a, b) => a - b);
+        }
+        const observed = Date.parse(parsed.observed_at), received = now(), identity = hash([trustedSource, parsed.channel.toLowerCase(), parsed.text.toLowerCase(), parsed.system_ids.join(',')].join('|'));
+        const existing = rows(id, 'intel').find(item => item.identity === identity && (item.observed_at === parsed.observed_at || received - Date.parse(item.received_at) < 5000));
+        if (existing) return { ...existing, expired: Date.parse(existing.expires_at) <= now(), duplicate: true };
+        const item = { id: randomUUID(), ...parsed, identity, received_at: iso(), expires_at: new Date(observed + cfg.intel_expiry_minutes * 60000).toISOString() };
+        put(id, 'intel', item, 500); maybeAlert(id, item, cfg); changed(id);
+        return { ...item, expired: Date.parse(item.expires_at) <= received };
+    }
+    function ingestIntel(id, input) { return ingest(id, input, 'manual'); }
+    function removeIntel(characterId, key) {
+        const id = pilotId(characterId); delRow.run(id, 'intel', String(key));
+        for (const alert of rows(id, 'alert')) if (alert.intel_id === key) delRow.run(id, 'alert', alert.id);
+        changed(id); return { removed: true };
+    }
+    function acknowledge(characterId, key) {
+        const id = pilotId(characterId), alert = row(id, 'alert', key);
+        if (!alert) throw new Error('Alert not found for this pilot.');
+        alert.acknowledged_at ||= iso(); put(id, 'alert', alert, 250); changed(id); return alert;
+    }
+    function saveSignature(characterId, input) {
+        const id = pilotId(characterId), previous = input.id ? row(id, 'signature', input.id) : null;
+        if (input.id && !previous) throw new Error('Signature not found for this pilot.');
+        const system = systemId(input.system_id ?? previous?.system_id), signature = clean(input.signature_id ?? previous?.signature_id, 16).toUpperCase();
+        if (!/^[A-Z0-9]{3}-\d{3}$/.test(signature)) throw new Error('Use an EVE signature ID such as ABC-123.');
+        const collision = rows(id, 'signature').find(item => item.system_id === system && item.signature_id === signature);
+        if (previous && collision && previous.id !== collision.id) throw new Error('This system already has that signature ID.');
+        const old = previous || collision, value = { id: old?.id || randomUUID(), system_id: system, signature_id: signature,
+            group: clean(input.group || old?.group || 'Cosmic Signature'), type: clean(input.type ?? old?.type), name: clean(input.name ?? old?.name),
+            first_seen_at: old?.first_seen_at || iso(), last_seen_at: iso(), missing: input.missing === undefined ? false : input.missing === true,
+            notes: clean(input.notes ?? old?.notes, 2000), updated_at: iso() };
+        if (!old && rows(id, 'signature').length >= 1000) throw new Error('Remove old signatures before adding more than 1,000.');
+        put(id, 'signature', value); changed(id); return value;
+    }
+    function previewSignatures(characterId, input) {
+        const id = pilotId(characterId), system = systemId(input.system_id);
+        if (typeof input.text !== 'string' || input.text.length > 200000) throw new Error('Paste at most 200,000 characters of probe scanner results.');
+        const { rows: parsed, ignored, diagnostics } = parseSignatureClipboard(input.text), before = rows(id, 'signature').filter(item => item.system_id === system);
+        const known = new Map(before.map(item => [item.signature_id, item])), incoming = new Set(parsed.map(item => item.signature_id)), added = [], updated = [];
+        for (const item of parsed) {
+            const old = known.get(item.signature_id), resolved = { ...item, type: item.type || old?.type || '', name: item.name || old?.name || '' };
+            if (old) updated.push({ ...resolved, id: old.id, changes: ['group', 'type', 'name'].filter(key => resolved[key] !== old[key]).concat(old.missing ? ['missing'] : []) });
+            else added.push(resolved);
+        }
+        if (rows(id, 'signature').length + added.length > 1000) diagnostics.push({ line: null, reason: 'Remove old signatures before adding more than 1,000.', severity: 'error' });
+        const valid = parsed.length > 0 && !diagnostics.some(item => item.severity === 'error');
+        return { system_id: system, valid, ignored, diagnostics, added, updated, signature_ids: [...incoming], complete_scan: input.complete_scan === true,
+            missing: input.complete_scan === true && valid ? before.filter(item => !incoming.has(item.signature_id)).map(({ id, signature_id, name, type }) => ({ id, signature_id, name, type })) : [] };
+    }
+    function importSignatures(characterId, input) {
+        const id = pilotId(characterId), preview = previewSignatures(id, input), system = preview.system_id;
+        if (rows(id, 'signature').length + preview.added.length > 1000) throw new Error('Remove old signatures before adding more than 1,000.');
+        for (const item of [...preview.added, ...preview.updated]) saveSignature(id, { system_id: system, ...item });
+        for (const item of preview.missing) {
+            const old = row(id, 'signature', item.id); put(id, 'signature', { ...old, missing: true, updated_at: iso() });
+        }
+        changed(id); return { added: preview.added.length, updated: preview.updated.length, missing: preview.missing.length, ignored: preview.ignored,
+            diagnostics: preview.diagnostics, complete_scan_applied: preview.valid && preview.complete_scan, signatures: rows(id, 'signature').filter(item => item.system_id === system) };
+    }
+    function saveUpgrade(characterId, input) {
+        const id = pilotId(characterId), old = input.id ? row(id, 'upgrade', input.id) : null;
+        if (input.id && !old) throw new Error('Infrastructure note not found for this pilot.');
+        const system = systemId(input.system_id ?? old?.system_id), slot = Number(input.slot ?? old?.slot), level = Number(input.level ?? old?.level ?? 1), name = clean(input.name ?? old?.name);
+        if (!Number.isInteger(slot) || slot < 1 || slot > 100 || !Number.isInteger(level) || level < 0 || level > 5 || !name) throw new Error('Choose a slot (1–100), upgrade name and level (0–5).');
+        if (input.online !== undefined && typeof input.online !== 'boolean') throw new Error('Choose the observed online state.');
+        const collision = rows(id, 'upgrade').find(item => item.system_id === system && item.slot === slot);
+        if (old && collision && old.id !== collision.id) throw new Error('This system already has an upgrade note in that slot.');
+        const previous = old || collision;
+        if (!previous && rows(id, 'upgrade').length >= 1000) throw new Error('Remove old infrastructure notes before adding more than 1,000.');
+        const value = { id: previous?.id || randomUUID(), system_id: system, slot, name, level, online: input.online ?? previous?.online ?? false,
+            notes: clean(input.notes ?? previous?.notes, 2000), updated_at: iso() };
+        put(id, 'upgrade', value); changed(id); return value;
+    }
+    function previewUpgrades(characterId, input) {
+        const id = pilotId(characterId), preview = parseUpgradeImport(input, atlas);
+        const existing = rows(id, 'upgrade'), keys = new Set(existing.map(row => row.system_id + ':' + row.slot));
+        const added = preview.upgrades.filter(row => !keys.has(row.system_id + ':' + row.slot)).length;
+        if (existing.length + added > 1000) {
+            preview.valid = false;
+            preview.issues.push({ line: null, raw: '', severity: 'error', message: 'Remove old infrastructure notes before adding more than 1,000.' });
+            preview.stats.errors++;
+        }
+        return { ...preview, added, updated: preview.upgrades.length - added };
+    }
+    function importUpgrades(characterId, input) {
+        const id = pilotId(characterId), preview = previewUpgrades(id, input);
+        if (!preview.valid) throw new Error('Infrastructure import needs correction: ' + preview.issues.map(issue => issue.message).slice(0, 3).join(' '));
+        const existing = new Map(rows(id, 'upgrade').map(row => [row.system_id + ':' + row.slot, row]));
+        const records = preview.upgrades.map(item => ({ id: existing.get(item.system_id + ':' + item.slot)?.id || randomUUID(),
+            system_id: item.system_id, slot: item.slot, name: clean(item.name), level: item.level, online: item.online,
+            notes: clean(preview.format === 'smt' ? existing.get(item.system_id + ':' + item.slot)?.notes : item.notes, 2000), updated_at: iso() }));
+        store.db.exec('SAVEPOINT universe_upgrade_import');
+        try {
+            for (const item of records) put(id, 'upgrade', item);
+            store.db.exec('RELEASE universe_upgrade_import');
+        } catch (error) { store.db.exec('ROLLBACK TO universe_upgrade_import; RELEASE universe_upgrade_import'); throw error; }
+        changed(id); return { added: preview.added, updated: preview.updated, upgrades: rows(id, 'upgrade') };
+    }
+    function exportUpgrades(characterId, input = {}) {
+        const id = pilotId(characterId), system = input.system_id == null ? null : systemId(input.system_id);
+        return formatUpgradeExport(rows(id, 'upgrade').filter(row => system == null || row.system_id === system), atlas, { format: input.format || 'smt' });
+    }
+    function removeRecord(characterId, kind, key) { const id = pilotId(characterId); delRow.run(id, kind, String(key)); changed(id); return { removed: true }; }
+    async function fetchFleet(id) {
+        if (closed || fleetBusy.has(id)) return;
+        const pilot = character(id), cfg = config(id);
+        if (!cfg.enabled || !cfg.fleet_enabled || !pilot || pilot.needsReauth || !arr(pilot.scopes).includes(FLEET_SCOPE)) return;
+        fleetBusy.add(id); fleetNext.set(id, now() + 60000);
+        let membership = null, previous = store.snapshot(id, 'universe_fleet');
+        const save = (status, data, response = {}, error = null) => {
+            const current = character(id), currentConfig = current ? config(id) : null;
+            if (closed || !store.get('module:universe', true) || !current || current.needsReauth || !currentConfig?.enabled || !currentConfig.fleet_enabled || !arr(current.scopes).includes(FLEET_SCOPE)) return;
+            const sample = { status, data, updatedAt: response.updatedAt || iso(), expiresAt: response.expiresAt || new Date(now() + 60000).toISOString(), error };
+            store.saveSnapshot(id, 'universe_fleet', sample); changed(id);
+        };
+        try {
+            const response = await esi.request('/characters/' + id + '/fleet', { characterId: id, ttl: 60 });
+            if (response.stale) throw Object.assign(new Error(response.error || 'Fleet membership is stale.'), { status: response.errorStatus, retryAt: response.retryAt, staleMembership: true });
+            if (!Number.isSafeInteger(response.data?.fleet_id) || response.data.fleet_id <= 0) throw new Error('ESI returned invalid fleet membership.');
+            membership = response.data;
+            if (membership.role !== 'fleet_commander') { save('no_access', { ...emptyFleet('no_access'), fleet_id: membership.fleet_id, role: membership.role }, response); return; }
+            const roster = await esi.request('/fleets/' + membership.fleet_id + '/members', { characterId: id, ttl: 60 });
+            if (roster.stale && [401, 403, 404].includes(roster.errorStatus)) throw Object.assign(new Error(roster.error || 'Fleet access is no longer available.'), { status: roster.errorStatus, retryAt: roster.retryAt });
+            if (!Array.isArray(roster.data)) throw new Error('ESI returned an invalid fleet roster.');
+            if (roster.stale && previous?.data?.fleet_id !== membership.fleet_id) throw Object.assign(new Error('Waiting for a current roster for this fleet.'), { wrongFleet: true });
+            const unique = [...new Map(roster.data.filter(item => validId(item?.character_id)).slice(0, 256).map(item => [item.character_id, item])).values()];
+            const ids = [...new Set(unique.flatMap(item => [item.character_id, item.ship_type_id]).filter(validId))];
+            const names = esi.names ? await esi.names(ids) : {};
+            const members = unique.map(item => { const system = byId.get(item.solar_system_id); return {
+                character_id: item.character_id, name: names[item.character_id] || 'Pilot ' + item.character_id,
+                system_id: system?.system_id || null, system_name: system?.name || null,
+                ship_type_id: validId(item.ship_type_id) ? item.ship_type_id : null, ship_name: names[item.ship_type_id] || null,
+                squad_id: Number.isSafeInteger(item.squad_id) ? item.squad_id : null, wing_id: Number.isSafeInteger(item.wing_id) ? item.wing_id : null };
+            }).sort((a, b) => a.name.localeCompare(b.name) || a.character_id - b.character_id);
+            save(roster.stale ? 'stale' : 'ready', { fleet_id: membership.fleet_id, role: membership.role, members },
+                { updatedAt: roster.updatedAt, expiresAt: [response.expiresAt, roster.expiresAt].filter(Boolean).sort()[0] }, roster.error || null);
+        } catch (error) {
+            if ([401, 403, 404].includes(error.status)) save(error.status === 404 && !membership ? 'no_fleet' : error.status === 401 ? 'reauth_required' : 'no_access', emptyFleet('no_access'), {}, error.message);
+            else if (previous?.data?.fleet_id && (!membership || previous.data.fleet_id === membership.fleet_id) && !error.wrongFleet)
+                save('stale', previous.data, previous, clean(error.message, 300));
+            else save('error', { ...emptyFleet('error'), fleet_id: membership?.fleet_id || null, role: membership?.role || null }, {}, clean(error.message, 300));
+            if (finiteDate(error.retryAt)) fleetNext.set(id, Math.max(now() + 60000, Date.parse(error.retryAt)));
+        } finally { fleetBusy.delete(id); }
+    }
+    async function refreshFleet(characterId) {
+        const id = pilotId(characterId);
+        if (!closed && store.get('module:universe', true)) {
+            if (fleetFlights.has(id)) await fleetFlights.get(id);
+            else if ((fleetNext.get(id) || 0) <= now()) {
+                const flight = fetchFleet(id); fleetFlights.set(id, flight);
+                try { await flight; } finally { fleetFlights.delete(id); }
+            }
+        }
+        return closed ? emptyFleet('disabled') : fleetState(id, config(id));
+    }
+    const tail = createUniverseLogTail({ now, onLines: (id, input) => {
+        if (closed || !store.get('module:universe', true) || !character(id)) return;
+        const cfg = config(id);
+        if (!cfg.enabled || !cfg.logs_enabled) return;
+        for (const text of String(input.text || '').split(/\r?\n/).slice(0, 500)) {
+            if (!text.trim()) continue;
+            try {
+                if (input.kind !== 'game' && observeLogLocation(id, text)) continue;
+                // Automatically included Local is only a position source unless the user selected it for intel too.
+                if (input.kind !== 'game' && !cfg.intel_channels.some(channel => String(input.channel).toLowerCase().includes(channel.toLowerCase()))) continue;
+                ingest(id, { text, channel: input.channel }, input.kind === 'game' ? 'game_log' : 'chat_log');
+            } catch { /* A malformed or oversized line cannot stall the tail. */ }
+        }
+    }, onStatus: id => { if (!closed) changed(id); } });
+    for (const pilot of auth.characters()) configureLogs(pilot.id, config(pilot.id));
+    function state(characterId) {
+        const id = pilotId(characterId), cfg = config(id), enabled = store.get('module:universe', true) && cfg.enabled;
+        return { version: 1, character_id: id, generated_at: iso(), config: { ...cfg, enabled }, location: location(id),
+            intel: rows(id, 'intel').map(({ identity, ...item }) => ({ ...item, expired: Date.parse(item.expires_at) <= now() })),
+            alerts: rows(id, 'alert'), pilots: enabled ? pilots(id) : [], fleet: fleetState(id, cfg),
+            signatures: rows(id, 'signature'), upgrades: rows(id, 'upgrade'), logs: tail.status(id) };
+    }
+    async function runTick() {
+        if (closed || ticking) return;
+        if (!store.get('module:universe', true)) {
+            for (const id of logPilots) tail.configure(id, { enabled: false, directory: '', channels: [], characterName: '' });
+            return;
+        }
+        ticking = true;
+        try {
+            for (const pilot of auth.characters()) configureLogs(pilot.id, config(pilot.id));
+            for (const id of logPilots) if (!character(id)) { tail.configure(id, { enabled: false, directory: '', channels: [], characterName: '' }); logPilots.delete(id); }
+            await tail.tick();
+            if (!options.noSync) {
+                const eligible = auth.characters().filter(pilot => { const cfg = config(pilot.id); return cfg.enabled && cfg.fleet_enabled && !pilot.needsReauth && arr(pilot.scopes).includes(FLEET_SCOPE); });
+                for (let visited = 0; visited < eligible.length; visited++) {
+                    const pilot = eligible[fleetCursor++ % eligible.length];
+                    if ((fleetNext.get(pilot.id) || 0) <= now()) { await refreshFleet(pilot.id); break; }
+                }
+            }
+        } finally { ticking = false; }
+    }
+    function tick() {
+        if (!closed && !store.get('module:universe', true)) {
+            for (const id of logPilots) tail.configure(id, { enabled: false, directory: '', channels: [], characterName: '' });
+        }
+        if (tickFlight) return tickFlight;
+        const flight = runTick(); tickFlight = flight;
+        return flight.finally(() => { if (tickFlight === flight) tickFlight = null; });
+    }
+    async function close() {
+        closed = true;
+        await tail.close();
+        await Promise.allSettled([tickFlight, ...fleetFlights.values()].filter(Boolean));
+    }
+    return { state, location: id => location(pilotId(id)), config, saveConfig, ingestIntel, removeIntel, acknowledge, previewSignatures, importSignatures, saveSignature,
+        removeSignature: (id, key) => removeRecord(id, 'signature', key), saveUpgrade, previewUpgrades, importUpgrades, exportUpgrades, removeUpgrade: (id, key) => removeRecord(id, 'upgrade', key),
+        defaultLogDirectories: () => tail.defaultDirectories(), refreshFleet, refresh: async id => { await refreshFleet(id); return state(id); }, tick, close };
+}
