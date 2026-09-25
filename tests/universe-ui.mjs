@@ -10,6 +10,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {openStore} from '../server/store.mjs';
 import {startKairo} from '../server/index.mjs';
 import {projectKnownSystems} from '../components/kairo/universe-map-math.mjs';
+import {jspaceAcceptance} from './jspace-ui-workflows.mjs';
 
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(existsSync);
 if(!chrome)throw new Error('Chrome is required for the browser smoke test. Set KAIRO_CHROME_PATH.');
@@ -17,7 +18,7 @@ const dir=await mkdtemp(join(tmpdir(),'kairo-universe-ui-')),output=process.env.
 await mkdir(output,{recursive:true});
 let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[],contrastChecks=[],motionChecks=[],mapLayouts=[],paletteChecks=[],territoryChecks=[];let sequence=0;
 const empireColours={500001:'#4f88c6',500004:'#3da891',500003:'#c7a44b',500002:'#b86b4b'};
-const externalCalls=[],recentUniverseRequests=[];
+const externalCalls=[],recentUniverseRequests=[];let heldBackgroundRequests=null;
 const denyExternal=async url=>{externalCalls.push(String(url));throw new Error('External access is disabled in this synthetic browser test');};
 const appOptions={port:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590),streamPort:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590)+1,dataDir:join(dir,'data'),noSync:true,fetcher:denyExternal,universe:{operations:{noSync:true,fetcher:denyExternal},feeds:{noSync:true,fetcher:denyExternal}}};
 function call(method,params={},sessionId){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params,...(sessionId?{sessionId}:{})}));});}
@@ -65,7 +66,26 @@ async function preset(name){
  await choose('Map view',name);
  if(!open)await click('[aria-label="Close layers"]');
 }
-async function space(name){await clickElement(`Array.from(document.querySelectorAll('[aria-label="Universe space"] [role="tab"]')).find(e=>e.querySelector('strong')?.textContent===${JSON.stringify(name)})`);}
+async function space(name){
+ const route=name==='J-Space'?'universe-jspace':'universe-kspace',selector='[data-route="'+route+'"]';
+ if(!await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});return !!e&&e.getBoundingClientRect().width>0;})()`))await click('[data-sidebar="trigger"]');
+ await click(selector);
+ await waitFor(`location.hash===${JSON.stringify('#'+route)} && !!document.querySelector('.universe-module') && !document.querySelector('.universe-loading')`);
+ const active=await evaluate(`document.querySelector(${JSON.stringify(selector)})?.getAttribute('aria-current') || null`);
+ if(active!==null)assert.equal(active,'page');
+}
+async function ensureJSpaceMap(name,force=false,withDiscoveries=false){
+ await waitFor("!!document.querySelector('[aria-label=\"Active J-Space map\"]') || !!document.querySelector('.jspace-welcome button')");
+ if(force||!await evaluate("!!document.querySelector('[aria-label=\"Active J-Space map\"]')")){
+  await click('[aria-label="Create a J-Space map"]');
+  await fill('[aria-label="J-Space map name"]',name);
+  if(withDiscoveries)assert.equal(await evaluate("document.querySelector('.jspace-sheet .jspace-checkbox input')?.checked"),true,'Existing discoveries are offered for adoption by default');
+  else if(await evaluate("document.querySelector('.jspace-sheet .jspace-checkbox input')?.checked"))await click('.jspace-sheet .jspace-checkbox input');
+  await button('Create map','.jspace-sheet');
+  await waitFor('!document.querySelector(".jspace-sheet") && document.querySelector('+JSON.stringify('[aria-label="Active J-Space map"]')+')?.selectedOptions[0]?.textContent==='+JSON.stringify(name));
+ }
+ await waitFor("!!document.querySelector('[data-testid=\"jspace-map\"]')");
+}
 async function screenshot(name){await evaluate('document.fonts.ready');await delay(500);await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
 async function api(path,method='GET',body){
  return evaluate(`(async()=>{const boot=await(await fetch('/api/bootstrap')).json();const response=await fetch('/api'+${JSON.stringify(path)},{method:${JSON.stringify(method)},headers:{'content-type':'application/json','x-kairo-csrf':boot.csrf},${body===undefined?'':'body:'+JSON.stringify(JSON.stringify(body))+','}});const data=await response.json();if(!response.ok)throw new Error(JSON.stringify(data));return data;})()`);
@@ -146,6 +166,25 @@ async function navigationMotion(){
  }
  await click('[aria-label="Fit map"]');await delay(900);
  checks.push('Finite smooth zoom/focus, reduced motion and simulated hidden-page cancellation');
+}
+async function staticMapMotion(){
+ // Camera gestures use the loaded public atlas with no live observations.
+ // Hold only periodic background GETs during this sample: parent data refreshes
+ // legitimately repaint once, independently of camera animation. Live refresh
+ // and expiry behavior are exercised separately after requests are released.
+ const snapshot=await api('/universe?character=0');
+ const timedRows=[...snapshot.operations?.intel||[],...snapshot.operations?.pilots||[],...snapshot.feeds?.connections||[],...Object.values(snapshot.feeds?.sources||{}),snapshot.operations?.location,snapshot.operations?.fleet].filter(Boolean);
+ assert.equal(timedRows.some(row=>row.observed_at||row.updated_at||row.expires_at),false,'The camera-motion fixture has no live age or expiry transitions');
+ await withoutBackgroundRefresh(async()=>{await navigationMotion();await pointerNavigation();});
+}
+async function withoutBackgroundRefresh(sample){
+ heldBackgroundRequests=[];
+ await call('Fetch.enable',{patterns:[{urlPattern:'*/api/state?character=*',requestStage:'Request'},{urlPattern:'*/api/universe?character=*',requestStage:'Request'}]});
+ try{return await sample();}
+ finally{
+  while(heldBackgroundRequests.length){const ids=heldBackgroundRequests.splice(0);await Promise.all(ids.map(requestId=>call('Fetch.continueRequest',{requestId})));}
+  await call('Fetch.disable');heldBackgroundRequests=null;
+ }
 }
 async function pointerNavigation(){
  // This public/no-pilot scenario has one selected system, so its eight-pixel
@@ -598,6 +637,18 @@ async function minimumZoom(label){
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Zoom out\"]').disabled"),true);
  checks.push(label+' bounded minimum zoom');
 }
+async function minimumChainZoom(label){
+ await click('[aria-label="Fit chain"]');await delay(700);
+ const fitted=await evaluate("Number(document.querySelector('[aria-label=\"Chain zoom\"]').dataset.zoom)");
+ assert.ok(fitted>0&&Number.isFinite(fitted),label+': chain fit has a finite zoom');
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Zoom out of chain\"]').disabled"),true,label+': fit is the chain minimum zoom');
+ const point=await evaluate("(()=>{const e=document.querySelector('.jspace-map-viewport');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width*.57,y:r.y+r.height*.41};})()");
+ for(let i=0;i<5;i++)await call('Input.dispatchMouseEvent',{type:'mouseWheel',...point,deltaX:0,deltaY:200});
+ await delay(700);
+ assert.equal(await evaluate("Number(document.querySelector('[aria-label=\"Chain zoom\"]').dataset.zoom)"),fitted,label+': repeated wheel zoom cannot recede beyond padded chain bounds');
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Zoom out of chain\"]').disabled"),true);
+ checks.push(label+' bounded minimum zoom');
+}
 async function vectorRendering(state,source='inferred'){
  // Browser-only instrumentation verifies the visible territory redraw uses
  // geometry, not a magnified bitmap or per-system radial halo texture.
@@ -646,11 +697,12 @@ async function idleMetrics(){
  // Finite age/expiry updates are meaningful data changes, not an animation
  // loop. Measure a settled window that does not straddle one of those updates.
  const state=await api('/universe?character=42'),time=Date.now(),deadlines=[Math.floor(time/60000)*60000+60000];
- for(const row of [...state.operations?.intel||[],...state.operations?.pilots||[],...state.feeds?.connections||[]]){
+ for(const row of [...state.operations?.intel||[],...state.operations?.pilots||[],...state.feeds?.connections||[],...Object.values(state.feeds?.sources||{}),state.operations?.location,state.operations?.fleet].filter(Boolean)){
   const observed=Date.parse(row.observed_at||row.updated_at||'');
   for(const deadline of [observed+30000,observed+150000,Date.parse(row.expires_at||'')])if(Number.isFinite(deadline)&&deadline>time)deadlines.push(deadline);
  }
  const soon=Math.min(...deadlines)-time;if(soon<4000)await delay(soon+350);
+ return withoutBackgroundRefresh(async()=>{
  await call('Performance.enable');await delay(300);
  // Instrument only this disposable browser after interacting. This is never
  // compiled into the app, and distinguishes event-driven draws from a loop.
@@ -663,13 +715,14 @@ async function idleMetrics(){
  const result={windowMs:Date.now()-start,canvasDraws:draws,taskMs:1000*(after.TaskDuration-before.TaskDuration),layoutMs:1000*(after.LayoutDuration-before.LayoutDuration),layouts:after.LayoutCount-before.LayoutCount};
  assert.equal(draws,0,'A settled idle map must not redraw: '+JSON.stringify(result));
  return result;
+ });
 }
 async function startBrowser(){
  proc=spawn(chrome,['--headless','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--no-first-run','--remote-debugging-port=0','--user-data-dir='+join(dir,'chrome'),'about:blank'],{stdio:['ignore','ignore','pipe']});
  const browserURL=await new Promise((resolve,reject)=>{let log='';const timer=setTimeout(()=>reject(new Error('Chrome did not start: '+log.slice(-1000))),20000);proc.stderr.on('data',b=>{log+=b;const m=log.match(/DevTools listening on (ws:\/\/[^\s]+)/);if(m){clearTimeout(timer);resolve(m[1]);}});proc.on('error',reject);proc.on('exit',code=>{clearTimeout(timer);reject(new Error('Chrome exited: '+code+' '+log.slice(-1000)));});});
  const endpoint=new URL(browserURL),target=await(await fetch('http://'+endpoint.host+'/json/new?about:blank',{method:'PUT'})).json();
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
- ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);else if(m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/universe')&&m.params.request.method!=='GET'){const {url,method,postData}=m.params.request;recentUniverseRequests.push({url,method,postData});if(recentUniverseRequests.length>20)recentUniverseRequests.shift();}});
+ ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);else if(m.method==='Fetch.requestPaused'){if(heldBackgroundRequests&&m.params.request.method==='GET')heldBackgroundRequests.push(m.params.requestId);else void call('Fetch.continueRequest',{requestId:m.params.requestId});}else if(m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/universe')&&m.params.request.method!=='GET'){const {url,method,postData}=m.params.request;recentUniverseRequests.push({url,method,postData});if(recentUniverseRequests.length>20)recentUniverseRequests.shift();}});
  await call('Page.enable');await call('Runtime.enable');await call('Network.enable');await viewport(1600);
 }
 
@@ -683,23 +736,35 @@ try{
  assert.ok(atlas.systems>8000&&atlas.known>5000&&atlas.gates>6000,'Full bundled universe is available without EVE authentication');
  assert.ok((await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label')")).includes(atlas.known.toLocaleString('en-US')+' systems'));
  assert.equal((await api('/bootstrap')).characters.length,0);
- assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('[aria-label=\"Universe space\"] [role=tab] strong')).map(e=>e.textContent)"),['K-Space','J-Space']);
+ assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('[data-workspace-group=\"UNIVERSE\"] [data-route]')).map(e=>e.textContent.trim())"),['K-Space','J-Space']);
+ assert.equal(await evaluate("location.hash"),'#universe-kspace','Legacy Universe bookmarks resolve to the K-Space workspace');
+ assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Universe space\"] [role=tab]')"),false,'Space selection belongs to sidebar navigation rather than an in-page mode switch');
  await minimumZoom('Known space');
- await space('J-Space');await waitFor("document.querySelector('.universe-module')?.classList.contains('is-jspace')");
- assert.ok(await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label').startsWith('Wormhole space')"));
+ await search('Jita');await preset('Activity');
+ await click('[aria-label="Focus selected system"]');await delay(750);await click('[aria-label="Zoom in"]');await delay(750);
+ const knownSpaceZoom=await evaluate("parseFloat(document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent)");
+ await space('J-Space');await waitFor("!!document.querySelector('.jspace-welcome') && document.querySelector('.jspace-workspace-stage')?.getAttribute('aria-busy')==='false'");
+ assert.ok(await evaluate("document.querySelector('.universe-module')?.classList.contains('is-jspace')"));
+ assert.ok(await evaluate("!!document.querySelector('.jspace-welcome')"),'The guest J-Space atlas introduces its dedicated chain workspace');
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Territory view\"]')"),null,'J-space has its own discovery controls');
  assert.equal(await evaluate("!!document.querySelector('.universe-map-scale-bar')"),false,'Schematic J-space does not claim a physical distance scale');
- assert.ok(await evaluate("document.querySelector('.universe-map-scale').textContent.includes('no scale')"));
- await button('Layers & views');
  assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Map region\"]')"),false,'J-space does not offer geographic region filtering');
- await click('[aria-label="Close layers"]');
  assert.equal(await evaluate("!!document.querySelector('.universe-overview-regions')"),false,'J-space overview never groups discoveries into regions');
  await screenshot('universe-jspace-empty');await space('K-Space');
- await button('Layers & views');assert.ok(await evaluate("!!document.querySelector('[aria-label=\"Map region\"]')"),'K-space retains useful physical region navigation');await click('[aria-label="Close layers"]');
- await readability('Public atlas', [['.universe-tabs button',16],['.universe-space-switch strong',16],['[aria-label="Find a solar system"]',16],['.universe-map-footnote',14]]);
+ await waitFor("document.querySelector('.universe-system-title h3')?.textContent==='Jita'");
+ await delay(900);
+ assert.equal(await evaluate("parseFloat(document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent)"),knownSpaceZoom,'K-Space restores its camera magnification after switching workspaces');
+ await evaluate('history.back()');await waitFor("location.hash==='#universe-jspace' && document.querySelector('.universe-module')?.classList.contains('is-jspace')");
+ await evaluate('history.forward()');await waitFor("location.hash==='#universe-kspace' && !!document.querySelector('.universe-module canvas') && document.querySelector('[data-route=\"universe-kspace\"]')?.getAttribute('aria-current')==='page'");
+ await button('Layers & views');
+ assert.ok(await evaluate("document.querySelector('[aria-label=\"Map view\"]').textContent.includes('Activity')"),'K-Space restores its layer independently of the J-Space workspace');
+ assert.ok(await evaluate("!!document.querySelector('[aria-label=\"Map region\"]')"),'K-space retains useful physical region navigation');await click('[aria-label="Close layers"]');
+ await preset('Geopolitics');
+ checks.push('K-Space restores system, layer and camera across workspace changes; browser Back/Forward keeps the page, sidebar and URL aligned');
+ await readability('Public atlas', [['.universe-tabs button',16],['[data-workspace-group="UNIVERSE"] [data-route]',14],['[aria-label="Find a solar system"]',16],['.universe-map-footnote',14]]);
  await mapFirstLayout('Desktop public atlas');await screenshot('universe-map-first-desktop');
- await contrast('Atlas controls',['.universe-tabs button','.universe-space-switch strong','.universe-map-footnote']);
- checks.push('Distinct K-space and J-space tabs with a dedicated wormhole discovery context');
+ await contrast('Atlas controls',['.universe-tabs button','[data-workspace-group="UNIVERSE"] [data-route]','.universe-map-footnote']);
+ checks.push('Independent K-Space and J-Space navigation under Universe with legacy deep-link compatibility');
  await layout('Public atlas desktop');await screenshot('universe-public-atlas');
  await defaultMapWorkspace('desktop');
  await search('Jita');
@@ -710,8 +775,7 @@ try{
  await clickElement("Array.from(document.querySelectorAll('.universe-celestial-group summary')).find(e=>e.textContent.startsWith('NPC stations'))");
  assert.ok(await evaluate("Array.from(document.querySelectorAll('.universe-celestial-list strong')).some(e=>e.textContent.includes('Caldari Navy Assembly Plant'))"),'Jita NPC station names render from bundled detail data');
  await disclosure('Celestials & NPC stations');
- await navigationMotion();
- await pointerNavigation();
+ await staticMapMotion();
  await overviewNavigation();
  await click('[aria-label="Zoom in"]');await delay(100);const zoomed=await canvasHash();
  const point=await evaluate("(()=>{const e=document.querySelector('.universe-module canvas');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()");
@@ -766,6 +830,10 @@ try{
    db.db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)').run(42,type,module,summary,JSON.stringify({solar_system_id:atlas.systemsByName.Perimeter}),new Date(now-3600000+offset*60000).toISOString());
  }finally{db.close();}
  app=await startKairo(appOptions);await call('Page.navigate',{url:app.origin+'/#universe'});await waitFor("document.querySelector('[aria-label=\"Active character\"]')?.textContent.includes('Atlas Alpha') && !!document.querySelector('.universe-module canvas')");
+ await space('J-Space');await ensureJSpaceMap('Discovery atlas');
+ assert.ok(await evaluate("document.querySelector('.jspace-map-viewport').textContent.includes('Your chain starts here')"),'An empty map introduces the chain-building workflow');
+ assert.equal(await evaluate("document.querySelectorAll('.jspace-node').length"),0,'An empty private map does not display the entire static J-Space catalogue');
+ await screenshot('universe-jspace-empty-map');await space('K-Space');
  await search('UALX-3');await waitFor("document.querySelector('.universe-standing')?.textContent.includes('good standing')");
  const inferred=await api('/universe/politics','POST');
  assert.deepEqual(inferred.groups.filter(g=>g.source==='inferred').map(g=>g.alliance_ids).sort((a,b)=>a[0]-b[0]),[[77,78],[79,80]],'Repeated local cooperation supports separate inferred groups');
@@ -816,11 +884,12 @@ try{
  await readability('Power bloc settings 390',[['.power-bloc-intro p',16],['.power-bloc-fallback p',16],['.power-bloc-member strong',16]]);
  await contrast('Power bloc settings',['.power-bloc-intro p','.power-bloc-member strong']);
  await screenshot('universe-power-bloc-settings-mobile');await viewport(1600);
- await clickElement("Array.from(document.querySelectorAll('[data-sidebar=menu-button]')).find(e=>e.textContent.trim()==='Universe')");
+ await space('K-Space');
  await waitFor("!!document.querySelector('.universe-module canvas')");
  await search('UALX-3');await waitFor("document.querySelector('.universe-membership.configured')?.textContent.includes('Test Expedition Bloc')");
  assert.ok(await evaluate("document.querySelector('.universe-owner').textContent.includes('Synthetic sovereignty alliance')"),'Configured bloc does not replace actual sovereign ownership');
  assert.ok(await evaluate("document.querySelector('.universe-standing').textContent.includes('good standing')"),'Configured bloc does not replace the pilot standing');
+ await preset('Geopolitics');
  const configured=await api('/universe?character=42');
  politicalPalette(configured,'Configured and inferred political map');
  await vectorRendering(configured,'configured');
@@ -838,7 +907,7 @@ try{
  await screenshot('universe-inferred-membership');
  await click('[aria-label="Configure Universe power blocs"]');await waitFor("document.querySelector('[aria-label=\"Power bloc name\"]')?.value==='Test Expedition Bloc'");
  assert.ok(await evaluate("document.querySelector('.power-bloc-members').textContent.includes('Synthetic sovereignty alliance')"),'Saved settings re-open with exact memberships');
- await clickElement("Array.from(document.querySelectorAll('[data-sidebar=menu-button]')).find(e=>e.textContent.trim()==='Universe')");await waitFor("!!document.querySelector('.universe-module canvas')");
+ await space('K-Space');await waitFor("!!document.querySelector('.universe-module canvas')");
  checks.push('Power bloc create/name/colour, explicit membership move to independent, save/reopen, source labels and per-alliance fallback');
 
  await territoryInspection(configured);
@@ -949,18 +1018,23 @@ try{
  const revised=(await api('/universe?character=42')).links.find(l=>l.id===wormhole.id);assert.ok(Math.abs(Date.parse(revised.expires_at)-Date.now()-4*3600000)<15000);
  await choose('Lifetime for '+wormhole.id,'Expire now');await waitFor('('+connection('Unconfirmed passage')+').textContent.includes("EXPIRED")');
  const expired=await api('/universe?character=42');assert.equal(expired.links.find(l=>l.id===wormhole.id).active,false);assert.ok(expired.pins.some(p=>p.system_id===atlas.wormhole.system_id));
- await button('Atlas','.universe-tabs');await space('J-Space');
- assert.ok((await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label')")).includes('Wormhole space interactive map showing 1 systems'));
- await fill('[aria-label="Find a solar system"]',atlas.wormhole.region_name);
- assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-search-popover strong')).some(e=>e.textContent==="+JSON.stringify(atlas.wormhole.region_name)+")"),false,'Internal J-space region names are not search destinations');
- await search(atlas.wormhole.name);
- const jspaceBreadcrumb=await evaluate("document.querySelector('.universe-breadcrumb').textContent");
+ await button('Atlas','.universe-tabs');await space('J-Space');await ensureJSpaceMap('Recorded discoveries',true,true);
+ await waitFor('!!document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+')');
+ assert.ok(await evaluate('document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+').textContent.includes('+JSON.stringify(atlas.wormhole.name)+')'),'The pinned wormhole system remains on the chain after its connection expires');
+ await button('Add system','.jspace-workspace-toolbar');
+ await fill('[aria-label="Find a system to add to chain"]',atlas.wormhole.region_name);
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-add-results strong')).some(e=>e.textContent==="+JSON.stringify(atlas.wormhole.region_name)+")"),false,'Internal J-space region names are not search destinations');
+ await fill('[aria-label="Find a system to add to chain"]',atlas.wormhole.name);
+ await clickElement("Array.from(document.querySelectorAll('.jspace-add-results button')).find(e=>e.querySelector('strong')?.textContent==="+JSON.stringify(atlas.wormhole.name)+")");
+ await waitFor("document.querySelector('[aria-label=\"Selected map context\"] h3')?.textContent==="+JSON.stringify(atlas.wormhole.name));
+ const jspaceBreadcrumb=await evaluate("document.querySelector('[aria-label=\"Selected map context\"] header').textContent");
  assert.ok(jspaceBreadcrumb.includes('J-Space')&&!jspaceBreadcrumb.includes(atlas.wormhole.region_name)&&!jspaceBreadcrumb.includes(atlas.wormhole.constellation_name),'J-space inspection explains system class and discovery context without internal region geography');
- await minimumZoom('Discovered J-space');
+ await minimumChainZoom('Discovered J-space');
  await screenshot('universe-expired-discovery');checks.push('Wormhole confirmation, lifetime editing, expiry and retained discoveries');
  checks.push('J-space keeps system search and discovery context while hiding region navigation, grouping and internal geography');
+ await jspaceAcceptance({app,api,evaluate,click,clickElement,button,fill,key,choose,waitFor,delay,screenshot,viewport,layout,space,ensureJSpaceMap,call,checks,recentUniverseRequests});
 
- await button('Journey','.universe-tabs');await waitFor("!!document.querySelector('.route-stop')");
+ await space('K-Space');await button('Journey','.universe-tabs');await waitFor("!!document.querySelector('.route-stop')");
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-module button')).some(e=>e.textContent.trim()==='Sessions')"),false,'Sessions has its own page, outside Universe');
  assert.equal(await evaluate("Array.from(document.querySelectorAll('[data-sidebar=menu-button]')).filter(e=>e.textContent.trim()==='Sessions').length"),1);
  await button('Atlas','.universe-tabs');await preset('Geopolitics');await search('UALX-3');await click('[aria-label="Fit map"]');

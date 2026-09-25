@@ -36,7 +36,7 @@ type MapProps = {
   space?: 'known' | 'wormhole'; standingFilter?: UniverseStandingFilter;
   replay?: ReplayMapFrame | null; onReplayManualPan?: () => void;
   territoryFocus?: UniverseTerritoryFocus | null; onInspectTerritory?: (key: string) => void; onClearTerritoryFocus?: () => void; onFrameTerritory?: () => void;
-  routeEdges?: UniverseRouteEdge[]; tactical?: UniverseTacticalOptions; surfaceKey?: number; onRouteToSystem?: (id: number) => void; onOpenNotebook?: (id: number) => void;
+  routeEdges?: UniverseRouteEdge[]; tactical?: UniverseTacticalOptions; surfaceKey?: number; workspaceKey?: string; onRouteToSystem?: (id: number) => void; onOpenNotebook?: (id: number) => void;
 };
 const PALETTE = {
   excellent: '#78acf8', good: '#76d4e9', neutral: '#9ba4b0', bad: '#edb071', terrible: '#eb7984', unknown: '#606d7d',
@@ -178,7 +178,7 @@ function createTerritories(geometry: Geometry, styles: TerritoryStyle[]) {
   return {geometry, styles, groups: [...groups.values()], labels: territoryComponents(geometry, styles)};
 }
 
-export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, showConnections = true, showSpecialLinks = true, visitedSystemIds = EMPTY, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory, onRouteToSystem, onOpenNotebook}: MapProps) {
+export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, workspaceKey, showConnections = true, showSpecialLinks = true, visitedSystemIds = EMPTY, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory, onRouteToSystem, onOpenNotebook}: MapProps) {
   const helpId = useId(), wrapper = useRef<HTMLDivElement>(null), canvas = useRef<HTMLCanvasElement>(null);
   const view = useRef<View>({x: 0, y: 0, scale: 1}), dimensions = useRef({width: 900, height: 570, dpr: 1});
   const pendingFrame = useRef<number | null>(null), paintRef = useRef<() => void>(() => {});
@@ -446,6 +446,21 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     fittedScope.current = {geometryKey, focusedRegionId};
     cancelCameraMotion(); fitRef.current(regionChanged && !replay);
   }, [geometryKey, focusedRegionId, cancelCameraMotion]);
+  const cameraMemoryKey = workspaceKey ? `kairo-map-camera:${workspaceKey}:${projection}:${focusedRegionId || 'all'}` : '';
+  useEffect(() => {
+    if (!cameraMemoryKey || replay || !sizeInitialized.current) return;
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(cameraMemoryKey) || 'null');
+      if (saved && [saved.cx,saved.cy,saved.zoom].every(Number.isFinite) && saved.zoom >= 1 && saved.zoom <= 75) {
+        const scale=fitCamera(boundsRef.current,dimensions.current).scale*saved.zoom;
+        animateCamera({x:dimensions.current.width/2-saved.cx*scale,y:dimensions.current.height/2-saved.cy*scale,scale},0);
+      } else fitRef.current(false);
+    } catch {}
+    return () => {
+      const camera=cameraTarget.current || view.current;
+      try {sessionStorage.setItem(cameraMemoryKey,JSON.stringify({cx:(dimensions.current.width/2-camera.x)/camera.scale,cy:(dimensions.current.height/2-camera.y)/camera.scale,zoom:camera.scale/baseScale.current}));} catch {}
+    };
+  }, [cameraMemoryKey,geometryKey,Boolean(replay),animateCamera]);
   useEffect(() => {
     if (space !== 'known' || projection !== 'physical' || background === 'none' || replay) {territory.current = null; lastTerritoryKey.current = ''; redraw(); return;}
     if (lastTerritoryKey.current === territoryKey) return;

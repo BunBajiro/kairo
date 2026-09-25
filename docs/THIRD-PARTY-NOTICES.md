@@ -30,3 +30,7 @@ SOFTWARE.
 ## EVE universe data and public observations
 
 Official EVE static data and ESI provenance are documented in [UNIVERSE-DATA.md](UNIVERSE-DATA.md). The 358 A0 star reference markers are derived from existing official SDE star type records (build 3503375), not from SMT, and retain their separate source attribution. EVE-Scout observations and wormhole reports remain attributed to EVE-Scout; public combat records remain attributed to zKillboard and ESI. Sources have independent coverage, expiry and availability.
+
+## Wanderer Industries
+
+The J-Space atlas includes normalized wormhole reference data from [Wanderer](https://github.com/wanderer-industries/wanderer), revision `6c5d43936e88f1d2acabc4d45fc82cbb67d4a08a`. The [Wanderer reference notice](WANDERER-REFERENCE-NOTICE.md) contains the complete MIT license, adapted-file inventory, deterministic rebuild instructions and documented corrections against CCP sources. The [destination catalogue notice](WANDERER-DESTINATIONS-NOTICE.md) covers the pinned loot-sale, security-status service and trade-hub reference data and its reproducible generator.

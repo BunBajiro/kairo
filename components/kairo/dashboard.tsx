@@ -1,13 +1,14 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ShoppingCart, LayoutDashboard, Link2, ShieldCheck, RefreshCw, Orbit, BrainCircuit, Wallet, Boxes, Factory, Route, Globe, Target, Monitor, Blocks, ChevronRight, Search, Command as CommandIcon, Settings2, ExternalLink } from 'lucide-react';
-import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+import { ShoppingCart, LayoutDashboard, Link2, ShieldCheck, RefreshCw, Orbit, BrainCircuit, Wallet, Boxes, Factory, Route, Globe, Waypoints, Target, Monitor, Blocks, ChevronRight, Search, Command as CommandIcon, Settings2, ExternalLink } from 'lucide-react';
+import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { routes, api, type Bootstrap, type ModuleState } from './model';
+import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
 import { Kairo } from './context';
 import { Choice, Panel, DataTable } from './ui';
 import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
@@ -16,9 +17,21 @@ import { Goals, SessionsPage } from './intelligence';
 import { Universe } from './universe';
 import {Markets} from './markets';
 import { Studio, OPSEC } from './studio';
-const icons: any = { markets:ShoppingCart, overview: LayoutDashboard, character: BrainCircuit, wallet: Wallet, assets: Boxes, industry: Factory, sessions: Route, universe: Globe, goals: Target, studio: Monitor, opsec: ShieldCheck, modules: Settings2, connections: Link2 };
-const descriptions: any = { markets:'A shared market desk for every character. Scan, compare, and plan your next supply run.', overview: 'Your pilot. Your operations. Your next move.', character: 'Training, clones and the capabilities behind your next undock.', wallet: 'Follow your ISK, orders and recent trades.', assets: 'Your ships, equipment and fittings, all accounted for.', industry: 'Keep production, extraction and research moving.', sessions: 'Record an operation. Review its activity, progress and outcomes.', universe: 'Explore New Eden. Read the landscape. Plan your next move.', goals: 'Make progress. Leave yourself a trail.', studio: 'A clear canvas for the parts of Kairo you choose to broadcast.', opsec: 'Control what your stream can see.', modules: 'Manage modules, appearance and how often Kairo refreshes EVE data.', connections: 'Connect your characters. Choose your ESI access.' };
+const icons: any = { markets:ShoppingCart, overview: LayoutDashboard, character: BrainCircuit, wallet: Wallet, assets: Boxes, industry: Factory, sessions: Route, 'universe-kspace': Globe, 'universe-jspace': Waypoints, goals: Target, studio: Monitor, opsec: ShieldCheck, modules: Settings2, connections: Link2 };
+const descriptions: any = { markets:'A shared market desk for every character. Scan, compare, and plan your next supply run.', overview: 'Your pilot. Your operations. Your next move.', character: 'Training, clones and the capabilities behind your next undock.', wallet: 'Follow your ISK, orders and recent trades.', assets: 'Your ships, equipment and fittings, all accounted for.', industry: 'Keep production, extraction and research moving.', sessions: 'Record an operation. Review its activity, progress and outcomes.', 'universe-kspace': 'Read the landscape of New Eden. Follow its borders, activity and routes.', 'universe-jspace': 'Chart your chain. Read the signatures. Find your next connection.', goals: 'Make progress. Leave yourself a trail.', studio: 'A clear canvas for the parts of Kairo you choose to broadcast.', opsec: 'Control what your stream can see.', modules: 'Manage modules, appearance and how often Kairo refreshes EVE data.', connections: 'Connect your characters. Choose your ESI access.' };
+function workspaceDestination(id: string) {
+    const target = resolveWorkspaceRoute(id);
+    if (target.universeTab && typeof window !== 'undefined') {
+        try { sessionStorage.setItem('kairo-universe-tab', target.universeTab); } catch { }
+    }
+    return target.id;
+}
 function EveClock() { const [time, setTime] = useState(''); useEffect(() => { const tick = () => setTime(new Date().toISOString().slice(11, 19)); tick(); const t = setInterval(tick, 1000); return () => clearInterval(t); }, []); return <span className="eve-clock">{time || '--:--:--'} <small>EVE</small></span>; }
+function SidebarDestination({route, active, navigate}: {route: WorkspaceRoute; active: boolean; navigate: (id: string) => void}) {
+    const {isMobile, setOpenMobile} = useSidebar();
+    const Icon = icons[route.id] || Blocks;
+    return <SidebarMenuItem><SidebarMenuButton data-route={route.id} aria-current={active ? 'page' : undefined} isActive={active} tooltip={route.name} onClick={() => {navigate(route.id); if (isMobile) setOpenMobile(false);}}><Icon /><span>{route.name}</span>{route.id === 'studio' && <span className="nav-tag">OBS</span>}</SidebarMenuButton></SidebarMenuItem>;
+}
 export default function Dashboard() {
     const [page, setPage] = useState('overview'), [boot, setBoot] = useState<Bootstrap | null>(null), [data, setData] = useState<Record<string, ModuleState>>({}), [names, setNames] = useState<any>({}), [character, setCharacterState] = useState(0), [sessions, setSessions] = useState<any[]>([]), [opsec, setOpsec] = useState<any>({ state: 'unknown' }), [err, setErr] = useState(''), [refreshing, setRefreshing] = useState(false), [search, setSearch] = useState(false), [connected, setConnected] = useState(false);
     const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null), loading = useRef(0);
@@ -26,8 +39,12 @@ export default function Dashboard() {
         localStorage.setItem('kairo-character', String(id));
     }
     catch { } }
-    const navigate = useCallback((id: string) => { if(id==='journey'){sessionStorage.setItem('kairo-universe-tab','journey');id='universe';} setPage(id); if (typeof window !== 'undefined')
-        window.location.hash = id; setSearch(false); window.scrollTo({ top: 0, behavior: 'instant' }); }, []);
+    const navigate = useCallback((id: string) => {
+        const target=workspaceDestination(id);
+        // Keep the framework's history metadata and the selected page in sync.
+        if(typeof window!=='undefined'&&window.location.hash!=='#'+target)window.history.pushState(window.history.state,'',window.location.pathname+window.location.search+'#'+target);
+        setPage(target);setSearch(false);window.scrollTo({top:0,behavior:'instant'});
+    }, []);
     const refresh = useCallback(async () => { const requestId = ++loading.current, id = charRef.current; const state = await api('/state?character=' + id); if (requestId !== loading.current || id !== charRef.current)
         return; setData(state.data); setNames(state.names); setOpsec(state.opsec); setSessions(state.sessions); }, []);
     const reload = useCallback(async () => { const result = await api('/bootstrap'); bootRef.current = result; setBoot(result); if (charRef.current && !result.characters.some((c: any) => c.id === charRef.current))
@@ -48,7 +65,7 @@ export default function Dashboard() {
     catch (e: any) {
         if (alive)
             setErr(e.message);
-    } }; initial(); const hash = () => { let id = window.location.hash.slice(1); if(id==='journey'){sessionStorage.setItem('kairo-universe-tab','journey');id='universe';window.history.replaceState({},'',location.pathname+location.search+'#universe');} setPage(routes.some(r => r.id === id) || id.startsWith('module:') ? id : 'overview'); }; hash(); window.addEventListener('hashchange', hash); const params = new URLSearchParams(location.search); if (params.has('auth')) {
+    } }; initial(); const hash = () => { const requested=window.location.hash.slice(1), id=workspaceDestination(requested); if(requested==='universe'||requested==='journey')window.history.replaceState(window.history.state,'',location.pathname+location.search+'#'+id); setPage(id); }; hash(); window.addEventListener('hashchange', hash);window.addEventListener('popstate',hash); const params = new URLSearchParams(location.search); if (params.has('auth')) {
         const a = params.get('auth');
         if (a === 'connected')
             toast.success('EVE character connected. Syncing your data.');
@@ -56,11 +73,11 @@ export default function Dashboard() {
             toast('EVE sign-in was cancelled.');
         else
             toast.error('EVE sign-in could not be verified. Check the callback address and try again.');
-        window.history.replaceState({}, '', location.pathname + location.hash);
+        window.history.replaceState(window.history.state, '', location.pathname + location.hash);
     } const hotkey = (e: KeyboardEvent) => { if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setSearch(v => !v);
-    } }; window.addEventListener('keydown', hotkey); return () => { alive = false; window.removeEventListener('hashchange', hash); window.removeEventListener('keydown', hotkey); }; }, [refresh]);
+    } }; window.addEventListener('keydown', hotkey); return () => { alive = false; window.removeEventListener('hashchange', hash);window.removeEventListener('popstate',hash); window.removeEventListener('keydown', hotkey); }; }, [refresh]);
     useEffect(() => { if (boot)
         refresh().catch(e => toast.error(e.message)); }, [character, refresh, !!boot]);
     useEffect(() => { if (!boot)
@@ -106,8 +123,11 @@ export default function Dashboard() {
         case 'sessions':
             content = <SessionsPage />;
             break;
-        case 'universe':
-            content = <Universe />;
+        case 'universe-kspace':
+            content = <Universe space="known" />;
+            break;
+        case 'universe-jspace':
+            content = <Universe space="wormhole" />;
             break;
         case 'goals':
             content = <Goals />;
@@ -126,7 +146,7 @@ export default function Dashboard() {
             break;
         default: content = page.startsWith('module:') ? <ExtensionPage id={page.slice(7)} character={character}/> : <Overview />;
     }
-    return <SidebarProvider style={{ '--sidebar-width': '238px' } as React.CSSProperties}><Sidebar className="k-sidebar"><SidebarHeader><a className="brand" href="/#overview"><span className="brand-symbol">K</span><span>KAIRO<small>CAPSULEER OPERATIONS</small></span></a><button className="workspace-search" onClick={() => setSearch(true)}><Search size={15}/><span>Jump to module</span><kbd>⌘ K</kbd></button></SidebarHeader><SidebarContent>{['OPERATIONS', 'INTELLIGENCE', 'BROADCAST', 'SYSTEM', ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <SidebarGroup key={group}><SidebarGroupLabel>{group}</SidebarGroupLabel><SidebarMenu>{navRoutes.filter(r => r.group === group).map(r => { const Icon = icons[r.id] || Blocks; return <SidebarMenuItem key={r.id}><SidebarMenuButton isActive={page === r.id} onClick={() => navigate(r.id)}><Icon /><span>{r.name}</span>{r.id === 'studio' && <span className="nav-tag">OBS</span>}</SidebarMenuButton></SidebarMenuItem>; })}</SidebarMenu></SidebarGroup>)}</SidebarContent><SidebarFooter><div className="local-stamp"><ShieldCheck size={16}/><span>LOCAL ENVIRONMENT<small>Private by design · v{boot?.version || '0.8.0-rc.6'}</small></span></div></SidebarFooter></Sidebar><SidebarInset><header className="topbar"><div className="flex items-center gap-3"><SidebarTrigger /><span className="muted">Workspace</span><ChevronRight size={14}/><span>{current?.name || 'Command centre'}</span></div><div className="topbar-right"><span className={'connection-status ' + (connected ? 'online' : '')}><i />{connected ? 'Core connected' : 'Connecting'}</span><EveClock /></div></header><div className="workspace"><div className="page-heading"><div><p className="eyebrow">{page === 'studio' || page === 'opsec' ? 'BROADCAST SYSTEMS' : page === 'connections' || page === 'modules' ? 'WORKSPACE CONTROL' : 'YOUR FLIGHT DECK'}</p><h1>{current?.name || 'Command centre'}</h1><p className="muted">{descriptions[page]}</p></div><div className="page-actions">{boot?.characters.length ? <Choice label="Active character" value={String(character)} onChange={v => setCharacter(Number(v))} options={boot.characters.map(c => ({ value: String(c.id), label: c.name }))}/> : <Button variant="outline" onClick={() => navigate('connections')}><Link2 size={15}/> Connect EVE</Button>}<Button size="icon" variant="outline" aria-label="Refresh ESI data" disabled={refreshing || !boot} onClick={sync}><RefreshCw size={16} className={refreshing ? 'animate-spin' : ''}/></Button></div></div>{err ? <div className="panel server-error"><Orbit size={38}/><h2>Kairo’s local core is unavailable.</h2><p>{err}</p><p className="muted">Start Kairo on your computer, then reload this page.</p><Button onClick={() => window.location.reload()}>Retry connection</Button></div> : boot ? <Kairo.Provider value={{ boot, data, names, character, setCharacter, page, navigate, reload, refresh, opsec, sessions, time: Date.now() }}>{active?.needsReauth && <div className="inline-error mb-5">EVE access needs to be renewed. <button onClick={() => navigate('connections')}>Reconnect {active.name}</button></div>}<div className="page-transition" key={page}>{content}</div></Kairo.Provider> : <div className="loading-layout"><div className="stats-grid">{[0, 1, 2, 3].map(x => <Skeleton key={x} className="h-40"/>)}</div><Skeleton className="h-80"/></div>}<footer className="workspace-footer"><span>KAIRO / CAPSULEER OPERATIONS</span><span>Local memory. Modular growth.</span></footer></div></SidebarInset><Toaster theme="dark"/><CommandDialog open={search} onOpenChange={setSearch} title="Jump to a module" description="Search your Kairo workspace"><CommandInput placeholder="Search modules…"/><CommandList><CommandEmpty>No module found.</CommandEmpty><CommandGroup heading="Your workspace">{navRoutes.map(r => { const Icon = icons[r.id] || Blocks; return <CommandItem key={r.id} value={r.name} onSelect={() => navigate(r.id)}><Icon size={17}/><span>{r.name}</span></CommandItem>; })}</CommandGroup></CommandList></CommandDialog></SidebarProvider>;
+    return <SidebarProvider style={{ '--sidebar-width': '238px' } as React.CSSProperties}><Sidebar className="k-sidebar"><SidebarHeader><a className="brand" href="/#overview"><span className="brand-symbol">K</span><span>KAIRO<small>CAPSULEER OPERATIONS</small></span></a><button className="workspace-search" onClick={() => setSearch(true)}><Search size={15}/><span>Jump to module</span><kbd>⌘ K</kbd></button></SidebarHeader><SidebarContent>{[...workspaceGroups, ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <SidebarGroup key={group} data-workspace-group={group}><SidebarGroupLabel>{group}</SidebarGroupLabel><SidebarMenu>{navRoutes.filter(r => r.group === group).map(r => <SidebarDestination key={r.id} route={r} active={page === r.id} navigate={navigate} />)}</SidebarMenu></SidebarGroup>)}</SidebarContent><SidebarFooter><div className="local-stamp"><ShieldCheck size={16}/><span>LOCAL ENVIRONMENT<small>Private by design · v{boot?.version || '0.8.0-rc.7'}</small></span></div></SidebarFooter></Sidebar><SidebarInset><header className="topbar"><div className="flex items-center gap-3"><SidebarTrigger /><span className="muted">{current?.group === 'UNIVERSE' ? 'Universe' : 'Workspace'}</span><ChevronRight size={14}/><span>{current?.name || 'Command centre'}</span></div><div className="topbar-right"><span className={'connection-status ' + (connected ? 'online' : '')}><i />{connected ? 'Core connected' : 'Connecting'}</span><EveClock /></div></header><div className="workspace"><div className="page-heading"><div><p className="eyebrow">{current?.group === 'UNIVERSE' ? 'UNIVERSE ATLAS' : page === 'studio' || page === 'opsec' ? 'BROADCAST SYSTEMS' : page === 'connections' || page === 'modules' ? 'WORKSPACE CONTROL' : 'YOUR FLIGHT DECK'}</p><h1>{current?.name || 'Command centre'}</h1><p className="muted">{descriptions[page]}</p></div><div className="page-actions">{boot?.characters.length ? <Choice label="Active character" value={String(character)} onChange={v => setCharacter(Number(v))} options={boot.characters.map(c => ({ value: String(c.id), label: c.name }))}/> : <Button variant="outline" onClick={() => navigate('connections')}><Link2 size={15}/> Connect EVE</Button>}<Button size="icon" variant="outline" aria-label="Refresh ESI data" disabled={refreshing || !boot} onClick={sync}><RefreshCw size={16} className={refreshing ? 'animate-spin' : ''}/></Button></div></div>{err ? <div className="panel server-error"><Orbit size={38}/><h2>Kairo’s local core is unavailable.</h2><p>{err}</p><p className="muted">Start Kairo on your computer, then reload this page.</p><Button onClick={() => window.location.reload()}>Retry connection</Button></div> : boot ? <Kairo.Provider value={{ boot, data, names, character, setCharacter, page, navigate, reload, refresh, opsec, sessions, time: Date.now() }}>{active?.needsReauth && <div className="inline-error mb-5">EVE access needs to be renewed. <button onClick={() => navigate('connections')}>Reconnect {active.name}</button></div>}<div className="page-transition" key={page}>{content}</div></Kairo.Provider> : <div className="loading-layout"><div className="stats-grid">{[0, 1, 2, 3].map(x => <Skeleton key={x} className="h-40"/>)}</div><Skeleton className="h-80"/></div>}<footer className="workspace-footer"><span>KAIRO / CAPSULEER OPERATIONS</span><span>Local memory. Modular growth.</span></footer></div></SidebarInset><Toaster theme="dark"/><CommandDialog open={search} onOpenChange={setSearch} title="Jump to a module" description="Search your Kairo workspace"><CommandInput placeholder="Search modules…"/><CommandList><CommandEmpty>No module found.</CommandEmpty>{[...workspaceGroups, ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <CommandGroup key={group} heading={group === 'UNIVERSE' ? 'Universe' : group.charAt(0)+group.slice(1).toLowerCase()}>{navRoutes.filter(r => r.group === group).map(r => { const Icon = icons[r.id] || Blocks; return <CommandItem key={r.id} value={r.name} keywords={r.keywords || []} onSelect={() => navigate(r.id)}><Icon size={17}/><span>{r.name}</span></CommandItem>; })}</CommandGroup>)}</CommandList></CommandDialog></SidebarProvider>;
 }
 function ExtensionPage({ id, character }: {
     id: string;

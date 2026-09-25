@@ -1,5 +1,6 @@
 import { closeSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
+import { enrichWormholeSystem } from './universe-wormholes.mjs';
 
 export const LIGHT_YEAR_METRES = 9460000000000000;
 const TOPOLOGY_FILE = new URL('./data/universe.json.gz', import.meta.url);
@@ -53,10 +54,10 @@ export function getUniverseStatic() {
     }
     const regions = new Map(data.regions.map(r => [r.region_id, freeze(r)]));
     const constellations = new Map(data.constellations.map(r => [r.constellation_id, freeze(r)]));
-    const systems = data.systems.map(s => freeze({
+    const systems = data.systems.map(s => freeze(enrichWormholeSystem({
         ...s, region_name: regions.get(s.region_id)?.name,
         constellation_name: constellations.get(s.constellation_id)?.name,
-    }));
+    })));
     const bySystemId = new Map(systems.map(s => [s.system_id, s]));
     const neighbors = new Map(systems.map(s => [s.system_id, new Set()]));
     for (const gate of data.gates) {

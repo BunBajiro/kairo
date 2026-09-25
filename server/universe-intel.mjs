@@ -81,7 +81,26 @@ export function gateDistances(atlas, origins, limit = 20) {
     return distances;
 }
 
-export function parseSignatureClipboard(text) {
+// Probe-scanner vocabulary verified against Wanderer's EN/DE/FR/RU scanner types.
+// Localized site names remain untouched; only scanner categories are normalized.
+const SCANNER_KINDS = new Map([
+    ['Cosmic Signature', 'Cosmic Signature'], ['Kosmische Signatur', 'Cosmic Signature'],
+    ['Kosmische Signatur (typ)', 'Cosmic Signature'], ['Signature cosmique', 'Cosmic Signature'],
+    ['Signature cosmique (type)', 'Cosmic Signature'], ['Скрытый сигнал', 'Cosmic Signature'],
+    ['Cosmic Anomaly', 'Cosmic Anomaly'], ['Kosmische Anomalie', 'Cosmic Anomaly'],
+    ['Anomalie cosmique', 'Cosmic Anomaly'], ['Космическая аномалия', 'Cosmic Anomaly'],
+].map(([label, kind]) => [label.toLocaleLowerCase(), kind]));
+const SCANNER_TYPES = new Map([
+    ['Wormhole', 'Wurmloch', 'Trou de ver', 'Червоточина'],
+    ['Gas Site', 'Gasgebiet', 'Site de collecte de gaz', 'Газовый район'],
+    ['Relic Site', 'Reliktgebiet', 'Site de reliques', 'Археологический район'],
+    ['Data Site', 'Datengebiet', 'Site de données', 'Информационный район'],
+    ['Ore Site', 'Mineraliengebiet', 'Site de minerai', 'Астероидный район'],
+    ['Combat Site', 'Kampfgebiet', 'Site de combat', 'Боевой район'],
+    ['', 'Cosmic Signature', 'Kosmische Signatur (gruppe)', 'Signature cosmique (groupe)', 'Скрытый сигнал'],
+].flatMap(([type, ...labels]) => [type, ...labels].map(label => [label.toLocaleLowerCase(), type])));
+
+export function parseSignatureClipboard(text, { includeAnomalies = false } = {}) {
     const rows = [], seen = new Set(), diagnostics = []; let ignored = 0;
     const lines = String(text || '').split(/\r?\n/);
     if (lines.length > 1000 && lines.slice(1000).some(line => line.trim())) diagnostics.push({ line: 1001, reason: 'Only the first 1,000 lines can be imported.', severity: 'error' });
@@ -91,13 +110,14 @@ export function parseSignatureClipboard(text) {
         if (fields.length !== 6 || !/^[A-Z0-9]{3}-\d{3}$/i.test(fields[0])) {
             ignored++; diagnostics.push({ line: index + 1, reason: fields.length !== 6 ? 'Expected six tab-separated scanner columns.' : 'Invalid signature ID.', severity: 'error' }); continue;
         }
-        if (!/^(?:Cosmic Signature|Kosmische Signatur|Signature cosmique)$/i.test(fields[1])) {
-            ignored++; diagnostics.push({ line: index + 1, reason: 'This row is not a supported cosmic signature.',
-                severity: /^(?:Cosmic Anomaly|Kosmische Anomalie|Anomalie cosmique)$/i.test(fields[1]) ? 'warning' : 'error' }); continue;
+        const kind = SCANNER_KINDS.get(fields[1].toLocaleLowerCase());
+        if (!kind || kind === 'Cosmic Anomaly' && !includeAnomalies) {
+            ignored++; diagnostics.push({ line: index + 1, reason: kind === 'Cosmic Anomaly' ? 'Anomaly skipped; enable anomalies to include this row.' : 'Unrecognized scanner category. Supported languages: English, German, French and Russian.',
+                severity: kind === 'Cosmic Anomaly' ? 'warning' : 'error' }); continue;
         }
         const signature_id = fields[0].toUpperCase();
         if (seen.has(signature_id)) continue;
-        seen.add(signature_id); rows.push({ signature_id, group: fields[1], type: fields[2], name: fields[3] });
+        seen.add(signature_id); rows.push({ signature_id, kind, group: kind, type: SCANNER_TYPES.get(fields[2].toLocaleLowerCase()) ?? fields[2], name: fields[3] });
     }
     return { rows, ignored, diagnostics };
 }

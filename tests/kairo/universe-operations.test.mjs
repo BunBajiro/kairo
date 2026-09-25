@@ -326,3 +326,121 @@ test('infrastructure import rolls back all rows on a storage failure and emits n
     ] }), /Synthetic write failure/);
     assert.equal(service.state(42).upgrades.length, 1); assert.equal(service.state(42).upgrades[0].name, 'Original'); assert.equal(changes, 0);
 });
+
+test('scanner normalizes every Wanderer language and includes anomalies only on explicit request', async t => {
+    const { service } = await fixture(t);
+    const text = [
+        'AAA-001\tCosmic Signature\tWormhole\tEnglish name\t100%\t1 AU',
+        'BBB-002\tKosmische Signatur (typ)\tWurmloch\tGerman name\t100%\t1 AU',
+        'CCC-003\tSignature cosmique (type)\tTrou de ver\tFrench name\t100%\t1 AU',
+        'DDD-004\tСкрытый сигнал\tЧервоточина\tРусское имя\t100%\t1 AU',
+        'EEE-005\tКосмическая аномалия\tБоевой район\tБоевой район\t100%\t1 AU',
+    ].join('\n');
+    const partial = parseSignatureClipboard(text);
+    assert.equal(partial.rows.length, 4); assert.equal(partial.ignored, 1);
+    assert.ok(partial.rows.every(row => row.type === 'Wormhole' && row.kind === 'Cosmic Signature'));
+    const all = parseSignatureClipboard(text, { includeAnomalies: true });
+    assert.equal(all.rows.length, 5); assert.equal(all.ignored, 0);
+    assert.equal(all.rows[3].name, 'Русское имя');
+    assert.equal(all.rows[4].kind, 'Cosmic Anomaly'); assert.equal(all.rows[4].type, 'Combat Site');
+    service.importSignatures(42, { system_id: 30000001, text, include_anomalies: true });
+    const result = service.importSignatures(42, { system_id: 30000001, text: text.split('\n')[0], complete_scan: true });
+    assert.equal(result.missing, 3);
+    assert.equal(service.state(42).signatures.find(row => row.signature_id === 'EEE-005').missing, false, 'Signature-only complete scans cannot mark omitted anomalies missing');
+    const final = service.importSignatures(42, { system_id: 30000001, text: text.split('\n')[0], complete_scan: true, include_anomalies: true });
+    assert.equal(final.missing, 4);
+});
+
+test('signature deletion restore is pilot and revision scoped, preserves observations, and expires', async t => {
+    const { service, setTime } = await fixture(t);
+    const original = service.saveSignature(42, { system_id: 30000001, signature_id: 'ABC-123', type: 'Wormhole', wh_type: 'P060', destination_system_id: 31000001, name: 'Scout report', notes: 'Original note' });
+    setTime(AT + 10000);
+    const deletion = service.removeSignature(42, original.id);
+    assert.equal(deletion.removed, true);
+    assert.equal(service.state(42).signatures.length, 0);
+    assert.equal(service.state(42).deleted_signatures.length, 1);
+    assert.equal(service.state(43).deleted_signatures.length, 0);
+    const input = { id: original.id, revision: deletion.deleted.revision };
+    assert.throws(() => service.restoreSignature(43, input), /no longer available/);
+    assert.throws(() => service.restoreSignature(42, { ...input, revision: 'old-token' }), /no longer available/);
+    setTime(AT + 20000);
+    const restored = service.restoreSignature(42, input);
+    assert.equal(restored.id, original.id); assert.equal(restored.first_seen_at, original.first_seen_at);
+    assert.equal(restored.last_seen_at, original.last_seen_at); assert.equal(restored.bookmark_index, original.bookmark_index);
+    assert.equal(restored.wh_type, 'P060'); assert.equal(restored.destination_system_id, 31000001);
+    assert.equal(restored.notes, 'Original note'); assert.equal(restored.restored_at, new Date(AT + 20000).toISOString());
+    assert.equal(service.state(42).deleted_signatures.length, 0);
+    assert.throws(() => service.restoreSignature(42, input), /no longer available/);
+    const next = service.removeSignature(42, original.id);
+    assert.notEqual(next.deleted.revision, input.revision);
+    assert.throws(() => service.restoreSignature(42, input), /no longer available/);
+    setTime(AT + 20000 + 86400000);
+    assert.equal(service.state(42).deleted_signatures.length, 0);
+    assert.throws(() => service.restoreSignature(42, { id: original.id, revision: next.deleted.revision }), /no longer available/);
+});
+
+test('signature restore never overwrites a newer matching scan and trash is capped at 100', async t => {
+    const { service, setTime } = await fixture(t);
+    const old = service.saveSignature(42, { system_id: 30000001, signature_id: 'ABC-123', name: 'Old observation' });
+    const deleted = service.removeSignature(42, old.id).deleted;
+    const current = service.saveSignature(42, { system_id: 30000001, signature_id: 'ABC-123', name: 'New observation' });
+    assert.notEqual(current.id, old.id);
+    assert.throws(() => service.restoreSignature(42, { id: old.id, revision: deleted.revision }), /newer signature/);
+    assert.equal(service.state(42).signatures[0].name, 'New observation');
+    for (let index = 0; index < 105; index++) {
+        setTime(AT + index + 1);
+        const value = service.saveSignature(42, { system_id: 30000002, signature_id: 'ZZZ-' + String(index).padStart(3, '0') });
+        service.removeSignature(42, value.id);
+    }
+    assert.equal(service.state(42).deleted_signatures.length, 100);
+    assert.throws(() => service.restoreSignature(42, { id: old.id, revision: deleted.revision }), /no longer available/);
+});
+
+test('signature metadata survives scanner refresh and bookmark configuration validates tokens', async t => {
+    const { service, setTime } = await fixture(t);
+    const first = service.saveSignature(42, { system_id: 30000001, signature_id: 'ABC-123', type: 'Wormhole', wh_type: 'C247', destination_system_id: 31000001 });
+    const second = service.saveSignature(42, { system_id: 30000001, signature_id: 'DEF-456', type: 'Wormhole' });
+    assert.equal(first.bookmark_index, 1); assert.equal(second.bookmark_index, 2);
+    setTime(AT + 1000);
+    service.importSignatures(42, { system_id: 30000001, text: 'ABC-123\tCosmic Signature\tWormhole\tUnstable Wormhole\t100%\t1 AU' });
+    const current = service.state(42).signatures.find(row => row.id === first.id);
+    assert.equal(current.wh_type, 'C247'); assert.equal(current.destination_system_id, 31000001);
+    assert.equal(current.bookmark_index, 1); assert.equal(current.first_seen_at, first.first_seen_at);
+    assert.throws(() => service.saveSignature(42, { ...first, wh_type: 'NOPE' }), /known wormhole type/);
+    assert.throws(() => service.saveSignature(42, { ...first, destination_system_id: first.system_id }), /different system/);
+    const cfg = { ...service.config(42), bookmark_template: '{sig_letters} {index_letter} {destination} {type}' };
+    assert.equal(service.saveConfig(42, cfg).bookmark_template, cfg.bookmark_template);
+    assert.notEqual(service.config(43).bookmark_template, cfg.bookmark_template);
+    assert.throws(() => service.saveConfig(42, { ...cfg, bookmark_template: '{invented_token}' }), /Unknown bookmark token/);
+    assert.throws(() => service.saveConfig(42, { ...cfg, bookmark_template: 'hello\nworld' }), /printable/);
+});
+
+test('signature delete transaction rolls back the tombstone if removing the live observation fails', async t => {
+    const { service, store } = await fixture(t);
+    const first = service.saveSignature(42, { system_id: 30000001, signature_id: 'ABC-123' });
+    store.db.exec("CREATE TRIGGER signature_delete_failure BEFORE DELETE ON universe_operations_records WHEN OLD.kind='signature' BEGIN SELECT RAISE(ABORT,'test deletion failure'); END");
+    assert.throws(() => service.removeSignature(42, first.id), /test deletion failure/);
+    assert.equal(service.state(42).signatures[0].id, first.id);
+    assert.equal(service.state(42).deleted_signatures.length, 0);
+});
+
+test('bookmark metadata and per-pilot conventions preserve zero indices, manual branches and type provenance', async t => {
+    const { service, setTime } = await fixture(t);
+    const config={...service.config(42),bookmark_start_at_zero:true,bookmark_return_symbol:'BACK',bookmark_custom_mapping:{mass_verge:'!'}};
+    service.saveConfig(42,config);
+    const first=service.saveSignature(42,{system_id:30000001,signature_id:'ABC-123',type:'Wormhole',wh_type:'P060',bookmark_chain:'121',bookmark_chain_letters:'A21',temporary_name:'Entrance',is_return_hole:true});
+    assert.equal(first.bookmark_index,0);
+    setTime(AT+1000);
+    const edited=service.saveSignature(42,{id:first.id,notes:'Metadata only'});
+    assert.equal(edited.bookmark_index,0); assert.equal(edited.last_seen_at,first.last_seen_at);
+    assert.equal(edited.bookmark_chain,'121');assert.equal(edited.bookmark_chain_letters,'A21');assert.equal(edited.temporary_name,'Entrance');assert.equal(edited.is_return_hole,true);
+    const next=service.saveSignature(42,{system_id:30000001,signature_id:'DEF-456'});assert.equal(next.bookmark_index,1);
+    const override=service.saveSignature(42,{id:first.id,bookmark_index:27});assert.equal(override.bookmark_index,27);
+    assert.equal(service.state(42).signatures.find(row=>row.id===first.id).type_reference.type,'P060');
+    assert.equal(service.state(42).signatures.find(row=>row.id===first.id).type_reference.totalMassKg,500000000);
+    assert.equal(service.config(43).bookmark_start_at_zero,false);assert.deepEqual(service.config(43).bookmark_custom_mapping,{});
+    assert.throws(()=>service.saveSignature(42,{id:first.id,bookmark_index:-1}),/bookmark index/);
+    assert.throws(()=>service.saveSignature(42,{id:first.id,bookmark_chain:'x'.repeat(65)}),/short printable/);
+    assert.throws(()=>service.saveSignature(42,{id:first.id,is_return_hole:'yes'}),/return hole/);
+    assert.throws(()=>service.saveConfig(42,{...config,bookmark_custom_mapping:{mass_verge:'x'.repeat(33)}}),/32 printable/);
+});

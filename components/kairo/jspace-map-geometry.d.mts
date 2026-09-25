@@ -1,0 +1,18 @@
+export const CHAIN_NODE_WIDTH: number;
+export const CHAIN_NODE_HEIGHT: number;
+export const CHAIN_MAX_ZOOM: number;
+export type ChainCamera = {x:number;y:number;zoom:number};
+export type ChainPoint = {x:number;y:number};
+export type ChainViewport = {width:number;height:number};
+export type ChainGeometryNode = {system_id:number;x:number;y:number};
+export function chainBounds(nodes: ChainGeometryNode[]): {minX:number;minY:number;maxX:number;maxY:number};
+export function fitChainCamera(nodes: ChainGeometryNode[], viewport:ChainViewport, padding?:number, maxZoom?:number):ChainCamera;
+export function chainZoomLimits(nodes:ChainGeometryNode[], viewport:ChainViewport):{min:number;max:number};
+export function zoomChainAt(camera:ChainCamera,point:ChainPoint,factor:number,limits?:{min:number;max:number}):ChainCamera;
+export function boundChainCamera(camera:ChainCamera,nodes:ChainGeometryNode[],viewport:ChainViewport):ChainCamera;
+export type ChainEdgeGeometry={start:ChainPoint;end:ChainPoint;label:ChainPoint;controls:[ChainPoint,ChainPoint];path:string};
+export function chainEdgeGeometry(from:ChainPoint,to:ChainPoint,parallelOffset?:number):ChainEdgeGeometry;
+export function placeChainEdgeLabels<T extends ChainEdgeGeometry & {labelWidth?:number;labelHeight?:number}>(edges:T[],nodes:ChainGeometryNode[]):Array<T & {labelBox:{left:number;right:number;top:number;bottom:number};leader:{from:ChainPoint;to:ChainPoint}|null}>;
+export function traceChainPath(nodes:ChainGeometryNode[],connections:Array<{id:string;from_system_id:number;to_system_id:number;expired?:boolean;life_status?:string;enabled?:boolean;expires_at?:string|null}>,fromId:number,toId:number,now?:number):{nodes:number[];edges:string[]};
+export function placeChainPopover(point:ChainPoint,size:ChainViewport,viewport:ChainViewport,padding?:number):ChainPoint;
+export function visibleChainLabels(nodes:ChainGeometryNode[],camera:ChainCamera,viewport:ChainViewport,priorityIds?:(number|null|undefined)[]):Set<number>;

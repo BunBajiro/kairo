@@ -2,6 +2,16 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.7 — J-Space chain workspace
+
+- Splits Universe into separate K-Space and J-Space navigation entries, with independent remembered workspace state and legacy link compatibility.
+- Replaces the live J-Space discovery canvas with readable system cards and editable named chains: class, statics, effects, saved layouts, locks, aliases, status and contextual actions.
+- Bundles attributed offline references for 2,604 wormhole systems and 100 hole types, including documented corrections against CCP data. Expected static types never become live routing edges.
+- Adds connection conditions and linked scanner signatures, manual and reviewed sampled passage ledgers, observations/timers, field notes, map activity, undo, duplication and Kairo/Wanderer version-1 import/export, with explicit format limits.
+- Extends scanner support to four languages and optional anomalies, configurable bookmark text and safe recently-deleted signature restoration.
+- Adds graph-based nearest exits and services using confirmation, expiry, vessel and routing restrictions. Preserves recorded ages and separates public reports from private confirmation.
+- Retains the existing K-Space political atlas, EVE-Scout integration, Sessions and replay. No local data reset is required. See the Wanderer coverage matrix for the local operational scope and remaining remote-collaboration differences.
+
 ## 0.8.0-rc.6 — Connections on the map
 
 - Brings Thera and Turnur reports onto their actual map entrances with distinct symbols and source-aware network focus.

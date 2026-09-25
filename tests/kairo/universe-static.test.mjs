@@ -182,6 +182,8 @@ test('truncated detail archives and mismatched offsets fail instead of returning
     try {
         mkdirSync(join(dir, 'data'));
         copyFileSync(sourceFile, join(dir, 'truncated.mjs'));
+        copyFileSync(new URL('../../server/universe-wormholes.mjs', import.meta.url), join(dir, 'universe-wormholes.mjs'));
+        copyFileSync(new URL('../../server/data/universe-wormholes.json', import.meta.url), join(dir, 'data/universe-wormholes.json'));
         copyFileSync(topologyFile, join(dir, 'data/universe.json.gz'));
         writeFileSync(join(dir, 'data/universe-details-000.bin'), Buffer.from([0]));
         const truncated = await import(pathToFileURL(join(dir, 'truncated.mjs')).href);

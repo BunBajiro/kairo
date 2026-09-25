@@ -81,14 +81,7 @@ export type Bootstrap = {
     vault: string;
     localOnly: boolean;
 };
-export const routes = [
-    { id: 'overview', name: 'Command centre', group: 'OPERATIONS' }, { id: 'character', name: 'Pilot & training', group: 'OPERATIONS' },
-    { id: 'wallet', name: 'Wallet & trade', group: 'OPERATIONS' }, { id: 'assets', name: 'Hangar & assets', group: 'OPERATIONS' },
-    { id: 'markets', name: 'Markets', group: 'OPERATIONS' }, { id: 'industry', name: 'Industry & planets', group: 'OPERATIONS' }, { id: 'sessions', name: 'Sessions', group: 'OPERATIONS' },
-    { id: 'universe', name: 'Universe', group: 'INTELLIGENCE' }, { id: 'goals', name: 'Goals & notes', group: 'INTELLIGENCE' },
-    { id: 'studio', name: 'Stream studio', group: 'BROADCAST' }, { id: 'opsec', name: 'OPSEC control', group: 'BROADCAST' },
-    { id: 'modules', name: 'Settings', group: 'SYSTEM' }, { id: 'connections', name: 'Connections', group: 'SYSTEM' },
-];
+export {workspaceRoutes as routes} from './workspace-navigation.mjs';
 export const isk = (n: any, compact = false) => typeof n === 'number' ? new Intl.NumberFormat('en-GB', { maximumFractionDigits: compact ? 2 : 0, notation: compact ? 'compact' : 'standard' }).format(n) : '—';
 export const stamp = (v?: string) => v ? new Date(v).toLocaleString('en-GB', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }) + ' EVE' : 'Awaiting data';
 export const remaining = (v?: string | number) => { if (!v)

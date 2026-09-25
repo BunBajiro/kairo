@@ -66,7 +66,7 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.6', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.7', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
         if (path === '/state' && read) {
             const id = checkedChar(url);
             return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
@@ -260,6 +260,18 @@ export async function startKairo(options = {}) {
             return res.end(compressed?universeAtlasResponse.gzip:universeAtlasResponse.raw);
         }
         if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));
+        if (path === '/universe/jspace' && read) return json(res, 200, core.universe.jspace.state(checkedChar(url)));
+        if (path === '/universe/jspace/destinations' && req.method === 'POST') return json(res, 200, core.universe.jspaceDestinations(checkedChar(url), await body(req)));
+        if (path === '/universe/jspace/maps' && req.method === 'POST') return json(res, 200, core.universe.jspace.create(checkedChar(url), await body(req)));
+        if (path === '/universe/jspace/import/preview' && req.method === 'POST') return json(res, 200, core.universe.jspace.previewImport(checkedChar(url), await body(req, 4_100_000)));
+        if (path === '/universe/jspace/import' && req.method === 'POST') return json(res, 200, core.universe.jspace.importMap(checkedChar(url), await body(req, 4_100_000)));
+        if (/^\/universe\/jspace\/maps\/[^/]+\/commands$/.test(path) && req.method === 'POST') return json(res, 200, core.universe.jspace.command(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));
+        if (/^\/universe\/jspace\/maps\/[^/]+\/duplicate$/.test(path) && req.method === 'POST') return json(res, 200, core.universe.jspace.duplicate(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));
+        if (/^\/universe\/jspace\/maps\/[^/]+\/export$/.test(path) && read) {
+            const result = core.universe.jspace.exportMap(checkedChar(url), decodeURIComponent(path.split('/')[4]), url.searchParams.get('format') || 'kairo');
+            res.setHeader('Content-Disposition', 'attachment; filename="kairo-jspace-map.json"'); return json(res, 200, result);
+        }
+        if (/^\/universe\/jspace\/maps\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res, 200, core.universe.jspace.remove(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));
         if (path === '/universe/operations' && read) return json(res,200,core.universe.operations.state(checkedChar(url)));
         if (path === '/universe/operations/config' && read) return json(res,200,core.universe.operations.config(checkedChar(url)));
         if (path === '/universe/operations/config' && req.method === 'PUT') return json(res,200,core.universe.operations.saveConfig(checkedChar(url),await body(req)));
@@ -269,6 +281,7 @@ export async function startKairo(options = {}) {
         if (/^\/universe\/alerts\/[^/]+\/ack$/.test(path) && req.method === 'POST') return json(res,200,core.universe.operations.acknowledge(checkedChar(url),decodeURIComponent(path.split('/')[3])));
         if (path === '/universe/signatures/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewSignatures(checkedChar(url),await body(req)));
         if (path === '/universe/signatures/import' && req.method === 'POST') return json(res,200,core.universe.operations.importSignatures(checkedChar(url),await body(req)));
+        if (path === '/universe/signatures/restore' && req.method === 'POST') return json(res,200,core.universe.operations.restoreSignature(checkedChar(url),await body(req)));
         if (path === '/universe/upgrades/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewUpgrades(checkedChar(url),await body(req,1_000_000)));
         if (path === '/universe/upgrades/import' && req.method === 'POST') return json(res,200,core.universe.operations.importUpgrades(checkedChar(url),await body(req,1_000_000)));
         if (path === '/universe/upgrades/export' && read) {

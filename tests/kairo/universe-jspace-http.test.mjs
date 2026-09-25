@@ -1,0 +1,42 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { startKairo } from '../../server/index.mjs';
+
+test('J-Space HTTP commands preserve session, pilot, revision, import and OBS boundaries', async t => {
+    const dir = await mkdtemp(join(tmpdir(), 'kairo-jspace-http-')), calls = [];
+    const app = await startKairo({ port: 19566, streamPort: 19567, dataDir: dir, noSync: true, fetcher: async url => { calls.push(String(url)); throw new Error('No network expected for private map commands.'); } });
+    t.after(async () => { await app.close(); await rm(dir, { recursive: true, force: true }); });
+    const page = await fetch(app.origin), cookie = page.headers.get('set-cookie').split(';')[0];
+    const boot = await fetch(app.origin + '/api/bootstrap', { headers: { Cookie: cookie } }).then(response => response.json());
+    const headers = { Cookie: cookie, Origin: app.origin, 'Content-Type': 'application/json', 'X-Kairo-CSRF': boot.csrf };
+    for (const id of [42, 43]) app.store.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)').run(id, 'Private scout ' + id, '[]', '{}');
+    const request = async (path, method = 'GET', body, expected = 200) => {
+        const response = await fetch(app.origin + '/api/universe/jspace' + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) }), result = await response.json();
+        assert.equal(response.status, expected, JSON.stringify(result)); return result;
+    };
+    assert.equal((await fetch(app.origin + '/api/universe/jspace?character=42')).status, 401);
+    const denied = await fetch(app.origin + '/api/universe/jspace/maps?character=42', { method: 'POST', headers: { Cookie: cookie, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Denied private chain' }) });
+    assert.equal(denied.status, 403); assert.deepEqual((await request('?character=42')).maps, []);
+    let map = await request('/maps?character=42', 'POST', { name: 'Private observer chain' });
+    await request('/maps', 'POST', { name: 'Guest cannot write' }, 400);
+    await request('/maps/' + map.id + '/commands?character=43', 'POST', { revision: map.revision, op: 'map.update', name: 'Cross-pilot edit' }, 400);
+    const atlas = app.core.universe.static(), system = atlas.systems.find(row => row.name === 'J225111'); assert.ok(system);
+    const initialRevision = map.revision;
+    map = await request('/maps/' + map.id + '/commands?character=42', 'POST', { revision: map.revision, op: 'node.save', node: { system_id: system.system_id, alias: 'Home never broadcast' } });
+    await request('/maps/' + map.id + '/commands?character=42', 'POST', { revision: initialRevision, op: 'node.remove', system_id: system.system_id }, 409);
+    assert.equal((await request('?character=42')).maps[0].nodes.length, 1);
+    const exported = await request('/maps/' + map.id + '/export?character=42'); assert.equal(exported.format, 'kairo-jspace'); assert.equal(exported.map.nodes[0].alias, 'Home never broadcast');
+    assert.equal((await request('/import/preview?character=43', 'POST', { document: JSON.stringify(exported) })).valid, true);
+    assert.deepEqual((await request('?character=43')).maps, []);
+    const imported = await request('/import?character=43', 'POST', { document: exported }); assert.notEqual(imported.id, map.id);
+    const copied = await request('/maps/' + map.id + '/duplicate?character=42', 'POST', { revision: map.revision }); assert.notEqual(copied.id, map.id);
+    await request('/maps/' + map.id + '?character=42', 'DELETE', { revision: initialRevision }, 409);
+    for (const path of ['', '/maps', '/maps/' + map.id + '/export', '/destinations']) assert.equal((await fetch(app.streamOrigin + '/api/universe/jspace' + path)).status, 404);
+    assert.equal((await fetch(app.streamOrigin + '/api/universe/jspace/maps', { method: 'POST', headers, body: '{}' })).status, 405);
+    const stream = await fetch(app.streamOrigin + '/state').then(response => response.text());
+    for (const value of ['Private observer chain', 'Home never broadcast', 'jspace_map', 'Private scout']) assert.equal(stream.includes(value), false);
+    assert.deepEqual(calls, []);
+});

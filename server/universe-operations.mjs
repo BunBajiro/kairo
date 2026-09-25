@@ -1,13 +1,15 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { isAbsolute } from 'node:path';
 import { createIntelParser, gateDistances, parseSignatureClipboard } from './universe-intel.mjs';
+import { getWormholeType } from './universe-wormholes.mjs';
+import { BOOKMARK_DEFAULT, validateBookmarkTemplate, validateBookmarkMapping } from '../components/kairo/universe-signature-bookmarks.mjs';
 import { createUniverseLogTail } from './universe-log-tail.mjs';
 import { parseUpgradeImport, exportUpgrades as formatUpgradeExport } from './universe-upgrades.mjs';
 
 const FLEET_SCOPE = 'esi-fleets.read_fleet.v1';
 const DEFAULTS = { version: 1, enabled: true, logs_enabled: false, log_directory: '', intel_channels: ['Int'], ignore_keywords: ['status'],
     alert_keywords: [], clear_keywords: ['clear', 'clr'], alerts_enabled: true, alert_combat: true, alert_decloak: true, alert_decloak_observatory: true, alert_decloak_gate: true, alert_unknown: false,
-    danger_jumps: 5, watched_system_ids: [], intel_expiry_minutes: 15, alert_cooldown_seconds: 60, fleet_enabled: false, location_source: 'esi' };
+    danger_jumps: 5, watched_system_ids: [], intel_expiry_minutes: 15, alert_cooldown_seconds: 60, fleet_enabled: false, location_source: 'esi', bookmark_template: BOOKMARK_DEFAULT, bookmark_custom_mapping: {}, bookmark_start_at_zero: false, bookmark_return_symbol: '↩' };
 const arr = value => Array.isArray(value) ? value : [];
 const clean = (value, max = 240) => String(value ?? '').trim().slice(0, max);
 const validId = value => Number.isSafeInteger(value) && value > 0 && value < 2147483647;
@@ -66,6 +68,12 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         if (!id && (out.logs_enabled || out.fleet_enabled)) throw new Error('Connect a pilot before enabling logs or fleet access.');
         if (input.location_source !== undefined && !['esi', 'logs', 'prefer_esi'].includes(input.location_source)) throw new Error('Choose ESI, logs, or ESI with a log fallback for location.');
         out.location_source = input.location_source || 'esi';
+        out.bookmark_template = validateBookmarkTemplate(input.bookmark_template ?? DEFAULTS.bookmark_template);
+        out.bookmark_custom_mapping = validateBookmarkMapping(input.bookmark_custom_mapping ?? {});
+        if (input.bookmark_start_at_zero !== undefined && typeof input.bookmark_start_at_zero !== 'boolean') throw new Error('Choose whether bookmark indices start at zero.');
+        out.bookmark_start_at_zero = input.bookmark_start_at_zero === true;
+        if (input.bookmark_return_symbol != null && (typeof input.bookmark_return_symbol !== 'string' || input.bookmark_return_symbol.length > 32 || /[\u0000-\u001f\u007f]/.test(input.bookmark_return_symbol))) throw new Error('Use at most 32 printable characters for the return-hole symbol.');
+        out.bookmark_return_symbol = input.bookmark_return_symbol ?? '↩';
         for (const key of ['intel_channels', 'ignore_keywords', 'alert_keywords', 'clear_keywords']) {
             if (input[key] !== undefined && (!Array.isArray(input[key]) || input[key].length > 32)) throw new Error('Use at most 32 ' + key.replaceAll('_', ' ') + '.');
             out[key] = input[key] === undefined ? out[key] : [...new Set(input[key].map(item => clean(item, 100)).filter(Boolean))];
@@ -200,16 +208,37 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         if (!alert) throw new Error('Alert not found for this pilot.');
         alert.acknowledged_at ||= iso(); put(id, 'alert', alert, 250); changed(id); return alert;
     }
-    function saveSignature(characterId, input) {
+    function saveSignature(characterId, input, options = {}) {
         const id = pilotId(characterId), previous = input.id ? row(id, 'signature', input.id) : null;
         if (input.id && !previous) throw new Error('Signature not found for this pilot.');
         const system = systemId(input.system_id ?? previous?.system_id), signature = clean(input.signature_id ?? previous?.signature_id, 16).toUpperCase();
         if (!/^[A-Z0-9]{3}-\d{3}$/.test(signature)) throw new Error('Use an EVE signature ID such as ABC-123.');
         const collision = rows(id, 'signature').find(item => item.system_id === system && item.signature_id === signature);
         if (previous && collision && previous.id !== collision.id) throw new Error('This system already has that signature ID.');
-        const old = previous || collision, value = { id: old?.id || randomUUID(), system_id: system, signature_id: signature,
-            group: clean(input.group || old?.group || 'Cosmic Signature'), type: clean(input.type ?? old?.type), name: clean(input.name ?? old?.name),
-            first_seen_at: old?.first_seen_at || iso(), last_seen_at: iso(), missing: input.missing === undefined ? false : input.missing === true,
+        const old = previous || collision;
+        const signatureType = clean(input.type ?? old?.type);
+        const holeType = clean(input.wh_type ?? old?.wh_type, 4).toUpperCase();
+        if (holeType && !getWormholeType(holeType)) throw new Error('Choose a known wormhole type such as C247 or K162.');
+        const rawDestination = input.destination_system_id !== undefined ? input.destination_system_id : old?.destination_system_id;
+        const destination = rawDestination === null || rawDestination === undefined || rawDestination === '' ? null : systemId(rawDestination);
+        if (destination === system) throw new Error('A signature destination must be a different system.');
+        const kind = input.kind ?? old?.kind ?? 'Cosmic Signature';
+        if (!['Cosmic Signature', 'Cosmic Anomaly'].includes(kind)) throw new Error('Choose a cosmic signature or anomaly.');
+        const usedIndices = [...rows(id, 'signature'), ...rows(id, 'signature_deleted').map(item => item.signature)].filter(item => item?.system_id === system).map(item => item.bookmark_index || 0);
+        const firstIndex = config(id).bookmark_start_at_zero ? 0 : 1;
+        const bookmarkIndex = input.bookmark_index ?? old?.bookmark_index ?? Math.max(firstIndex - 1, ...usedIndices) + 1;
+        if (!Number.isSafeInteger(bookmarkIndex) || bookmarkIndex < 0 || bookmarkIndex > 1000000) throw new Error('Use a bookmark index from 0 to 1,000,000.');
+        for (const key of ['bookmark_chain', 'bookmark_chain_letters', 'temporary_name']) if (input[key] != null && (typeof input[key] !== 'string' || input[key].length > (key === 'temporary_name' ? 80 : 64) || /[\u0000-\u001f\u007f]/.test(input[key]))) throw new Error('Use a short printable bookmark label.');
+        if (input.is_return_hole !== undefined && typeof input.is_return_hole !== 'boolean') throw new Error('Choose whether this is a return hole.');
+        const observed = !old || options.observed === true || options.observed !== false && input.missing === false;
+        const missing = options.observed === false && old ? old.missing : input.missing !== undefined ? input.missing === true : observed ? false : old?.missing ?? false;
+        const value = { id: old?.id || randomUUID(), system_id: system, signature_id: signature, kind,
+            wh_type: signatureType === 'Wormhole' ? holeType || null : null,
+            destination_system_id: signatureType === 'Wormhole' ? destination : null, bookmark_index: bookmarkIndex,
+            bookmark_chain: clean(input.bookmark_chain ?? old?.bookmark_chain, 64), bookmark_chain_letters: clean(input.bookmark_chain_letters ?? old?.bookmark_chain_letters, 64),
+            temporary_name: clean(input.temporary_name ?? old?.temporary_name, 80), is_return_hole: input.is_return_hole ?? old?.is_return_hole ?? false,
+            group: clean(input.group || old?.group || 'Cosmic Signature'), type: signatureType, name: clean(input.name ?? old?.name),
+            first_seen_at: old?.first_seen_at || iso(), last_seen_at: observed ? iso() : old.last_seen_at, missing,
             notes: clean(input.notes ?? old?.notes, 2000), updated_at: iso() };
         if (!old && rows(id, 'signature').length >= 1000) throw new Error('Remove old signatures before adding more than 1,000.');
         put(id, 'signature', value); changed(id); return value;
@@ -217,7 +246,7 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     function previewSignatures(characterId, input) {
         const id = pilotId(characterId), system = systemId(input.system_id);
         if (typeof input.text !== 'string' || input.text.length > 200000) throw new Error('Paste at most 200,000 characters of probe scanner results.');
-        const { rows: parsed, ignored, diagnostics } = parseSignatureClipboard(input.text), before = rows(id, 'signature').filter(item => item.system_id === system);
+        const { rows: parsed, ignored, diagnostics } = parseSignatureClipboard(input.text, { includeAnomalies: input.include_anomalies === true }), before = rows(id, 'signature').filter(item => item.system_id === system);
         const known = new Map(before.map(item => [item.signature_id, item])), incoming = new Set(parsed.map(item => item.signature_id)), added = [], updated = [];
         for (const item of parsed) {
             const old = known.get(item.signature_id), resolved = { ...item, type: item.type || old?.type || '', name: item.name || old?.name || '' };
@@ -227,17 +256,46 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         if (rows(id, 'signature').length + added.length > 1000) diagnostics.push({ line: null, reason: 'Remove old signatures before adding more than 1,000.', severity: 'error' });
         const valid = parsed.length > 0 && !diagnostics.some(item => item.severity === 'error');
         return { system_id: system, valid, ignored, diagnostics, added, updated, signature_ids: [...incoming], complete_scan: input.complete_scan === true,
-            missing: input.complete_scan === true && valid ? before.filter(item => !incoming.has(item.signature_id)).map(({ id, signature_id, name, type }) => ({ id, signature_id, name, type })) : [] };
+            missing: input.complete_scan === true && valid ? before.filter(item => !incoming.has(item.signature_id) && (input.include_anomalies === true || item.kind !== 'Cosmic Anomaly')).map(({ id, signature_id, name, type }) => ({ id, signature_id, name, type })) : [] };
     }
     function importSignatures(characterId, input) {
         const id = pilotId(characterId), preview = previewSignatures(id, input), system = preview.system_id;
         if (rows(id, 'signature').length + preview.added.length > 1000) throw new Error('Remove old signatures before adding more than 1,000.');
-        for (const item of [...preview.added, ...preview.updated]) saveSignature(id, { system_id: system, ...item });
+        for (const item of [...preview.added, ...preview.updated]) saveSignature(id, { system_id: system, ...item }, { observed: true });
         for (const item of preview.missing) {
             const old = row(id, 'signature', item.id); put(id, 'signature', { ...old, missing: true, updated_at: iso() });
         }
         changed(id); return { added: preview.added.length, updated: preview.updated.length, missing: preview.missing.length, ignored: preview.ignored,
             diagnostics: preview.diagnostics, complete_scan_applied: preview.valid && preview.complete_scan, signatures: rows(id, 'signature').filter(item => item.system_id === system) };
+    }
+    function removeSignature(characterId, key) {
+        const id = pilotId(characterId), signature = row(id, 'signature', key);
+        if (!signature) return { removed: false };
+        const deleted = { id: signature.id, revision: randomUUID(), signature,
+            deleted_at: iso(), expires_at: new Date(now() + 86400000).toISOString(), updated_at: iso() };
+        store.db.exec('SAVEPOINT signature_delete');
+        try {
+            put(id, 'signature_deleted', deleted, 100);
+            delRow.run(id, 'signature', signature.id);
+            store.db.exec('RELEASE signature_delete');
+        } catch (error) { store.db.exec('ROLLBACK TO signature_delete; RELEASE signature_delete'); throw error; }
+        changed(id); return { removed: true, deleted };
+    }
+    function restoreSignature(characterId, input) {
+        const id = pilotId(characterId), deleted = row(id, 'signature_deleted', input?.id);
+        if (!deleted || deleted.revision !== input?.revision || Date.parse(deleted.expires_at) <= now()) throw new Error('This signature deletion is no longer available to undo.');
+        const signature = deleted.signature;
+        if (row(id, 'signature', signature.id) || rows(id, 'signature').some(item => item.system_id === signature.system_id && item.signature_id === signature.signature_id)) throw new Error('A newer signature uses this ID. Kept the current observation; restoration was not applied.');
+        if (rows(id, 'signature').length >= 1000) throw new Error('Remove old signatures before restoring more than 1,000.');
+        systemId(signature.system_id);
+        const restored = { ...signature, restored_at: iso(), updated_at: iso() };
+        store.db.exec('SAVEPOINT signature_restore');
+        try {
+            put(id, 'signature', restored);
+            delRow.run(id, 'signature_deleted', signature.id);
+            store.db.exec('RELEASE signature_restore');
+        } catch (error) { store.db.exec('ROLLBACK TO signature_restore; RELEASE signature_restore'); throw error; }
+        changed(id); return restored;
     }
     function saveUpgrade(characterId, input) {
         const id = pilotId(characterId), old = input.id ? row(id, 'upgrade', input.id) : null;
@@ -355,7 +413,7 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         return { version: 1, character_id: id, generated_at: iso(), config: { ...cfg, enabled }, location: location(id),
             intel: rows(id, 'intel').map(({ identity, ...item }) => ({ ...item, expired: Date.parse(item.expires_at) <= now() })),
             alerts: rows(id, 'alert'), pilots: enabled ? pilots(id) : [], fleet: fleetState(id, cfg),
-            signatures: rows(id, 'signature'), upgrades: rows(id, 'upgrade'), logs: tail.status(id) };
+            signatures: rows(id, 'signature').map(row => ({ ...row, type_reference: row.wh_type ? getWormholeType(row.wh_type) : null })), deleted_signatures: rows(id, 'signature_deleted').filter(item => Date.parse(item.expires_at) > now()), upgrades: rows(id, 'upgrade'), logs: tail.status(id) };
     }
     async function runTick() {
         if (closed || ticking) return;
@@ -391,6 +449,6 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         await Promise.allSettled([tickFlight, ...fleetFlights.values()].filter(Boolean));
     }
     return { state, location: id => location(pilotId(id)), config, saveConfig, ingestIntel, removeIntel, acknowledge, previewSignatures, importSignatures, saveSignature,
-        removeSignature: (id, key) => removeRecord(id, 'signature', key), saveUpgrade, previewUpgrades, importUpgrades, exportUpgrades, removeUpgrade: (id, key) => removeRecord(id, 'upgrade', key),
+        removeSignature, restoreSignature, saveUpgrade, previewUpgrades, importUpgrades, exportUpgrades, removeUpgrade: (id, key) => removeRecord(id, 'upgrade', key),
         defaultLogDirectories: () => tail.defaultDirectories(), refreshFleet, refresh: async id => { await refreshFleet(id); return state(id); }, tick, close };
 }
