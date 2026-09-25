@@ -1,4 +1,5 @@
 "use client";
+import {systemLocationLabel} from './universe-presentation.mjs';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {ArrowDown,ArrowUp,Check,Copy,CornerDownRight,Focus,Navigation,Plus,RefreshCw,Route,Send,Shield,Target,Trash2,X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -12,7 +13,7 @@ import './universe-navigation-ui.css';
 
 const message=(error:unknown)=>error instanceof Error?error.message:'The request could not be completed.';
 const uniqueId=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();
-function SystemInput({label,value,onChange,atlas}:{label:string;value:string;onChange:(v:string)=>void;atlas:UniverseAtlas}){const id='navigation-'+label.toLowerCase().replace(/[^a-z0-9]/g,'-');return <label className="field-label">{label}<Input aria-label={label} list={id} value={value} onChange={event=>onChange(event.target.value)} placeholder="System name" autoComplete="off"/><datalist id={id}>{atlas.systems.filter(system=>value&&system.name.toLowerCase().includes(value.toLowerCase())).slice(0,16).map(system=><option key={system.system_id} value={system.name}>{system.region_name}</option>)}</datalist></label>;}
+function SystemInput({label,value,onChange,atlas}:{label:string;value:string;onChange:(v:string)=>void;atlas:UniverseAtlas}){const id='navigation-'+label.toLowerCase().replace(/[^a-z0-9]/g,'-');return <label className="field-label">{label}<Input aria-label={label} list={id} value={value} onChange={event=>onChange(event.target.value)} placeholder="System name" autoComplete="off"/><datalist id={id}>{atlas.systems.filter(system=>value&&system.name.toLowerCase().includes(value.toLowerCase())).slice(0,16).map(system=><option key={system.system_id} value={system.name}>{systemLocationLabel(system)}</option>)}</datalist></label>;}
 function CheckOption({label,checked,onChange}:{label:string;checked:boolean;onChange:(v:boolean)=>void}){return <label className="universe-check"><input type="checkbox" checked={checked} onChange={event=>onChange(event.target.checked)}/>{label}</label>;}
 export function UniverseNavigation({atlas,intel,draft,onDraftChange,onResult,onSelectSystem,onReload,tool,onToolChange,tactical,onTacticalChange}:{atlas:UniverseAtlas;intel:UniverseIntel|null;draft:{from:string;to:string};onDraftChange:(value:{from:string;to:string})=>void;onResult:(result:any)=>void;onSelectSystem:(id:number)=>void;onReload:()=>Promise<unknown>;tool:'gate'|'jump'|'range';onToolChange:(tool:'gate'|'jump'|'range')=>void;tactical:UniverseTacticalOptions;onTacticalChange:(patch:Partial<UniverseTacticalOptions>)=>void}){
  const {character,boot}=useKairo(),state=intel?.navigation;

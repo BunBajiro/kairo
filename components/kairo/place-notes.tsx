@@ -8,11 +8,11 @@ import {toast} from 'sonner';
 import {Panel,Choice} from './ui';
 import {useKairo} from './context';
 import {api,stamp} from './model';
-export function PlaceNotes(props:{system:any;constellation?:any;region?:any}){
+export function PlaceNotes(props:{system:any;constellation?:any;region?:any;allowedScopes?:('system'|'constellation'|'region')[]}){
  const {boot}=useKairo();const [dirty,setDirty]=useState(false),[place,setPlace]=useState(props);
  const [kind,setKind]=useState('system'),[body,setBody]=useState(''),[tags,setTags]=useState(''),[status,setStatus]=useState('none'),[updated,setUpdated]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState('');
  useEffect(()=>{if(!dirty)setPlace(props);},[props.system?.system_id,props.constellation?.name,props.region?.name,dirty]);
- const {system,constellation,region}=place,entities=[{kind:'system',id:system?.system_id,name:system?.name},{kind:'constellation',id:system?.constellation_id,name:constellation?.name},{kind:'region',id:constellation?.region_id,name:region?.name}].filter(e=>e.id),entity=entities.find(e=>e.kind===kind)||entities[0],url=entity?'/places/'+entity.kind+'/'+entity.id:'';
+ const {system,constellation,region}=place,entities=[{kind:'system',id:system?.system_id,name:system?.name},{kind:'constellation',id:system?.constellation_id,name:constellation?.name},{kind:'region',id:constellation?.region_id,name:region?.name}].filter(e=>e.id&&(!props.allowedScopes||props.allowedScopes.includes(e.kind as 'system'|'constellation'|'region'))),entity=entities.find(e=>e.kind===kind)||entities[0],url=entity?'/places/'+entity.kind+'/'+entity.id:'';
  function fill(n:any){setBody(n.body);setTags(n.tags.join(', '));setStatus(n.status);setUpdated(n.updated||'');setDirty(false);}
  useEffect(()=>{let live=true;setLoading(true);setError('');if(url)api(url).then(n=>{if(live){fill(n);setLoading(false);}}).catch(e=>{if(live){setError(e.message);setLoading(false);}});return()=>{live=false;};},[url]);
  async function save(){if(!entity)return;setBusy(true);try{const n=await api(url,'PUT',{name:entity.name,body,tags:tags.split(','),status},boot.csrf);setUpdated(n.updated);setDirty(false);toast.success('Place details saved.');}catch(e:any){toast.error(e.message);}finally{setBusy(false);}}

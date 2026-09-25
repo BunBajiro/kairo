@@ -1,5 +1,17 @@
 # Validation — 25 September 2026
 
+## Universe 0.8.0-rc.6
+
+This candidate puts public hub connections and contextual actions directly on the map. Thera rings and Turnur diamonds mark actual reported entrances, network framing respects the current space/region scope, and hover, click/tap and keyboard access share the same symbol model. J-Space presents systems, wormhole classes and connection context rather than internal EVE regions.
+
+- All 391 Node tests pass. Seven new portal-model tests cover hub identity, direction/signatures, duplicate reports, malformed endpoints, source freshness, incomplete scans and expiry. Four presentation tests cover J-Space search/context and known-system discovery without losing K-Space region navigation.
+- TypeScript and production compilation pass. The Sessions browser suite retains its nine-card, 135-event and 390–1600px layout checks.
+- The compiled Universe suite passes 44 acceptance/layout groups. New checks exercise actual entrance-symbol mouseover without camera/dock changes, click/tap pinned details, keyboard selection and Escape focus, native type-limit expansion within the canvas, a 390px card, route-draft actions without saved-itinerary changes, stale warnings, timed expiry and pinned pilot-card dismissal when its layer is hidden.
+- J-Space checks confirm that system search and discovery context remain while region navigation, grouping and internal geography disappear; K-Space region controls remain available. Existing political paint, routing, exact SMT import, operational notebook, detached-window updates and historical replay checks continue to pass.
+- Desktop portal overview, hover, pinned details, mobile context, J-Space and legacy workflow captures were inspected. Rounded label outlines, viewport-edge fading, reduced motion and hidden-page camera pause remain intact. A three-second idle sample recorded zero canvas redraws and about 9 ms of renderer tasks. These are focused local checks, not a full accessibility audit or hardware guarantees.
+
+Map context never calculates a route or sends EVE waypoints implicitly. Destination actions prepare the navigation form; public shortcuts remain opt-in. Source observations, nominal wormhole limits and remaining mass retain their existing distinctions. Tests use synthetic observations, not private live EVE commands. Existing history and settings require no reset. This remains a draft feature-branch candidate awaiting the user's review.
+
 ## Universe 0.8.0-rc.5
 
 This candidate integrates SMT-reviewed navigation, local intelligence and exploration workflows into the existing Universe workspace, with EVE-Scout Thera/Turnur details and public operational signals. The [feature matrix](SMT-INTEGRATION.md) distinguishes workflow parity, Kairo improvements and browser adaptations; the [source audit](SMT-SOURCE-AUDIT.md) records provider contracts and attribution.

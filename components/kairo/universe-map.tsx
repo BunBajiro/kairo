@@ -1,7 +1,7 @@
 "use client";
 
 import {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react';
-import {ChevronDown, Crosshair, Focus, HelpCircle, LocateFixed, Map as MapIcon, Maximize2, Minus, Plus, Route, Type, X} from 'lucide-react';
+import {ChevronDown, Crosshair, Focus, HelpCircle, LocateFixed, Map as MapIcon, Maximize2, Minus, Plus, Route, Shapes, Type, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import type {UniverseAtlas, UniverseBackground, UniverseIndicator, UniverseIntel, UniverseOverlay, UniverseStandingFilter, UniverseSystem, UniverseTerritoryFocus} from './universe-types';
 import type {ReplayMapFrame} from './session-replay';
@@ -15,11 +15,17 @@ import {buildGateGraph, routeWatchDistances, tacticalLayout, operationalSystems,
 import type {UniverseRouteEdge, UniverseTacticalOptions, OperationalSystem, FeedMarker} from './universe-map-operations.mjs';
 import {mapLabelBounds, labelEdgeOpacity, labelCollisionBounds} from './universe-map-labels.mjs';
 import type {LabelRect} from './universe-map-labels.mjs';
+import {buildPortalNetworks} from './universe-map-portals.mjs';
+import type {PortalEndpoint} from './universe-map-portals.mjs';
+import {UniverseMapContext, positionMapContext} from './universe-map-context';
+import type {MapSymbolContext} from './universe-map-context';
+import {systemLocationLabel} from './universe-presentation.mjs';
 
 type Point = {system: UniverseSystem; x: number; y: number};
 type View = {x: number; y: number; scale: number};
 type TerritoryHit = {key: string; name: string; colour: string; source: string; count: number};
 type MarkerCluster = {key:string;x:number;y:number;systemIds:number[]};
+type SymbolHit = {symbol: MapSymbolContext; x: number; y: number; radius: number; priority: number; segment?: {x: number; y: number}; systemIds?: number[]};
 type Drag = {id: number; x: number; y: number; originX: number; originY: number; moved: boolean; vx: number; vy: number; lastAt: number};
 type MapProps = {
   atlas: UniverseAtlas; intel: UniverseIntel | null;
@@ -30,7 +36,7 @@ type MapProps = {
   space?: 'known' | 'wormhole'; standingFilter?: UniverseStandingFilter;
   replay?: ReplayMapFrame | null; onReplayManualPan?: () => void;
   territoryFocus?: UniverseTerritoryFocus | null; onInspectTerritory?: (key: string) => void; onClearTerritoryFocus?: () => void; onFrameTerritory?: () => void;
-  routeEdges?: UniverseRouteEdge[]; tactical?: UniverseTacticalOptions; surfaceKey?: number;
+  routeEdges?: UniverseRouteEdge[]; tactical?: UniverseTacticalOptions; surfaceKey?: number; onRouteToSystem?: (id: number) => void; onOpenNotebook?: (id: number) => void;
 };
 const PALETTE = {
   excellent: '#78acf8', good: '#76d4e9', neutral: '#9ba4b0', bad: '#edb071', terrible: '#eb7984', unknown: '#606d7d',
@@ -108,7 +114,7 @@ function activeLink(link: NonNullable<UniverseIntel['links']>[number]) {
 }
 
 /** A stable discovery graph: only observed/pinned systems and explicit links enter J-space. */
-function discoveryPoints(atlas: UniverseAtlas, intel: UniverseIntel | null, selectedSystemId: number | null = null, replay?: ReplayMapFrame | null): Point[] {
+function discoveryPoints(atlas: UniverseAtlas, intel: UniverseIntel | null, selectedSystemId: number | null = null, replay?: ReplayMapFrame | null, publicVisible = true): Point[] {
   const systems = new Map(atlas.systems.map(system => [system.system_id, system])), discovered = new Set<number>();
   if (replay) {
     for (const id of replay.discoveredSystemIds) if (systems.get(id)?.space === 'wormhole') discovered.add(id);
@@ -120,7 +126,7 @@ function discoveryPoints(atlas: UniverseAtlas, intel: UniverseIntel | null, sele
   if (intel?.location?.system_id && systems.get(intel.location.system_id)?.space === 'wormhole') discovered.add(intel.location.system_id);
   if (intel?.operations?.location?.system_id && systems.get(intel.operations.location.system_id)?.space === 'wormhole') discovered.add(intel.operations.location.system_id);
   }
-  const edges = replay ? replay.allTravel.filter(link => systems.get(link.from_system_id)?.space === 'wormhole' || systems.get(link.to_system_id)?.space === 'wormhole') : [...(intel?.links || []).filter(link => link.kind === 'wormhole' && activeLink(link)), ...usablePublicConnections(intel?.feeds)];
+  const edges = replay ? replay.allTravel.filter(link => systems.get(link.from_system_id)?.space === 'wormhole' || systems.get(link.to_system_id)?.space === 'wormhole') : [...(intel?.links || []).filter(link => link.kind === 'wormhole' && activeLink(link)), ...(publicVisible ? usablePublicConnections(intel?.feeds) : [])];
   if (!replay) {
   for (const link of intel?.links || []) if (link.kind === 'wormhole') {
     // Remember the discovered J-space endpoints after their connection expires.
@@ -172,7 +178,7 @@ function createTerritories(geometry: Geometry, styles: TerritoryStyle[]) {
   return {geometry, styles, groups: [...groups.values()], labels: territoryComponents(geometry, styles)};
 }
 
-export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, showConnections = true, showSpecialLinks = true, visitedSystemIds = EMPTY, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory}: MapProps) {
+export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, showConnections = true, showSpecialLinks = true, visitedSystemIds = EMPTY, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory, onRouteToSystem, onOpenNotebook}: MapProps) {
   const helpId = useId(), wrapper = useRef<HTMLDivElement>(null), canvas = useRef<HTMLCanvasElement>(null);
   const view = useRef<View>({x: 0, y: 0, scale: 1}), dimensions = useRef({width: 900, height: 570, dpr: 1});
   const pendingFrame = useRef<number | null>(null), paintRef = useRef<() => void>(() => {});
@@ -189,6 +195,13 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const [intelPulse, setIntelPulse] = useState<{id:string;systemIds:number[]}|null>(null), seenReports = useRef<Set<string> | null>(null), seenReportCharacter = useRef<number|null>(null);
   const intelPulseNodes = useRef(new Map<number, HTMLDivElement>());
   const markerClusters = useRef<MarkerCluster[]>([]), [hoveredCluster, setHoveredCluster] = useState<MarkerCluster|null>(null);
+
+  const symbolHits = useRef<SymbolHit[]>([]), symbolContextElement = useRef<HTMLDivElement>(null);
+  const [hoveredSymbol, setHoveredSymbol] = useState<SymbolHit | null>(null), hoveredSymbolRef = useRef<SymbolHit | null>(null);
+  const [pinnedSymbol, setPinnedSymbol] = useState<SymbolHit | null>(null), pinnedSymbolRef = useRef<SymbolHit | null>(null);
+  const [symbolNavigator, setSymbolNavigator] = useState(false), [symbolQuery, setSymbolQuery] = useState(''), [symbolChoices, setSymbolChoices] = useState<SymbolHit[]>([]);
+  const [portalNetwork, setPortalNetwork] = useState<'thera' | 'turnur' | null>(null);
+  const symbolLauncher = useRef<HTMLButtonElement>(null);
 
   const territory = useRef<ReturnType<typeof createTerritories> | null>(null);
   const geometryCache = useRef<{key: string; geometry: Geometry} | null>(null);
@@ -218,7 +231,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const projection = replay || space !== 'known' ? 'physical' : tactical.projection || 'physical';
   const tacticalCenter = tactical.centerSystemId || selectedSystemId || currentLocationId || knownPoints[0]?.system.system_id;
   const localLayout = useMemo(() => projection === 'physical' ? null : tacticalLayout(atlas.systems, graph, {mode: projection, centerSystemId: tacticalCenter, hops: tactical.hops || 3, regionId: focusedRegionId}), [atlas.systems, graph, projection, tacticalCenter, tactical.hops, focusedRegionId]);
-  const allPoints = useMemo(() => space === 'known' ? localLayout?.points || knownPoints : discoveryPoints(atlas, intel, selectedSystemId, replay), [knownPoints, localLayout, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' && !replay ? clock : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null]);
+  const allPoints = useMemo(() => space === 'known' ? localLayout?.points || knownPoints : discoveryPoints(atlas, intel, selectedSystemId, replay, tactical.feedsVisible !== false), [knownPoints, localLayout, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' && !replay ? clock : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null, tactical.feedsVisible]);
   const geometryPoints = useMemo(() => allPoints.map(point => ({id: point.system.system_id, x: point.x, y: point.y})), [allPoints]);
   const geometryKey = useMemo(() => geometryRevision(geometryPoints), [geometryPoints]);
   const points = allPoints;
@@ -249,12 +262,14 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const watchDistances = useMemo(() => routeWatchDistances(graph, routeSystemIds.length ? routeSystemIds : tacticalCenter ? [tacticalCenter] : [], 6), [graph, routeSystemIds, tacticalCenter]);
   const operational = useMemo(() => replay ? new Map<number, OperationalSystem>() : operationalSystems(intel?.operations, clock), [intel?.operations, clock, Boolean(replay)]);
   const feeds = useMemo(() => replay || tactical.feedsVisible === false ? new Map<number, FeedMarker[]>() : feedSystems(intel?.feeds, clock), [intel?.feeds, clock, tactical.feedsVisible, Boolean(replay)]);
-  const mapFeeds = useMemo(() => new Map<number, FeedMarker[]>([...feeds].map(([id, markers]): [number, FeedMarker[]] => [id, tactical.pointsVisible ? markers : markers.filter(marker => ['storm', 'campaign', 'combat', 'wormhole'].includes(marker.kind))]).filter(([, markers]) => markers.length)), [feeds, tactical.pointsVisible]);
+  const mapFeeds = useMemo(() => new Map<number, FeedMarker[]>([...feeds].map(([id, markers]): [number, FeedMarker[]] => [id, tactical.pointsVisible ? markers.filter(marker => marker.kind !== 'wormhole') : markers.filter(marker => ['storm', 'campaign', 'combat'].includes(marker.kind))]).filter(([, markers]) => markers.length)), [feeds, tactical.pointsVisible]);
   const watchedThreats = useMemo(() => [...operational.values()].filter(value => watchDistances.has(value.systemId) && value.reports.some((report: any) => ['hostile', 'combat', 'decloak'].includes(report.kind))), [operational, watchDistances]);
   const verifiedReachability = matchingReachability(tactical.rangeOrigins, tactical.reachability) && !replay;
   const reach = useMemo(() => new Set(verifiedReachability ? tactical.reachability?.unionSystemIds || [] : []), [tactical.reachability, verifiedReachability]);
   const overlap = useMemo(() => new Set(verifiedReachability ? tactical.reachability?.overlapSystemIds || [] : []), [tactical.reachability, verifiedReachability]);
   const overlapHull = useMemo(() => projectedHull([...overlap].map(id => byId.get(id)).filter((point): point is Point => !!point)), [overlap, byId]);
+  const portalNetworks = useMemo(() => replay || tactical.feedsVisible === false ? [] : buildPortalNetworks(intel?.feeds, atlas.systems, clock), [intel?.feeds, atlas.systems, clock, Boolean(replay), tactical.feedsVisible]);
+  const portalEndpoints = useMemo(() => portalNetworks.flatMap(network => network.endpoints).filter(endpoint => byId.has(endpoint.systemId) && (!focusedRegionId || byId.get(endpoint.systemId)?.system.region_id === focusedRegionId)), [portalNetworks, byId, focusedRegionId]);
   const publicLinks = useMemo(() => replay ? [] : usablePublicConnections(intel?.feeds, clock), [intel?.feeds, clock, Boolean(replay)]);
   const feedIndicatorValues = useMemo(() => new Map<number, number>((indicator === 'npc_delta' ? intel?.feeds?.npc_deltas || [] : indicator === 'adm' ? intel?.feeds?.development || [] : []).filter((row: any) => Number.isFinite(indicator === 'adm' ? row.adm : row.delta)).map((row: any) => [row.system_id, indicator === 'adm' ? row.adm : row.delta])), [indicator, intel?.feeds]);
   const indicatorMax = useMemo(() => Math.max(1, ...points.map(point => Math.abs(feedIndicatorValues.get(point.system.system_id) ?? indicatorValue(overlays.get(point.system.system_id), indicator)))), [points, overlays, indicator, feedIndicatorValues]);
@@ -274,7 +289,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       for (const value of [observed + 30_000, observed + 150_000, Date.parse(record.expires_at || '')]) if (Number.isFinite(value) && value > now) deadlines.push(value);
     }
     // Age labels advance at most once a minute while relevant data is visible; there is no idle RAF.
-    if (reports.some((record: any) => observationAge(record, now) !== 'expired') || pilots.length) deadlines.push(Math.floor(now / 60_000) * 60_000 + 60_000);
+    if (reports.some((record: any) => observationAge(record, now) !== 'expired') || pilots.length || (intel?.feeds?.connections || []).length) deadlines.push(Math.floor(now / 60_000) * 60_000 + 60_000);
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (deadlines.length && !owner.hidden) timer = setTimeout(() => setClock(Date.now()), Math.max(50, Math.min(...deadlines) - now + 10));
     const visible = () => {if (!owner.hidden) setClock(Date.now());}; owner.addEventListener('visibilitychange', visible);
@@ -291,8 +306,15 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     setIntelPulse({id: recent.map((report: any) => report.id).join(':'), systemIds});
   }, [intel?.operations?.intel, Boolean(replay), tactical.operationsVisible, surface]);
   useEffect(() => {if (!intelPulse) return; const timer = setTimeout(() => setIntelPulse(null), 1600); return () => clearTimeout(timer);}, [intelPulse?.id]);
-  const clearHover = useCallback(() => {hoveredRef.current = null; hoveredTerritoryRef.current = null; setHovered(null); setHoveredTerritory(null); setHoveredCluster(null); redraw();}, [redraw]);
+  const clearHover = useCallback(() => {hoveredRef.current = null; hoveredTerritoryRef.current = null; setHovered(null); setHoveredTerritory(null); setHoveredCluster(null); hoveredSymbolRef.current = null; setHoveredSymbol(null); redraw();}, [redraw]);
   useEffect(() => {clearHover();}, [territoryKey, clearHover]);
+  const dismissContext = useCallback((restoreFocus = false) => {pinnedSymbolRef.current = null; setPinnedSymbol(null); hoveredSymbolRef.current = null; setHoveredSymbol(null); setSymbolNavigator(false); if (restoreFocus) canvas.current?.focus({preventScroll: true}); redraw();}, [redraw]);
+  useEffect(() => {dismissContext(); setPortalNetwork(null);}, [Boolean(replay), tactical.feedsVisible, space, intel?.character_id, dismissContext]);
+  useEffect(() => {
+    const owner = surface();
+    const dismiss = (event: KeyboardEvent) => {const target=event.target as HTMLElement|null; if(event.defaultPrevented || !target || !wrapper.current?.parentElement?.contains(target) || (target.closest('[role="dialog"]') && !target.closest('.universe-map-context'))) return; if (event.key === 'Escape' && (pinnedSymbolRef.current || hoveredSymbolRef.current || symbolNavigator || portalNetwork)) {event.preventDefault(); event.stopPropagation(); dismissContext(true); setPortalNetwork(null);}};
+    owner.addEventListener('keydown', dismiss); return () => owner.removeEventListener('keydown', dismiss);
+  }, [surface, surfaceKey, dismissContext, symbolNavigator, portalNetwork]);
   const updateZoom = useCallback(() => setZoom(view.current.scale / baseScale.current), []);
   const cancelCameraMotion = useCallback(() => {
     if (cameraFrame.current !== null) cancelFrame(cameraFrame.current);
@@ -350,6 +372,62 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     manualMovement(); animateCamera(fitCamera(pointBounds(candidates), dimensions.current), 720);
   }, [byId, focusedRegionId, manualMovement, animateCamera]);
 
+
+  const portalSymbol = useCallback((endpoint: PortalEndpoint): MapSymbolContext => ({id: `portal:${endpoint.id}`, kind: 'portal', title: `${endpoint.source === 'thera' ? 'Thera' : 'Turnur'} connection`, description: endpoint.source === 'thera' ? 'This ring marks a reported entrance to Thera. All Thera entrances share the same wormhole hub.' : 'A reported wormhole entrance to Turnur. Its diamond distinguishes the network from Thera’s ring.', systemId: endpoint.systemId, systemName: endpoint.system.name, source: 'EVE-Scout', updatedAt: endpoint.observedAt, portalNetwork: endpoint.source, portal: endpoint}), []);
+  // Resolve cards against live sources rather than retaining a snapshot from an old canvas frame.
+  const resolveSymbol = useCallback((hit: SymbolHit): SymbolHit | null => {
+    const value = hit.symbol, id = value.systemId || 0, point = byId.get(id), op = operational.get(id);
+    const replace = (symbol: MapSymbolContext) => ({...hit, symbol});
+    if (value.portal) {const endpoint = portalEndpoints.find(endpoint => `portal:${endpoint.id}` === value.id); return endpoint ? replace(portalSymbol(endpoint)) : null;}
+    if (value.kind === 'portal-cluster') {
+      const endpoints = portalEndpoints.filter(endpoint => value.entrances?.some(entrance => entrance.id === `portal:${endpoint.id}`));
+      return endpoints.length ? replace({...value,title:`${endpoints.length} ${value.portalNetwork === 'thera' ? 'Thera' : 'Turnur'} connections`,entrances:endpoints.map(endpoint => ({id:`portal:${endpoint.id}`,systemId:endpoint.systemId,systemName:endpoint.system.name,label:endpoint.usable?'Fresh report':endpoint.state.replaceAll('_',' ')}))}) : null;
+    }
+    if (value.kind === 'cluster') {
+      const ids = (hit.systemIds || []).filter(systemId => {const current=operational.get(systemId);return byId.has(systemId) && (tactical.operationsVisible!==false&&!!current?.reports.length || tactical.pilotsVisible!==false&&!!current&&(current.pilots.length+current.fleet.length)>0 || !!mapFeeds.get(systemId)?.length);});
+      return ids.length ? {...replace({...value,title:`${ids.length} systems with context`,entrances:ids.map(systemId=>({id:`system:${systemId}`,systemId,systemName:byId.get(systemId)!.system.name}))}),systemIds:ids} : null;
+    }
+    if (!point) return null;
+    if (value.kind === 'intel') {
+      if (tactical.operationsVisible===false || !op?.reports.length) return null;
+      const report=op.reports.find((row:any)=>['hostile','combat','decloak'].includes(row.kind)) || op.reports[0];
+      return replace({...value,title:report.kind==='clear'?'Reported clear':['hostile','combat','decloak'].includes(report.kind)?'Reported threat':'Intel observation',description:`${report.raw || report.text || report.kind}. Reports are observations, not verified safety.`,source:report.source || 'Private intel',updatedAt:report.observed_at || report.created_at,details:[{label:'Freshness',value:report.age || 'unknown'},{label:'Reports',value:String(op.reports.length)}]});
+    }
+    if (value.kind === 'pilots') {
+      const occupants = op ? [...op.pilots,...op.fleet] : [];
+      if (tactical.pilotsVisible===false || !occupants.length) return null;
+      return replace({...value,title:`${occupants.length} pilot${occupants.length===1?'':'s'} reported here`,description:`${occupants.map((pilot:any)=>pilot.name || `Pilot ${pilot.character_id}`).join(' · ')}. Observed positions can change between updates.`,updatedAt:occupants[0]?.updated_at,details:[{label:'Last known / offline',value:String(occupants.filter((pilot:any)=>pilot.stale || pilot.online===false).length)}]});
+    }
+    if (value.kind === 'notebook') return tactical.operationsVisible!==false && op && op.signatures.length+op.upgrades.length ? replace({...value,description:`${op.signatures.length} recorded signatures · ${op.upgrades.length} configured upgrades. Open the notebook to review or update these records.`}) : null;
+    if (value.kind === 'connection') return showSpecialLinks && !replay && (intel?.links || []).some(link=>`link:${link.id || link.from_system_id+':'+link.to_system_id}`===value.id && activeLink(link)) ? hit : null;
+    if (value.kind === 'route') return !replay && routeEdges.some(edge=>`route:${edge.from_system_id}:${edge.to_system_id}:${edge.kind}`===value.id) ? hit : null;
+    if (value.kind === 'cyno') return cynoPins.has(id) ? hit : null;
+    if (value.kind === 'range') {
+      if(replay)return null;
+      if(value.id.startsWith('range-origin:')){const origin=tactical.rangeOrigins?.find(origin=>origin.systemId===id);return origin?replace({...value,description:`${origin.rangeLy} light years of configured range. Dashed circles show projected outer limits, not guaranteed 3D reach.`}):null;}
+      return verifiedReachability&&reach.has(id)?replace({...value,title:overlap.has(id)?'In every origin’s jump range':'In verified jump range'}):null;
+    }
+    if (value.kind === 'indicator') {const current=feedIndicatorValues.get(id) ?? indicatorValue(overlays.get(id),indicator);return indicator!=='none'&&current ? replace({...value,title:INDICATOR_LABELS[indicator],description:`${current.toLocaleString()}${indicator==='npc_delta'?' change between rolling one-hour snapshots, not new kills.':''}`}) : null;}
+    if (value.kind === 'faction-warfare') {const fw=overlays.get(id)?.faction_warfare;return indicator==='fw' && fw?.operational_state_source==='derived_gate_adjacency' && fw.operational_state!=='unknown' ? replace({...value,title:FW_STATES[fw.operational_state] || 'Faction warfare state'}) : null;}
+    if (value.id.startsWith('system-context:')) return pins.has(id)||visits.has(id)||selectedSystemId===id ? replace({...value,title:pins.has(id)?'Pinned system':selectedSystemId===id?'Selected system':'Visited system',description:pins.has(id)?'Your saved map pin marks this system.':selectedSystemId===id?'This is the system selected in the inspector.':'This system appears in your recorded journey.'}) : null;
+    if (value.kind === 'location') return id===(replay?replay.systemId:currentLocationId) ? replace({...value,title:replay?'Replay location':locationReady?'Your observed location':'Last known location',source:replay?'Session replay':mapLocation?.source==='chat_log'?'Local EVE log':'EVE ESI',updatedAt:mapLocation?.updated_at}) : null;
+    if (['system','station'].includes(value.kind)) return hit;
+    const marker = mapFeeds.get(id)?.find(marker=>marker.kind===value.kind);
+    return marker ? replace({...value,title:marker.name,description:marker.detail,source:marker.source,updatedAt:marker.at,details:marker.stale?[{label:'Freshness',value:'Stale — retained for context'}]:undefined}) : null;
+  }, [portalEndpoints,portalSymbol,byId,operational,mapFeeds,tactical,showSpecialLinks,Boolean(replay),replay?.systemId,intel?.links,routeEdges,cynoPins,verifiedReachability,reach,overlap,feedIndicatorValues,overlays,indicator,pins,visits,selectedSystemId,currentLocationId,locationReady,mapLocation?.source,mapLocation?.updated_at]);
+  useEffect(() => {
+    const pinned=pinnedSymbolRef.current,hovered=hoveredSymbolRef.current;
+    if(pinned){const fresh=resolveSymbol(pinned);pinnedSymbolRef.current=fresh;setPinnedSymbol(fresh);}
+    if(hovered){const fresh=resolveSymbol(hovered);hoveredSymbolRef.current=fresh;setHoveredSymbol(fresh);}
+    setSymbolChoices(previous=>previous.map(resolveSymbol).filter((hit):hit is SymbolHit=>!!hit));
+  }, [resolveSymbol]);
+  const pinSymbol = useCallback((hit: SymbolHit) => {const fresh=resolveSymbol(hit);setSymbolNavigator(false);hoveredSymbolRef.current=null;setHoveredSymbol(null);pinnedSymbolRef.current=fresh;setPinnedSymbol(fresh);redraw();}, [redraw,resolveSymbol]);
+  const exploreNetwork = useCallback((source: 'thera' | 'turnur') => {
+    const network = portalNetworks.find(value => value.source === source); if (!network) return;
+    const selecting = portalNetwork !== source; setPortalNetwork(selecting ? source : null); dismissContext();
+    if (selecting) frameSystems(network.endpoints.map(endpoint => endpoint.systemId));
+  }, [portalNetworks, portalNetwork, dismissContext, frameSystems]);
+  const openSymbols = useCallback(() => {setSymbolChoices([...symbolHits.current].sort((a, b) => b.priority - a.priority || a.symbol.title.localeCompare(b.symbol.title))); setSymbolNavigator(value => !value); setSymbolQuery('');}, []);
 
   useEffect(() => {
     const element = wrapper.current; if (!element) return;
@@ -453,6 +531,11 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     const context = canvas.current?.getContext('2d'); if (!context) return;
     const {width, height, dpr} = dimensions.current, camera = view.current;
     const screen = (point: Point) => ({x: point.x * camera.scale + camera.x, y: point.y * camera.scale + camera.y});
+    const hits: SymbolHit[] = [];
+    const register = (symbol: MapSymbolContext, x: number, y: number, radius = 11, priority = 1, segment?: {x: number; y: number}, systemIds?: number[]) => {
+      if (segment ? Math.max(x, segment.x) < 0 || Math.min(x, segment.x) > width || Math.max(y, segment.y) < 0 || Math.min(y, segment.y) > height : x < -radius || y < -radius || x > width + radius || y > height + radius) return;
+      hits.push({symbol, x, y, radius, priority, segment, systemIds});
+    };
     context.setTransform(dpr, 0, 0, dpr, 0, 0); context.clearRect(0, 0, width, height); context.textAlign = 'left'; context.textBaseline = 'alphabetic';
     const paintLabel = (text: string, x: number, y: number, fontSize: number, colour: string, opacity = 1, bounds?: LabelRect) => {
       const alpha = labelEdgeOpacity(bounds || mapLabelBounds(x, y, context.measureText(text), fontSize), {width, height}) * opacity;
@@ -520,9 +603,11 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     if (showSpecialLinks && !replay) for (const link of intel?.links || []) {
       if (!activeLink(link) || (space === 'wormhole' && link.kind !== 'wormhole')) continue;
       const from = byId.get(link.from_system_id), to = byId.get(link.to_system_id); if (!from || !to) continue;
-      const a = screen(from), b = screen(to); context.strokeStyle = link.kind === 'wormhole' ? '#c1a0ebad' : '#80dddead'; context.setLineDash(link.kind === 'wormhole' ? [3, 5] : [7, 4]); context.lineWidth = 1.35; context.beginPath(); context.moveTo(a.x, a.y); context.lineTo(b.x, b.y); context.stroke();
+      const a = screen(from), b = screen(to);
+      register({id:`link:${link.id || link.from_system_id + ':' + link.to_system_id}`,kind:'connection',title:link.kind === 'wormhole' ? 'Private wormhole connection' : 'Ansiblex connection',description:`${from.system.name} → ${to.system.name}. ${link.kind === 'wormhole' ? 'A user-recorded temporary connection; confirm its condition before travel.' : 'A configured jump bridge; availability and access can change.'}`,source:'Your connection list',systemId:from.system.system_id,systemName:from.system.name,details:link.expires_at ? [{label:'Expires',value:link.expires_at}] : undefined},a.x,a.y,7,2,b);
+      context.strokeStyle = link.kind === 'wormhole' ? '#c1a0ebad' : '#80dddead'; context.setLineDash(link.kind === 'wormhole' ? [3, 5] : [7, 4]); context.lineWidth = 1.35; context.beginPath(); context.moveTo(a.x, a.y); context.lineTo(b.x, b.y); context.stroke();
     }
-    if (showSpecialLinks && tactical.feedsVisible !== false && !replay) for (const link of publicLinks) {
+    if (showSpecialLinks && tactical.feedsVisible !== false && !replay && (space === 'wormhole' || portalNetwork === 'turnur')) for (const link of publicLinks) {
       const from = byId.get(link.from_system_id), to = byId.get(link.to_system_id); if (!from || !to) continue;
       const a = screen(from), b = screen(to); context.strokeStyle = '#bca2de95'; context.lineWidth = 1.25; context.setLineDash([2, 5]); context.beginPath(); context.moveTo(a.x, a.y); context.lineTo(b.x, b.y); context.stroke();
     }
@@ -542,6 +627,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       for (const edge of routeEdges) {
         const from = byId.get(edge.from_system_id), to = byId.get(edge.to_system_id); if (!from || !to) continue;
         const a = screen(from), b = screen(to), kind = edge.kind;
+        register({id:`route:${edge.from_system_id}:${edge.to_system_id}:${kind}`,kind:'route',title:kind === 'jump' ? 'Jump-drive route leg' : kind === 'ansiblex' ? 'Ansiblex route leg' : kind === 'wormhole' ? 'Wormhole route leg' : 'Stargate route leg',description:`Planned travel: ${from.system.name} → ${to.system.name}. The arrow indicates direction.`,source:'Your route plan',systemId:to.system.system_id,systemName:to.system.name},a.x,a.y,7,3,b);
         context.strokeStyle = kind === 'jump' ? '#f1c282' : kind === 'ansiblex' ? '#78dce6' : kind === 'wormhole' ? '#c8a6f2' : '#a4f1d4';
         context.lineWidth = 2.1; context.setLineDash(kind === 'jump' ? [9, 5] : kind === 'ansiblex' ? [7, 3] : kind === 'wormhole' ? [2, 5] : []);
         context.beginPath(); context.moveTo(a.x, a.y); context.lineTo(b.x, b.y); context.stroke();
@@ -573,6 +659,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         else if (fw.operational_state === 'command_operations') context.rect(p.x - 7, p.y - 7, 14, 14);
         else {context.moveTo(p.x - 6, p.y + 7); context.lineTo(p.x, p.y + 11); context.lineTo(p.x + 6, p.y + 7);}
         context.stroke();
+        register({id:`fw:${point.system.system_id}`,kind:'faction-warfare',title:FW_STATES[fw.operational_state] || 'Faction warfare state',description:'Derived from fresh occupancy and neighbouring stargates. Diamonds mark frontlines, squares command operations, chevrons rearguards.',systemId:point.system.system_id,systemName:point.system.name,source:'EVE ESI · derived gate adjacency'},p.x,p.y,13,5);
         if (fw.operational_state !== 'frontline') continue;
         for (const neighborId of fw.frontline_neighbors || []) {
           const target = byId.get(Number(neighborId)), other = overlays.get(Number(neighborId))?.faction_warfare;
@@ -595,8 +682,8 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         overlapHull.forEach((point, i) => {const p = screen(point); if (i) context.lineTo(p.x, p.y); else context.moveTo(p.x, p.y);}); context.closePath(); context.stroke();
       }
       context.setLineDash([]);
-      for (const point of visible) if (reach.has(point.system.system_id)) {const p = screen(point); context.strokeStyle = overlap.has(point.system.system_id) ? '#f2d48c' : '#c9a9ef'; context.lineWidth = overlap.has(point.system.system_id) ? 1.8 : 1.1; context.strokeRect(p.x - 6, p.y - 6, 12, 12);}
-      for (const origin of tactical.rangeOrigins) {const point = byId.get(origin.systemId); if (!point) continue; const p = screen(point); context.strokeStyle = '#dfc6fc'; context.lineWidth = 2; context.beginPath(); context.moveTo(p.x - 11, p.y - 7); context.lineTo(p.x - 11, p.y + 7); context.moveTo(p.x + 11, p.y - 7); context.lineTo(p.x + 11, p.y + 7); context.stroke();}
+      for (const point of visible) if (reach.has(point.system.system_id)) {const p = screen(point); context.strokeStyle = overlap.has(point.system.system_id) ? '#f2d48c' : '#c9a9ef'; context.lineWidth = overlap.has(point.system.system_id) ? 1.8 : 1.1; context.strokeRect(p.x - 6, p.y - 6, 12, 12);register({id:`reach:${point.system.system_id}`,kind:'range',title:overlap.has(point.system.system_id)?'In every origin’s jump range':'In verified jump range',description:'This square marks an eligible system from the 3D range calculation. Cyno availability, access and safety remain unverified.',systemId:point.system.system_id,systemName:point.system.name,source:'Your capital range calculation'},p.x,p.y,9,4);}
+      for (const origin of tactical.rangeOrigins) {const point = byId.get(origin.systemId); if (!point) continue; const p = screen(point); context.strokeStyle = '#dfc6fc'; context.lineWidth = 2; context.beginPath(); context.moveTo(p.x - 11, p.y - 7); context.lineTo(p.x - 11, p.y + 7); context.moveTo(p.x + 11, p.y - 7); context.lineTo(p.x + 11, p.y + 7); context.stroke();register({id:`range-origin:${origin.systemId}`,kind:'range',title:'Jump-range origin',description:`${origin.rangeLy} light years of configured range. Dashed circles show projected outer limits, not guaranteed 3D reach.`,systemId:origin.systemId,systemName:point.system.name,source:'Your capital range origins'},p.x,p.y,14,6);}
     }
     const clustered = new Set<number>(); markerClusters.current = [];
     if (!replay && projection === 'physical' && camera.scale / baseScale.current < 4) {
@@ -619,12 +706,18 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         if (clear) {context.moveTo(p.x - 10, p.y + 4); context.lineTo(p.x - 5, p.y + 9); context.lineTo(p.x + 8, p.y - 8);}
         else {context.moveTo(p.x, p.y - 13); context.lineTo(p.x + 12, p.y + 9); context.lineTo(p.x - 12, p.y + 9); context.closePath();}
         context.stroke(); context.setLineDash([]);
+        register({id:`intel:${systemId}`,kind:'intel',title:clear ? 'Reported clear' : danger ? 'Reported threat' : 'Intel observation',description:`${report.raw || report.text || report.kind}. Reports are observations, not verified safety.`,systemId,systemName:point.system.name,source:report.source || 'Private intel',updatedAt:report.observed_at || report.created_at,details:[{label:'Freshness',value:report.age || 'unknown'},{label:'Reports',value:String(op.reports.length)}]},p.x,p.y,14,6);
       }
       if (tactical.pilotsVisible !== false && op && op.pilots.length + op.fleet.length > 0) {
         const occupants = [...op.pilots, ...op.fleet], stale = occupants.every((pilot: any) => pilot.stale || pilot.online === false), text = `${occupants.length}${stale ? '?' : ''}`;
         context.font = '600 14px "Cascadia Code", Consolas, monospace'; const size = Math.max(21, context.measureText(text).width + 10);
         context.save(); context.globalAlpha = labelEdgeOpacity({left:p.x+9.5,top:p.y+5.5,right:p.x+size+10.5,bottom:p.y+27.5},{width,height});
         context.fillStyle = '#102b38'; context.strokeStyle = stale ? '#899eaf' : '#88d9eb'; context.lineWidth = 1; context.fillRect(p.x + 10, p.y + 6, size, 21); context.strokeRect(p.x + 10, p.y + 6, size, 21); context.fillStyle = stale ? '#b9c4d0' : '#ccf2fa'; context.fillText(text, p.x + 15, p.y + 22); context.restore();
+        register({id:`pilots:${systemId}`,kind:'pilots',title:`${occupants.length} pilot${occupants.length === 1 ? '' : 's'} reported here`,description:`${occupants.map((pilot: any) => pilot.name || `Pilot ${pilot.character_id}`).join(' · ')}. ${stale ? 'Dashed or ? means last known, stale or offline positions.' : 'Observed positions can change between updates.'}`,systemId,systemName:point.system.name,source:op.fleet.length ? 'Authorized fleet / selected pilots' : 'Selected pilots',updatedAt:occupants[0]?.updated_at},p.x+10+size/2,p.y+16.5,Math.max(12,size/2),7);
+      }
+      if (tactical.operationsVisible !== false && op && (op.signatures.length || op.upgrades.length) && !op.reports.length && !contextMarkers.length) {
+        const x=p.x-17,y=p.y-11;context.strokeStyle='#c2bbdd';context.lineWidth=1.4;context.strokeRect(x-5,y-6,10,12);context.beginPath();context.moveTo(x-1,y-4);context.lineTo(x-1,y+4);context.stroke();
+        register({id:`notebook:${systemId}`,kind:'notebook',title:'Exploration notebook',description:`${op.signatures.length} recorded signatures · ${op.upgrades.length} configured upgrades. Open the notebook to review or update these records.`,systemId,systemName:point.system.name,source:'Your Universe notebook'},x,y,11,7);
       }
       if (contextMarkers.length && (camera.scale > 1.5 || projection !== 'physical' || systemId === selectedSystemId || contextMarkers.some((marker: any) => ['storm', 'campaign', 'combat'].includes(marker.kind)))) {
         const marker = contextMarkers.find((entry: any) => entry.kind === 'campaign') || contextMarkers.find((entry: any) => entry.kind === 'storm') || contextMarkers[0];
@@ -634,12 +727,14 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         else if (marker.kind === 'campaign' || marker.kind === 'combat') {context.moveTo(x - 5, y - 5); context.lineTo(x + 5, y + 5); context.moveTo(x + 5, y - 5); context.lineTo(x - 5, y + 5);}
         else {context.moveTo(x, y - 6); context.lineTo(x + 5, y); context.lineTo(x, y + 6); context.lineTo(x - 5, y); context.closePath();}
         context.stroke(); context.setLineDash([]);
+        register({id:`feed:${systemId}`,kind:marker.kind,title:marker.kind === 'storm' ? 'Metaliminal storm' : marker.kind === 'campaign' ? 'Sovereignty campaign' : marker.kind === 'combat' ? 'Public combat report' : marker.name,description:contextMarkers.map(value => `${value.name}: ${value.detail || ''}`).join(' · '),systemId,systemName:point.system.name,source:marker.source,updatedAt:marker.at,details:marker.stale ? [{label:'Freshness',value:'Stale — retained for context'}] : undefined},x,y,11,8);
       }
     }
     for (const cluster of markerClusters.current) {
       const text = String(cluster.systemIds.length); context.font = '600 14px "Cascadia Code", Consolas, monospace'; const size = Math.max(28, context.measureText(text).width + 15);
       context.save(); context.globalAlpha = labelEdgeOpacity({left:cluster.x-size/2-.625,top:cluster.y-12.625,right:cluster.x+size/2+.625,bottom:cluster.y+12.625},{width,height});
       context.fillStyle = '#162938'; context.strokeStyle = '#88b5ce'; context.lineWidth = 1.25; context.fillRect(cluster.x - size / 2, cluster.y - 12, size, 24); context.strokeRect(cluster.x - size / 2, cluster.y - 12, size, 24); context.fillStyle = '#d1e8f4'; context.fillText(text, cluster.x - context.measureText(text).width / 2, cluster.y + 5); context.restore();
+      register({id:`cluster:${cluster.key}`,kind:'cluster',title:`${cluster.systemIds.length} systems with context`,description:'Nearby intel, pilots or public signals are grouped at this scale. Explore the group to separate its systems.',source:'Visible map observations',entrances:cluster.systemIds.map(id=>({id:`system:${id}`,systemId:id,systemName:byId.get(id)?.system.name || String(id)}))},cluster.x,cluster.y,Math.max(16,size/2),5,undefined,cluster.systemIds);
     }
     if (indicator !== 'none') for (const point of visible) {
       if (indicator === 'fw' && overlays.get(point.system.system_id)?.faction_warfare?.operational_state_source === 'derived_gate_adjacency') continue;
@@ -650,6 +745,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       if (indicator === 'npc_delta') {context.fillStyle = value > 0 ? '#85dcb526' : '#ef9b9b26'; context.strokeStyle = value > 0 ? '#85dcb599' : '#ef9b9b99';}
       if (indicator === 'adm') {context.fillStyle = '#9bbde026'; context.strokeStyle = '#9bbde08a';}
       context.lineWidth = .7; context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill(); context.stroke();
+      register({id:`indicator:${point.system.system_id}`,kind:'indicator',title:INDICATOR_LABELS[indicator],description:`${value.toLocaleString()}${indicator==='npc_delta'?' change between rolling one-hour snapshots, not new kills.':''}`,systemId:point.system.system_id,systemName:point.system.name,source:indicator==='visits'?'Your recorded journey':'Map data snapshot'},p.x,p.y,radius+3,3);
     }
     const occupied: LabelRect[] = [];
     const claimLabel = (bounds: LabelRect) => {
@@ -670,7 +766,10 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       context.fillStyle = highlighted ? '#d2fae9' : colour;
       if (point.system.station_count && (camera.scale > 2.8 || projection !== 'physical')) context.fillRect(p.x - radius, p.y - radius, radius * 2, radius * 2);
       else {context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill();}
-      if (cynoPins.has(id)) { context.strokeStyle='#dfbe7b';context.lineWidth=1.4;context.beginPath();context.moveTo(p.x,p.y-9);context.lineTo(p.x+8,p.y+6);context.lineTo(p.x-8,p.y+6);context.closePath();context.stroke(); }
+      if (point.system.station_count && (camera.scale > 2.8 || projection !== 'physical')) register({id:`station:${id}`,kind:'station',title:'NPC station system',description:`The square marks a system with ${point.system.station_count} NPC station${point.system.station_count === 1 ? '' : 's'}. It does not indicate player-structure access.`,systemId:id,systemName:point.system.name,source:'CCP static universe data'},p.x,p.y,7,1);
+      if (current) register({id:`location:${id}`,kind:'location',title:replay ? 'Replay location' : locationReady ? 'Your observed location' : 'Last known location',description:replay ? 'The pilot’s recorded location at this replay instant.' : 'The gold reticle marks the current location observation. This is not a safety indicator.',systemId:id,systemName:point.system.name,source:replay ? 'Session replay' : mapLocation?.source === 'chat_log' ? 'Local EVE log' : 'EVE ESI',updatedAt:mapLocation?.updated_at},p.x,p.y,12,5);
+      if (!current && (pins.has(id) || visits.has(id) || active)) register({id:`system-context:${id}`,kind:'system',title:pins.has(id) ? 'Pinned system' : active ? 'Selected system' : 'Visited system',description:pins.has(id) ? 'Your saved map pin marks this system.' : active ? 'This is the system selected in the inspector.' : 'This system appears in your recorded journey.',systemId:id,systemName:point.system.name,source:'Your Universe workspace'},p.x,p.y,8,2);
+      if (cynoPins.has(id)) { register({id:`cyno:${id}`,kind:'cyno',title:'Cyno observation',description:'A user-recorded cynosural observation. The triangle does not establish that a beacon is online, accessible or safe.',systemId:id,systemName:point.system.name,source:'Your map notes'},p.x,p.y-5,11,7); context.strokeStyle='#dfbe7b';context.lineWidth=1.4;context.beginPath();context.moveTo(p.x,p.y-9);context.lineTo(p.x+8,p.y+6);context.lineTo(p.x-8,p.y+6);context.closePath();context.stroke(); }
       if (active || current || hover || visits.has(id) || pins.has(id)) {
         context.strokeStyle = current ? '#f2cb8b' : pins.has(id) ? '#bea3e8' : active || hover ? '#abf1d7' : '#89ceb78c'; context.lineWidth = active || current ? 1.6 : .8; context.beginPath(); context.arc(p.x, p.y, active || current ? 8 : 5.5, 0, Math.PI * 2); context.stroke();
         if (current) {context.beginPath(); context.moveTo(p.x - 12, p.y); context.lineTo(p.x - 9, p.y); context.moveTo(p.x + 9, p.y); context.lineTo(p.x + 12, p.y); context.moveTo(p.x, p.y - 12); context.lineTo(p.x, p.y - 9); context.moveTo(p.x, p.y + 9); context.lineTo(p.x, p.y + 12); context.stroke();}
@@ -680,6 +779,27 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       }
     }
     context.globalAlpha = 1;
+    // Public entrances sit over the map at every zoom. Leaders retain their true system anchors.
+    const portalBuckets: {source:'thera'|'turnur';x:number;y:number;endpoints:PortalEndpoint[];anchors:{x:number;y:number}[]}[] = [];
+    for (const endpoint of portalEndpoints) {
+      const point = byId.get(endpoint.systemId); if (!point) continue; const anchor = screen(point);
+      if (anchor.x < -15 || anchor.y < -15 || anchor.x > width + 15 || anchor.y > height + 15) continue;
+      const x = anchor.x + (endpoint.source === 'thera' ? 15 : -15), y = anchor.y - 17;
+      const bucket = portalBuckets.find(value=>value.source === endpoint.source && Math.hypot(value.x-x,value.y-y)<27);
+      if (bucket) {const count=bucket.endpoints.length;bucket.x=(bucket.x*count+x)/(count+1);bucket.y=(bucket.y*count+y)/(count+1);bucket.endpoints.push(endpoint);bucket.anchors.push(anchor);} else portalBuckets.push({source:endpoint.source,x,y,endpoints:[endpoint],anchors:[anchor]});
+    }
+    for (const bucket of portalBuckets) {
+      const {x,y,source,endpoints}=bucket, selected = portalNetwork === source, stale = endpoints.every(endpoint=>!endpoint.usable), colour = source === 'thera' ? '#c6a7f7' : '#7bdcda';
+      context.save();context.globalAlpha=portalNetwork && !selected ? .45 : 1; context.strokeStyle=stale?'#99a8b8':colour;context.fillStyle='#101b29';context.lineWidth=selected?2.3:1.7;context.setLineDash(stale?[3,3]:[]);
+      for(const anchor of bucket.anchors) {context.beginPath();context.moveTo(anchor.x,anchor.y);context.lineTo(x,y);context.stroke();}
+      const radius=endpoints.length>1?13:9;context.beginPath();
+      if(source==='thera')context.arc(x,y,radius,0,Math.PI*2);else{context.moveTo(x,y-radius-1);context.lineTo(x+radius+1,y);context.lineTo(x,y+radius+1);context.lineTo(x-radius-1,y);context.closePath();}context.fill();context.stroke();context.setLineDash([]);
+      if(endpoints.length>1){context.font='600 13px "Cascadia Code", Consolas, monospace';context.fillStyle=stale?'#bbc7d2':colour;context.fillText(String(endpoints.length),x-context.measureText(String(endpoints.length)).width/2,y+4.5);}else{context.beginPath();context.arc(x,y,3,0,Math.PI*2);context.stroke();}
+      context.restore();
+      const symbol:MapSymbolContext=endpoints.length===1?portalSymbol(endpoints[0]):{id:`portal-cluster:${source}:${endpoints.map(endpoint=>endpoint.id).sort().join(':')}`,kind:'portal-cluster',title:`${endpoints.length} ${source==='thera'?'Thera':'Turnur'} connections`,description:'Nearby reported wormhole entrances share this marker. Choose an entrance for its signatures and travel limits.',source:'EVE-Scout',portalNetwork:source,entrances:endpoints.map(endpoint=>({id:`portal:${endpoint.id}`,systemId:endpoint.systemId,systemName:endpoint.system.name,label:endpoint.usable?'Reported connection':endpoint.state.replaceAll('_',' ')}))};
+      register(symbol,x,y,radius+5,10,undefined,endpoints.map(endpoint=>endpoint.systemId));
+      if(selected && endpoints.length===1)systemLabels.push({name:`${endpoints[0].system.name} · ${source==='thera'?'Thera':'Turnur'}`,x:x+5,y:y-5,priority:3,dim:false});
+    }
     for (const label of systemLabels.sort((a, b) => b.priority - a.priority)) {
       const fontSize = label.priority ? 16 : 14;
       context.font = `${label.priority ? '600 ' : ''}${fontSize}px "Cascadia Code", Consolas, monospace`;
@@ -738,8 +858,17 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         context.fillText(caption, x + 11, y + 46, boxWidth - 22); context.restore();
       }
     }
+    symbolHits.current = hits;
+    if (canvas.current) canvas.current.dataset.mapSymbols = JSON.stringify(hits.filter(hit=>hit.priority>=5).slice(0,200).map(hit=>({id:hit.symbol.id,kind:hit.symbol.kind,title:hit.symbol.title,systemId:hit.symbol.systemId,x:Math.round(hit.x),y:Math.round(hit.y),radius:hit.radius})));
+    const active = pinnedSymbolRef.current || hoveredSymbolRef.current;
+    if (active && symbolContextElement.current) {
+      const current = hits.find(hit=>hit.symbol.id===active.symbol.id);
+      if (current) {active.x=current.x;active.y=current.y;}
+      else if (active.symbol.systemId) {const point=byId.get(active.symbol.systemId);if(point){const p=screen(point);active.x=p.x;active.y=p.y;}}
+      positionMapContext(symbolContextElement.current,{x:active.x,y:active.y},{width,height},!!pinnedSymbolRef.current);
+    }
   };
-  useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, routeEdges, route, showConnections, showSpecialLinks, focusedRegionId, space, visits, pins, cynoPins, replay, standingFilter, territoryPalette, territoryFocus, overviewOpen, overview, worldUnitsPerLightYear, tactical, operational, feeds, intelPulse, projection, surfaceKey, redraw]);
+  useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, routeEdges, route, showConnections, showSpecialLinks, focusedRegionId, space, visits, pins, cynoPins, replay, standingFilter, territoryPalette, territoryFocus, overviewOpen, overview, worldUnitsPerLightYear, tactical, operational, feeds, intelPulse, projection, surfaceKey, portalEndpoints, portalNetwork, redraw]);
 
   function nearest(clientX: number, clientY: number) {
     const rect = canvas.current?.getBoundingClientRect(); if (!rect) return null;
@@ -760,8 +889,15 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     const rect = canvas.current?.getBoundingClientRect(); if (!rect) return null;
     return markerClusters.current.find(cluster => Math.abs(cluster.x - clientX + rect.left) < 22 && Math.abs(cluster.y - clientY + rect.top) < 16) || null;
   }
+  function symbolHit(clientX: number, clientY: number) {
+    const rect=canvas.current?.getBoundingClientRect();if(!rect)return null;const x=clientX-rect.left,y=clientY-rect.top;
+    return symbolHits.current.filter(hit=>{if(hit.segment){const dx=hit.segment.x-hit.x,dy=hit.segment.y-hit.y,l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,((x-hit.x)*dx+(y-hit.y)*dy)/l)):0;return Math.hypot(x-hit.x-t*dx,y-hit.y-t*dy)<=hit.radius;}return Math.hypot(x-hit.x,y-hit.y)<=hit.radius;}).sort((a,b)=>b.priority-a.priority)[0] || null;
+  }
   function hoverAt(clientX: number, clientY: number) {
-    const cluster = clusterHit(clientX, clientY), id = cluster ? null : nearest(clientX, clientY), hit = id || cluster ? null : politicalHit(clientX, clientY);
+    let symbol = symbolHit(clientX, clientY);
+    if(!symbol){const id=nearest(clientX,clientY),point=id?byId.get(id):null;if(point)symbol={symbol:{id:`system:${point.system.system_id}`,kind:'system',title:point.system.name,description:`${systemLocationLabel(point.system)} · ${point.system.security_known===false?'Security unknown':`Security ${point.system.security.toFixed(1)}`}. A dot marks a star system; a square marks NPC stations.`,systemId:point.system.system_id,systemName:point.system.name,source:'CCP universe data'},x:point.x*view.current.scale+view.current.x,y:point.y*view.current.scale+view.current.y,radius:9,priority:0};}
+    if(symbol?.symbol.id!==hoveredSymbolRef.current?.symbol.id){hoveredSymbolRef.current=symbol;setHoveredSymbol(symbol);}
+    const cluster = symbol ? null : clusterHit(clientX, clientY), id = symbol ? symbol.symbol.systemId || null : cluster ? null : nearest(clientX, clientY), hit = symbol || id || cluster ? null : politicalHit(clientX, clientY);
     if (cluster?.key !== hoveredCluster?.key) setHoveredCluster(cluster);
     if (id !== hoveredRef.current) {hoveredRef.current = id; setHovered(id); redraw();}
     if (hit?.key !== hoveredTerritoryRef.current?.key || hit?.name !== hoveredTerritoryRef.current?.name || hit?.count !== hoveredTerritoryRef.current?.count || hit?.source !== hoveredTerritoryRef.current?.source) {hoveredTerritoryRef.current = hit; setHoveredTerritory(hit); redraw();}
@@ -776,6 +912,9 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     const scale = Math.max(view.current.scale, baseScale.current * 2);
     animateCamera({x: dimensions.current.width / 2 - (x - overview.x) / overview.scale * scale, y: dimensions.current.height / 2 - (y - overview.y) / overview.scale * scale, scale}, 640);
   }
+  const activeSymbol = pinnedSymbol || hoveredSymbol;
+  const symbolResults = symbolChoices.filter(hit=>!symbolQuery || `${hit.symbol.title} ${hit.symbol.systemName || ''} ${hit.symbol.description}`.toLocaleLowerCase().includes(symbolQuery.toLocaleLowerCase()));
+  const chooseEntrance = (id:string) => {const endpoint=portalEndpoints.find(value=>`portal:${value.id}`===id);if(endpoint){const point=byId.get(endpoint.systemId),p=point?{x:point.x*view.current.scale+view.current.x,y:point.y*view.current.scale+view.current.y}:{x:dimensions.current.width/2,y:dimensions.current.height/2};pinSymbol({symbol:portalSymbol(endpoint),...p,radius:14,priority:10});}else if(id.startsWith('system:')){const systemId=Number(id.slice(7));const point=byId.get(systemId);if(point){pinSymbol({symbol:{id,kind:'system',title:'System context',systemId,systemName:point.system.name,description:'Inspect this system or use it as a route destination.'},x:point.x*view.current.scale+view.current.x,y:point.y*view.current.scale+view.current.y,radius:10,priority:1});}}};
   const hoverPoint = hovered ? byId.get(hovered) : null;
   const selectedPoint = selectedSystemId ? byId.get(selectedSystemId) : null;
   const locationId = replay ? replay.systemId : mapLocation?.system_id;
@@ -788,28 +927,30 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const routePoints = routeSystemIds.filter(id => byId.has(id) && (!focusedRegionId || byId.get(id)?.system.region_id === focusedRegionId));
   const hudValue = hud ? indicator === 'npc_delta' || indicator === 'adm' ? feedIndicatorValues.get(hud.system.system_id) ?? null : reportedIndicator(overlays.get(hud.system.system_id), indicator, intel) : null;
   const hudFW = hud && !replay && indicator === 'fw' ? overlays.get(hud.system.system_id)?.faction_warfare : null;
-  return <div className="universe-canvas-shell universe-map-immersive" data-map-space={space} data-map-projection={projection} style={{border: '1px solid #2a3542', background: '#0b1119', overflow: 'hidden'}}>
+  return <div className="universe-canvas-shell universe-map-immersive" data-map-space={space} data-map-projection={projection} data-portal-network={portalNetwork || undefined} style={{border: '1px solid #2a3542', background: '#0b1119', overflow: 'hidden'}}>
     <div className="universe-map-toolbar" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '9px 13px', borderBottom: '1px solid #25303d', flexWrap: 'wrap'}}>
       <div className="universe-map-coordinate-title"><span>{space === 'known' ? projection === 'radar' ? 'Local radar' : projection === 'schematic' ? 'Regional network' : 'New Eden' : 'J-Space'}</span><span>{points.length.toLocaleString()} systems{localLayout?.limited ? ` of ${localLayout.total}` : ''}</span></div>
       <div style={{display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap'}}>
+        <Button ref={symbolLauncher} variant="ghost" size="icon" title="Explore map symbols (S)" aria-label="Explore map symbols" aria-expanded={symbolNavigator} onClick={openSymbols}><Shapes size={17}/></Button>
         <Button variant="ghost" size="icon" title="Toggle map labels" aria-label="Toggle map labels" aria-pressed={labels} onClick={() => setLabels(value => !value)}><Type size={17}/></Button>
         <Button variant="ghost" size="icon" title={replay ? 'Centre on replay location' : locationReady ? mapLocation?.source === 'chat_log' ? 'Centre on reported log location' : 'Centre on current location' : 'Centre on last known location'} aria-label={replay ? 'Centre on replay location' : 'Centre on current location'} disabled={!locationId || !byId.has(locationId)} onClick={() => requestSystemFocus(locationId)}><LocateFixed size={17}/></Button>
         <Button variant="ghost" size="icon" title="Focus selected system" aria-label="Focus selected system" disabled={!selectedPoint} onClick={() => requestSystemFocus(selectedSystemId)}><Crosshair size={17}/></Button>
         {territoryFocus && !replay && space === 'known' && projection === 'physical' && <Button variant="ghost" size="icon" title="Frame selected territory" aria-label="Frame selected territory" onClick={() => onFrameTerritory ? onFrameTerritory() : frameSystems(territoryFocus.systemIds)}><Focus size={17}/></Button>}
         {routeSystemIds.length > 1 && <Button variant="ghost" size="icon" disabled={routePoints.length < 2} title={focusedRegionId ? 'Fit route in current region' : routePoints.length < routeSystemIds.length ? 'Fit route in this space' : 'Fit route'} aria-label="Fit route" onClick={() => frameSystems(routePoints)}><Route size={17}/></Button>}
         <span style={{height: 17, width: 1, background: '#2b3948', margin: '0 5px'}}/>
-        <Button variant="ghost" size="icon" aria-label="Zoom out" disabled={zoom <= 1.001} onClick={() => zoomAt(1 / 1.4)}><Minus size={17}/></Button>
+        <Button variant="ghost" size="icon" title="Zoom out" aria-label="Zoom out" disabled={zoom <= 1.001} onClick={() => zoomAt(1 / 1.4)}><Minus size={17}/></Button>
         <span style={{fontSize: 14, fontFamily: 'var(--font-mono)', color: '#c0d0dd', width: 48, textAlign: 'center'}}>{zoom.toFixed(1)}×</span>
-        <Button variant="ghost" size="icon" aria-label="Zoom in" onClick={() => zoomAt(1.4)}><Plus size={17}/></Button>
+        <Button variant="ghost" size="icon" title="Zoom in" aria-label="Zoom in" onClick={() => zoomAt(1.4)}><Plus size={17}/></Button>
         <Button variant="ghost" size="icon" title="Fit map (Home)" aria-label="Fit map" onClick={() => {manualMovement(); fit(true);}}><Maximize2 size={17}/></Button>
       </div>
     </div>
     <div ref={wrapper} className="universe-map-viewport" style={{position: 'relative', width: '100%'}}>
       <div className="universe-map-atmosphere" ref={atmosphere} aria-hidden="true"><svg viewBox="0 0 1000 680" preserveAspectRatio="none" focusable="false">{AMBIENT_STARS.map((star, i) => <circle key={i} cx={star.x} cy={star.y} r={star.r}/>)}</svg></div>
       <canvas ref={canvas} role="img" tabIndex={0} aria-label={`${space === 'known' ? 'New Eden' : 'Wormhole space'} interactive map showing ${points.length.toLocaleString()} systems. ${projection === 'physical' ? LAYERS[background] + ' background' : projection === 'radar' ? 'Gate-hop radar; schematic, not to scale' : 'Regional network; schematic, not to scale'}. ${INDICATOR_LABELS[indicator]}.`} aria-describedby={helpId}
-        style={{position: 'relative', display: 'block', width: '100%', height: '100%', touchAction: 'none', cursor: dragging ? 'grabbing' : hovered || hoveredTerritory ? 'pointer' : 'grab'}}
+        style={{position: 'relative', display: 'block', width: '100%', height: '100%', touchAction: 'none', cursor: dragging ? 'grabbing' : hoveredSymbol || hovered || hoveredTerritory ? 'pointer' : 'grab'}}
         onKeyDown={event => {
-          if (event.key === '+' || event.key === '=') {event.preventDefault(); zoomAt(1.4);} else if (event.key === '-') {event.preventDefault(); zoomAt(1 / 1.4);} else if (event.key === 'Home') {event.preventDefault(); manualMovement(); fit(true);}
+          if (event.key.toLowerCase() === 's') {event.preventDefault();openSymbols();}
+          else if (event.key === '+' || event.key === '=') {event.preventDefault(); zoomAt(1.4);} else if (event.key === '-') {event.preventDefault(); zoomAt(1 / 1.4);} else if (event.key === 'Home') {event.preventDefault(); manualMovement(); fit(true);}
           else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {event.preventDefault(); manualMovement(); view.current.x += event.key === 'ArrowLeft' ? 60 : event.key === 'ArrowRight' ? -60 : 0; view.current.y += event.key === 'ArrowUp' ? 60 : event.key === 'ArrowDown' ? -60 : 0; constrainView(); redraw();}
           else if (event.key === 'Enter' && selectedSystemId) {requestSystemFocus(selectedSystemId);}
         }}
@@ -842,7 +983,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
           if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
           if (activePointers.current.size) {const [id, position] = [...activePointers.current][0]; pointer.current = {id, ...position, originX: position.x, originY: position.y, moved: true, vx: 0, vy: 0, lastAt: performance.now()}; return;}
           pointer.current = null; setDragging(false);
-          if (held && !held.moved && !wasPinching) {const cluster = clusterHit(event.clientX, event.clientY); if (cluster) {frameSystems(cluster.systemIds); return;} const id = nearest(event.clientX, event.clientY); if (id) onSelectSystem(id); else {const hit = politicalHit(event.clientX, event.clientY); if (hit) onInspectTerritory?.(hit.key);}}
+          if (held && !held.moved && !wasPinching) {const symbol=symbolHit(event.clientX,event.clientY);if(symbol){pinSymbol(symbol);return;}dismissContext();const cluster = clusterHit(event.clientX, event.clientY); if (cluster) {frameSystems(cluster.systemIds); return;} const id = nearest(event.clientX, event.clientY); if (id) onSelectSystem(id); else {const hit = politicalHit(event.clientX, event.clientY); if (hit) onInspectTerritory?.(hit.key);}}
           else if (held && !wasPinching && motionAllowed(surface())) {const coast = dragCoast(view.current, {x: held.vx, y: held.vy}, performance.now() - held.lastAt, boundsRef.current, dimensions.current); if (coast) animateCamera(coast.target, coast.duration);}
         }}
         onPointerCancel={cancelGesture}
@@ -850,6 +991,14 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         onPointerLeave={() => {if (!pointer.current) clearHover();}}
         onDoubleClick={event => {const rect = event.currentTarget.getBoundingClientRect(); zoomAt(1.8, event.clientX - rect.left, event.clientY - rect.top);}}
       >Use the system search and system list to select a system without the visual map.</canvas>
+      {activeSymbol && <UniverseMapContext symbol={activeSymbol.symbol} anchor={{x:activeSymbol.x,y:activeSymbol.y}} viewport={dimensions.current} pinned={!!pinnedSymbol} now={clock} onOpenNotebook={onOpenNotebook} anchorElementRef={symbolContextElement} onClose={()=>dismissContext(true)} onRoute={activeSymbol.symbol.systemId && onRouteToSystem ? ()=>onRouteToSystem(activeSymbol.symbol.systemId!) : undefined} onInspect={activeSymbol.symbol.systemId ? ()=>onSelectSystem(activeSymbol.symbol.systemId!) : undefined} onNetwork={activeSymbol.symbol.portalNetwork ? ()=>{const source=activeSymbol.symbol.portalNetwork!;setPortalNetwork(source);frameSystems(portalNetworks.find(value=>value.source===source)?.endpoints.map(endpoint=>endpoint.systemId)||[]);dismissContext();} : activeSymbol.systemIds?.length ? ()=>{frameSystems(activeSymbol.systemIds!);dismissContext();} : undefined} onChooseEntrance={chooseEntrance}/>}
+      {symbolNavigator && <div className="universe-map-symbols" role="region" aria-label="Map symbols" onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();setSymbolNavigator(false);symbolLauncher.current?.focus();}}}>
+        <div className="universe-map-symbols-heading"><strong>Symbols in view</strong><button aria-label="Close map symbols" title="Close map symbols" onClick={()=>{setSymbolNavigator(false);symbolLauncher.current?.focus();}}><X size={16}/></button></div>
+        <input autoFocus aria-label="Find a map symbol" placeholder="Find a symbol or system…" value={symbolQuery} onChange={event=>setSymbolQuery(event.target.value)}/>
+        <p>Hover any map symbol for its meaning. Select one to keep its context beside the map.</p>
+        <div className="universe-map-symbol-list">{symbolResults.slice(0,120).map(hit=><button key={hit.symbol.id} data-map-symbol-kind={hit.symbol.kind} data-map-symbol-id={hit.symbol.id} data-map-x={hit.x} data-map-y={hit.y} onClick={()=>pinSymbol(hit)}><span className={`universe-map-symbol-key is-${hit.symbol.kind}`}/><span><strong>{hit.symbol.title}</strong><small>{hit.symbol.systemName || hit.symbol.source || 'Map context'}</small></span></button>)}{!symbolResults.length&&<p>No matching symbols in the current view.</p>}{symbolResults.length>120&&<p>Showing 120 of {symbolResults.length}. Search to narrow the list.</p>}</div>
+      </div>}
+      {!replay && tactical.feedsVisible !== false && <div className="universe-portal-networks" aria-label="Public wormhole networks">{portalNetworks.map(network=><button key={network.source} data-portal-source={network.source} aria-label={`Explore ${network.name} connections`} aria-pressed={portalNetwork===network.source} title={`Show ${network.name} entrance systems. ${network.usableCount} current reports${network.staleCount ? `, ${network.staleCount} stale` : ''}. Source: EVE-Scout.`} onClick={()=>exploreNetwork(network.source)}><i className={`universe-portal-network-glyph is-${network.source}`}/><span><strong>{network.name}</strong><small>{portalEndpoints.filter(endpoint=>endpoint.source===network.source&&endpoint.usable).length} fresh{network.staleCount>0?` · ${portalEndpoints.filter(endpoint=>endpoint.source===network.source&&!endpoint.usable).length} stale`:''}{portalEndpoints.filter(endpoint=>endpoint.source===network.source).length!==network.endpoints.length?` · ${network.endpoints.length} total`:''}{!network.endpoints.length?` · ${network.status === 'ready' ? 'no reports' : network.status || 'unavailable'}`:''}</small></span><ChevronDown size={15}/></button>)}{portalNetwork && <span className="universe-portal-network-caption">{portalNetwork==='thera'?'Entrances share Thera · hub position is schematic':'Reported entrances to Turnur'}{focusedRegionId?' · current region':''}<button aria-label="Clear connection focus" title="Clear connection focus" onClick={()=>setPortalNetwork(null)}><X size={14}/></button></span>}</div>}
       {!replay && intelPulse && intelPulse.systemIds.map(systemId => <div className="universe-map-intel-pulse-anchor" key={intelPulse.id+':'+systemId} ref={element => {if (element) intelPulseNodes.current.set(systemId, element); else intelPulseNodes.current.delete(systemId);}} aria-hidden="true"><i className="universe-map-intel-pulse"/></div>)}
       <div ref={acquisition} className="universe-map-acquisition-anchor" aria-hidden="true"><div key={`${space}:${replay ? replay.systemId : selectedSystemId}`} className="universe-map-acquisition"><i/><i/><i/><i/></div></div>
       {!points.length && <div style={{position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', pointerEvents: 'none', color: '#8ca2b4', fontSize: 14, padding: 30, textAlign: 'center'}}>{space === 'wormhole' && !allPoints.length ? 'Visit or pin a J-space system, or add a discovered wormhole, to build your connection map.' : 'No systems match this map filter.'}</div>}
@@ -859,13 +1008,13 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         {tactical.rangeOrigins?.length ? <span className="universe-range-status">{verifiedReachability ? `${reach.size} eligible systems${tactical.rangeOrigins.length > 1 ? ` · ${overlap.size} in every origin’s range` : ''}` : 'Range origins · calculate to verify reachable systems'}</span> : null}
         {localLayout?.limited && <span>Dense neighbourhood · showing {points.length} of {localLayout.total} systems</span>}
       </div>}
-      {hoveredCluster ? <div className="universe-map-hud universe-operational-hud"><div className="universe-map-hud-heading"><strong>{hoveredCluster.systemIds.length} systems with context</strong></div><div className="universe-map-hud-region">{hoveredCluster.systemIds.slice(0, 4).map(id => byId.get(id)?.system.name).filter(Boolean).join(' · ')}{hoveredCluster.systemIds.length > 4 ? '…' : ''}</div><div className="universe-territory-hint">Select cluster to expand its systems</div></div> : territoryHud ? <div className="universe-map-hud universe-territory-hud" data-selected={territoryFocus?.key === territoryHud.key ? "true" : "false"} key={territoryHud.key}>
+      {!activeSymbol && (hoveredCluster ? <div className="universe-map-hud universe-operational-hud"><div className="universe-map-hud-heading"><strong>{hoveredCluster.systemIds.length} systems with context</strong></div><div className="universe-map-hud-region">{hoveredCluster.systemIds.slice(0, 4).map(id => byId.get(id)?.system.name).filter(Boolean).join(' · ')}{hoveredCluster.systemIds.length > 4 ? '…' : ''}</div><div className="universe-territory-hint">Select cluster to expand its systems</div></div> : territoryHud ? <div className="universe-map-hud universe-territory-hud" data-selected={territoryFocus?.key === territoryHud.key ? "true" : "false"} key={territoryHud.key}>
         <div className="universe-map-hud-heading"><i className="universe-territory-swatch" style={{background: territoryHud.colour}}/><strong>{territoryHud.name}</strong></div>
         <div className="universe-territory-facts"><span>{territoryHud.count.toLocaleString()} sovereign systems</span><span>{territoryHud.source === 'configured' ? 'Configured bloc' : territoryHud.source === 'inferred' ? 'Inferred affiliation' : territoryHud.source === 'independent' ? 'Independent alliance' : territoryHud.source === 'unassigned' ? 'Unassigned alliance' : 'Sovereignty'}</span></div>
         {territoryFocus?.key === territoryHud.key ? <div className="universe-territory-actions"><button onClick={() => onFrameTerritory ? onFrameTerritory() : frameSystems(territoryFocus.systemIds)}><Focus size={16}/>Frame territory</button><button onClick={onClearTerritoryFocus}><X size={15}/>Clear</button></div> : <div className="universe-territory-hint">Select territory to explore</div>}
       </div> : hud && <div className="universe-map-hud" key={hud.system.system_id}>
         <div className="universe-map-hud-heading"><strong>{hud.system.name}</strong><span className="universe-map-security-badge" style={{color: hud.system.security_known === false ? '#a2b5c8' : securityColour(hud.system.security)}}>{hud.system.security_known === false ? '?' : hud.system.security.toFixed(1)}</span>{hud.system.system_id === locationId && <span className="universe-map-location-badge">{replay ? 'Replay' : !locationReady ? 'Last known location' : mapLocation?.source === 'chat_log' ? 'Reported location · logs' : 'You are here'}</span>}</div>
-        <div className="universe-map-hud-region">{hud.system.region_name}{hud.system.space === 'wormhole' && hud.system.wormhole_class ? ` · C${hud.system.wormhole_class}` : ''}</div>
+        <div className="universe-map-hud-region">{systemLocationLabel(hud.system)}</div>
         {!replay && <div className="universe-map-hud-owner">{sovereigntyName(overlays.get(hud.system.system_id)?.sovereignty) || (hud.system.space === 'wormhole' ? 'Wormhole space' : 'Owner unavailable')}{background === 'power_blocs' && hudBloc && <span className="universe-map-hud-bloc"><i style={{background: hudBlocColour || '#77879a'}}/>{hudBloc.name}<span>{hudBloc.source === 'configured' ? 'Configured' : hudBloc.source === 'inferred' ? 'Inferred' : hudBloc.source === 'independent' ? 'Independent' : 'Unassigned'}</span></span>}</div>}
         {indicator !== 'none' && indicator !== 'fw' && <div className="universe-map-hud-metric"><span>{INDICATOR_LABELS[indicator]}</span><strong>{hudValue === null ? 'Unavailable' : indicator === 'industry' ? hudValue.toFixed(2) + '%' : hudValue.toLocaleString()}</strong></div>}
         {hudFW && <div className="universe-map-fw-state"><strong>{FW_STATES[hudFW.operational_state] || 'State unavailable'}</strong><span style={{color:FACTION_TERRITORY_COLOURS[Number(hudFW.occupier_faction_id ?? hudFW.occupier_id)]?.fill}}>{FACTION_TERRITORY_COLOURS[Number(hudFW.occupier_faction_id ?? hudFW.occupier_id)]?.name || 'Occupier unavailable'}</span><small>{hudFW.operational_state_source === 'derived_gate_adjacency' ? 'Derived from current occupancy and gate adjacency' : 'Awaiting a fresh warfare snapshot'}</small></div>}
@@ -877,7 +1026,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
           {hudOperations && hudOperations.signatures.length > 0 && <div className="universe-map-feed"><strong>{hudOperations.signatures.length} recorded signatures</strong><span>{hudOperations.signatures.slice(0, 3).map((signature: any) => signature.signature_id).join(' · ')}</span></div>}
           {hudOperations && hudOperations.upgrades.length > 0 && <div className="universe-map-feed"><strong>{hudOperations.upgrades.length} configured upgrades</strong><span>{hudOperations.upgrades.slice(0, 2).map((upgrade: any) => upgrade.name).join(' · ')}</span></div>}
         </div>}
-      </div>}
+      </div>)}
       <div className={'universe-map-overview'+(overviewOpen?' is-open':'')}>
         <button className="universe-overview-toggle" aria-label="Toggle overview map" aria-expanded={overviewOpen} onClick={() => setOverviewOpen(value => !value)}><MapIcon size={15}/><span>Overview</span><ChevronDown size={15}/></button>
         {overviewOpen && <svg viewBox="0 0 164 108" role="button" tabIndex={0} aria-label="Navigate overview map" onClick={event => {const rect = event.currentTarget.getBoundingClientRect(); navigateOverview((event.clientX - rect.left) / rect.width * 164, (event.clientY - rect.top) / rect.height * 108);}} onKeyDown={event => {
@@ -901,7 +1050,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     {!replay && indicator === 'npc_delta' && <p className="universe-map-help">NPC activity change compares two rolling one-hour snapshots, not kills between samples. Green means the total rose; red means it fell. Missing samples stay unavailable.</p>}
     {!replay && indicator === 'fw' && <p className="universe-map-help">Faction warfare: diamonds mark frontlines, squares command operations, and chevrons rearguards. Mark colours identify the current occupier; opposing-front gate lines meet at a white boundary tick. These states are derived from fresh ESI occupancy and the stargate graph.</p>}
     {!replay && <p className="universe-map-help universe-operational-key">Reports are observations, not verified safety. Fresh: under 30 seconds; recent: under 150 seconds; older: dashed until expiry. Adjacent gates highlight on hover: mint within a constellation, blue between constellations, gold between regions. Square systems contain NPC stations. Storm bolts and crossed campaign markers show source-attributed context; optional landmarks can be historical.</p>}
-    <p id={helpId} className="universe-map-help">Drag to pan · scroll or pinch to zoom · Home to fit · select a system or territory to inspect. The overview navigates within the active region or space. Arrow keys pan when the map is focused. Use system search for keyboard selection.{space === 'wormhole' || projection !== 'physical' ? ' This topological layout does not represent physical distances. Only active connections are drawn.' : ' Borders are a map guide around sovereign systems, not a claim of control over empty space.'}</p>
+    <p id={helpId} className="universe-map-help">Drag to pan · scroll or pinch to zoom · Home to fit · select a system or territory to inspect. The overview navigates within the active region or space. Arrow keys pan when the map is focused. S opens the symbol navigator; Escape dismisses map context. Hover symbols for their meaning, or tap to keep their card open. Use system search for keyboard selection.{space === 'wormhole' || projection !== 'physical' ? ' This topological layout does not represent physical distances. Only active connections are drawn.' : ' Borders are a map guide around sovereign systems, not a claim of control over empty space.'}</p>
     </details>
   </div>;
 }

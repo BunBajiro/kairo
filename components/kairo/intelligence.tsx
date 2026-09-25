@@ -12,11 +12,14 @@ import { Panel, DataTable, DataStatus, NoData, ItemName } from './ui';
 import { SessionReport } from './session-report';
 import { ActivityTimeline } from './activity-timeline';
 import { CombatCoverage } from './combat-coverage';
+import type { UniverseAtlas } from './universe-types';
+import { systemLocationLabel } from './universe-presentation.mjs';
 export { Goals } from './goals';
 
 // Travel observations belong to Universe. Sessions have their own workspace.
-export function JourneyLog() {
+export function JourneyLog({atlas}: {atlas?: UniverseAtlas|null} = {}) {
     const { character, data } = useKairo();
+    const byId = new Map(atlas?.systems.map(system => [system.system_id, system]) || []);
     const [journey, setJourney] = useState<any>({ visits: [], systems: [] });
     const [error, setError] = useState('');
     useEffect(() => {
@@ -42,7 +45,7 @@ export function JourneyLog() {
             <TabsContent value="timeline"><ActivityTimeline key={character}/></TabsContent>
             <TabsContent value="systems"><Panel title="Visited systems">
                 <p className="meta mb-4">Use the Visits indicator to explore these records on the Universe map.</p>
-                <DataTable rows={journey.systems} columns={[{ key: 'name', label: 'System' }, { key: 'region_name', label: 'Region' },
+                <DataTable rows={journey.systems} columns={[{ key: 'name', label: 'System' }, { key: 'region_name', label: 'Region / space', render: row => systemLocationLabel(byId.get(row.system_id)) },
                     { key: 'visits', label: 'Visits' }, { key: 'last', label: 'Last observed', render: row => stamp(row.last) }]}/>
             </Panel></TabsContent>
         </Tabs>

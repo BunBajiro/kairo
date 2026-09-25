@@ -2,6 +2,14 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.6 — Connections on the map
+
+- Brings Thera and Turnur reports onto their actual map entrances with distinct symbols and source-aware network focus.
+- Adds contextual explanations for map symbols on hover and pinned details on click/tap, with keyboard access and direct system/destination actions.
+- Keeps map context and camera stable during inspection; network framing and selection use finite motion with reduced-motion support.
+- Presents J-Space through systems, wormhole classes and connections, removing internal region/constellation groupings from navigation, search, details and notebook context.
+- Retains exact expiry and source-age distinctions, keeps current reports out of replay, and preserves existing local data.
+
 ## 0.8.0-rc.5 — Operational Universe
 
 - Integrates SMT-inspired intelligence, pilot/fleet context, signatures, infrastructure notes, tactical map projections, itinerary and capital planning into the normal Universe workspace.

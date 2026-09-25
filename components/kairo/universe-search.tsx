@@ -4,21 +4,18 @@ import {ArrowUpRight, Globe2, MapPin, Search, Users, X} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import type {UniverseAtlas} from './universe-types';
 import type {PoliticalTerritory} from '../../lib/universe-political-atlas.mjs';
+import {universeSearchCatalogue} from './universe-presentation.mjs';
+import type {UniverseSearchDestination} from './universe-presentation.mjs';
 import './universe-search.css';
 
-type Destination = {id:string;name:string;detail:string;kind:'system'|'region'|'territory';value:string;search:string;color?:string};
+type Destination = UniverseSearchDestination;
 type Props = {atlas:UniverseAtlas;territories:PoliticalTerritory[];ownershipAvailable?:boolean;space:'known'|'wormhole';onSelectSystem:(id:number)=>void;onSelectRegion:(id:number)=>void;onSelectTerritory:(key:string)=>void};
 
 /** One keyboard-accessible entry point into the atlas; all results use local data. */
 export function UniverseSearch({atlas,territories,ownershipAvailable=false,space,onSelectSystem,onSelectRegion,onSelectTerritory}:Props){
  const id=useId(),root=useRef<HTMLDivElement>(null),input=useRef<HTMLInputElement>(null);
  const [query,setQuery]=useState(''),[open,setOpen]=useState(false),[active,setActive]=useState(0);
- const knownRegions=useMemo(()=>new Set(atlas.systems.filter(system=>system.space==='known').map(system=>system.region_id)),[atlas]);
- const catalogue=useMemo<Destination[]>(()=>[
-  ...atlas.systems.filter(system=>system.space==='known'||system.space==='wormhole').map(system=>({id:'system-'+system.system_id,name:system.name,detail:system.region_name+' · '+(system.space==='wormhole'?'J-Space':'K-Space'),kind:'system' as const,value:String(system.system_id),search:system.name.toLocaleLowerCase()+' '+system.system_id})),
-  ...atlas.regions.filter(region=>knownRegions.has(region.region_id)).map(region=>({id:'region-'+region.region_id,name:region.name,detail:'Region · frame its systems',kind:'region' as const,value:String(region.region_id),search:region.name.toLocaleLowerCase()})),
-  ...territories.map(territory=>({id:'territory-'+territory.key,name:territory.name,detail:(territory.source==='inferred'?'Inferred group':territory.source==='configured'?'Configured bloc':territory.source==='independent'?'Kept independent':territory.source==='unassigned'?'Unassigned owner':territory.key.startsWith('f')?'Faction sovereignty':'Sovereignty owner')+' · '+(ownershipAvailable?territory.systemIds.length.toLocaleString('en-GB')+' observed systems':'awaiting ownership data'),kind:'territory' as const,value:territory.key,search:territory.name.toLocaleLowerCase(),color:territory.color})),
- ],[atlas,territories,knownRegions,ownershipAvailable]);
+ const catalogue=useMemo(()=>universeSearchCatalogue(atlas,territories,{space,ownershipAvailable}),[atlas,territories,space,ownershipAvailable]);
  const results=useMemo(()=>{
   const text=query.trim().toLocaleLowerCase();if(!text)return [];
   const rank=(item:Destination)=>item.name.toLocaleLowerCase()===text||item.value===text?0:item.name.toLocaleLowerCase().startsWith(text)?1:2;
@@ -51,19 +48,19 @@ export function UniverseSearch({atlas,territories,ownershipAvailable=false,space
  }
  return <div ref={root} className="universe-search universe-global-search" onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node|null))setOpen(false);}}>
   <Search size={19} aria-hidden="true"/>
-  <Input ref={input} aria-label="Find a solar system" role="combobox" aria-autocomplete="list" aria-expanded={expanded} aria-controls={id+'-results'} aria-describedby={id+'-hint'} aria-activedescendant={expanded&&results[selected]?id+'-option-'+selected:undefined} autoComplete="off" placeholder={space==='known'?'Search systems, regions, blocs…':'Find a wormhole or region…'} value={query} onFocus={()=>setOpen(true)} onChange={event=>{setQuery(event.target.value);setOpen(true);}} onKeyDown={event=>{
+  <Input ref={input} aria-label="Find a solar system" role="combobox" aria-autocomplete="list" aria-expanded={expanded} aria-controls={id+'-results'} aria-describedby={id+'-hint'} aria-activedescendant={expanded&&results[selected]?id+'-option-'+selected:undefined} autoComplete="off" placeholder={space==='known'?'Search systems, regions, blocs…':'Find systems or connection endpoints…'} value={query} onFocus={()=>setOpen(true)} onChange={event=>{setQuery(event.target.value);setOpen(true);}} onKeyDown={event=>{
    if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();setOpen(true);setActive(value=>results.length?(value+(event.key==='ArrowDown'?1:-1)+results.length)%results.length:0);}
    else if(event.key==='Enter'&&results[selected]){event.preventDefault();choose(results[selected]);}
    else if(event.key==='Escape'&&(expanded||query)){event.preventDefault();event.stopPropagation();setOpen(false);setQuery('');}
   }}/>
-  <span className="sr-only" id={id+'-hint'}>Search systems, known-space regions and observed political territories. Use arrow keys and Enter to choose. Press slash to focus search.</span>
+  <span className="sr-only" id={id+'-hint'}>{space==='wormhole'?'Search system names and IDs across J-Space and K-Space.':'Search systems, known-space regions and observed political territories.'} Use arrow keys and Enter to choose. Press slash to focus search.</span>
   {query?<button aria-label="Clear system search" onClick={()=>{setQuery('');input.current?.focus();}}><X size={18}/></button>:<kbd aria-hidden="true">/</kbd>}
   {expanded&&<div className="universe-search-popover">
    <div className="universe-search-caption"><span>Navigate New Eden</span><small>↑ ↓ choose · Enter open</small></div>
    <div id={id+'-results'} role="listbox" aria-label="Universe search results">
     {results.map((destination,index)=>{const Icon=destination.kind==='system'?MapPin:destination.kind==='region'?Globe2:Users;return <button type="button" role="option" aria-selected={selected===index} id={id+'-option-'+index} key={destination.id} tabIndex={-1} className={selected===index?'is-active':''} onPointerDown={event=>event.preventDefault()} onMouseEnter={()=>setActive(index)} onClick={()=>choose(destination)}><span className="universe-search-kind" style={destination.color?{color:destination.color}:undefined}><Icon size={20}/></span><span><strong>{destination.name}</strong><small>{destination.detail}</small></span><ArrowUpRight size={17}/></button>;})}
    </div>
-   {!results.length&&<p role="status">No matching systems, regions or territories.</p>}
+   {!results.length&&<p role="status">{space==='wormhole'?'No matching systems. Try a system name or ID.':'No matching systems, regions or territories.'}</p>}
   </div>}
  </div>;
 }

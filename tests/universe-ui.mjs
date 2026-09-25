@@ -75,6 +75,8 @@ async function key(key,code,windowsVirtualKeyCode,text=''){
  await call('Input.dispatchKeyEvent',{type:text?'keyDown':'rawKeyDown',key,code,windowsVirtualKeyCode,text,unmodifiedText:text});
  await call('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});
 }
+async function moveTo(point){await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:point.x,y:point.y});}
+async function clickAt(point){await moveTo(point);await call('Input.dispatchMouseEvent',{type:'mousePressed',x:point.x,y:point.y,button:'left',clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:point.x,y:point.y,button:'left',clickCount:1});}
 async function search(name){await fill('[aria-label="Find a solar system"]',name);await key('Enter','Enter',13,'\r');await waitFor(`document.querySelector('.universe-system-title h3')?.textContent===${JSON.stringify(name)}`);}
 async function canvasHash(){return evaluate(`(()=>{const bytes=document.querySelector('.universe-module canvas').toDataURL();let hash=2166136261;for(let i=0;i<bytes.length;i++)hash=Math.imul(hash^bytes.charCodeAt(i),16777619);return hash>>>0;})()`);}
 async function disclosure(label){await clickElement(`Array.from(document.querySelectorAll('.universe-disclosure summary')).find(e=>e.textContent.startsWith(${JSON.stringify(label)}))`);}
@@ -260,15 +262,97 @@ async function overviewNavigation(){
  await click('[aria-label="Fit map"]');await delay(900);checks.push('Clickable and keyboard overview navigation with projected K-space scale');
 }
 
+async function mapSymbolPoint(predicate){
+ // The same bounded symbol registry powers the accessible map index. Hit the
+ // painted canvas through CDP; do not invoke component callbacks or inject UI.
+ const expression=`(()=>{const canvas=document.querySelector('.universe-module canvas'),r=canvas.getBoundingClientRect(),symbols=JSON.parse(canvas.dataset.mapSymbols||'[]');return symbols.filter(${predicate}).map(symbol=>({...symbol,x:r.left+symbol.x,y:r.top+symbol.y})).find(symbol=>symbol.x>r.left+20&&symbol.x<r.right-20&&symbol.y>r.top+20&&symbol.y<r.bottom-20&&document.elementFromPoint(symbol.x,symbol.y)===canvas)||null;})()`;
+ await waitFor(expression);return evaluate(expression);
+}
+async function portalMapAcceptance(atlas,cached){
+ const original=app.store.get('universe:feeds:thera'),base=original.data[0],second={...base,id:'thera:ui-network',to_system_id:atlas.systemsByName['C-J6MT'],from_signature:'THR-789',to_signature:'CJ6-789'},expired={...base,id:'thera:ui-expired',to_system_id:atlas.systemsByName.Jita,expires_at:new Date(Date.now()-60000).toISOString()};
+ app.store.set('universe:feeds:thera',cached([...original.data,second,expired]));
+ await click('[aria-label="Refresh Universe data"]');
+ if(await evaluate("!!document.querySelector('[aria-label=\"Collapse details\"]')"))await click('[aria-label="Collapse details"]');
+ await click('[aria-label="Fit map"]');await delay(950);
+ await waitFor("!!document.querySelector('[aria-label=\"Explore Thera connections\"]') && !!document.querySelector('[aria-label=\"Explore Turnur connections\"]')");
+ assert.equal(await evaluate("JSON.parse(document.querySelector('.universe-module canvas').dataset.mapSymbols||'[]').some(symbol=>symbol.id.includes('ui-expired'))"),false,'Expired public reports never become current map entrance glyphs');
+ await screenshot('universe-portal-networks-map-first');
+ await click('[aria-label="Explore Thera connections"]');await delay(950);
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Explore Thera connections\"]').getAttribute('aria-pressed')"),'true','A network can be explored directly from the map');
+ const portal=await mapSymbolPoint('symbol=>symbol.kind===\'portal\'&&symbol.title.includes(\'Thera\')');
+ const portalPosition=`(()=>{const symbol=JSON.parse(document.querySelector('.universe-module canvas').dataset.mapSymbols||'[]').find(symbol=>symbol.id===${JSON.stringify(portal.id)});return {x:symbol?.x,y:symbol?.y};})()`,positionBefore=await evaluate(portalPosition);
+ const beforeHover=await evaluate("({zoom:document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent,dock:!!document.querySelector('[aria-label=\"Collapse details\"]'),selected:document.querySelector('.universe-system-title h3')?.textContent})");
+ await moveTo(portal);await waitFor("document.querySelector('.universe-map-context[role=tooltip]')?.textContent.includes('Thera connection')");
+ assert.deepEqual(await evaluate("({zoom:document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent,dock:!!document.querySelector('[aria-label=\"Collapse details\"]'),selected:document.querySelector('.universe-system-title h3')?.textContent})"),beforeHover,'Mouseover explains a glyph without moving the camera or opening the operations dock');
+ assert.deepEqual(await evaluate(portalPosition),positionBefore,'The geographic entrance stays at the same screen coordinates during mouseover');
+ assert.ok(await evaluate("document.querySelector('.universe-map-context').textContent.includes('EVE-Scout')"),'Portal explanation identifies its public source');
+ await screenshot('universe-portal-hover-explanation');
+ await clickAt(portal);await waitFor("!!document.querySelector('.universe-map-context[role=dialog]')");
+ assert.ok(await evaluate("document.querySelector('.universe-map-context').textContent.includes('Remaining mass unknown') && document.querySelector('.universe-map-context').textContent.includes('Reported expiry')"),'Pinned portal reports explain expiry and unknown remaining mass');
+ assert.ok(await evaluate("Array.from(document.querySelectorAll('.universe-map-context button')).some(button=>button.textContent==='Route to entrance')"),'A map entrance has a direct navigation action');
+ await click('.universe-map-context-type summary');await delay(100);
+ const expanded=await evaluate("(()=>{const card=document.querySelector('.universe-map-context'),r=card.getBoundingClientRect(),map=document.querySelector('.universe-module canvas').getBoundingClientRect();return {open:card.querySelector('.universe-map-context-type').open,top:r.top,bottom:r.bottom,left:r.left,right:r.right,mapTop:map.top,mapBottom:map.bottom,mapLeft:map.left,mapRight:map.right};})()");
+ assert.ok(expanded.open&&expanded.top>=expanded.mapTop&&expanded.bottom<=expanded.mapBottom+1&&expanded.left>=expanded.mapLeft&&expanded.right<=expanded.mapRight+1,'Expanding nominal type limits re-clamps the actual card inside the map: '+JSON.stringify(expanded));
+ await evaluate("document.querySelector('.universe-map-context').scrollTop=0");
+ await screenshot('universe-portal-pinned-report');
+ await viewport(390,844);await layout('Pinned portal map 390');
+ const mobile=await evaluate("(()=>{const r=document.querySelector('.universe-map-context').getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:innerWidth,height:innerHeight};})()");
+ assert.ok(mobile.left>=0&&mobile.right<=mobile.width+1&&mobile.top>=0&&mobile.bottom<=mobile.height+1,'The complete map card stays within the mobile viewport: '+JSON.stringify(mobile));
+ await evaluate("document.querySelector('.universe-map-context').scrollTop=0");
+ await screenshot('universe-portal-pinned-mobile');await viewport(1600);await delay(150);
+ await key('Escape','Escape',27);await waitFor("!document.querySelector('.universe-map-context[role=dialog]')");
+ assert.equal(await evaluate("document.activeElement===document.querySelector('.universe-module canvas')"),true,'Escape returns focus to the map after dismissing its pinned details');
+ await moveTo({x:10,y:10});
+ await click('[aria-label="Explore map symbols"]');await waitFor("!!document.querySelector('[aria-label=\"Map symbols\"]')");
+ const entry="Array.from(document.querySelectorAll('[aria-label=\"Map symbols\"] button')).find(button=>button.textContent.includes('Thera connection'))";
+ await waitFor('!!('+entry+')');
+ // Focus a real, keyboard-reachable index item and activate its native button.
+ assert.ok(await evaluate('('+entry+').tabIndex>=0'),'Map explanations can be reached without a pointer');
+ await evaluate('('+entry+').focus()');await key('Enter','Enter',13,'\r');
+ await waitFor("!!document.querySelector('.universe-map-context[role=dialog][data-map-symbol-kind=portal]')");
+ const itineraryBefore=(await api('/universe/navigation?character=42')).itinerary,commandsBefore=recentUniverseRequests.filter(request=>/\/navigation\/(?:plan|waypoints)(?:\?|$)/.test(request.url)).length;
+ const destination=await evaluate("document.querySelector('.universe-map-context').textContent.includes('C-J6MT')?'C-J6MT':'UALX-3'");
+ await button('Route to entrance','.universe-map-context');await waitFor("document.querySelector('[aria-label=\"Route destination\"]')?.value==="+JSON.stringify(destination));
+ assert.deepEqual((await api('/universe/navigation?character=42')).itinerary,itineraryBefore,'Routing from an entrance prepares a draft and preserves the saved itinerary');
+ assert.equal(recentUniverseRequests.filter(request=>/\/navigation\/(?:plan|waypoints)(?:\?|$)/.test(request.url)).length,commandsBefore,'Inspecting and drafting an entrance route never calculates or sends EVE waypoints implicitly');
+ if(await evaluate("!!document.querySelector('[aria-label=\"Close map details\"]')"))await click('[aria-label="Close map details"]');
+ if(await evaluate("!!document.querySelector('[aria-label=\"Collapse details\"]')"))await click('[aria-label="Collapse details"]');
+ await click('[aria-label="Explore Turnur connections"]');await delay(950);
+ const stale=await mapSymbolPoint('symbol=>symbol.kind===\'portal\'&&symbol.title.includes(\'Turnur\')');
+ await moveTo(stale);await waitFor("document.querySelector('.universe-map-context[role=tooltip]')?.textContent.includes('Stale report')");
+ await clickAt(stale);await waitFor("document.querySelector('.universe-map-context[role=dialog]')?.textContent.includes('Stale report')");
+ await screenshot('universe-portal-stale-report');await key('Escape','Escape',27);await moveTo({x:10,y:10});
+ app.store.set('universe:feeds:thera',cached([{...second,expires_at:new Date(Date.now()+5000).toISOString()}]));
+ await click('[aria-label="Refresh Universe data"]');await click('[aria-label="Explore Thera connections"]');await delay(950);
+ const expiring=await mapSymbolPoint('symbol=>symbol.kind===\'portal\'&&symbol.id.includes(\'ui-network\')');
+ await clickAt(expiring);await waitFor("!!document.querySelector('.universe-map-context[role=dialog]')");
+ await waitFor("!JSON.parse(document.querySelector('.universe-module canvas').dataset.mapSymbols||'[]').some(symbol=>symbol.id.includes('ui-network'))");
+ assert.equal(await evaluate("!!document.querySelector('.universe-map-context[role=dialog]')"),false,'A pinned public entrance is dismissed when its report expires without a manual refresh');
+ app.store.set('universe:feeds:thera',original);await click('[aria-label="Refresh Universe data"]');
+ await search('UALX-3');if(await evaluate("!!document.querySelector('[aria-label=\"Collapse details\"]')"))await click('[aria-label="Collapse details"]');await delay(950);
+ const pilot=await mapSymbolPoint('symbol=>[\'pilots\',\'fleet\'].includes(symbol.kind)');await moveTo(pilot);
+ await waitFor("!!document.querySelector('.universe-map-context[role=tooltip]')");
+ assert.ok(await evaluate("['pilots','fleet'].includes(document.querySelector('.universe-map-context').dataset.mapSymbolKind)"),'Pilot or fleet glyphs explain their own meaning on actual canvas mouseover');
+ await clickAt(pilot);await waitFor("!!document.querySelector('.universe-map-context[role=dialog][data-map-symbol-kind=pilots]')");
+ await button('Layers & views');await checkLabel('Pilots & fleet','.universe-tactical-controls');
+ await waitFor("!document.querySelector('.universe-map-context[data-map-symbol-kind=pilots]')");
+ assert.equal(await evaluate("JSON.parse(document.querySelector('.universe-module canvas').dataset.mapSymbols||'[]').some(symbol=>symbol.kind==='pilots')"),false,'Hiding pilots removes both the painted symbols and any pinned occupant details');
+ await checkLabel('Pilots & fleet','.universe-tactical-controls');await click('[aria-label="Close layers"]');
+ await moveTo({x:10,y:10});await inspector('Exploration');
+ checks.push('Thera and Turnur entrances are visible and explorable on the map with attributed hover details and honest stale/expired states');
+ checks.push('Pinned map explanations support keyboard dismissal, mobile layout and entrance route drafts without changing saved itineraries');
+ checks.push('Pilot and fleet symbols explain their meaning through actual map mouseover and dismiss pinned details when their layer is hidden');
+}
+
 async function operationalAcceptance(atlas){
  const now=Date.now(),iso=offset=>new Date(now+offset).toISOString(),ualx=atlas.systemsByName['UALX-3'];
  const fullAtlas=await api('/universe/static'),thera=fullAtlas.systems.find(system=>system.name==='Thera').system_id,turnur=fullAtlas.systems.find(system=>system.name==='Turnur').system_id;
  // Normalized provider fixtures: provider parsing has separate injected-network
  // tests. Here the browser must explain cached freshness and safe user actions.
  const cached=data=>({status:'ready',data,updated_at:iso(0),expires_at:iso(3600000)});
- app.store.set('universe:feeds:thera',cached([{id:'thera:ui-fixture',source:'thera',from_system_id:thera,to_system_id:ualx,from_signature:'THR-123',to_signature:'UAL-123',wh_type:'Z999',expires_at:iso(3600000),completed:true,max_ship_size:'large',reported:true,stale:false}]));
+ app.store.set('universe:feeds:thera',cached([{id:'thera:ui-fixture',source:'thera',from_system_id:thera,to_system_id:ualx,from_signature:'THR-123',to_signature:'UAL-123',wh_type:'Z999',observed_at:iso(-300000),expires_at:iso(3600000),completed:true,max_ship_size:'large',reported:true,stale:false}]));
  app.store.set('universe:feeds:wormhole_types',cached([{identifier:'Z999',max_jump_mass_kg:100000000,max_stable_mass_kg:1000000000,nominal_lifetime_minutes:1440}]));
- app.store.set('universe:feeds:turnur',{...cached([{id:'turnur:ui-fixture',source:'turnur',from_system_id:turnur,to_system_id:ualx,from_signature:'TRN-123',to_signature:'UAL-456',expires_at:iso(3600000),completed:true,max_ship_size:'medium',reported:true}]),status:'stale',error:'Synthetic provider temporarily unavailable'});
+ app.store.set('universe:feeds:turnur',{...cached([{id:'turnur:ui-fixture',source:'turnur',from_system_id:turnur,to_system_id:ualx,from_signature:'TRN-123',to_signature:'UAL-456',observed_at:iso(-300000),expires_at:iso(3600000),completed:true,max_ship_size:'medium',reported:true}]),status:'stale',error:'Synthetic provider temporarily unavailable'});
  app.store.set('universe:feeds:combat',cached([{killmail_id:770099,system_id:ualx,time:iso(-60000),victim_ship_type_id:587,total_value:25000000,source:'zkillboard'}]));
  app.store.saveSnapshot(0,'sovereignty_campaigns',{status:'ready',data:[{campaign_id:770099,solar_system_id:ualx,event_type:'ihub_defense',start_time:iso(3600000),defender_id:77,defender_score:.75,attackers_score:.25}],updatedAt:iso(0),expiresAt:iso(3600000)});
  app.store.db.prepare('UPDATE characters SET scopes=? WHERE id=42').run(JSON.stringify(['esi-location.read_location.v1','esi-fleets.read_fleet.v1']));
@@ -340,6 +424,8 @@ async function operationalAcceptance(atlas){
  await choose('Landmark category','market hub');assert.ok(await evaluate("document.querySelector('.universe-public-signals').textContent.includes('Jita')"));
  await choose('Public signal type','NPC activity changes');
  assert.ok(await evaluate("document.querySelector('.universe-feed-source').textContent.includes('not the number')"),'Rolling-window delta is not mislabeled as newly killed NPCs');
+
+ await portalMapAcceptance(atlas,cached);
 
  await inspector('Exploration');
  await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\tWormhole\tSynthetic entrance\t100.0%\t1.2 AU\nDEF-456\tCosmic Signature\tRelic Site\tSynthetic relic\t100.0%\t2 AU');
@@ -604,7 +690,12 @@ try{
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Territory view\"]')"),null,'J-space has its own discovery controls');
  assert.equal(await evaluate("!!document.querySelector('.universe-map-scale-bar')"),false,'Schematic J-space does not claim a physical distance scale');
  assert.ok(await evaluate("document.querySelector('.universe-map-scale').textContent.includes('no scale')"));
+ await button('Layers & views');
+ assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Map region\"]')"),false,'J-space does not offer geographic region filtering');
+ await click('[aria-label="Close layers"]');
+ assert.equal(await evaluate("!!document.querySelector('.universe-overview-regions')"),false,'J-space overview never groups discoveries into regions');
  await screenshot('universe-jspace-empty');await space('K-Space');
+ await button('Layers & views');assert.ok(await evaluate("!!document.querySelector('[aria-label=\"Map region\"]')"),'K-space retains useful physical region navigation');await click('[aria-label="Close layers"]');
  await readability('Public atlas', [['.universe-tabs button',16],['.universe-space-switch strong',16],['[aria-label="Find a solar system"]',16],['.universe-map-footnote',14]]);
  await mapFirstLayout('Desktop public atlas');await screenshot('universe-map-first-desktop');
  await contrast('Atlas controls',['.universe-tabs button','.universe-space-switch strong','.universe-map-footnote']);
@@ -860,8 +951,14 @@ try{
  const expired=await api('/universe?character=42');assert.equal(expired.links.find(l=>l.id===wormhole.id).active,false);assert.ok(expired.pins.some(p=>p.system_id===atlas.wormhole.system_id));
  await button('Atlas','.universe-tabs');await space('J-Space');
  assert.ok((await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label')")).includes('Wormhole space interactive map showing 1 systems'));
+ await fill('[aria-label="Find a solar system"]',atlas.wormhole.region_name);
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-search-popover strong')).some(e=>e.textContent==="+JSON.stringify(atlas.wormhole.region_name)+")"),false,'Internal J-space region names are not search destinations');
+ await search(atlas.wormhole.name);
+ const jspaceBreadcrumb=await evaluate("document.querySelector('.universe-breadcrumb').textContent");
+ assert.ok(jspaceBreadcrumb.includes('J-Space')&&!jspaceBreadcrumb.includes(atlas.wormhole.region_name)&&!jspaceBreadcrumb.includes(atlas.wormhole.constellation_name),'J-space inspection explains system class and discovery context without internal region geography');
  await minimumZoom('Discovered J-space');
  await screenshot('universe-expired-discovery');checks.push('Wormhole confirmation, lifetime editing, expiry and retained discoveries');
+ checks.push('J-space keeps system search and discovery context while hiding region navigation, grouping and internal geography');
 
  await button('Journey','.universe-tabs');await waitFor("!!document.querySelector('.route-stop')");
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-module button')).some(e=>e.textContent.trim()==='Sessions')"),false,'Sessions has its own page, outside Universe');
@@ -889,6 +986,7 @@ try{
  assert.equal(await evaluate("document.querySelector('.universe-map-layer-plaque').textContent.trim().toLowerCase()"),'session replay','The map explicitly identifies its recorded replay context');
  assert.ok(await evaluate("document.querySelector('.universe-map-footnote').textContent.includes('Current sovereignty and activity are hidden')"),'Replay separates historical observations from current geopolitical data');
  assert.equal(await evaluate("!!document.querySelector('.universe-map-intel-pulse,.universe-operational-hud,.universe-map-operational-status')"),false,'Historical replay hides current operational intel, fleet and public-feed markers');
+ assert.equal(await evaluate("!!document.querySelector('.universe-portal-networks,.universe-map-context')"),false,'Historical replay never presents current public portal networks or their live map cards');
  assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Play session replay\"]')"),true,'Replay opens paused');
  const replayViewport=await evaluate("(()=>{const map=document.querySelector('.universe-module canvas').getBoundingClientRect(),play=document.querySelector('[aria-label=\"Play session replay\"]').getBoundingClientRect();return {width:innerWidth,height:innerHeight,centre:{x:map.x+map.width/2,y:map.y+map.height/2},play:{top:play.top,bottom:play.bottom,left:play.left,right:play.right}};})()");
  assert.ok(replayViewport.centre.x>0&&replayViewport.centre.x<replayViewport.width&&replayViewport.centre.y>0&&replayViewport.centre.y<replayViewport.height-50&&replayViewport.play.top>=0&&replayViewport.play.bottom<=replayViewport.height&&replayViewport.play.left>=0&&replayViewport.play.right<=replayViewport.width,'Desktop replay keeps the followed pilot/map centre and playback controls visible together: '+JSON.stringify(replayViewport));
