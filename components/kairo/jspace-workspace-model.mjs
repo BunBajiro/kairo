@@ -26,11 +26,47 @@ export function connectionEditorPayload(draft, expiryInput, original = null) {
   if (expiryInput) {
     const originalDate = original?.expires_at && Number.isFinite(Date.parse(original.expires_at)) ? new Date(original.expires_at) : null;
     payload.expires_at = originalDate?.toISOString().slice(0, 16) === expiryInput ? original.expires_at : new Date(expiryInput + 'Z').toISOString();
-  } else payload.duration_hours = Number(draft.duration_hours || 16);
+  } else if (draft.duration_hours === '') payload.expires_at = null;
+  else payload.duration_hours = Number(draft.duration_hours ?? 16);
   payload.max_ship_size = draft.max_ship_size || null;
   payload.from_signature = String(draft.from_signature || '').trim().toUpperCase();
   payload.to_signature = String(draft.to_signature || '').trim().toUpperCase();
   return payload;
+}
+
+/** A drawn edge records only the two endpoints; no conditions or access are inferred. */
+export function drawnConnectionPayload(fromSystemId, toSystemId) {
+  return {kind:'wormhole',from_system_id:fromSystemId,to_system_id:toSystemId,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'unknown',life_status:'unknown',expires_at:null};
+}
+
+/** Each layout gesture saves against the revision accepted by the previous gesture. */
+export function createLayoutSaveQueue() {
+  let tail = Promise.resolve();
+  return function enqueue(save) {
+    const result = tail.then(save);
+    tail = result.then(() => undefined, () => undefined);
+    return result;
+  };
+}
+
+/** A pilot/map switch invalidates queued gestures without affecting the next workspace. */
+export function createLayoutSaveScope(key) {
+  const enqueue = createLayoutSaveQueue();let closed=false,generation=0,pending=0;
+  return {
+    key,
+    get closed(){return closed;},
+    get pending(){return pending;},
+    cancel(){closed=true;generation++;},
+    run(save){
+      if(closed)return Promise.resolve(null);
+      const version=generation;pending++;
+      return enqueue(async()=>{
+        if(closed||version!==generation)return null;
+        try {const result=await save();if(!result)generation++;return result;}
+        catch(error){generation++;throw error;}
+      }).finally(()=>{pending--;});
+    },
+  };
 }
 
 // CCP type identities used by EVE's tab-separated directional scanner clipboard.

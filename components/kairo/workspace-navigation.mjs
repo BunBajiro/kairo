@@ -22,6 +22,11 @@ export function universeRouteForSpace(space) {
   return space === 'wormhole' ? 'universe-jspace' : 'universe-kspace';
 }
 
+/** J-Space always opens its chain, including workspaces saved before the split. */
+export function universeTabForSpace(space, tab) {
+  return space === 'wormhole' ? 'atlas' : tab === 'journey' || tab === 'connections' ? tab : 'atlas';
+}
+
 /** Keep older bookmarks, module links and session replay launches working. */
 export function resolveWorkspaceRoute(id) {
   if (id === 'universe' || id === 'journey') return {id: universeRouteForSpace('known'), universeTab: id === 'journey' ? 'journey' : null};

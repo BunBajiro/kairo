@@ -2,6 +2,14 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.8 — Direct chain interaction
+
+- Makes card movement track the pointer directly, including connected lines, and queues release-time position saves so another drag does not wait for the previous response.
+- Adds visible drag-to-connect handles, live connection previews and keyboard connection creation. Drawn links start unconfirmed with unknown expiry and no route access.
+- Compacts system cards around class, name and static destination classes. Hole codes move to concise hover/focus detail; secondary information remains in the inspector.
+- Removes Journey and Ansiblex management tabs from J-Space, retaining the K-Space tools and shared notebook/navigation. Legacy J-Space tab state opens the chain.
+- Trims repeated explanatory copy and keeps decision-relevant trust, expiry and error states. Existing maps and history are retained; no data reset is required.
+
 ## 0.8.0-rc.7 — J-Space chain workspace
 
 - Splits Universe into separate K-Space and J-Space navigation entries, with independent remembered workspace state and legacy link compatibility.

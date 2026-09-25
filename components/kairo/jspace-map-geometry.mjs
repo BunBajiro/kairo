@@ -1,5 +1,5 @@
 export const CHAIN_NODE_WIDTH = 264;
-export const CHAIN_NODE_HEIGHT = 196;
+export const CHAIN_NODE_HEIGHT = 84;
 export const CHAIN_MAX_ZOOM = 1.8;
 
 const clamp = (value, low, high) => Math.max(low, Math.min(Math.max(low, high), value));
@@ -13,7 +13,14 @@ export function chainBounds(nodes) {
 
 export function fitChainCamera(nodes, viewport, padding = viewport.width < 600 ? 24 : 58, maxZoom = 1) {
   const bounds = chainBounds(nodes), width = Math.max(1, viewport.width), height = Math.max(1, viewport.height);
-  const zoom = clamp(Math.min(Math.max(1, width - padding * 2) / (bounds.maxX - bounds.minX), Math.max(1, height - padding * 2) / (bounds.maxY - bounds.minY)), .12, maxZoom);
+  const availableWidth=Math.max(1,width-padding*2),availableHeight=Math.max(1,height-padding*2);
+  let zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX),availableHeight/(bounds.maxY-bounds.minY)),.12,maxZoom);
+  if(zoom<.85){
+    // Overview identity and its connection handles retain a minimum screen size.
+    // Frame their actual envelope, not just the much smaller world-space card.
+    const spanX=bounds.maxX-bounds.minX-CHAIN_NODE_WIDTH,spanY=bounds.maxY-bounds.minY-CHAIN_NODE_HEIGHT;
+    zoom=Math.max(.12,Math.min(zoom,availableWidth/(spanX+306),spanX>0?(availableWidth-306*.65)/spanX:zoom,availableHeight/(spanY+84),spanY>0?(availableHeight-50*.65)/spanY:zoom));
+  }
   return {x: width / 2 - (bounds.minX + bounds.maxX) / 2 * zoom, y: height / 2 - (bounds.minY + bounds.maxY) / 2 * zoom, zoom};
 }
 
@@ -113,7 +120,7 @@ export function visibleChainLabels(nodes, camera, viewport, priorityIds = []) {
   const priority = new Map(priorityIds.filter(Boolean).map((id,index)=>[id,index]));
   const ordered = [...nodes].sort((a,b)=>(priority.get(a.system_id)??999)-(priority.get(b.system_id)??999)||a.system_id-b.system_id);
   const cells = new Map(), visible = new Set();
-  const labelScale=Math.max(.65,camera.zoom),halfWidth=(252*labelScale+14)/2,halfHeight=(62*labelScale+12)/2;
+  const labelScale=Math.max(.65,camera.zoom),halfWidth=(306*labelScale+14)/2,halfHeight=(62*labelScale+12)/2;
   for (const node of ordered) {
     const x=camera.x+(node.x+CHAIN_NODE_WIDTH/2)*camera.zoom,y=camera.y+(node.y+CHAIN_NODE_HEIGHT/2)*camera.zoom;
     const box={left:x-halfWidth,right:x+halfWidth,top:y-halfHeight,bottom:y+halfHeight};
@@ -123,4 +130,19 @@ export function visibleChainLabels(nodes, camera, viewport, priorityIds = []) {
     visible.add(node.system_id);for(const key of keys)cells.set(key,[...(cells.get(key)||[]),box]);
   }
   return visible;
+}
+
+/** Pointer deltas use the gesture's initial zoom, including while a previous save is pending. */
+export function draggedChainPositions(originals, start, end, zoom) {
+  return originals.map(node=>({system_id:node.system_id,x:Math.round(node.x+(end.x-start.x)/zoom),y:Math.round(node.y+(end.y-start.y)/zoom)}));
+}
+/** Public reports cannot become private connection endpoints without explicit adoption. */
+export function chainConnectionTarget(nodes, point, fromId, padding=12) {
+  return nodes.find(node=>node.system_id!==fromId&&!node.public_report&&point.x>=node.x-padding&&point.x<=node.x+CHAIN_NODE_WIDTH+padding&&point.y>=node.y-padding&&point.y<=node.y+CHAIN_NODE_HEIGHT+padding)||null;
+}
+export function chainConnectionPreview(from, side, point, target=null, portExtent=CHAIN_NODE_WIDTH/2) {
+  const start={x:from.x+CHAIN_NODE_WIDTH/2+(side==='right'?portExtent:-portExtent),y:from.y+CHAIN_NODE_HEIGHT/2};
+  const end=target?{x:target.x+CHAIN_NODE_WIDTH/2+(start.x>target.x+CHAIN_NODE_WIDTH/2?portExtent:-portExtent),y:target.y+CHAIN_NODE_HEIGHT/2}:point;
+  const direction=side==='right'?1:-1,bend=Math.max(44,Math.min(160,Math.abs(end.x-start.x)*.45));
+  return `M ${start.x} ${start.y} C ${start.x+direction*bend} ${start.y}, ${end.x+(target?(start.x>end.x?1:-1):-direction)*bend} ${end.y}, ${end.x} ${end.y}`;
 }

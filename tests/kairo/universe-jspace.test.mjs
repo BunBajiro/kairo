@@ -247,3 +247,23 @@ test('deleted signature bindings permit condition edits without rebinding and sh
     assert.throws(() => f.cmd(map, 'connection.save', { connection: { id: map.connections[0].id, from_signature_record_id: other.id } }), /belong to this pilot/);
     assert.throws(() => f.service.saveLink(42, { id: map.connections[0].link_id, from_system_id: A, from_signature_record_id: deletedId }), /belong to this pilot/);
 });
+
+test('drawn connections preserve explicit unknown lifetime until an observed expiry is deliberately supplied', async t => {
+    const f = await fixture(t); let map = twoNodes(f, f.create());
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, confirmed: false, accessible: false, mass: 'unknown', life_status: 'unknown', expires_at: null } });
+    const edge = map.connections[0];
+    assert.equal(edge.expires_at, null); assert.equal(edge.expired, false); assert.equal(edge.active, false);
+    assert.equal(f.service.state(42).links[0].expires_at, null);
+    f.time(AT + 3600000);
+    map = f.cmd(map, 'connection.save', { connection: { id: edge.id, notes: 'Needs a scout to inspect both ends.' } });
+    assert.equal(map.connections[0].expires_at, null, 'editing a drawn edge must not invent a lifetime');
+    for (const changes of [{ confirmed: true }, { accessible: true }, { reverse_accessible: true }]) {
+        assert.throws(() => f.cmd(map, 'connection.save', { connection: { id: edge.id, ...changes } }), /Record a wormhole expiry/);
+    }
+    assert.equal(f.api.state(42).maps[0].revision, map.revision, 'failed activation must not advance the map or mutate its canonical link');
+    assert.equal(f.service.route(42, { originId: W, destinationId: X, preferences: { useWormholes: true, allowUnknownWormholeSize: true } }).status, 'no_route');
+    map = f.cmd(map, 'connection.save', { connection: { id: edge.id, confirmed: true, accessible: true, duration_hours: 4 } });
+    assert.equal(map.connections[0].expires_at, new Date(AT + 5 * 3600000).toISOString()); assert.equal(map.connections[0].active, true);
+    const ordinaryManual = f.service.saveLink(42, { kind: 'wormhole', from_system_id: W, to_system_id: A });
+    assert.equal(ordinaryManual.expires_at, new Date(AT + 17 * 3600000).toISOString(), 'existing manual creation defaults remain unchanged');
+});

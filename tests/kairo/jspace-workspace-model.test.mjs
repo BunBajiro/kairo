@@ -1,6 +1,50 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {connectionEditorPayload,previewStructureScan,publicChainScene} from '../../components/kairo/jspace-workspace-model.mjs';
+import {connectionEditorPayload,previewStructureScan,publicChainScene,drawnConnectionPayload,createLayoutSaveQueue,createLayoutSaveScope} from '../../components/kairo/jspace-workspace-model.mjs';
+
+test('drawing a connection records only endpoints and keeps unknown lifetime through metadata edits',()=>{
+ const edge=drawnConnectionPayload(31000111,31000222);
+ assert.deepEqual(edge,{kind:'wormhole',from_system_id:31000111,to_system_id:31000222,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'unknown',life_status:'unknown',expires_at:null});
+ const edited=connectionEditorPayload({...edge,duration_hours:'',notes:'Needs scanning'},'',edge);
+ assert.equal(edited.expires_at,null);assert.equal('duration_hours' in edited,false);
+ assert.equal(edited.confirmed,false);assert.equal(edited.accessible,false);
+ const verified=connectionEditorPayload({...edge,duration_hours:4,confirmed:true,accessible:true},'',edge);
+ assert.equal(verified.duration_hours,4);assert.equal('expires_at' in verified,false);
+});
+
+test('consecutive drag saves wait for the accepted revision without dropping the later position',async()=>{
+ const enqueue=createLayoutSaveQueue(),calls=[];let release,revision=7,position=0;
+ const response=new Promise(resolve=>{release=resolve;});
+ const save=value=>enqueue(async()=>{calls.push({revision,value});if(value===40)await response;position=value;revision++;return {revision,position};});
+ const first=save(40),second=save(95);await Promise.resolve();
+ assert.deepEqual(calls,[{revision:7,value:40}]);assert.equal(position,0);
+ release();assert.deepEqual(await first,{revision:8,position:40});assert.deepEqual(await second,{revision:9,position:95});
+ assert.deepEqual(calls,[{revision:7,value:40},{revision:8,value:95}]);
+});
+
+test('switching pilot or map cancels old queued drags while a failed old response cannot cancel the new workspace',async()=>{
+ const old=createLayoutSaveScope('pilot-a:map-a');let releaseOld,releaseNew;const writes=[];
+ const blocked=new Promise(resolve=>{releaseOld=resolve;}),nextBlocked=new Promise(resolve=>{releaseNew=resolve;});
+ const oldFirst=old.run(async()=>{writes.push('old-start');await blocked;return null;});
+ const oldSecond=old.run(async()=>{writes.push('old-queued');return true;});await Promise.resolve();old.cancel();
+ const current=createLayoutSaveScope('pilot-b:map-b');
+ const newFirst=current.run(async()=>{writes.push('new-start');await nextBlocked;return true;});
+ const newSecond=current.run(async()=>{writes.push('new-queued');return true;});await Promise.resolve();
+ releaseOld();await Promise.all([oldFirst,oldSecond]);assert.equal(current.pending,2);
+ releaseNew();assert.deepEqual(await Promise.all([newFirst,newSecond]),[true,true]);
+ assert.deepEqual(writes,['old-start','new-start','new-queued']);assert.equal(current.pending,0);
+ const returned=createLayoutSaveScope('pilot-a:map-a');assert.equal(await returned.run(async()=>true),true);
+ assert.equal(await old.run(async()=>{throw new Error('closed scope must never run');}),null);
+});
+
+test('a rejected revision cancels later gestures in that layout scope until a new gesture is made',async()=>{
+ const scope=createLayoutSaveScope('pilot:map'),writes=[];
+ const first=scope.run(async()=>{writes.push('conflict');return null;});
+ const second=scope.run(async()=>{writes.push('stale-replay');return true;});
+ assert.deepEqual(await Promise.all([first,second]),[null,null]);assert.deepEqual(writes,['conflict']);
+ assert.equal(await scope.run(async()=>{writes.push('new-gesture');return true;}),true);
+ assert.deepEqual(writes,['conflict','new-gesture']);
+});
 
 test('editing connection conditions preserves exact expiry and never sends a renewing duration',()=>{
  const connection={id:'old',expires_at:'2026-09-20T12:45:36.781Z',mass:'stable',confirmed:true};

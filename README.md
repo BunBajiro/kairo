@@ -2,7 +2,7 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.8.0-rc.7 · Universe review build · Windows first · No cloud deployment**
+**Version 0.8.0-rc.8 · Universe review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
@@ -22,13 +22,13 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version **0.8.0-rc.7** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
+Version **0.8.0-rc.8** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
 
 Configure named power blocs and their member alliances in **Settings → Universe**. Unconfigured alliances can use **Inferred Coalitions**, an explicitly uncertain fallback from combat evidence collected locally. Crisp vector borders, separate K-Space and J-Space navigation under Universe, bounded zoom and larger visual controls make the political map easier to read. Replay keeps recorded travel while hiding routine system-entry and OPSEC event cards.
 
 Universe opens as an immersive map workspace by default, with a collapsible details dock, direct territory exploration, regional holdings, physical stargate frontiers and unified system/region/territory search. Fluid navigation, an overview inset and route framing keep travel and political exploration connected. Primary controls use 16px text; motion respects reduced-motion settings and settles when idle. Distinct political territories use unique colours, with Caldari blue, Gallente teal, Amarr gold and Minmatar rust reserved for their factions.
 
-J-Space now opens into a dedicated chain workspace: readable class/name/static cards, offline effect reference, saved positions and locks, connection conditions, scanner linkage, passage records and observations. Separate named maps can be imported from Wanderer or exported for transfer. See the [Wanderer feature comparison](docs/WANDERER-INTEGRATION.md) for verified coverage and the remaining collaboration boundaries.
+J-Space opens directly into a dedicated chain workspace: compact class/name/static cards, responsive dragging, visible drag-to-connect handles, offline effect reference, saved positions and locks, scanner linkage, passage records and observations. Static hole codes appear on hover; drawn links begin unconfirmed with unknown expiry. Journey and Ansiblex management stay in K-Space. Separate named maps can be imported from Wanderer or exported for transfer. See the [Wanderer feature comparison](docs/WANDERER-INTEGRATION.md) for verified coverage and the remaining collaboration boundaries.
 
 Thera and Turnur entrances appear directly on the map. Hover a symbol for its meaning, click or tap for connection details and nearby actions, or use the keyboard-accessible Symbols list. J-Space centres on known systems, wormhole classes and connections; its internal regions are not presented as destinations.
 
@@ -208,7 +208,7 @@ Personal ESI references are paged across its 90-day window. Public backfill also
 
 Reports are based on observations and event timestamps. Missing scopes, disabled modules, ESI cache delays and time spent with Kairo closed limit coverage. Events that arrive late can enter an earlier report if their occurrence time is inside that session. Existing 0.1 sessions retain historical events and visits, but cannot reconstruct start/end wallet or SP samples that were never captured.
 
-**Universe → Journey → Systems visited** retains the observed system ledger. Use the **My footprint** map preset or **Your visits** indicator to explore this history on the full atlas. ESI can miss brief transits; visits are observations and do not establish usable connections. The earlier Journey connection-pruning data is retained for compatibility but does not affect the new routing graph.
+**Universe → K-Space → Journey → Systems visited** retains the observed system ledger. Use the **My footprint** map preset or **Your visits** indicator to explore this history on the full atlas. ESI can miss brief transits; visits are observations and do not establish usable connections. The earlier Journey connection-pruning data is retained for compatibility but does not affect the new routing graph.
 
 In a selected Universe system, open **Field notes** to edit system, constellation or region notes, tags and personal markers. Notes remain local and never appear in OBS automatically. They do not change OPSEC policy.
 

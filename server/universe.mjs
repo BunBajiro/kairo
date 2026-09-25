@@ -183,10 +183,11 @@ export function createUniverse(store, auth, esi, options = {}) {
                 const signature = parse(getSignature.get(id, recordId)?.body);
                 if (signature?.system_id === link[side + '_system_id']) link[side + '_signature'] = signature.signature_id;
             }
-            const expired = link.kind === 'wormhole' && Date.parse(link.expires_at) <= now();
+            const expiry = Date.parse(link.expires_at), expired = link.kind === 'wormhole' && Number.isFinite(expiry) && expiry <= now();
+            const lifetimeValid = link.kind !== 'wormhole' || Number.isFinite(expiry) && expiry > now();
             const listEnabled = !link.list_id || lists.get(link.list_id)?.enabled === true;
             return { ...link, from_name: byId.get(link.from_system_id)?.name || String(link.from_system_id), to_name: byId.get(link.to_system_id)?.name || String(link.to_system_id),
-                expired, list_enabled: listEnabled, active: link.enabled && (link.accessible || link.reverse_accessible === true) && link.confirmed && !expired && listEnabled };
+                expired, list_enabled: listEnabled, active: link.enabled && (link.accessible || link.reverse_accessible === true) && link.confirmed && lifetimeValid && listEnabled };
         });
     }
     function staticData() { return { metadata: atlas.metadata, systems: atlas.systems, regions: atlas.regions, constellations: atlas.constellations, gates: atlas.gates }; }
@@ -254,11 +255,15 @@ export function createUniverse(store, auth, esi, options = {}) {
             const duration = Number(input.duration_hours);
             if (!HOURS.has(duration)) throw new Error('Wormhole lifetime must be 16, 12, 8, 4, 1 hours, or expired.');
             expires_at = new Date(now() + duration * 3600000).toISOString();
+        } else if (kind === 'wormhole' && Object.hasOwn(input, 'expires_at') && input.expires_at === null) {
+            // A newly drawn, unverified connection has no reported lifetime. Null is an
+            // intentional unknown, distinct from the existing manual-form default.
+            expires_at = null;
         } else if (kind === 'wormhole' && input.expires_at != null && input.expires_at !== old.expires_at) {
             const expiry = Date.parse(input.expires_at);
             if (!Number.isFinite(expiry) || expiry <= now() || expiry > now() + 48 * 3600000) throw new Error('Reported wormhole expiry must be in the next 48 hours.');
             expires_at = new Date(expiry).toISOString();
-        } else if (kind === 'wormhole' && !expires_at) {
+        } else if (kind === 'wormhole' && !expires_at && !(old.kind === 'wormhole' && Object.hasOwn(old, 'expires_at') && old.expires_at === null)) {
             expires_at = new Date(now() + 16 * 3600000).toISOString();
         }
         const max_ship_size = Object.hasOwn(input, 'max_ship_size') ? input.max_ship_size : old.max_ship_size ?? null;
@@ -292,6 +297,8 @@ export function createUniverse(store, auth, esi, options = {}) {
             if (input[key] != null && typeof input[key] !== 'boolean') throw new Error(key + ' must be true or false.');
             return input[key] ?? old[key] ?? fallback;
         };
+        if (kind === 'wormhole' && expires_at === null && (boolean('confirmed', true) || boolean('accessible', true) || boolean('reverse_accessible', false)))
+            throw new Error('Record a wormhole expiry before confirming the connection or allowing it in routes. Unknown-lifetime connections must remain unconfirmed and inaccessible.');
         return { id: old.id || randomUUID(), kind, from_system_id: from, to_system_id: to, list_id,
             label: text(input.label ?? old.label, 160), enabled: life_status !== 'collapsed' && boolean('enabled', true), accessible: boolean('accessible', kind === 'wormhole'),
             confirmed: boolean('confirmed', true), directional: boolean('directional', false),

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {workspaceRoutes, workspaceGroups, resolveWorkspaceRoute, universeRouteForSpace} from '../../components/kairo/workspace-navigation.mjs';
+import {workspaceRoutes, workspaceGroups, resolveWorkspaceRoute, universeRouteForSpace, universeTabForSpace} from '../../components/kairo/workspace-navigation.mjs';
 
 test('Universe has separate atlas destinations while Sessions remains independent', () => {
   assert.deepEqual(workspaceRoutes.filter(route => route.group === 'UNIVERSE').map(({id, name}) => ({id, name})), [
@@ -24,4 +24,18 @@ test('workspace routing preserves extension destinations and bounds unknown link
   assert.deepEqual(resolveWorkspaceRoute('module:my-tool'), {id: 'module:my-tool', universeTab: null});
   for (const route of [undefined, null, '', 'module:', 'unknown-page']) assert.equal(resolveWorkspaceRoute(route).id, 'overview');
   for (const route of workspaceRoutes) assert.equal(resolveWorkspaceRoute(route.id).id, route.id);
+});
+
+test('restored J-Space workspaces open the chain while K-Space keeps its tools', () => {
+  for (const savedTab of ['atlas', 'journey', 'connections']) {
+    assert.equal(universeTabForSpace('wormhole', savedTab), 'atlas');
+    assert.equal(universeTabForSpace('known', savedTab), savedTab);
+  }
+  const journeyIntent = resolveWorkspaceRoute('journey').universeTab;
+  assert.equal(universeTabForSpace('known', journeyIntent), 'journey');
+  assert.equal(universeTabForSpace('wormhole', journeyIntent), 'atlas');
+  for (const savedTab of [undefined, null, '', 'removed-tool', {}, ['journey']]) {
+    assert.equal(universeTabForSpace('wormhole', savedTab), 'atlas');
+    assert.equal(universeTabForSpace('known', savedTab), 'atlas');
+  }
 });

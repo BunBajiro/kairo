@@ -1,5 +1,16 @@
 # Validation — 25 September 2026
 
+## Universe 0.8.0-rc.8
+
+This pass addresses direct manipulation and readability in the J-Space chain: compact class/name/static cards, visible connection handles, immediate pointer tracking, and shorter contextual copy. J-Space opens directly into its chain; K-Space retains Journey and connection-network management.
+
+- All 466 Node tests pass. New regressions cover unknown-lifetime connections and explicit confirmation, queued position revisions, pilot/map scope cancellation, connection targets, and legacy J-Space navigation state.
+- TypeScript and production compilation pass. The focused compiled J-Space browser run passes 14 acceptance/layout groups with no browser errors. It verifies real pointer motion within two animation frames before release, a second saved drag while the first response is delayed, visible handle previews/pending state, pointer and keyboard connection creation, cancellation and invalid drops, exact C1/P060 and C3/C247 badge mappings, and unchanged saved itineraries.
+- Existing scanner reconciliation, signature restoration/linkage, passage records, observations, native/Wanderer import/export, pilot isolation, nearest exits, public report age/expiry and restored-route invalidation remain covered by that browser run. Desktop and 390px captures were inspected; narrow-screen fitting accounts for the readable overview labels and their handles.
+- Direct manipulation updates only moved cards and their incident SVG paths during pointer input. Geometry and position persistence settle on release; rejected or superseded saves cannot overwrite a later gesture. Pilot/map changes invalidate old gesture scopes. This is a focused responsiveness check, not a frame-rate guarantee for every graph or device.
+
+The full combined Universe and Sessions browser suites and standalone packaged-runtime tests remain required gates in the exact-commit GitHub Actions test build. The draft PR links the successful run and downloadable artifact. Synthetic fixtures issue no live EVE waypoint commands. Existing maps, settings and history require no reset.
+
 ## Universe 0.8.0-rc.7
 
 This candidate separates K-Space and J-Space in the Universe navigation category and adds a dedicated chain workspace. The [Wanderer matrix](WANDERER-INTEGRATION.md) and [51-workflow inventory](WANDERER-WORKFLOW-INVENTORY.md) distinguish implemented parity, Kairo additions, local adaptations and remaining gaps.

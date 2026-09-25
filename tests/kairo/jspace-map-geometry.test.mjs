@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT, chainBounds, fitChainCamera, chainZoomLimits, zoomChainAt, boundChainCamera, chainEdgeGeometry, traceChainPath, placeChainPopover, visibleChainLabels, placeChainEdgeLabels} from '../../components/kairo/jspace-map-geometry.mjs';
+import {draggedChainPositions,chainConnectionTarget,chainConnectionPreview,CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT, chainBounds, fitChainCamera, chainZoomLimits, zoomChainAt, boundChainCamera, chainEdgeGeometry, traceChainPath, placeChainPopover, visibleChainLabels, placeChainEdgeLabels} from '../../components/kairo/jspace-map-geometry.mjs';
 
 test('chain framing includes full cards at negative coordinates and disconnected discoveries', () => {
   const nodes = [{system_id:1,x:-420,y:-200},{system_id:2,x:610,y:470}], viewport = {width:1200,height:760};
@@ -75,4 +75,38 @@ test('public and private connection captions avoid intervening cards and narrow 
   assert.ok(edges[0].leader,'the narrow private gap uses a leader to retain association');
   assert.notDeepEqual(edges[1].label,chainEdgeGeometry(nodes[2],nodes[0]).label,'public caption leaves the intervening middle card');
   assert.ok(edges[0].labelBox.right<=edges[1].labelBox.left||edges[0].labelBox.left>=edges[1].labelBox.right||edges[0].labelBox.bottom<=edges[1].labelBox.top||edges[0].labelBox.top>=edges[1].labelBox.bottom);
+});
+
+
+test('drag previews preserve group offsets using initial zoom and latest pending positions',()=>{
+  const original=[{system_id:1,x:10,y:20},{system_id:2,x:290,y:45}];
+  const first=draggedChainPositions(original,{x:100,y:200},{x:130,y:215},.5);
+  assert.deepEqual(first,[{system_id:1,x:70,y:50},{system_id:2,x:350,y:75}]);
+  assert.deepEqual(draggedChainPositions(first,{x:0,y:0},{x:10,y:-5},.5),[{system_id:1,x:90,y:40},{system_id:2,x:370,y:65}]);
+  assert.equal(CHAIN_NODE_HEIGHT,84);
+});
+
+test('connection handles snap to private targets and reject self, empty space and public reports',()=>{
+  const nodes=[{system_id:1,x:0,y:0},{system_id:2,x:400,y:0,locked:true},{system_id:3,x:800,y:0,public_report:true}];
+  assert.equal(chainConnectionTarget(nodes,{x:10,y:20},1),null);
+  assert.equal(chainConnectionTarget(nodes,{x:400,y:42},1)?.system_id,2);
+  assert.equal(chainConnectionTarget(nodes,{x:395,y:42},1)?.system_id,2);
+  assert.equal(chainConnectionTarget(nodes,{x:820,y:20},1),null);
+  assert.equal(chainConnectionTarget(nodes,{x:600,y:300},1),null);
+  assert.match(chainConnectionPreview(nodes[0],'right',{x:320,y:60}),/^M 264 42 C /);
+  assert.match(chainConnectionPreview(nodes[0],'right',{x:420,y:60},nodes[1]),/, 400 42$/);
+  assert.match(chainConnectionPreview(nodes[1],'left',{x:0,y:0},nodes[0]),/^M 400 42 C .*264 42$/);
+});
+
+
+test('mobile Fit frames readable semantic headers and their visible connection handles',()=>{
+  const nodes=[{system_id:1,x:-140,y:20},{system_id:2,x:140,y:20},{system_id:3,x:460,y:20}],viewport={width:340,height:360};
+  const camera=fitChainCamera(nodes,viewport),scale=Math.max(.65,camera.zoom),halfEnvelope=306*scale/2;
+  assert.ok(camera.zoom<.65,'The chain exercises fixed screen-size overview labels');
+  for(const node of nodes){const center=camera.x+(node.x+CHAIN_NODE_WIDTH/2)*camera.zoom;assert.ok(center-halfEnvelope>=23.99,'Left header and handle remain inside Fit padding');assert.ok(center+halfEnvelope<=viewport.width-23.99,'Right header and handle remain inside Fit padding');}
+  const portExtent=140*Math.max(1,.65/camera.zoom),path=chainConnectionPreview(nodes[0],'right',{x:0,y:0},nodes[2],portExtent);
+  assert.ok(path.startsWith(`M ${nodes[0].x+132+portExtent} 62 C `),'Preview originates at the visible semantic handle');
+  const visible=visibleChainLabels(nodes,camera,viewport,[1]);assert.ok(visible.has(1));
+  const visibleNodes=nodes.filter(node=>visible.has(node.system_id));
+  for(let i=1;i<visibleNodes.length;i++)assert.ok(Math.abs(visibleNodes[i].x-visibleNodes[i-1].x)*camera.zoom>306*scale,'Visible labels and ports cannot cover another identity');
 });

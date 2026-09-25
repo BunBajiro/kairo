@@ -31,17 +31,121 @@ export async function jspaceAcceptance(ui){
   await call('Input.dispatchKeyEvent',{type:'keyUp',key:keyName,code:keyName,windowsVirtualKeyCode:code,modifiers:1});await settle();
  };
  const action=async(system,name)=>{await click('[aria-label='+JSON.stringify('Actions for '+system.name)+']');await button(name,'.jspace-map-menu');await settle();};
+ const port=(system,side='right')=>'.jspace-connection-handle[data-system-id="'+system.system_id+'"][data-side="'+side+'"]';
+ const pointerAt=async selector=>evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('Missing pointer target');const r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+ const beginPort=async system=>{const point=await pointerAt(port(system));await call('Input.dispatchMouseEvent',{type:'mouseMoved',...point});await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',buttons:1,clickCount:1});return point;};
+ const movePort=async point=>call('Input.dispatchMouseEvent',{type:'mouseMoved',...point,button:'left',buttons:1});
+ const releasePort=async point=>call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1});
+
+ // Exercise movement while a real save is outstanding. A delayed response must
+ // never turn pointer movement into a wait-for-server interaction or drop the
+ // next gesture. This wrapper is confined to this disposable browser and this
+ // one command; it does not interfere with the harness's polling controls.
+ await ensureJSpaceMap('Direct interaction review',true);
+ await addNode(home);await addNode(other);await click('[aria-label="Fit chain"]');await delay(650);
+ const directBefore=await mapState(),firstPosition=directBefore.nodes.find(row=>row.system_id===home.system_id);
+ const dragFrames=[];
+ const trackedDrag=async(system,dx,dy)=>{
+  const start=await evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(node(system.system_id))}),e=n.querySelector('.jspace-node-grab'),r=e.getBoundingClientRect(),b=n.getBoundingClientRect();return {x:r.x+r.width*.35,y:r.y+r.height*.5,left:b.left,top:b.top,zoom:Number(document.querySelector('[data-testid="jspace-map"]').dataset.cameraZoom)};})()`);
+  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:start.x,y:start.y});
+  await call('Input.dispatchMouseEvent',{type:'mousePressed',x:start.x,y:start.y,button:'left',buttons:1,clickCount:1});
+  await evaluate(`(()=>{window.__chainDragFrames=[];document.addEventListener('pointermove',()=>{const at=performance.now();const frame=()=>{const r=document.querySelector(${JSON.stringify(node(system.system_id))}).getBoundingClientRect();window.__chainDragFrames.push({left:r.left,top:r.top,elapsed:performance.now()-at});if(window.__chainDragFrames.length<2)requestAnimationFrame(frame);};requestAnimationFrame(frame);},{once:true,capture:true});})()`);
+  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:start.x+dx,y:start.y+dy,button:'left',buttons:1});
+  await waitFor('window.__chainDragFrames?.length===2');
+  const frames=await evaluate('window.__chainDragFrames');dragFrames.push({dx,dy,zoom:start.zoom,frames});
+  assert.ok(frames.some(frame=>Math.abs(frame.left-start.left-dx)<=2&&Math.abs(frame.top-start.top-dy)<=2),'The card reaches the pointer within two animation frames, before pointer release: '+JSON.stringify({start,dx,dy,frames}));
+  await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:start.x+dx,y:start.y+dy,button:'left',clickCount:1});
+  return {...start,dx,dy};
+ };
+ await evaluate(`(()=>{const nativeFetch=window.fetch;window.__positionFetch=nativeFetch;window.__positionSaveHeld=false;let release;const gate=new Promise(resolve=>{release=resolve;});window.__releasePositionSave=release;window.fetch=async function(input,init){let payload;try{payload=JSON.parse(init?.body||'{}');}catch{}if(!window.__positionSaveHeld&&String(input).includes('/universe/jspace/maps/')&&payload?.op==='nodes.position'){window.__positionSaveHeld=true;await gate;}return nativeFetch.call(this,input,init);};})()`);
+ let firstDrag,secondDrag;
+ try{
+  firstDrag=await trackedDrag(home,-48,32);await waitFor('window.__positionSaveHeld===true');
+  assert.deepEqual((await mapState()).nodes.find(row=>row.system_id===home.system_id),firstPosition,'A deferred save leaves the authoritative position unchanged while the card moves locally');
+  const held=await evaluate(`(()=>{const r=document.querySelector(${JSON.stringify(node(home.system_id))}).getBoundingClientRect();return {left:r.left,top:r.top};})()`);
+  assert.ok(Math.abs(held.left-firstDrag.left-firstDrag.dx)<=2&&Math.abs(held.top-firstDrag.top-firstDrag.dy)<=2,'Pointer release does not snap back while its save is pending');
+  secondDrag=await trackedDrag(home,26,-18);
+  await screenshot('jspace-live-drag-pending-save');
+ }finally{await evaluate('window.__releasePositionSave?.();window.fetch=window.__positionFetch;delete window.__positionFetch;delete window.__releasePositionSave;');}
+ await settle();
+ await waitFor(`(async()=>{const d=await(await fetch('/api/universe/jspace?character=42')).json();return d.maps.find(m=>m.id===${JSON.stringify(directBefore.id)})?.revision>=${directBefore.revision+2};})()`);
+ const savedPosition=(await mapState()).nodes.find(row=>row.system_id===home.system_id);
+ const expected={x:firstPosition.x+Math.round(firstDrag.dx/firstDrag.zoom)+Math.round(secondDrag.dx/secondDrag.zoom),y:firstPosition.y+Math.round(firstDrag.dy/firstDrag.zoom)+Math.round(secondDrag.dy/secondDrag.zoom)};
+ assert.ok(Math.abs(savedPosition.x-expected.x)<=1&&Math.abs(savedPosition.y-expected.y)<=1,'Two gestures persist in order without dropping the second movement: '+JSON.stringify({savedPosition,expected,dragFrames}));
+ await click('[aria-label="Refresh J-Space map"]');await settle();
+ assert.deepEqual({x:(await mapState()).nodes.find(row=>row.system_id===home.system_id).x,y:(await mapState()).nodes.find(row=>row.system_id===home.system_id).y},{x:savedPosition.x,y:savedPosition.y});
+ checks.push('Card movement follows real pointer input within two frames, stays optimistic during a delayed save and persists a second gesture in order');
+
+ await click('[aria-label="Fit chain"]');await delay(650);
+ const compact=await evaluate(`Array.from(document.querySelectorAll('.jspace-node')).map(e=>({width:e.offsetWidth,height:e.offsetHeight,identity:parseFloat(getComputedStyle(e.querySelector('.jspace-node-name strong')).fontSize),text:e.innerText,ports:Array.from(e.querySelectorAll('.jspace-connection-handle')).map(p=>({disabled:p.disabled,opacity:getComputedStyle(p).opacity,width:p.getBoundingClientRect().width,height:p.getBoundingClientRect().height}))}))`);
+ assert.ok(compact.every(row=>row.width<=280&&row.height<=100&&row.identity>=14),'Compact cards retain a readable system identity: '+JSON.stringify(compact));
+ assert.ok(compact.every(row=>row.ports.length===2&&row.ports.every(port=>!port.disabled&&Number(port.opacity)>0&&port.width>=16&&port.height>=16)),'Both connection ports are visibly usable on each private card');
+ assert.ok(compact.every(row=>!/(?:No effect|Status unknown|Reference only)/i.test(row.text)),'Default and reference boilerplate does not consume space on compact cards');
+ const navBeforePorts=JSON.stringify((await api('/universe/navigation?character=42')).itinerary);
+ const originalPositionRevision=(await mapState()).revision;
+ const startPort=await beginPort(home),targetPort=await pointerAt(port(other,'left'));
+ await movePort({x:(startPort.x+targetPort.x)/2,y:Math.max(startPort.y,targetPort.y)+60});
+ await waitFor("document.querySelector('[data-testid=\"jspace-connection-preview\"]')?.dataset.state==='drawing'");
+ const previewPath=await evaluate("document.querySelector('[data-testid=\"jspace-connection-preview\"]').getAttribute('d')");assert.ok(previewPath?.startsWith('M '));
+ await screenshot('jspace-port-drawing-preview');
+ await movePort(targetPort);await waitFor('document.querySelector('+JSON.stringify(node(other.system_id))+')?.classList.contains("is-connect-target")');
+ assert.notEqual(await evaluate("document.querySelector('[data-testid=\"jspace-connection-preview\"]').getAttribute('d')"),previewPath,'The drafted connection follows the pointer before any save');
+ await evaluate(`(()=>{const nativeFetch=window.fetch;window.__connectionFetch=nativeFetch;window.__connectionSaveHeld=false;let release;const gate=new Promise(resolve=>{release=resolve;});window.__releaseConnectionSave=release;window.fetch=async function(input,init){let payload;try{payload=JSON.parse(init?.body||'{}');}catch{}if(!window.__connectionSaveHeld&&String(input).includes('/universe/jspace/maps/')&&payload?.op==='connection.save'){window.__connectionSaveHeld=true;await gate;}return nativeFetch.call(this,input,init);};})()`);
+ try{
+  await releasePort(targetPort);await waitFor('window.__connectionSaveHeld===true');
+  await waitFor("document.querySelector('[data-testid=\"jspace-connection-preview\"]')?.dataset.state==='pending'");
+  assert.equal((await mapState()).connections.length,0,'The pending visual is not a saved or routable connection');
+ }finally{await evaluate('window.__releaseConnectionSave?.();window.fetch=window.__connectionFetch;delete window.__connectionFetch;delete window.__releaseConnectionSave;');}
+ await settle();await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
+ let directMap=await mapState();assert.equal(directMap.connections.length,1);assert.equal(directMap.revision,originalPositionRevision+1);
+ const drawn=directMap.connections[0];assert.deepEqual([drawn.from_system_id,drawn.to_system_id],[home.system_id,other.system_id]);
+ assert.equal(drawn.confirmed,false);assert.equal(drawn.accessible,false);assert.equal(drawn.active,false);assert.equal(drawn.expires_at,null);assert.equal(drawn.mass,'unknown');assert.equal(drawn.life_status,'unknown');assert.equal(drawn.wh_type,'');assert.equal(drawn.from_signature,'');assert.equal(drawn.to_signature,'');
+ assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Drawing a connection keeps the chain visible without opening a form');
+ if(await evaluate("!!document.querySelector('[aria-label=\"Close selected map context\"]')"))await click('[aria-label="Close selected map context"]');
+ const noSaveRevision=directMap.revision;
+ let cancelled=await beginPort(home);await movePort({x:cancelled.x+35,y:cancelled.y+55});await key('Escape','Escape',27);await releasePort({x:cancelled.x+35,y:cancelled.y+55});
+ await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
+ await beginPort(home);const self=await pointerAt(port(home,'left'));await movePort(self);await releasePort(self);await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
+ const emptyDrop=await evaluate("(()=>{const r=document.querySelector('.jspace-map-viewport').getBoundingClientRect();return{x:r.x+r.width/2,y:r.bottom-20};})()");
+ await beginPort(home);await movePort(emptyDrop);await releasePort(emptyDrop);await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
+ directMap=await mapState();assert.equal(directMap.revision,noSaveRevision);assert.equal(directMap.connections.length,1,'Escape, self-drops and empty-space drops never create connections');
+ await addNode(systems.jita);await click('[aria-label="Fit chain"]');await delay(650);
+ await evaluate('document.querySelector('+JSON.stringify(port(other))+').focus()');await key('Enter','Enter',13,'\r');
+ await waitFor("!!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
+ await evaluate('document.querySelector('+JSON.stringify(port(systems.jita,'left'))+').focus()');await key('Enter','Enter',13,'\r');await settle();
+ directMap=await mapState();assert.equal(directMap.connections.length,2,'Keyboard ports create a connection without needing a mouse drag');
+ assert.ok(directMap.connections.some(row=>row.from_system_id===other.system_id&&row.to_system_id===systems.jita.system_id&&!row.confirmed&&!row.active));
+ assert.equal(JSON.stringify((await api('/universe/navigation?character=42')).itinerary),navBeforePorts,'Drawing or keyboard-connecting a chain never changes the saved itinerary');
+ await screenshot('jspace-compact-connected-desktop');
+ if(await evaluate("!!document.querySelector('[aria-label=\"Close selected map context\"]')"))await click('[aria-label="Close selected map context"]');
+ await viewport(390,844);await click('[aria-label="Fit chain"]');await delay(650);await layout('Compact connection workspace 390');
+ const mobileOverview=await evaluate(`(()=>{const v=document.querySelector('.jspace-map-viewport').getBoundingClientRect(),box=e=>{const r=e.getBoundingClientRect();return{left:r.left-v.left,right:r.right-v.left,top:r.top-v.top,bottom:r.bottom-v.top};},shown=e=>{const s=getComputedStyle(e);return e.getClientRects().length&&s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)>0;};return {width:v.width,height:v.height,nodes:Array.from(document.querySelectorAll('.jspace-node')).map(n=>{const h=n.querySelector('.jspace-node-heading');return{id:n.dataset.systemId,header:shown(h)?box(h):null,ports:Array.from(n.querySelectorAll('.jspace-connection-handle')).filter(shown).map(box)};})};})()`);
+ const visibleNames=mobileOverview.nodes.filter(row=>row.header),overlaps=(a,b)=>a.left<b.right-1&&a.right>b.left+1&&a.top<b.bottom-1&&a.bottom>b.top+1;
+ assert.ok(visibleNames.length>0,'The fitted mobile chain keeps at least one readable system name');
+ for(const row of mobileOverview.nodes){
+  for(const box of [...(row.header?[row.header]:[]),...row.ports])assert.ok(box.left>=-1&&box.top>=-1&&box.right<=mobileOverview.width+1&&box.bottom<=mobileOverview.height+1,'Fit keeps visible overview names and ports inside the mobile viewport: '+JSON.stringify(mobileOverview));
+  for(const neighbor of visibleNames.filter(value=>value.id!==row.id)){
+   if(row.header)assert.equal(overlaps(row.header,neighbor.header),false,'Visible mobile overview names do not overlap neighboring names');
+   for(const port of row.ports)assert.equal(overlaps(port,neighbor.header),false,'Shown connection ports do not cover a neighboring visible system name');
+  }
+ }
+ await screenshot('jspace-compact-connected-mobile');await viewport(1600);
+ checks.push('Mobile fit keeps visible overview names and connection ports inside the viewport without overlapping neighboring labels');
+ checks.push('Compact readable cards expose pointer and keyboard ports, preserve the pending visual and create only unconfirmed observations; canceled, self and empty drops leave the map unchanged');
 
  await ensureJSpaceMap('Flagship scout chain',true);
  const fresh=await mapState();assert.equal(fresh.nodes.length,0);assert.equal(fresh.connections.length,0);
  await addNode(home);await addNode(other);await click('[aria-label="Fit chain"]');await delay(650);
  assert.equal(await evaluate('document.querySelector('+JSON.stringify(node(home.system_id)+' .jspace-node-class')+').textContent'),'C4');
  assert.deepEqual(await evaluate('Array.from(document.querySelectorAll('+JSON.stringify(node(home.system_id)+' .jspace-static strong')+')).map(e=>e.textContent).sort()'),['C1','C3']);
- const badge=await evaluate(`(()=>{const r=document.querySelector(${JSON.stringify(node(home.system_id)+' .jspace-static')}).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};})()`);
- await call('Input.dispatchMouseEvent',{type:'mouseMoved',...badge});await waitFor("document.querySelector('.jspace-map-hint')?.textContent.includes('not a scanned connection')");
+ assert.deepEqual(await evaluate('Array.from(document.querySelectorAll('+JSON.stringify(node(home.system_id)+' .jspace-static')+')).map(e=>e.getAttribute("aria-label")).sort()'),['C247 → C3','P060 → C1'],'Compact static badges retain both exact type-to-class mappings');
+ const firstStatic=home.wormhole.statics.find(row=>row.destinationClasses.some(value=>value.label==='C1'));
+ const badge=await evaluate(`(()=>{const r=Array.from(document.querySelectorAll(${JSON.stringify(node(home.system_id)+' .jspace-static')})).find(e=>e.getAttribute('aria-label')?.startsWith(${JSON.stringify(firstStatic.type+' →')})).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...badge});await waitFor('document.querySelector(".jspace-map-hint")?.textContent.includes('+JSON.stringify(firstStatic.type)+')');
+ assert.ok(await evaluate('document.querySelector(".jspace-map-hint").textContent.includes('+JSON.stringify(firstStatic.destinationClasses[0].label)+')'),'Static hover reveals the exact hole type and destination class');
  assert.equal((await mapState()).connections.length,0,'Static badges are references, never generated route edges');
  await selectNode(home);await button('System intel',selected);await waitFor("document.querySelectorAll('.jspace-static-reference').length===2");
- assert.ok(await evaluate("document.querySelector('.jspace-reference').textContent.includes('Nominal') && document.querySelector('.jspace-reference').textContent.includes('not identify a current signature')"));
+ assert.ok(await evaluate("document.querySelector('.jspace-reference').textContent.includes('Nominal') && document.querySelector('.jspace-reference').textContent.includes('Expected static types')"));
  assert.equal(await evaluate('document.querySelector(".jspace-reference").textContent.includes('+JSON.stringify(home.region_name)+')'),false,'Static reference keeps internal wormhole regions out of the user’s context');
  await screenshot('jspace-system-reference');await closeSheet();
  await button('Edit system',selected);await fill('[aria-label="Chain system alias"]','Forward camp');await fill('[aria-label="Chain system label"]','Scouting route');
@@ -107,7 +211,7 @@ export async function jspaceAcceptance(ui){
  await selectEdge(edge.id);await button('Passages',selected);await fill('[aria-label="Passage pilot name"]','Synthetic scout');await fill('[aria-label="Passage ship name"]','Buzzard');await fill('[aria-label="Passage observed mass kg"]','1270000');await button('Record observed passage',sheet);await settle();
  await click('[aria-label="Reverse passage direction"]');await fill('[aria-label="Passage pilot name"]','Unknown-mass return');await button('Record observed passage',sheet);await settle();
  map=await mapState();assert.equal(map.passages.length,2);assert.equal(map.connections[0].observed_mass_kg,1270000);assert.equal(map.connections[0].unweighed_passages,1);assert.equal(map.connections[0].remaining_mass_kg,null);
- assert.ok(await evaluate("document.querySelector('.jspace-sheet').textContent.includes('Mass unknown') && document.querySelector('.jspace-sheet').textContent.includes('safe rolling pass')"));
+ assert.ok(await evaluate("document.querySelector('.jspace-sheet').textContent.includes('Mass unknown') && document.querySelector('.jspace-sheet').textContent.includes('remaining mass unknown')"));
  await screenshot('jspace-passage-ledger');await closeSheet();
  checks.push('Two-sided connection conditions use canonical links, explicit route access, unchanged itineraries and an honest passage ledger');
 
@@ -148,7 +252,10 @@ export async function jspaceAcceptance(ui){
  assert.equal((await api('/universe/jspace?character=43')).maps.length,0,'Chain maps remain isolated to the selected pilot');
  await choose('Active character','Atlas Alpha');await waitFor("!!document.querySelector('[data-testid=\"jspace-map\"]')");
  await nativeSelect('Active J-Space map',originalId);await waitFor('document.querySelector(".jspace-workspace").dataset.mapId==='+JSON.stringify(originalId));await click('[aria-label="Fit chain"]');await delay(650);await selectNode(home);
- await space('K-Space');await space('J-Space');await waitFor('document.querySelector(".jspace-workspace").dataset.mapId==='+JSON.stringify(originalId));
+ await space('K-Space');
+ assert.ok(await evaluate("Array.from(document.querySelectorAll('.universe-tabs button')).some(e=>e.textContent.trim()==='Journey') && Array.from(document.querySelectorAll('.universe-tabs button')).some(e=>e.textContent.includes('Connections & pins'))"),'K-Space retains its established Journey and connection tools');
+ await space('J-Space');await waitFor('document.querySelector(".jspace-workspace").dataset.mapId==='+JSON.stringify(originalId));
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-module .universe-tabs button')).some(e=>e.getClientRects().length&&/Journey|Connections/.test(e.textContent))"),false,'J-Space opens directly into its chain without Journey or Connections tabs');
  assert.ok(await evaluate('document.querySelector('+JSON.stringify(node(home.system_id))+').classList.contains("is-selected")'),'Returning to J-Space restores the selected map and system');
  await selectEdge(edge.id);await button('Edit connection',selected);await clickElement('Array.from(document.querySelectorAll(".jspace-choice-field")).find(e=>e.querySelector("legend")?.textContent==="Observed lifetime")?.querySelector("button.is-collapsed")');await button('Save connection conditions',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  const collapsed=(await mapState()).connections[0];assert.equal(collapsed.active,false);assert.equal(collapsed.life_status,'collapsed');assert.ok(await evaluate('document.querySelector('+JSON.stringify('[data-connection-id="'+edge.id+'"]')+').classList.contains("is-expired")'),'A reported collapse becomes historical topology instead of a live route');
@@ -176,6 +283,11 @@ export async function jspaceAcceptance(ui){
   await click('[aria-label="Refresh Universe data"]');await waitFor("document.querySelector('[aria-label=\"Show Thera reports on chain\"] small')?.textContent==='EVE-Scout'");const savedBefore=await mapState();
   await click('[aria-label="Show Thera reports on chain"]');await waitFor("!!document.querySelector('[data-connection-label^=\"public:\"]')");await click('[aria-label="Fit chain"]');await delay(650);
   assert.equal((await mapState()).nodes.length,savedBefore.nodes.length);assert.equal((await mapState()).connections.length,savedBefore.connections.length,'Viewing public reports does not mutate the private map');
+  assert.ok(await evaluate('Array.from(document.querySelectorAll('+JSON.stringify(node(systems.thera.system_id)+' .jspace-connection-handle')+')).every(e=>e.disabled)'),'An ephemeral public-only card cannot start a private connection');
+  await beginPort(home);const publicDrop=await pointerAt(node(systems.thera.system_id)+' .jspace-node-grab');await movePort(publicDrop);
+  assert.equal(await evaluate('document.querySelector('+JSON.stringify(node(systems.thera.system_id))+').classList.contains("is-connect-target")'),false,'An ephemeral public card is not offered as a valid private endpoint');
+  await releasePort(publicDrop);await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
+  assert.equal((await mapState()).revision,savedBefore.revision,'Dropping a connection on a public-only endpoint does not save a map change');
   const publicId=await evaluate("document.querySelector('[data-connection-label^=\"public:\"]').dataset.connectionLabel");await selectEdge(publicId);await button('Inspect public report',selected);
   assert.ok(await evaluate("document.querySelector('.jspace-sheet').textContent.includes('EVE-Scout / Signal Cartel') && document.querySelector('.jspace-public-facts').textContent.includes('Remaining massUnknown')"));
   assert.ok(await evaluate("document.querySelector('.jspace-source-heading p').textContent.includes('1m ago')"),'New public data refreshes its displayed observation age during active mapping');

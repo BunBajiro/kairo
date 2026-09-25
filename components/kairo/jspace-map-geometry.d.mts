@@ -16,3 +16,7 @@ export function placeChainEdgeLabels<T extends ChainEdgeGeometry & {labelWidth?:
 export function traceChainPath(nodes:ChainGeometryNode[],connections:Array<{id:string;from_system_id:number;to_system_id:number;expired?:boolean;life_status?:string;enabled?:boolean;expires_at?:string|null}>,fromId:number,toId:number,now?:number):{nodes:number[];edges:string[]};
 export function placeChainPopover(point:ChainPoint,size:ChainViewport,viewport:ChainViewport,padding?:number):ChainPoint;
 export function visibleChainLabels(nodes:ChainGeometryNode[],camera:ChainCamera,viewport:ChainViewport,priorityIds?:(number|null|undefined)[]):Set<number>;
+
+export function draggedChainPositions(originals:ChainGeometryNode[],start:ChainPoint,end:ChainPoint,zoom:number):ChainGeometryNode[];
+export function chainConnectionTarget<T extends ChainGeometryNode & {public_report?:boolean}>(nodes:T[],point:ChainPoint,fromId:number,padding?:number):T|null;
+export function chainConnectionPreview(from:ChainPoint,side:'left'|'right',point:ChainPoint,target?:ChainPoint|null,portExtent?:number):string;
