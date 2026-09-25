@@ -2,6 +2,14 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.4 — Explore the political atlas
+
+- Added an immersive map workspace, linked territory selection and richer regional context.
+- Made political territories directly explorable, with framing, regional holdings and neighbouring stargate connections.
+- Added fluid drag and touch navigation, a map overview and route framing while retaining bounded views and reduced-motion support.
+- Unified local search across systems, regions and political territories with keyboard navigation.
+- Preserved unique territory colours, configured membership precedence and the explicit uncertainty of inferred groups.
+
 ## 0.8.0-rc.3 — Immersive Universe and distinct territories
 
 - Reshaped Universe around a larger map with a compact command area, clearer contrast, larger type and visual system/bloc cards.

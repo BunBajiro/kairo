@@ -2,7 +2,7 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.8.0-rc.3 · Universe review build · Windows first · No cloud deployment**
+**Version 0.8.0-rc.4 · Universe review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
@@ -22,11 +22,11 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version **0.8.0-rc.3** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md).
+Version **0.8.0-rc.4** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md).
 
 Configure named power blocs and their member alliances in **Settings → Universe**. Unconfigured alliances can use **Inferred Coalitions**, an explicitly uncertain fallback from combat evidence collected locally. Crisp vector borders, distinct K-Space/J-Space tabs, bounded zoom and larger visual controls make the political map easier to read. Replay keeps recorded travel while hiding routine system-entry and OPSEC event cards.
 
-The latest candidate puts the map first, with 16px primary text, clearer cards, smooth camera movement and brief selection/event animations that respect reduced-motion settings. Distinct political territories use unique colours, with Caldari blue, Gallente teal, Amarr gold and Minmatar rust reserved for their factions.
+Universe opens as an immersive map workspace by default, with a collapsible details dock, direct territory exploration, regional holdings, physical stargate frontiers and unified system/region/territory search. Fluid navigation, an overview inset and route framing keep travel and political exploration connected. Primary controls use 16px text; motion respects reduced-motion settings and settles when idle. Distinct political territories use unique colours, with Caldari blue, Gallente teal, Amarr gold and Minmatar rust reserved for their factions.
 
 Existing visits, sessions and notes are retained. The old Journey navigation opens **Universe → Journey**. Its separate module and map are retired; observed travel is never imported as a verified routing network. There is no data reset in this build.
 

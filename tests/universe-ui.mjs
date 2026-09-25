@@ -9,17 +9,18 @@ import {join} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {openStore} from '../server/store.mjs';
 import {startKairo} from '../server/index.mjs';
+import {projectKnownSystems} from '../components/kairo/universe-map-math.mjs';
 
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(existsSync);
 if(!chrome)throw new Error('Chrome is required for the browser smoke test. Set KAIRO_CHROME_PATH.');
 const dir=await mkdtemp(join(tmpdir(),'kairo-universe-ui-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-screenshots';
 await mkdir(output,{recursive:true});
-let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[],contrastChecks=[],motionChecks=[],mapLayouts=[],paletteChecks=[];let sequence=0;
+let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[],contrastChecks=[],motionChecks=[],mapLayouts=[],paletteChecks=[],territoryChecks=[];let sequence=0;
 const empireColours={500001:'#4f88c6',500004:'#3da891',500003:'#c7a44b',500002:'#b86b4b'};
 const externalCalls=[];
 const appOptions={port:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590),streamPort:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590)+1,dataDir:join(dir,'data'),noSync:true,fetcher:async url=>{externalCalls.push(String(url));throw new Error('External ESI access is disabled in this synthetic browser test');}};
 function call(method,params={}){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params}));});}
-async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+': '+r.exceptionDetails.exception?.description);return r.result.value;}
+async function evaluate(expression){let r;try{r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});}catch(error){throw new Error(error.message+'; expression: '+expression.slice(0,500));}if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+': '+r.exceptionDetails.exception?.description);return r.result.value;}
 async function waitFor(expression){for(let i=0;i<300;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Condition not met: '+expression);}
 async function clickElement(expression){
  await waitFor('!!('+expression+')');
@@ -54,7 +55,7 @@ async function preset(name){
  if(!open)await click('[aria-label="Close layers"]');
 }
 async function space(name){await clickElement(`Array.from(document.querySelectorAll('[aria-label="Universe space"] [role="tab"]')).find(e=>e.querySelector('strong')?.textContent===${JSON.stringify(name)})`);}
-async function screenshot(name){await evaluate('document.fonts.ready');await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
+async function screenshot(name){await evaluate('document.fonts.ready');await delay(500);await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
 async function api(path,method='GET',body){
  return evaluate(`(async()=>{const boot=await(await fetch('/api/bootstrap')).json();const response=await fetch('/api'+${JSON.stringify(path)},{method:${JSON.stringify(method)},headers:{'content-type':'application/json','x-kairo-csrf':boot.csrf},${body===undefined?'':'body:'+JSON.stringify(JSON.stringify(body))+','}});const data=await response.json();if(!response.ok)throw new Error(JSON.stringify(data));return data;})()`);
 }
@@ -132,6 +133,173 @@ async function navigationMotion(){
  }
  await click('[aria-label="Fit map"]');await delay(900);
  checks.push('Finite smooth zoom/focus, reduced motion and simulated hidden-page cancellation');
+}
+async function pointerNavigation(){
+ // This public/no-pilot scenario has one selected system, so its eight-pixel
+ // ring is a stable geographic probe independent of label collision placement.
+ await click('[aria-label="Focus selected system"]');await delay(900);
+ await evaluate(`(()=>{window.__navigation={points:[],draws:0};window.__navigationOriginals={arc:CanvasRenderingContext2D.prototype.arc,clearRect:CanvasRenderingContext2D.prototype.clearRect};CanvasRenderingContext2D.prototype.arc=function(x,y,r,...args){if(this.canvas.closest('.universe-module')&&r===8)window.__navigation.points.push({x,y,at:performance.now()});return window.__navigationOriginals.arc.call(this,x,y,r,...args);};CanvasRenderingContext2D.prototype.clearRect=function(...args){if(this.canvas.closest('.universe-module'))window.__navigation.draws++;return window.__navigationOriginals.clearRect.apply(this,args);};})()`);
+ const reset=()=>evaluate('window.__navigation={points:[],draws:0}');
+ const settle=async(label)=>{
+  await delay(1100);const value=await evaluate('window.__navigation');await delay(200);
+  assert.equal(await evaluate('window.__navigation.draws'),value.draws,label+': no continuing redraw after the gesture settles');return value;
+ };
+ const zoom=()=>evaluate("parseFloat(document.querySelector('[aria-label=\"Zoom in\"]').previousElementSibling.textContent)");
+ try{
+  await click('[aria-label="Focus selected system"]');await delay(900);
+  const ring=await evaluate('window.__navigation.points.at(-1)');assert.ok(ring,'Selected-system ring is available for the anchor measurement');
+  const bounds=await evaluate("(()=>{const e=document.querySelector('.universe-module canvas');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};})()");
+  const anchor={x:bounds.x+ring.x,y:bounds.y+ring.y};await reset();const beforeZoom=await zoom();
+  await call('Input.dispatchMouseEvent',{type:'mouseWheel',...anchor,deltaX:0,deltaY:-80});
+  const wheel=await settle('Anchored wheel zoom'),drift=Math.max(...wheel.points.map(p=>Math.hypot(p.x-ring.x,p.y-ring.y)));
+  assert.ok(await zoom()>beforeZoom,'Wheel input magnifies the map');assert.ok(wheel.points.length>=3&&drift<2,'The geographic point beneath the wheel stays anchored during easing: '+drift);
+  motionChecks.push({label:'Wheel geographic anchor',samples:wheel.points.length,maxDriftPixels:drift});
+
+  await call('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});await reset();const pinchBefore=await zoom();
+  const touch=spread=>[{x:anchor.x-spread,y:anchor.y,id:1},{x:anchor.x+spread,y:anchor.y,id:2}];
+  await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:touch(45)});
+  for(const spread of [55,70,85]){await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:touch(spread)});await delay(30);}
+  await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await settle('Touch pinch');
+  const pinchAfter=await zoom();assert.ok(pinchAfter>pinchBefore*1.4,'A real two-touch gesture changes map scale');
+  motionChecks.push({label:'Two-touch pinch zoom',zoomBefore:pinchBefore,zoomAfter:pinchAfter});await call('Emulation.setTouchEmulationEnabled',{enabled:false});
+
+  const drag=async()=>{
+   const start={x:bounds.x+bounds.width*.48,y:bounds.y+bounds.height*.5};
+   await call('Input.dispatchMouseEvent',{type:'mousePressed',...start,button:'left',clickCount:1});
+   for(const offset of [20,40,60]){await delay(25);await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:start.x+offset,y:start.y+offset*.35,button:'left',buttons:1});}
+   await reset();await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:start.x+60,y:start.y+21,button:'left',clickCount:1});
+  };
+  await drag();const coast=await settle('Drag coast'),positions=new Set(coast.points.map(p=>p.x.toFixed(2)+':'+p.y.toFixed(2))).size;
+  assert.ok(positions>=3,'Releasing a moving drag produces finite intermediate coast positions');
+  motionChecks.push({label:'Finite drag coast',positions,samples:coast.points.length,spanMs:coast.points.at(-1).at-coast.points[0].at,draws:coast.draws});
+  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});await delay(50);await drag();
+  const reduced=await settle('Reduced-motion drag');assert.ok(new Set(reduced.points.map(p=>p.x.toFixed(2)+':'+p.y.toFixed(2))).size<=1,'Reduced motion removes coast after release');
+  motionChecks.push({label:'Reduced-motion drag coast',positions:new Set(reduced.points.map(p=>p.x.toFixed(2)+':'+p.y.toFixed(2))).size,draws:reduced.draws});
+ }finally{
+  await evaluate("for(const [name,original] of Object.entries(window.__navigationOriginals))CanvasRenderingContext2D.prototype[name]=original");
+  await call('Emulation.setTouchEmulationEnabled',{enabled:false});await call('Emulation.setEmulatedMedia',{features:[]});
+ }
+ await click('[aria-label="Fit map"]');await delay(900);checks.push('Anchored wheel, real touch pinch and finite drag inertia with reduced-motion override');
+}
+async function territoryInspection(state){
+ const staticAtlas=await api('/universe/static'),byId=new Map(staticAtlas.systems.map(s=>[s.system_id,s])),group=state.politics.groups.find(g=>g.source==='configured'),colour=group.color;
+ const owned=state.systems.filter(s=>s.power_bloc?.source==='configured'&&s.power_bloc?.group_id===group.id).map(s=>s.system_id),ownedIds=new Set(owned);
+ const observed=state.systems.filter(s=>byId.get(s.system_id)?.space==='known'&&(s.sovereignty?.alliance_id||s.sovereignty?.faction_id||s.sovereignty?.corporation_id)).length;
+ const regions=new Map();for(const id of owned){const s=byId.get(id);regions.set(s.region_name,(regions.get(s.region_name)||0)+1);}
+ await preset('Geopolitics');await click('[aria-label="Fit map"]');await delay(900);
+ // Reuse actual browser-rendered vector paths to find a quiet interior point.
+ // This does not inject application state or bypass map hit-testing.
+ await evaluate(`(()=>{window.__territoryPaint={paths:[],points:[]};window.__territoryOriginals={};for(const method of ['clearRect','fill','arc']){const original=CanvasRenderingContext2D.prototype[method];window.__territoryOriginals[method]=original;CanvasRenderingContext2D.prototype[method]=function(...args){if(this.canvas.closest('.universe-module')){if(method==='clearRect')window.__territoryPaint={paths:[],points:[]};if(method==='fill'&&args[0] instanceof Path2D){const t=this.getTransform();window.__territoryPaint.paths.push({path:args[0],fill:this.fillStyle,matrix:[t.a,t.b,t.c,t.d,t.e,t.f]});}if(method==='arc'&&args[2]<=8)window.__territoryPaint.points.push({x:args[0],y:args[1]});}return original.apply(this,args);};}})()`);
+ try{
+  await click('[aria-label="Fit map"]');await delay(900);let hit;
+  for(let attempt=0;attempt<4&&!hit;attempt++){
+   hit=await evaluate(`(()=>{const canvas=document.querySelector('.universe-module canvas'),r=canvas.getBoundingClientRect(),context=canvas.getContext('2d'),paths=window.__territoryPaint.paths.filter(p=>p.fill===${JSON.stringify(colour)}),points=window.__territoryPaint.points;context.save();let found=null;for(const path of paths){context.setTransform(...path.matrix);for(let y=35;y<r.height-35&&!found;y+=6)for(let x=35;x<r.width-35;x+=6){if(document.elementFromPoint(r.left+x,r.top+y)!==canvas||points.some(p=>Math.hypot(p.x-x,p.y-y)<15))continue;if(context.isPointInPath(path.path,x,y)&&context.isPointInPath(path.path,x+2,y)&&context.isPointInPath(path.path,x-2,y)&&context.isPointInPath(path.path,x,y+2)&&context.isPointInPath(path.path,x,y-2)){found={x:r.left+x,y:r.top+y,localX:x,localY:y};break;}}if(found)break;}context.restore();return found;})()`);
+   if(!hit){await click('[aria-label="Zoom in"]');await delay(750);}
+  }
+  assert.ok(hit,'A real territory interior can be selected away from system hit targets');
+  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:hit.x,y:hit.y});
+  await waitFor(`document.querySelector('.universe-territory-hud')?.textContent.includes(${JSON.stringify(group.name)})`);
+  await call('Input.dispatchMouseEvent',{type:'mousePressed',x:hit.x,y:hit.y,button:'left',clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:hit.x,y:hit.y,button:'left',clickCount:1});
+  await waitFor(`document.querySelector('.universe-bloc-focus h3')?.textContent===${JSON.stringify(group.name)}`);
+  assert.ok(await evaluate("!!document.querySelector('.universe-territory-hud[data-selected=\"true\"]') && !!document.querySelector('[aria-label=\"Frame selected territory\"]')"),'Clicking the actual polygon creates an actionable territory spotlight');
+  const share=await evaluate("({value:Number(document.querySelector('[aria-label=\"Share of observed owned systems\"]').getAttribute('aria-valuenow')),label:document.querySelector('[aria-label=\"Share of observed owned systems\"]').getAttribute('aria-valuetext'),regions:Array.from(document.querySelectorAll('.universe-territory-region')).map(e=>({name:e.querySelector('strong').textContent,count:Number(e.querySelector(':scope > span > span').textContent.replace(/[^0-9]/g,''))}))})");
+  assert.ok(Math.abs(share.value-owned.length/observed*100)<.001,'Share counts observed owned systems against the full roster');assert.ok(share.label.includes(observed.toLocaleString('en-GB')+' observed owned systems'));
+  assert.deepEqual(Object.fromEntries(share.regions.map(r=>[r.name,r.count])),Object.fromEntries(regions),'Regional distribution accounts for all holdings, including collapsed additional regions');
+  assert.ok(await evaluate("document.querySelector('.universe-territory-frontiers').textContent.includes('Physical gate connections, not diplomatic relationships.')"));
+  await click('.universe-frontier-gates summary');
+  const endpoints=await evaluate("Array.from(document.querySelector('.universe-frontier-connection').querySelectorAll('button')).map(e=>e.textContent)");
+  const endpointIds=endpoints.map(name=>staticAtlas.systems.find(s=>s.name===name).system_id);
+  assert.ok(ownedIds.has(endpointIds[0])&&!ownedIds.has(endpointIds[1]),'The frontier is oriented from this territory to its neighbour');
+  assert.ok(staticAtlas.gates.some(g=>g.from_system_id===endpointIds[0]&&g.to_system_id===endpointIds[1]||g.from_system_id===endpointIds[1]&&g.to_system_id===endpointIds[0]),'Frontier endpoints are an actual physical stargate pair');
+  await click('[aria-label='+JSON.stringify('Inspect frontier system '+endpoints[0])+']');await waitFor(`document.querySelector('.universe-system-title h3')?.textContent===${JSON.stringify(endpoints[0])}`);
+  await click('.universe-member-link');await waitFor("!!document.querySelector('.universe-bloc-selection')");
+  const exploredRegion=await evaluate("document.querySelector('.universe-territory-region strong').textContent");await click('.universe-territory-region');await delay(900);
+  assert.equal(await evaluate("document.querySelector('.universe-bloc-focus h3').textContent"),group.name,'Exploring regional holdings retains the territorial context');
+  await button('Layers & views');assert.ok(await evaluate(`document.querySelector('[aria-label="Map region"]').textContent.includes(${JSON.stringify(exploredRegion)})`),'Regional holdings action frames that region');await click('[aria-label="Close layers"]');
+  await button('Frame territory','.universe-bloc-selection');await delay(900);
+  const frame=await evaluate(`(()=>{const e=document.querySelector('.universe-module canvas'),r=e.getBoundingClientRect();return {matrix:window.__territoryPaint.paths.find(p=>p.fill===${JSON.stringify(colour)})?.matrix,width:r.width,height:r.height};})()`);
+  assert.ok(frame.matrix,'Framed territory still has its vector geometry');
+  const projected=projectKnownSystems(staticAtlas.systems).filter(p=>ownedIds.has(p.system.system_id)).map(p=>({x:p.x*frame.matrix[0]+frame.matrix[4],y:p.y*frame.matrix[3]+frame.matrix[5]}));
+  const extent={minX:Math.min(...projected.map(p=>p.x)),maxX:Math.max(...projected.map(p=>p.x)),minY:Math.min(...projected.map(p=>p.y)),maxY:Math.max(...projected.map(p=>p.y))};
+  assert.ok(extent.minX>=20&&extent.minY>=20&&extent.maxX<=frame.width-20&&extent.maxY<=frame.height-20,'Frame territory includes every owned system with padding: '+JSON.stringify({...extent,...frame}));
+  await disclosure('Evidence & coverage');assert.ok(await evaluate("document.querySelector('.universe-evidence-coverage').textContent.includes('not map area') && document.querySelector('.universe-evidence-coverage').textContent.includes('Unclaimed or unobserved')"));
+  await evaluate("document.querySelector('#universe-details-dock').scrollTop=0");
+  await screenshot('universe-territory-intelligence');
+  territoryChecks.push({label:'Real polygon selection and territorial intelligence',key:'bloc:'+group.id,ownedSystems:owned.length,observedSystems:observed,regions:regions.size,frontierEndpoints:endpoints,frame:extent});
+  await button('Clear spotlight','.universe-territory-actions');await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await waitFor("!document.querySelector('.universe-bloc-selection')");
+  assert.equal(await evaluate("!!document.querySelector('.universe-territory-hud')"),false,'Clearing the spotlight removes its map HUD');
+  await button('Owners','.universe-bloc-filters');const owners=await evaluate("Array.from(document.querySelectorAll('.universe-bloc-row strong')).map(e=>e.textContent)");
+  assert.ok(owners.includes('Synthetic independent alliance')&&owners.includes('Synthetic opponent'),'Independent and unassigned owners are directly explorable');
+  await button('Factions','.universe-bloc-filters');assert.equal(await evaluate("document.querySelectorAll('.universe-bloc-row').length"),4,'All four empires are directly explorable');
+  await button('All','.universe-bloc-filters');
+ }finally{await evaluate("for(const [name,original] of Object.entries(window.__territoryOriginals))CanvasRenderingContext2D.prototype[name]=original");}
+ await search('UALX-3');await click('[aria-label="Fit map"]');await delay(900);checks.push('Actual territory hover/click, spotlight, complete framing, regional shares and physical frontier inspection');
+}
+async function overviewNavigation(){
+ if(!await evaluate("!!document.querySelector('[aria-label=\"Navigate overview map\"]')"))await click('[aria-label="Toggle overview map"]');
+ await click('[aria-label="Zoom in"]');await click('[aria-label="Zoom in"]');await delay(750);
+ const before=await evaluate("(()=>{const e=document.querySelector('.universe-overview-viewport');return {x:Number(e.getAttribute('x')),y:Number(e.getAttribute('y')),width:Number(e.getAttribute('width')),height:Number(e.getAttribute('height'))};})()");
+ const target=await evaluate("(()=>{const r=document.querySelector('[aria-label=\"Navigate overview map\"]').getBoundingClientRect();return {x:r.left+r.width*.3,y:r.top+r.height*.35};})()");
+ const prior=await canvasHash();await call('Input.dispatchMouseEvent',{type:'mousePressed',...target,button:'left',clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',...target,button:'left',clickCount:1});await delay(900);
+ const after=await evaluate("(()=>{const e=document.querySelector('.universe-overview-viewport');return {x:Number(e.getAttribute('x')),y:Number(e.getAttribute('y')),width:Number(e.getAttribute('width')),height:Number(e.getAttribute('height'))};})()");
+ assert.ok(Math.hypot(after.x-before.x,after.y-before.y)>1,'Clicking the overview relocates the camera viewport');assert.notEqual(await canvasHash(),prior,'Overview navigation changes the actual map');
+ assert.ok(await evaluate("/Projected distance: [0-9.]+ ly/i.test(document.querySelector('.universe-map-scale').getAttribute('aria-label'))"),'K-space carries a numeric projected distance scale');
+ await click('[aria-label="Navigate overview map"]');await delay(900);const keyBefore=await canvasHash();await key('ArrowRight','ArrowRight',39);await delay(900);assert.notEqual(await canvasHash(),keyBefore,'Overview navigation works from the keyboard');
+ motionChecks.push({label:'Overview click navigation',before,after});
+ await click('[aria-label="Fit map"]');await delay(900);checks.push('Clickable and keyboard overview navigation with projected K-space scale');
+}
+async function searchAtlasContexts(){
+ await click('[aria-label="Fit map"]');await key('/','Slash',191,'/');
+ assert.equal(await evaluate("document.activeElement?.getAttribute('aria-label')"),'Find a solar system','Slash focuses the unified atlas search outside editable fields');
+ await fill('[aria-label="Find a solar system"]','The Forge');
+ await waitFor("document.querySelector('[aria-label=\"Universe search results\"] [role=option] strong')?.textContent==='The Forge'");
+ await key('ArrowDown','ArrowDown',40);await key('ArrowUp','ArrowUp',38);
+ assert.ok(await evaluate("(()=>{const input=document.querySelector('[aria-label=\"Find a solar system\"]');return document.getElementById(input.getAttribute('aria-activedescendant'))?.getAttribute('role')==='option';})()"),'Search exposes the active result to assistive technology');
+ await key('Enter','Enter',13,'\r');await waitFor("document.querySelector('.universe-overview-heading h3')?.textContent==='The Forge'");
+ await fill('[aria-label="Find a solar system"]','Test Expedition Bloc');await key('Enter','Enter',13,'\r');
+ await waitFor("document.querySelector('.universe-bloc-focus h3')?.textContent==='Test Expedition Bloc'");
+ await button('Frame territory','.universe-bloc-selection');await delay(900);
+ await button('Layers & views');assert.ok(await evaluate("document.querySelector('[aria-label=\"Map region\"]').textContent.includes('All regions')"),'Framing a whole territory clears a conflicting region scope');await click('[aria-label="Close layers"]');
+ const camera=()=>evaluate("(()=>{const e=document.querySelector('.universe-overview-viewport');return ['x','y','width','height'].map(k=>Number(e.getAttribute(k)));})()");
+ const firstFrame=await camera();await click('[aria-label="Zoom in"]');await delay(750);await button('Frame territory','.universe-bloc-selection');await delay(900);const repeatedFrame=await camera();
+ assert.ok(firstFrame.every((n,i)=>Math.abs(n-repeatedFrame[i])<.5),'Repeated territory framing restores the same bounds after manual zoom');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});
+ assert.ok(await evaluate("!!document.querySelector('[aria-label=\"Frame selected territory\"]')"),'The same territory can be framed repeatedly while retaining its spotlight');
+ await button('Clear spotlight','.universe-bloc-selection');
+ await fill('[aria-label="Find a solar system"]','Caldari State');await key('Escape','Escape',27);
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Find a solar system\"]').value"),'');assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Universe search results\"]')"),false,'Escape dismisses search without selecting a result');
+ await search('UALX-3');await click('[aria-label="Fit map"]');await delay(900);
+ checks.push('Unified system, region and territory keyboard search, scope reset and repeat territory frame');
+}
+async function defaultMapWorkspace(label){
+ await delay(1100);
+ const geometry=()=>evaluate("(()=>{const e=document.querySelector('.universe-module canvas'),r=e.getBoundingClientRect(),v=document.querySelector('.universe-overview-viewport');return {left:r.left,top:r.top,width:r.width,height:r.height,bottom:r.bottom,viewportHeight:innerHeight,camera:v?Object.fromEntries(['x','y','width','height'].map(k=>[k,Number(v.getAttribute(k))])):null};})()");
+ const before=await geometry();
+ assert.ok(await evaluate("document.querySelector('.universe-module').classList.contains('is-atlas-workspace')"),'The immersive atlas is the default workspace');
+ assert.ok(before.bottom<=before.viewportHeight&&before.height>=Math.min(450,before.viewportHeight*.42),label+': default map occupies the remaining viewport without page scrolling: '+JSON.stringify(before));
+ await evaluate("void(window.__workspaceCanvas=document.querySelector('.universe-module canvas'))");
+ await click('[aria-label="Collapse details"]');await delay(900);const collapsed=await geometry();
+ assert.equal(await evaluate("document.querySelector('#universe-details-dock').hidden"),true,'Collapsing details removes the dock from the layout');
+ assert.equal(await evaluate("document.activeElement?.getAttribute('aria-label')"),'Open details','Keyboard focus stays on the dock toggle');
+ await screenshot('universe-default-map-collapsed-'+label);
+ await click('[aria-label="Open details"]');await delay(900);const reopened=await geometry();
+ assert.equal(await evaluate("document.querySelector('.universe-module canvas')===window.__workspaceCanvas"),true,'Dock toggling keeps the same map canvas mounted');
+ for(const dimension of ['left','top','width','height'])assert.ok(Math.abs(reopened[dimension]-before[dimension])<1,label+': reopening details restores the map layout');
+ if(before.camera&&reopened.camera)for(const k of ['x','y','width','height'])assert.ok(Math.abs(reopened.camera[k]-before.camera[k])<.5,label+': dock toggling preserves camera '+k);
+ await button('Layers & views');await waitFor("!!document.querySelector('#universe-layer-popover')");const layered=await geometry();
+ assert.ok(Math.abs(layered.top-before.top)<1&&Math.abs(layered.height-before.height)<1,'Layer controls overlay the map without pushing it down');
+ await key('Escape','Escape',27);await waitFor("!document.querySelector('#universe-layer-popover')");
+ assert.equal(await evaluate("document.activeElement?.getAttribute('aria-controls')"),'universe-layer-popover','Escape restores layer-toggle focus');
+ if(label==='mobile')await click('[aria-label="Collapse details"]');
+ await click('.universe-map-footnote > button');await waitFor("!!document.querySelector('#universe-source-drawer')");const sourced=await geometry();
+ assert.ok(Math.abs(sourced.top-before.top)<1&&Math.abs(sourced.height-before.height)<1,'Data sources overlay the map without displacing it');
+ await key('Escape','Escape',27);await waitFor("!document.querySelector('#universe-source-drawer')");
+ assert.equal(await evaluate("document.activeElement===document.querySelector('.universe-map-footnote > button')"),true,'Escape restores data-source-toggle focus');
+ await button('Atlas','.universe-tabs');
+ await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',nativeVirtualKeyCode:9,windowsVirtualKeyCode:9,modifiers:8,text:'\t',unmodifiedText:'\t'});
+ await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',nativeVirtualKeyCode:9,windowsVirtualKeyCode:9,modifiers:8});await delay(50);
+ assert.equal(await evaluate("!!document.activeElement?.closest('.universe-module')"),false,'Shift-Tab from the first atlas control returns to the application shell');
+ mapLayouts.push({label:'Default map workspace '+label,before,collapsed,reopened});checks.push('Default immersive map, stable collapsible dock and overlay controls '+label);
 }
 function politicalPalette(state,label){
  const colours=state.politics.territory_colours,entries=Object.entries(colours);
@@ -220,12 +388,15 @@ try{
  await space('J-Space');await waitFor("document.querySelector('.universe-module')?.classList.contains('is-jspace')");
  assert.ok(await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label').startsWith('Wormhole space')"));
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Territory view\"]')"),null,'J-space has its own discovery controls');
+ assert.equal(await evaluate("!!document.querySelector('.universe-map-scale-bar')"),false,'Schematic J-space does not claim a physical distance scale');
+ assert.ok(await evaluate("document.querySelector('.universe-map-scale').textContent.includes('no scale')"));
  await screenshot('universe-jspace-empty');await space('K-Space');
  await readability('Public atlas', [['.universe-tabs button',16],['.universe-space-switch strong',16],['[aria-label="Find a solar system"]',16],['.universe-map-footnote',14]]);
  await mapFirstLayout('Desktop public atlas');await screenshot('universe-map-first-desktop');
  await contrast('Atlas controls',['.universe-tabs button','.universe-space-switch strong','.universe-map-footnote']);
  checks.push('Distinct K-space and J-space tabs with a dedicated wormhole discovery context');
  await layout('Public atlas desktop');await screenshot('universe-public-atlas');
+ await defaultMapWorkspace('desktop');
  await search('Jita');
  assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-metric-grid strong')).map(e=>e.textContent)"),['—','—','—','—'],'Unavailable public feeds must not look like zero activity');
  await disclosure('Celestials & NPC stations');await waitFor("document.querySelectorAll('.universe-celestial-group').length===4");
@@ -235,6 +406,8 @@ try{
  assert.ok(await evaluate("Array.from(document.querySelectorAll('.universe-celestial-list strong')).some(e=>e.textContent.includes('Caldari Navy Assembly Plant'))"),'Jita NPC station names render from bundled detail data');
  await disclosure('Celestials & NPC stations');
  await navigationMotion();
+ await pointerNavigation();
+ await overviewNavigation();
  await click('[aria-label="Zoom in"]');await delay(100);const zoomed=await canvasHash();
  const point=await evaluate("(()=>{const e=document.querySelector('.universe-module canvas');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()");
  await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1});
@@ -363,12 +536,19 @@ try{
  await clickElement("Array.from(document.querySelectorAll('[data-sidebar=menu-button]')).find(e=>e.textContent.trim()==='Universe')");await waitFor("!!document.querySelector('.universe-module canvas')");
  checks.push('Power bloc create/name/colour, explicit membership move to independent, save/reopen, source labels and per-alliance fallback');
 
- await search('Jita');await button('Route','.universe-inspector-tabs');
- await fill('[list="universe-system-route-origin"]','Jita');await fill('[list="universe-system-route-destination"]','Amarr');await button('Calculate route');
+ await territoryInspection(configured);
+ await searchAtlasContexts();
+
+ await search('Jita');await click('[aria-label="Set route origin"]');
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Route origin\"]').value"),'Jita');
+ await search('Amarr');await click('[aria-label="Set route destination"]');
+ assert.deepEqual(await evaluate("['Route origin','Route destination'].map(label=>document.querySelector('[aria-label=\"'+label+'\"]').value)"),['Jita','Amarr'],'Selected-system route actions preserve the other endpoint');
+ await button('Calculate route');
  await waitFor("document.querySelector('.universe-route-result .eyebrow')?.textContent==='CALCULATED ROUTE'");
  const route=await evaluate("Array.from(document.querySelectorAll('.universe-route-result ol strong')).map(e=>e.textContent)");
  assert.equal(route[0],'Jita');assert.equal(route.at(-1),'Amarr');assert.ok(route.length>2,'Route uses multiple actual stargates');
  assert.ok(await evaluate("document.querySelector('.universe-canvas-shell').textContent.includes('Planned route')"),'Calculated route is passed to the map');
+ await delay(900);const beforeRouteFit=await canvasHash();await click('[aria-label="Fit route"]');await delay(900);assert.notEqual(await canvasHash(),beforeRouteFit,'Fit route reframes the drawn route');
  await screenshot('universe-gate-route');
  await button('Jump range','.universe-inspector-tabs');
  assert.ok(atlas.nearby,'Static data supplies an actual nullsec target within range');
@@ -430,6 +610,7 @@ try{
   await readability('Atlas '+width,[['.universe-tabs button',16],['.universe-system-title h3',22],['.universe-owner strong',16],['.universe-membership p',14],['.universe-breadcrumb',14],['[aria-label="Find a solar system"]',16]]);
   if(width===1600){await mapFirstLayout('Desktop pilot atlas');await contrast('System inspector',['.universe-owner strong','.universe-membership p','.universe-breadcrumb']);}
   await evaluate("document.querySelector('.universe-module').scrollIntoView({block:'start'})");await screenshot('universe-atlas-'+width);
+  if(width===390)await defaultMapWorkspace('mobile');
  }
  await button('Layers & views');await layout('Layers 390');await screenshot('universe-mobile-layers');await click('[aria-label="Close layers"]');
  await clickElement("Array.from(document.querySelectorAll('.universe-tabs button')).find(e=>e.textContent.startsWith('Connections & pins'))");await layout('Connections 390');await screenshot('universe-mobile-connections');
@@ -500,13 +681,13 @@ try{
  const metrics=await idleMetrics();
  assert.deepEqual(errors,[],'No uncaught browser errors');
  assert.deepEqual(externalCalls,[],'No external ESI or login requests from synthetic fixtures');
- await writeFile(join(output,'universe-checks.json'),JSON.stringify({checks,metrics,renderChecks,typeChecks,contrastChecks,motionChecks,mapLayouts,paletteChecks,atlas:{systems:atlas.systems,known:atlas.known,gates:atlas.gates},routeHops:route.length-1},null,2));
+ await writeFile(join(output,'universe-checks.json'),JSON.stringify({checks,metrics,renderChecks,typeChecks,contrastChecks,motionChecks,mapLayouts,paletteChecks,territoryChecks,atlas:{systems:atlas.systems,known:atlas.known,gates:atlas.gates},routeHops:route.length-1},null,2));
  await rm(join(output,'failure.json'),{force:true});await rm(join(output,'universe-failure.png'),{force:true});
  console.log(JSON.stringify({ok:true,checks,metrics,screenshots:output}));
 }catch(error){
  console.error('Universe browser check failed:',error.stack||error.message);
- const state=ws?.readyState===1?await evaluate("({url:location.href,tabs:Array.from(document.querySelectorAll('[role=tab]')).map(t=>({text:t.textContent,selected:t.getAttribute('aria-selected')})),body:document.body.innerText.slice(-16000)})").catch(()=>null):null;
- await writeFile(join(output,'failure.json'),JSON.stringify({error:error.stack||error.message,errors,state},null,2));
+ const state=ws?.readyState===1?await evaluate("({url:location.href,focus:{tag:document.activeElement?.tagName,text:document.activeElement?.textContent?.slice(0,100),aria:document.activeElement?.getAttribute('aria-label')},tabs:Array.from(document.querySelectorAll('[role=tab]')).map(t=>({text:t.textContent,selected:t.getAttribute('aria-selected')})),body:document.body.innerText.slice(-16000)})").catch(()=>null):null;
+ await writeFile(join(output,'failure.json'),JSON.stringify({error:error.stack||error.message,errors,checks,motionChecks,mapLayouts,territoryChecks,state},null,2));
  if(ws?.readyState===1)await screenshot('universe-failure').catch(()=>{});throw error;
 }finally{
  ws?.close();

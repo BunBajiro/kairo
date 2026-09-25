@@ -1,6 +1,11 @@
 export type UniverseBackground = 'power_blocs' | 'sovereignty' | 'standings' | 'security' | 'activity' | 'none';
 export type UniverseIndicator = 'none' | 'ship_kills' | 'pod_kills' | 'npc_kills' | 'jumps' | 'mining' | 'industry' | 'fw' | 'incursions' | 'visits';
 export type UniverseStandingFilter = 'all' | 'friendly' | 'hostile' | 'neutral' | 'unknown';
+export type UniverseTerritoryFocus = {
+ key:string;label:string;color:string;systemIds:number[];
+ /** Zero selects without moving the camera; positive changes request a frame. */
+ requestId:number;
+};
 export type UniverseSystem = {
   system_id: number; name: string; constellation_id: number; constellation_name: string;
   region_id: number; region_name: string; security: number; security_known?:boolean; x: number; y: number; z: number;

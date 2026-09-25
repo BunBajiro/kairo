@@ -1,4 +1,15 @@
-# Validation — 24 September 2026
+# Validation — 25 September 2026
+
+## Universe 0.8.0-rc.4
+
+This candidate makes the immersive map workspace Universe's default layout. It adds direct territory exploration, regional holdings, real stargate frontiers, unified search, route endpoints and framing, an interactive overview, bounded drag inertia and touch pinch navigation.
+
+- All 264 Node tests pass. New political-atlas checks cover observed ownership, configured/inferred membership validity, full-roster colours, regional aggregation, unique real gate frontiers, missing activity and stale provenance. New navigation checks cover cursor anchoring, wheel accumulation, pinch bounds, finite drag coast, overview footprints and projected-distance scales.
+- TypeScript and production compilation pass. The existing Sessions browser suite passes its nine-card, event pagination, legacy report and 390–1600px layout checks.
+- The compiled Universe suite passes 32 acceptance/layout groups. Checks cover the default desktop/mobile workspace, preserved canvas and camera when toggling details, overlay placement and focus restoration, keyboard search, actual polygon selection, complete territory framing, regional totals, real frontier endpoints, route shortcuts, overview navigation, touch pinch and bounded inertial panning. Existing settings, palette, privacy, space bounds and replay checks continue to pass.
+- Desktop, narrow-screen, political, settings and replay captures were inspected. Sampled primary text remains at least 16px and supporting text at least 14px; sampled contrast exceeds 4.5:1. Motion draws intermediate positions, reduced-motion navigation settles immediately, and simulated hidden-page motion pauses. A three-second idle sample recorded zero canvas redraws and about 14 ms of renderer tasks. These focused local checks are not a full accessibility audit or hardware guarantees.
+
+Political shares count observed owned systems rather than map area. Frontiers establish gate adjacency, not diplomacy. Activity describes events in those systems, not actions attributed to their owners; unavailable observations remain unknown. The fixtures are synthetic and do not establish live coalition accuracy. Existing saved settings and historical data require no reset. This candidate remains on the draft feature branch for the user's review.
 
 ## Universe 0.8.0-rc.3
 
