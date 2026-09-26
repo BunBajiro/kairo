@@ -123,7 +123,9 @@ export async function jspaceAcceptance(ui){
  await beginPort(home);await movePort(emptyDrop);await releasePort(emptyDrop);await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
  directMap=await mapState();assert.equal(directMap.revision,noSaveRevision);assert.equal(directMap.connections.length,1,'Escape, self-drops and empty-space drops never create connections');
  await addNode(systems.jita);await click('[aria-label="Fit chain"]');await delay(650);
- await waitFor('document.querySelector('+JSON.stringify(node(systems.jita.system_id)+' .jspace-node-owner')+')?.textContent.includes("Caldari")');
+ const exitOwner=(await api('/universe?character=42')).systems.find(row=>row.system_id===systems.jita.system_id)?.sovereignty,exitOwnerName=exitOwner?.alliance_name||exitOwner?.faction_name||exitOwner?.corporation_name;
+ assert.ok(exitOwnerName,'The synthetic exit has observed sovereignty');
+ await waitFor('document.querySelector('+JSON.stringify(node(systems.jita.system_id)+' .jspace-node-owner')+')?.textContent.includes('+JSON.stringify(exitOwnerName)+')');
  await evaluate('document.querySelector('+JSON.stringify(port(other))+').focus()');await key('Enter','Enter',13,'\r');
  await waitFor("!!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
  await evaluate('document.querySelector('+JSON.stringify(port(systems.jita,'left'))+').focus()');await key('Enter','Enter',13,'\r');await settle();
