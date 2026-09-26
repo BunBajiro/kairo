@@ -2,6 +2,15 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.11 — Clearer chain workflows
+
+- Uses lifetime presets 1h, 4h, 4.5h, 16h, 24h and 48h; mass Verge/Half/Normal; ship sizes S/M/L/H/XL. New links default to 16h, Normal and L while routing verification remains explicit.
+- Draws continuous solid connections, retaining lifetime borders and mass fill colours.
+- Unifies detailed system work in one System/Scanner/Reports/Notes/Navigate/Intel panel.
+- Archives unlocked disconnected cards after 30 minutes, preserving their user data and metadata for rediscovery. Unlocking or manually restoring a card grants a new 30-minute grace period.
+- Adds manually assigned alliance/corporation dominion to J-Space cards.
+- Keeps unexpired public Thera/Turnur reports visible during refresh, with stale status and stable positions; successful snapshots reconcile added, changed and removed reports.
+
 ## 0.8.0-rc.10 — More room for the chain
 
 - Gives J-Space the available application viewport, with tighter gutters, compact pilot controls and a clear sidebar collapse/restore action.

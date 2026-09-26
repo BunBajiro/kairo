@@ -65,3 +65,14 @@
 @media(max-width:520px){.jspace-selection-card{width:auto}.jspace-quick-status{grid-template-columns:repeat(3,minmax(0,1fr))}.jspace-quick-condition>button{font-size:13px!important}.jspace-connection-clock{font-size:12px}.jspace-condition-summary>div{padding:10px}}
 
 .jspace-selection-card .jspace-eyebrow{text-transform:uppercase}
+
+/* A single, stable details host for every system tool. */
+.jspace-sheet:has(.jspace-system-tabs){width:min(480px,calc(100% - 24px))}
+.jspace-system-tabs{position:sticky;top:-15px;z-index:4;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:-15px -15px 15px;padding:10px 15px;background:#1b2638;box-shadow:0 4px 12px #09111d66}
+.jspace-system-tabs>button{font-size:13px!important;min-height:36px!important}
+.jspace-owner-editor{border:1px solid #665f80;border-radius:6px;padding:12px}
+.jspace-owner-editor legend{padding:0 6px;color:#d5c6ec;font-size:14px}
+.is-compact-profile>.universe-detail-back,.is-compact-profile>.eyebrow,.is-compact-profile>.universe-system-title,.is-compact-profile>.universe-breadcrumb,.is-compact-profile>.universe-metric-grid,.is-compact-profile>.universe-small-note,.is-compact-profile>.universe-system-route-actions{display:none}
+.jspace-sheet-body>.jspace-form+.jspace-panel-section{margin-bottom:18px}
+.jspace-sheet .universe-operations-tool>.universe-operation-heading{display:none}
+@media(max-width:520px){.jspace-sheet:has(.jspace-system-tabs){width:auto}.jspace-system-tabs{top:-14px;margin:-14px -14px 14px;padding:9px 14px}}

@@ -1,4 +1,13 @@
-/** EVE's observed lifetime bands are upper bounds, never precise countdowns. */
+/** Connection choices match the mapper conventions; access remains a separate decision. */
+export const LIFETIME_PRESETS = Object.freeze([1,4,4.5,16,24,48].map(value => ({value,label:value+'h',tone:value<=1?'critical':value<=4.5?'eol':'stable'})));
+export const MASS_STATES = Object.freeze([{value:'critical',label:'Verge'},{value:'reduced',label:'Half'},{value:'stable',label:'Normal'}]);
+// Wanderer: freight/H maps to Kairo's existing xlarge; capital/XL is not supercapital.
+export const SHIP_SIZES = Object.freeze([{value:'small',label:'S',description:'Small · frigates and destroyers'},{value:'medium',label:'M',description:'Medium · up to battlecruisers'},{value:'large',label:'L',description:'Large · up to battleships'},{value:'xlarge',label:'H',description:'Huge · freighters'},{value:'capital',label:'XL',description:'Extra large · capital ships'}]);
+export function connectionLifePreset(connection) {return LIFETIME_PRESETS.some(row=>row.value===connection?.duration_hours)?connection.duration_hours:null;}
+export function connectionMassLabel(connection) {return MASS_STATES.find(row=>row.value===connection?.mass)?.label||'Unknown';}
+export function connectionShipLabel(connection) {return SHIP_SIZES.find(row=>row.value===connection?.max_ship_size)?.label||connection?.max_ship_size||'Unknown';}
+
+/** Legacy observed lifetime bands remain meaningful when opening existing maps. */
 export const LIFE_BANDS = Object.freeze([
   {value:'unknown', label:'Unknown', hours:null, tone:'unknown'},
   {value:'under_day', label:'< 1 day', hours:24, tone:'stable'},
@@ -10,15 +19,19 @@ const byBand = new Map(LIFE_BANDS.map(row => [row.value, row]));
 export function connectionLifeBand(connection) { return byBand.has(connection?.life_band) ? connection.life_band : 'unknown'; }
 export function connectionLifeLabel(connection) {
   if (connection?.life_status === 'collapsed') return 'Collapsed';
+  if (connectionLifePreset(connection) != null) return connection.duration_hours+'h';
   if (connectionLifeBand(connection) !== 'unknown') return byBand.get(connection.life_band).label;
   return {stable:'Stable',eol:'End of life',critical:'Critical'}[connection?.life_status] || 'Unknown';
 }
 export function connectionLifeTone(connection) {
   if (connection?.life_status === 'collapsed') return 'collapsed';
+  if (connectionLifePreset(connection) != null) return LIFETIME_PRESETS.find(row=>row.value===connection.duration_hours).tone;
   if (connectionLifeBand(connection) !== 'unknown') return byBand.get(connection.life_band).tone;
   return ['stable','eol','critical'].includes(connection?.life_status) ? connection.life_status : 'unknown';
 }
 export function connectionConditionPatch(field, value) {
+  if (field === 'duration_hours' && LIFETIME_PRESETS.some(row=>row.value===Number(value))) return {duration_hours:Number(value)};
+  if (field === 'max_ship_size' && SHIP_SIZES.some(row=>row.value===value)) return {max_ship_size:value};
   if (field === 'mass' && ['unknown','stable','reduced','critical'].includes(value)) return {mass:value};
   if (field === 'life_band' && byBand.has(value)) return {life_band:value};
   throw new Error('Choose a valid observed connection condition.');
@@ -26,6 +39,7 @@ export function connectionConditionPatch(field, value) {
 
 /** Recording a band can shorten the routing bound, but can never renew a hole. */
 export function observedLife(input, previous = {}, now = Date.now(), expiresAt = previous.expires_at ?? null) {
+  if (input.duration_hours != null) return {life_band:'unknown',life_observed_at:new Date(now).toISOString(),life_status:input.life_status==='collapsed'?'collapsed':Number(input.duration_hours)<=4.5?'eol':'stable',expires_at:expiresAt};
   // Other Universe editors echo complete records. An unchanged band + timestamp
   // is not a new observation and must not override their explicit legacy state
   // or lifetime edit. A narrow {life_band} quick action is deliberate observation.

@@ -15,7 +15,7 @@ import { observedLife } from '../components/kairo/jspace-connection-model.mjs';
 const PUBLIC_SOURCES = ['sovereignty', 'kills', 'jumps', 'fw', 'incursions', 'industry_systems', 'sovereignty_structures', 'sovereignty_campaigns'];
 const PRIVATE_SOURCES = ['profile', 'location', 'contacts', 'corporation_contacts', 'alliance_contacts', 'calendar', 'mining'];
 const CONTACT_SOURCES = [['contacts', 'personal'], ['corporation_contacts', 'corporation'], ['alliance_contacts', 'alliance']];
-const HOURS = new Set([16, 12, 8, 4, 1, 0]);
+const HOURS = new Set([1, 4, 4.5, 16, 24, 48, 12, 8, 0]);
 const STRUCTURE_SCOPE = 'esi-universe.read_structures.v1';
 const text = (value, max = 160) => String(value ?? '').trim().slice(0, max);
 const validId = value => Number.isSafeInteger(value) && value > 0;
@@ -251,10 +251,12 @@ export function createUniverse(store, auth, esi, options = {}) {
             return key.includes('system') ? systemId(parsed) : parsed;
         };
         let expires_at = kind === 'wormhole' ? old.expires_at : null;
-        if (kind === 'wormhole' && input.duration_hours != null) {
+        const echoedDuration = input.duration_hours === old.duration_hours && Object.hasOwn(input, 'expires_at') && input.expires_at === old.expires_at;
+        const durationEdited = kind === 'wormhole' && input.duration_hours != null && !echoedDuration;
+        if (durationEdited) {
             // A deliberate lifetime edit takes precedence over an echoed saved timestamp.
             const duration = Number(input.duration_hours);
-            if (!HOURS.has(duration)) throw new Error('Wormhole lifetime must be 16, 12, 8, 4, 1 hours, or expired.');
+            if (!HOURS.has(duration)) throw new Error('Wormhole lifetime must be 1, 4, 4.5, 16, 24 or 48 hours, or expired.');
             expires_at = new Date(now() + duration * 3600000).toISOString();
         } else if (kind === 'wormhole' && Object.hasOwn(input, 'expires_at') && input.expires_at === null) {
             // A newly drawn, unverified connection has no reported lifetime. Null is an
@@ -277,9 +279,11 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (observed_at != null && (!Number.isFinite(Date.parse(observed_at)) || Date.parse(observed_at) > now() + 300000)) throw new Error('Choose a valid wormhole observation time.');
         const mass = input.mass || old.mass || 'unknown';
         if (!['stable', 'reduced', 'critical', 'unknown'].includes(mass)) throw new Error('Choose a valid wormhole mass state.');
-        const life = kind === 'wormhole' ? observedLife(input, old, now(), expires_at) : {};
+        const life = kind === 'wormhole' ? observedLife(durationEdited ? input : {...input,duration_hours:undefined}, old, now(), expires_at) : {};
         if (kind === 'wormhole') expires_at = life.expires_at;
         const life_status = life.life_status ?? input.life_status ?? old.life_status ?? 'unknown';
+        const lifetimeReplaced = Object.hasOwn(input,'expires_at') && input.expires_at !== old.expires_at || Object.hasOwn(input,'life_band') && input.life_band !== old.life_band;
+        const duration_hours = durationEdited ? Number(input.duration_hours) : lifetimeReplaced ? null : old.duration_hours ?? null;
         if (!['unknown', 'stable', 'eol', 'critical', 'collapsed'].includes(life_status)) throw new Error('Choose a valid wormhole life state.');
         const signatureRecord = side => {
             const key = side + '_signature_record_id', endpoint = side === 'from' ? from : to;
@@ -305,7 +309,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         return { id: old.id || randomUUID(), kind, from_system_id: from, to_system_id: to, list_id,
             label: text(input.label ?? old.label, 160), enabled: life_status !== 'collapsed' && boolean('enabled', true), accessible: boolean('accessible', kind === 'wormhole'),
             confirmed: boolean('confirmed', true), directional: boolean('directional', false),
-            ...(kind === 'wormhole' ? {life_status, life_band:life.life_band, life_observed_at:life.life_observed_at, from_signature_record_id: signatureRecord('from'), to_signature_record_id: signatureRecord('to'), max_ship_size, max_jump_mass_kg, type_status, wh_type: text(input.wh_type ?? old.wh_type,16), from_signature: text(input.from_signature ?? old.from_signature,16),
+            ...(kind === 'wormhole' ? {life_status, duration_hours, life_band:life.life_band, life_observed_at:life.life_observed_at, from_signature_record_id: signatureRecord('from'), to_signature_record_id: signatureRecord('to'), max_ship_size, max_jump_mass_kg, type_status, wh_type: text(input.wh_type ?? old.wh_type,16), from_signature: text(input.from_signature ?? old.from_signature,16),
                 to_signature: text(input.to_signature ?? old.to_signature,16), reported_source: text(input.reported_source ?? old.reported_source,80),
                 report_id: text(input.report_id ?? old.report_id,100), observed_at: observed_at == null ? null : new Date(observed_at).toISOString()} : {}),
             reverse_accessible: input.reverse_accessible == null && old.reverse_accessible == null ? null : boolean('reverse_accessible', false), mass,

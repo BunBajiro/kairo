@@ -1,19 +1,23 @@
 import {buildPortalNetworks} from './universe-map-portals.mjs';
 
 /** Read-only public report cards augment the diagram; they never enter saved map state. */
-export function publicChainScene(map, feeds, systems, selectedSources = {}, now = Date.now()) {
+export function publicChainScene(map, feeds, systems, selectedSources = {}, now = Date.now(), previous = null) {
   if (!map) return null;
   const networks = buildPortalNetworks(feeds, systems, now).filter(network => selectedSources[network.source]);
   const nodes = [...map.nodes], connections = [...map.connections], present = new Set(nodes.map(node => node.system_id));
+  // Keep surviving public cards in place when the provider changes a snapshot.
+  const prior = new Map(previous?.id === map.id ? previous.nodes.filter(node => node.public_report).map(node => [node.system_id,node]) : []);
+  const occupied = [...nodes,...prior.values()];
+  function publicPosition(id,x,y) {const old=prior.get(id);if(old)return {x:old.x,y:old.y};while(occupied.some(node=>Math.abs(node.x-x)<290&&Math.abs(node.y-y)<110))y+=250;const position={x,y};occupied.push(position);return position;}
   let edgeX = nodes.length ? Math.max(...nodes.map(node => node.x)) + 400 : 0;
   for (const network of networks) {
-    const endpoints = network.endpoints.filter(endpoint => endpoint.usable);
+    const endpoints = network.endpoints.filter(endpoint => endpoint.usable || endpoint.state === 'stale' && endpoint.report.completed === true && endpoint.report.reported === true && endpoint.report.route_eligible !== false);
     if (!network.hub || !endpoints.length) continue;
     const hub = network.hub, hubY = Math.max(0, Math.ceil(endpoints.length / 3) * 110 - 110);
-    if (!present.has(hub.system_id)) {nodes.push({system_id:hub.system_id,x:edgeX,y:hubY,locked:true,status:'unknown',label:network.name+' · EVE-Scout',public_report:true,public_source:network.source});present.add(hub.system_id);}
+    if (!present.has(hub.system_id)) {nodes.push({system_id:hub.system_id,...publicPosition(hub.system_id,edgeX,hubY),locked:true,status:'unknown',label:network.name+' · EVE-Scout',public_report:true,public_source:network.source});present.add(hub.system_id);}
     endpoints.forEach((endpoint,index) => {
-      if (!present.has(endpoint.systemId)) {nodes.push({system_id:endpoint.systemId,x:edgeX+370+(index%3)*310,y:Math.floor(index/3)*250,locked:true,status:'unknown',label:network.name+' entrance · EVE-Scout',public_report:true,public_source:network.source});present.add(endpoint.systemId);}
-      connections.push({...endpoint.report,id:'public:'+endpoint.id,link_id:undefined,kind:'wormhole',from_system_id:endpoint.report.from_system_id,to_system_id:endpoint.report.to_system_id,confirmed:false,accessible:false,enabled:false,active:false,public_report:true,public_source:network.source,portal:endpoint,life_status:'unknown',mass:'unknown'});
+      if (!present.has(endpoint.systemId)) {nodes.push({system_id:endpoint.systemId,...publicPosition(endpoint.systemId,edgeX+370+(index%3)*310,Math.floor(index/3)*250),locked:true,status:'unknown',label:network.name+' entrance · EVE-Scout',public_report:true,public_source:network.source});present.add(endpoint.systemId);}
+      connections.push({...endpoint.report,id:'public:'+endpoint.id,link_id:undefined,kind:'wormhole',from_system_id:endpoint.report.from_system_id,to_system_id:endpoint.report.to_system_id,confirmed:false,accessible:false,enabled:false,active:false,public_report:true,public_source:network.source,stale:endpoint.state==='stale',portal:endpoint,life_status:'unknown',mass:'unknown'});
     });
     edgeX += 1450;
   }
@@ -31,16 +35,17 @@ export function connectionEditorPayload(draft, expiryInput, original = null) {
     const originalDate = original?.expires_at && Number.isFinite(Date.parse(original.expires_at)) ? new Date(original.expires_at) : null;
     payload.expires_at = originalDate?.toISOString().slice(0, 16) === expiryInput ? original.expires_at : new Date(expiryInput + 'Z').toISOString();
   } else if (draft.duration_hours === '') payload.expires_at = null;
-  else payload.duration_hours = Number(draft.duration_hours ?? 16);
+  else if (draft.duration_hours != null && (original == null || draft.duration_hours !== original.duration_hours || draft.lifetime_edited)) payload.duration_hours = Number(draft.duration_hours);
+  delete payload.lifetime_edited;
   payload.max_ship_size = draft.max_ship_size || null;
   payload.from_signature = String(draft.from_signature || '').trim().toUpperCase();
   payload.to_signature = String(draft.to_signature || '').trim().toUpperCase();
   return payload;
 }
 
-/** A drawn edge records only the two endpoints; no conditions or access are inferred. */
+/** New edges start with mapper defaults; they still require explicit route verification. */
 export function drawnConnectionPayload(fromSystemId, toSystemId) {
-  return {kind:'wormhole',from_system_id:fromSystemId,to_system_id:toSystemId,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'unknown',life_status:'unknown',expires_at:null};
+  return {kind:'wormhole',from_system_id:fromSystemId,to_system_id:toSystemId,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'stable',life_status:'stable',duration_hours:16,max_ship_size:'large'};
 }
 
 /** Each layout gesture saves against the revision accepted by the previous gesture. */

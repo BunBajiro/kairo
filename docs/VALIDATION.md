@@ -1,5 +1,16 @@
 # Validation — 26 September 2026
 
+## Universe 0.8.0-rc.11
+
+Focused corrections update the requested connection presets and defaults, continuous curves, unified system details, diagram cleanup, manual J-Space dominion and public-feed refresh continuity.
+
+- All 478 Node tests pass. Lifetime tests cover fractional 4.5h, all six presets, default 16h/Normal/L, explicit resets versus unrelated edits, ship-size mapping and import-age preservation.
+- Deterministic lifecycle checks cover the last connected edge, expiry/deletion, lock protection, fresh grace after unlocking/manual restoration, reconnection, archived metadata/ownership, signatures/notes/reports/passages and native round trips. Never-connected standalone nodes remain; cleanup only removes diagram membership.
+- A held-provider refresh test keeps cached public cards/IDs present and in place while stale, with no routing eligibility. The completed snapshot updates modified reports and adds/removes endpoints without clearing the whole network.
+- The compiled J-Space browser suite passes 24 acceptance/layout groups with no browser errors; desktop and 390px captures were inspected. Browser checks exercise the single persistent system-details host across all six tabs, assigned owner text on the card, corrected quick controls and defaults, solid strokes, scanner cancellation, route-draft invalidation and desktop/390px layout. Tab/system switches reset panel scroll; background refresh preserves it. The selected tab is restored per pilot when returning from K-Space.
+
+Application TypeScript and production compilation pass. Exact-commit Actions runs the wider Universe/replay suite, Sessions suite and extracted standalone tests before the draft PR advertises its download. Existing data requires no reset; main remains unmerged.
+
 ## Universe 0.8.0-rc.10
 
 This focused J-Space pass reclaims window space, adds qualitative connection life/mass controls, improves card status/sovereignty and fixes zoom-level card rendering.

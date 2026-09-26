@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {connectionConditionPatch, connectionLifeBand, connectionLifeLabel, connectionLifeTone, observedLife} from '../../components/kairo/jspace-connection-model.mjs';
+import {LIFETIME_PRESETS, MASS_STATES, SHIP_SIZES, connectionLifePreset, connectionConditionPatch, connectionLifeBand, connectionLifeLabel, connectionLifeTone, observedLife} from '../../components/kairo/jspace-connection-model.mjs';
 import {connectionEditorPayload} from '../../components/kairo/jspace-workspace-model.mjs';
 
 const now=Date.parse('2026-09-26T10:00:00Z');
@@ -35,7 +35,18 @@ test('complete legacy editor records do not turn echoed band fields into fresh o
   const edge={life_band:'unknown',life_observed_at:null,life_status:'eol',expires_at:'2026-09-26T11:00:00.000Z'};
   const explicit='2026-09-26T14:00:00.000Z';
   const edited=observedLife({...edge,duration_hours:4},edge,now,explicit);
-  assert.equal(edited.expires_at,explicit);assert.equal(edited.life_status,'eol');assert.equal(edited.life_observed_at,null);
+  assert.equal(edited.expires_at,explicit);assert.equal(edited.life_status,'eol');assert.equal(edited.life_observed_at,new Date(now).toISOString());
   const massOnly=observedLife({...edge,mass:'reduced'},edge,now,edge.expires_at);
   assert.equal(massOnly.life_observed_at,null);assert.equal(massOnly.life_status,'eol');
+});
+
+test('mapper presets preserve fractional hours and H freight / XL capital semantics',()=>{
+ assert.deepEqual(LIFETIME_PRESETS.map(row=>row.value),[1,4,4.5,16,24,48]);
+ assert.deepEqual(MASS_STATES.map(row=>row.label),['Verge','Half','Normal']);
+ assert.deepEqual(SHIP_SIZES.map(row=>[row.label,row.value]),[['S','small'],['M','medium'],['L','large'],['H','xlarge'],['XL','capital']]);
+ assert.deepEqual(connectionConditionPatch('duration_hours','4.5'),{duration_hours:4.5});
+ assert.deepEqual(connectionConditionPatch('max_ship_size','xlarge'),{max_ship_size:'xlarge'});
+ assert.equal(connectionLifePreset({duration_hours:4.5}),4.5);assert.equal(connectionLifeLabel({duration_hours:4.5}),'4.5h');
+ assert.throws(()=>connectionConditionPatch('duration_hours','7'),/valid/);
+ assert.throws(()=>connectionConditionPatch('max_ship_size','supercapital'),/valid/);
 });

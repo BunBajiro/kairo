@@ -287,3 +287,81 @@ test('drawn connections preserve explicit unknown lifetime until an observed exp
     const ordinaryManual = f.service.saveLink(42, { kind: 'wormhole', from_system_id: W, to_system_id: A });
     assert.equal(ordinaryManual.expires_at, new Date(AT + 17 * 3600000).toISOString(), 'existing manual creation defaults remain unchanged');
 });
+
+test('disconnected cards prune after the last expiry while metadata, signatures and reports survive rediscovery', async t => {
+    const f = await fixture(t); let map = twoNodes(f, f.create());
+    const owner = { kind: 'corporation', id: 98000001, name: 'Local residents' };
+    map = f.cmd(map, 'node.save', { node: { system_id: W, alias: 'Homeward', description: 'Resident intelligence', status: 'friendly', tags: ['residents'], effective_owner: owner } });
+    map = f.cmd(map, 'comment.add', { comment: { system_id: W, body: 'Keep this scouting note' } });
+    map = f.cmd(map, 'observation.save', { observation: { system_id: W, title: 'Resident citadel', kind: 'structure' } });
+    map = f.cmd(map, 'signature.save', { signature: { system_id: W, signature_id: 'AAA-123', name: 'Saved signature' } });
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, duration_hours: 1, notes: 'Original edge note' } });
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, duration_hours: 4 } });
+    f.time(AT + 4 * 3600000 + 29 * 60000); map = f.api.state(42).maps[0];
+    assert.equal(map.nodes.length, 2, 'The later connection determines the grace period');
+    assert.equal(map.nodes[0].disconnected_at, new Date(AT + 4 * 3600000).toISOString());
+    f.time(AT + 4 * 3600000 + 30 * 60000); map = f.api.state(42).maps[0];
+    assert.equal(map.nodes.length, 0); assert.equal(map.connections.length, 0); assert.equal(map.archived_nodes.length, 2);
+    assert.ok(map.archived_connections.some(row => row.notes === 'Original edge note'));
+    assert.equal(map.observations[0].title, 'Resident citadel'); assert.equal(map.comments[0].body, 'Keep this scouting note');
+    assert.equal(f.service.operations.state(42).signatures.length, 1);
+    const imported = f.api.importMap(43, { document: f.api.exportMap(42, map.id), name: 'Archive copy' });
+    assert.deepEqual(imported.archived_nodes.find(row => row.system_id === W).effective_owner, owner);
+    assert.equal(f.service.operations.state(43).signatures[0].signature_id, 'AAA-123');
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, add_missing_nodes: true, expires_at: null } });
+    const restored = map.nodes.find(row => row.system_id === W);
+    assert.equal(restored.alias, 'Homeward'); assert.equal(restored.description, 'Resident intelligence'); assert.deepEqual(restored.tags, ['residents']);
+    assert.equal(restored.status, 'friendly'); assert.deepEqual(restored.effective_owner, owner); assert.equal(map.signatures[0].signature_id, 'AAA-123');
+    assert.equal(map.connections[0].confirmed, false); assert.equal(map.connections[0].active, false);
+});
+
+test('deletion grace survives refreshes, reconnecting cancels it, and standalone cards are retained', async t => {
+    const f = await fixture(t); let map = twoNodes(f, f.create());
+    map = f.cmd(map, 'node.save', { node: { system_id: A } });
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, expires_at: null } });
+    f.time(AT + 60000); map = f.cmd(map, 'connection.remove', { connection_id: map.connections[0].id });
+    const removedAt = new Date(AT + 60000).toISOString();
+    assert.equal(map.nodes[0].disconnected_at, removedAt);
+    f.time(AT + 29 * 60000); map = f.api.state(42).maps[0];
+    assert.equal(map.nodes[0].disconnected_at, removedAt); assert.equal(map.nodes.length, 3);
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, expires_at: null } });
+    assert.equal(map.nodes[0].disconnected_at, undefined);
+    f.time(AT + 60 * 60000); map = f.api.state(42).maps[0]; assert.equal(map.nodes.length, 3);
+    map = f.cmd(map, 'connection.remove', { connection_id: map.connections[0].id });
+    f.time(AT + 90 * 60000); map = f.api.state(42).maps[0];
+    assert.deepEqual(map.nodes.map(row => row.system_id), [A]);
+    assert.equal(f.service.state(42).links.length, 2, 'Pruning a diagram cannot change canonical route evidence');
+});
+
+test('unlock and manual re-add each grant disconnected cards a fresh thirty minutes', async t => {
+    const f = await fixture(t); let map = twoNodes(f, f.create());
+    map = f.cmd(map, 'node.save', { node: { system_id: W, locked: true, alias: 'Keep me' } });
+    map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, duration_hours: 1 } });
+    f.time(AT + 10 * 3600000); map = f.api.state(42).maps[0];
+    assert.deepEqual(map.nodes.map(row => row.system_id), [W]);
+    map = f.cmd(map, 'node.save', { node: { system_id: W, locked: false } });
+    assert.equal(map.nodes.length, 1, 'Unlocking does not instantly prune a long-disconnected card');
+    f.time(AT + 10 * 3600000 + 29 * 60000); map = f.api.state(42).maps[0]; assert.equal(map.nodes.length, 1);
+    f.time(AT + 10 * 3600000 + 30 * 60000); map = f.api.state(42).maps[0]; assert.equal(map.nodes.length, 0);
+    map = f.cmd(map, 'node.save', { node: { system_id: W } });
+    assert.equal(map.nodes[0].alias, 'Keep me');
+    f.time(AT + 10 * 3600000 + 59 * 60000); map = f.api.state(42).maps[0]; assert.equal(map.nodes.length, 1);
+    f.time(AT + 11 * 3600000); map = f.api.state(42).maps[0]; assert.equal(map.nodes.length, 0);
+});
+
+test('effective J-Space owners are private annotations, validated and preserved through manual removal', async t => {
+    const f = await fixture(t); let map = twoNodes(f, f.create());
+    const owner = { kind: 'alliance', id: 99000001, name: 'Home Alliance' };
+    map = f.cmd(map, 'node.save', { node: { system_id: W, effective_owner: owner } });
+    assert.deepEqual(map.nodes[0].effective_owner, owner); assert.deepEqual(f.api.state(43).maps, []);
+    for (const value of [{ ...owner, id: -1 }, { ...owner, name: '' }, { ...owner, kind: 'character' }]) {
+        assert.throws(() => f.cmd(map, 'node.save', { node: { system_id: W, effective_owner: value } }));
+    }
+    assert.throws(() => f.cmd(map, 'node.save', { node: { system_id: A, effective_owner: owner } }), /J-Space/);
+    map = f.cmd(map, 'node.remove', { system_id: W });
+    map = f.cmd(map, 'node.save', { node: { system_id: W } });
+    assert.deepEqual(map.nodes.find(row => row.system_id === W).effective_owner, owner);
+    assert.deepEqual(f.service.state(42).links, [], 'Local ownership creates no travel permissions or canonical links');
+    map = f.cmd(map, 'node.save', { node: { system_id: W, effective_owner: null } });
+    assert.equal(map.nodes.find(row => row.system_id === W).effective_owner, null);
+});

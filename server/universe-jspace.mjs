@@ -4,6 +4,7 @@ import { getWormholeType } from './universe-wormholes.mjs';
 const LIMITS = Object.freeze({ maps: 24, nodes: 600, connections: 1000, passages: 1000, observations: 1000, comments: 500, pings: 100, activity: 100, undo: 10, document_bytes: 4_000_000 });
 const STATUSES = ['unknown', 'unscanned', 'scanning', 'scanned', 'occupied', 'hostile', 'friendly', 'empty'];
 const LIFE = ['unknown', 'stable', 'eol', 'critical', 'collapsed'];
+const PRUNE_DELAY_MS = 30 * 60000;
 const own = (value, key) => Object.hasOwn(value, key);
 const clone = value => structuredClone(value);
 const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -81,10 +82,79 @@ export function createUniverseJSpace(store, auth, options) {
     function node(input, old = null, index = 0) {
         if (!object(input)) throw new Error('Provide a valid system card.');
         const previous = old || {}, tags = input.tags === undefined ? previous.tags || [] : array(input.tags, 20, 'tags').map(tag => clean(tag, 40));
-        return { system_id: system(input.system_id ?? previous.system_id), x: coordinate(input.x, previous.x ?? index % 5 * 340), y: coordinate(input.y, previous.y ?? Math.floor(index / 5) * 260),
+        const system_id = system(input.system_id ?? previous.system_id);
+        let effective_owner = previous.effective_owner || null;
+        if (own(input, 'effective_owner')) {
+            effective_owner = input.effective_owner;
+            if (effective_owner !== null) {
+                if (byId.get(system_id)?.space !== 'wormhole') throw new Error('Assign a local owner only to a J-Space system.');
+                if (!object(effective_owner) || !Number.isSafeInteger(effective_owner.id) || effective_owner.id < 1) throw new Error('Provide a valid alliance or corporation ID.');
+                const name = clean(effective_owner.name, 160);
+                if (!name) throw new Error('Provide the alliance or corporation name.');
+                effective_owner = { kind: choose(effective_owner.kind, ['alliance', 'corporation']), id: effective_owner.id, name };
+                if (!effective_owner.kind) throw new Error('Choose alliance or corporation.');
+            }
+        }
+        return { system_id, x: coordinate(input.x, previous.x ?? index % 5 * 340), y: coordinate(input.y, previous.y ?? Math.floor(index / 5) * 260),
             alias: clean(input.alias ?? previous.alias, 100), label: clean(input.label ?? previous.label, 120), description: clean(input.description ?? previous.description, 4000),
             status: choose(input.status, STATUSES, previous.status || 'unknown'), role: choose(input.role, ['', 'home', 'staging'], previous.role || ''),
-            locked: boolean(input.locked, previous.locked || false), tags: [...new Set(tags.filter(Boolean))] };
+            locked: boolean(input.locked, previous.locked || false), tags: [...new Set(tags.filter(Boolean))], effective_owner,
+            ...(previous.disconnected_at ? { disconnected_at: previous.disconnected_at } : {}),
+            ...(previous.prune_grace_at || !old ? { prune_grace_at: previous.prune_grace_at || iso() } : {}) };
+    }
+    function restoreNode(map, input) {
+        const previous = (map.archived_nodes || []).find(row => row.system_id === Number(input.system_id));
+        const restored = node(input, previous, map.nodes.length);
+        restored.prune_grace_at = iso();
+        if (previous?.disconnected_at) restored.disconnected_at = iso();
+        map.archived_nodes = (map.archived_nodes || []).filter(row => row.system_id !== restored.system_id);
+        return restored;
+    }
+    function archiveNodes(map, ids) {
+        map.archived_nodes = [...(map.archived_nodes || []).filter(row => !ids.has(row.system_id)), ...map.nodes.filter(row => ids.has(row.system_id))];
+        const removedEdges = map.connections.filter(row => ids.has(row.from_system_id) || ids.has(row.to_system_id));
+        map.archived_connections = [...(map.archived_connections || []), ...removedEdges];
+        map.nodes = map.nodes.filter(row => !ids.has(row.system_id));
+        map.connections = map.connections.filter(row => !ids.has(row.from_system_id) && !ids.has(row.to_system_id));
+        map.pings = map.pings.filter(row => !ids.has(row.system_id));
+    }
+    function markDetached(map, edges) {
+        const affected = new Set(edges.flatMap(row => [row.from_system_id, row.to_system_id]));
+        for (const row of map.nodes) if (affected.has(row.system_id)) row.disconnected_at = iso();
+    }
+    // Diagram membership expires, never the pilot's observations or card metadata.
+    // Unknown/unconfirmed links still connect cards; routing permission is unrelated.
+    function reconcileNodes(id, map, canonical) {
+        let changed = false;
+        const prune = new Set();
+        for (const row of map.nodes) {
+            const attached = map.connections.filter(edge => edge.from_system_id === row.system_id || edge.to_system_id === row.system_id);
+            const losses = attached.map(edge => {
+                if (edge.kind === 'gate') return null;
+                const link = canonical.get(edge.link_id);
+                if (!link) return Date.parse(row.disconnected_at) || now();
+                if (link.life_status === 'collapsed') return Date.parse(row.disconnected_at) || Date.parse(link.updated_at) || Date.parse(link.expires_at) || now();
+                const expiry = Date.parse(link.expires_at);
+                return Number.isFinite(expiry) && expiry <= now() ? expiry : null;
+            });
+            if (losses.some(value => value === null)) {
+                if (row.disconnected_at) { delete row.disconnected_at; changed = true; }
+                continue;
+            }
+            // A standalone card that has never lost a connection stays on its map.
+            if (!losses.length && !row.disconnected_at) continue;
+            const disconnected = Math.max(Date.parse(row.disconnected_at) || 0, Date.parse(row.prune_grace_at) || 0, ...losses);
+            const stamp = new Date(disconnected).toISOString();
+            if (row.disconnected_at !== stamp) { row.disconnected_at = stamp; changed = true; }
+            if (!row.locked && now() >= disconnected + PRUNE_DELAY_MS) prune.add(row.system_id);
+        }
+        if (prune.size) {
+            archiveNodes(map, prune); map.revision++; map.updated_at = iso();
+            log(map, 'nodes.prune', `Archived ${prune.size} disconnected system card${prune.size === 1 ? '' : 's'}`);
+            deleteRow.run(id, 'jspace_undo', map.id); changed = true;
+        }
+        if (changed) write(id, 'jspace_map', map);
+        return map;
     }
     function mapNode(map, value) { const id = system(value); if (!map.nodes.some(row => row.system_id === id)) throw new Error('Add this system to the chain first.'); return id; }
     function connection(map, value) { const result = map.connections.find(row => row.id === value); if (!result) throw new Error('Connection not found on this chain.'); return result; }
@@ -128,7 +198,8 @@ export function createUniverseJSpace(store, auth, options) {
         return { id: randomUUID(), system_id: mapNode(map, input.system_id), label: clean(input.label, 120), created_at: iso(), expires_at: new Date(now() + duration * 1000).toISOString() };
     }
     function project(id, value, shared = null) {
-        const canonical = shared?.canonical || new Map(getLinks(id).map(row => [row.id, row])), map = clone(value), signatures = shared?.signatures || operations.state(id).signatures;
+        const canonical = shared?.canonical || new Map(getLinks(id).map(row => [row.id, row]));
+        const map = reconcileNodes(id, clone(value), canonical), signatures = shared?.signatures || operations.state(id).signatures;
         const signaturesById = new Map(signatures.map(row => [row.id, row])), signaturesBySystem = new Map(signatures.map(row => [`${row.system_id}:${row.signature_id}`, row])), passagesByEdge = new Map();
         for (const row of map.passages) {
             const aggregate = passagesByEdge.get(row.connection_id) || { count: 0, mass: 0, unweighed: 0 };
@@ -226,7 +297,7 @@ export function createUniverseJSpace(store, auth, options) {
         if (boolean(input.add_missing_nodes)) {
             for (const value of [input.from_system_id ?? previous?.from_system_id ?? known?.from_system_id, input.to_system_id ?? previous?.to_system_id ?? known?.to_system_id]) {
                 const system_id = system(value);
-                if (!map.nodes.some(row => row.system_id === system_id)) map.nodes.push(node({ system_id }, null, map.nodes.length));
+                if (!map.nodes.some(row => row.system_id === system_id)) map.nodes.push(restoreNode(map, { system_id }));
             }
         }
         const from = mapNode(map, input.from_system_id ?? previous?.from_system_id ?? known?.from_system_id), to = mapNode(map, input.to_system_id ?? previous?.to_system_id ?? known?.to_system_id);
@@ -268,7 +339,8 @@ export function createUniverseJSpace(store, auth, options) {
                     break;
                 }
                 case 'node.save': {
-                    const source = input.node, previous = map.nodes.find(row => row.system_id === Number(source?.system_id)), next = node(source, previous, map.nodes.length);
+                    const source = input.node, previous = map.nodes.find(row => row.system_id === Number(source?.system_id)), next = previous ? node(source, previous, map.nodes.length) : restoreNode(map, source);
+                    if (previous?.locked && !next.locked) next.prune_grace_at = iso();
                     if (previous?.locked && (next.x !== previous.x || next.y !== previous.y) && next.locked) throw new Error('Unlock this system before moving it.');
                     if (previous) map.nodes = map.nodes.map(row => row.system_id === next.system_id ? next : row); else map.nodes.push(next);
                     break;
@@ -290,8 +362,8 @@ export function createUniverseJSpace(store, auth, options) {
                     if (map.nodes.some(row => systemIds.has(row.system_id) && row.locked)) throw new Error('Unlock this system before removing it.');
                     const attached = new Set(map.connections.filter(row => systemIds.has(row.from_system_id) || systemIds.has(row.to_system_id)).map(row => row.id));
                     if (map.connections.some(row => attached.has(row.id) && row.locked)) throw new Error('Unlock attached connections before removing this system.');
-                    map.nodes = map.nodes.filter(row => !systemIds.has(row.system_id)); map.connections = map.connections.filter(row => !attached.has(row.id));
-                    map.pings = map.pings.filter(row => !systemIds.has(row.system_id));
+                    markDetached(map, map.connections.filter(row => attached.has(row.id)));
+                    archiveNodes(map, systemIds);
                     // Observation history remains private and exportable even when its card is removed.
                     break;
                 }
@@ -300,6 +372,8 @@ export function createUniverseJSpace(store, auth, options) {
                     const edge = connection(map, input.connection_id);
                     if (edge.locked) throw new Error('Unlock this connection before removing it.');
                     if (boolean(input.disable_link) && edge.link_id) { saveLink(id, { id: edge.link_id, enabled: false }); undoable = false; }
+                    markDetached(map, [edge]);
+                    map.archived_connections = [...(map.archived_connections || []), edge];
                     map.connections = map.connections.filter(row => row.id !== edge.id); break;
                 }
                 case 'passage.add': map.passages.unshift(passage(map, input.passage)); undoable = false; break;
@@ -400,6 +474,8 @@ export function createUniverseJSpace(store, auth, options) {
                 kairo_notice: 'Wanderer portable v1 cannot carry exact expiry, confirmation, observation ages, passages, structures, timers or map comments. Unconfirmed, inactive, expired and collapsed connections are omitted. Review all imported conditions before use.' };
         }
         if (format !== 'kairo') throw new Error('Choose Kairo or Wanderer export format.');
+        const storedSystems = new Set([...map.nodes, ...(map.archived_nodes || [])].map(row => row.system_id));
+        map.signatures = operations.state(id).signatures.filter(row => storedSystems.has(row.system_id));
         return { format: 'kairo-jspace', version: 1, exported_at: iso(), map,
             notice: 'Private observations. Importing preserves the diagram but requires reviewing connections before using them for navigation.' };
     }
@@ -433,6 +509,17 @@ export function createUniverseJSpace(store, auth, options) {
             const value = node(translated, null, index);
             if (seen.has(value.system_id)) throw new Error('The export contains a duplicate system.'); seen.add(value.system_id); map.nodes.push(value);
         }
+        if (native) {
+            map.archived_nodes = array(source.archived_nodes || [], byId.size, 'archived systems').map(row => {
+                const value = node(row);
+                if (seen.has(value.system_id)) throw new Error('The export contains a duplicate archived system.');
+                seen.add(value.system_id); return { ...value, disconnected_at: iso() };
+            });
+            map.archived_connections = array(source.archived_connections || [], 10000, 'archived connections').map(row => ({
+                id: clean(row.id, 100) || randomUUID(), from_system_id: system(row.from_system_id), to_system_id: system(row.to_system_id),
+                notes: clean(row.notes, 2000), kind: choose(row.kind, ['wormhole', 'ansiblex', 'gate'], 'wormhole'), archived: true
+            }));
+        }
         const sourceEdges = array(native ? source.connections : document.connections, LIMITS.connections, 'connections');
         for (const row of sourceEdges) {
             if (!object(row)) throw new Error('Each imported connection must be an object.');
@@ -455,7 +542,10 @@ export function createUniverseJSpace(store, auth, options) {
                 const expiry = native ? Date.parse(row.expires_at) : NaN;
                 if (kind === 'wormhole' && Number.isFinite(expiry) && expiry > now() && expiry <= now() + 48 * 3600000) candidate.expires_at = new Date(expiry).toISOString();
                 else if (kind === 'wormhole') candidate.duration_hours = 0;
-                const prepared = validateLink(id, candidate); prepared.source = 'import'; edge.link_id = prepared.id; links.push(prepared);
+                const prepared = validateLink(id, candidate);
+                // A duration label describes the imported observation; do not rebase its expiry.
+                if (native && kind === 'wormhole' && [1, 4, 4.5, 16, 24, 48].includes(row.duration_hours)) prepared.duration_hours = row.duration_hours;
+                prepared.source = 'import'; edge.link_id = prepared.id; links.push(prepared);
             }
             map.connections.push(edge);
         }
@@ -463,7 +553,7 @@ export function createUniverseJSpace(store, auth, options) {
         const signatures = array(native ? source.signatures || [] : document.signatures || [], 1000, 'signatures'), sigKeys = new Set();
         for (const row of signatures) {
             if (!object(row)) throw new Error('Each imported signature must be an object.');
-            const system_id = mapNode(map, native ? row.system_id : row.solar_system_id), signature_id = clean(native ? row.signature_id : row.eve_id, 16).toUpperCase();
+            const system_id = mapNode(native ? { ...map, nodes: [...map.nodes, ...map.archived_nodes] } : map, native ? row.system_id : row.solar_system_id), signature_id = clean(native ? row.signature_id : row.eve_id, 16).toUpperCase();
             if (!/^[A-Z0-9]{3}-\d{3}$/.test(signature_id)) throw new Error('Imported signature IDs must use the EVE format ABC-123.');
             const key = `${system_id}:${signature_id}`; if (sigKeys.has(key)) throw new Error('The export contains duplicate signatures.'); sigKeys.add(key);
             const last_seen_at = native ? date(row.last_seen_at) : null, first_seen_at = native ? date(row.first_seen_at, iso()) : iso();

@@ -2,14 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {connectionEditorPayload,previewStructureScan,publicChainScene,drawnConnectionPayload,createLayoutSaveQueue,createLayoutSaveScope} from '../../components/kairo/jspace-workspace-model.mjs';
 
-test('drawing a connection records only endpoints and keeps unknown lifetime through metadata edits',()=>{
+test('drawn connections use mapper defaults without granting route access; later condition edits preserve expiry',()=>{
  const edge=drawnConnectionPayload(31000111,31000222);
- assert.deepEqual(edge,{kind:'wormhole',from_system_id:31000111,to_system_id:31000222,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'unknown',life_status:'unknown',expires_at:null});
- const edited=connectionEditorPayload({...edge,duration_hours:'',notes:'Needs scanning'},'',edge);
- assert.equal(edited.expires_at,null);assert.equal('duration_hours' in edited,false);
+ assert.deepEqual(edge,{kind:'wormhole',from_system_id:31000111,to_system_id:31000222,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'stable',life_status:'stable',duration_hours:16,max_ship_size:'large'});
+ const saved={...edge,expires_at:'2026-09-26T20:12:34.123Z'};
+ const edited=connectionEditorPayload({...saved,mass:'reduced'},'2026-09-26T20:12',saved);
+ assert.equal(edited.expires_at,saved.expires_at);assert.equal('duration_hours' in edited,false);
  assert.equal(edited.confirmed,false);assert.equal(edited.accessible,false);
- const verified=connectionEditorPayload({...edge,duration_hours:4,confirmed:true,accessible:true},'',edge);
- assert.equal(verified.duration_hours,4);assert.equal('expires_at' in verified,false);
+ const explicit=connectionEditorPayload({...saved,duration_hours:16,lifetime_edited:true},'',saved);
+ assert.equal(explicit.duration_hours,16);assert.equal('expires_at' in explicit,false);assert.equal('lifetime_edited' in explicit,false);
+ const legacy={expires_at:null,mass:'unknown',life_status:'unknown'};
+ const unchanged=connectionEditorPayload({...legacy,duration_hours:null},'',legacy);
+ assert.equal('duration_hours' in unchanged,false);assert.equal(unchanged.mass,'unknown');
 });
 
 test('consecutive drag saves wait for the accepted revision without dropping the later position',async()=>{
@@ -84,5 +88,8 @@ test('public chain reports are explicit, ephemeral and cannot become trusted rou
  const scene=publicChainScene(map,feeds,systems,{thera:true},now);assert.equal(scene.nodes.length,2);assert.equal(scene.connections.length,1);
  assert.equal(scene.connections[0].confirmed,false);assert.equal(scene.connections[0].accessible,false);assert.equal(scene.connections[0].enabled,false);assert.equal(scene.nodes[0].public_report,undefined);assert.equal(map.nodes.length,1);assert.equal(map.connections.length,0);
  assert.equal(publicChainScene(map,feeds,systems,{thera:true},now+3600000).connections.length,0);
- assert.equal(publicChainScene(map,{...feeds,sources:{thera:{status:'stale'}}},systems,{thera:true},now).connections.length,0);
+ const stale=publicChainScene(map,{...feeds,sources:{thera:{status:'stale'}}},systems,{thera:true},now,scene);
+ assert.equal(stale.connections.length,1);assert.equal(stale.connections[0].id,scene.connections[0].id);assert.equal(stale.connections[0].stale,true);assert.equal(stale.connections[0].active,false);
+ assert.deepEqual(stale.nodes,scene.nodes);
+ assert.equal(publicChainScene(map,{...feeds,connections:[]},systems,{thera:true},now,stale).connections.length,0,'A successful empty snapshot removes reports');
 });

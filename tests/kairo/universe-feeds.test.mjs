@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {publicChainScene} from '../../components/kairo/jspace-workspace-model.mjs';
 import assert from 'node:assert/strict';
 import { createUniverseFeeds } from '../../server/universe-feeds.mjs';
 import { FEED_URLS, normalizeConnections, normalizeObservations, normalizeDevelopment, npcDeltas, npcSample, stormArea } from '../../server/universe-feed-model.mjs';
@@ -160,4 +161,16 @@ test('same cached NPC window never creates a comparison; stale or disabled feed 
 test('invalid provider timestamps never advertise ready reports',t=>{
  const {service,store}=fixture(t);store.set('universe:feeds:thera',{status:'ready',updated_at:'not-a-date',expires_at:'also-invalid',data:[]});
  assert.equal(service.state().sources.thera.status,'stale');
+});
+
+test('public chain retains cached cards through refresh and reconciles only the resulting snapshot',async t=>{
+ let release,started,call=0;const waiting=new Promise(resolve=>{started=resolve;});
+ const {service,time}=fixture(t,async()=>{if(++call===1)return response([wh(),wh({id:'5',in_system_id:B})],200,{'cache-control':'max-age=300'});started();return new Promise(resolve=>{release=resolve;});});
+ await service.refresh('thera');const map={id:'public-refresh',nodes:[],connections:[]},before=publicChainScene(map,service.state(),atlas.systems,{thera:true},AT);
+ assert.equal(before.connections.length,2);time(AT+300001);const pending=service.refresh('thera');await waiting;
+ try{const during=publicChainScene(map,service.state(),atlas.systems,{thera:true},AT+300001,before);assert.deepEqual(during.nodes,before.nodes);assert.deepEqual(during.connections.map(row=>row.id),before.connections.map(row=>row.id));assert.ok(during.connections.every(row=>row.stale&&!row.active&&!row.portal.routingEligible));}
+ finally{release(response([wh({wh_type:'K162'}),wh({id:'6',in_system_id:C})],200,{'cache-control':'max-age=300'}));await pending;}
+ const after=publicChainScene(map,service.state(),atlas.systems,{thera:true},AT+300001,before);
+ assert.equal(after.connections.length,2);assert.equal(after.connections.find(row=>row.to_system_id===A||row.from_system_id===A).wh_type,'K162');assert.ok(!after.nodes.some(node=>node.system_id===B));assert.ok(after.nodes.some(node=>node.system_id===C));
+ for(const id of [T,A]){const old=before.nodes.find(node=>node.system_id===id),next=after.nodes.find(node=>node.system_id===id);assert.deepEqual({x:next.x,y:next.y},{x:old.x,y:old.y});}
 });

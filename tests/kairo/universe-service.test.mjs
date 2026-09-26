@@ -140,6 +140,26 @@ test('wormholes default to sixteen hours, expire exactly, and prune keeps durabl
     assert.throws(() => service.saveLink(42, { kind: 'wormhole', from: 'Alpha', to: 'J000001', duration_hours: 7 }), /lifetime/);
 });
 
+test('all mapper durations persist precisely and unrelated edits never renew a connection', async t => {
+    const {service,time}=await fixture(t);
+    for(const hours of [1,4,4.5,16,24,48]) {
+        const edge=service.saveLink(42,{kind:'wormhole',from_system_id:A,to_system_id:W,duration_hours:hours,mass:'stable',max_ship_size:'large',confirmed:false,accessible:false});
+        assert.equal(edge.duration_hours,hours);assert.equal(Date.parse(edge.expires_at),AT+hours*3600000);assert.equal(edge.active,false);
+    }
+    const edge=service.saveLink(42,{kind:'wormhole',from_system_id:A,to_system_id:W,life_band:'under_4h',confirmed:false,accessible:false});
+    time(AT+1800000);
+    const preset=service.saveLink(42,{id:edge.id,duration_hours:4.5});
+    assert.equal(preset.life_band,'unknown');assert.equal(preset.duration_hours,4.5);assert.equal(Date.parse(preset.expires_at),AT+5*3600000);
+    assert.equal(preset.confirmed,false);assert.equal(preset.accessible,false);
+    time(AT+3600000);
+    const size=service.saveLink(42,{id:edge.id,max_ship_size:'xlarge',mass:'reduced'});
+    assert.equal(size.expires_at,preset.expires_at);assert.equal(size.life_observed_at,preset.life_observed_at);assert.equal(size.duration_hours,4.5);
+    const echo=service.saveLink(42,{...size,mass:'critical'});
+    assert.equal(echo.expires_at,preset.expires_at);assert.equal(echo.life_observed_at,preset.life_observed_at);
+    const manual=service.saveLink(42,{id:edge.id,expires_at:new Date(AT+6*3600000).toISOString()});
+    assert.equal(manual.duration_hours,null);
+});
+
 test('observed travel creates only unconfirmed J-space candidates and never routes visit history', async t => {
     const { service, store } = await fixture(t);
     const before = sample({ solar_system_id: A }, { updatedAt: new Date(AT - 15000).toISOString() });
