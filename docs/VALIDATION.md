@@ -1,4 +1,15 @@
-# Validation — 25 September 2026
+# Validation — 26 September 2026
+
+## Universe 0.8.0-rc.9
+
+This pass simplifies and styles **J-Space only**: permanent chain search, direct card badges, immediate observed-status/role and connection condition controls, a visible scanner composer, and scoped Undo for diagram removal. Shared tool navigation uses one dock, while K-Space retains its existing interface and workflow.
+
+- All 466 Node tests pass. TypeScript and production compilation pass.
+- The compiled J-Space browser suite passes 21 acceptance/layout groups with no browser errors. It covers direct partial scan updates, explicit complete-scan review, cancellation of delayed validation when leaving Scanner, and notebook context for systems outside the private chain. It also verifies one-click status/role changes, exact expiry and route-trust preservation, node/edge/group removal with canonical records retained and real Undo, compact card metric bounds, direct notes/reports, and desktop/390px layouts.
+- Existing real-pointer drag/connection tests, queued save responsiveness, keyboard gestures, reduced motion, scanner linkage/restoration, observations, passage records, migration, pilot isolation, public report expiry and navigation invalidation remain covered. Desktop and narrow captures were inspected. Collapsed/public conditions use compact read-only tiles; collapsed quick edits cannot rewrite historical expiry.
+- Review caught and fixed a delayed scanner import after unmount, a refresh request-epoch collision, and overlapping or incorrectly replaced shared-tool context. Ordinary quick connection patches preserve recorded expiry, observation age and verification/access. Diagram-removal Undo is bound to the exact pilot, map and revision; canonical changes retain their existing distinct history semantics.
+
+The exact-commit GitHub Actions test-build gate runs the combined Universe/replay suite, Sessions browser suite and 466 extracted-package tests before publishing its downloadable ZIP. See the draft PR for the successful run and artifact. No live EVE waypoint commands are issued by synthetic verification. Existing data requires no reset; no merge into main is authorized.
 
 ## Universe 0.8.0-rc.8
 

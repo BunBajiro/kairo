@@ -2,6 +2,15 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.9 — J-Space at a glance
+
+- Puts system search directly in the chain toolbar, with one action to add a new card or frame an existing one.
+- Gives J-Space a stronger visual identity, with clearer class/static hierarchy, quieter cartographic depth, condition symbols and direct scanner/observation/note badges on cards.
+- Adds immediate observed-status, home/staging and connection mass/life controls beside the map. Ordinary condition updates preserve expiry and route trust.
+- Removes diagram cards and connections immediately with a scoped Undo action, including group removal. Shared routing disable and whole-map deletion remain separate deliberate operations.
+- Opens scanner paste and signature rows directly in J-Space. Valid partial scans update in one action; complete scans and diagnostics retain review. Removes K-Space Infrastructure tools from this notebook.
+- Consolidates repeated headers and gives shared tools a consistent Scanner/Navigate/Intel/System strip. Existing maps and history remain available without a reset; K-Space workflows are unchanged.
+
 ## 0.8.0-rc.8 — Direct chain interaction
 
 - Makes card movement track the pointer directly, including connected lines, and queues release-time position saves so another drag does not wait for the previous response.

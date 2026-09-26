@@ -133,3 +133,17 @@
 @media(prefers-reduced-motion:reduce){.jspace-shared-dock.universe-inspector{animation:none}}
 
 .jspace-shared-dock[hidden]{display:none}
+
+/* J-Space lives in its chain canvas; all shared tools use one consistent dock. */
+.workspace:has(.jspace-dedicated-workspace){padding-top:10px;padding-bottom:12px}
+.workspace:has(.jspace-dedicated-workspace)>.page-heading{margin-bottom:10px}
+.workspace:has(.jspace-dedicated-workspace)>.workspace-footer{display:none}
+.jspace-dedicated-workspace .jspace-shared-dock.universe-inspector{border-color:#817098;background:linear-gradient(155deg,#24253a,#111d2d 65%);box-shadow:0 16px 60px #030711b3,inset 0 1px #d7c4f31a}
+.jspace-dedicated-workspace .jspace-shared-dock>.universe-dock-handle{background:linear-gradient(110deg,#302940,#1a2c3c);border-color:#615671;min-height:64px;gap:12px}
+.jspace-dock-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:9px 12px;background:#141e2dc9;border-bottom:1px solid #4c4660;flex:none}
+.jspace-dock-tools button{display:flex;gap:6px;align-items:center;justify-content:center;min-height:39px;padding:7px 5px;border:1px solid transparent;border-radius:5px;color:#bec5d8;font-size:14px;transition:background .16s,border-color .16s,color .16s}
+.jspace-dock-tools button:hover:not(:disabled){background:#302e45;color:#ede7fa}
+.jspace-dock-tools button[aria-pressed=true]{color:#f0e4ff;background:#423452;border-color:#9478b2}
+.jspace-dock-tools button:focus-visible{outline:2px solid #d6b5ff;outline-offset:2px}
+.jspace-dock-tools button:disabled{opacity:.5}
+@media(prefers-reduced-motion:reduce){.jspace-dock-tools button{transition:none}}

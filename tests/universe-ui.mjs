@@ -1030,11 +1030,10 @@ try{
  await button('Atlas','.universe-tabs');await space('J-Space');await ensureJSpaceMap('Recorded discoveries',true,true);
  await waitFor('!!document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+')');
  assert.ok(await evaluate('document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+').textContent.includes('+JSON.stringify(atlas.wormhole.name)+')'),'The pinned wormhole system remains on the chain after its connection expires');
- await button('Add system','.jspace-workspace-toolbar');
  await fill('[aria-label="Find a system to add to chain"]',atlas.wormhole.region_name);
- assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-add-results strong')).some(e=>e.textContent==="+JSON.stringify(atlas.wormhole.region_name)+")"),false,'Internal J-space region names are not search destinations');
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-quick-results strong')).some(e=>e.textContent==="+JSON.stringify(atlas.wormhole.region_name)+")"),false,'Internal J-space region names are not search destinations');
  await fill('[aria-label="Find a system to add to chain"]',atlas.wormhole.name);
- await clickElement("Array.from(document.querySelectorAll('.jspace-add-results button')).find(e=>e.querySelector('strong')?.textContent==="+JSON.stringify(atlas.wormhole.name)+")");
+ await clickElement("Array.from(document.querySelectorAll('.jspace-quick-results button')).find(e=>e.querySelector('strong')?.textContent==="+JSON.stringify(atlas.wormhole.name)+")");
  await waitFor("document.querySelector('[aria-label=\"Selected map context\"] h3')?.textContent==="+JSON.stringify(atlas.wormhole.name));
  const jspaceBreadcrumb=await evaluate("document.querySelector('[aria-label=\"Selected map context\"] header').textContent");
  assert.ok(jspaceBreadcrumb.includes('J-Space')&&!jspaceBreadcrumb.includes(atlas.wormhole.region_name)&&!jspaceBreadcrumb.includes(atlas.wormhole.constellation_name),'J-space inspection explains system class and discovery context without internal region geography');

@@ -3,3 +3,87 @@
 .universe-signature-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}.universe-signature-summary span{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;background:color-mix(in srgb,var(--primary) 7%,transparent);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--muted-foreground)}.universe-signature-summary strong{font-size:24px;line-height:1.15;color:var(--foreground);font-variant-numeric:tabular-nums}.universe-signature-filters{display:grid;gap:8px;margin-bottom:12px}.universe-bookmark-format output{display:block;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:16px;overflow-wrap:anywhere;color:var(--foreground)}.universe-signature-destination{color:var(--primary);font-size:14px!important}.universe-signature-trash>div{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:10px;border:1px solid var(--border);border-radius:10px}.universe-signature-trash small{display:block;color:var(--muted-foreground);margin-top:4px}.universe-signature-trash>div>span{min-width:0;overflow-wrap:anywhere}.universe-signature-list .universe-record-action{display:inline-flex;align-items:center;gap:5px}
 
 .universe-bookmark-advanced{border:1px solid var(--border);border-radius:9px;padding:10px 12px}.universe-bookmark-advanced>summary{cursor:pointer;color:var(--foreground);font-size:14px;font-weight:600}.universe-bookmark-advanced[open]>summary{margin-bottom:12px}
+
+/* J-Space keeps the shared notebook, with observations and frequent actions up front. */
+.universe-operations-tool.is-jspace .universe-operation-heading{margin-bottom:14px}
+.universe-operations-tool.is-jspace .universe-operation-heading .eyebrow{font-size:14px;letter-spacing:.17em}
+.jspace-notebook{display:flex;flex-direction:column;gap:12px}
+.jspace-notebook>.universe-notebook-system{order:0;margin:0}
+.jspace-notebook>.universe-notebook-title{order:1;margin:0;padding:6px 0 10px;border-bottom:1px solid var(--border)}
+.jspace-notebook>.jspace-scan-composer{order:2}
+.jspace-notebook>[role="status"],.jspace-notebook>[role="alert"]{order:3;margin:0}
+.jspace-notebook>.universe-signature-summary{order:4;margin:0}
+.jspace-notebook>.universe-signature-filters{order:5;margin:0}
+.jspace-notebook>.universe-notebook-bulk{order:6;margin:0}
+.jspace-notebook>.universe-operation-error{order:6}
+.jspace-notebook>.universe-signature-list{order:7}
+.jspace-notebook>.universe-operation-empty{order:7;min-height:120px;padding:20px}
+.jspace-notebook>.universe-signature-editor{order:8}
+.jspace-notebook>.universe-signature-trash{order:9}
+.jspace-notebook>.universe-bookmark-format{order:10}
+.jspace-notebook>.universe-disclosure:not(.universe-signature-editor):not(.universe-signature-trash):not(.universe-bookmark-format){order:11}
+.jspace-notebook>button,.jspace-notebook>.universe-operation-note:not([role]){order:12}
+.jspace-scan-composer{border:1px solid color-mix(in srgb,var(--primary) 28%,var(--border));border-radius:14px;padding:13px;background:linear-gradient(140deg,color-mix(in srgb,var(--primary) 6%,transparent),transparent 80%);display:grid;gap:10px}
+.jspace-scan-composer-heading{display:flex;align-items:center;gap:8px;color:var(--foreground)}
+.jspace-scan-composer-heading>svg{color:var(--primary)}
+.jspace-scan-composer-heading>strong{font-size:14px}
+.jspace-scan-composer-heading>span{margin-left:auto;font-size:14px;color:var(--muted-foreground)}
+.jspace-scan-composer textarea{min-height:72px;resize:vertical;font:14px/1.5 var(--font-mono,monospace);background:color-mix(in srgb,var(--background) 75%,transparent)}
+.jspace-scan-options{display:grid;gap:7px}
+.jspace-scan-options .universe-check{font-size:14px;gap:8px;line-height:1.35}
+.jspace-scan-composer .universe-operation-actions{display:flex;justify-content:space-between;gap:8px}
+.jspace-scan-composer .universe-operation-actions button{min-height:36px;font-size:14px;gap:7px}
+.jspace-scan-composer .universe-operation-actions button:last-child{flex:1}
+.jspace-scan-composer .universe-operation-note{font-size:14px;margin:0}
+.jspace-scan-summary{gap:7px}
+.jspace-scan-summary button{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;column-gap:7px;row-gap:3px;padding:10px 6px;border:1px solid var(--border);border-radius:11px;background:color-mix(in srgb,var(--primary) 4%,transparent);color:var(--muted-foreground);transition:background .16s,border-color .16s}
+.jspace-scan-summary button:hover,.jspace-scan-summary button[aria-pressed="true"]{background:color-mix(in srgb,var(--primary) 12%,transparent);border-color:color-mix(in srgb,var(--primary) 45%,var(--border));color:var(--primary)}
+.jspace-scan-summary button strong{font-size:22px;font-weight:600}
+.jspace-scan-summary button span{grid-column:1/-1;background:none;border:0;padding:0;font-size:14px;color:inherit;line-height:1.3}
+.jspace-signature-list{gap:8px}
+.jspace-signature-list article{--signal-color:var(--muted-foreground);padding:10px 12px;border-radius:12px;border-left:3px solid color-mix(in srgb,var(--signal-color) 70%,transparent);background:linear-gradient(110deg,color-mix(in srgb,var(--signal-color) 6%,transparent),transparent 75%)}
+.jspace-signature-list article.signature-wormhole{--signal-color:#a79cff}
+.jspace-signature-list article.signature-data{--signal-color:#80bffa}
+.jspace-signature-list article.signature-relic{--signal-color:#e2bf7f}
+.jspace-signature-list article.signature-gas{--signal-color:#86c8b3}
+.jspace-signature-list article.signature-combat{--signal-color:#e18b94}
+.jspace-signature-list article.signature-ore{--signal-color:#b3bcc9}
+.jspace-signature-list article.is-missing{opacity:.65;border-left-style:dashed}
+.jspace-signature-list article header{gap:7px;margin-bottom:4px}
+.jspace-signature-list article header>span.jspace-signature-type{font-size:14px;color:var(--signal-color);margin-left:auto}
+.jspace-signature-list article header>button{width:28px;height:28px;margin:0;display:grid;place-items:center;border-radius:7px}
+.jspace-signature-list .universe-signature-select{gap:7px}
+.jspace-signature-list .universe-signature-select strong{font:600 14px/1.3 var(--font-mono,monospace);letter-spacing:.03em}
+.jspace-signature-list .universe-signature-select input{width:15px;height:15px;accent-color:var(--primary)}
+.jspace-signature-symbol{display:flex;color:var(--signal-color)}
+.jspace-signature-body{padding-left:22px;min-width:0}
+.jspace-signature-list article .jspace-signature-body>p{margin:2px 0;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.jspace-signature-body .universe-signature-destination{display:flex;gap:5px;align-items:center;font-size:14px!important}
+.jspace-signature-body .jspace-signature-note{color:var(--muted-foreground);font-size:14px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jspace-signature-list article footer{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;padding-left:22px}
+.jspace-signature-age{display:flex;align-items:center;gap:4px;font-size:14px;color:var(--muted-foreground);font-variant-numeric:tabular-nums}
+.jspace-signature-age.is-missing{color:#d4af74}
+.jspace-signature-actions{display:flex;gap:2px;flex:none}
+.jspace-signature-actions .universe-record-action{display:grid;place-items:center;width:29px;height:29px;padding:0;border-radius:7px;color:var(--muted-foreground);text-decoration:none}
+.jspace-signature-actions .universe-record-action:hover,.jspace-signature-list article header>button:hover{color:var(--foreground);background:color-mix(in srgb,var(--primary) 12%,transparent)}
+.jspace-notebook .universe-bookmark-format,.jspace-notebook .universe-signature-editor,.jspace-notebook .universe-signature-trash{margin:0}
+.jspace-notebook .universe-bookmark-format>summary,.jspace-notebook .universe-signature-editor>summary,.jspace-notebook .universe-signature-trash>summary{font-size:14px}
+.jspace-notebook .universe-notebook-bulk button{font-size:14px;min-height:32px;padding:5px 9px}
+.jspace-notebook button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.jspace-scan-summary button{transition:none}}
+.jspace-notebook input[type="checkbox"]{min-height:16px;width:16px;height:16px;flex:none;accent-color:var(--primary)}
+.jspace-notebook .jspace-signature-actions .universe-record-action{margin:0}
+.jspace-notebook .jspace-signature-actions .universe-record-action+.universe-record-action{margin-inline-start:0}
+.jspace-notebook .jspace-scan-composer textarea{font-size:14px}
+.jspace-notebook .jspace-scan-composer .universe-operation-actions{flex-direction:row}
+.jspace-notebook>.universe-notebook-title{background:transparent;border-width:0 0 1px;border-radius:0}
+.jspace-notebook>.universe-notebook-title small{flex-basis:auto;padding-left:0;margin-left:auto}
+.jspace-notebook>.universe-signature-list{margin:0}
+
+/* The surrounding dock already supplies the title and padding. */
+.jspace-shared-dock .universe-operations-tool.is-jspace{padding:0}
+.jspace-shared-dock .universe-operations-tool.is-jspace .universe-operation-heading{margin-bottom:10px;gap:9px}
+.jspace-shared-dock .universe-operations-tool.is-jspace .universe-operation-heading .eyebrow{display:none}
+.jspace-shared-dock .universe-operations-tool.is-jspace .universe-operation-heading h3{font-size:18px;margin:0}
+.jspace-shared-dock .universe-operations-tool.is-jspace .universe-operation-heading>svg{width:19px;height:19px}
+.jspace-notebook .jspace-scan-summary button{padding:7px 5px}

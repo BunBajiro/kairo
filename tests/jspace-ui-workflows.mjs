@@ -14,7 +14,7 @@ export async function jspaceAcceptance(ui){
  const closeSheet=async()=>{const label=await evaluate("document.querySelector('.jspace-sheet')?.getAttribute('aria-label')");if(label)await click('[aria-label='+JSON.stringify('Close '+label)+']');};
  const selectNode=async system=>{await click('[aria-label='+JSON.stringify('Select '+system.name)+']');await waitFor('!!document.querySelector('+JSON.stringify(selected)+')');};
  const selectEdge=async id=>{if(await evaluate("!!document.querySelector('[aria-label=\"Close selected map context\"]')"))await click('[aria-label="Close selected map context"]');await click('[data-connection-label='+JSON.stringify(id)+']');};
- const addNode=async system=>{await button('Add system','.jspace-workspace-toolbar');await fill('[aria-label="Find a system to add to chain"]',system.name);await clickElement('Array.from(document.querySelectorAll(".jspace-add-results button")).find(e=>e.querySelector("strong")?.textContent==='+JSON.stringify(system.name)+')');await waitFor('!!document.querySelector('+JSON.stringify(node(system.system_id))+') && !document.querySelector(".jspace-sheet")');};
+ const addNode=async system=>{await fill('[aria-label="Find a system to add to chain"]',system.name);await clickElement('Array.from(document.querySelectorAll(".jspace-quick-results button")).find(e=>e.querySelector("strong")?.textContent==='+JSON.stringify(system.name)+')');await waitFor('!!document.querySelector('+JSON.stringify(node(system.system_id))+') && !document.querySelector(".jspace-sheet")');};
  const nativeSelect=async(label,value)=>{await waitFor('!!document.querySelector('+JSON.stringify('[aria-label='+JSON.stringify(label)+']')+')');await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify('[aria-label='+JSON.stringify(label)+']')});if(!Array.from(e.options).some(o=>o.value===${JSON.stringify(String(value))}))throw new Error('Missing native option');e.focus();Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(e,${JSON.stringify(String(value))});e.dispatchEvent(new Event('change',{bubbles:true}));})()`);};
  const inputValue=async(label,value)=>evaluate(`(()=>{const e=document.querySelector(${JSON.stringify('[aria-label='+JSON.stringify(label)+']')});Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,${JSON.stringify(value)});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
  const toggle=async text=>clickElement('Array.from(document.querySelectorAll(".jspace-sheet label")).find(e=>e.textContent.includes('+JSON.stringify(text)+'))?.querySelector("input[type=checkbox]")');
@@ -42,7 +42,11 @@ export async function jspaceAcceptance(ui){
  // next gesture. This wrapper is confined to this disposable browser and this
  // one command; it does not interfere with the harness's polling controls.
  await ensureJSpaceMap('Direct interaction review',true);
- await addNode(home);await addNode(other);await click('[aria-label="Fit chain"]');await delay(650);
+ await addNode(home);await addNode(other);
+ const searchRevision=(await mapState()).revision;await addNode(home);
+ assert.equal((await mapState()).revision,searchRevision,'Finding a system already on the chain frames it without saving a duplicate');
+ assert.equal((await mapState()).nodes.filter(row=>row.system_id===home.system_id).length,1);
+ await click('[aria-label="Fit chain"]');await delay(650);
  const directBefore=await mapState(),firstPosition=directBefore.nodes.find(row=>row.system_id===home.system_id);
  const dragFrames=[];
  const trackedDrag=async(system,dx,dy)=>{
@@ -72,7 +76,7 @@ export async function jspaceAcceptance(ui){
  const savedPosition=(await mapState()).nodes.find(row=>row.system_id===home.system_id);
  const expected={x:firstPosition.x+Math.round(firstDrag.dx/firstDrag.zoom)+Math.round(secondDrag.dx/secondDrag.zoom),y:firstPosition.y+Math.round(firstDrag.dy/firstDrag.zoom)+Math.round(secondDrag.dy/secondDrag.zoom)};
  assert.ok(Math.abs(savedPosition.x-expected.x)<=1&&Math.abs(savedPosition.y-expected.y)<=1,'Two gestures persist in order without dropping the second movement: '+JSON.stringify({savedPosition,expected,dragFrames}));
- await click('[aria-label="Refresh J-Space map"]');await settle();
+ await click('[aria-label="Refresh Universe data"]');await settle();
  assert.deepEqual({x:(await mapState()).nodes.find(row=>row.system_id===home.system_id).x,y:(await mapState()).nodes.find(row=>row.system_id===home.system_id).y},{x:savedPosition.x,y:savedPosition.y});
  checks.push('Card movement follows real pointer input within two frames, stays optimistic during a delayed save and persists a second gesture in order');
 
@@ -133,6 +137,48 @@ export async function jspaceAcceptance(ui){
  checks.push('Mobile fit keeps visible overview names and connection ports inside the viewport without overlapping neighboring labels');
  checks.push('Compact readable cards expose pointer and keyboard ports, preserve the pending visual and create only unconfirmed observations; canceled, self and empty drops leave the map unchanged');
 
+ // Common field observations are direct actions, but updating an observation
+ // must never infer route trust or silently renew a wormhole's expiry.
+ await click('[aria-label="Fit chain"]');await delay(650);await selectNode(home);
+ await click('[aria-label="Mark system scanned"]');await settle();
+ await click('[aria-label="Set system role home"]');await settle();
+ let quickMap=await mapState();assert.equal(quickMap.nodes.find(row=>row.system_id===home.system_id).status,'scanned');assert.equal(quickMap.nodes.find(row=>row.system_id===home.system_id).role,'home');
+ assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Status and role save directly from the selected system');
+ await selectEdge(drawn.id);await click('[aria-label="Set observed mass reduced"]');await settle();await click('[aria-label="Set observed lifetime eol"]');await settle();
+ quickMap=await mapState();const quickEdge=quickMap.connections.find(row=>row.id===drawn.id);
+ assert.equal(quickEdge.mass,'reduced');assert.equal(quickEdge.life_status,'eol');assert.equal(quickEdge.expires_at,null);assert.equal(quickEdge.confirmed,false);assert.equal(quickEdge.accessible,false);assert.equal(quickEdge.active,false);
+ assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Observed connection conditions save without opening a full editor');
+ await screenshot('jspace-direct-connection-workbench');
+ checks.push('Permanent chain search frames existing systems without duplicate writes; one-click status, role and condition changes retain unknown expiry and unconfirmed route trust');
+
+ // Diagram-only removals are immediate and genuinely reversible. Canonical
+ // shared connection records and routing permissions survive these operations.
+ const undoRemoval=async()=>{await button('Undo removal','.jspace-notice');await settle();};
+ const shape=value=>({nodes:value.nodes.map(row=>row.system_id).sort((a,b)=>a-b),connections:value.connections.map(row=>row.id).sort()});
+ const removalBefore=await mapState(),removalShape=shape(removalBefore),canonicalBefore=(await api('/universe?character=42')).links.find(row=>row.id===quickEdge.link_id);
+ await click('[aria-label="Close selected map context"]');
+ const edgePoint=await pointerAt('[data-connection-label='+JSON.stringify(drawn.id)+']');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...edgePoint});await call('Input.dispatchMouseEvent',{type:'mousePressed',...edgePoint,button:'right',buttons:2,clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',...edgePoint,button:'right',clickCount:1});
+ await button('Remove from this map','.jspace-map-menu');await settle();
+ assert.equal((await mapState()).connections.some(row=>row.id===drawn.id),false,'The edge context action removes the diagram edge immediately');
+ assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Diagram removal opens neither an editor nor a confirmation sheet');
+ const canonicalAfter=(await api('/universe?character=42')).links.find(row=>row.id===quickEdge.link_id);
+ for(const field of ['id','enabled','confirmed','accessible','expires_at','mass','life_status'])assert.equal(canonicalAfter[field],canonicalBefore[field],'Diagram removal preserves canonical '+field);
+ await undoRemoval();assert.deepEqual(shape(await mapState()),removalShape,'Undo restores the removed diagram edge');
+ await selectNode(home);await click('[aria-label="Remove system from map"]');await settle();
+ assert.equal((await mapState()).nodes.some(row=>row.system_id===home.system_id),false,'The selected system trash action removes its card immediately');
+ assert.equal((await mapState()).connections.some(row=>row.from_system_id===home.system_id||row.to_system_id===home.system_id),false,'Removing a card removes its attached diagram edges');
+ await screenshot('jspace-removal-undo');await undoRemoval();assert.deepEqual(shape(await mapState()),removalShape,'Undo restores the card and all attached diagram edges');
+ await action(home,'Remove from this map');assert.equal((await mapState()).nodes.some(row=>row.system_id===home.system_id),false,'The system menu removal performs the action instead of opening an editor');await undoRemoval();assert.deepEqual(shape(await mapState()),removalShape);
+ await selectNode(home);const groupPoint=await pointerAt(node(other.system_id)+' .jspace-node-grab');
+ await call('Input.dispatchMouseEvent',{type:'mousePressed',...groupPoint,button:'left',buttons:1,modifiers:2,clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',...groupPoint,button:'left',modifiers:2,clickCount:1});
+ await waitFor("document.querySelector('[aria-label=\"Selected chain systems\"]')?.textContent.includes('2 selected')");
+ await click('[aria-label="Remove unlocked systems"]');await settle();
+ assert.deepEqual((await mapState()).nodes.map(row=>row.system_id),[systems.jita.system_id],'Group removal acts immediately on the selected unlocked cards');
+ await undoRemoval();assert.deepEqual(shape(await mapState()),removalShape,'One Undo restores an entire removed group and its connections');
+ if(await evaluate("!!document.querySelector('[aria-label=\"Clear chain selection\"]')"))await click('[aria-label="Clear chain selection"]');
+ checks.push('Node, edge and group diagram removals act immediately; real Undo restores cards and topology while canonical shared connection records remain unchanged');
+
  await ensureJSpaceMap('Flagship scout chain',true);
  const fresh=await mapState();assert.equal(fresh.nodes.length,0);assert.equal(fresh.connections.length,0);
  await addNode(home);await addNode(other);await click('[aria-label="Fit chain"]');await delay(650);
@@ -148,7 +194,7 @@ export async function jspaceAcceptance(ui){
  assert.ok(await evaluate("document.querySelector('.jspace-reference').textContent.includes('Nominal') && document.querySelector('.jspace-reference').textContent.includes('Expected static types')"));
  assert.equal(await evaluate('document.querySelector(".jspace-reference").textContent.includes('+JSON.stringify(home.region_name)+')'),false,'Static reference keeps internal wormhole regions out of the user’s context');
  await screenshot('jspace-system-reference');await closeSheet();
- await button('Edit system',selected);await fill('[aria-label="Chain system alias"]','Forward camp');await fill('[aria-label="Chain system label"]','Scouting route');
+ await button('Edit system',selected);await fill('[aria-label="Chain system alias"]','Forward camp');await clickElement('Array.from(document.querySelectorAll(".jspace-sheet summary")).find(e=>e.textContent.trim()==="Notes & details")');await fill('[aria-label="Chain system label"]','Scouting route');
  await nativeSelect('Chain system status','scanned');await nativeSelect('Chain system role','staging');await fill('[aria-label="Chain system tags"]','exploration, bookmarks');
  await button('Save system context',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  let map=await mapState();assert.equal(map.nodes.find(row=>row.system_id===home.system_id).alias,'Forward camp');
@@ -186,47 +232,96 @@ export async function jspaceAcceptance(ui){
  const linked=(await api('/universe?character=42')).links.find(row=>row.id===edge.link_id);assert.equal(linked.from_signature,'ABC-123');assert.equal(linked.to_signature,'XYZ-789');assert.equal(linked.active,false);
  await button('Edit connection',selected);await toggle('I have verified this connection');await toggle('Allow this verified connection in my routes');await button('Save connection conditions',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  map=await mapState();edge=map.connections[0];assert.equal(edge.confirmed,true);assert.equal(edge.accessible,true);assert.equal(edge.active,true,'Only explicit confirmation and route access make the live record usable');
+ const exactExpiry=edge.expires_at;assert.ok(exactExpiry,'The explicitly recorded connection has a real expiry');
+ await click('[aria-label="Set observed mass reduced"]');await settle();await click('[aria-label="Set observed lifetime stable"]');await settle();
+ map=await mapState();edge=map.connections[0];assert.equal(edge.expires_at,exactExpiry,'Quick condition changes preserve the exact recorded expiry');assert.equal(edge.confirmed,true);assert.equal(edge.accessible,true);assert.equal(edge.active,true);
+ checks.push('Quick condition updates preserve a confirmed connection’s exact expiry and existing routing permissions');
  const itinerary=JSON.stringify((await api('/universe/navigation?character=42')).itinerary),commandCount=recentUniverseRequests.filter(row=>/\/navigation\/(?:plan|waypoints)(?:\?|$)/.test(row.url)).length;
  await selectNode(home);await action(home,'Set route destination');await waitFor("document.querySelector('.jspace-shared-dock')?.hidden===false");
  assert.equal(JSON.stringify((await api('/universe/navigation?character=42')).itinerary),itinerary,'A map destination action does not replace the persisted itinerary');
  assert.equal(recentUniverseRequests.filter(row=>/\/navigation\/(?:plan|waypoints)(?:\?|$)/.test(row.url)).length,commandCount,'Map destination action does not plan or send EVE waypoints');
  const dockClose=await evaluate("Array.from(document.querySelectorAll('.jspace-shared-dock button')).find(e=>/close|collapse/i.test(e.getAttribute('aria-label')||e.textContent))?.getAttribute('aria-label')");if(dockClose)await click('[aria-label='+JSON.stringify(dockClose)+']');
- await selectNode(home);await button('Scanner',selected);await waitFor('document.querySelector(".universe-notebook-title strong")?.textContent==='+JSON.stringify(home.name));
+ await click('[aria-label='+JSON.stringify('Open scanner in '+home.name)+']');await waitFor('document.querySelector(".universe-notebook-title strong")?.textContent==='+JSON.stringify(home.name));
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-shared-dock button')).some(e=>e.getClientRects().length&&e.textContent.trim()==='Infrastructure')"),false,'The J-Space scanner exposes its relevant notebook without nullsec infrastructure');
+ assert.ok(await evaluate("document.querySelector('[aria-label=\"Scanner clipboard text\"]')?.getClientRects().length>0"),'A single card action opens the visible scan composer');
+ assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Selected map context\"]')?.getClientRects().length"),false,'Opening the scanner replaces selected map context instead of stacking workbenches');
+ await screenshot('jspace-scanner-direct');
+ const scannerMapBefore=await mapState();assert.equal(scannerMapBefore.nodes.some(row=>row.system_id===systems.thera.system_id),false,'The scanner navigation sample is outside the private chain');
+ await fill('[aria-label="Notebook system"]',systems.thera.name);await click('[aria-label="Open system notebook"]');
+ await waitFor('document.querySelector(".jspace-shared-dock")?.hidden===false && document.querySelector(".universe-notebook-title strong")?.textContent==='+JSON.stringify(systems.thera.name)+' && !!document.querySelector('+JSON.stringify('[aria-label="Scanner clipboard text"]')+')?.getClientRects().length');
+ assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Choosing an uncharted scanner system keeps Scanner open instead of replacing it with system reference');
+ assert.equal((await mapState()).revision,scannerMapBefore.revision,'Opening an uncharted system notebook does not add it to the private chain');
+ await fill('[aria-label="Notebook system"]',home.name);await click('[aria-label="Open system notebook"]');await waitFor('document.querySelector(".universe-notebook-title strong")?.textContent==='+JSON.stringify(home.name));
+ checks.push('Scanner navigation to a system outside the private chain keeps the requested tool open without adding a map card');
+ await fill('[aria-label="Scanner clipboard text"]','CAN-999\tCosmic Signature\tGas Site\tCanceled preview\t100.0%\t3 AU');
+ await evaluate(`(()=>{const nativeFetch=window.fetch;window.__scanFetch=nativeFetch;window.__scanPreviewHeld=false;window.__scanPreviewFinished=false;window.__scanImportsAfterLeave=0;let release;const gate=new Promise(resolve=>{release=resolve;});window.__releaseScanPreview=release;window.fetch=async function(input,init){if(String(input).includes('/universe/signatures/import'))window.__scanImportsAfterLeave++;if(!window.__scanPreviewHeld&&String(input).includes('/universe/signatures/preview')){window.__scanPreviewHeld=true;await gate;try{return await nativeFetch.call(this,input,init);}finally{window.__scanPreviewFinished=true;}}return nativeFetch.call(this,input,init);};})()`);
+ try{
+  await button('Update scan','.jspace-shared-dock');await waitFor('window.__scanPreviewHeld===true');
+  await button('Navigate','.jspace-dock-tools');await waitFor("!document.querySelector('[aria-label=\"Scanner clipboard text\"]')");
+  await evaluate('window.__releaseScanPreview()');await waitFor('window.__scanPreviewFinished===true');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+  assert.equal(await evaluate('window.__scanImportsAfterLeave'),0,'Leaving Scanner while validation is pending prevents a delayed automatic import');
+  assert.equal((await api('/universe/operations?character=42')).signatures.some(row=>row.signature_id==='CAN-999'),false,'A canceled preview never becomes a canonical observation');
+ }finally{await evaluate('window.__releaseScanPreview?.();window.fetch=window.__scanFetch;delete window.__scanFetch;delete window.__releaseScanPreview;');}
+ await button('Scanner','.jspace-dock-tools');await waitFor('document.querySelector(".universe-notebook-title strong")?.textContent==='+JSON.stringify(home.name));
+ checks.push('A delayed partial-scan preview cannot import after the user leaves the Scanner tool');
  await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\tWormhole\tSurveyed entrance\t100.0%\t1 AU\nDEF-456\tCosmic Signature\tRelic Site\tSurveyed relic\t100.0%\t2 AU');
- await button('Review scan','.jspace-shared-dock');await waitFor("!!document.querySelector('.universe-scan-review')");
- assert.equal((await api('/universe/operations?character=42')).signatures.filter(row=>row.system_id===home.system_id).length,0,'Reviewing a scanner paste does not save observations');
- await button('Import signatures','.universe-scan-review');await waitFor("document.querySelectorAll('.universe-signature-list article').length===2");
- const signatureBefore=(await api('/universe/operations?character=42')).signatures.find(row=>row.system_id===home.system_id&&row.signature_id==='DEF-456');
+ assert.equal((await api('/universe/operations?character=42')).signatures.filter(row=>row.system_id===home.system_id).length,0,'Pasting a scan alone never saves observations');
+ await button('Update scan','.jspace-shared-dock');await waitFor("document.querySelectorAll('.universe-signature-list article').length===2");
+ assert.equal(await evaluate("!!document.querySelector('.universe-scan-review')"),false,'A valid partial scan updates in one action without a redundant review step');
+ const scanSignatures=async()=>(await api('/universe/operations?character=42')).signatures.filter(row=>row.system_id===home.system_id);
+ await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\tWormhole\tSurveyed entrance\t100.0%\t1 AU');await button('Update scan','.jspace-shared-dock');
+ await waitFor("!document.querySelector('.jspace-shared-dock [aria-label=\"Scanner clipboard text\"]').value");
+ assert.ok((await scanSignatures()).every(row=>!row.missing),'The fast partial update preserves signatures absent from the paste');
+ await fill('[aria-label="Scanner clipboard text"]','ABC-123\tCosmic Signature\tWormhole\tSurveyed entrance\t100.0%\t1 AU');
+ await clickElement('Array.from(document.querySelectorAll(".jspace-shared-dock label")).find(e=>e.textContent.includes('+JSON.stringify('This is a complete scan of '+home.name)+'))?.querySelector("input[type=checkbox]")');
+ await button('Review scan','.jspace-shared-dock');await waitFor("document.querySelector('.universe-scan-review')?.textContent.includes('DEF-456')");
+ assert.ok((await scanSignatures()).every(row=>!row.missing),'Reviewing a complete scan does not mark signatures missing before confirmation');
+ await button('Import signatures','.universe-scan-review');await waitFor("document.querySelector('.universe-signature-list .is-missing')?.textContent.includes('DEF-456')");
+ assert.equal((await scanSignatures()).find(row=>row.signature_id==='DEF-456').missing,true);
+ await clickElement('Array.from(document.querySelectorAll(".jspace-shared-dock label")).find(e=>e.textContent.includes('+JSON.stringify('This is a complete scan of '+home.name)+'))?.querySelector("input[type=checkbox]")');
+ await fill('[aria-label="Scanner clipboard text"]','DEF-456\tCosmic Signature\tRelic Site\tSurveyed relic\t100.0%\t2 AU');await button('Update scan','.jspace-shared-dock');
+ await waitFor("!document.querySelector('.universe-signature-list .is-missing')");
+ const signatureBefore=(await scanSignatures()).find(row=>row.signature_id==='DEF-456');
+ checks.push('A card opens the visible J-Space scanner in one click; partial updates preserve absent signatures while complete scans retain explicit missing-signature review');
  await clickElement('Array.from(document.querySelectorAll(".universe-signature-list article")).find(e=>e.querySelector("strong")?.textContent==="DEF-456")?.querySelector(".universe-record-action")');
  await waitFor("document.querySelector('[aria-label=\"Notebook export text\"]')?.value.includes('DEF-456')");
  await click('[aria-label="Delete signature DEF-456"]');await waitFor("!Array.from(document.querySelectorAll('.universe-signature-list article strong')).some(e=>e.textContent==='DEF-456')");
  await click('.universe-signature-trash summary');await click('[aria-label="Restore signature DEF-456"]');await waitFor("document.querySelectorAll('.universe-signature-list article').length===2");
  const restored=(await api('/universe/operations?character=42')).signatures.find(row=>row.system_id===home.system_id&&row.signature_id==='DEF-456');
  assert.equal(restored.first_seen_at,signatureBefore.first_seen_at);assert.equal(restored.last_seen_at,signatureBefore.last_seen_at,'Restoring a signature retains its original observation time');
- await screenshot('jspace-canonical-scanner-bookmark');await click('.jspace-shared-dock [aria-label^="Close"]');await click('[aria-label="Refresh J-Space map"]');await settle();
+ await screenshot('jspace-canonical-scanner-bookmark');await click('.jspace-shared-dock [aria-label^="Close"]');await click('[aria-label="Refresh Universe data"]');await settle();
+ assert.equal(await evaluate('document.querySelector('+JSON.stringify(node(home.system_id)+' .jspace-node-metric[data-kind="signatures"]')+').textContent.trim()'),'2','The card shows the canonical present-signature count after scanning');
  await selectEdge(edge.id);await button('Edit connection',selected);await clickElement('Array.from(document.querySelectorAll(".jspace-sheet summary")).find(e=>e.textContent.includes("Link a scanner signature"))');
  const entrance=(await mapState()).signatures.find(row=>row.system_id===home.system_id&&row.signature_id==='ABC-123');await nativeSelect('Notebook signature to link',entrance.id);await button('Link signature to connection',sheet);await settle();
  map=await mapState();assert.equal(map.connections[0].from_signature_id,entrance.id);assert.ok(map.signatures.find(row=>row.id===entrance.id).connection_ids.includes(edge.id));await closeSheet();
- checks.push('Canonical scanner preview/import, bookmark text and deletion restore preserve observation age and attach to the exact connection');
- await selectEdge(edge.id);await button('Passages',selected);await fill('[aria-label="Passage pilot name"]','Synthetic scout');await fill('[aria-label="Passage ship name"]','Buzzard');await fill('[aria-label="Passage observed mass kg"]','1270000');await button('Record observed passage',sheet);await settle();
+ checks.push('Canonical scanner updates, bookmark text and deletion restore preserve observation age and attach to the exact connection');
+ await selectEdge(edge.id);await click(selected+' [aria-label="Passages"]');await fill('[aria-label="Passage pilot name"]','Synthetic scout');await fill('[aria-label="Passage ship name"]','Buzzard');await fill('[aria-label="Passage observed mass kg"]','1270000');await button('Record observed passage',sheet);await settle();
  await click('[aria-label="Reverse passage direction"]');await fill('[aria-label="Passage pilot name"]','Unknown-mass return');await button('Record observed passage',sheet);await settle();
  map=await mapState();assert.equal(map.passages.length,2);assert.equal(map.connections[0].observed_mass_kg,1270000);assert.equal(map.connections[0].unweighed_passages,1);assert.equal(map.connections[0].remaining_mass_kg,null);
  assert.ok(await evaluate("document.querySelector('.jspace-sheet').textContent.includes('Mass unknown') && document.querySelector('.jspace-sheet').textContent.includes('remaining mass unknown')"));
  await screenshot('jspace-passage-ledger');await closeSheet();
  checks.push('Two-sided connection conditions use canonical links, explicit route access, unchanged itineraries and an honest passage ledger');
 
- await selectNode(home);await button('Observations',selected);await fill('[aria-label="System observation title"]','Synthetic observatory');await fill('[aria-label="System observation notes"]','Reported Astrahus; owner and access unconfirmed.');await button('Save observation',sheet);await settle();
+ await selectNode(home);await click(selected+' [aria-label="Observations"]');await fill('[aria-label="System observation title"]','Synthetic observatory');await fill('[aria-label="System observation notes"]','Reported Astrahus; owner and access unconfirmed.');await button('Save observation',sheet);await settle();
  await nativeSelect('System observation type','timer');await fill('[aria-label="System observation title"]','Scouting return window');await inputValue('Observation timer UTC',new Date(Date.now()+7200000).toISOString().slice(0,16));await button('Save observation',sheet);await settle();
  map=await mapState();assert.equal(map.observations.length,2);assert.ok(map.observations.some(row=>row.kind==='timer'&&Date.parse(row.timer_at)>Date.now()));assert.ok(map.observations.every(row=>row.system_id===home.system_id));
  await click('.jspace-dscan-import summary');await fill('[aria-label="D-scan structure clipboard"]','35832\tSurveyed Astrahus\tAstrahus\t1,475 km\n587\tPassing Rifter\tRifter\t5 km\n35833\tSurveyed Fortizar\tFortizar\t10 km');await button('Preview structure scan','.jspace-dscan-import');
  assert.ok(await evaluate("document.querySelector('.jspace-dscan-import .jspace-import-review h4').textContent.includes('2 structures') && document.querySelector('.jspace-dscan-import .jspace-import-review h4').textContent.includes('1 ignored')"));
  assert.equal((await mapState()).observations.length,2,'D-scan review does not save or remove observations');await button('Record 2 structure observations','.jspace-dscan-import');await waitFor("document.querySelector('.jspace-dscan-import [role=status]')?.textContent.includes('2')");
  map=await mapState();assert.equal(map.observations.length,4);const scannedStructure=map.observations.find(row=>row.title==='Surveyed Astrahus');assert.ok(scannedStructure);assert.equal(scannedStructure.standing,'unknown');assert.equal(scannedStructure.owner,'');assert.equal(scannedStructure.state,'','D-scan does not invent power state or access');
- await closeSheet();await button('Notes',selected);await fill('[aria-label="J-Space field note"]','Follow the surveyed chain; static labels are reference only.');await button('Save note',sheet);await settle();
+ await closeSheet();await click(selected+' [aria-label="Notes"]');await fill('[aria-label="J-Space field note"]','Follow the surveyed chain; static labels are reference only.');await button('Save note',sheet);await settle();
  assert.equal((await mapState()).comments.at(-1).system_id,home.system_id);await closeSheet();
  await button('Rally here',selected);await settle();map=await mapState();assert.equal(map.pings.length,1);assert.equal(map.pings[0].system_id,home.system_id);assert.ok(Date.parse(map.pings[0].expires_at)>Date.now());
  assert.ok(await evaluate('!!document.querySelector('+JSON.stringify(node(home.system_id)+' .jspace-node-rally')+')'),'A local rally is visible on its system card');await button('Clear rally',selected);await settle();assert.equal((await mapState()).pings.length,0);
+ await click('[aria-label="Close selected map context"]');
+ const cardMetrics=await evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(node(home.system_id))}),f=n.querySelector('.jspace-node-footer'),r=n.getBoundingClientRect();return {width:n.offsetWidth,height:n.offsetHeight,footerWidth:f.clientWidth,footerContent:f.scrollWidth,metrics:Array.from(n.querySelectorAll('.jspace-node-metric')).map(e=>{const b=e.getBoundingClientRect();return {kind:e.dataset.kind,text:e.textContent.trim(),inside:b.left>=r.left-1&&b.right<=r.right+1&&b.top>=r.top-1&&b.bottom<=r.bottom+1};})};})()`);
+ assert.ok(cardMetrics.width<=280&&cardMetrics.height<=100&&cardMetrics.footerContent<=cardMetrics.footerWidth+1&&cardMetrics.metrics.every(row=>row.inside),'Visual signature/report/note metrics fit within the compact card: '+JSON.stringify(cardMetrics));
+ assert.equal(cardMetrics.metrics.find(row=>row.kind==='signatures')?.text,'2');
+ await screenshot('jspace-visual-system-metrics');
+ await click('[aria-label='+JSON.stringify('Open notes in '+home.name)+']');await waitFor("document.querySelector('.jspace-sheet')?.getAttribute('aria-label')==='Field notes'");await closeSheet();
+ await click('[aria-label='+JSON.stringify('Open observations in '+home.name)+']');await waitFor("document.querySelector('.jspace-sheet')?.getAttribute('aria-label')==='System observations'");await closeSheet();
  checks.push('System observations, reviewed D-scan structure imports, EVE-time timers, expiring local rallies and contextual notes persist without inventing access or power state');
+ checks.push('Compact visual card metrics fit inside the card and open scanner, notes and observations directly');
 
  await click('[aria-label="Map settings and export"]');await fill('[aria-label="J-Space map name"]','Flagship surveyed chain');await button('Save map details',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  await click('[aria-label="Map settings and export"]');await evaluate("window.__chainExport=null;window.__chainObjectURL=URL.createObjectURL;URL.createObjectURL=function(blob){blob.text().then(text=>window.__chainExport=text);return window.__chainObjectURL.call(URL,blob);}");
@@ -259,6 +354,7 @@ export async function jspaceAcceptance(ui){
  assert.ok(await evaluate('document.querySelector('+JSON.stringify(node(home.system_id))+').classList.contains("is-selected")'),'Returning to J-Space restores the selected map and system');
  await selectEdge(edge.id);await button('Edit connection',selected);await clickElement('Array.from(document.querySelectorAll(".jspace-choice-field")).find(e=>e.querySelector("legend")?.textContent==="Observed lifetime")?.querySelector("button.is-collapsed")');await button('Save connection conditions',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  const collapsed=(await mapState()).connections[0];assert.equal(collapsed.active,false);assert.equal(collapsed.life_status,'collapsed');assert.ok(await evaluate('document.querySelector('+JSON.stringify('[data-connection-id="'+edge.id+'"]')+').classList.contains("is-expired")'),'A reported collapse becomes historical topology instead of a live route');
+ assert.ok(await evaluate("Array.from(document.querySelectorAll('[aria-label^=\"Set observed mass \"],[aria-label^=\"Set observed lifetime \"]')).every(e=>e.disabled)"),'Quick condition controls cannot accidentally revive a collapsed historical connection');
  await viewport(390,844);await layout('J-Space chain mobile');await screenshot('jspace-chain-mobile');await viewport(1600);await screenshot('jspace-chain-desktop');
  checks.push('Map rename/export/import preserves context with unconfirmed copied links; pilot isolation and workspace restoration work on desktop and mobile');
 
@@ -301,13 +397,13 @@ export async function jspaceAcceptance(ui){
   await click('[aria-label="Refresh Universe data"]');await click('[aria-label="Show Thera reports on chain"]');await waitFor("Array.from(document.querySelectorAll('[data-connection-id^=\"public:\"]')).some(e=>e.dataset.connectionId.includes('ui-expiry'))");
   const expiringId=await evaluate("Array.from(document.querySelectorAll('[data-connection-id^=\"public:\"]')).find(e=>e.dataset.connectionId.includes('ui-expiry')).dataset.connectionId");
   let mapRefreshes=0;
-  while(Date.now()<expiringAt+450){await click('[aria-label="Refresh J-Space map"]');await delay(250);mapRefreshes++;}
-  assert.ok(mapRefreshes>=3,'The expiry sample includes repeated map-only refreshes');
+  while(Date.now()<expiringAt+450){await click('[aria-label="Refresh Universe data"]');await delay(250);mapRefreshes++;}
+  assert.ok(mapRefreshes>=3,'The expiry sample includes repeated workspace refreshes');
   await waitFor('!document.querySelector('+JSON.stringify('[data-connection-id="'+expiringId+'"]')+')');
   assert.equal((await mapState()).connections.length,adopted.connections.length,'Public expiry never removes or creates saved private connections');
   await screenshot('jspace-public-expiry');await click('[aria-label="Show Thera reports on chain"]');
  }finally{if(priorThera===undefined)app.store.db.prepare('DELETE FROM settings WHERE key=?').run('universe:feeds:thera');else app.store.set('universe:feeds:thera',priorThera);await click('[aria-label="Refresh Universe data"]');}
- checks.push('Thera reports show current observation age, expire during repeated map refreshes, and support explicit adoption without granting route access');
+ checks.push('Thera reports show current observation age, expire during repeated workspace refreshes, and support explicit adoption without granting route access');
 
  await click('[aria-label="Fit chain"]');await delay(650);await selectNode(home);await action(home,'Set route destination');await waitFor("document.querySelector('.jspace-shared-dock')?.hidden===false");
  if(await evaluate("Array.from(document.querySelectorAll('.jspace-shared-dock button')).some(e=>e.textContent.trim()==='Clear saved itinerary')")){await button('Clear saved itinerary','.jspace-shared-dock');await waitFor("!document.querySelector('.universe-itinerary-stops')");}
