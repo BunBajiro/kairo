@@ -24,6 +24,26 @@ async function fixture(t) {
 }
 function twoNodes(f, map) { map = f.cmd(map, 'node.save', { node: { system_id: W } }); return f.cmd(map, 'node.save', { node: { system_id: X } }); }
 
+test('observed lifetime bands persist without granting access, renewing expiry or losing their age on mass edits', async t => {
+    const f=await fixture(t);let map=twoNodes(f,f.create());
+    map=f.cmd(map,'connection.save',{connection:{from_system_id:W,to_system_id:X,confirmed:false,accessible:false,expires_at:null}});
+    map=f.cmd(map,'connection.save',{connection:{id:map.connections[0].id,life_band:'under_8h'}});
+    let edge=map.connections[0];
+    assert.equal(edge.life_band,'under_8h');assert.equal(edge.life_status,'stable');assert.equal(edge.expires_at,new Date(AT+8*3600000).toISOString());
+    assert.equal(edge.confirmed,false);assert.equal(edge.accessible,false);assert.equal(edge.active,false);
+    const observed=edge.life_observed_at;f.time(AT+3600000);
+    map=f.cmd(map,'connection.save',{connection:{id:edge.id,mass:'reduced'}});
+    assert.equal(map.connections[0].life_observed_at,observed);assert.equal(map.connections[0].expires_at,edge.expires_at);
+    map=f.cmd(map,'connection.save',{connection:{id:edge.id,life_band:'under_day'}});
+    assert.equal(map.connections[0].expires_at,edge.expires_at,'Broader observation does not extend known upper bound');
+    map=f.cmd(map,'connection.save',{connection:{id:edge.id,life_band:'under_4h'}});edge=map.connections[0];
+    assert.equal(edge.life_status,'eol');assert.equal(edge.expires_at,new Date(AT+5*3600000).toISOString());
+    const exported=f.api.exportMap(42,map.id);
+    const copy=f.api.importMap(42,{document:exported,name:'Observed copy'});
+    assert.equal(copy.connections[0].life_band,'under_4h');assert.equal(copy.connections[0].life_observed_at,edge.life_observed_at);
+    assert.equal(copy.connections[0].expires_at,edge.expires_at);assert.equal(copy.connections[0].confirmed,false);
+});
+
 test('private chain maps survive reopening, isolate pilots and require revision-matched writes', async t => {
     const f = await fixture(t); let map = f.create();
     assert.deepEqual(f.api.state(43).maps, []); assert.deepEqual(f.api.state(0).maps, []);

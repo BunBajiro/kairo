@@ -99,14 +99,17 @@ test('connection handles snap to private targets and reject self, empty space an
 });
 
 
-test('mobile Fit frames readable semantic headers and their visible connection handles',()=>{
+test('mobile Fit frames whole cards and their attached handles without a second label envelope',()=>{
   const nodes=[{system_id:1,x:-140,y:20},{system_id:2,x:140,y:20},{system_id:3,x:460,y:20}],viewport={width:340,height:360};
-  const camera=fitChainCamera(nodes,viewport),scale=Math.max(.65,camera.zoom),halfEnvelope=306*scale/2;
-  assert.ok(camera.zoom<.65,'The chain exercises fixed screen-size overview labels');
-  for(const node of nodes){const center=camera.x+(node.x+CHAIN_NODE_WIDTH/2)*camera.zoom;assert.ok(center-halfEnvelope>=23.99,'Left header and handle remain inside Fit padding');assert.ok(center+halfEnvelope<=viewport.width-23.99,'Right header and handle remain inside Fit padding');}
-  const portExtent=140*Math.max(1,.65/camera.zoom),path=chainConnectionPreview(nodes[0],'right',{x:0,y:0},nodes[2],portExtent);
-  assert.ok(path.startsWith(`M ${nodes[0].x+132+portExtent} 62 C `),'Preview originates at the visible semantic handle');
-  const visible=visibleChainLabels(nodes,camera,viewport,[1]);assert.ok(visible.has(1));
-  const visibleNodes=nodes.filter(node=>visible.has(node.system_id));
-  for(let i=1;i<visibleNodes.length;i++)assert.ok(Math.abs(visibleNodes[i].x-visibleNodes[i-1].x)*camera.zoom>306*scale,'Visible labels and ports cannot cover another identity');
+  const camera=fitChainCamera(nodes,viewport),halfEnvelope=(CHAIN_NODE_WIDTH+28)*camera.zoom/2;
+  assert.ok(camera.zoom<.65,'The chain exercises overview zoom');
+  for(const node of nodes){
+    const center=camera.x+(node.x+CHAIN_NODE_WIDTH/2)*camera.zoom;
+    assert.ok(center-halfEnvelope>=23.99,'The actual card and left handle remain inside Fit padding');
+    assert.ok(center+halfEnvelope<=viewport.width-23.99,'The actual card and right handle remain inside Fit padding');
+  }
+  const path=chainConnectionPreview(nodes[0],'right',{x:0,y:0},nodes[2]);
+  assert.ok(path.startsWith(`M ${nodes[0].x+CHAIN_NODE_WIDTH} 62 C `),'Preview stays attached to the same card edge at every zoom');
+  const cardScreenWidth=CHAIN_NODE_WIDTH*camera.zoom;
+  for(let i=1;i<nodes.length;i++)assert.ok((nodes[i].x-nodes[i-1].x)*camera.zoom>cardScreenWidth,'Whole identities retain their non-overlapping arrangement at overview zoom');
 });

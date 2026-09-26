@@ -254,3 +254,8 @@ h1,h2,h3,p{margin-top:0}h3{font-size:15px;font-weight:600}button,input,textarea{
  .session-table-wrap:has(.session-lp-table){overflow:visible;border:0}
 }
 @media(prefers-reduced-motion:reduce){.session-detail-card,.session-card-chevron{transition:none}}
+
+/* Keep navigation collapse discoverable without taking over the workspace. */
+.workspace-sidebar-toggle{gap:7px;padding:6px 9px;height:34px;color:#b9c9d2;border:1px solid #39444d;font-size:12px;white-space:nowrap}
+.workspace-sidebar-toggle:hover{color:#e4f3ed;border-color:#6c8a7d}
+@media(max-width:700px){.workspace-sidebar-toggle{width:34px;padding:6px}.workspace-sidebar-toggle>span{display:none}}

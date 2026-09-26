@@ -23,6 +23,10 @@ export function publicChainScene(map, feeds, systems, selectedSources = {}, now 
 /** Keep observation timestamps exact when an editor only changes other fields. */
 export function connectionEditorPayload(draft, expiryInput, original = null) {
   const {duration_hours: ignoredDuration, expires_at: ignoredExpiry, ...payload} = draft;
+  // Merely opening/saving details must not restamp the lifetime observation.
+  if ((draft.life_band || 'unknown') === (original?.life_band || 'unknown')) {
+    delete payload.life_band; delete payload.life_observed_at;
+  } else delete payload.life_observed_at;
   if (expiryInput) {
     const originalDate = original?.expires_at && Number.isFinite(Date.parse(original.expires_at)) ? new Date(original.expires_at) : null;
     payload.expires_at = originalDate?.toISOString().slice(0, 16) === expiryInput ? original.expires_at : new Date(expiryInput + 'Z').toISOString();

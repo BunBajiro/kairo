@@ -1,5 +1,15 @@
 # Validation — 26 September 2026
 
+## Universe 0.8.0-rc.10
+
+This focused J-Space pass reclaims window space, adds qualitative connection life/mass controls, improves card status/sovereignty and fixes zoom-level card rendering.
+
+- All 471 Node tests pass. Application TypeScript and production compilation pass. Regressions cover conservative lifetime bounds, mass-only observation-age preservation, legacy full-record edits, native round trips and whole-card fit geometry.
+- The compiled J-Space browser suite passes 23 acceptance/layout groups with no browser errors. Desktop and 390px captures were inspected. Coverage includes sidebar width recovery, dominant graph height, 390px fitting, complete card rendering across zoom, status gradients, sovereignty on exit cards, right-click lifetime/mass persistence, independent border/fill colours and system context links. Existing pointer drag, keyboard connections, scanner, passage, public-report and pilot-isolation checks remain in the same suite.
+- Right-click menus leave the detailed workbench closed, preventing it from covering quick actions. Ordinary edits retain exact expiry; a newly observed band can shorten an earlier bound but cannot renew it or confer confirmation/access. Qualitative bands are observations, not precise collapse predictions.
+
+Existing data requires no reset. The draft PR provides the exact-commit Actions result and downloadable standalone ZIP after its combined Universe/replay, Sessions and extracted-package gates pass. No merge into main is authorized.
+
 ## Universe 0.8.0-rc.9
 
 This pass simplifies and styles **J-Space only**: permanent chain search, direct card badges, immediate observed-status/role and connection condition controls, a visible scanner composer, and scoped Undo for diagram removal. Shared tool navigation uses one dock, while K-Space retains its existing interface and workflow.

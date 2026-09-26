@@ -42,6 +42,15 @@ export async function jspaceAcceptance(ui){
  // next gesture. This wrapper is confined to this disposable browser and this
  // one command; it does not interfere with the harness's polling controls.
  await ensureJSpaceMap('Direct interaction review',true);
+ // Navigation collapse makes room for the map and persists its preference.
+ const viewportSize=()=>evaluate("(()=>{const r=document.querySelector('.jspace-map-viewport').getBoundingClientRect();return {width:r.width,height:r.height,bottom:r.bottom,windowHeight:innerHeight};})()");
+ if(await evaluate("!!document.querySelector('[aria-label=\"Show sidebar\"]')"))await click('[aria-label="Show sidebar"]');
+ await delay(350);const expanded=await viewportSize();await click('[aria-label="Hide sidebar"]');await delay(350);const collapsedViewport=await viewportSize();
+ assert.ok(collapsedViewport.width>expanded.width+200,'Collapsing navigation returns its width to the chain');
+ assert.ok(collapsedViewport.height>collapsedViewport.windowHeight*.65&&collapsedViewport.bottom<=collapsedViewport.windowHeight,'The J-Space graph occupies most of the window height: '+JSON.stringify(collapsedViewport));
+ assert.ok(await evaluate("document.cookie.includes('sidebar_state=false')"),'Sidebar preference persists');
+ await click('[aria-label="Show sidebar"]');await delay(350);
+ checks.push('J-Space uses the remaining window height and sidebar collapse returns more than200 pixels to the map');
  await addNode(home);await addNode(other);
  const searchRevision=(await mapState()).revision;await addNode(home);
  assert.equal((await mapState()).revision,searchRevision,'Finding a system already on the chain frames it without saving a duplicate');
@@ -114,6 +123,7 @@ export async function jspaceAcceptance(ui){
  await beginPort(home);await movePort(emptyDrop);await releasePort(emptyDrop);await waitFor("!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
  directMap=await mapState();assert.equal(directMap.revision,noSaveRevision);assert.equal(directMap.connections.length,1,'Escape, self-drops and empty-space drops never create connections');
  await addNode(systems.jita);await click('[aria-label="Fit chain"]');await delay(650);
+ await waitFor('document.querySelector('+JSON.stringify(node(systems.jita.system_id)+' .jspace-node-owner')+')?.textContent.includes("Caldari")');
  await evaluate('document.querySelector('+JSON.stringify(port(other))+').focus()');await key('Enter','Enter',13,'\r');
  await waitFor("!!document.querySelector('[data-testid=\"jspace-connection-preview\"]')");
  await evaluate('document.querySelector('+JSON.stringify(port(systems.jita,'left'))+').focus()');await key('Enter','Enter',13,'\r');await settle();
@@ -133,6 +143,8 @@ export async function jspaceAcceptance(ui){
    for(const port of row.ports)assert.equal(overlaps(port,neighbor.header),false,'Shown connection ports do not cover a neighboring visible system name');
   }
  }
+ const wholeCards=await evaluate("Array.from(document.querySelectorAll('.jspace-node')).map(n=>{const b=n.getBoundingClientRect(),h=n.querySelector('.jspace-node-heading'),r=h.getBoundingClientRect(),f=n.querySelector('footer');return {inside:r.left>=b.left-1&&r.right<=b.right+1&&r.top>=b.top-1&&r.bottom<=b.bottom+1,header:getComputedStyle(h).visibility,footer:getComputedStyle(f).display,hidden:n.classList.contains('is-lod-hidden')};})");
+ assert.ok(wholeCards.every(n=>n.inside&&n.header!=='hidden'&&n.footer!=='none'&&!n.hidden),'Fitted cards keep headers and details inside their original rectangles without zoom culling');
  await screenshot('jspace-compact-connected-mobile');await viewport(1600);
  checks.push('Mobile fit keeps visible overview names and connection ports inside the viewport without overlapping neighboring labels');
  checks.push('Compact readable cards expose pointer and keyboard ports, preserve the pending visual and create only unconfirmed observations; canceled, self and empty drops leave the map unchanged');
@@ -144,12 +156,31 @@ export async function jspaceAcceptance(ui){
  await click('[aria-label="Set system role home"]');await settle();
  let quickMap=await mapState();assert.equal(quickMap.nodes.find(row=>row.system_id===home.system_id).status,'scanned');assert.equal(quickMap.nodes.find(row=>row.system_id===home.system_id).role,'home');
  assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Status and role save directly from the selected system');
- await selectEdge(drawn.id);await click('[aria-label="Set observed mass reduced"]');await settle();await click('[aria-label="Set observed lifetime eol"]');await settle();
+ const statusFill=await evaluate(`getComputedStyle(document.querySelector(${JSON.stringify(node(home.system_id))})).backgroundImage`),unknownFill=await evaluate(`getComputedStyle(document.querySelector(${JSON.stringify(node(other.system_id))})).backgroundImage`);
+ assert.notEqual(statusFill,unknownFill,'System status changes the card gradient, not only a status dot');
+ await selectEdge(drawn.id);await click('[aria-label="Set observed mass reduced"]');await settle();await click('[aria-label="Set observed lifetime < 4 hours"]');await settle();
  quickMap=await mapState();const quickEdge=quickMap.connections.find(row=>row.id===drawn.id);
- assert.equal(quickEdge.mass,'reduced');assert.equal(quickEdge.life_status,'eol');assert.equal(quickEdge.expires_at,null);assert.equal(quickEdge.confirmed,false);assert.equal(quickEdge.accessible,false);assert.equal(quickEdge.active,false);
+ assert.equal(quickEdge.mass,'reduced');assert.equal(quickEdge.life_status,'eol');assert.equal(quickEdge.life_band,'under_4h');assert.ok(Date.parse(quickEdge.expires_at)>Date.now()&&Date.parse(quickEdge.expires_at)<=Date.now()+4*3600000); assert.equal(quickEdge.confirmed,false);assert.equal(quickEdge.accessible,false);assert.equal(quickEdge.active,false);
  assert.equal(await evaluate('!!document.querySelector(".jspace-sheet")'),false,'Observed connection conditions save without opening a full editor');
  await screenshot('jspace-direct-connection-workbench');
- checks.push('Permanent chain search frames existing systems without duplicate writes; one-click status, role and condition changes retain unknown expiry and unconfirmed route trust');
+ checks.push('Permanent chain search frames existing systems without duplicate writes; one-click status, role and condition changes keep conservative lifetime bounds and unconfirmed route trust');
+
+ // Right-click conditions share the same persisted observations and line colors.
+ await click('[aria-label="Close selected map context"]');
+ const conditionPoint=await pointerAt('[data-connection-label='+JSON.stringify(drawn.id)+']');
+ await call('Input.dispatchMouseEvent',{type:'mousePressed',...conditionPoint,button:'right',buttons:2,clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',...conditionPoint,button:'right',clickCount:1});
+ await click('[aria-label="Less than 8 hours remaining"]');await settle();await button('Critical','.jspace-mass-choices');await settle();
+ const contextEdge=(await mapState()).connections.find(row=>row.id===drawn.id);
+ assert.equal(contextEdge.life_band,'under_8h');assert.equal(contextEdge.mass,'critical');assert.equal(contextEdge.expires_at,quickEdge.expires_at,'A broader observed band does not extend the previous expiry bound');assert.equal(contextEdge.active,false);
+ const strokes=await evaluate(`(()=>{const e=document.querySelector('[data-connection-id="${drawn.id}"]');return {border:getComputedStyle(e.querySelector('.jspace-edge-underlay')).stroke,fill:getComputedStyle(e.querySelector('.jspace-edge-line')).stroke};})()`);
+ assert.notEqual(strokes.border,strokes.fill,'Lifetime border and mass fill render independently');
+ assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Selected map context\"]')"),false,'Right-click conditions leave the detailed workbench closed');
+ await screenshot('jspace-connection-context');await click('[aria-label="Close chain actions"]');
+ await click('[aria-label='+JSON.stringify('Actions for '+systems.jita.name)+']');
+ assert.deepEqual(await evaluate("(()=>{const e=document.querySelector('.jspace-map-menu a');return {href:e.href,target:e.target,rel:e.rel};})()"),{href:`https://zkillboard.com/system/${systems.jita.system_id}/`,target:'_blank',rel:'noopener noreferrer'});
+ await button('View in K-Space','.jspace-map-menu');await waitFor("location.hash==='#universe-kspace' && !!document.querySelector('.universe-module canvas')");
+ await space('J-Space');await settle();await waitFor('!!document.querySelector('+JSON.stringify(node(home.system_id))+')');await selectEdge(drawn.id);
+ checks.push('Right-click lifetime and mass changes persist conservative observations with separate line colors; system menus link to zKillboard and the K-Space atlas');
 
  // Diagram-only removals are immediate and genuinely reversible. Canonical
  // shared connection records and routing permissions survive these operations.
@@ -225,7 +256,7 @@ export async function jspaceAcceptance(ui){
  await fill('[aria-label="Connection from signature"]','ABC-123');await fill('[aria-label="Connection to signature"]','XYZ-789');
  await fill('[aria-label="Connection wormhole type"]',home.wormhole.statics.find(row=>row.destinationClasses.some(item=>item.label==='C1')).type);
  await clickElement('Array.from(document.querySelectorAll(".jspace-choice-field")).find(e=>e.querySelector("legend")?.textContent==="Observed mass condition")?.querySelector("button.is-critical")');
- await button('End of life',sheet);await button('Record connection',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
+ await click('[aria-label="Observed lifetime < 4 hours"]');await button('Record connection',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  map=await mapState();let edge=map.connections[0];assert.equal(edge.confirmed,false);assert.equal(edge.active,false);assert.equal(edge.mass,'critical');assert.equal(edge.life_status,'eol');
  assert.ok(await evaluate('document.querySelector('+JSON.stringify('[data-connection-id="'+edge.id+'"]')+').classList.contains("is-unconfirmed")'));
  assert.equal(await evaluate('document.querySelector('+JSON.stringify('[data-connection-id="'+edge.id+'"]')+').dataset.mass'),'critical');
@@ -233,7 +264,7 @@ export async function jspaceAcceptance(ui){
  await button('Edit connection',selected);await toggle('I have verified this connection');await toggle('Allow this verified connection in my routes');await button('Save connection conditions',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  map=await mapState();edge=map.connections[0];assert.equal(edge.confirmed,true);assert.equal(edge.accessible,true);assert.equal(edge.active,true,'Only explicit confirmation and route access make the live record usable');
  const exactExpiry=edge.expires_at;assert.ok(exactExpiry,'The explicitly recorded connection has a real expiry');
- await click('[aria-label="Set observed mass reduced"]');await settle();await click('[aria-label="Set observed lifetime stable"]');await settle();
+ await click('[aria-label="Set observed mass reduced"]');await settle();await click('[aria-label="Set observed lifetime < 1 day"]');await settle();
  map=await mapState();edge=map.connections[0];assert.equal(edge.expires_at,exactExpiry,'Quick condition changes preserve the exact recorded expiry');assert.equal(edge.confirmed,true);assert.equal(edge.accessible,true);assert.equal(edge.active,true);
  checks.push('Quick condition updates preserve a confirmed connection’s exact expiry and existing routing permissions');
  const itinerary=JSON.stringify((await api('/universe/navigation?character=42')).itinerary),commandCount=recentUniverseRequests.filter(row=>/\/navigation\/(?:plan|waypoints)(?:\?|$)/.test(row.url)).length;
@@ -362,7 +393,7 @@ export async function jspaceAcceptance(ui){
  await nativeSelect('Connection from system',home.system_id);await nativeSelect('Connection to system',systems.jita.system_id);await nativeSelect('Connection maximum ship size','small');await button('Record connection',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  const exitEdge=(await mapState()).connections[0];await selectNode(home);await button('Find an exit','.jspace-workspace-footer');await button('Find destinations','.jspace-destinations');await waitFor("!!document.querySelector('.jspace-destination-empty')");
  assert.ok(await evaluate("document.querySelector('.jspace-destination-empty').textContent.includes('No eligible route')"),'Unconfirmed diagram topology cannot supply an exit route');await closeSheet();
- await selectEdge(exitEdge.id);await button('Edit connection',selected);await toggle('I have verified this connection');await toggle('Allow this verified connection in my routes');await button('Save connection conditions',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
+ await selectEdge(exitEdge.id);await button('Edit connection',selected);await click('[aria-label="Observed lifetime < 1 day"]');await toggle('I have verified this connection');await toggle('Allow this verified connection in my routes');await button('Save connection conditions',sheet);await waitFor('!document.querySelector(".jspace-sheet")');
  await selectNode(home);await button('Find an exit','.jspace-workspace-footer');await button('Find destinations','.jspace-destinations');await waitFor("!!document.querySelector('.jspace-destination-empty')");
  await choose('Destination vessel size','Small · frigate / destroyer');await button('Find destinations','.jspace-destinations');await waitFor("Array.from(document.querySelectorAll('.jspace-destination-card h4')).some(e=>e.textContent==='Jita')");
  const exitResult='Array.from(document.querySelectorAll(".jspace-destination-card")).find(e=>e.querySelector("h4")?.textContent==="Jita")';

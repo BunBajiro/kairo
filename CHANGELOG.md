@@ -2,6 +2,15 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.10 — More room for the chain
+
+- Gives J-Space the available application viewport, with tighter gutters, compact pilot controls and a clear sidebar collapse/restore action.
+- Replaces split zoom-level card rendering with a single complete card, removing blank overlapping rectangles and abrupt loss of card content.
+- Adds observed lifetime bands (less than one day, eight hours or four hours) to connection quick menus and details. Life controls the outer line colour; mass controls the inner colour. These reports remain uncertain upper bounds, not exact disappearance times.
+- Tints system-card gradients by observed status and shows concise sovereignty on K-Space exit cards.
+- Adds direct system context links to zKillboard and to the K-Space atlas for known-space systems.
+- Preserves verification/access boundaries, existing data and the draft-only review workflow.
+
 ## 0.8.0-rc.9 — J-Space at a glance
 
 - Puts system search directly in the chain toolbar, with one action to add a new card or frame an existing one.

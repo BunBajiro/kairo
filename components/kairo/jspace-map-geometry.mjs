@@ -13,14 +13,9 @@ export function chainBounds(nodes) {
 
 export function fitChainCamera(nodes, viewport, padding = viewport.width < 600 ? 24 : 58, maxZoom = 1) {
   const bounds = chainBounds(nodes), width = Math.max(1, viewport.width), height = Math.max(1, viewport.height);
+  // Include the actual side handles, which remain attached to the whole card at every zoom.
   const availableWidth=Math.max(1,width-padding*2),availableHeight=Math.max(1,height-padding*2);
-  let zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX),availableHeight/(bounds.maxY-bounds.minY)),.12,maxZoom);
-  if(zoom<.85){
-    // Overview identity and its connection handles retain a minimum screen size.
-    // Frame their actual envelope, not just the much smaller world-space card.
-    const spanX=bounds.maxX-bounds.minX-CHAIN_NODE_WIDTH,spanY=bounds.maxY-bounds.minY-CHAIN_NODE_HEIGHT;
-    zoom=Math.max(.12,Math.min(zoom,availableWidth/(spanX+306),spanX>0?(availableWidth-306*.65)/spanX:zoom,availableHeight/(spanY+84),spanY>0?(availableHeight-50*.65)/spanY:zoom));
-  }
+  const zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX+28),availableHeight/(bounds.maxY-bounds.minY)),.12,maxZoom);
   return {x: width / 2 - (bounds.minX + bounds.maxX) / 2 * zoom, y: height / 2 - (bounds.minY + bounds.maxY) / 2 * zoom, zoom};
 }
 

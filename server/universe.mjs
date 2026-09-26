@@ -10,6 +10,7 @@ import { createUniverseNavigation } from './universe-navigation.mjs';
 import { createUniverseJSpace } from './universe-jspace.mjs';
 import { findNearestDestinations } from './universe-destinations.mjs';
 import { parseAnsiblexImport, exportAnsiblexSMT } from './universe-ansiblex.mjs';
+import { observedLife } from '../components/kairo/jspace-connection-model.mjs';
 
 const PUBLIC_SOURCES = ['sovereignty', 'kills', 'jumps', 'fw', 'incursions', 'industry_systems', 'sovereignty_structures', 'sovereignty_campaigns'];
 const PRIVATE_SOURCES = ['profile', 'location', 'contacts', 'corporation_contacts', 'alliance_contacts', 'calendar', 'mining'];
@@ -263,7 +264,7 @@ export function createUniverse(store, auth, esi, options = {}) {
             const expiry = Date.parse(input.expires_at);
             if (!Number.isFinite(expiry) || expiry <= now() || expiry > now() + 48 * 3600000) throw new Error('Reported wormhole expiry must be in the next 48 hours.');
             expires_at = new Date(expiry).toISOString();
-        } else if (kind === 'wormhole' && !expires_at && !(old.kind === 'wormhole' && Object.hasOwn(old, 'expires_at') && old.expires_at === null)) {
+        } else if (kind === 'wormhole' && !expires_at && !Object.hasOwn(input, 'life_band') && !(old.kind === 'wormhole' && Object.hasOwn(old, 'expires_at') && old.expires_at === null)) {
             expires_at = new Date(now() + 16 * 3600000).toISOString();
         }
         const max_ship_size = Object.hasOwn(input, 'max_ship_size') ? input.max_ship_size : old.max_ship_size ?? null;
@@ -276,7 +277,9 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (observed_at != null && (!Number.isFinite(Date.parse(observed_at)) || Date.parse(observed_at) > now() + 300000)) throw new Error('Choose a valid wormhole observation time.');
         const mass = input.mass || old.mass || 'unknown';
         if (!['stable', 'reduced', 'critical', 'unknown'].includes(mass)) throw new Error('Choose a valid wormhole mass state.');
-        const life_status = input.life_status ?? old.life_status ?? 'unknown';
+        const life = kind === 'wormhole' ? observedLife(input, old, now(), expires_at) : {};
+        if (kind === 'wormhole') expires_at = life.expires_at;
+        const life_status = life.life_status ?? input.life_status ?? old.life_status ?? 'unknown';
         if (!['unknown', 'stable', 'eol', 'critical', 'collapsed'].includes(life_status)) throw new Error('Choose a valid wormhole life state.');
         const signatureRecord = side => {
             const key = side + '_signature_record_id', endpoint = side === 'from' ? from : to;
@@ -302,7 +305,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         return { id: old.id || randomUUID(), kind, from_system_id: from, to_system_id: to, list_id,
             label: text(input.label ?? old.label, 160), enabled: life_status !== 'collapsed' && boolean('enabled', true), accessible: boolean('accessible', kind === 'wormhole'),
             confirmed: boolean('confirmed', true), directional: boolean('directional', false),
-            ...(kind === 'wormhole' ? {life_status, from_signature_record_id: signatureRecord('from'), to_signature_record_id: signatureRecord('to'), max_ship_size, max_jump_mass_kg, type_status, wh_type: text(input.wh_type ?? old.wh_type,16), from_signature: text(input.from_signature ?? old.from_signature,16),
+            ...(kind === 'wormhole' ? {life_status, life_band:life.life_band, life_observed_at:life.life_observed_at, from_signature_record_id: signatureRecord('from'), to_signature_record_id: signatureRecord('to'), max_ship_size, max_jump_mass_kg, type_status, wh_type: text(input.wh_type ?? old.wh_type,16), from_signature: text(input.from_signature ?? old.from_signature,16),
                 to_signature: text(input.to_signature ?? old.to_signature,16), reported_source: text(input.reported_source ?? old.reported_source,80),
                 report_id: text(input.report_id ?? old.report_id,100), observed_at: observed_at == null ? null : new Date(observed_at).toISOString()} : {}),
             reverse_accessible: input.reverse_accessible == null && old.reverse_accessible == null ? null : boolean('reverse_accessible', false), mass,
