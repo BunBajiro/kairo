@@ -863,7 +863,7 @@ try{
  }finally{db.close();}
  app=await startKairo(appOptions);await call('Page.navigate',{url:app.origin+'/#universe'});await waitFor("document.querySelector('[aria-label=\"Active character\"]')?.textContent.includes('Atlas Alpha') && !!document.querySelector('.universe-module canvas')");
  await space('J-Space');await ensureJSpaceMap('Discovery atlas');
- assert.ok(await evaluate("document.querySelector('.jspace-map-viewport').textContent.includes('Your chain starts here')"),'An empty map introduces the chain-building workflow');
+ assert.ok(await evaluate("document.querySelector('.jspace-map-viewport').textContent.includes('Your map starts here')"),'An empty map introduces the mapping workflow');
  assert.equal(await evaluate("document.querySelectorAll('.jspace-node').length"),0,'An empty private map does not display the entire static J-Space catalogue');
  await screenshot('universe-jspace-empty-map');await space('K-Space');
  await search('UALX-3');await waitFor("document.querySelector('.universe-standing')?.textContent.includes('good standing')");
