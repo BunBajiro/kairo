@@ -2,6 +2,19 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.12 — Independent maps and live tracking
+
+- Deletes expired, collapsed and manually removed wormhole connections immediately, including their connection notes, passage records, bound signatures, cached routes and undo copies. Connections have no archive or lock; system data and its 30-minute grace period remain.
+- Gives each J-Space map independent system annotations, signatures, intel and connections. Existing maps migrate into separate instances; new maps never import visited-system history.
+- Adds a per-map pilot roster with tracking enabled by default and explicit pause/resume. One tracking service distributes existing live location samples to subscribed maps, without additional ESI requests or per-map polling.
+- Adds a lightweight, read-only Live source for the active pilot. It records current observed topology without system notes, scanner records or passage history, using existing location samples without extra polling.
+- Configures map population by systems, K-Space constellations/regions, sovereign alliances/corporations and user-defined power blocs. Selections combine with OR; matching live chains populate independent map instances, including when a later exit establishes the match. This controls population, not visibility of saved cards.
+- Requires fresh, complete sovereignty for owner-based scope matches; inferred coalitions and manually assigned J-Space dominion never stand in for sovereignty.
+- Copies live source chains with independent default annotations and connection conditions, preserving their original observation age and remaining lifetime. Dead topology and visited-system history are never imported.
+- Keeps deleted connections and removed cards absent during unrelated backfill; fresh traversal can discover them again without retaining deleted connection records.
+- Adds effective-owner name search with alliance/corporation logos and EVE IDs in selectable results.
+- Keeps explicit Kairo/Wanderer imports and copies map-local; expired connection data is omitted rather than revived. Native exports preserve map reports and infrastructure with independent imported IDs, without exporting live pilot telemetry or replaying alerts.
+
 ## 0.8.0-rc.11 — Clearer chain workflows
 
 - Uses lifetime presets 1h, 4h, 4.5h, 16h, 24h and 48h; mass Verge/Half/Normal; ship sizes S/M/L/H/XL. New links default to 16h, Normal and L while routing verification remains explicit.

@@ -76,3 +76,28 @@
 .jspace-sheet-body>.jspace-form+.jspace-panel-section{margin-bottom:18px}
 .jspace-sheet .universe-operations-tool>.universe-operation-heading{display:none}
 @media(max-width:520px){.jspace-sheet:has(.jspace-system-tabs){width:auto}.jspace-system-tabs{top:-14px;margin:-14px -14px 14px;padding:9px 14px}}
+
+.jspace-record-list .jspace-map-pilot {display:flex;align-items:center;gap:10px;padding:12px}
+.jspace-map-pilot>img {flex:none;border-radius:50%;border:1px solid var(--border)}
+.jspace-map-pilot-identity {display:grid;gap:4px;min-width:0;flex:1}
+.jspace-map-pilot-identity>strong {overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jspace-map-pilot-identity>button {display:flex;align-items:center;gap:4px;color:var(--muted-foreground);font-size:12px;text-align:left}
+.jspace-pilot-tracking {display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid var(--border);border-radius:8px;font-size:12px}
+.jspace-pilot-tracking>span {width:6px;height:6px;border-radius:50%;background:#8a99ad}
+.jspace-pilot-tracking[aria-pressed=true] {color:#8de2c0;border-color:#426f63}
+.jspace-pilot-tracking[aria-pressed=true]>span {background:#7ad7b3}
+
+.jspace-source-notice {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:9px 14px;color:#b5c8d7;background:linear-gradient(100deg,#16303980,#14222b50);border-block:1px solid #46708050;font-size:13px}
+.jspace-source-notice>span,.jspace-source-notice>button {display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.jspace-source-notice strong {color:#d9eaf0;font-weight:550}
+.jspace-source-notice>button {padding:6px 9px;border-radius:7px;border:1px solid #668d9a70;color:#def3f4;background:#31546255}
+.jspace-scope-editor {display:grid;gap:10px;padding:13px;border:1px solid #65849540;border-radius:12px;background:linear-gradient(140deg,#1c354344,#0c151c44)}
+.jspace-scope-editor legend {display:flex;align-items:center;gap:7px;padding:0 6px;font-size:14px;font-weight:600}
+.jspace-scope-editor legend>span {font-size:11px;color:#9fc7ce;font-weight:500}
+.jspace-scope-editor .jspace-muted {margin:0}
+.jspace-scope-search {display:grid;grid-template-columns:130px minmax(0,1fr);gap:7px}
+.jspace-scope-chips,.jspace-scope-matches {display:flex;flex-wrap:wrap;gap:6px}
+.jspace-scope-chips:empty {display:none}
+.jspace-scope-chips>button,.jspace-scope-matches>button,.jspace-scope-id {display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:8px;border:1px solid #526d8060;color:#c9dae5;background:#233e4a66;font-size:12px}
+.jspace-scope-chips>button {border-color:#65a5a27a;background:#23565255;color:#b9e9db}
+.jspace-scope-chips span {max-width:255px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

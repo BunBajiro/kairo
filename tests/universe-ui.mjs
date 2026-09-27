@@ -74,17 +74,16 @@ async function space(name){
  const active=await evaluate(`document.querySelector(${JSON.stringify(selector)})?.getAttribute('aria-current') || null`);
  if(active!==null)assert.equal(active,'page');
 }
-async function ensureJSpaceMap(name,force=false,withDiscoveries=false){
+async function ensureJSpaceMap(name,force=false){
  await waitFor("!!document.querySelector('[aria-label=\"Active J-Space map\"]') || !!document.querySelector('.jspace-welcome button')");
- if(force||!await evaluate("!!document.querySelector('[aria-label=\"Active J-Space map\"]')")){
+ if(force||await evaluate("!document.querySelector('[aria-label=\"Active J-Space map\"]') || !!document.querySelector('.jspace-source-notice')")){
   await click('[aria-label="Create a J-Space map"]');
   await fill('[aria-label="J-Space map name"]',name);
-  if(withDiscoveries)assert.equal(await evaluate("document.querySelector('.jspace-sheet .jspace-checkbox input')?.checked"),true,'Existing discoveries are offered for adoption by default');
-  else if(await evaluate("document.querySelector('.jspace-sheet .jspace-checkbox input')?.checked"))await click('.jspace-sheet .jspace-checkbox input');
+  assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-sheet label')).some(e=>/discoveries|adopt/i.test(e.textContent))"),false,'New maps do not offer global discovery seeding');
   await button('Create map','.jspace-sheet');
   await waitFor('!document.querySelector(".jspace-sheet") && document.querySelector('+JSON.stringify('[aria-label="Active J-Space map"]')+')?.selectedOptions[0]?.textContent==='+JSON.stringify(name));
  }
- await waitFor("!!document.querySelector('[data-testid=\"jspace-map\"]')");
+ await waitFor("!!document.querySelector('[data-testid=\"jspace-map\"]') && !document.querySelector('.jspace-source-notice')");
 }
 async function screenshot(name){await evaluate('document.fonts.ready');await delay(500);await evaluate('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');const r=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
 async function api(path,method='GET',body){
@@ -447,13 +446,20 @@ async function operationalAcceptance(atlas){
  assert.equal(await evaluate(`Array.from((${reportCard('turnur')}).querySelectorAll('button')).find(e=>e.textContent==='Use as a private connection').disabled`),true,'A stale public report cannot be promoted to a private route connection');
  await clickElement(`Array.from((${reportCard('thera')}).querySelectorAll('button')).find(e=>e.textContent==='Use as a private connection')`);
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-connection-confirm button')).find(e=>e.textContent==='Record confirmed connection').disabled"),true);
+ const targetMap=(await api('/universe/jspace?character=42')).maps.find(map=>map.name==='Discovery atlas');assert.ok(targetMap,'Public adoption requires an existing private target map');
+ await waitFor('Array.from(document.querySelector('+JSON.stringify('[aria-label="Private connection target map"]')+')?.options||[]).some(option=>option.value==='+JSON.stringify(targetMap.id)+')');
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Private connection target map\"]').value"),'','A K-Space report does not silently choose a private map');
+ await evaluate(`(()=>{const select=document.querySelector('[aria-label="Private connection target map"]');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(select,${JSON.stringify(targetMap.id)});select.dispatchEvent(new Event('change',{bubbles:true}));})()`);
  await checkLabel('I have verified this connection for my route','.universe-connection-confirm');await button('Record confirmed connection','.universe-connection-confirm');
- const promoted=(await api('/universe?character=42')).links.find(link=>link.label==='Reported thera · THR-123');
+ await waitFor('!document.querySelector(".universe-connection-confirm")');
+ const adoptedMap=(await api('/universe/jspace?character=42')).maps.find(map=>map.id===targetMap.id),promoted=adoptedMap.connections.find(link=>link.label==='Reported thera · THR-123');
  assert.ok(promoted&&promoted.confirmed&&promoted.accessible);assert.equal(promoted.expires_at,iso(3600000));
  assert.equal(promoted.max_ship_size,'large');assert.equal(promoted.from_signature,'THR-123');assert.equal(promoted.to_signature,'UAL-123');assert.equal(promoted.reported_source,'thera');
  assert.equal(promoted.max_jump_mass_kg,100000000);assert.equal(promoted.type_status,'ready','Promotion preserves the known nominal type limit separately from unknown remaining mass');
- assert.equal((await api('/universe?character=43')).links.some(link=>link.id===promoted.id),false);
- await api('/universe/links/'+promoted.id+'?character=42','DELETE');
+ assert.equal((await api('/universe?character=42')).links.some(link=>link.id===promoted.link_id),false,'Adoption does not create a global K-Space wormhole');
+ assert.equal((await api('/universe/jspace?character=43')).maps.some(map=>map.connections.some(link=>link.link_id===promoted.link_id)),false);
+ assert.ok(adoptedMap.nodes.some(node=>node.system_id===thera)&&adoptedMap.nodes.some(node=>node.system_id===ualx),'The chosen private map receives both endpoints');
+ await api('/universe/jspace/maps/'+targetMap.id+'/commands?character=42','POST',{revision:adoptedMap.revision,op:'connection.remove',connection_id:promoted.id});
  await screenshot('universe-public-connections');
  await choose('Public signal type','Metaliminal storms');
  await waitFor("document.querySelector('.universe-public-signals')?.textContent.includes('Synthetic electric storm')");await screenshot('universe-storm-observations');
@@ -525,7 +531,7 @@ async function operationalAcceptance(atlas){
  assert.equal(await evaluate("!!document.querySelector('.universe-map-scale-bar')"),false);await screenshot('universe-local-radar');
  await button('Layers & views');await button('Physical','.universe-tactical-controls');await click('[aria-label="Close layers"]');await waitFor("document.querySelector('[data-map-projection]')?.dataset.mapProjection==='physical'");
  await inspector('System');
- // Remove public wormhole fixtures before the existing private-discovery check.
+ // Remove public wormhole fixtures before the private map lifecycle check.
  app.store.set('universe:feeds:thera',cached([]));app.store.set('universe:feeds:turnur',cached([]));
  await click('[aria-label="Refresh Universe data"]');
  checks.push('Private intel, alert acknowledgement, expired history, authorized pilots/fleet and source-aware public observations');
@@ -1011,25 +1017,38 @@ try{
  checks.push('Unchanged user SMT list imports eleven reciprocal pairs and round-trips all twenty-two unknown-ID directions');
 
  await button('Atlas','.universe-tabs');await operationalAcceptance(atlas);await tacticalWindowAcceptance();
- await clickElement("Array.from(document.querySelectorAll('.universe-tabs button')).find(e=>e.textContent.startsWith('Connections & pins'))");
-
- // An observed, unconfirmed passage cannot enter routes until explicitly
- // confirmed. Expiry preserves the discovered destination and its private pin.
- const wormhole=await api('/universe/links?character=42','POST',{kind:'wormhole',label:'Unconfirmed passage',from_system_id:atlas.systemsByName['Jita'],to_system_id:atlas.wormhole.system_id,confirmed:false,accessible:true,duration_hours:16});
- await api('/universe/pins?character=42','POST',{system_id:atlas.wormhole.system_id,label:'Persistent J-space discovery',body:'Remains after the passage expires'});
- await button('Refresh','.universe-heading');await waitFor('!!('+connection('Unconfirmed passage')+')');
- assert.ok(await evaluate('('+connection('Unconfirmed passage')+').textContent.includes("UNCONFIRMED")'));
- await clickElement(`Array.from((${connection('Unconfirmed passage')}).querySelectorAll('button')).find(e=>e.textContent.trim()==='Confirm')`);
- await waitFor('('+connection('Unconfirmed passage')+').textContent.includes("ACTIVE")');
- await clickElement(`Array.from((${connection('Unconfirmed passage')}).querySelectorAll('button')).find(e=>e.textContent.trim()==='Edit')`);
-  await choose('Lifetime for '+wormhole.id,'4 hours from now');
-  await waitFor('('+connection('Unconfirmed passage')+').textContent.includes("4.0h remaining")');
- const revised=(await api('/universe?character=42')).links.find(l=>l.id===wormhole.id);assert.ok(Math.abs(Date.parse(revised.expires_at)-Date.now()-4*3600000)<15000);
- await choose('Lifetime for '+wormhole.id,'Expire now');await waitFor('('+connection('Unconfirmed passage')+').textContent.includes("EXPIRED")');
- const expired=await api('/universe?character=42');assert.equal(expired.links.find(l=>l.id===wormhole.id).active,false);assert.ok(expired.pins.some(p=>p.system_id===atlas.wormhole.system_id));
- await button('Atlas','.universe-tabs');await space('J-Space');await ensureJSpaceMap('Recorded discoveries',true,true);
+ // Private wormholes and system notes belong to the explicitly selected map.
+ // Verify confirmation and lifetime controls here, then let the real deadline
+ // remove the edge while its system card and note retain their grace period.
+ await space('J-Space');await ensureJSpaceMap('Recorded chain',true);
+ const privateMapId=await evaluate("document.querySelector('.jspace-workspace').dataset.mapId");
+ const privateState=async()=>{const state=await api('/universe/jspace?character=42');return state.maps.find(map=>map.id===privateMapId);};
+ const privateCommand=async(op,args={})=>{const map=await privateState();return api('/universe/jspace/maps/'+privateMapId+'/commands?character=42','POST',{revision:map.revision,op,...args});};
+ assert.deepEqual((await privateState()).nodes,[],'A new map starts empty despite earlier visits, scanner data and other maps');
+ await privateCommand('node.save',{node:{system_id:atlas.wormhole.system_id,description:'Persistent map-owned system knowledge'}});
+ await privateCommand('comment.add',{comment:{system_id:atlas.wormhole.system_id,body:'Remains after the passage expires'}});
+ const observedMap=await privateCommand('connection.save',{connection:{kind:'wormhole',label:'Unconfirmed passage',from_system_id:atlas.systemsByName.Jita,to_system_id:atlas.wormhole.system_id,add_missing_nodes:true,confirmed:false,accessible:false,duration_hours:16}});
+ const wormhole=observedMap.connections[0],edgeSelector='[data-connection-id="'+wormhole.id+'"]';
+ assert.equal(wormhole.active,false);assert.equal(wormhole.confirmed,false);
+ assert.equal((await api('/universe?character=42')).links.some(link=>link.id===wormhole.link_id),false,'Global K-Space state excludes private map links');
+ await click('[aria-label="Refresh Universe data"]');await waitFor('!!document.querySelector('+JSON.stringify(edgeSelector)+')');
+ await click('[aria-label="Fit chain"]');await delay(650);await click('[data-connection-label="'+wormhole.id+'"]');
+ await button('Edit connection','[aria-label="Selected map context"]');
+ await checkLabel('I have verified this connection','.jspace-sheet');await checkLabel('Allow this verified connection in my routes','.jspace-sheet');
+ await button('Save connection conditions','.jspace-sheet');await waitFor('!document.querySelector(".jspace-sheet")');
+ assert.equal((await privateState()).connections[0].active,true,'Only explicit verification and route consent activate the private connection');
+ await click('[aria-label="Set observed lifetime 4h"]');
+ await waitFor("document.querySelector('.jspace-workspace-stage')?.getAttribute('aria-busy')==='false' && !document.querySelector('.jspace-saving')");
+ const revised=(await privateState()).connections[0];assert.equal(revised.duration_hours,4);assert.ok(Math.abs(Date.parse(revised.expires_at)-Date.now()-4*3600000)<15000);
+ await privateCommand('connection.save',{connection:{id:wormhole.id,expires_at:new Date(Date.now()+1200).toISOString()}});
+ await click('[aria-label="Refresh Universe data"]');
+ await waitFor('!document.querySelector('+JSON.stringify(edgeSelector)+')');
+ const expiredMap=await privateState();assert.deepEqual(expiredMap.connections,[]);assert.ok(!expiredMap.archived_connections?.length);
+ assert.equal(expiredMap.nodes.find(node=>node.system_id===atlas.wormhole.system_id).description,'Persistent map-owned system knowledge');
+ assert.ok(expiredMap.comments.some(note=>note.body==='Remains after the passage expires'));
+ assert.equal((await api('/universe?character=42&map_id='+privateMapId)).links.some(link=>link.id===wormhole.link_id),false,'Expired private connection evidence is removed, not retained as an inactive row');
  await waitFor('!!document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+')');
- assert.ok(await evaluate('document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+').textContent.includes('+JSON.stringify(atlas.wormhole.name)+')'),'The pinned wormhole system remains on the chain after its connection expires');
+ assert.ok(await evaluate('document.querySelector('+JSON.stringify('.jspace-node[data-system-id="'+atlas.wormhole.system_id+'"]')+').textContent.includes('+JSON.stringify(atlas.wormhole.name)+')'),'The wormhole system remains on its own map during its pruning grace period');
  await fill('[aria-label="Find a system to add to chain"]',atlas.wormhole.region_name);
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-quick-results strong')).some(e=>e.textContent==="+JSON.stringify(atlas.wormhole.region_name)+")"),false,'Internal J-space region names are not search destinations');
  await fill('[aria-label="Find a system to add to chain"]',atlas.wormhole.name);
@@ -1038,7 +1057,7 @@ try{
  const jspaceBreadcrumb=await evaluate("document.querySelector('[aria-label=\"Selected map context\"] header').textContent");
  assert.ok(jspaceBreadcrumb.includes('J-Space')&&!jspaceBreadcrumb.includes(atlas.wormhole.region_name)&&!jspaceBreadcrumb.includes(atlas.wormhole.constellation_name),'J-space inspection explains system class and discovery context without internal region geography');
  await minimumChainZoom('Discovered J-space');
- await screenshot('universe-expired-discovery');checks.push('Wormhole confirmation, lifetime editing, expiry and retained discoveries');
+ await screenshot('universe-expired-discovery');checks.push('Map-owned wormhole confirmation, lifetime editing, immediate expiry removal and preserved system knowledge');
  checks.push('J-space keeps system search and discovery context while hiding region navigation, grouping and internal geography');
  await jspaceAcceptance({app,api,evaluate,click,clickElement,button,fill,key,choose,waitFor,delay,screenshot,viewport,layout,space,ensureJSpaceMap,call,checks,recentUniverseRequests});
 

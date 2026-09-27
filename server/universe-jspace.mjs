@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { getWormholeType } from './universe-wormholes.mjs';
+import { createJSpaceTracking } from './universe-jspace-tracking.mjs';
+import { validateJSpaceScope, hasJSpaceScope, matchesJSpaceScope } from './universe-jspace-scopes.mjs';
 
 const LIMITS = Object.freeze({ maps: 24, nodes: 600, connections: 1000, passages: 1000, observations: 1000, comments: 500, pings: 100, activity: 100, undo: 10, document_bytes: 4_000_000 });
 const STATUSES = ['unknown', 'unscanned', 'scanning', 'scanned', 'occupied', 'hostile', 'friendly', 'empty'];
@@ -48,7 +50,7 @@ function conflict(revision) {
 
 /** Private diagrams reference Universe links; diagram topology never independently authorises a route. */
 export function createUniverseJSpace(store, auth, options) {
-    const { atlas, getLinks, saveLink, validateLink, operations, onChange = () => {} } = options;
+    const { atlas, getLinks, saveLink, deleteLink, validateLink, operations, getScopeContext = () => ({ atlas, politicsConfig: {} }), onChange = () => {} } = options;
     const now = options.now || Date.now, iso = () => new Date(now()).toISOString();
     const byId = atlas.bySystemId || new Map(atlas.systems.map(row => [row.system_id, row]));
     const gates = new Set(atlas.gates.flatMap(row => [`${row.from_system_id}:${row.to_system_id}`, `${row.to_system_id}:${row.from_system_id}`]));
@@ -59,6 +61,56 @@ export function createUniverseJSpace(store, auth, options) {
     const read = (pilot, kind, id) => { const value = getRow.get(pilot, kind, String(id)); return value ? JSON.parse(value.body) : null; };
     const rows = (pilot, kind) => getRows.all(pilot, kind).map(row => JSON.parse(row.body));
     const write = (pilot, kind, value) => putRow.run(pilot, kind, value.id, JSON.stringify(value), value.updated_at || iso());
+    let scopeContexts = null, nextSourceCleanup = 0;
+    const scopeContext = id => {
+        if (!scopeContexts) return getScopeContext(id);
+        if (!scopeContexts.has(id)) scopeContexts.set(id, getScopeContext(id));
+        return scopeContexts.get(id);
+    };
+    function withScopeContexts(fn) {
+        const previous = scopeContexts; scopeContexts = previous || new Map();
+        try { return fn(); } finally { scopeContexts = previous; }
+    }
+    const populateScopes = (id, mapId) => withScopeContexts(() => tracking.populateScopes(id, mapId));
+    const isActivePilot = id => id === store.get('universe:jspace:active_pilot', auth.characters()[0]?.id || 0);
+    const tracking = createJSpaceTracking(store, auth, { atlas, now, operations, onChange, saveConnection, isActivePilot,
+        hasScope: map => hasJSpaceScope(map.scope), scopeMatches: (id, map, systemId) => matchesJSpaceScope(map.scope, systemId, scopeContext(id)),
+        getConnections: (id, map) => getLinks(id, map.id),
+        copyConnection: (id, map, source) => {
+            const expiry = Date.parse(source.expires_at); if (!Number.isFinite(expiry) || expiry <= now()) return null;
+            const edge = saveConnection(id, map, { kind: 'wormhole', from_system_id: source.from_system_id, to_system_id: source.to_system_id,
+                expires_at: source.expires_at, observed_at: source.observed_at || source.discovered_at, mass: 'stable', max_ship_size: 'large', life_status: 'stable',
+                confirmed: false, accessible: false, reverse_accessible: false });
+            if (edge) { const link = read(id, 'link', edge.link_id); link.duration_hours = 16; write(id, 'link', link); }
+            return edge;
+        },
+        addSystem: (map, systemId, anchorId) => {
+            if (map.nodes.some(row => row.system_id === systemId)) return;
+            const wasArchived = (map.archived_nodes || []).some(row => row.system_id === systemId);
+            const restored = restoreNode(map, { system_id: systemId }), anchor = map.nodes.find(row => row.system_id === anchorId);
+            if (map.kind === 'tracking_source') restored.disconnected_at = iso();
+            if (!wasArchived && anchor) {
+                restored.x = anchor.x + 340; restored.y = anchor.y;
+                while (map.nodes.some(row => Math.abs(row.x - restored.x) < 300 && Math.abs(row.y - restored.y) < 140)) restored.y += 190;
+            }
+            map.nodes.push(restored);
+        },
+        writeMap: (id, map) => {
+            capacity(map);
+            if (read(id, 'jspace_map', map.id)?.revision !== map.revision) deleteRow.run(id, 'jspace_undo', map.id);
+            write(id, 'jspace_map', map);
+        },
+        recordPassage: (id, map, edge, input) => {
+            if (map.passages.length >= LIMITS.passages || map.passages.some(row => row.sample_key === input.sample_key)) return false;
+            const candidates = getLinks(id, map.id).filter(row => row.kind === 'wormhole' && row.active && row.confirmed &&
+                (row.from_system_id === edge.from_system_id && row.to_system_id === edge.to_system_id || row.from_system_id === edge.to_system_id && row.to_system_id === edge.from_system_id));
+            if (candidates.length !== 1 || candidates[0].id !== edge.link_id) return false;
+            const row = passage(map, { connection_id: edge.id, from_system_id: input.from_system_id, to_system_id: input.to_system_id, occurred_at: input.at,
+                pilot_name: auth.characters().find(pilot => pilot.id === input.character_id)?.name || String(input.character_id),
+                notes: 'Sampled locations suggest passage through this confirmed connection. Polling can miss movement; ship mass is unknown.' });
+            Object.assign(row, { source: 'sampled_location', reviewed: false, sample_key: input.sample_key, sampled_previous_at: input.previous_at });
+            map.passages.unshift(row); return true;
+        } });
     function pilot(value, writing = false) {
         const id = Number(value ?? 0);
         if (!Number.isSafeInteger(id) || id < 0 || id && !auth.characters().some(row => row.id === id) || writing && !id) throw new Error('Choose a connected pilot for your private J-Space maps.');
@@ -73,6 +125,40 @@ export function createUniverseJSpace(store, auth, options) {
         const value = read(id, 'jspace_map', key);
         if (!value) throw new Error('Chain map not found for this pilot.');
         return value;
+    }
+    function editable(map) { if (map.kind === 'tracking_source') throw new Error('The live source map is read-only. Create an interactive map to edit it.'); }
+    function ensureSource(id) {
+        if (!id) return null;
+        const key = 'tracking-source-' + id, existing = read(id, 'jspace_map', key);
+        if (existing) return existing;
+        const map = { ...blank({ name: 'Live source' }), id: key, kind: 'tracking_source', pilots: [{ character_id: id, tracking: true }] };
+        write(id, 'jspace_map', map); tracking.syncMap(id, map); return map;
+    }
+    function setActivePilot(characterId) {
+        const id = pilot(characterId), previous = store.get('universe:jspace:active_pilot', auth.characters()[0]?.id || 0);
+        if (previous !== id) { tracking.resetSourceBaseline?.(previous); tracking.resetSourceBaseline?.(id); }
+        store.set('universe:jspace:active_pilot', id);
+        if (id) ensureSource(id);
+        return { character_id: id };
+    }
+    function observeLocation(characterId, input) {
+        const id = pilot(characterId);
+        if (id && isActivePilot(id)) ensureSource(id);
+        return withScopeContexts(() => tracking.observeLocation(id, input));
+    }
+    function cleanupSources() {
+        if (now() < nextSourceCleanup) return;
+        nextSourceCleanup = now() + 30000;
+        for (const item of store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='jspace_map' AND json_extract(body,'$.kind')='tracking_source'").all()) {
+            const map = JSON.parse(item.body);
+            if (!map.nodes.some(row => !row.locked && row.disconnected_at && Math.max(Date.parse(row.disconnected_at) || 0, Date.parse(row.prune_grace_at) || 0) + PRUNE_DELAY_MS <= now())) continue;
+            // Expiry cleanup already ran in Universe's shared tick. Read canonical
+            // topology directly so disconnected accounts also lose old source nodes.
+            const links = store.db.prepare("SELECT body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.map_id')=?").all(item.character_id, map.id).map(row => JSON.parse(row.body));
+            const revision = map.revision;
+            reconcileNodes(item.character_id, map, new Map(links.map(link => [link.id, link])));
+            if (map.revision !== revision) onChange(item.character_id);
+        }
     }
     function atomic(fn) {
         store.db.exec('BEGIN IMMEDIATE');
@@ -99,6 +185,7 @@ export function createUniverseJSpace(store, auth, options) {
             alias: clean(input.alias ?? previous.alias, 100), label: clean(input.label ?? previous.label, 120), description: clean(input.description ?? previous.description, 4000),
             status: choose(input.status, STATUSES, previous.status || 'unknown'), role: choose(input.role, ['', 'home', 'staging'], previous.role || ''),
             locked: boolean(input.locked, previous.locked || false), tags: [...new Set(tags.filter(Boolean))], effective_owner,
+            ...(previous.source_coverage ? { source_coverage: clone(previous.source_coverage) } : {}),
             ...(previous.disconnected_at ? { disconnected_at: previous.disconnected_at } : {}),
             ...(previous.prune_grace_at || !old ? { prune_grace_at: previous.prune_grace_at || iso() } : {}) };
     }
@@ -111,39 +198,112 @@ export function createUniverseJSpace(store, auth, options) {
         return restored;
     }
     function archiveNodes(map, ids) {
-        map.archived_nodes = [...(map.archived_nodes || []).filter(row => !ids.has(row.system_id)), ...map.nodes.filter(row => ids.has(row.system_id))];
-        const removedEdges = map.connections.filter(row => ids.has(row.from_system_id) || ids.has(row.to_system_id));
-        map.archived_connections = [...(map.archived_connections || []), ...removedEdges];
+        if (map.kind !== 'tracking_source') map.archived_nodes = [...(map.archived_nodes || []).filter(row => !ids.has(row.system_id)), ...map.nodes.filter(row => ids.has(row.system_id))];
         map.nodes = map.nodes.filter(row => !ids.has(row.system_id));
         map.connections = map.connections.filter(row => !ids.has(row.from_system_id) && !ids.has(row.to_system_id));
         map.pings = map.pings.filter(row => !ids.has(row.system_id));
     }
-    function markDetached(map, edges) {
-        const affected = new Set(edges.flatMap(row => [row.from_system_id, row.to_system_id]));
-        for (const row of map.nodes) if (affected.has(row.system_id)) row.disconnected_at = iso();
+    function markDetached(map, edges, ended = new Map()) {
+        const losses = new Map();
+        for (const edge of edges) for (const id of [edge.from_system_id, edge.to_system_id]) losses.set(id, Math.max(losses.get(id) || 0, Date.parse(ended.get(edge.link_id)) || now()));
+        for (const row of [...map.nodes, ...(map.archived_nodes || [])]) {
+            if (losses.has(row.system_id)) row.disconnected_at = new Date(Math.max(Date.parse(row.disconnected_at) || 0, losses.get(row.system_id))).toISOString();
+        }
+    }
+    // Only systems have an archive. A departed connection has no notes, passages,
+    // activity entries or undo snapshot that can bring it back.
+    function forgetMapConnections(map, removed, canonical = null) {
+        const before = JSON.stringify(map), ended = new Map(removed.map(link => [link.id, link.ended_at || link.expires_at || iso()]));
+        const dead = map.connections.filter(edge => ended.has(edge.link_id) || canonical && edge.kind !== 'gate' && !canonical.has(edge.link_id));
+        markDetached(map, dead, ended);
+        const deadIds = new Set(dead.map(edge => edge.id));
+        map.connections = map.connections.filter(edge => !deadIds.has(edge.id)).map(({ locked, ...edge }) => edge);
+        delete map.archived_connections;
+        const present = new Set(map.connections.map(edge => edge.id));
+        map.passages = map.passages.filter(row => present.has(row.connection_id));
+        map.comments = map.comments.filter(row => !row.connection_id || present.has(row.connection_id));
+        map.activity = (map.activity || []).filter(row => !/^(connection|passage)\./.test(row.op));
+        return JSON.stringify(map) !== before;
+    }
+    function forgetConnections(characterId, removed = []) {
+        const id = Number(characterId);
+        if (!Number.isSafeInteger(id) || id < 0) throw new Error('Invalid stored pilot.');
+        for (const map of rows(id, 'jspace_map')) {
+            if (forgetMapConnections(map, removed)) { map.revision++; map.updated_at = iso(); write(id, 'jspace_map', map); }
+        }
+        for (const history of rows(id, 'jspace_undo')) {
+            let changed = false;
+            for (const snapshot of history.entries) if (forgetMapConnections(snapshot, removed)) changed = true;
+            if (changed) write(id, 'jspace_undo', { ...history, updated_at: iso() });
+        }
+    }
+    function migrateScopes() {
+        // One-time isolation of existing diagrams. No visit history seeds a map.
+        // Only already-visible memberships receive their own connection records.
+        for (const item of store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='jspace_map'").all()) {
+            const id = item.character_id, map = JSON.parse(item.body);
+            if (map.scope_version === 2) {
+                if (!map.pilots) { map.pilots = [{ character_id: id, tracking: true }]; write(id, 'jspace_map', map); }
+                tracking.syncMap(id, map); continue;
+            }
+            const canonical = new Map();
+            for (const edge of map.connections) {
+                if (edge.kind !== 'wormhole' || !edge.link_id) continue;
+                const old = read(id, 'link', edge.link_id);
+                if (!old) continue;
+                const link = { ...old, id: randomUUID(), map_id: map.id };
+                write(id, 'link', link); canonical.set(link.id, link);
+                const oldId = edge.link_id; edge.link_id = link.id;
+                for (const passage of map.passages) if (passage.link_id === oldId) passage.link_id = link.id;
+            }
+            // Retain non-wormhole memberships without treating them as discoveries.
+            for (const edge of map.connections) if (edge.kind !== 'wormhole' && edge.link_id) {
+                const link = read(id, 'link', edge.link_id); if (link) canonical.set(link.id, link);
+            }
+            forgetMapConnections(map, [], canonical);
+            map.scope_version = 2; map.revision++; map.updated_at = iso();
+            map.pilots = [{ character_id: id, tracking: true }];
+            write(id, 'jspace_map', map); deleteRow.run(id, 'jspace_undo', map.id);
+            tracking.syncMap(id, map);
+        }
+        for (const item of store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='link'").all()) {
+            const link = JSON.parse(item.body);
+            if (link.kind === 'wormhole' && (!link.map_id || !read(item.character_id, 'jspace_map', link.map_id))) deleteRow.run(item.character_id, 'link', link.id);
+        }
+        const notes = store.db.prepare("SELECT * FROM place_notes WHERE kind='system'").all().filter(row => byId.get(row.entity_id)?.space === 'wormhole');
+        const pins = store.db.prepare("SELECT character_id,id,body FROM universe_records WHERE kind='pin'").all().map(row => ({ ...row, value: JSON.parse(row.body) })).filter(row => byId.get(row.value.system_id)?.space === 'wormhole');
+        if (notes.length || pins.length) for (const item of store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='jspace_map'").all()) {
+            const map = JSON.parse(item.body), systems = new Set([...map.nodes, ...(map.archived_nodes || [])].map(row => row.system_id));
+            let changed = false;
+            for (const note of notes) if (systems.has(note.entity_id)) {
+                if (note.body) map.comments.push({ id: randomUUID(), system_id: note.entity_id, connection_id: null, body: note.body, created_at: note.updated || iso() });
+                const card = [...map.nodes, ...(map.archived_nodes || [])].find(row => row.system_id === note.entity_id);
+                card.tags = [...new Set([...(card.tags || []), ...JSON.parse(note.tags || '[]')])].slice(0, 20); changed = true;
+            }
+            for (const pin of pins) if (pin.character_id === item.character_id && systems.has(pin.value.system_id)) {
+                const body = [pin.value.label, pin.value.note, pin.value.body, pin.value.event_at].filter(Boolean).join('\n');
+                if (body) map.comments.push({ id: randomUUID(), system_id: pin.value.system_id, connection_id: null, body, created_at: pin.value.created_at || iso() });
+                changed = true;
+            }
+            if (changed) { map.revision++; map.updated_at = iso(); write(item.character_id, 'jspace_map', map); }
+        }
+        for (const note of notes) store.db.prepare("DELETE FROM place_notes WHERE kind='system' AND entity_id=?").run(note.entity_id);
+        for (const pin of pins) deleteRow.run(pin.character_id, 'pin', pin.id);
     }
     // Diagram membership expires, never the pilot's observations or card metadata.
     // Unknown/unconfirmed links still connect cards; routing permission is unrelated.
     function reconcileNodes(id, map, canonical) {
-        let changed = false;
+        let changed = forgetMapConnections(map, [], canonical);
         const prune = new Set();
+        const connected = new Set(map.connections.flatMap(edge => [edge.from_system_id, edge.to_system_id]));
         for (const row of map.nodes) {
-            const attached = map.connections.filter(edge => edge.from_system_id === row.system_id || edge.to_system_id === row.system_id);
-            const losses = attached.map(edge => {
-                if (edge.kind === 'gate') return null;
-                const link = canonical.get(edge.link_id);
-                if (!link) return Date.parse(row.disconnected_at) || now();
-                if (link.life_status === 'collapsed') return Date.parse(row.disconnected_at) || Date.parse(link.updated_at) || Date.parse(link.expires_at) || now();
-                const expiry = Date.parse(link.expires_at);
-                return Number.isFinite(expiry) && expiry <= now() ? expiry : null;
-            });
-            if (losses.some(value => value === null)) {
+            if (connected.has(row.system_id)) {
                 if (row.disconnected_at) { delete row.disconnected_at; changed = true; }
                 continue;
             }
             // A standalone card that has never lost a connection stays on its map.
-            if (!losses.length && !row.disconnected_at) continue;
-            const disconnected = Math.max(Date.parse(row.disconnected_at) || 0, Date.parse(row.prune_grace_at) || 0, ...losses);
+            if (!row.disconnected_at) continue;
+            const disconnected = Math.max(Date.parse(row.disconnected_at) || 0, Date.parse(row.prune_grace_at) || 0);
             const stamp = new Date(disconnected).toISOString();
             if (row.disconnected_at !== stamp) { row.disconnected_at = stamp; changed = true; }
             if (!row.locked && now() >= disconnected + PRUNE_DELAY_MS) prune.add(row.system_id);
@@ -198,8 +358,8 @@ export function createUniverseJSpace(store, auth, options) {
         return { id: randomUUID(), system_id: mapNode(map, input.system_id), label: clean(input.label, 120), created_at: iso(), expires_at: new Date(now() + duration * 1000).toISOString() };
     }
     function project(id, value, shared = null) {
-        const canonical = shared?.canonical || new Map(getLinks(id).map(row => [row.id, row]));
-        const map = reconcileNodes(id, clone(value), canonical), signatures = shared?.signatures || operations.state(id).signatures;
+        const canonical = new Map(getLinks(id, value.id).map(row => [row.id, row]));
+        const map = reconcileNodes(id, clone(read(id, 'jspace_map', value.id) || value), canonical), operational = map.kind === 'tracking_source' ? null : operations.state(id, value.id), signatures = operational?.signatures || [];
         const signaturesById = new Map(signatures.map(row => [row.id, row])), signaturesBySystem = new Map(signatures.map(row => [`${row.system_id}:${row.signature_id}`, row])), passagesByEdge = new Map();
         for (const row of map.passages) {
             const aggregate = passagesByEdge.get(row.connection_id) || { count: 0, mass: 0, unweighed: 0 };
@@ -229,69 +389,57 @@ export function createUniverseJSpace(store, auth, options) {
             stale: row.missing === true || !Number.isFinite(Date.parse(row.last_seen_at)) || now() - Date.parse(row.last_seen_at) > 24 * 3600000,
             connection_ids: map.connections.filter(edge => edge.from_signature_id === row.id || edge.to_signature_id === row.id).map(edge => edge.id) }));
         map.can_undo = (read(id, 'jspace_undo', map.id)?.entries.length || 0) > 0;
+        map.operations = operational;
+        map.pilots = tracking.projectPilots(map);
+        map.read_only = map.kind === 'tracking_source';
         return map;
     }
-    function discovery(id) {
-        const links = getLinks(id).filter(row => row.kind === 'wormhole'), ids = new Set();
-        for (const row of links) { ids.add(row.from_system_id); ids.add(row.to_system_id); }
-        for (const row of rows(id, 'pin')) if (byId.get(row.system_id)?.space === 'wormhole') ids.add(row.system_id);
-        for (const row of store.db.prepare('SELECT DISTINCT system_id FROM visits WHERE character_id=?').all(id)) if (byId.get(row.system_id)?.space === 'wormhole') ids.add(row.system_id);
-        const position = operations.location(id);
-        if (position.status === 'ready' && byId.get(position.system_id)?.space === 'wormhole') ids.add(position.system_id);
-        return { systems: [...ids].filter(value => byId.has(value)).sort((a, b) => a - b), connections: links,
-            note: 'Existing connections and visits can seed a diagram. Visits do not create confirmed connections.' };
-    }
     function state(characterId) {
-        const id = pilot(characterId), shared = { canonical: new Map(getLinks(id).map(row => [row.id, row])), signatures: operations.state(id).signatures };
-        return { character_id: id, generated_at: iso(), maps: rows(id, 'jspace_map').map(value => project(id, value, shared)), discovery: discovery(id), limits: LIMITS };
+        const id = pilot(characterId), rawSource = ensureSource(id);
+        const links = rawSource ? new Map(getLinks(id, rawSource.id).map(link => [link.id, link])) : null;
+        const source = rawSource ? reconcileNodes(id, loaded(id, rawSource.id), links) : null;
+        return { character_id: id, generated_at: iso(), maps: rows(id, 'jspace_map').filter(value => value.kind !== 'tracking_source').map(value => project(id, value)),
+            source_map: source ? { id: source.id, name: source.name, kind: 'tracking_source', read_only: true, revision: source.revision,
+                node_count: source.nodes.length, connection_count: source.connections.length, nodes: [], connections: [] } : null, limits: LIMITS };
     }
     function blank(input) {
         const name = clean(input.name, 80); if (!name) throw new Error('Give this chain a name.');
-        return { id: randomUUID(), name, description: clean(input.description, 4000), track_passages: boolean(input.track_passages), revision: 1, created_at: iso(), updated_at: iso(), nodes: [], connections: [], passages: [], observations: [], comments: [], pings: [], activity: [] };
+        return { id: randomUUID(), name, description: clean(input.description, 4000), track_passages: boolean(input.track_passages), scope: null, scope_version: 2, revision: 1, created_at: iso(), updated_at: iso(), nodes: [], connections: [], passages: [], observations: [], comments: [], pings: [], activity: [], pilots: [] };
     }
     function capacity(map) {
         for (const key of ['nodes', 'connections', 'passages', 'observations', 'comments', 'pings']) array(map[key], LIMITS[key], key);
         if (Buffer.byteLength(JSON.stringify(map)) > LIMITS.document_bytes) throw new Error('This chain is too large. Export older observations before adding more.');
     }
-    function log(map, op, summary) { map.activity.unshift({ id: randomUUID(), op, summary, at: iso() }); map.activity = map.activity.slice(0, LIMITS.activity); }
+    function log(map, op, summary) { if (map.kind === 'tracking_source' || /^(connection|passage)\./.test(op)) return; map.activity.unshift({ id: randomUUID(), op, summary, at: iso() }); map.activity = map.activity.slice(0, LIMITS.activity); }
     function create(characterId, input = {}) {
         const id = pilot(characterId, true), map = blank(input);
-        if (rows(id, 'jspace_map').length >= LIMITS.maps) throw new Error('Remove a chain before creating more than 24 maps.');
-        if (boolean(input.seed_discovery)) {
-            const known = discovery(id);
-            map.nodes = known.systems.slice(0, LIMITS.nodes).map((system_id, index) => node({ system_id }, null, index));
-            const present = new Set(map.nodes.map(row => row.system_id));
-            map.connections = known.connections.filter(row => present.has(row.from_system_id) && present.has(row.to_system_id)).slice(0, LIMITS.connections).map(row =>
-                ({ id: randomUUID(), link_id: row.id, kind: row.kind, from_system_id: row.from_system_id, to_system_id: row.to_system_id, life_status: 'unknown', locked: false, notes: '' }));
-        }
-        log(map, 'map.create', 'Created private chain map'); capacity(map); write(id, 'jspace_map', map); onChange(id); return project(id, map);
+        if (rows(id, 'jspace_map').filter(row => row.kind !== 'tracking_source').length >= LIMITS.maps) throw new Error('Remove a chain before creating more than 24 maps.');
+        map.scope = validateJSpaceScope(input.scope, getScopeContext(id));
+        tracking.rosterCommand(id, map, 'pilot.add', { character_id: id });
+        log(map, 'map.create', 'Created private chain map'); capacity(map); write(id, 'jspace_map', map); tracking.syncMap(id, map); populateScopes(id, map.id); onChange(id); return project(id, loaded(id, map.id));
     }
     function checkRevision(map, input) { if (!Number.isSafeInteger(input.revision) || input.revision !== map.revision) throw conflict(map.revision); }
     function remove(characterId, key, input = {}) {
         const id = pilot(characterId, true);
-        atomic(() => { const map = loaded(id, key); checkRevision(map, input); deleteRow.run(id, 'jspace_map', map.id); deleteRow.run(id, 'jspace_undo', map.id); });
-        onChange(id); return { id: key, deleted: true, note: 'Existing Universe connections and signatures remain available.' };
+        getLinks(id, key);
+        atomic(() => { const map = loaded(id, key); editable(map); checkRevision(map, input);
+            for (const edge of map.connections) if (edge.kind === 'wormhole' && edge.link_id) deleteLink(id, edge.link_id);
+            operations.removeMapScope(id, map.id);
+            store.db.prepare('DELETE FROM settings WHERE key=?').run('universe:navigation:' + id + ':' + map.id);
+            deleteRow.run(id, 'jspace_map', map.id); deleteRow.run(id, 'jspace_undo', map.id); });
+        tracking.forgetMap(id, key); onChange(id); return { id: key, deleted: true };
     }
     function duplicate(characterId, key, input = {}) {
         const id = pilot(characterId, true);
-        const map = atomic(() => {
-            const old = loaded(id, key); checkRevision(old, input);
-            if (rows(id, 'jspace_map').length >= LIMITS.maps) throw new Error('Remove a chain before creating more than 24 maps.');
-            const value = { ...clone(old), id: randomUUID(), name: clean(input.name || (old.name.slice(0, 73) + ' copy'), 80), revision: 1, created_at: iso(), updated_at: iso(), pings: [], activity: [] };
-            const edgeIds = new Map(value.connections.map(row => [row.id, randomUUID()]));
-            value.connections = value.connections.map(row => ({ ...row, id: edgeIds.get(row.id) }));
-            value.passages = value.passages.map(row => ({ ...row, id: randomUUID(), connection_id: edgeIds.get(row.connection_id) || row.connection_id }));
-            value.comments = value.comments.map(row => ({ ...row, id: randomUUID(), connection_id: edgeIds.get(row.connection_id) || row.connection_id }));
-            value.observations = value.observations.map(row => ({ ...row, id: randomUUID() }));
-            log(value, 'map.duplicate', 'Copied diagram and observations; Universe connections remain shared'); capacity(value); write(id, 'jspace_map', value); return value;
-        });
-        onChange(id); return project(id, map);
+        getLinks(id, key);
+        const old = loaded(id, key); checkRevision(old, input);
+        const copy = importMap(id, { document: exportMap(id, key), name: clean(input.name || (old.name.slice(0, 73) + ' copy'), 80) });
+        return project(id, loaded(id, copy.id));
     }
     function saveConnection(id, map, input) {
         if (!object(input)) throw new Error('Provide a connection observation.');
         const previous = input.id ? connection(map, input.id) : null;
-        if (previous?.locked && input.locked !== false) throw new Error('Unlock this connection before editing it.');
-        const link_id = input.link_id ?? previous?.link_id, known = link_id ? getLinks(id).find(row => row.id === link_id) : null;
+        const link_id = input.link_id ?? previous?.link_id, known = link_id ? getLinks(id, map.id).find(row => row.id === link_id) : null;
         if (link_id && !known) throw new Error('Universe connection not found for this pilot.');
         if (known && input.updated_at != null && input.updated_at !== known.updated_at) throw conflict(map.revision);
         if (boolean(input.add_missing_nodes)) {
@@ -310,14 +458,20 @@ export function createUniverseJSpace(store, auth, options) {
         if (kind === 'gate') {
             if (!gates.has(`${from}:${to}`)) throw new Error('Only real stargates in the static atlas can be shown as gate connections.');
         } else {
-            const supplied = { ...input, id: known?.id, kind, life_status, from_system_id: from, to_system_id: to, confirmed: boolean(input.confirmed, known?.confirmed || false), accessible: boolean(input.accessible, known?.accessible || false) };
+            const supplied = { ...input, map_id: map.id, id: known?.id, kind, life_status, from_system_id: from, to_system_id: to, confirmed: boolean(input.confirmed, known?.confirmed || false), accessible: boolean(input.accessible, known?.accessible || false) };
             if (life_status === 'collapsed') { supplied.enabled = false; supplied.confirmed = false; if (kind === 'wormhole') supplied.duration_hours = 0; }
             link = saveLink(id, supplied);
         }
+        if (link?.deleted) {
+            if (previous) { markDetached(map, [previous], new Map([[link.id, link.ended_at || link.expires_at || iso()]])); map.connections = map.connections.filter(row => row.id !== previous.id); }
+            forgetMapConnections(map, [link]);
+            return null;
+        }
         const edge = { id: previous?.id || randomUUID(), link_id: link?.id || null, kind, from_system_id: from, to_system_id: to, life_status,
-            locked: boolean(input.locked, previous?.locked || false), notes: clean(input.notes ?? previous?.notes, 2000) };
+            notes: clean(input.notes ?? previous?.notes, 2000) };
+        const signatures = map.kind === 'tracking_source' ? [] : operations.state(id, map.id).signatures;
         for (const side of ['from', 'to']) {
-            const signature = operations.state(id).signatures.find(row => row.system_id === edge[side + '_system_id'] && row.signature_id === link?.[side + '_signature']);
+            const signature = signatures.find(row => row.system_id === edge[side + '_system_id'] && row.signature_id === link?.[side + '_signature']);
             if (signature) edge[side + '_signature_id'] = signature.id;
             else if (previous && own(previous, side + '_signature_id') && input[side + '_signature'] === undefined) edge[side + '_signature_id'] = previous[side + '_signature_id'];
         }
@@ -327,15 +481,21 @@ export function createUniverseJSpace(store, auth, options) {
     }
     function command(characterId, key, input = {}) {
         const id = pilot(characterId, true), op = clean(input.op, 60);
+        getLinks(id, key);
         const result = atomic(() => {
-            let map = loaded(id, key); checkRevision(map, input);
+            let map = loaded(id, key); editable(map); checkRevision(map, input);
             const before = clone(map), history = read(id, 'jspace_undo', map.id) || { id: map.id, entries: [] };
+            const linksToForget = new Set();
             let undoable = true;
             switch (op) {
+                case 'pilot.add':
+                case 'pilot.tracking':
+                case 'pilot.remove': tracking.rosterCommand(id, map, op, input); undoable = false; break;
                 case 'map.update': {
                     if (own(input, 'name')) { map.name = clean(input.name, 80); if (!map.name) throw new Error('Give this chain a name.'); }
                     if (own(input, 'description')) map.description = clean(input.description, 4000);
                     if (own(input, 'track_passages')) map.track_passages = boolean(input.track_passages);
+                    if (own(input, 'scope')) map.scope = validateJSpaceScope(input.scope, getScopeContext(id));
                     break;
                 }
                 case 'node.save': {
@@ -361,7 +521,7 @@ export function createUniverseJSpace(store, auth, options) {
                     if (!systemIds.size) throw new Error('Select at least one system to remove.');
                     if (map.nodes.some(row => systemIds.has(row.system_id) && row.locked)) throw new Error('Unlock this system before removing it.');
                     const attached = new Set(map.connections.filter(row => systemIds.has(row.from_system_id) || systemIds.has(row.to_system_id)).map(row => row.id));
-                    if (map.connections.some(row => attached.has(row.id) && row.locked)) throw new Error('Unlock attached connections before removing this system.');
+                    for (const edge of map.connections) if (attached.has(edge.id) && edge.kind === 'wormhole' && edge.link_id) linksToForget.add(edge.link_id);
                     markDetached(map, map.connections.filter(row => attached.has(row.id)));
                     archiveNodes(map, systemIds);
                     // Observation history remains private and exportable even when its card is removed.
@@ -370,10 +530,9 @@ export function createUniverseJSpace(store, auth, options) {
                 case 'connection.save': saveConnection(id, map, input.connection); undoable = false; break;
                 case 'connection.remove': {
                     const edge = connection(map, input.connection_id);
-                    if (edge.locked) throw new Error('Unlock this connection before removing it.');
-                    if (boolean(input.disable_link) && edge.link_id) { saveLink(id, { id: edge.link_id, enabled: false }); undoable = false; }
+                    if (edge.link_id) linksToForget.add(edge.link_id);
+                    undoable = false;
                     markDetached(map, [edge]);
-                    map.archived_connections = [...(map.archived_connections || []), edge];
                     map.connections = map.connections.filter(row => row.id !== edge.id); break;
                 }
                 case 'passage.add': map.passages.unshift(passage(map, input.passage)); undoable = false; break;
@@ -409,10 +568,9 @@ export function createUniverseJSpace(store, auth, options) {
                     if (!object(source)) throw new Error('Provide a signature observation.');
                     const system_id = mapNode(map, source.system_id), edge = source.connection_id ? connection(map, source.connection_id) : null;
                     if (edge) {
-                        if (edge.locked) throw new Error('Unlock this connection before linking a signature.');
                         if (edge.kind !== 'wormhole' || !edge.link_id || ![edge.from_system_id, edge.to_system_id].includes(system_id)) throw new Error('Select a wormhole connected to the signature system.');
                     }
-                    const saved = operations.saveSignature(id, { ...source, system_id, ...(edge ? { type: 'Wormhole', destination_system_id: edge.from_system_id === system_id ? edge.to_system_id : edge.from_system_id } : {}) }, { observed: !source.id });
+                    const saved = operations.saveSignature(id, { ...source, map_id: map.id, system_id, ...(edge ? { type: 'Wormhole', destination_system_id: edge.from_system_id === system_id ? edge.to_system_id : edge.from_system_id } : {}) }, { observed: !source.id });
                     if (edge) {
                         const side = edge.from_system_id === system_id ? 'from' : 'to';
                         saveLink(id, { id: edge.link_id, [side + '_signature']: saved.signature_id, [side + '_signature_record_id']: saved.id }); edge[side + '_signature_id'] = saved.id;
@@ -420,13 +578,21 @@ export function createUniverseJSpace(store, auth, options) {
                     undoable = false; break;
                 }
                 case 'signature.remove': {
-                    const signature = operations.state(id).signatures.find(row => row.id === input.signature_id);
+                    const signature = operations.state(id, map.id).signatures.find(row => row.id === input.signature_id);
                     if (!signature) throw new Error('Signature not found for this pilot.'); mapNode(map, signature.system_id);
-                    operations.removeSignature(id, signature.id); undoable = false; break;
+                    operations.removeSignature(id, signature.id, map.id); undoable = false; break;
                 }
                 case 'undo': {
                     if (!history.entries.length) throw new Error('No map annotation or layout change is available to undo.');
-                    const restored = history.entries.pop(); map = { ...restored, revision: map.revision, activity: map.activity, created_at: map.created_at }; break;
+                    const restored = history.entries.pop();
+                    const coverage = new Map([...map.nodes, ...(map.archived_nodes || [])].map(row => [row.system_id, row.source_coverage || {}]));
+                    for (const row of [...restored.nodes, ...(restored.archived_nodes || [])]) {
+                        for (const [pilotId, generation] of Object.entries(coverage.get(row.system_id) || {})) {
+                            row.source_coverage ||= {};
+                            row.source_coverage[pilotId] = Math.max(row.source_coverage[pilotId] || 0, generation);
+                        }
+                    }
+                    map = { ...restored, pilots: map.pilots, revision: map.revision, activity: map.activity, created_at: map.created_at }; break;
                 }
                 default: throw new Error('Unsupported J-Space command.');
             }
@@ -434,31 +600,16 @@ export function createUniverseJSpace(store, auth, options) {
                 if (undoable) { const snapshot = { ...before, activity: [] }; history.entries.push(snapshot); history.entries = history.entries.slice(-LIMITS.undo); }
                 else history.entries = [];
             }
+            forgetMapConnections(map, []);
+            if (op === 'undo') for (const row of map.nodes) if (!before.nodes.some(previous => previous.system_id === row.system_id)) row.prune_grace_at = iso();
             map.revision++; map.updated_at = iso(); log(map, op, op.replaceAll('.', ' ').replaceAll('_', ' ')); capacity(map);
-            write(id, 'jspace_map', map); write(id, 'jspace_undo', { ...history, updated_at: iso() }); return map;
+            write(id, 'jspace_map', map); write(id, 'jspace_undo', { ...history, updated_at: iso() });
+            for (const linkId of linksToForget) deleteLink(id, linkId);
+            return loaded(id, map.id);
         });
-        onChange(id); return project(id, result);
+        tracking.syncMap(id, result); if (op === 'map.update' || op.startsWith('pilot.')) populateScopes(id, result.id); onChange(id); return project(id, loaded(id, result.id));
     }
 
-    function observeTrackedTransition(characterId, link, input) {
-        const id = pilot(characterId, true), selectedPilot = auth.characters().find(row => row.id === id), at = date(input.at);
-        if (!at || Date.parse(at) > now() + 1000 || Date.parse(at) < now() - 30000 || !link.active || link.kind !== 'wormhole') return { recorded: 0 };
-        const sample_key = `${id}:${at}:${input.from_system_id}:${input.to_system_id}`;
-        const recorded = atomic(() => {
-            let count = 0;
-            for (const map of rows(id, 'jspace_map')) {
-                if (!map.track_passages || map.passages.length >= LIMITS.passages || map.passages.some(row => row.sample_key === sample_key)) continue;
-                const edge = map.connections.find(row => row.link_id === link.id); if (!edge) continue;
-                const row = passage(map, { connection_id: edge.id, from_system_id: input.from_system_id, to_system_id: input.to_system_id, occurred_at: at, pilot_name: selectedPilot?.name || String(id),
-                    notes: 'Sampled ESI locations suggest passage through this already confirmed connection. Review the transition: polling can miss movement. Ship mass and unobserved traffic are unknown.' });
-                row.source = 'sampled_location'; row.reviewed = false; row.sample_key = sample_key; row.sampled_previous_at = date(input.previous_at);
-                map.passages.unshift(row); map.revision++; map.updated_at = iso(); log(map, 'passage.sampled', 'Sampled location transition recorded for review');
-                capacity(map); write(id, 'jspace_map', map); deleteRow.run(id, 'jspace_undo', map.id); count++;
-            }
-            return count;
-        });
-        if (recorded) onChange(id); return { recorded };
-    }
     function exportMap(characterId, key, format = 'kairo') {
         const id = pilot(characterId), map = project(id, loaded(id, key));
         if (format === 'wanderer') {
@@ -468,14 +619,17 @@ export function createUniverseJSpace(store, auth, options) {
                     labels: JSON.stringify(row.tags), status: status(row), tag: row.role, temporary_name: row.label, locked: row.locked })),
                 connections: map.connections.filter(row => !row.missing && !row.expired && row.active && row.confirmed && row.life_status !== 'collapsed').map(row => ({ source: row.from_system_id, target: row.to_system_id, type: row.kind === 'gate' ? 1 : row.kind === 'ansiblex' ? 2 : 0,
                     mass_status: { stable: 0, reduced: 1, critical: 2 }[row.mass] ?? null, time_status: row.life_status === 'eol' || row.life_status === 'critical' ? 2 : 0,
-                    ship_size_type: { small: 0, medium: 1, large: 2, xlarge: 3, capital: 4 }[row.max_ship_size] ?? null, wormhole_type: row.wh_type || null, locked: row.locked })),
+                    ship_size_type: { small: 0, medium: 1, large: 2, xlarge: 3, capital: 4 }[row.max_ship_size] ?? null, wormhole_type: row.wh_type || null })),
                 signatures: map.signatures.map(row => ({ solar_system_id: row.system_id, eve_id: row.signature_id, name: row.name, temporary_name: row.temporary_name || '', description: row.notes,
                     kind: row.kind || 'Cosmic Signature', group: row.type || row.group, type: row.type === 'Wormhole' ? row.wh_type || '' : row.type, custom_info: null })),
                 kairo_notice: 'Wanderer portable v1 cannot carry exact expiry, confirmation, observation ages, passages, structures, timers or map comments. Unconfirmed, inactive, expired and collapsed connections are omitted. Review all imported conditions before use.' };
         }
         if (format !== 'kairo') throw new Error('Choose Kairo or Wanderer export format.');
-        const storedSystems = new Set([...map.nodes, ...(map.archived_nodes || [])].map(row => row.system_id));
-        map.signatures = operations.state(id).signatures.filter(row => storedSystems.has(row.system_id));
+        map.signatures = map.kind === 'tracking_source' ? [] : operations.state(id, map.id).signatures;
+        if (map.kind !== 'tracking_source') map.operational_records = operations.exportMapScope(id, map.id);
+        for (const card of [...map.nodes, ...(map.archived_nodes || [])]) { delete card.source_coverage; delete card.source_generation; }
+        delete map.operations;
+        delete map.pilots; delete map.source_generation; delete map.can_undo;
         return { format: 'kairo-jspace', version: 1, exported_at: iso(), map,
             notice: 'Private observations. Importing preserves the diagram but requires reviewing connections before using them for navigation.' };
     }
@@ -491,7 +645,9 @@ export function createUniverseJSpace(store, auth, options) {
     function prepareImport(id, input) {
         const { document, native } = parseDocument(input), source = document.map;
         if (!object(source)) throw new Error('The map document is missing.');
-        const map = blank({ name: input.name || source.name, description: source.description }), warnings = [], links = [], signatureRows = [], edgeIds = new Map();
+        const map = blank({ name: input.name || source.name, description: source.description }), warnings = [], links = [], signatureRows = [], edgeIds = new Map(), deadSignatures = new Set(), deadSignatureKeys = new Set();
+        map.scope = validateJSpaceScope(native ? source.scope : null, getScopeContext(id));
+        const operational_records = operations.validateMapScopeImport(native ? source.operational_records : null);
         const sourceNodes = array(native ? source.nodes : document.systems, LIMITS.nodes, 'systems');
         const seen = new Set();
         for (const [index, row] of sourceNodes.entries()) {
@@ -515,45 +671,56 @@ export function createUniverseJSpace(store, auth, options) {
                 if (seen.has(value.system_id)) throw new Error('The export contains a duplicate archived system.');
                 seen.add(value.system_id); return { ...value, disconnected_at: iso() };
             });
-            map.archived_connections = array(source.archived_connections || [], 10000, 'archived connections').map(row => ({
-                id: clean(row.id, 100) || randomUUID(), from_system_id: system(row.from_system_id), to_system_id: system(row.to_system_id),
-                notes: clean(row.notes, 2000), kind: choose(row.kind, ['wormhole', 'ansiblex', 'gate'], 'wormhole'), archived: true
-            }));
         }
+        const forgetImportedSignatures = row => {
+            for (const side of ['from', 'to']) {
+                const recordId = row[side + '_signature_record_id'] || row[side + '_signature_id'];
+                if (recordId) deadSignatures.add(recordId);
+                else if (row[side + '_signature']) deadSignatureKeys.add(`${row[side + '_system_id']}:${row[side + '_signature']}`);
+            }
+        };
+        if (native) for (const row of array(source.archived_connections || [], 10000, 'archived connections')) forgetImportedSignatures(row);
         const sourceEdges = array(native ? source.connections : document.connections, LIMITS.connections, 'connections');
         for (const row of sourceEdges) {
             if (!object(row)) throw new Error('Each imported connection must be an object.');
             const from = mapNode(map, native ? row.from_system_id : row.source), to = mapNode(map, native ? row.to_system_id : row.target);
             if (from === to) throw new Error('Imported connections require two different systems.');
             const kind = native ? choose(row.kind, ['wormhole', 'ansiblex', 'gate'], 'wormhole') : choose(row.type ?? 0, [0, 1, 2], 0) === 1 ? 'gate' : row.type === 2 ? 'ansiblex' : 'wormhole';
-            const edge = { id: randomUUID(), link_id: null, from_system_id: from, to_system_id: to, kind, life_status: native ? choose(row.life_status, LIFE, 'unknown') : [1, 2, 3].includes(row.time_status) ? 'eol' : 'unknown', locked: boolean(row.locked), notes: native ? clean(row.notes, 2000) : 'Imported Wanderer connection; review current conditions.' };
+            const expiry = native ? Date.parse(row.expires_at) : NaN;
+            if (kind === 'wormhole' && (row.life_status === 'collapsed' || native && (row.expired === true || Number.isFinite(expiry) && expiry <= now()))) {
+                forgetImportedSignatures(row); warnings.push('Expired and collapsed connections and their associated data are omitted.'); continue;
+            }
+            const edge = { id: randomUUID(), link_id: null, from_system_id: from, to_system_id: to, kind, life_status: native ? choose(row.life_status, LIFE, 'unknown') : [1, 2, 3].includes(row.time_status) ? 'eol' : 'unknown', notes: native ? clean(row.notes, 2000) : 'Imported Wanderer connection; review current conditions.' };
             if (native && row.id) { if (edgeIds.has(row.id)) throw new Error('Duplicate imported connection ID.'); edgeIds.set(row.id, edge.id); }
             if (kind === 'gate') {
                 if (!gates.has(`${from}:${to}`)) throw new Error('An imported gate is absent from the static atlas.');
             } else {
-                const candidate = { kind, from_system_id: from, to_system_id: to, label: native ? clean(row.label, 160) : '', confirmed: false, accessible: false, enabled: true,
+                const candidate = { kind, map_id: map.id, from_system_id: from, to_system_id: to, label: native ? clean(row.label, 160) : '', confirmed: false, accessible: false, enabled: true,
                     life_status: edge.life_status, mass: native ? choose(row.mass, ['unknown', 'stable', 'reduced', 'critical'], 'unknown') : ['stable', 'reduced', 'critical'][row.mass_status] || 'unknown',
                     ...(native && row.life_band && row.life_observed_at ? {life_band:row.life_band, life_observed_at:row.life_observed_at} : {}),
                     wh_type: native ? clean(row.wh_type, 16) : clean(row.wormhole_type, 16), from_signature: native ? clean(row.from_signature, 16) : '', to_signature: native ? clean(row.to_signature, 16) : '',
                     max_ship_size: native ? row.max_ship_size : ['small', 'medium', 'large', 'xlarge', 'capital'][row.ship_size_type] || null,
                     type_status: 'unavailable', reported_source: native ? 'Kairo map import' : 'Wanderer map import', observed_at: native ? row.observed_at || null : null };
-                // A portable diagram cannot establish a live lifetime. Preserve a future explicit expiry,
-                // otherwise import it expired; confirmation and lifetime are a deliberate later edit.
-                const expiry = native ? Date.parse(row.expires_at) : NaN;
+                // A portable diagram cannot establish a live lifetime. Unknown is not expired:
+                // retain it unconfirmed and unroutable until an observer supplies a lifetime.
                 if (kind === 'wormhole' && Number.isFinite(expiry) && expiry > now() && expiry <= now() + 48 * 3600000) candidate.expires_at = new Date(expiry).toISOString();
-                else if (kind === 'wormhole') candidate.duration_hours = 0;
-                const prepared = validateLink(id, candidate);
+                else if (kind === 'wormhole') candidate.expires_at = null;
+                const prepared = validateLink(id, candidate, map);
                 // A duration label describes the imported observation; do not rebase its expiry.
                 if (native && kind === 'wormhole' && [1, 4, 4.5, 16, 24, 48].includes(row.duration_hours)) prepared.duration_hours = row.duration_hours;
                 prepared.source = 'import'; edge.link_id = prepared.id; links.push(prepared);
             }
             map.connections.push(edge);
         }
-        if (links.length) warnings.push('Imported connections are unconfirmed and inaccessible for routing until reviewed. Missing lifetime evidence imports as expired; static class badges never create connections.');
+        if (links.length) warnings.push('Imported connections are unconfirmed and inaccessible for routing until reviewed. Missing lifetime evidence remains unknown; static class badges never create connections.');
         const signatures = array(native ? source.signatures || [] : document.signatures || [], 1000, 'signatures'), sigKeys = new Set();
         for (const row of signatures) {
             if (!object(row)) throw new Error('Each imported signature must be an object.');
-            const system_id = mapNode(native ? { ...map, nodes: [...map.nodes, ...map.archived_nodes] } : map, native ? row.system_id : row.solar_system_id), signature_id = clean(native ? row.signature_id : row.eve_id, 16).toUpperCase();
+            if (native && (deadSignatures.has(row.id) || deadSignatureKeys.has(`${row.system_id}:${row.signature_id}`))) continue;
+            const system_id = system(native ? row.system_id : row.solar_system_id), signature_id = clean(native ? row.signature_id : row.eve_id, 16).toUpperCase();
+            if (![...map.nodes, ...(map.archived_nodes || [])].some(node => node.system_id === system_id)) {
+                map.archived_nodes ||= []; map.archived_nodes.push(node({ system_id }));
+            }
             if (!/^[A-Z0-9]{3}-\d{3}$/.test(signature_id)) throw new Error('Imported signature IDs must use the EVE format ABC-123.');
             const key = `${system_id}:${signature_id}`; if (sigKeys.has(key)) throw new Error('The export contains duplicate signatures.'); sigKeys.add(key);
             const last_seen_at = native ? date(row.last_seen_at) : null, first_seen_at = native ? date(row.first_seen_at, iso()) : iso();
@@ -584,24 +751,22 @@ export function createUniverseJSpace(store, auth, options) {
             }
             for (const row of array(source.comments || [], LIMITS.comments, 'comments')) {
                 const connection_id = row.connection_id ? edgeIds.get(row.connection_id) : null;
+                if (row.connection_id && !connection_id) continue;
                 const historyMap = { ...map, nodes: row.system_id == null ? map.nodes : [...map.nodes, { system_id: system(row.system_id) }] };
                 const saved = comment(historyMap, { ...row, connection_id });
-                if (row.connection_id && !connection_id) { saved.connection_id = clean(row.connection_id, 100); saved.archived = true; }
                 saved.created_at = date(row.created_at, saved.created_at); map.comments.push(saved);
             }
             for (const row of array(source.passages || [], LIMITS.passages, 'passages')) {
                 const connection_id = edgeIds.get(row.connection_id);
-                const archivedId = connection_id || clean(row.connection_id, 100);
-                const historyMap = connection_id ? map : { ...map, connections: [...map.connections, { id: archivedId, link_id: null, from_system_id: system(row.from_system_id), to_system_id: system(row.to_system_id) }] };
-                const saved = passage(historyMap, { ...row, connection_id: archivedId });
+                if (!connection_id) continue;
+                const saved = passage(map, { ...row, connection_id });
                 if (row.source === 'sampled_location') { saved.source = 'sampled_location'; saved.reviewed = boolean(row.reviewed); saved.sampled_previous_at = date(row.sampled_previous_at); }
-                saved.created_at = date(row.created_at, saved.created_at); saved.updated_at = date(row.updated_at, saved.updated_at); if (!connection_id) saved.archived = true; map.passages.push(saved);
+                saved.created_at = date(row.created_at, saved.created_at); saved.updated_at = date(row.updated_at, saved.updated_at); map.passages.push(saved);
             }
         }
         capacity(map);
-        const existing = operations.state(id).signatures, existingKeys = new Set(existing.map(row => `${row.system_id}:${row.signature_id}`));
-        if (existing.length + signatureRows.filter(row => !existingKeys.has(`${row.system_id}:${row.signature_id}`)).length > 1000) throw new Error('This import would exceed the 1,000-signature limit.');
-        return { map, links, signatures: signatureRows, format: native ? 'kairo-jspace' : 'wanderer-v1', warnings: [...new Set(warnings)] };
+        if (signatureRows.length > 1000) throw new Error('This import would exceed the 1,000-signature limit.');
+        return { map, links, signatures: signatureRows, operational_records, format: native ? 'kairo-jspace' : 'wanderer-v1', warnings: [...new Set(warnings)] };
     }
     function previewImport(characterId, input = {}) {
         const id = pilot(characterId, true);
@@ -612,20 +777,32 @@ export function createUniverseJSpace(store, auth, options) {
     function importMap(characterId, input = {}) {
         const id = pilot(characterId, true);
         const map = atomic(() => {
-            if (rows(id, 'jspace_map').length >= LIMITS.maps) throw new Error('Remove a chain before importing more than 24 maps.');
+            if (rows(id, 'jspace_map').filter(row => row.kind !== 'tracking_source').length >= LIMITS.maps) throw new Error('Remove a chain before importing more than 24 maps.');
             const prepared = prepareImport(id, input);
+            tracking.rosterCommand(id, prepared.map, 'pilot.add', { character_id: id });
+            write(id, 'jspace_map', prepared.map);
+            operations.importMapScope(id, prepared.map.id, prepared.operational_records);
             for (const link of prepared.links) write(id, 'link', link);
-            const existing = new Set(operations.state(id).signatures.map(row => `${row.system_id}:${row.signature_id}`));
+            const existing = new Set(operations.state(id, prepared.map.id).signatures.map(row => `${row.system_id}:${row.signature_id}`));
             for (const signature of prepared.signatures) if (!existing.has(`${signature.system_id}:${signature.signature_id}`)) {
-                const saved = operations.saveSignature(id, { ...signature, missing: true });
+                const saved = operations.saveSignature(id, { ...signature, map_id: prepared.map.id, missing: true });
                 // Scanner APIs own these records. Import preserves historical ages instead of pretending
                 // that importing a portable file was a new scan of the system.
                 saved.first_seen_at = signature.first_seen_at; saved.last_seen_at = signature.last_seen_at; saved.imported_at = iso();
-                store.db.prepare('UPDATE universe_operations_records SET body=? WHERE character_id=? AND kind=? AND id=?').run(JSON.stringify(saved), id, 'signature', saved.id);
+                store.db.prepare('UPDATE universe_operations_records SET body=? WHERE character_id=? AND kind=? AND id=?').run(JSON.stringify(saved), id, 'signature:map:' + prepared.map.id, saved.id);
+            }
+            const signatures = operations.state(id, prepared.map.id).signatures;
+            for (const edge of prepared.map.connections) {
+                const link = prepared.links.find(row => row.id === edge.link_id); if (!link || link.kind !== 'wormhole') continue;
+                for (const side of ['from', 'to']) {
+                    const signature = signatures.find(row => row.system_id === edge[side + '_system_id'] && row.signature_id === link[side + '_signature']);
+                    if (signature) { link[side + '_signature_record_id'] = signature.id; edge[side + '_signature_id'] = signature.id; }
+                }
+                write(id, 'link', link);
             }
             log(prepared.map, 'map.import', 'Imported ' + prepared.format + ' map; connections need review'); write(id, 'jspace_map', prepared.map); return prepared.map;
         });
-        onChange(id); return project(id, map);
+        tracking.syncMap(id, map); onChange(id); return project(id, map);
     }
-    return { state, create, command, remove, duplicate, exportMap, previewImport, importMap, observeTrackedTransition };
+    return { state, map: (characterId, key) => { const id = pilot(characterId); return project(id, loaded(id, key)); }, create, command, remove, duplicate, exportMap, previewImport, importMap, observeLocation, setActivePilot, cleanupSources, forgetConnections, migrateScopes };
 }

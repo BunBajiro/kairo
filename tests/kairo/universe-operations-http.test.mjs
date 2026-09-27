@@ -105,6 +105,44 @@ test('Universe operations HTTP: authenticated state, private observations and pu
         await read('/signatures?character=43', 'POST', { ...signature, notes: 'Cannot overwrite another pilot' }, 400);
     });
 
+    await t.test('map-scoped HTTP scanner and intel never cross independent map instances', async () => {
+        const system = atlas.systems.find(system => system.space === 'wormhole' && system.name.startsWith('J')).system_id;
+        const first = await read('/jspace/maps?character=42', 'POST', { name: 'HTTP first independent chain' });
+        const second = await read('/jspace/maps?character=42', 'POST', { name: 'HTTP second independent chain' });
+        const scoped = map => '/operations?character=42&map_id=' + map.id;
+        const input = { system_id: system, signature_id: 'MAP-123', type: 'Relic Site' };
+        await read('/signatures?character=42', 'POST', input, 400);
+        const a = await read('/signatures?character=42', 'POST', { ...input, map_id: first.id, notes: 'Only first map' });
+        const b = await read('/signatures?character=42', 'POST', { ...input, map_id: second.id, notes: 'Only second map' });
+        assert.notEqual(a.id, b.id);
+        assert.equal((await read('/jspace/maps/' + first.id + '?character=42')).id, first.id);
+        await read('/jspace/maps/' + first.id + '?character=43', 'GET', undefined, 400);
+        const source = (await read('/jspace?character=42')).source_map;
+        assert.equal((await read('/jspace/maps/' + source.id + '?character=42')).read_only, true);
+        await read('/jspace/maps/' + source.id + '?character=43', 'GET', undefined, 400);
+        await read('/signatures?character=42', 'POST', { ...input, map_id: source.id }, 400);
+        await read('/intel?character=42', 'POST', { map_id: source.id, text: 'Forbidden source note', system_ids: [system] }, 400);
+        assert.deepEqual((await read('/operations?character=42&map_id=' + source.id)).signatures, []);
+        assert.deepEqual((await read(scoped(first))).signatures.map(row => row.notes), ['Only first map']);
+        assert.deepEqual((await read(scoped(second))).signatures.map(row => row.notes), ['Only second map']);
+        await read('/operations?character=43&map_id=' + first.id, 'GET', undefined, 400);
+        await read('/signatures?character=42', 'POST', { ...a, map_id: second.id }, 400);
+        await read('/signatures/' + a.id + '?character=42&map_id=' + second.id, 'DELETE');
+        assert.equal((await read(scoped(first))).signatures.length, 1);
+        const deletion = await read('/signatures/' + a.id + '?character=42&map_id=' + first.id, 'DELETE');
+        await read('/signatures/restore?character=42', 'POST', { id: a.id, revision: deletion.deleted.revision, map_id: second.id }, 400);
+        await read('/signatures/restore?character=42', 'POST', { id: a.id, revision: deletion.deleted.revision, map_id: first.id });
+        await read('/intel?character=42', 'POST', { map_id: first.id, text: 'Scoped observation', system_ids: [system] });
+        assert.equal((await read(scoped(first))).intel.length, 1);
+        assert.deepEqual((await read(scoped(second))).intel, []);
+        assert.equal((await state(42)).signatures.some(row => row.system_id === system), false);
+        const third = await read('/jspace/maps?character=42', 'POST', { name: 'HTTP new blank chain', include_discoveries: true });
+        assert.deepEqual(third.nodes, []);
+        assert.deepEqual((await read(scoped(third))).signatures, []);
+        for (const map of [first, second, third]) await read('/jspace/maps/' + map.id + '?character=42', 'DELETE', { revision: map.revision });
+        assert.equal(app.store.db.prepare("SELECT COUNT(*) AS n FROM universe_operations_records WHERE kind LIKE '%:map:%'").get().n, 0);
+    });
+
     await t.test('scanner diagnostics and infrastructure SMT previews are read-only, atomic and private', async () => {
         const before = await state(42);
         const invalidScan = await read('/signatures/preview?character=42', 'POST', { system_id: jita, text: 'Not scanner data', complete_scan: true });
@@ -188,23 +226,24 @@ test('Universe operations HTTP: authenticated state, private observations and pu
         assert.deepEqual(networkCalls, []);
     });
 
-    await t.test('reported wormhole expiry is preserved unless the user explicitly changes its remaining lifetime', async () => {
+    await t.test('map wormhole expiry is preserved on ordinary edits and forgotten at the lifetime boundary', async () => {
         const target = atlas.systems.find(system => system.space === 'wormhole' && system.name.startsWith('J')).system_id;
         const expiry = new Date(now + 2 * 3600000).toISOString();
-        const link = await read('/links?character=42', 'POST', { kind: 'wormhole', from_system_id: jita, to_system_id: target,
+        const map = await read('/jspace/maps?character=42', 'POST', { name: 'HTTP lifetime chain' });
+        const link = await read('/links?character=42', 'POST', { kind: 'wormhole', map_id: map.id, from_system_id: jita, to_system_id: target,
             label: 'Synthetic dated public report', confirmed: true, accessible: true, expires_at: expiry });
         assert.equal(link.expires_at, expiry);
         const ordinary = await read('/links?character=42', 'POST', { ...link, mass: 'reduced' });
         assert.equal(ordinary.expires_at, expiry, 'Editing an unrelated field does not extend a reported lifetime');
         const changed = await read('/links?character=42', 'POST', { ...ordinary, duration_hours: 4 });
         assert.equal(Date.parse(changed.expires_at), now + 4 * 3600000, 'Explicit duration overrides the old expiry carried in a complete editor record');
+        await read('/links?character=42', 'POST', { ...changed, duration_hours: 7 }, 400);
         const expired = await read('/links?character=42', 'POST', { ...changed, duration_hours: 0 });
-        assert.ok(Date.parse(expired.expires_at) <= now);
-        const stillExpired = await read('/links?character=42', 'POST', { ...expired, mass: 'critical' });
-        assert.equal(stillExpired.expires_at, expired.expires_at, 'Editing expired evidence never revives the connection');
-        await read('/links?character=42', 'POST', { ...stillExpired, duration_hours: 7 }, 400);
-        assert.equal((await read('?character=42')).links.find(row => row.id === link.id).active, false);
-        await read('/links/' + link.id + '?character=42', 'DELETE');
+        assert.equal(expired.deleted, true);
+        assert.equal(app.store.db.prepare("SELECT COUNT(*) AS n FROM universe_records WHERE kind='link' AND id=?").get(link.id).n, 0);
+        await read('/links?character=42', 'POST', { ...expired, mass: 'critical' }, 400);
+        assert.equal((await read('?character=42')).links.some(row => row.id === link.id), false);
+        await read('/jspace/maps/' + map.id + '?character=42', 'DELETE', { revision: map.revision });
     });
 
     await t.test('ordered itineraries reject stale edits and never send without explicit permission', async () => {

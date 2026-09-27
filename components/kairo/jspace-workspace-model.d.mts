@@ -1,3 +1,4 @@
+export function connectionHasEnded(connection:Record<string,any>,now?:number):boolean;
 export function connectionEditorPayload(draft:Record<string,any>,expiryInput:string,original?:Record<string,any>|null):Record<string,any>;
 export function drawnConnectionPayload(fromSystemId:number,toSystemId:number):Record<string,any>;
 export function createLayoutSaveQueue():<T>(save:()=>Promise<T>)=>Promise<T>;

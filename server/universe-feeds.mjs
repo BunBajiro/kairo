@@ -27,16 +27,43 @@ function metadata(sample, key, now) {
         error: sample?.error || null, notice: sample?.notice || base.notice, attribution: base.attribution, url: base.url, count: 0 };
 }
 /** Public operational feeds are independent of personal session combat collection. */
-export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetcher = fetch, noSync = false, onChange = () => {}, points = bundledPoints } = {}) {
+export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetcher = fetch, noSync = false, onChange = () => {}, onForgetConnections = () => {}, points = bundledPoints,
+    setExpiryTimer = setTimeout, clearExpiryTimer = clearTimeout } = {}) {
     if (!atlas?.systems || !atlas?.gates) throw new Error('Universe feeds need the bundled atlas.');
     const known = new Set(atlas.systems.map(s => s.system_id));
     const flights = new Map(), controllers = new Set();
-    let closed = false;
+    let closed = false, expiryTimer = null;
     const key = source => 'universe:feeds:' + source;
     const cached = source => store.get(key(source), null);
     const enabled = () => !closed && store.get('module:universe', true);
     const config = () => { const value=store.get(key('config'), {}); return { version:1, combat_enabled:value.combat_enabled===true, combat_window_minutes:value.combat_window_minutes ?? 60 }; };
-    const save = (source, value) => { store.set(key(source), value); };
+    const isConnectionSource = source => source === 'thera' || source === 'turnur';
+    function scheduleExpiry() {
+        if (expiryTimer !== null) { clearExpiryTimer(expiryTimer); expiryTimer = null; }
+        if (closed) return;
+        const deadlines = ['thera','turnur'].flatMap(source => (cached(source)?.data || []).map(row => Date.parse(row.expires_at))).filter(Number.isFinite);
+        if (!deadlines.length) return;
+        expiryTimer = setExpiryTimer(() => { expiryTimer = null; if (pruneExpired().length) changed(); }, Math.max(1, Math.min(2147483647, Math.min(...deadlines) - now())));
+        expiryTimer?.unref?.();
+    }
+    function save(source, value) {
+        if (!isConnectionSource(source)) { store.set(key(source), value); return; }
+        const previous = cached(source)?.data || [], data = (value.data || []).filter(row => Date.parse(row.expires_at) > now());
+        store.set(key(source), {...value, data});
+        const retained = new Set(data.map(row => row.id)), removed = previous.filter(row => !retained.has(row.id));
+        if (removed.length) onForgetConnections(removed);
+        scheduleExpiry();
+    }
+    function pruneExpired() {
+        const removed = [];
+        for (const source of ['thera','turnur']) {
+            const value = cached(source);
+            if (!value?.data) continue;
+            const expired = value.data.filter(row => !(Date.parse(row.expires_at) > now()));
+            if (expired.length) { removed.push(...expired); save(source, value); }
+        }
+        scheduleExpiry(); return removed;
+    }
     function changed() { if (!closed) onChange(); }
     function saveConfig(input) {
         if (typeof input?.combat_enabled !== 'boolean') throw new Error('Choose whether to enable public combat reports.');
@@ -158,6 +185,7 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         save('npc-windows', { previous: record.current, current });
     }
     function state(_characterId = 0) {
+        pruneExpired();
         const time = now(), on = enabled();
         const raw = Object.fromEntries(Object.keys(FEED_URLS).map(source => [source, cached(source)]));
         const campaigns = store.snapshot(0, 'sovereignty_campaigns'), sovereignty = store.snapshot(0, 'sovereignty'), kills = store.snapshot(0, 'kills');
@@ -196,7 +224,8 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         await Promise.all((source ? Object.hasOwn(FEED_URLS, source) ? [source] : [] : Object.keys(FEED_URLS)).map(name => refreshSource(name)));
         return state();
     }
-    async function tick() { if (noSync || !enabled()) return; return refresh(); }
-    function close() { closed = true; for (const controller of controllers) controller.abort(); controllers.clear(); return Promise.allSettled([...flights.values()]); }
-    return { state, refresh, tick, close, config, saveConfig, saveStorms, import: importData, importData, observeNpc };
+    async function tick() { pruneExpired(); if (noSync || !enabled()) return; return refresh(); }
+    function close() { closed = true; if (expiryTimer !== null) clearExpiryTimer(expiryTimer); expiryTimer = null; for (const controller of controllers) controller.abort(); controllers.clear(); return Promise.allSettled([...flights.values()]); }
+    scheduleExpiry();
+    return { state, refresh, tick, close, config, saveConfig, saveStorms, import: importData, importData, observeNpc, pruneExpired };
 }

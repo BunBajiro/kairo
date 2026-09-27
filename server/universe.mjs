@@ -11,6 +11,8 @@ import { createUniverseJSpace } from './universe-jspace.mjs';
 import { findNearestDestinations } from './universe-destinations.mjs';
 import { parseAnsiblexImport, exportAnsiblexSMT } from './universe-ansiblex.mjs';
 import { observedLife } from '../components/kairo/jspace-connection-model.mjs';
+import { jspaceScopeOptions } from './universe-jspace-scopes.mjs';
+import { createUniverseOwnerSearch } from './universe-owner-search.mjs';
 
 const PUBLIC_SOURCES = ['sovereignty', 'kills', 'jumps', 'fw', 'incursions', 'industry_systems', 'sovereignty_structures', 'sovereignty_campaigns'];
 const PRIVATE_SOURCES = ['profile', 'location', 'contacts', 'corporation_contacts', 'alliance_contacts', 'calendar', 'mining'];
@@ -70,6 +72,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     const now = options.now || Date.now;
     const atlas = options.staticData || getUniverseStatic();
     const politicsService = createUniversePolitics(store, auth, { now, atlas });
+    const ownerSearch = createUniverseOwnerSearch(store, auth, esi, {now});
     const byId = atlas.bySystemId || new Map(atlas.systems.map(system => [system.system_id, system]));
     const byName = new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
     const neighbors = atlas.neighbors || new Map();
@@ -80,10 +83,17 @@ export function createUniverse(store, auth, esi, options = {}) {
     }
     const operations = createUniverseOperations(store, auth, esi, {...options.operations, atlas, now, noSync: options.noSync,
         publish: options.publish, onChange: options.onChange, onLocation: id => observeSelectedLocation(id)});
+    let navigation;
     const feeds = createUniverseFeeds(store, esi, {...options.feeds, atlas, now, noSync: options.noSync,
-        onChange: () => options.onChange?.(0)});
-    const navigation = createUniverseNavigation(store, auth, esi, {...options.navigation, atlas, now,
+        onChange: () => options.onChange?.(0), onForgetConnections: rows => navigation?.forgetConnections(null, rows.map(row => row.id))});
+    navigation = createUniverseNavigation(store, auth, esi, {...options.navigation, atlas, now,
         planRoute: (id, input) => route(id, input, true), planJump: jump,
+        getMap: (id, key) => record(id, 'jspace_map', key),
+        isConnectionCurrent: (id, key, mapId) => {
+            const link = record(id, 'link', key);
+            return link?.kind === 'wormhole' && link.map_id === mapId && !expiredLink(link) || ['thera','turnur'].some(source =>
+                (store.get('universe:feeds:' + source, null)?.data || []).some(row => row.id === key && Date.parse(row.expires_at) > now()));
+        },
         getRouteSystems: id => routeContext(id, {}).systems,
         getOperations: id => operations.state(id), getFeeds: () => feeds.state(), publish: options.publish,
         onChange: options.onChange});
@@ -95,18 +105,97 @@ export function createUniverse(store, auth, esi, options = {}) {
     const get = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?');
     const put = store.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at');
     const remove = store.db.prepare('DELETE FROM universe_records WHERE character_id=? AND kind=? AND id=?');
-    const getSignature = store.db.prepare("SELECT body FROM universe_operations_records WHERE character_id=? AND kind='signature' AND id=?");
+    const nextWormholeExpiry = store.db.prepare("SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1");
+    const expiredWormholes = store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))");
+    const expiredPilotWormholes = store.db.prepare("SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))");
+    const getSignature = store.db.prepare('SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?');
+    const signatureKind = mapId => mapId ? 'signature:map:' + mapId : 'signature';
     const iso = () => new Date(now()).toISOString();
-    const jspace = createUniverseJSpace(store, auth, { atlas, now, operations, getLinks: links, saveLink,
-        validateLink: (id, input) => normalizeLink(id, input), onChange: options.onChange });
+    let expiryTimer = null, scheduledExpiryAt = null, lifecycleClosed = false, sweeping = false;
+    const setExpiryTimer = options.lifecycle?.setTimeout || setTimeout, clearExpiryTimer = options.lifecycle?.clearTimeout || clearTimeout;
+    const jspace = createUniverseJSpace(store, auth, { atlas, now, operations, getLinks: links, saveLink:(id,input)=>saveLink(id,input,true), deleteLink:(id,key)=>deleteLink(id,key,true),
+        validateLink: (id, input, scopeMap = null) => normalizeLink(id, input, null, undefined, scopeMap), getScopeContext, onChange: options.onChange });
     function pilotId(value) {
         const id = Number(value ?? 0);
         if (!Number.isSafeInteger(id) || id < 0 || id && !auth.characters().some(character => character.id === id)) throw new Error('Choose a connected pilot.');
         return id;
     }
+    function getScopeContext(characterId) {
+        pilotId(characterId);
+        const sample = store.get('module:universe', true) ? store.snapshot(0, 'sovereignty') : null;
+        const sovereigntyReady = sourceMetadata(sample, now()).status === 'ready' && sample?.truncated !== true && Array.isArray(sample?.data);
+        const sovereignty = sovereigntyReady ? sample.data : [];
+        return {atlas, sovereigntyReady, sovereignty, sovereigntyBySystemId:new Map(sovereignty.map(row => [row.system_id ?? row.solar_system_id, row])), politicsConfig:politicsService.config()};
+    }
+    function scopeOptions(characterId) { return jspaceScopeOptions({...getScopeContext(characterId),names:store.get('names', {})}); }
     function records(id, kind) { return select.all(id, kind).map(row => parse(row.body)).filter(Boolean); }
     function record(id, kind, key) { return parse(get.get(id, kind, String(key))?.body); }
-    function persist(id, kind, value) { put.run(id, kind, String(value.id), JSON.stringify(value), value.updated_at || iso()); return value; }
+    function persist(id, kind, value) { put.run(id, kind, String(value.id), JSON.stringify(value), value.updated_at || iso()); if (kind === 'link') scheduleExpiry(); return value; }
+    const expiredLink = link => link.kind === 'wormhole' && (link.life_status === 'collapsed' || Number.isFinite(Date.parse(link.expires_at)) && Date.parse(link.expires_at) <= now());
+    function scheduleExpiry() {
+        if (lifecycleClosed) return;
+        const expiry = Date.parse(nextWormholeExpiry.get()?.expires_at);
+        if (expiryTimer !== null && expiry === scheduledExpiryAt) return;
+        if (expiryTimer !== null) { clearExpiryTimer(expiryTimer); expiryTimer = null; }
+        scheduledExpiryAt = null;
+        if (!Number.isFinite(expiry)) return;
+        scheduledExpiryAt = expiry;
+        expiryTimer = setExpiryTimer(() => { expiryTimer = null; scheduledExpiryAt = null; cleanupExpired(); }, Math.max(1, Math.min(2147483647, expiry - now())));
+        expiryTimer?.unref?.();
+    }
+    function forgetLinks(id, removedLinks) {
+        if (!removedLinks.length) return;
+        store.db.exec('SAVEPOINT universe_forget_links');
+        try {
+            for (const link of removedLinks) {
+                remove.run(id, 'link', link.id);
+                forgetBoundSignatures(id, link);
+            }
+            jspace.forgetConnections(id, removedLinks);
+            navigation.forgetConnections(id, removedLinks.map(row => row.id));
+            store.db.exec('RELEASE universe_forget_links');
+        } catch (error) { store.db.exec('ROLLBACK TO universe_forget_links; RELEASE universe_forget_links'); throw error; }
+        options.onChange?.(id); scheduleExpiry();
+    }
+    function forgetBoundSignatures(id, link) {
+        if (link.kind !== 'wormhole') return;
+        // Only exact bound UUIDs belong to this connection. A new observation
+        // reusing a three-letter signature code is a different record.
+        const kind = signatureKind(link.map_id), deletedKind = link.map_id ? 'signature_deleted:map:' + link.map_id : 'signature_deleted';
+        const removeSignature = store.db.prepare('DELETE FROM universe_operations_records WHERE character_id=? AND kind IN (?,?) AND id=?');
+        for (const side of ['from','to']) {
+            const signatureId = link[side + '_signature_record_id'];
+            if (!signatureId) continue;
+            const current = parse(getSignature.get(id, kind, signatureId)?.body);
+            const deleted = parse(getSignature.get(id, deletedKind, signatureId)?.body)?.signature;
+            if ((current || deleted)?.system_id === link[side + '_system_id']) removeSignature.run(id, kind, deletedKind, signatureId);
+        }
+    }
+    function cleanupExpired(characterId = null) {
+        if (sweeping || lifecycleClosed) return { deleted: 0 };
+        sweeping = true;
+        let deleted = 0;
+        try {
+            const rows = characterId == null ? expiredWormholes.all(iso()) : expiredPilotWormholes.all(characterId, iso());
+            const groups = new Map();
+            for (const row of rows) {
+                const link = parse(row.body);
+                if (!link || !expiredLink(link)) continue;
+                if (!groups.has(row.character_id)) groups.set(row.character_id, []);
+                groups.get(row.character_id).push({...link, ended_at: link.life_status === 'collapsed' ? link.updated_at || iso() : link.expires_at});
+            }
+            for (const [id, links] of groups) { forgetLinks(id, links); deleted += links.length; }
+        } finally { sweeping = false; scheduleExpiry(); }
+        return { deleted };
+    }
+    function deleteLink(characterId, key, internal = false) {
+        const id = pilotId(characterId), link = record(id, 'link', key);
+        if (!link) throw new Error('Saved link not found for this pilot.');
+        if (!internal && link.map_id && record(id, 'jspace_map', link.map_id)?.kind === 'tracking_source') throw new Error('Tracking source connections are read-only.');
+        if (link.kind !== 'wormhole') return deleteRecord(id, 'link', key);
+        forgetLinks(id, [{...link, ended_at: expiredLink(link) && link.life_status !== 'collapsed' ? link.expires_at : iso()}]);
+        return { id: String(key), deleted: true };
+    }
     function saved(id, kind, input) {
         if (input.id != null && !record(id, kind, input.id)) throw new Error('Saved ' + kind + ' not found for this pilot.');
         return input.id == null ? null : record(id, kind, input.id);
@@ -156,6 +245,8 @@ export function createUniverse(store, auth, esi, options = {}) {
         const ids = new Set([...owners.keys(), ...kills.keys(), ...jumps.keys(), ...fw.keys(), ...industry.keys(), ...incursions.keys(), ...sovStructures.keys(), ...mining.keys(), ...visits.keys(), ...notes.keys()]);
         const complete = key => ['ready', 'stale'].includes(sources[key]?.status) && !sources[key]?.truncated && Array.isArray(samples[key]?.data);
         function overlay(system) {
+            if (byId.get(system)?.space === 'wormhole') return { system_id:system, sovereignty:null, standing:{value:null,label:'unknown',source:null,status:'unavailable'},
+                power_bloc:null, kills:null, jumps:null, faction_warfare:null, incursions:[], industry:null, mining:null, structures:[], visits:0, first_visit:null, last_visit:null, note:null };
             const sovereignty = owners.get(system), visit = visits.get(system);
             const allianceId = sovereignty?.alliance_id;
             const ownerKey = sovereignty?.alliance_id ? 'a' + sovereignty.alliance_id : sovereignty?.faction_id ? 'f' + sovereignty.faction_id : sovereignty?.corporation_id ? 'c' + sovereignty.corporation_id : null;
@@ -175,13 +266,15 @@ export function createUniverse(store, auth, esi, options = {}) {
         }
         return { samples, sources, ids, overlay, politics, defaults: { kills: complete('kills') ? { ship_kills: 0, pod_kills: 0, npc_kills: 0 } : null, jumps: complete('jumps') ? 0 : null } };
     }
-    function links(id) {
+    function links(id, mapId = null) {
+        cleanupExpired(id);
+        if (mapId && !record(id, 'jspace_map', mapId)) throw new Error('Choose a private chain map for this pilot.');
         const lists = new Map(records(id, 'list').map(list => [list.id, list]));
-        return records(id, 'link').map(link => {
+        return records(id, 'link').filter(link => link.kind !== 'wormhole' || mapId && link.map_id === mapId).map(link => {
             for (const side of ['from', 'to']) {
                 const recordId = link[side + '_signature_record_id'];
                 if (!recordId) continue;
-                const signature = parse(getSignature.get(id, recordId)?.body);
+                const signature = parse(getSignature.get(id, signatureKind(link.map_id), recordId)?.body);
                 if (signature?.system_id === link[side + '_system_id']) link[side + '_signature'] = signature.signature_id;
             }
             const expiry = Date.parse(link.expires_at), expired = link.kind === 'wormhole' && Number.isFinite(expiry) && expiry <= now();
@@ -215,8 +308,8 @@ export function createUniverse(store, auth, esi, options = {}) {
         const selectedLocation = { system_id: position.system_id, system_name: position.system_name, status: position.status, stale: position.status === 'stale',
             updatedAt: position.updated_at, expiresAt: position.expires_at, source: position.source };
         return { character_id: id, generated_at: iso(), location: selectedLocation, operations: operational, feeds: feeds.state(id), navigation: navigation.state(id),
-            systems: [...context.ids].filter(system => byId.has(system)).map(context.overlay), sources: context.sources, defaults: context.defaults, politics: context.politics,
-            links: links(id), link_lists: records(id, 'list'), pins: pinsFor(id, context.samples), views: records(id, 'view'),
+            systems: [...context.ids].filter(system => byId.get(system)?.space !== 'wormhole' && byId.has(system)).map(context.overlay), sources: context.sources, defaults: context.defaults, politics: context.politics,
+            links: links(id), link_lists: records(id, 'list'), pins: pinsFor(id, context.samples).filter(pin => byId.get(pin.system_id)?.space !== 'wormhole'), views: records(id, 'view'),
             structures: records(id, 'structure').map(currentStructure), journey: journeyData(store, id),
             calendar: sourceRows(context.samples, 'calendar').filter(event => Date.parse(event.event_date) >= now()).map(event => ({ ...event, source: 'calendar', status: context.sources.calendar.status, stale: context.sources.calendar.stale })) };
     }
@@ -236,9 +329,12 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (!remove.run(id, kind, String(key)).changes) throw new Error('Saved ' + kind + ' not found for this pilot.');
         return { id: String(key), deleted: true };
     }
-    function normalizeLink(id, input, previous = null, listId = undefined) {
+    function normalizeLink(id, input, previous = null, listId = undefined, scopeMap = null) {
         const old = previous || {}, kind = input.kind || old.kind || 'ansiblex';
         if (!['wormhole', 'ansiblex'].includes(kind)) throw new Error('Choose a wormhole or Ansiblex connection.');
+        const map_id = kind === 'wormhole' ? input.map_id ?? old.map_id : null;
+        if (kind === 'wormhole' && (!map_id || typeof map_id !== 'string' || scopeMap?.id !== map_id && !record(id, 'jspace_map', map_id))) throw new Error('Choose a private chain map for this wormhole.');
+        if (old.map_id && map_id !== old.map_id) throw new Error('A wormhole belongs to its original chain map.');
         const from = systemId(input.from_system_id ?? input.from ?? old.from_system_id), to = systemId(input.to_system_id ?? input.to ?? old.to_system_id);
         if (from === to) throw new Error('A connection needs two different systems.');
         const list_id = listId ?? input.list_id ?? old.list_id ?? null;
@@ -293,7 +389,7 @@ export function createUniverse(store, auth, esi, options = {}) {
                 // A deleted signature remains an unresolved historical binding. Echoing that same
                 // binding must not block an unrelated mass/lifetime edit or attach a replacement row.
                 if (input[key] === old[key] && endpoint === old[side + '_system_id']) return old[key];
-                const signature = parse(getSignature.get(id, input[key])?.body);
+                const signature = parse(getSignature.get(id, signatureKind(map_id), input[key])?.body);
                 if (!signature || signature.system_id !== endpoint) throw new Error('The signature must belong to this pilot and connection endpoint.');
                 return signature.id;
             }
@@ -306,7 +402,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         };
         if (kind === 'wormhole' && expires_at === null && (boolean('confirmed', true) || boolean('accessible', true) || boolean('reverse_accessible', false)))
             throw new Error('Record a wormhole expiry before confirming the connection or allowing it in routes. Unknown-lifetime connections must remain unconfirmed and inaccessible.');
-        return { id: old.id || randomUUID(), kind, from_system_id: from, to_system_id: to, list_id,
+        return { id: old.id || randomUUID(), kind, ...(map_id ? {map_id} : {}), from_system_id: from, to_system_id: to, list_id,
             label: text(input.label ?? old.label, 160), enabled: life_status !== 'collapsed' && boolean('enabled', true), accessible: boolean('accessible', kind === 'wormhole'),
             confirmed: boolean('confirmed', true), directional: boolean('directional', false),
             ...(kind === 'wormhole' ? {life_status, duration_hours, life_band:life.life_band, life_observed_at:life.life_observed_at, from_signature_record_id: signatureRecord('from'), to_signature_record_id: signatureRecord('to'), max_ship_size, max_jump_mass_kg, type_status, wh_type: text(input.wh_type ?? old.wh_type,16), from_signature: text(input.from_signature ?? old.from_signature,16),
@@ -317,10 +413,16 @@ export function createUniverse(store, auth, esi, options = {}) {
             capital_system_id: optionalId('capital_system_id'), reverse_owner_alliance_id: optionalId('reverse_owner_alliance_id'), reverse_capital_system_id: optionalId('reverse_capital_system_id'),
             source: old.source || (listId ? 'import' : 'manual'), discovered_at: old.discovered_at || iso(), expires_at, updated_at: iso() };
     }
-    function saveLink(characterId, input = {}) {
-        const id = pilotId(characterId), old = saved(id, 'link', input), link = normalizeLink(id, input, old);
+    function saveLink(characterId, input = {}, internal = false) {
+        const id = pilotId(characterId); cleanupExpired(id);
+        const old = saved(id, 'link', input), link = normalizeLink(id, input, old);
+        if (!internal && link.map_id && record(id, 'jspace_map', link.map_id)?.kind === 'tracking_source') throw new Error('Tracking source connections are read-only.');
+        if (expiredLink(link)) {
+            forgetLinks(id, [{...link, ended_at: link.life_status === 'collapsed' ? iso() : link.expires_at}]);
+            return {...link, active:false, expired:true, deleted:true};
+        }
         persist(id, 'link', link);
-        return links(id).find(row => row.id === link.id);
+        return links(id, link.map_id).find(row => row.id === link.id);
     }
     function previewLinks(characterId, input) {pilotId(characterId); return parseAnsiblexImport(input, atlas.systems);}
     function exportLinks(characterId, key) {
@@ -344,7 +446,11 @@ export function createUniverse(store, auth, esi, options = {}) {
         store.db.exec('BEGIN IMMEDIATE');
         try {
             persist(id, 'list', list);
-            if (input.links != null || input.text != null) for (const link of records(id, 'link').filter(link => link.list_id === list.id)) remove.run(id, 'link', link.id);
+            if (input.links != null || input.text != null) {
+                const previous = records(id, 'link').filter(link => link.list_id === list.id);
+                forgetLinks(id, previous.filter(link => link.kind === 'wormhole').map(link => ({...link,ended_at:iso()})));
+                for (const link of previous.filter(link => link.kind !== 'wormhole')) remove.run(id, 'link', link.id);
+            }
             for (const link of unique.values()) persist(id, 'link', link);
             store.db.exec('COMMIT');
         } catch (error) { store.db.exec('ROLLBACK'); throw error; }
@@ -355,13 +461,16 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (!record(id, 'list', key)) throw new Error('Connection list not found for this pilot.');
         store.db.exec('BEGIN IMMEDIATE');
         try {
-            for (const link of records(id, 'link').filter(link => link.list_id === key)) remove.run(id, 'link', link.id);
+            const previous = records(id, 'link').filter(link => link.list_id === key);
+            forgetLinks(id, previous.filter(link => link.kind === 'wormhole').map(link => ({...link,ended_at:iso()})));
+            for (const link of previous.filter(link => link.kind !== 'wormhole')) remove.run(id, 'link', link.id);
             remove.run(id, 'list', String(key)); store.db.exec('COMMIT');
         } catch (error) { store.db.exec('ROLLBACK'); throw error; }
         return { id: String(key), deleted: true };
     }
     function savePin(characterId, input = {}) {
         const id = pilotId(characterId), old = saved(id, 'pin', input), system_id = systemId(input.system_id ?? old?.system_id);
+        if (byId.get(system_id)?.space === 'wormhole') throw new Error('Record J-Space system notes inside a private chain map.');
         let event_at = input.event_at === '' || input.event_at === null ? null : input.event_at ?? old?.event_at ?? null;
         const event_id = input.event_id === null || input.event_id === '' ? null : input.event_id ?? old?.event_id ?? null;
         let calendarEvent = null;
@@ -419,6 +528,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     async function detail(characterId, value) {
         const id = pilotId(characterId), system = systemId(value), context = liveContext(id);
         const base = options.systemDetail ? await options.systemDetail(system) : options.staticData ? byId.get(system) : getUniverseSystem(system);
+        if (base.space === 'wormhole') return {...base, overlay:context.overlay(system), sources:{}, neighbors:[], notes:{system:null,constellation:null,region:null}, pins:[], links:[], structures:[], events:[]};
         const notes = {};
         for (const [kind, entity] of [['system', system], ['constellation', base.constellation_id], ['region', base.region_id]]) {
             const row = store.db.prepare('SELECT * FROM place_notes WHERE kind=? AND entity_id=?').get(kind, entity || 0);
@@ -451,7 +561,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         const id = pilotId(characterId), { context, preferences, systems } = routeContext(id, input);
         const originId = systemId(input.originId ?? input.origin_id ?? input.from_system_id), destinationId = systemId(input.destinationId ?? input.destination_id ?? input.to_system_id);
         const publicLinks = allowPublicConnections && Array.isArray(input.extraConnections) ? input.extraConnections : [];
-        const result = planRoute({ systems, gates: atlas.gates, connections: [...links(id).map(link => ({ ...link, enabled: link.active })), ...publicLinks], preferences, originId, destinationId, now: now() });
+        const result = planRoute({ systems, gates: atlas.gates, connections: [...links(id, input.map_id).map(link => ({ ...link, enabled: link.active })), ...publicLinks], preferences, originId, destinationId, now: now() });
         if (preferences.avoidHostile && result.systemIds.some(system => context.overlay(system).standing.value == null))
             result.warnings.push('Some route standings are unknown; avoid-hostile only excludes confirmed hostile systems.');
         if (preferences.mode === 'safer' && context.sources.kills.status !== 'ready')
@@ -476,43 +586,29 @@ export function createUniverse(store, auth, esi, options = {}) {
         return { ...findNearestDestinations({ systems, gates: atlas.gates, connections, feeds: feeds.state(), preferences,
             originId: systemId(input.originId), category: input.category, limit: input.limit, security: input.security, now: now() }), sources: context.sources, generated_at: iso() };
     }
-    function observeTravel(characterId, previous, current) {
-        const id = pilotId(characterId), before = previous?.data, after = current?.data;
-        if (!id || previous?.status !== 'ready' || current?.status !== 'ready' || !before || !after || before.solar_system_id === after.solar_system_id) return null;
-        const beforeTime = Date.parse(previous.updatedAt), afterTime = Date.parse(current.updatedAt);
-        if (!Number.isFinite(beforeTime) || !Number.isFinite(afterTime) || afterTime <= beforeTime || afterTime - beforeTime > 90000 || now() - afterTime > 30000) return null;
-        if (before.station_id || before.structure_id || after.station_id || after.structure_id) return null;
-        const from = byId.get(before.solar_system_id), to = byId.get(after.solar_system_id);
-        if (!from || !to || from.space !== 'wormhole' && to.space !== 'wormhole' || neighbors.get(from.system_id)?.has(to.system_id)) return null;
-        const recentPodLoss = store.db.prepare("SELECT 1 FROM combat_records WHERE character_id=? AND result='loss' AND at>=? AND json_extract(body,'$.victim.ship_type_id') IN (670,33328) LIMIT 1").get(id, new Date(beforeTime - 60000).toISOString());
-        if (recentPodLoss) return null;
-        const candidates = links(id).filter(link => link.kind === 'wormhole' && !link.expired &&
-            (link.from_system_id === from.system_id && link.to_system_id === to.system_id || link.from_system_id === to.system_id && link.to_system_id === from.system_id));
-        const existing = candidates[0], active = candidates.filter(link => link.active);
-        if (existing) {
-            if (active.length === 1) jspace.observeTrackedTransition(id, active[0], { from_system_id: from.system_id, to_system_id: to.system_id, at: current.updatedAt, previous_at: previous.updatedAt });
-            return existing;
-        }
-        const link = normalizeLink(id, { kind: 'wormhole', from_system_id: from.system_id, to_system_id: to.system_id, confirmed: false, accessible: false,
-            label: 'Observed travel · confirm wormhole connection' });
-        link.source = 'travel'; link.evidence = { observed_at: current.updatedAt, previous_at: previous.updatedAt, reason: 'Consecutive live in-space locations involving Anoikis. Confirm the connection before routing.' };
-        return persist(id, 'link', link);
+    function observeTravel(characterId, _previous, current) {
+        const id = pilotId(characterId);
+        if (!id || !store.get('module:universe', true)) return null;
+        cleanupExpired();
+        jspace.observeLocation(id, current);
+        return null;
     }
-    /** Selected operational location drives navigation only; ESI and OPSEC retain their own evidence. */
+    /** One selected operational location feeds map tracking and navigation; no extra collector. */
     function observeSelectedLocation(characterId) {
         const id = pilotId(characterId);
         if (!id || !store.get('module:universe', true)) return null;
         const position = operations.location(id), updated = Date.parse(position.updated_at), expires = Date.parse(position.expires_at);
         if (position.status !== 'ready' || !['esi', 'chat_log'].includes(position.source) || !byId.has(position.system_id) ||
             !Number.isFinite(updated) || updated > now() + 1000 || !Number.isFinite(expires) || expires <= now()) return null;
+        cleanupExpired();
+        jspace.observeLocation(id, {status:'ready',source:position.source,updatedAt:position.updated_at,expiresAt:position.expires_at,data:{solar_system_id:position.system_id}});
         return navigation.observeLocation(id, position);
     }
     function pruneExpired(characterId) {
-        const id = pilotId(characterId), expired = links(id).filter(link => link.kind === 'wormhole' && link.expired);
-        for (const link of expired) remove.run(id, 'link', link.id);
-        return { deleted: expired.length };
+        return cleanupExpired(pilotId(characterId));
     }
     function exportUserData(characterId) {
+        cleanupExpired(characterId == null ? null : pilotId(characterId)); feeds.pruneExpired();
         const rows = characterId == null ? store.db.prepare('SELECT character_id,kind,id,body FROM universe_records ORDER BY character_id,kind,id').all() :
             store.db.prepare('SELECT character_id,kind,id,body FROM universe_records WHERE character_id=? ORDER BY kind,id').all(pilotId(characterId));
         const operational = characterId == null ? store.db.prepare('SELECT character_id,kind,id,body FROM universe_operations_records ORDER BY character_id,kind,id').all() :
@@ -521,11 +617,32 @@ export function createUniverse(store, auth, esi, options = {}) {
             navigation: characterId == null ? auth.characters().map(pilot => ({character_id:pilot.id,...navigation.state(pilot.id)})).concat({character_id:0,...navigation.state(0)}) : navigation.state(pilotId(characterId)),
             ...(characterId == null ? { politics: politicsService.exportData(), operationalSettings: store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'universe:%' OR key LIKE 'universe-navigation:%'").all().map(row => ({key: row.key, value: parse(row.value)})) } : {}) };
     }
+    // Earlier builds archived detached connections. Retire those canonical rows
+    // before the J-Space migration strips their obsolete map copies.
+    store.db.exec('SAVEPOINT universe_map_scope_migration');
+    try {
+        const previous = store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='link'").all().map(row => ({id:row.character_id,link:parse(row.body)})).filter(row => row.link?.kind === 'wormhole' && !row.link.map_id);
+        jspace.migrateScopes();
+        operations.migrateMapScopes();
+        for (const {id,link} of previous) forgetBoundSignatures(id, link);
+        store.db.exec('RELEASE universe_map_scope_migration');
+    } catch (error) { store.db.exec('ROLLBACK TO universe_map_scope_migration; RELEASE universe_map_scope_migration'); throw error; }
+    const legacy = new Map();
+    for (const row of store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='jspace_map'").all()) for (const edge of parse(row.body)?.archived_connections || []) {
+        const link = record(row.character_id, 'link', edge.link_id);
+        if (link?.kind !== 'wormhole') continue;
+        if (!legacy.has(row.character_id)) legacy.set(row.character_id, new Map());
+        legacy.get(row.character_id).set(link.id, {...link, ended_at: expiredLink(link) ? link.expires_at || link.updated_at : edge.updated_at || iso()});
+    }
+    for (const [id, rows] of legacy) forgetLinks(id, [...rows.values()]);
+    cleanupExpired(); feeds.pruneExpired();
+    const publicIds = new Set(['thera','turnur'].flatMap(source => (store.get('universe:feeds:' + source, null)?.data || []).map(row => String(row.id))));
+    navigation.forgetMissingConnections((id, key) => record(id, 'link', key)?.kind === 'wormhole' || publicIds.has(String(key)));
     return { static: staticData, state, detail, route, jump, saveView, deleteView: (id, key) => deleteRecord(id, 'view', key),
-        saveLinkList, deleteLinkList, saveLink, deleteLink: (id, key) => deleteRecord(id, 'link', key), savePin, deletePin: (id, key) => deleteRecord(id, 'pin', key),
-        verifyStructure, observeTravel, observeSelectedLocation, pruneExpired, exportUserData, previewLinks, exportLinks, operations, feeds, navigation, jspace, jspaceDestinations,
-        tick: () => Promise.allSettled([operations.tick(), feeds.tick()]),
-        close: () => Promise.allSettled([operations.close(), feeds.close(), navigation.close?.()]),
+        saveLinkList, deleteLinkList, saveLink, deleteLink, savePin, deletePin: (id, key) => deleteRecord(id, 'pin', key),
+        verifyStructure, observeTravel, observeSelectedLocation, pruneExpired, exportUserData, previewLinks, exportLinks, operations, feeds, navigation, jspace, jspaceDestinations, scopeOptions, searchOwners:ownerSearch.search,
+        tick: () => { cleanupExpired(); jspace.cleanupSources(); return Promise.allSettled([operations.tick(), feeds.tick()]); },
+        close: () => { lifecycleClosed = true; if (expiryTimer !== null) clearExpiryTimer(expiryTimer); expiryTimer = null; scheduledExpiryAt = null; return Promise.allSettled([operations.close(), feeds.close(), navigation.close?.(), ownerSearch.close()]); },
         politicsConfig: politicsService.config, savePoliticsConfig: politicsService.saveConfig, politicsState: politicsService.read,
         refreshPolitics: politicsService.refresh, politicsAlliances: politicsService.alliances };
 }

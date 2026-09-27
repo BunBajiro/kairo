@@ -93,3 +93,10 @@ test('public chain reports are explicit, ephemeral and cannot become trusted rou
  assert.deepEqual(stale.nodes,scene.nodes);
  assert.equal(publicChainScene(map,{...feeds,connections:[]},systems,{thera:true},now,stale).connections.length,0,'A successful empty snapshot removes reports');
 });
+
+test('private connection lifetime ends at the exact boundary while unknown lifetimes and system cards remain',()=>{
+ const now=Date.parse('2026-09-27T12:00:00Z'),nodes=[{system_id:1,x:0,y:0,locked:true},{system_id:2,x:300,y:0}],edge={from_system_id:1,to_system_id:2,kind:'wormhole'};
+ const map={id:'private',nodes,connections:[{...edge,id:'current',expires_at:new Date(now+1).toISOString()},{...edge,id:'unknown',expires_at:null,confirmed:false},{...edge,id:'ended',expires_at:new Date(now).toISOString(),locked:true},{...edge,id:'collapsed',expires_at:new Date(now+1000).toISOString(),life_status:'collapsed'}]};
+ const scene=publicChainScene(map,null,[],{},now);assert.deepEqual(scene.connections.map(row=>row.id),['current','unknown']);assert.deepEqual(scene.nodes,nodes);
+ assert.deepEqual(publicChainScene(map,null,[],{},now+1).connections.map(row=>row.id),['unknown']);
+});

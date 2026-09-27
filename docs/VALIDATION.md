@@ -1,4 +1,22 @@
-# Validation — 26 September 2026
+# Validation — 27 September 2026
+
+## Universe 0.8.0-rc.12
+
+This pass separates connection lifetime from system retention, isolates mutable J-Space data per map, and uses one location dispatcher with a lightweight live source and configurable map population.
+
+- All 540 Node tests pass. Application TypeScript and production compilation pass.
+- The compiled J-Space browser suite passes 28 workflow/layout groups with no console errors. Desktop and mobile captures cover readable map interactions and owner autocomplete, including an unavailable-logo fallback. Exact-commit Actions additionally runs the combined Universe/replay suite, Sessions browser checks and extracted-package tests before the ZIP is advertised.
+- Node regression coverage checks actual database deletion at exact expiry, including disabled modules/no-sync, all J/J and J/K directions, manual deletion/collapse, bound signatures and deletion tombstones, passage/comments/undo cleanup, native imports, route caches and delayed public-provider responses.
+- Map isolation checks use the same system and scanner code in independent maps and pilots. Migration copies existing map instances, removes global J-Space scanner/pin/field-note remnants, and never seeds new maps from visit history. Copies receive independent connection/observation identities and cannot edit the source.
+- Tracking checks cover default enabled membership, add/remove/pause/resume, shared pilot dispatch to independent maps, no extra polling, sample deduplication, current-location baseline, entrances/internal movement/exits, stale/future/out-of-order/docked/gated/pod-loss transitions, missed-sample gaps, and route/passages remaining unconfirmed unless explicitly verified. Map navigation respects paused/removed membership.
+- Source and scope coverage checks the six OR-combined selection groups, K-Space-only organisational areas, fresh complete sovereignty, configured-only power blocs, late-exit chain population, preservation of observation age/expiry and independence from existing map edits. Scope controls population rather than removing or hiding saved records.
+- Read-only source checks cover active-pilot baselines, compact summaries, on-demand topology, no source annotations/passages, and rejection of direct scanner/intel/infrastructure mutation or cross-pilot access. Operations copies preserve independent intel/alert/upgrade identities and references.
+- Backfill regressions prevent unrelated source movement from restoring deleted connections or removed cards, preserve remaining timers, permit genuine traversal to rediscover topology, and defer capacity-blocked delivery without losing it. Closed-view maintenance prunes source systems after 30 minutes, including disconnected accounts.
+- Native operational round trips preserve reports, alert references and infrastructure with new identities and original ages. Malformed payloads and storage failures roll back the whole import; configuration and live pilot telemetry stay out of portable files and imported alerts are not replayed.
+- Ownership search review covers selectable alliance/corporation names, logos and EVE IDs, preserving assigned identities without treating them as formal sovereignty.
+- Browser acceptance covers the pilot roster, source selection, map configuration, scoped scanner/navigation, empty-map creation, public-report target-map adoption, immediate private/public expiry, permanent edge removal, system-only Undo, owner selection and existing interaction/layout coverage. Final TypeScript, production-build and browser results are recorded with the draft test build.
+
+Existing maps migrate automatically. System locks and the 30-minute disconnected-system grace remain, including a fresh grace after unlocking/restoration. Dead connections and their associated records are deliberately removed. The draft PR supplies the successful exact-commit Actions result and standalone ZIP; main remains unmerged.
 
 ## Universe 0.8.0-rc.11
 

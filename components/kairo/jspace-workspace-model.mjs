@@ -1,10 +1,15 @@
 import {buildPortalNetworks} from './universe-map-portals.mjs';
 
+/** Unknown lifetimes stay unconfirmed; explicit expiry or collapse ends the entity. */
+export function connectionHasEnded(connection, now = Date.now()) {
+  return connection.life_status === 'collapsed' || connection.expired === true || !!connection.expires_at && Number.isFinite(Date.parse(connection.expires_at)) && Date.parse(connection.expires_at) <= now;
+}
+
 /** Read-only public report cards augment the diagram; they never enter saved map state. */
 export function publicChainScene(map, feeds, systems, selectedSources = {}, now = Date.now(), previous = null) {
   if (!map) return null;
   const networks = buildPortalNetworks(feeds, systems, now).filter(network => selectedSources[network.source]);
-  const nodes = [...map.nodes], connections = [...map.connections], present = new Set(nodes.map(node => node.system_id));
+  const nodes = [...map.nodes], connections = map.connections.filter(connection => !connectionHasEnded(connection, now)), present = new Set(nodes.map(node => node.system_id));
   // Keep surviving public cards in place when the provider changes a snapshot.
   const prior = new Map(previous?.id === map.id ? previous.nodes.filter(node => node.public_report).map(node => [node.system_id,node]) : []);
   const occupied = [...nodes,...prior.values()];

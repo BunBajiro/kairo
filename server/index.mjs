@@ -66,7 +66,7 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.11', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.12', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
         if (path === '/state' && read) {
             const id = checkedChar(url);
             return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
@@ -186,6 +186,7 @@ export async function startKairo(options = {}) {
         if(path==='/journey/enrich'&&req.method==='POST'){const missing=journeyData(store,checkedChar(url)).systems.filter(s=>s.x===null||!s.region_id).slice(0,25),results=[];for(const s of missing){try{await getSystem(store,esi,s.system_id);results.push({id:s.system_id,ok:true});}catch{results.push({id:s.system_id,ok:false});}}return json(res,200,{results});}
         if(path==='/places'&&read)return json(res,200,store.db.prepare('SELECT * FROM place_notes ORDER BY updated DESC').all().map(n=>({...n,tags:JSON.parse(n.tags)})));
         if(path.startsWith('/places/')){const [,,kind,key]=path.split('/'),id=Number(key);if(!['system','constellation','region'].includes(kind)||!Number.isSafeInteger(id)||id<1)throw new Error('Invalid place.');
+            if(core.universe.static().systems.some(system=>system.space==='wormhole'&&system[kind+'_id']===id))throw new Error('Record J-Space system notes inside a private chain map.');
             if(read){const n=store.db.prepare('SELECT * FROM place_notes WHERE kind=? AND entity_id=?').get(kind,id);return json(res,200,n?{...n,tags:JSON.parse(n.tags)}:{kind,entity_id:id,body:'',tags:[],status:'none'});}
             if(req.method==='PUT')return json(res,200,savePlaceNote(store,kind,id,await body(req)));
             if(req.method==='DELETE'){store.db.prepare('DELETE FROM place_notes WHERE kind=? AND entity_id=?').run(kind,id);return json(res,200,{ok:true});}}
@@ -261,6 +262,9 @@ export async function startKairo(options = {}) {
         }
         if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));
         if (path === '/universe/jspace' && read) return json(res, 200, core.universe.jspace.state(checkedChar(url)));
+        if (path === '/universe/jspace/tracking/active' && req.method === 'PUT') return json(res, 200, core.universe.jspace.setActivePilot((await body(req)).character_id));
+        if (path === '/universe/jspace/scope-options' && read) return json(res, 200, core.universe.scopeOptions(checkedChar(url)));
+        if (path === '/universe/jspace/owners/search' && read) return json(res, 200, await core.universe.searchOwners(checkedChar(url), {kind:url.searchParams.get('kind'),q:url.searchParams.get('q')}));
         if (path === '/universe/jspace/destinations' && req.method === 'POST') return json(res, 200, core.universe.jspaceDestinations(checkedChar(url), await body(req)));
         if (path === '/universe/jspace/maps' && req.method === 'POST') return json(res, 200, core.universe.jspace.create(checkedChar(url), await body(req)));
         if (path === '/universe/jspace/import/preview' && req.method === 'POST') return json(res, 200, core.universe.jspace.previewImport(checkedChar(url), await body(req, 4_100_000)));
@@ -271,39 +275,40 @@ export async function startKairo(options = {}) {
             const result = core.universe.jspace.exportMap(checkedChar(url), decodeURIComponent(path.split('/')[4]), url.searchParams.get('format') || 'kairo');
             res.setHeader('Content-Disposition', 'attachment; filename="kairo-jspace-map.json"'); return json(res, 200, result);
         }
+        if (/^\/universe\/jspace\/maps\/[^/]+$/.test(path) && read) return json(res, 200, core.universe.jspace.map(checkedChar(url), decodeURIComponent(path.split('/')[4])));
         if (/^\/universe\/jspace\/maps\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res, 200, core.universe.jspace.remove(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));
-        if (path === '/universe/operations' && read) return json(res,200,core.universe.operations.state(checkedChar(url)));
+        if (path === '/universe/operations' && read) return json(res,200,core.universe.operations.state(checkedChar(url),url.searchParams.get('map_id')));
         if (path === '/universe/operations/config' && read) return json(res,200,core.universe.operations.config(checkedChar(url)));
         if (path === '/universe/operations/config' && req.method === 'PUT') return json(res,200,core.universe.operations.saveConfig(checkedChar(url),await body(req)));
         if (path === '/universe/log-directories' && read) return json(res,200,await core.universe.operations.defaultLogDirectories());
         if (path === '/universe/intel' && req.method === 'POST') return json(res,200,core.universe.operations.ingestIntel(checkedChar(url),await body(req)));
-        if (/^\/universe\/intel\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.operations.removeIntel(checkedChar(url),decodeURIComponent(path.split('/')[3])));
-        if (/^\/universe\/alerts\/[^/]+\/ack$/.test(path) && req.method === 'POST') return json(res,200,core.universe.operations.acknowledge(checkedChar(url),decodeURIComponent(path.split('/')[3])));
+        if (/^\/universe\/intel\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.operations.removeIntel(checkedChar(url),decodeURIComponent(path.split('/')[3]),url.searchParams.get('map_id')));
+        if (/^\/universe\/alerts\/[^/]+\/ack$/.test(path) && req.method === 'POST') return json(res,200,core.universe.operations.acknowledge(checkedChar(url),decodeURIComponent(path.split('/')[3]),url.searchParams.get('map_id')));
         if (path === '/universe/signatures/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewSignatures(checkedChar(url),await body(req)));
         if (path === '/universe/signatures/import' && req.method === 'POST') return json(res,200,core.universe.operations.importSignatures(checkedChar(url),await body(req)));
         if (path === '/universe/signatures/restore' && req.method === 'POST') return json(res,200,core.universe.operations.restoreSignature(checkedChar(url),await body(req)));
         if (path === '/universe/upgrades/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewUpgrades(checkedChar(url),await body(req,1_000_000)));
         if (path === '/universe/upgrades/import' && req.method === 'POST') return json(res,200,core.universe.operations.importUpgrades(checkedChar(url),await body(req,1_000_000)));
         if (path === '/universe/upgrades/export' && read) {
-            const result=core.universe.operations.exportUpgrades(checkedChar(url),{format:url.searchParams.get('format')||'smt',system_id:url.searchParams.get('system')||undefined});
+            const result=core.universe.operations.exportUpgrades(checkedChar(url),{format:url.searchParams.get('format')||'smt',system_id:url.searchParams.get('system')||undefined,map_id:url.searchParams.get('map_id')});
             res.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Content-Disposition':'attachment; filename="kairo-infrastructure.'+(result.format==='json'?'json':'txt')+'"','Cache-Control':'no-store'});
             return res.end(result.text);
         }
         for (const [collection,save,remove] of [['signatures','saveSignature','removeSignature'],['upgrades','saveUpgrade','removeUpgrade']]) {
             if (path === '/universe/'+collection && req.method === 'POST') return json(res,200,core.universe.operations[save](checkedChar(url),await body(req)));
-            if (path.startsWith('/universe/'+collection+'/') && req.method === 'DELETE') return json(res,200,core.universe.operations[remove](checkedChar(url),decodeURIComponent(path.split('/')[3])));
+            if (path.startsWith('/universe/'+collection+'/') && req.method === 'DELETE') return json(res,200,core.universe.operations[remove](checkedChar(url),decodeURIComponent(path.split('/')[3]),url.searchParams.get('map_id')));
         }
-        if (path === '/universe/operations/refresh' && req.method === 'POST') return json(res,200,await core.universe.operations.refresh(checkedChar(url)));
+        if (path === '/universe/operations/refresh' && req.method === 'POST') return json(res,200,await core.universe.operations.refresh(checkedChar(url),url.searchParams.get('map_id')));
         if (path === '/universe/feeds' && read) return json(res,200,core.universe.feeds.state());
         if (path === '/universe/feeds/config' && read) return json(res,200,core.universe.feeds.config());
         if (path === '/universe/feeds/config' && req.method === 'PUT') return json(res,200,core.universe.feeds.saveConfig(await body(req)));
         if (path === '/universe/feeds/refresh' && req.method === 'POST') return json(res,200,await core.universe.feeds.refresh(await body(req)));
         if (path === '/universe/feeds/import' && req.method === 'POST') return json(res,200,core.universe.feeds.importData(await body(req)));
         if (path === '/universe/feeds/storms' && req.method === 'PUT') { const input=await body(req); return json(res,200,core.universe.feeds.saveStorms(Array.isArray(input)?input:input.items)); }
-        if (path === '/universe/navigation' && read) return json(res,200,core.universe.navigation.state(checkedChar(url)));
+        if (path === '/universe/navigation' && read) return json(res,200,core.universe.navigation.state(checkedChar(url),url.searchParams.get('map_id')));
         if (path === '/universe/navigation/itinerary' && req.method === 'PUT') return json(res,200,core.universe.navigation.saveItinerary(checkedChar(url),await body(req)));
-        if (path === '/universe/navigation/itinerary' && req.method === 'DELETE') return json(res,200,core.universe.navigation.clearItinerary(checkedChar(url)));
-        if (/^\/universe\/navigation\/stops\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.navigation.removeStop(checkedChar(url),decodeURIComponent(path.split('/')[4])));
+        if (path === '/universe/navigation/itinerary' && req.method === 'DELETE') return json(res,200,core.universe.navigation.clearItinerary(checkedChar(url),url.searchParams.get('map_id')));
+        if (/^\/universe\/navigation\/stops\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.navigation.removeStop(checkedChar(url),decodeURIComponent(path.split('/')[4]),url.searchParams.get('map_id')));
         for (const [action,method] of [['reorder','reorderStops'],['plan','plan'],['waypoints','sendWaypoints'],['bridges','discoverBridges'],['reachability','reachability']]) {
             if (path === '/universe/navigation/'+action && req.method === 'POST') return json(res,200,await core.universe.navigation[method](checkedChar(url),await body(req)));
         }

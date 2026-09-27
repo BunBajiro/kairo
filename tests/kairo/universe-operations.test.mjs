@@ -11,7 +11,7 @@ const AT = Date.parse('2026-09-25T12:00:00Z');
 const atlas = { systems: [
     { system_id: 30000001, name: 'Alpha' }, { system_id: 30000002, name: 'Alpine' },
     { system_id: 30000003, name: 'Beta' }, { system_id: 30000004, name: 'New Caldari' },
-    { system_id: 31000001, name: 'J000001' },
+    { system_id: 31000001, name: 'J000001', space: 'wormhole' }, { system_id: 31000002, name: 'J000002', space: 'wormhole' },
 ], gates: [{ from_system_id: 30000001, to_system_id: 30000003 }, { from_system_id: 30000003, to_system_id: 30000004 }, { from_system_id: 30000004, to_system_id: 30000001 }] };
 const sample = (data, extra = {}) => ({ status: 'ready', data, updatedAt: new Date(AT).toISOString(), expiresAt: new Date(AT + 3600000).toISOString(), ...extra });
 async function fixture(t, options = {}) {
@@ -443,4 +443,193 @@ test('bookmark metadata and per-pilot conventions preserve zero indices, manual 
     assert.throws(()=>service.saveSignature(42,{id:first.id,bookmark_chain:'x'.repeat(65)}),/short printable/);
     assert.throws(()=>service.saveSignature(42,{id:first.id,is_return_hole:'yes'}),/return hole/);
     assert.throws(()=>service.saveConfig(42,{...config,bookmark_custom_mapping:{mass_verge:'x'.repeat(33)}}),/32 printable/);
+});
+
+function seedMapScope(store, characterId, id, nodes = [31000001]) {
+    store.db.exec(`CREATE TABLE IF NOT EXISTS universe_records(character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,PRIMARY KEY(character_id,kind,id))`);
+    store.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?)').run(characterId, 'jspace_map', id,
+        JSON.stringify({ id, nodes: nodes.map(system_id => ({ system_id })), archived_nodes: [] }), new Date(AT).toISOString());
+}
+
+test('scanner observations and undo belong to one map instance, including uncharted systems', async t => {
+    const { service, store } = await fixture(t);
+    seedMapScope(store, 42, 'chain-one', []); seedMapScope(store, 42, 'chain-two'); seedMapScope(store, 43, 'other-pilot');
+    const input = { system_id: 31000001, signature_id: 'ABC-123', type: 'Wormhole', notes: 'First chain notes' };
+    assert.throws(() => service.saveSignature(42, input), /Choose a J-Space map/);
+    assert.throws(() => service.saveSignature(42, { ...input, map_id: 'other-pilot' }), /Choose a J-Space map/);
+    assert.throws(() => service.state(43, 'chain-one'), /Choose a J-Space map/);
+    const first = service.saveSignature(42, { ...input, map_id: 'chain-one' });
+    const second = service.saveSignature(42, { ...input, map_id: 'chain-two', notes: 'Second chain notes' });
+    assert.notEqual(first.id, second.id);
+    assert.equal(service.state(42, 'chain-one').signatures[0].notes, 'First chain notes');
+    assert.equal(service.state(42, 'chain-two').signatures[0].notes, 'Second chain notes');
+    assert.deepEqual(service.state(42).signatures, []);
+    assert.throws(() => service.saveSignature(42, { ...first, map_id: 'chain-two', notes: 'Wrong chain edit' }), /not found/);
+    assert.equal(service.removeSignature(42, first.id, 'chain-two').removed, false);
+    const preview = service.previewSignatures(42, { map_id: 'chain-two', system_id: 31000001, text: 'ABC-123\tCosmic Signature\tRelic Site\tMap two ruins\t100%\t1 AU' });
+    assert.equal(preview.updated[0].id, second.id);
+    const deleted = service.removeSignature(42, first.id, 'chain-one').deleted;
+    assert.throws(() => service.restoreSignature(42, { map_id: 'chain-two', id: first.id, revision: deleted.revision }), /no longer available/);
+    assert.equal(service.restoreSignature(42, { map_id: 'chain-one', id: first.id, revision: deleted.revision }).notes, first.notes);
+    service.importSignatures(42, { map_id: 'chain-two', system_id: 31000001, text: 'ABC-123\tCosmic Signature\tRelic Site\tMap two ruins\t100%\t1 AU', complete_scan: true });
+    assert.equal(service.state(42, 'chain-two').signatures[0].name, 'Map two ruins');
+    assert.equal(service.state(42, 'chain-one').signatures[0].name, '');
+    service.removeMapScope(42, 'chain-one');
+    assert.deepEqual(service.state(42, 'chain-one').signatures, []);
+    assert.equal(service.state(42, 'chain-two').signatures.length, 1);
+});
+
+test('legacy J-Space observations migrate once into existing maps and never seed new maps', async t => {
+    const { service, store } = await fixture(t);
+    seedMapScope(store, 42, 'chain-one'); seedMapScope(store, 42, 'chain-two'); seedMapScope(store, 43, 'other-pilot');
+    const stamp = new Date(AT).toISOString(), legacy = { id: 'legacy-sig', system_id: 31000001, signature_id: 'ABC-123', type: 'Relic Site', notes: 'Preserved independent copy', updated_at: stamp };
+    const insert = store.db.prepare('INSERT INTO universe_operations_records VALUES(?,?,?,?,?)');
+    insert.run(42, 'signature', legacy.id, JSON.stringify(legacy), stamp);
+    insert.run(42, 'signature', 'orphan', JSON.stringify({ ...legacy, id: 'orphan', system_id: 31000002 }), stamp);
+    // The same legacy K-Space observation can be copied for an existing map without erasing its K-Space scanner entry.
+    service.saveSignature(42, { system_id: 30000001, signature_id: 'KSP-123' });
+    service.migrateMapScopes();
+    assert.equal(service.state(42).signatures.some(row => row.id === legacy.id), false);
+    assert.equal(service.state(42, 'chain-one').signatures[0].notes, legacy.notes);
+    assert.equal(service.state(42, 'chain-two').signatures[0].notes, legacy.notes);
+    assert.deepEqual(service.state(43, 'other-pilot').signatures, []);
+    service.saveSignature(42, { ...legacy, map_id: 'chain-one', notes: 'Edited independently' });
+    assert.equal(service.state(42, 'chain-two').signatures[0].notes, legacy.notes);
+    service.removeSignature(42, legacy.id, 'chain-one');
+    seedMapScope(store, 42, 'new-chain'); service.migrateMapScopes();
+    assert.deepEqual(service.state(42, 'new-chain').signatures, []);
+    assert.deepEqual(service.state(42, 'chain-one').signatures, []);
+    assert.equal(service.state(42).signatures.some(row => row.signature_id === 'KSP-123'), true);
+    assert.equal(store.db.prepare("SELECT COUNT(*) AS n FROM universe_operations_records WHERE kind='signature' AND id IN ('legacy-sig','orphan')").get().n, 0);
+});
+
+test('map intel, alerts and infrastructure notes stay private to that map; global wormhole writes are rejected', async t => {
+    const { service, store } = await fixture(t);
+    seedMapScope(store, 42, 'chain-one'); seedMapScope(store, 42, 'chain-two');
+    service.saveConfig(42, { ...service.config(42), watched_system_ids: [31000001], alert_cooldown_seconds: 0 });
+    assert.throws(() => service.ingestIntel(42, { text: 'J000001 hostile' }), /Choose a J-Space map/);
+    assert.throws(() => service.saveUpgrade(42, { system_id: 31000001, slot: 1, name: 'Home structure' }), /Choose a J-Space map/);
+    const report = service.ingestIntel(42, { map_id: 'chain-one', text: 'J000001 hostile' });
+    service.saveUpgrade(42, { map_id: 'chain-one', system_id: 31000001, slot: 1, name: 'Home structure' });
+    const mine = service.state(42, 'chain-one'), other = service.state(42, 'chain-two');
+    assert.equal(mine.intel[0].id, report.id); assert.equal(mine.alerts.length, 1); assert.equal(mine.upgrades.length, 1);
+    assert.deepEqual(other.intel, []); assert.deepEqual(other.alerts, []); assert.deepEqual(other.upgrades, []);
+    assert.deepEqual(service.state(42).intel, []); assert.deepEqual(service.state(42).alerts, []);
+    assert.throws(() => service.acknowledge(42, mine.alerts[0].id, 'chain-two'), /not found/);
+    service.removeIntel(42, report.id, 'chain-two'); assert.equal(service.state(42, 'chain-one').intel.length, 1);
+    service.removeMapScope(42, 'chain-one');
+    assert.deepEqual(service.state(42, 'chain-one').intel, []); assert.deepEqual(service.state(42, 'chain-one').alerts, []); assert.deepEqual(service.state(42, 'chain-one').upgrades, []);
+});
+
+
+test('explicit map duplication copies observations independently without duplicating scanner import records', async t => {
+    const { service, store } = await fixture(t);
+    seedMapScope(store, 42, 'source-chain'); seedMapScope(store, 42, 'copied-chain'); seedMapScope(store, 43, 'other-pilot');
+    service.saveConfig(42, { ...service.config(42), watched_system_ids: [31000001] });
+    const signature = service.saveSignature(42, { map_id: 'source-chain', system_id: 31000001, signature_id: 'ABC-123' });
+    const report = service.ingestIntel(42, { map_id: 'source-chain', text: 'J000001 hostile' });
+    const upgrade = service.saveUpgrade(42, { map_id: 'source-chain', system_id: 31000001, slot: 1, name: 'Home structure', notes: 'Original note' });
+    assert.throws(() => service.copyMapScope(42, 'source-chain', 'other-pilot'), /Choose a J-Space map/);
+    assert.throws(() => service.copyMapScope(42, 'source-chain', 'source-chain'), /different J-Space maps/);
+    service.copyMapScope(42, 'source-chain', 'copied-chain');
+    const copied = service.state(42, 'copied-chain');
+    assert.deepEqual(copied.signatures, [], 'Native map import owns signature copying and must not be duplicated by the operations helper');
+    assert.equal(service.state(42, 'source-chain').signatures[0].id, signature.id);
+    assert.notEqual(copied.intel[0].id, report.id); assert.equal(copied.intel[0].map_id, 'copied-chain');
+    assert.equal(copied.intel[0].observed_at, report.observed_at); assert.equal(copied.intel[0].expires_at, report.expires_at);
+    assert.equal(copied.alerts[0].intel_id, copied.intel[0].id);
+    assert.notEqual(copied.upgrades[0].id, upgrade.id); assert.equal(copied.upgrades[0].notes, upgrade.notes);
+    service.saveUpgrade(42, { ...copied.upgrades[0], notes: 'Only copied chain' });
+    service.removeIntel(42, copied.intel[0].id, 'copied-chain');
+    assert.equal(service.state(42, 'source-chain').intel[0].id, report.id);
+    assert.equal(service.state(42, 'source-chain').upgrades[0].notes, 'Original note');
+    assert.equal(service.state(42, 'copied-chain').upgrades[0].notes, 'Only copied chain');
+    assert.deepEqual(service.state(42, 'copied-chain').alerts, []);
+    assert.throws(() => service.copyMapScope(42, 'source-chain', 'copied-chain'), /new map/);
+});
+
+
+test('followed discovery maps cannot be mutated through operations APIs', async t => {
+    const { service, store } = await fixture(t);
+    seedMapScope(store, 42, 'discovery-source'); seedMapScope(store, 42, 'private-chain');
+    store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id='discovery-source'").run(JSON.stringify({
+        id: 'discovery-source', kind: 'tracking_source', nodes: [{ system_id: 31000001 }], archived_nodes: [],
+    }));
+    const signature = { map_id: 'discovery-source', system_id: 31000001, signature_id: 'ABC-123' };
+    const scanner = { map_id: 'discovery-source', system_id: 31000001, text: 'ABC-123\tCosmic Signature\tRelic Site\tRuins\t100%\t1 AU' };
+    const writes = [
+        () => service.saveSignature(42, signature),
+        () => service.importSignatures(42, scanner),
+        () => service.removeSignature(42, 'missing-signature', 'discovery-source'),
+        () => service.restoreSignature(42, { map_id: 'discovery-source', id: 'missing-signature', revision: 'missing' }),
+        () => service.ingestIntel(42, { map_id: 'discovery-source', text: 'J000001 hostile' }),
+        () => service.removeIntel(42, 'missing-intel', 'discovery-source'),
+        () => service.acknowledge(42, 'missing-alert', 'discovery-source'),
+        () => service.saveUpgrade(42, { map_id: 'discovery-source', system_id: 31000001, slot: 1, name: 'Structure' }),
+        () => service.importUpgrades(42, { map_id: 'discovery-source', text: 'J000001\n1\tStructure 1\tOnline\n' }),
+        () => service.removeUpgrade(42, 'missing-upgrade', 'discovery-source'),
+        () => service.removeMapScope(42, 'discovery-source'),
+        () => service.importMapScope(42, 'discovery-source', { version: 1, intel: [], alerts: [], upgrades: [] }),
+        () => service.copyMapScope(42, 'discovery-source', 'private-chain'),
+        () => service.copyMapScope(42, 'private-chain', 'discovery-source'),
+    ];
+    for (const write of writes) assert.throws(write, /read-only/);
+    assert.deepEqual(service.state(42, 'discovery-source').signatures, []);
+    assert.equal(service.previewSignatures(42, scanner).valid, true, 'A pure read-only preview cannot create source observations');
+    assert.equal(store.db.prepare("SELECT COUNT(*) AS n FROM universe_operations_records").get().n, 0);
+});
+
+
+test('native map operational records round-trip independently without live telemetry or retroactive alerts', async t => {
+    const { service, store, events, setTime } = await fixture(t);
+    seedMapScope(store, 42, 'source-chain'); seedMapScope(store, 42, 'imported-chain');
+    service.saveConfig(42, { ...service.config(42), watched_system_ids: [31000001], log_directory: '/private/log/location' });
+    service.ingestIntel(42, { map_id: 'source-chain', text: 'J000001 hostile', observed_at: new Date(AT - 60000).toISOString() });
+    service.saveUpgrade(42, { map_id: 'source-chain', system_id: 31000001, slot: 1, name: 'Home structure', notes: 'Scoped structure note' });
+    service.saveSignature(42, { map_id: 'source-chain', system_id: 31000001, signature_id: 'ABC-123' });
+    const original = service.state(42, 'source-chain'), portable = service.exportMapScope(42, 'source-chain'), eventCount = events.length;
+    assert.deepEqual(Object.keys(portable).sort(), ['alerts', 'intel', 'upgrades', 'version']);
+    assert.equal(JSON.stringify(portable).includes('/private/log/location'), false);
+    assert.equal(JSON.stringify(portable).includes('source-chain'), false, 'Portable records do not carry their old map context');
+    assert.equal(portable.intel[0].identity, undefined);
+    assert.throws(() => service.exportMapScope(43, 'source-chain'), /Choose a J-Space map/);
+    setTime(AT + 3600000);
+    assert.deepEqual(service.importMapScope(42, 'imported-chain', portable), { intel: 1, alerts: 1, upgrades: 1 });
+    const imported = service.state(42, 'imported-chain');
+    assert.equal(events.length, eventCount, 'Importing old alerts never publishes fresh notifications');
+    assert.equal(imported.intel[0].expired, true); assert.equal(imported.intel[0].observed_at, original.intel[0].observed_at);
+    assert.equal(imported.intel[0].expires_at, original.intel[0].expires_at); assert.notEqual(imported.intel[0].id, original.intel[0].id);
+    assert.equal(imported.alerts[0].intel_id, imported.intel[0].id); assert.notEqual(imported.alerts[0].id, original.alerts[0].id);
+    assert.equal(imported.upgrades[0].updated_at, original.upgrades[0].updated_at); assert.notEqual(imported.upgrades[0].id, original.upgrades[0].id);
+    assert.deepEqual(imported.signatures, [], 'Map native import remains responsible for signature records');
+    service.saveUpgrade(42, { ...imported.upgrades[0], notes: 'Only imported map' });
+    service.removeIntel(42, imported.intel[0].id, 'imported-chain');
+    assert.equal(service.state(42, 'source-chain').intel.length, 1);
+    assert.equal(service.state(42, 'source-chain').upgrades[0].notes, 'Scoped structure note');
+});
+
+test('native operational validation and storage failures cannot leave partial imported map records', async t => {
+    const { service, store, events } = await fixture(t);
+    seedMapScope(store, 42, 'source-chain'); seedMapScope(store, 42, 'target-chain');
+    service.saveConfig(42, { ...service.config(42), watched_system_ids: [31000001] });
+    service.ingestIntel(42, { map_id: 'source-chain', text: 'J000001 hostile' });
+    service.saveUpgrade(42, { map_id: 'source-chain', system_id: 31000001, slot: 1, name: 'Structure' });
+    const portable = service.exportMapScope(42, 'source-chain'), eventCount = events.length;
+    const invalid = [
+        { ...portable, config: { logs_enabled: true } },
+        { ...portable, intel: [portable.intel[0], portable.intel[0]] },
+        { ...portable, intel: [{ ...portable.intel[0], system_ids: [999999999] }] },
+        { ...portable, alerts: [{ ...portable.alerts[0], intel_id: 'missing-observation' }] },
+        { ...portable, upgrades: [{ ...portable.upgrades[0], slot: 0 }] },
+        { ...portable, upgrades: [{ ...portable.upgrades[0], updated_at: new Date(AT + 3600000).toISOString() }] },
+    ];
+    for (const input of invalid) {
+        assert.throws(() => service.importMapScope(42, 'target-chain', input));
+        assert.deepEqual(service.state(42, 'target-chain').intel, []);
+    }
+    store.db.exec(`CREATE TRIGGER fail_scoped_upgrade BEFORE INSERT ON universe_operations_records WHEN NEW.kind='upgrade:map:target-chain' BEGIN SELECT RAISE(ABORT,'Synthetic scoped storage failure'); END;`);
+    assert.throws(() => service.importMapScope(42, 'target-chain', portable), /Synthetic scoped storage failure/);
+    assert.equal(store.db.prepare("SELECT COUNT(*) AS n FROM universe_operations_records WHERE kind IN ('intel:map:target-chain','alert:map:target-chain','upgrade:map:target-chain')").get().n, 0);
+    assert.equal(events.length, eventCount);
+    assert.deepEqual(service.validateMapScopeImport(undefined), { version: 1, intel: [], alerts: [], upgrades: [] });
 });

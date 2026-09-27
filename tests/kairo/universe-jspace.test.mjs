@@ -23,6 +23,7 @@ async function fixture(t) {
         cmd: (map, op, args = {}) => api.command(42, map.id, { revision: map.revision, op, ...args }) };
 }
 function twoNodes(f, map) { map = f.cmd(map, 'node.save', { node: { system_id: W } }); return f.cmd(map, 'node.save', { node: { system_id: X } }); }
+function canonical(f, map) { return f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='link'").all().map(row => JSON.parse(row.body)).filter(row => row.map_id === map.id); }
 
 test('observed lifetime bands persist without granting access, renewing expiry or losing their age on mass edits', async t => {
     const f=await fixture(t);let map=twoNodes(f,f.create());
@@ -48,7 +49,7 @@ test('private chain maps survive reopening, isolate pilots and require revision-
     const f = await fixture(t); let map = f.create();
     assert.deepEqual(f.api.state(43).maps, []); assert.deepEqual(f.api.state(0).maps, []);
     assert.throws(() => f.api.create(0, { name: 'Guest map' }), /connected pilot/);
-    assert.throws(() => f.api.command(43, map.id, { revision: 1, op: 'map.update', name: 'Hijack' }), /not found/);
+    assert.throws(() => f.api.command(43, map.id, { revision: 1, op: 'map.update', name: 'Hijack' }), /private chain map/);
     const oldRevision = map.revision;
     map = f.cmd(map, 'map.update', { name: 'A home among stars', description: 'Private staging chain' });
     assert.throws(() => f.api.command(42, map.id, { revision: oldRevision, op: 'map.update', name: 'Stale tab' }), error => error.status === 409);
@@ -71,30 +72,32 @@ test('positions, locks, aliases, roles, annotations and undo are atomic and boun
     assert.throws(() => f.cmd(map, 'node.remove', { system_id: W }), /Unlock/);
 });
 
-test('known discoveries seed diagrams without converting visits or static classes into route links', async t => {
+test('global visits and pins cannot seed private maps or create map-owned connections', async t => {
     const f = await fixture(t);
     f.store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42, W, 'J000001', new Date(AT).toISOString());
-    f.service.savePin(42, { system_id: X, label: 'Discovery' });
+    assert.throws(() => f.service.savePin(42, { system_id: X, label: 'Discovery' }), /map/);
     let map = f.api.create(42, { name: 'Discovered chain', seed_discovery: true });
-    assert.deepEqual(map.nodes.map(row => row.system_id), [W, X]); assert.deepEqual(map.connections, []); assert.deepEqual(f.service.state(42).links, []);
-    const proposal = f.service.saveLink(42, { kind: 'wormhole', from_system_id: W, to_system_id: X, confirmed: false, accessible: false });
+    assert.deepEqual(map.nodes, []); assert.deepEqual(map.connections, []); assert.deepEqual(f.service.state(42).links, []);
+    map = twoNodes(f, map);
+    const proposal = f.service.saveLink(42, { map_id: map.id, kind: 'wormhole', from_system_id: W, to_system_id: X, confirmed: false, accessible: false });
     map = f.api.create(42, { name: 'Travel proposals', seed_discovery: true });
-    assert.equal(map.connections[0].link_id, proposal.id); assert.equal(map.connections[0].active, false);
-    assert.equal(map.connections[0].confirmed, false);
+    assert.deepEqual(map.nodes, []); assert.deepEqual(map.connections, []);
+    assert.ok(!JSON.stringify(map).includes(proposal.id), 'Creating a new map must not import another map’s evidence');
 });
 
 test('connections use canonical links, demand explicit confirmation and reflect expiry/removal', async t => {
     const f = await fixture(t); let map = twoNodes(f, f.create());
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, duration_hours: 1, mass: 'stable' } });
     let edge = map.connections[0]; assert.equal(edge.active, false); assert.equal(edge.confirmed, false); assert.equal(map.can_undo, false);
-    assert.equal(f.service.state(42).links[0].id, edge.link_id);
+    assert.equal(canonical(f, map)[0].id, edge.link_id);
+    assert.deepEqual(f.service.state(42).links, [], 'Private wormholes are absent from global K-Space links');
     map = f.cmd(map, 'connection.save', { connection: { id: edge.id, confirmed: true, accessible: true } }); edge = map.connections[0];
     assert.equal(edge.active, true);
-    const route = f.service.route(42, { originId: W, destinationId: X, preferences: { useWormholes: true, allowUnknownWormholeSize: true } });
+    const route = f.service.route(42, { map_id: map.id, originId: W, destinationId: X, preferences: { useWormholes: true, allowUnknownWormholeSize: true } });
     assert.equal(route.status, 'ok'); assert.equal(route.edges[0].id, edge.link_id);
-    f.time(AT + 3600001); assert.equal(f.api.state(42).maps[0].connections[0].expired, true); assert.equal(f.api.state(42).maps[0].connections[0].active, false);
-    f.service.deleteLink(42, edge.link_id);
-    assert.equal(f.api.state(42).maps[0].connections[0].missing, true); assert.equal(f.api.state(42).maps[0].connections[0].active, false);
+    f.time(AT + 3600000); map = f.api.state(42).maps[0];
+    assert.deepEqual(map.connections, []); assert.deepEqual(canonical(f, map), []);
+    assert.throws(() => f.service.deleteLink(42, edge.link_id), /not found/, 'Expiry already removed the canonical record');
 });
 
 test('passage ledger records direction and observed mass without claiming remaining mass', async t => {
@@ -103,11 +106,11 @@ test('passage ledger records direction and observed mass without claiming remain
     map = f.cmd(map, 'passage.add', { passage: { connection_id: edge.id, from_system_id: W, to_system_id: X, pilot_name: 'Scout', ship_name: 'Buzzard', mass_kg: 1270000 } });
     map = f.cmd(map, 'passage.add', { passage: { connection_id: edge.id, from_system_id: X, to_system_id: W, pilot_name: 'Scout' } });
     assert.equal(map.connections[0].observed_mass_kg, 1270000); assert.equal(map.connections[0].unweighed_passages, 1); assert.equal(map.connections[0].remaining_mass_kg, null);
-    assert.equal(f.service.state(42).links[0].mass, 'unknown', 'a ledger total cannot change observed collapse state');
+    assert.equal(canonical(f, map)[0].mass, 'unknown', 'a ledger total cannot change observed collapse state');
     assert.throws(() => f.cmd(map, 'passage.add', { passage: { connection_id: edge.id, from_system_id: W, to_system_id: A } }), /endpoints/);
     assert.throws(() => f.cmd(map, 'passage.add', { passage: { connection_id: edge.id, from_system_id: W, to_system_id: X, mass_kg: -2 } }), /positive/);
     map = f.cmd(map, 'connection.save', { connection: { id: edge.id, life_status: 'collapsed' } });
-    assert.equal(map.connections[0].active, false); assert.equal(f.service.state(42).links[0].enabled, false);
+    assert.deepEqual(map.connections, []); assert.deepEqual(map.passages, []); assert.deepEqual(canonical(f, map), []);
 });
 
 test('canonical scanner signatures link both endpoints and deletions do not invent replacement observations', async t => {
@@ -115,12 +118,13 @@ test('canonical scanner signatures link both endpoints and deletions do not inve
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X } }); const edge = map.connections[0];
     map = f.cmd(map, 'signature.save', { signature: { system_id: W, signature_id: 'AAA-123', name: 'Entrance', connection_id: edge.id } });
     map = f.cmd(map, 'signature.save', { signature: { system_id: X, signature_id: 'BBB-456', name: 'Return', connection_id: edge.id } });
-    assert.equal(f.service.operations.state(42).signatures.length, 2);
-    assert.equal(f.service.state(42).links[0].from_signature, 'AAA-123'); assert.equal(f.service.state(42).links[0].to_signature, 'BBB-456');
+    assert.equal(f.service.operations.state(42, map.id).signatures.length, 2);
+    assert.deepEqual(f.service.operations.state(42).signatures, [], 'Private scanner records do not leak into global operations');
+    assert.equal(canonical(f, map)[0].from_signature, 'AAA-123'); assert.equal(canonical(f, map)[0].to_signature, 'BBB-456');
     assert.ok(map.signatures.every(row => row.connection_ids.includes(edge.id)));
     const old = map.signatures.find(row => row.signature_id === 'AAA-123');
-    f.service.operations.removeSignature(42, old.id);
-    f.service.operations.saveSignature(42, { system_id: W, signature_id: 'AAA-123' });
+    f.service.operations.removeSignature(42, old.id, map.id);
+    f.service.operations.saveSignature(42, { map_id: map.id, system_id: W, signature_id: 'AAA-123' });
     map = f.api.state(42).maps[0];
     assert.equal(map.connections[0].from_signature_id, null, 'a different observation reusing an ID is not silently attached');
     assert.equal(map.signatures.find(row => row.signature_id === 'AAA-123').connection_ids.length, 0);
@@ -147,7 +151,7 @@ test('Wanderer v1 import previews without writes and never revives portable conn
     assert.equal(preview.valid, true); assert.equal(preview.format, 'wanderer-v1'); assert.equal(preview.counts.connections, 1); assert.equal(f.api.state(42).maps.length, 0); assert.equal(f.service.state(42).links.length, 0);
     const map = f.api.importMap(42, { document });
     assert.equal(map.nodes[0].alias, 'Home'); assert.equal(map.nodes[0].role, 'home'); assert.equal(map.nodes[0].locked, true); assert.equal(map.nodes[0].x, -100);
-    assert.equal(map.connections[0].mass, 'reduced'); assert.equal(map.connections[0].max_ship_size, 'small'); assert.equal(map.connections[0].active, false); assert.equal(map.connections[0].confirmed, false); assert.equal(map.connections[0].expired, true);
+    assert.equal(map.connections[0].mass, 'reduced'); assert.equal(map.connections[0].max_ship_size, 'small'); assert.equal(map.connections[0].active, false); assert.equal(map.connections[0].confirmed, false); assert.equal(map.connections[0].expired, false); assert.equal(map.connections[0].expires_at, null);
     assert.equal(map.signatures[0].missing, true); assert.equal(map.signatures[0].stale, true);
     assert.equal(f.api.state(43).maps.length, 0); assert.equal(f.service.operations.state(43).signatures.length, 0);
 });
@@ -159,8 +163,9 @@ test('invalid imports and invalid cross-service commands roll back every affecte
     let map = twoNodes(f, f.create());
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, locked: true } });
     const revision = map.revision;
-    assert.throws(() => f.cmd(map, 'signature.save', { signature: { system_id: W, signature_id: 'ABC-123', connection_id: map.connections[0].id } }), /Unlock/);
-    assert.equal(f.service.operations.state(42).signatures.length, 0); assert.equal(f.api.state(42).maps[0].revision, revision);
+    assert.equal(map.connections[0].locked, undefined, 'Only system cards can be locked');
+    assert.throws(() => f.cmd(map, 'signature.save', { signature: { system_id: A, signature_id: 'ABC-123', connection_id: map.connections[0].id } }), /Add this system/);
+    assert.equal(f.service.operations.state(42, map.id).signatures.length, 0); assert.equal(f.api.state(42).maps[0].revision, revision);
 });
 
 test('native exports preserve map content across pilots while demoting imported links', async t => {
@@ -173,21 +178,25 @@ test('native exports preserve map content across pilots while demoting imported 
     assert.notEqual(imported.connections[0].link_id, map.connections[0].link_id); assert.equal(imported.connections[0].confirmed, false); assert.equal(imported.connections[0].active, false);
     assert.equal(f.api.state(42).maps[0].connections[0].active, true);
     f.api.remove(43, imported.id, { revision: imported.revision });
-    assert.equal(f.api.state(43).maps.length, 0); assert.equal(f.service.state(43).links.length, 1, 'map removal must not silently delete canonical observations');
+    assert.equal(f.api.state(43).maps.length, 0);
+    assert.equal(f.store.db.prepare("SELECT COUNT(*) AS count FROM universe_records WHERE character_id=43 AND kind='link'").get().count, 0, 'Removing a map removes its owned connections');
+    assert.equal(f.api.state(42).maps[0].connections[0].active, true, 'Removing an imported map leaves the source map intact');
 });
 
-test('duplicating a chain preserves canonical ages and shares life/mass while map edits remain independent', async t => {
+test('duplicating a chain preserves observed ages and makes connection evidence independent', async t => {
     const f = await fixture(t); let map = twoNodes(f, f.create());
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, confirmed: true, accessible: true, duration_hours: 4 } });
     map = f.cmd(map, 'comment.add', { comment: { body: 'Original note', connection_id: map.connections[0].id } });
-    const originalLink = f.service.state(42).links[0]; f.time(AT + 600000);
+    const originalLink = canonical(f, map)[0]; f.time(AT + 600000);
     let copy = f.api.duplicate(42, map.id, { revision: map.revision, name: 'Scouting copy' });
-    assert.notEqual(copy.id, map.id); assert.notEqual(copy.connections[0].id, map.connections[0].id); assert.equal(copy.connections[0].link_id, map.connections[0].link_id);
-    assert.equal(copy.connections[0].expires_at, originalLink.expires_at); assert.equal(copy.connections[0].updated_at, originalLink.updated_at);
+    assert.notEqual(copy.id, map.id); assert.notEqual(copy.connections[0].id, map.connections[0].id); assert.notEqual(copy.connections[0].link_id, map.connections[0].link_id);
+    assert.equal(copy.connections[0].expires_at, originalLink.expires_at); assert.equal(copy.connections[0].observed_at, originalLink.observed_at);
+    assert.equal(copy.connections[0].confirmed, false); assert.equal(copy.connections[0].accessible, false);
     assert.equal(copy.comments[0].connection_id, copy.connections[0].id);
     copy = f.cmd(copy, 'connection.save', { connection: { id: copy.connections[0].id, life_status: 'eol', mass: 'reduced' } });
     const refreshed = f.api.state(42).maps.find(row => row.id === map.id);
-    assert.equal(refreshed.connections[0].life_status, 'eol'); assert.equal(refreshed.connections[0].mass, 'reduced');
+    assert.equal(refreshed.connections[0].life_status, map.connections[0].life_status); assert.equal(refreshed.connections[0].mass, map.connections[0].mass);
+    assert.equal(copy.connections[0].life_status, 'eol'); assert.equal(copy.connections[0].mass, 'reduced');
     copy = f.cmd(copy, 'node.save', { node: { system_id: W, alias: 'Copy alias' } });
     assert.equal(f.api.state(42).maps.find(row => row.id === map.id).nodes[0].alias, '');
 });
@@ -205,26 +214,126 @@ test('passage corrections preserve identity and occurrence while multi-delete ob
     assert.equal(f.api.state(42).maps[0].nodes.length, 2);
     map = f.cmd(map, 'node.save', { node: { system_id: X, locked: false } });
     map = f.cmd(map, 'nodes.remove', { system_ids: [W, X] });
-    assert.equal(map.nodes.length, 0); assert.equal(map.connections.length, 0); assert.equal(map.passages.length, 1, 'observations remain in the private archive');
-    assert.equal(f.service.state(42).links.length, 1, 'removing diagram cards must not mutate routing truth');
-    map = f.cmd(map, 'undo'); assert.equal(map.nodes.length, 2); assert.equal(map.connections.length, 1);
+    assert.equal(map.nodes.length, 0); assert.equal(map.connections.length, 0); assert.equal(map.passages.length, 0, 'Passages disappear with their removed connection');
+    assert.deepEqual(canonical(f, map), [], 'Removing connected cards forgets the removed connections too');
+    map = f.cmd(map, 'undo'); assert.equal(map.nodes.length, 2); assert.equal(map.connections.length, 0, 'Undo restores system cards without resurrecting connections');
 });
 
 test('opt-in sampled passage tracking is deduplicated, reviewable and never changes connection trust', async t => {
-    const f = await fixture(t); let map = twoNodes(f, f.create());
+    const f = await fixture(t);
+    f.auth.characters = () => [{ id: 42, scopes: ['esi-location.read_location.v1'] }, { id: 43, scopes: [] }];
+    let map = twoNodes(f, f.create());
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, confirmed: true, accessible: true } });
-    const before = { status: 'ready', updatedAt: new Date(AT - 10000).toISOString(), data: { solar_system_id: W } }, after = { status: 'ready', updatedAt: new Date(AT).toISOString(), data: { solar_system_id: X } };
+    const sample = (system_id, at) => ({ status: 'ready', updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 60000).toISOString(), data: { solar_system_id: system_id } });
+    const before = sample(W, AT - 10000), after = sample(X, AT);
+    f.service.observeTravel(42, null, before);
     f.service.observeTravel(42, before, after); assert.equal(f.api.state(42).maps[0].passages.length, 0);
-    map = f.cmd(map, 'map.update', { track_passages: true }); const canonical = f.service.state(42).links;
-    f.service.observeTravel(42, before, after); f.service.observeTravel(42, before, after);
+    map = f.cmd(map, 'map.update', { track_passages: true }); const beforeLinks = canonical(f, map);
+    const returning = sample(W, AT + 10000); f.time(AT + 10000);
+    f.service.observeTravel(42, after, returning); f.service.observeTravel(42, after, returning);
     map = f.api.state(42).maps[0]; assert.equal(map.passages.length, 1); assert.equal(map.passages[0].source, 'sampled_location'); assert.equal(map.passages[0].reviewed, false); assert.equal(map.passages[0].mass_kg, null);
-    assert.deepEqual(f.service.state(42).links, canonical); assert.equal(map.can_undo, false);
+    assert.deepEqual(canonical(f, map), beforeLinks); assert.equal(map.can_undo, false);
     map = f.cmd(map, 'passage.save', { passage: { id: map.passages[0].id, notes: 'Reviewed the observed transition.' } });
     assert.equal(map.passages[0].source, 'sampled_location'); assert.equal(map.passages[0].reviewed, true);
-    f.service.observeTravel(42, before, after); assert.equal(f.api.state(42).maps[0].passages.length, 1, 'reviewing preserves the sample deduplication identity');
-    f.service.saveLink(42, { kind: 'wormhole', from_system_id: W, to_system_id: X, confirmed: true, accessible: true });
-    f.time(AT + 1000); f.service.observeTravel(42, before, { ...after, updatedAt: new Date(AT + 1000).toISOString() });
+    f.service.observeTravel(42, after, returning); assert.equal(f.api.state(42).maps[0].passages.length, 1, 'reviewing preserves the sample deduplication identity');
+    f.service.saveLink(42, { map_id: map.id, kind: 'wormhole', from_system_id: W, to_system_id: X, confirmed: true, accessible: true });
+    f.time(AT + 20000); f.service.observeTravel(42, returning, sample(X, AT + 20000));
     assert.equal(f.api.state(42).maps[0].passages.length, 1, 'ambiguous parallel connections must not invent a passage identity');
+});
+
+test('the shared selected-location stream expands only subscribed private maps and map-local pause stops tracking', async t => {
+    const f = await fixture(t);
+    f.auth.characters = () => [42, 43].map(id => ({ id, scopes: ['esi-location.read_location.v1'] }));
+    let home = f.create('Home'), other = f.api.create(43, { name: 'Independent' });
+    assert.equal(home.pilots[0].tracking, true); assert.equal(other.pilots[0].tracking, true);
+    home = f.cmd(home, 'pilot.add', { character_id: 43 });
+    const emit = (id, system_id, at) => {
+        f.time(at); f.store.saveSnapshot(id, 'location', { status: 'ready', data: { solar_system_id: system_id },
+            updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 60000).toISOString() });
+        f.service.observeSelectedLocation(id);
+    };
+    emit(43, W, AT); emit(43, X, AT + 20000);
+    home = f.api.state(42).maps[0]; other = f.api.state(43).maps[0];
+    assert.equal(home.connections.length, 1); assert.equal(other.connections.length, 1);
+    assert.notEqual(home.connections[0].link_id, other.connections[0].link_id);
+    assert.equal(home.connections[0].confirmed, false); assert.equal(other.connections[0].active, false);
+    assert.equal(home.pilots.find(row => row.character_id === 43).system_id, X);
+    home = f.cmd(home, 'pilot.tracking', { character_id: 43, tracking: false });
+    const expiry = other.connections[0].expires_at;
+    emit(43, A, AT + 40000);
+    assert.equal(f.api.state(42).maps[0].nodes.some(row => row.system_id === A), false);
+    other = f.api.state(43).maps[0];
+    assert.equal(other.nodes.some(row => row.system_id === A), true); assert.equal(other.connections.length, 2);
+    assert.equal(other.connections[0].expires_at, expiry);
+    assert.deepEqual(f.service.state(42).links, []); assert.deepEqual(f.service.state(43).links, []);
+    assert.equal(f.api.exportMap(42, home.id).map.pilots, undefined, 'map export carries no private tracking telemetry');
+});
+
+test('scoped maps adopt a source chain when a later exit matches without renewing its lifetime or copying user data', async t => {
+    const f = await fixture(t);
+    f.auth.characters = () => [42, 43].map(id => ({ id, scopes: ['esi-location.read_location.v1'] }));
+    const scoped = f.api.create(42, { name: 'Alpha approaches', scope: { system_ids: [A] } });
+    const emit = (system_id, at) => {
+        f.time(at); f.store.saveSnapshot(42, 'location', { status: 'ready', data: { solar_system_id: system_id },
+            updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 60000).toISOString() }); f.service.observeSelectedLocation(42);
+    };
+    emit(W, AT); emit(X, AT + 20000);
+    assert.deepEqual(f.api.state(42).maps[0].nodes, []);
+    const sourceId = f.api.state(42).source_map.id, first = f.api.map(42, sourceId).connections[0];
+    assert.equal(f.api.map(42, sourceId).read_only, true);
+    assert.throws(() => f.api.command(42, sourceId, { revision: f.api.map(42, sourceId).revision, op: 'node.save', node: { system_id: W, alias: 'No edits' } }), /read-only/);
+    emit(A, AT + 40000);
+    const adopted = f.api.map(42, scoped.id), copy = adopted.connections.find(row => row.from_system_id === W);
+    assert.deepEqual(new Set(adopted.nodes.map(row => row.system_id)), new Set([W, X, A]));
+    assert.notEqual(copy.link_id, first.link_id); assert.equal(copy.expires_at, first.expires_at); assert.equal(copy.observed_at, first.observed_at);
+    assert.equal(copy.duration_hours, 16); assert.equal(copy.mass, 'stable'); assert.equal(copy.max_ship_size, 'large'); assert.equal(copy.confirmed, false);
+    assert.deepEqual(f.api.map(42, sourceId).passages, []); assert.deepEqual(f.api.map(42, sourceId).comments, []);
+    const independent = f.api.duplicate(42, sourceId, { revision: f.api.map(42, sourceId).revision, name: 'My live chain' });
+    assert.equal(independent.read_only, false); assert.equal(independent.connections.length, 2);
+    assert.notEqual(independent.connections[0].link_id, first.link_id);
+});
+
+test('changing the selected pilot resets only source baselines and keeps explicitly tracked interactive pilots active', async t => {
+    const f = await fixture(t);
+    f.auth.characters = () => [42, 43].map(id => ({ id, scopes: ['esi-location.read_location.v1'] }));
+    let map = f.create(); map = f.cmd(map, 'pilot.add', { character_id: 43 });
+    const emit = (id, system_id, at) => {
+        f.time(at); f.store.saveSnapshot(id, 'location', { status: 'ready', data: { solar_system_id: system_id },
+            updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 60000).toISOString() }); f.service.observeSelectedLocation(id);
+    };
+    const source43 = f.api.state(43).source_map.id;
+    emit(43, W, AT); emit(43, X, AT + 20000);
+    assert.equal(f.api.map(43, source43).connections.length, 0); assert.equal(f.api.map(42, map.id).connections.length, 1);
+    f.api.setActivePilot(43); emit(43, W, AT + 40000);
+    assert.equal(f.api.map(43, source43).connections.length, 0);
+    emit(43, X, AT + 60000); assert.equal(f.api.map(43, source43).connections.length, 1);
+    f.api.setActivePilot(42); emit(43, A, AT + 80000); f.api.setActivePilot(43); emit(43, W, AT + 100000);
+    assert.equal(f.api.map(43, source43).connections.length, 1, 'time while this pilot was not selected cannot bridge a new source connection');
+    assert.equal(f.api.map(42, map.id).connections.length, 3, 'the explicit interactive roster continues independently');
+});
+
+test('shared maintenance expires source connections immediately and prunes source cards without an open view or connected account', async t => {
+    const f = await fixture(t);
+    f.auth.characters = () => [42, 43].map(id => ({ id, scopes: ['esi-location.read_location.v1'] }));
+    const emit = (id, system_id, at) => {
+        f.time(at); f.store.saveSnapshot(id, 'location', { status: 'ready', data: { solar_system_id: system_id },
+            updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 60000).toISOString() }); f.service.observeSelectedLocation(id);
+    };
+    emit(42, W, AT); emit(42, X, AT + 20000);
+    const source42 = f.api.state(42).source_map.id, expiry = Date.parse(f.api.map(42, source42).connections[0].expires_at);
+    f.api.setActivePilot(43); emit(43, W, AT + 40000);
+    const source43 = f.api.state(43).source_map.id;
+    const raw = (id, key) => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?").get(id, key).body);
+    f.auth.characters = () => []; // The cleanup path must not depend on an open page or valid active character.
+    f.time(AT + 40000 + 30 * 60000); await f.service.tick();
+    assert.deepEqual(raw(43, source43).nodes, []); assert.deepEqual(raw(43, source43).archived_nodes || [], [], 'source singleton cards have no archive');
+    assert.equal(raw(42, source42).connections.length, 1);
+    f.time(expiry); await f.service.tick();
+    assert.deepEqual(raw(42, source42).connections, []); assert.equal(raw(42, source42).nodes.length, 2, 'only system cards receive the grace period');
+    assert.equal(f.store.db.prepare("SELECT COUNT(*) AS total FROM universe_records WHERE character_id=42 AND kind='link' AND json_extract(body,'$.map_id')=?").get(source42).total, 0);
+    f.time(expiry + 30 * 60000); await f.service.tick();
+    const empty = raw(42, source42);
+    assert.deepEqual(empty.nodes, []); assert.deepEqual(empty.archived_nodes || [], []); assert.deepEqual(empty.passages, []); assert.deepEqual(empty.activity, []);
 });
 
 test('Wanderer-compatible export preserves portable fields while excluding unroutable observations', async t => {
@@ -257,13 +366,14 @@ test('deleted signature bindings permit condition edits without rebinding and sh
     const f = await fixture(t); let map = twoNodes(f, f.create());
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, max_ship_size: 'small' } });
     map = f.cmd(map, 'signature.save', { signature: { system_id: W, signature_id: 'ABC-123', connection_id: map.connections[0].id } });
-    const deletedId = map.signatures[0].id; f.service.operations.removeSignature(42, deletedId);
-    f.service.operations.saveSignature(42, { system_id: W, signature_id: 'ABC-123' });
+    const deletedId = map.signatures[0].id; f.service.operations.removeSignature(42, deletedId, map.id);
+    f.service.operations.saveSignature(42, { map_id: map.id, system_id: W, signature_id: 'ABC-123' });
     map = f.api.state(42).maps[0];
     map = f.cmd(map, 'connection.save', { connection: { ...map.connections[0], mass: 'reduced', life_status: 'eol', max_ship_size: null } });
     assert.equal(map.connections[0].mass, 'reduced'); assert.equal(map.connections[0].max_ship_size, null);
     assert.equal(map.connections[0].from_signature_record_id, deletedId); assert.equal(map.connections[0].from_signature_id, null);
-    const other = f.service.operations.saveSignature(43, { system_id: W, signature_id: 'ZZZ-999' });
+    const otherMap = f.api.create(43, { name: 'Other pilot' });
+    const other = f.service.operations.saveSignature(43, { map_id: otherMap.id, system_id: W, signature_id: 'ZZZ-999' });
     assert.throws(() => f.cmd(map, 'connection.save', { connection: { id: map.connections[0].id, from_signature_record_id: other.id } }), /belong to this pilot/);
     assert.throws(() => f.service.saveLink(42, { id: map.connections[0].link_id, from_system_id: A, from_signature_record_id: deletedId }), /belong to this pilot/);
 });
@@ -273,7 +383,7 @@ test('drawn connections preserve explicit unknown lifetime until an observed exp
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, confirmed: false, accessible: false, mass: 'unknown', life_status: 'unknown', expires_at: null } });
     const edge = map.connections[0];
     assert.equal(edge.expires_at, null); assert.equal(edge.expired, false); assert.equal(edge.active, false);
-    assert.equal(f.service.state(42).links[0].expires_at, null);
+    assert.equal(canonical(f, map)[0].expires_at, null);
     f.time(AT + 3600000);
     map = f.cmd(map, 'connection.save', { connection: { id: edge.id, notes: 'Needs a scout to inspect both ends.' } });
     assert.equal(map.connections[0].expires_at, null, 'editing a drawn edge must not invent a lifetime');
@@ -281,10 +391,10 @@ test('drawn connections preserve explicit unknown lifetime until an observed exp
         assert.throws(() => f.cmd(map, 'connection.save', { connection: { id: edge.id, ...changes } }), /Record a wormhole expiry/);
     }
     assert.equal(f.api.state(42).maps[0].revision, map.revision, 'failed activation must not advance the map or mutate its canonical link');
-    assert.equal(f.service.route(42, { originId: W, destinationId: X, preferences: { useWormholes: true, allowUnknownWormholeSize: true } }).status, 'no_route');
+    assert.equal(f.service.route(42, { map_id: map.id, originId: W, destinationId: X, preferences: { useWormholes: true, allowUnknownWormholeSize: true } }).status, 'no_route');
     map = f.cmd(map, 'connection.save', { connection: { id: edge.id, confirmed: true, accessible: true, duration_hours: 4 } });
     assert.equal(map.connections[0].expires_at, new Date(AT + 5 * 3600000).toISOString()); assert.equal(map.connections[0].active, true);
-    const ordinaryManual = f.service.saveLink(42, { kind: 'wormhole', from_system_id: W, to_system_id: A });
+    const ordinaryManual = f.service.saveLink(42, { map_id: map.id, kind: 'wormhole', from_system_id: W, to_system_id: A });
     assert.equal(ordinaryManual.expires_at, new Date(AT + 17 * 3600000).toISOString(), 'existing manual creation defaults remain unchanged');
 });
 
@@ -302,12 +412,13 @@ test('disconnected cards prune after the last expiry while metadata, signatures 
     assert.equal(map.nodes[0].disconnected_at, new Date(AT + 4 * 3600000).toISOString());
     f.time(AT + 4 * 3600000 + 30 * 60000); map = f.api.state(42).maps[0];
     assert.equal(map.nodes.length, 0); assert.equal(map.connections.length, 0); assert.equal(map.archived_nodes.length, 2);
-    assert.ok(map.archived_connections.some(row => row.notes === 'Original edge note'));
+    assert.ok(!map.archived_connections?.length, 'Only system records are archived');
+    assert.deepEqual(canonical(f, map), [], 'Expired connection evidence is forgotten');
     assert.equal(map.observations[0].title, 'Resident citadel'); assert.equal(map.comments[0].body, 'Keep this scouting note');
-    assert.equal(f.service.operations.state(42).signatures.length, 1);
+    assert.equal(f.service.operations.state(42, map.id).signatures.length, 1);
     const imported = f.api.importMap(43, { document: f.api.exportMap(42, map.id), name: 'Archive copy' });
     assert.deepEqual(imported.archived_nodes.find(row => row.system_id === W).effective_owner, owner);
-    assert.equal(f.service.operations.state(43).signatures[0].signature_id, 'AAA-123');
+    assert.equal(f.service.operations.state(43, imported.id).signatures[0].signature_id, 'AAA-123');
     map = f.cmd(map, 'connection.save', { connection: { from_system_id: W, to_system_id: X, add_missing_nodes: true, expires_at: null } });
     const restored = map.nodes.find(row => row.system_id === W);
     assert.equal(restored.alias, 'Homeward'); assert.equal(restored.description, 'Resident intelligence'); assert.deepEqual(restored.tags, ['residents']);
@@ -330,7 +441,7 @@ test('deletion grace survives refreshes, reconnecting cancels it, and standalone
     map = f.cmd(map, 'connection.remove', { connection_id: map.connections[0].id });
     f.time(AT + 90 * 60000); map = f.api.state(42).maps[0];
     assert.deepEqual(map.nodes.map(row => row.system_id), [A]);
-    assert.equal(f.service.state(42).links.length, 2, 'Pruning a diagram cannot change canonical route evidence');
+    assert.deepEqual(canonical(f, map), [], 'Deleted connections leave no canonical remnants when systems are pruned');
 });
 
 test('unlock and manual re-add each grant disconnected cards a fresh thirty minutes', async t => {

@@ -25,6 +25,51 @@ test('ordered planning persists per pilot, joins segments and reports an unreach
  nav.saveItinerary(42,{stops:[{systemId:2},{systemId:5}]});const broken=await nav.plan(42);assert.equal(broken.status,'no_route');assert.deepEqual(broken.systemIds,[]);assert.equal(broken.failedSegment,1);
  assert.throws(()=>nav.state(999),/connected/);
 });
+test('map navigation drafts, plans and removal stay separate from other maps and K-Space',async t=>{
+ const seen=[];const {nav,store}=await fixture(t,{getMap:(id,key)=>id===42&&['alpha','beta'].includes(key),planRoute:(id,input)=>{seen.push(input.map_id);return planRoute({systems,gates,...input});}});
+ nav.saveItinerary(42,{map_id:'alpha',originId:1,stops:[{systemId:3}]});nav.saveItinerary(42,{map_id:'beta',originId:4,stops:[{systemId:2}]});
+ assert.equal(nav.state(42).itinerary.stops.length,0);assert.equal(nav.state(42,'alpha').itinerary.stops[0].systemId,3);assert.equal(nav.state(42,'beta').itinerary.stops[0].systemId,2);
+ assert.deepEqual((await nav.plan(42,{map_id:'alpha'})).systemIds,[1,2,3]);assert.deepEqual(seen,['alpha']);
+ assert.ok(store.get('universe:navigation:42:alpha').plan);assert.equal(store.get('universe:navigation:42:beta').plan,null);
+ nav.clearItinerary(42,'alpha');assert.equal(nav.state(42,'alpha').itinerary.stops.length,0);assert.equal(nav.state(42,'beta').itinerary.stops.length,1);
+ assert.throws(()=>nav.state(43,'alpha'),/private chain map/);assert.throws(()=>nav.saveItinerary(42,{map_id:'missing',stops:[]}),/private chain map/);
+});
+test('automatic map itinerary progress respects roster tracking and never records wormhole positions globally',async t=>{
+ const maps={active:{pilots:[{character_id:42,tracking:true}]},paused:{pilots:[{character_id:42,tracking:false}]},removed:{pilots:[]},alternate:{pilots:[{character_id:43,tracking:true}]}};
+ const scopedSystems=systems.map(row=>({...row,space:row.system_id===5?'wormhole':'known'}));
+ const {nav,store}=await fixture(t,{atlas:{systems:scopedSystems,gates},getMap:(id,key)=>id===42?maps[key]:null});
+ for(const map_id of Object.keys(maps)) nav.saveItinerary(42,{map_id,originId:1,stops:[{id:'exit',systemId:5}]});
+ nav.saveItinerary(42,{originId:1,stops:[{id:'global',systemId:5}]});
+ const globalBefore=store.get('universe:navigation:42');
+ nav.observeLocation(42,{system_id:5,status:'ready'});
+ assert.deepEqual(nav.state(42,'active').itinerary.progress.completedStopIds,['exit']);
+ for(const mapId of ['paused','removed','alternate']) assert.equal(nav.state(42,mapId).itinerary.progress.lastSystemId,null);
+ assert.deepEqual(store.get('universe:navigation:42'),globalBefore);
+ nav.observeLocation(43,{system_id:5,status:'ready'});assert.equal(nav.state(42,'alternate').itinerary.progress.lastSystemId,null);
+ assert.equal(store.get('universe:navigation:43',null),null);
+});
+test('forgetting a connection clears every cached route copy without deleting map itinerary or unrelated plans',async t=>{
+ const {nav,store}=await fixture(t,{getMap:()=>true});
+ for(const map_id of ['alpha','beta']) nav.saveItinerary(42,{map_id,originId:1,stops:[{systemId:4}]});
+ const value=store.get('universe:navigation:42:alpha');value.plan={status:'no_route',segments:[{excluded:[{id:'dead',kind:'wormhole',label:'Connection note'}]}]};value.exportStatus={status:'sent'};store.set('universe:navigation:42:alpha',value);
+ const other=store.get('universe:navigation:42:beta');other.plan={status:'ok',edges:[{id:'alive',kind:'wormhole'}]};store.set('universe:navigation:42:beta',other);
+ nav.forgetConnections(42,['dead']);assert.equal(nav.state(42,'alpha').plan,null);assert.equal(nav.state(42,'alpha').exportStatus,null);assert.equal(nav.state(42,'alpha').itinerary.stops.length,1);assert.equal(nav.state(42,'beta').plan.edges[0].id,'alive');
+ nav.forgetMissingConnections(()=>false);assert.equal(nav.state(42,'beta').plan,null);
+});
+test('a pending calculation cannot save a copy after its connection has vanished',async t=>{
+ let release,started,current=true;const blocked=new Promise(resolve=>release=resolve),begun=new Promise(resolve=>started=resolve);
+ const {nav}=await fixture(t,{isConnectionCurrent:()=>current,planRoute:async()=>{started();await blocked;return {status:'ok',systemIds:[1,4],edges:[{id:'vanished',kind:'wormhole',from_system_id:1,to_system_id:4}],cost:1};}});
+ nav.saveItinerary(42,{originId:1,stops:[{systemId:4}]});const pending=nav.plan(42);await begun;current=false;release();
+ await assert.rejects(pending,/Connections changed/);assert.equal(nav.state(42).plan,null);
+});
+test('a delayed gate-only plan cannot recreate scoped settings after its map is deleted',async t=>{
+ let exists=true,release,started;const blocked=new Promise(resolve=>release=resolve),begun=new Promise(resolve=>started=resolve);
+ const {nav,store}=await fixture(t,{getMap:()=>exists,planRoute:async()=>{started();await blocked;return {status:'ok',systemIds:[1,2],edges:[{id:'gate:1:2',kind:'gate',from_system_id:1,to_system_id:2}],cost:1};}});
+ // A revision-zero imported draft can match the empty fallback after deletion.
+ const draft=nav.state(42,'removed');draft.itinerary.originId=1;draft.itinerary.stops=[{id:'end',systemId:2,label:'System 2'}];store.set('universe:navigation:42:removed',draft);
+ const pending=nav.plan(42,{map_id:'removed'});await begun;exists=false;store.db.prepare('DELETE FROM settings WHERE key=?').run('universe:navigation:42:removed');release();
+ await assert.rejects(pending,/private chain map/);assert.equal(store.get('universe:navigation:42:removed',null),null);
+});
 test('progress consumes only the next occurrence, retains future revisits, and ignores stale observations',async t=>{
  const {nav}=await fixture(t);nav.saveItinerary(42,{originId:1,stops:[{id:'a',systemId:2},{id:'b',systemId:1},{id:'c',systemId:2}]});
  nav.observeLocation(42,2);assert.deepEqual(nav.state(42).itinerary.progress.completedStopIds,['a']);nav.observeLocation(42,2);assert.deepEqual(nav.state(42).itinerary.progress.completedStopIds,['a']);

@@ -227,7 +227,6 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             if (d.key === 'sovereignty' && Array.isArray(r.data?.solar_systems))
                 store.saveSnapshot(0, 'sovereignty_structures', {...snapshot, data: sovereigntyStructures(data), derivedFrom: 'sovereignty'});
             if (d.key === 'location' && !r.stale && store.get('module:universe', true)) universe.observeSelectedLocation(id);
-            if(d.key==='location' && !r.stale && store.get('module:universe',true)) universe.observeTravel(id, prior, snapshot);
             if(d.key==='loyalty'&&!r.stale)reconcileSessionLoyalty(store,id);
             goals.refresh(id,d.key);
             nextRun.set(key, r.stale ? retryDeadline(d, r.retryAt) : Math.max(Date.now() + 3000, Date.parse(snapshot.refreshAt)));

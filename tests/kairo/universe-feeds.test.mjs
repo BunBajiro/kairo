@@ -20,11 +20,11 @@ const kill = (sequence, killId = sequence) => ({ sequence_id: sequence, killmail
     esi: { killmail_time: iso(-30000), solar_system_id: A, victim: { ship_type_id: 587, alliance_id: 99 } }, zkb: { totalValue: 300000 } });
 const response = (data, status = 200, headers = {}) => new Response(status === 304 ? null : JSON.stringify(data), { status, headers });
 const sample = (data, extra = {}) => ({ status: 'ready', data, updatedAt: iso(0), expiresAt: iso(3600000), ...extra });
-function fixture(t, fetcher = async () => { throw new Error('Unexpected network call'); }) {
+function fixture(t, fetcher = async () => { throw new Error('Unexpected network call'); }, options = {}) {
     const values = new Map(), snapshots = new Map(); let time = AT, calls = [];
     const store = { get: (k, fallback) => values.has(k) ? structuredClone(values.get(k)) : fallback,
         set: (k, value) => values.set(k, structuredClone(value)), snapshot: (id, key) => snapshots.get(id + ':' + key) || null };
-    const service = createUniverseFeeds(store, {}, { atlas, now: () => time, fetcher: async (url, options) => { calls.push({ url, options }); return fetcher(url, options); }, points: { items: [], metadata: {} } });
+    const service = createUniverseFeeds(store, {}, { atlas, now: () => time, fetcher: async (url, options) => { calls.push({ url, options }); return fetcher(url, options); }, points: { items: [], metadata: {} }, ...options });
     t.after(() => service.close());
     return { service, store, calls, snapshots, time: v => { time = v; } };
 }
@@ -33,6 +33,22 @@ test('wormhole reports retain limitations, discard incomplete or expired, and va
     assert.equal(rows.length, 1); assert.equal(rows[0].max_ship_size, 'large'); assert.equal(rows[0].completed, true);
     assert.equal(rows[0].reported, true); assert.equal(rows[0].from_signature, 'AAA-111');
     assert.throws(() => normalizeConnections([wh({ out_system_id: B })], 'thera', atlas, AT), /matched/);
+});
+test('public connection expiry physically removes cached reports at their deadline, including while disabled', async t => {
+    const timers=new Map(),removed=[];let next=0;
+    const {service,store,time}=fixture(t,async()=>response([wh({expires_at:iso(60000)})]),{setExpiryTimer:(fn,ms)=>{const key=++next;timers.set(key,{fn,ms});return key;},clearExpiryTimer:key=>timers.delete(key),onForgetConnections:rows=>removed.push(...rows)});
+    await service.refresh({source:'thera'});assert.equal([...timers.values()][0].ms,60000);
+    store.set('module:universe',false);time(AT+60000);const callback=[...timers.values()][0].fn;timers.clear();callback();
+    assert.deepEqual(store.get('universe:feeds:thera').data,[]);assert.deepEqual(removed.map(row=>row.id),['thera:4']);assert.equal(timers.size,0);
+});
+test('304 and failed in-flight refreshes cannot restore a report that expired while waiting', async t => {
+    for(const failed of [false,true]) {
+        let count=0,release;const waiting=new Promise(resolve=>release=resolve);
+        const {service,store,time}=fixture(t,async()=>{if(++count===1)return response([wh({expires_at:iso(600000)})]);await waiting;if(failed)throw new Error('Provider unavailable');return response(null,304);});
+        await service.refresh({source:'thera'});time(AT+300001);const pending=service.refresh({source:'thera'});
+        time(AT+600000);service.pruneExpired();assert.deepEqual(store.get('universe:feeds:thera').data,[]);
+        release();await pending;assert.deepEqual(store.get('universe:feeds:thera').data,[]);assert.deepEqual(service.state().connections,[]);
+    }
 });
 test('combat display window is explicit, bounded and preserves retained observations when shortened', t => {
     const {service,store}=fixture(t);

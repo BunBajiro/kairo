@@ -88,28 +88,37 @@ test('Universe HTTP contract: local planning, private records, CSRF and stream i
         for (const id of [42, 43]) app.store.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)')
             .run(id, 'Universe pilot ' + id, '[]', '{}');
         const view = await json('/views?character=42', 'POST', { name: 'Private fleet view', config: { mode: 'standings', pinned: staging } });
-        const link = await json('/links?character=42', 'POST', {
+        const map = await json('/jspace/maps?character=42', 'POST', { name: 'Private route chain' });
+        const otherMap = await json('/jspace/maps?character=42', 'POST', { name: 'Independent route chain' });
+        const link = await json('/links?character=42', 'POST', { map_id: map.id,
             label: 'Private wormhole', from_system_id: jita, to_system_id: amarr,
             kind: 'wormhole', enabled: true, accessible: true, confirmed: true, duration_hours: 1,
         });
         const mine = await json('?character=42'), other = await json('?character=43'), guest = await json('');
         assert.equal(mine.views[0].id, view.id);
-        assert.equal(mine.links[0].id, link.id);
+        assert.equal(link.map_id, map.id);
+        assert.deepEqual(mine.links, [], 'Private map wormholes never appear in global route connections');
         assert.deepEqual(other.views, []); assert.deepEqual(other.links, []);
         assert.deepEqual(guest.views, []); assert.deepEqual(guest.links, []);
         await json('/views/' + view.id + '?character=43', 'DELETE', undefined, 400);
         await json('/links/' + link.id + '?character=43', 'DELETE', undefined, 400);
         await json('/views?character=43', 'POST', { id: view.id, name: 'Cannot overwrite', config: {} }, 400);
         const preferences = { useWormholes: true };
-        const personalRoute = await json('/route?character=42', 'POST', { originId: jita, destinationId: amarr, preferences });
+        const personalRoute = await json('/route?character=42', 'POST', { map_id: map.id, originId: jita, destinationId: amarr, preferences });
+        const independentRoute = await json('/route?character=42', 'POST', { map_id: otherMap.id, originId: jita, destinationId: amarr, preferences });
+        const unscopedRoute = await json('/route?character=42', 'POST', { originId: jita, destinationId: amarr, preferences });
+        await json('/route?character=43', 'POST', { map_id: map.id, originId: jita, destinationId: amarr, preferences }, 400);
         const otherRoute = await json('/route?character=43', 'POST', { originId: jita, destinationId: amarr, preferences });
         assert.equal(personalRoute.hops, 1);
         assert.equal(personalRoute.edges[0].id, link.id);
         assert.equal(personalRoute.edges[0].kind, 'wormhole');
         assert.ok(otherRoute.hops > 1);
         assert.ok(otherRoute.edges.every(edge => edge.kind === 'gate'));
+        assert.ok(independentRoute.hops > 1); assert.ok(independentRoute.edges.every(edge => edge.kind === 'gate'));
+        assert.ok(unscopedRoute.hops > 1); assert.ok(unscopedRoute.edges.every(edge => edge.kind === 'gate'));
         await json('/links/' + link.id + '?character=42', 'DELETE');
         assert.deepEqual((await json('?character=42')).links, []);
+        for (const chain of [map, otherMap]) await json('/jspace/maps/' + chain.id + '?character=42', 'DELETE', { revision: chain.revision });
     });
 
     await t.test('invalid pilot and system identifiers fail through the public API', async () => {
