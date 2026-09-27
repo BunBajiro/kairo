@@ -224,9 +224,12 @@ async function pointerNavigation(){
 
   const drag=async()=>{
    const start={x:bounds.x+bounds.width*.48,y:bounds.y+bounds.height*.5};
+   // Reset at the real release, without inserting a DevTools round-trip that
+   // artificially ages the final velocity sample before the user's pointer-up.
+   await evaluate("document.querySelector('.universe-module canvas').addEventListener('pointerup',()=>{window.__navigation={points:[],draws:0};},{once:true,capture:true})");
    await call('Input.dispatchMouseEvent',{type:'mousePressed',...start,button:'left',clickCount:1});
    for(const offset of [20,40,60]){await delay(25);await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:start.x+offset,y:start.y+offset*.35,button:'left',buttons:1});}
-   await reset();await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:start.x+60,y:start.y+21,button:'left',clickCount:1});
+   await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:start.x+60,y:start.y+21,button:'left',clickCount:1});
   };
   await drag();const coast=await settle('Drag coast'),positions=new Set(coast.points.map(p=>p.x.toFixed(2)+':'+p.y.toFixed(2))).size;
   assert.ok(positions>=3,'Releasing a moving drag produces finite intermediate coast positions');
