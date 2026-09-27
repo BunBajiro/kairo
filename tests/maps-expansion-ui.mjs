@@ -41,8 +41,9 @@ export async function mapsExpansionAcceptance(ui) {
  checks.push('Region and constellation previews stay provisional, drag and nudge as one group, cancel without writes, then atomically place individual nodes and real internal stargates');
 
  await click('[aria-label="Fit chain"]');await delay(350);
- const gate=saved.connections.find(edge=>edge.kind==='gate'),gateLabel='[data-connection-label='+JSON.stringify(gate.id)+']';
- const gatePoint=await evaluate(`(()=>{const r=document.querySelector(${JSON.stringify(gateLabel)}).getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+ const gate=saved.connections.find(edge=>edge.kind==='gate'),gatePath='[data-connection-id='+JSON.stringify(gate.id)+'] .jspace-edge-hit';
+ assert.equal(await evaluate("document.querySelectorAll('.jspace-edge-label[data-kind=gate],.jspace-edge-label[data-kind=ansiblex]').length"),0,'Permanent connections have no information badges');
+ const gatePoint=await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(gatePath)}),matrix=e.getScreenCTM();for(const t of [.5,.4,.6,.3,.7]){const p=e.getPointAtLength(e.getTotalLength()*t).matrixTransform(matrix);if(document.elementFromPoint(p.x,p.y)===e)return{x:p.x,y:p.y};}throw new Error('No exposed stargate segment');})()`);
  await call('Input.dispatchMouseEvent',{type:'mousePressed',...gatePoint,button:'right',buttons:2,clickCount:1});await call('Input.dispatchMouseEvent',{type:'mouseReleased',...gatePoint,button:'right',clickCount:1});
  await waitFor("!!document.querySelector('.jspace-map-menu')");assert.equal(await evaluate("!!document.querySelector('.jspace-connection-quick')"),false,'Permanent connection menus contain no lifetime, mass or ship-size controls');
  await button('Edit connection','.jspace-map-menu');await waitFor("!!document.querySelector('.jspace-sheet')");
@@ -52,12 +53,18 @@ export async function mapsExpansionAcceptance(ui) {
  await nativeSelect('Connection from system',gate.from_system_id);await nativeSelect('Connection to system',gate.to_system_id);await click('[aria-label="Connection type Ansiblex"]');
  assert.equal(await evaluate("!!document.querySelector('.jspace-sheet [aria-label=\"Connection wormhole type\"]')"),false);
  await button('Record connection','.jspace-sheet');await waitFor('!document.querySelector(".jspace-sheet")');await settle();
- const bridge=(await state()).connections.find(edge=>edge.kind==='ansiblex');assert.ok(bridge&&!bridge.expires_at&&!bridge.mass);assert.match(await evaluate('document.querySelector('+JSON.stringify('[data-connection-label='+JSON.stringify(bridge.id)+']')+').textContent'),/Ansiblex/);
+ const bridge=(await state()).connections.find(edge=>edge.kind==='ansiblex');assert.ok(bridge&&!bridge.expires_at&&!bridge.mass);
+ assert.equal(await evaluate('!!document.querySelector('+JSON.stringify('[data-connection-label='+JSON.stringify(bridge.id)+']')+')'),false,'Ansiblex is drawn as an uninterrupted connection without a badge');
+ const bridgePath='[data-connection-id='+JSON.stringify(bridge.id)+'] .jspace-edge-hit';
+ assert.match(await evaluate('document.querySelector('+JSON.stringify(bridgePath)+').getAttribute("aria-label")'),/Ansiblex/);
+ await evaluate('document.querySelector('+JSON.stringify(bridgePath)+').focus()');await key('Enter','Enter',13,'\r');
+ await waitFor('document.querySelector('+JSON.stringify('[data-connection-id='+JSON.stringify(bridge.id)+']')+').classList.contains("is-selected")');
  if(await evaluate("!!document.querySelector('[aria-label=\"Close selected map context\"]')"))await click('[aria-label="Close selected map context"]');
  const unlinkedPair=reference.members.flatMap((a,index)=>reference.members.slice(index+1).map(b=>[a.system_id,b.system_id])).find(pair=>!pairs.has([...pair].sort((a,b)=>a-b).join(':')));assert.ok(unlinkedPair,'The anchor test uses systems with no real stargate');
  const port=(id,side)=>'.jspace-connection-handle[data-system-id="'+id+'"][data-side="'+side+'"]';
  await evaluate('document.querySelector('+JSON.stringify(port(unlinkedPair[0],'top'))+').focus()');await key('Enter','Enter',13,'\r');await evaluate('document.querySelector('+JSON.stringify(port(unlinkedPair[1],'bottom'))+').focus()');await key('Enter','Enter',13,'\r');await settle();
  const drawn=(await state()).connections.find(edge=>edge.kind==='wormhole');assert.ok(drawn);assert.equal(drawn.from_port,'top');assert.equal(drawn.to_port,'bottom');
+ assert.ok(await evaluate('!!document.querySelector('+JSON.stringify('[data-connection-label='+JSON.stringify(drawn.id)+']')+')'),'Wormhole condition badges remain available');
  const curve=await evaluate('document.querySelector('+JSON.stringify('[data-connection-id='+JSON.stringify(drawn.id)+'] .jspace-edge-line')+').getAttribute("d")');assert.equal((curve.match(/C/g)||[]).length,1);assert.equal((curve.match(/M/g)||[]).length,1);
  checks.push('Stargates and Ansiblex have distinct permanent visuals and editors without wormhole conditions; keyboard creation from top to bottom tabs preserves both anchors on one continuous curve');
 
