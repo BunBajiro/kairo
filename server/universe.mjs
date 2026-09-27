@@ -192,7 +192,6 @@ export function createUniverse(store, auth, esi, options = {}) {
         const id = pilotId(characterId), link = record(id, 'link', key);
         if (!link) throw new Error('Saved link not found for this pilot.');
         if (!internal && link.map_id && record(id, 'jspace_map', link.map_id)?.kind === 'tracking_source') throw new Error('Tracking source connections are read-only.');
-        if (link.kind !== 'wormhole') return deleteRecord(id, 'link', key);
         forgetLinks(id, [{...link, ended_at: expiredLink(link) && link.life_status !== 'collapsed' ? link.expires_at : iso()}]);
         return { id: String(key), deleted: true };
     }
@@ -270,7 +269,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         cleanupExpired(id);
         if (mapId && !record(id, 'jspace_map', mapId)) throw new Error('Choose a private chain map for this pilot.');
         const lists = new Map(records(id, 'list').map(list => [list.id, list]));
-        return records(id, 'link').filter(link => link.kind !== 'wormhole' || mapId && link.map_id === mapId).map(link => {
+        return records(id, 'link').filter(link => link.map_id ? mapId && link.map_id === mapId : link.kind !== 'wormhole').map(link => {
             for (const side of ['from', 'to']) {
                 const recordId = link[side + '_signature_record_id'];
                 if (!recordId) continue;
@@ -332,13 +331,15 @@ export function createUniverse(store, auth, esi, options = {}) {
     function normalizeLink(id, input, previous = null, listId = undefined, scopeMap = null) {
         const old = previous || {}, kind = input.kind || old.kind || 'ansiblex';
         if (!['wormhole', 'ansiblex'].includes(kind)) throw new Error('Choose a wormhole or Ansiblex connection.');
-        const map_id = kind === 'wormhole' ? input.map_id ?? old.map_id : null;
-        if (kind === 'wormhole' && (!map_id || typeof map_id !== 'string' || scopeMap?.id !== map_id && !record(id, 'jspace_map', map_id))) throw new Error('Choose a private chain map for this wormhole.');
-        if (old.map_id && map_id !== old.map_id) throw new Error('A wormhole belongs to its original chain map.');
+        const map_id = input.map_id ?? old.map_id ?? null;
+        if ((kind === 'wormhole' || map_id) && (!map_id || typeof map_id !== 'string' || scopeMap?.id !== map_id && !record(id, 'jspace_map', map_id))) throw new Error('Choose a private chain map for this wormhole.');
+        if (old.map_id && map_id !== old.map_id) throw new Error('A connection belongs to its original chain map.');
         const from = systemId(input.from_system_id ?? input.from ?? old.from_system_id), to = systemId(input.to_system_id ?? input.to ?? old.to_system_id);
         if (from === to) throw new Error('A connection needs two different systems.');
+        if (kind === 'ansiblex' && [from, to].some(system => byId.get(system)?.space !== 'known')) throw new Error('Ansiblex connections require two known-space systems.');
         const list_id = listId ?? input.list_id ?? old.list_id ?? null;
         if (list_id && listId === undefined && !record(id, 'list', list_id)) throw new Error('Connection list not found for this pilot.');
+        if (map_id && list_id) throw new Error('Map-owned connections cannot change a configured connection list.');
         const optionalId = key => {
             const value = input[key] ?? old[key];
             if (value == null || value === '') return null;
@@ -403,12 +404,12 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (kind === 'wormhole' && expires_at === null && (boolean('confirmed', true) || boolean('accessible', true) || boolean('reverse_accessible', false)))
             throw new Error('Record a wormhole expiry before confirming the connection or allowing it in routes. Unknown-lifetime connections must remain unconfirmed and inaccessible.');
         return { id: old.id || randomUUID(), kind, ...(map_id ? {map_id} : {}), from_system_id: from, to_system_id: to, list_id,
-            label: text(input.label ?? old.label, 160), enabled: life_status !== 'collapsed' && boolean('enabled', true), accessible: boolean('accessible', kind === 'wormhole'),
+            label: text(input.label ?? old.label, 160), enabled: (kind !== 'wormhole' || life_status !== 'collapsed') && boolean('enabled', true), accessible: boolean('accessible', kind === 'wormhole'),
             confirmed: boolean('confirmed', true), directional: boolean('directional', false),
             ...(kind === 'wormhole' ? {life_status, duration_hours, life_band:life.life_band, life_observed_at:life.life_observed_at, from_signature_record_id: signatureRecord('from'), to_signature_record_id: signatureRecord('to'), max_ship_size, max_jump_mass_kg, type_status, wh_type: text(input.wh_type ?? old.wh_type,16), from_signature: text(input.from_signature ?? old.from_signature,16),
                 to_signature: text(input.to_signature ?? old.to_signature,16), reported_source: text(input.reported_source ?? old.reported_source,80),
                 report_id: text(input.report_id ?? old.report_id,100), observed_at: observed_at == null ? null : new Date(observed_at).toISOString()} : {}),
-            reverse_accessible: input.reverse_accessible == null && old.reverse_accessible == null ? null : boolean('reverse_accessible', false), mass,
+            reverse_accessible: input.reverse_accessible == null && old.reverse_accessible == null ? null : boolean('reverse_accessible', false), ...(kind === 'wormhole' ? {mass} : {}),
             structure_id: optionalId('structure_id'), reverse_structure_id: optionalId('reverse_structure_id'), owner_alliance_id: optionalId('owner_alliance_id'),
             capital_system_id: optionalId('capital_system_id'), reverse_owner_alliance_id: optionalId('reverse_owner_alliance_id'), reverse_capital_system_id: optionalId('reverse_capital_system_id'),
             source: old.source || (listId ? 'import' : 'manual'), discovered_at: old.discovered_at || iso(), expires_at, updated_at: iso() };
@@ -440,16 +441,27 @@ export function createUniverse(store, auth, esi, options = {}) {
         const rows = preview.links;
         if ((input.text != null || input.links != null) && !rows.length) throw new Error('No valid Ansiblex connections found. Paste the SMT or CSV list first.');
         if (rows.length > 2000) throw new Error('Import no more than 2,000 connections at a time.');
-        const imported = rows.map(row => normalizeLink(id, { ...row, kind: 'ansiblex', accessible: row.accessible ?? input.accessible ?? false }, null, list.id));
-        const unique = new Map(imported.map(link => [link.directional ? 'directed:' + link.from_system_id + ':' + link.to_system_id :
-            [link.from_system_id, link.to_system_id].sort((a, b) => a - b).join(':'), link]));
+        const pairKey = link => link.directional ? 'directed:' + link.from_system_id + ':' + link.to_system_id : [link.from_system_id, link.to_system_id].sort((a, b) => a - b).join(':');
+        const previous = records(id, 'link').filter(link => link.list_id === list.id), previousByPair = new Map(previous.map(link => [pairKey(link), link]));
+        const imported = rows.map(source => {
+            const oldLink = previousByPair.get(pairKey(source));
+            let row = source;
+            // A reordered reciprocal list must not flip existing map endpoints or their ports.
+            if (oldLink && !source.directional && source.from_system_id !== oldLink.from_system_id) {
+                row = { ...source, from_system_id: source.to_system_id, to_system_id: source.from_system_id };
+                for (const field of ['structure_id', 'accessible', 'owner_alliance_id', 'capital_system_id']) {
+                    row[field] = source['reverse_' + field]; row['reverse_' + field] = source[field];
+                }
+            }
+            return normalizeLink(id, { ...row, kind: 'ansiblex', accessible: row.accessible ?? input.accessible ?? false }, oldLink, list.id);
+        });
+        const unique = new Map(imported.map(link => [pairKey(link), link]));
         store.db.exec('BEGIN IMMEDIATE');
         try {
             persist(id, 'list', list);
             if (input.links != null || input.text != null) {
-                const previous = records(id, 'link').filter(link => link.list_id === list.id);
-                forgetLinks(id, previous.filter(link => link.kind === 'wormhole').map(link => ({...link,ended_at:iso()})));
-                for (const link of previous.filter(link => link.kind !== 'wormhole')) remove.run(id, 'link', link.id);
+                const retained = new Set([...unique.values()].map(link => link.id));
+                forgetLinks(id, previous.filter(link => !retained.has(link.id)).map(link => ({...link,ended_at:iso()})));
             }
             for (const link of unique.values()) persist(id, 'link', link);
             store.db.exec('COMMIT');
@@ -462,8 +474,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         store.db.exec('BEGIN IMMEDIATE');
         try {
             const previous = records(id, 'link').filter(link => link.list_id === key);
-            forgetLinks(id, previous.filter(link => link.kind === 'wormhole').map(link => ({...link,ended_at:iso()})));
-            for (const link of previous.filter(link => link.kind !== 'wormhole')) remove.run(id, 'link', link.id);
+            forgetLinks(id, previous.map(link => ({...link,ended_at:iso()})));
             remove.run(id, 'list', String(key)); store.db.exec('COMMIT');
         } catch (error) { store.db.exec('ROLLBACK'); throw error; }
         return { id: String(key), deleted: true };

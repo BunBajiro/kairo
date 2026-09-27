@@ -15,7 +15,7 @@ export function fitChainCamera(nodes, viewport, padding = viewport.width < 600 ?
   const bounds = chainBounds(nodes), width = Math.max(1, viewport.width), height = Math.max(1, viewport.height);
   // Include the actual side handles, which remain attached to the whole card at every zoom.
   const availableWidth=Math.max(1,width-padding*2),availableHeight=Math.max(1,height-padding*2);
-  const zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX+28),availableHeight/(bounds.maxY-bounds.minY)),.12,maxZoom);
+  const zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX+28),availableHeight/(bounds.maxY-bounds.minY+28)),.002,maxZoom);
   return {x: width / 2 - (bounds.minX + bounds.maxX) / 2 * zoom, y: height / 2 - (bounds.minY + bounds.maxY) / 2 * zoom, zoom};
 }
 
@@ -34,20 +34,28 @@ export function boundChainCamera(camera, nodes, viewport) {
   return {...camera, x: clamp(camera.x, margin - bounds.maxX * camera.zoom, viewport.width - margin - bounds.minX * camera.zoom), y: clamp(camera.y, margin - bounds.maxY * camera.zoom, viewport.height - margin - bounds.minY * camera.zoom)};
 }
 
-/** Cardinal ports and cubic curves attach to the card boundary, never its label. */
-export function chainEdgeGeometry(from, to, parallelOffset = 0) {
-  const source = {x: from.x + CHAIN_NODE_WIDTH / 2, y: from.y + CHAIN_NODE_HEIGHT / 2};
-  const target = {x: to.x + CHAIN_NODE_WIDTH / 2, y: to.y + CHAIN_NODE_HEIGHT / 2};
-  const dx = target.x - source.x, dy = target.y - source.y;
-  const horizontal = Math.abs(dx) / CHAIN_NODE_WIDTH >= Math.abs(dy) / CHAIN_NODE_HEIGHT;
-  const direction = (horizontal ? dx : dy) >= 0 ? 1 : -1;
-  const start = {x: source.x + (horizontal ? direction * CHAIN_NODE_WIDTH / 2 : 0), y: source.y + (horizontal ? 0 : direction * CHAIN_NODE_HEIGHT / 2)};
-  const end = {x: target.x - (horizontal ? direction * CHAIN_NODE_WIDTH / 2 : 0), y: target.y - (horizontal ? 0 : direction * CHAIN_NODE_HEIGHT / 2)};
-  const bend = Math.max(52, Math.min(240, Math.abs(horizontal ? end.x - start.x : end.y - start.y) * .45));
-  const c1 = {x: start.x + (horizontal ? direction * bend : parallelOffset), y: start.y + (horizontal ? parallelOffset : direction * bend)};
-  const c2 = {x: end.x - (horizontal ? direction * bend : -parallelOffset), y: end.y - (horizontal ? -parallelOffset : direction * bend)};
-  const label = {x: (start.x + 3 * c1.x + 3 * c2.x + end.x) / 8, y: (start.y + 3 * c1.y + 3 * c2.y + end.y) / 8};
-  return {start, end, label, controls:[c1,c2], path: `M ${start.x} ${start.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`};
+export const CHAIN_PORTS = ['left', 'right', 'top', 'bottom'];
+const portNormals = {left:{x:-1,y:0},right:{x:1,y:0},top:{x:0,y:-1},bottom:{x:0,y:1}};
+export function chainPortPoint(node, port) {
+  const normal=portNormals[port]||portNormals.right;
+  return {x:node.x+CHAIN_NODE_WIDTH/2+normal.x*CHAIN_NODE_WIDTH/2,y:node.y+CHAIN_NODE_HEIGHT/2+normal.y*CHAIN_NODE_HEIGHT/2};
+}
+export function nearestChainPort(node, point) {
+  return CHAIN_PORTS.reduce((best,port)=>{const a=chainPortPoint(node,port),b=chainPortPoint(node,best);return Math.hypot(a.x-point.x,a.y-point.y)<Math.hypot(b.x-point.x,b.y-point.y)?port:best;},'left');
+}
+function portCurve(start,end,fromPort,toPort,parallelOffset=0) {
+  const a=portNormals[fromPort],b=portNormals[toPort],bend=Math.max(52,Math.min(240,Math.hypot(end.x-start.x,end.y-start.y)*.45));
+  const c1={x:start.x+a.x*bend-a.y*parallelOffset,y:start.y+a.y*bend+a.x*parallelOffset};
+  const c2={x:end.x+b.x*bend+b.y*parallelOffset,y:end.y+b.y*bend-b.x*parallelOffset};
+  const label={x:(start.x+3*c1.x+3*c2.x+end.x)/8,y:(start.y+3*c1.y+3*c2.y+end.y)/8};
+  return {start,end,label,controls:[c1,c2],path:`M ${start.x} ${start.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`};
+}
+/** Explicit cardinal ports remain attached while cards move; older links choose facing sides. */
+export function chainEdgeGeometry(from, to, parallelOffset = 0, ports = {}) {
+  const dx=to.x-from.x,dy=to.y-from.y,horizontal=Math.abs(dx)/CHAIN_NODE_WIDTH>=Math.abs(dy)/CHAIN_NODE_HEIGHT;
+  const autoFrom=horizontal?(dx>=0?'right':'left'):(dy>=0?'bottom':'top'),autoTo=({left:'right',right:'left',top:'bottom',bottom:'top'})[autoFrom];
+  const fromPort=CHAIN_PORTS.includes(ports.from_port)?ports.from_port:autoFrom,toPort=CHAIN_PORTS.includes(ports.to_port)?ports.to_port:autoTo;
+  return portCurve(chainPortPoint(from,fromPort),chainPortPoint(to,toPort),fromPort,toPort,parallelOffset);
 }
 
 /** Place connection captions in clear space using a shared spatial index, including dense 16px card gaps. */
@@ -90,9 +98,10 @@ export function traceChainPath(nodes, connections, fromId, toId, now = Date.now(
   if (!present.has(fromId) || !present.has(toId)) return {nodes: [], edges: []};
   const neighbors = new Map([...present].map(id => [id, []]));
   for (const edge of connections) {
-    if (!present.has(edge.from_system_id) || !present.has(edge.to_system_id) || edge.expired || edge.life_status === 'collapsed' || edge.enabled === false || edge.expires_at && Date.parse(edge.expires_at) <= now) continue;
+    const permanent=edge.kind==='gate'||edge.kind==='ansiblex';
+    if (!present.has(edge.from_system_id) || !present.has(edge.to_system_id) || edge.enabled === false || !permanent&&(edge.expired || edge.life_status === 'collapsed' || edge.expires_at && Date.parse(edge.expires_at) <= now)) continue;
     neighbors.get(edge.from_system_id).push({to: edge.to_system_id, edge: edge.id});
-    neighbors.get(edge.to_system_id).push({to: edge.from_system_id, edge: edge.id});
+    if(edge.directional!==true)neighbors.get(edge.to_system_id).push({to: edge.from_system_id, edge: edge.id});
   }
   for (const list of neighbors.values()) list.sort((a, b) => a.to - b.to || String(a.edge).localeCompare(String(b.edge)));
   const visited = new Map([[fromId, null]]), queue = [fromId];
@@ -135,9 +144,11 @@ export function draggedChainPositions(originals, start, end, zoom) {
 export function chainConnectionTarget(nodes, point, fromId, padding=12) {
   return nodes.find(node=>node.system_id!==fromId&&!node.public_report&&point.x>=node.x-padding&&point.x<=node.x+CHAIN_NODE_WIDTH+padding&&point.y>=node.y-padding&&point.y<=node.y+CHAIN_NODE_HEIGHT+padding)||null;
 }
-export function chainConnectionPreview(from, side, point, target=null, portExtent=CHAIN_NODE_WIDTH/2) {
-  const start={x:from.x+CHAIN_NODE_WIDTH/2+(side==='right'?portExtent:-portExtent),y:from.y+CHAIN_NODE_HEIGHT/2};
-  const end=target?{x:target.x+CHAIN_NODE_WIDTH/2+(start.x>target.x+CHAIN_NODE_WIDTH/2?portExtent:-portExtent),y:target.y+CHAIN_NODE_HEIGHT/2}:point;
-  const direction=side==='right'?1:-1,bend=Math.max(44,Math.min(160,Math.abs(end.x-start.x)*.45));
-  return `M ${start.x} ${start.y} C ${start.x+direction*bend} ${start.y}, ${end.x+(target?(start.x>end.x?1:-1):-direction)*bend} ${end.y}, ${end.x} ${end.y}`;
+export function chainConnectionPreview(from, side, point, target=null, portExtent=CHAIN_NODE_WIDTH/2, targetSide=null) {
+  const start=chainPortPoint(from,side),normal=portNormals[side]||portNormals.right;
+  // Keep the former extent argument compatible for clients with custom horizontal card envelopes.
+  if(normal.x)start.x=from.x+CHAIN_NODE_WIDTH/2+normal.x*portExtent;
+  const toPort=target?(CHAIN_PORTS.includes(targetSide)?targetSide:nearestChainPort(target,start)):({left:'right',right:'left',top:'bottom',bottom:'top'})[side];
+  const end=target?chainPortPoint(target,toPort):point;
+  return portCurve(start,end,side,toPort).path;
 }

@@ -38,6 +38,13 @@ export function publicChainScene(map, feeds, systems, selectedSources = {}, now 
 
 /** Keep observation timestamps exact when an editor only changes other fields. */
 export function connectionEditorPayload(draft, expiryInput, original = null) {
+  if (draft.kind === 'gate' || draft.kind === 'ansiblex') {
+    // A diagram reference must never overwrite the shared Ansiblex network.
+    const fields = original?.kind === 'ansiblex' && !original.map_id
+      ? ['id','link_id','kind','from_system_id','to_system_id','notes','from_port','to_port','updated_at']
+      : ['id','link_id','kind','from_system_id','to_system_id','notes','from_port','to_port','updated_at','confirmed','accessible','reverse_accessible','enabled'];
+    return Object.fromEntries(fields.filter(key => draft[key] !== undefined).map(key => [key,draft[key]]));
+  }
   const {duration_hours: ignoredDuration, expires_at: ignoredExpiry, ...payload} = draft;
   // Merely opening/saving details must not restamp the lifetime observation.
   if ((draft.life_band || 'unknown') === (original?.life_band || 'unknown')) {

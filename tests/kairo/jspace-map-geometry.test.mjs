@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {draggedChainPositions,chainConnectionTarget,chainConnectionPreview,CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT, chainBounds, fitChainCamera, chainZoomLimits, zoomChainAt, boundChainCamera, chainEdgeGeometry, traceChainPath, placeChainPopover, visibleChainLabels, placeChainEdgeLabels} from '../../components/kairo/jspace-map-geometry.mjs';
+import {CHAIN_PORTS,chainPortPoint,nearestChainPort,draggedChainPositions,chainConnectionTarget,chainConnectionPreview,CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT, chainBounds, fitChainCamera, chainZoomLimits, zoomChainAt, boundChainCamera, chainEdgeGeometry, traceChainPath, placeChainPopover, visibleChainLabels, placeChainEdgeLabels} from '../../components/kairo/jspace-map-geometry.mjs';
 
 test('chain framing includes full cards at negative coordinates and disconnected discoveries', () => {
   const nodes = [{system_id:1,x:-420,y:-200},{system_id:2,x:610,y:470}], viewport = {width:1200,height:760};
@@ -112,4 +112,45 @@ test('mobile Fit frames whole cards and their attached handles without a second 
   assert.ok(path.startsWith(`M ${nodes[0].x+CHAIN_NODE_WIDTH} 62 C `),'Preview stays attached to the same card edge at every zoom');
   const cardScreenWidth=CHAIN_NODE_WIDTH*camera.zoom;
   for(let i=1;i<nodes.length;i++)assert.ok((nodes[i].x-nodes[i-1].x)*camera.zoom>cardScreenWidth,'Whole identities retain their non-overlapping arrangement at overview zoom');
+});
+
+
+test('four cardinal tabs preserve exact selected endpoints in a single continuous curve',()=>{
+  const from={x:20,y:50},to={x:630,y:360};
+  for(const from_port of CHAIN_PORTS)for(const to_port of CHAIN_PORTS){
+    const edge=chainEdgeGeometry(from,to,0,{from_port,to_port});
+    assert.deepEqual(edge.start,chainPortPoint(from,from_port));
+    assert.deepEqual(edge.end,chainPortPoint(to,to_port));
+    assert.equal((edge.path.match(/M/g)||[]).length,1);
+    assert.equal((edge.path.match(/C/g)||[]).length,1);
+    assert.equal((edge.path.match(/L/g)||[]).length,0);
+    assert.equal(chainConnectionPreview(from,from_port,edge.end,to,CHAIN_NODE_WIDTH/2,to_port),edge.path,'preview and saved curve agree at both chosen tabs');
+    const moved=chainEdgeGeometry({...from,x:1000,y:-200},to,0,{from_port,to_port});
+    assert.deepEqual(moved.start,chainPortPoint({x:1000,y:-200},from_port),'moving across the target does not switch the chosen tab');
+  }
+  assert.equal(nearestChainPort(to,{x:762,y:348}),'top');
+  assert.equal(nearestChainPort(to,{x:762,y:456}),'bottom');
+  assert.equal(nearestChainPort(to,{x:618,y:402}),'left');
+  assert.equal(nearestChainPort(to,{x:906,y:402}),'right');
+});
+
+test('a large staged region can be framed with its full node and tab envelope',()=>{
+  const nodes=[{system_id:1,x:-25000,y:-20000},{system_id:2,x:25000,y:20000}],viewport={width:1200,height:760};
+  const camera=fitChainCamera(nodes,viewport);
+  assert.ok(camera.zoom<.12,'expansive groups are not clipped by the old overview minimum');
+  for(const node of nodes){
+    assert.ok(camera.x+(node.x-14)*camera.zoom>=57.99);
+    assert.ok(camera.x+(node.x+CHAIN_NODE_WIDTH+14)*camera.zoom<=viewport.width-57.99);
+    assert.ok(camera.y+(node.y-14)*camera.zoom>=57.99);
+    assert.ok(camera.y+(node.y+CHAIN_NODE_HEIGHT+14)*camera.zoom<=viewport.height-57.99);
+  }
+});
+
+
+test('permanent map traces retain gates and follow Ansiblex direction without wormhole conditions',()=>{
+  const nodes=[1,2,3].map(system_id=>({system_id,x:0,y:0}));
+  const connections=[{id:'gate',kind:'gate',from_system_id:1,to_system_id:2,expires_at:'2020-01-01T00:00:00Z'},{id:'bridge',kind:'ansiblex',from_system_id:2,to_system_id:3,directional:true}];
+  assert.deepEqual(traceChainPath(nodes,connections,1,3),{nodes:[1,2,3],edges:['gate','bridge']});
+  assert.deepEqual(traceChainPath(nodes,connections,3,1),{nodes:[],edges:[]});
+  assert.deepEqual(traceChainPath(nodes,connections.map(link=>({...link,enabled:false})),1,3),{nodes:[],edges:[]});
 });

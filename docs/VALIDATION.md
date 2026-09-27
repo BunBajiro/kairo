@@ -1,5 +1,17 @@
 # Validation — 27 September 2026
 
+## Universe 0.8.0-rc.14
+
+Atlas and Maps now have distinct roles: Atlas owns the remembered physical/schematic projection, while Maps owns provisional system-group placement and private topology.
+
+- All 578 Node tests pass; the final history-bootstrap replacement also passes its focused navigation suite. Application TypeScript and production compilation pass. Regression coverage validates official CCP schematic geometry, collision-safe group spacing, real gate derivation, atomic group placement, unchanged existing nodes, cardinal attachment persistence and map-private bridge routing.
+- Permanent-link tests cover configured bridge access protection, independent imports/copies, immediate removal cleanup, and stable canonical identities when an unchanged Ansiblex list is reimported.
+- Notes tests cover trusted pilot authorship, exact hour-boundary/UTC formatting, map-local search, truthful imported attribution and suppression of ended-connection notes.
+- The focused Maps/replay browser suite passes 33 workflow/layout groups. New expansion acceptance passes three additional groups: provisional region/constellation placement with pointer and keyboard movement, permanent-connection controls and four-sided anchors, and landing system/note search into the correct map instance. Initial staged cards fit within the viewport padding after the confirmation bar resizes it.
+- Browser verification also checks the compact remembered Atlas projection switch, Tenerifis schematic geometry, dedicated settings and browser history. Kairo hash traversal is handled before the framework's RSC listener; other document navigation remains outside that handler.
+
+Existing user data is retained. Exact-commit Actions runs the combined Universe/replay workflow, Sessions and extracted-package tests before a downloadable candidate is advertised. Main remains unmerged pending review.
+
 ## Universe 0.8.0-rc.13
 
 A focused correction pass covers normal ESI polling, map entry/creation and structure/report presentation.

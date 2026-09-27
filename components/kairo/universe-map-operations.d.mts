@@ -11,7 +11,7 @@ export type WatchDistance = {distance:number;nearestRouteSystemId:number;nextSys
 export type OperationalSystem = {systemId:number;reports:any[];pilots:any[];fleet:any[];alerts:any[];signatures:any[];upgrades:any[]};
 export function buildGateGraph(gates:any[]):GateGraph;
 export function routeWatchDistances(graph:GateGraph,origins:number[],maxHops?:number):Map<number,WatchDistance>;
-export function tacticalLayout(systems:UniverseSystem[],graph:GateGraph,options?:{mode?:'radar'|'schematic';centerSystemId?:number;hops?:number;regionId?:number|null}):{points:{system:UniverseSystem;x:number;y:number}[];distances:Map<number,WatchDistance>;limited:boolean;total:number};
+export function tacticalLayout(systems:UniverseSystem[],graph:GateGraph,options?:{mode?:'radar'|'schematic';centerSystemId?:number;hops?:number;regionId?:number|null;constellationId?:number|null}):{points:{system:UniverseSystem;x:number;y:number}[];distances:Map<number,WatchDistance>;limited:boolean;total:number};
 export function observationAge(observation:any,now?:number):'fresh'|'recent'|'older'|'expired'|'unknown';
 export function ageLabel(value:string|number|undefined,now?:number):string;
 export function operationalSystems(operations:any,now?:number):Map<number,OperationalSystem>;

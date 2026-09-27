@@ -1,4 +1,5 @@
 // Operational map models stay separate from political ownership and physical routing.
+import {schematicLayout} from '../../lib/universe-schematic-layout.mjs';
 const id = value => Number.isSafeInteger(Number(value)) && Number(value) > 0 ? Number(value) : null;
 const date = value => typeof value === 'number' ? value : Date.parse(value || '');
 export function buildGateGraph(gates = []) {
@@ -28,9 +29,13 @@ export function routeWatchDistances(graph, origins, maxHops = 6) {
   return result;
 }
 
-/** Stable hop bands, never a physical-distance projection. Isolated nodes are retained. */
-export function tacticalLayout(systems, graph, {mode = 'radar', centerSystemId, hops = 3, regionId} = {}) {
+/** Radar uses hop bands; schematic uses CCP's in-game 2D positions at any scope. */
+export function tacticalLayout(systems, graph, {mode = 'radar', centerSystemId, hops = 3, regionId, constellationId} = {}) {
   const lookup = new Map(systems.filter(system => system.space === 'known').map(system => [system.system_id, system]));
+  if (mode === 'schematic') {
+    const eligible = [...lookup.values()].filter(system => (!regionId || system.region_id === regionId) && (!constellationId || system.constellation_id === constellationId));
+    return {points: schematicLayout(eligible).points, distances: new Map(), limited: false, total: eligible.length};
+  }
   const center = lookup.get(centerSystemId);
   if (!center) return {points: [], distances: new Map(), limited: false, total: 0};
   const distances = routeWatchDistances(graph, [center.system_id], mode === 'radar' ? Math.max(1, Math.min(6, hops)) : 12);

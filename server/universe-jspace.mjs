@@ -268,7 +268,7 @@ export function createUniverseJSpace(store, auth, options) {
         }
         for (const item of store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='link'").all()) {
             const link = JSON.parse(item.body);
-            if (link.kind === 'wormhole' && (!link.map_id || !read(item.character_id, 'jspace_map', link.map_id))) deleteRow.run(item.character_id, 'link', link.id);
+            if ((link.kind === 'wormhole' || link.map_id) && (!link.map_id || !read(item.character_id, 'jspace_map', link.map_id))) deleteRow.run(item.character_id, 'link', link.id);
         }
         const notes = store.db.prepare("SELECT * FROM place_notes WHERE kind='system'").all().filter(row => byId.get(row.entity_id)?.space === 'wormhole');
         const pins = store.db.prepare("SELECT character_id,id,body FROM universe_records WHERE kind='pin'").all().map(row => ({ ...row, value: JSON.parse(row.body) })).filter(row => byId.get(row.value.system_id)?.space === 'wormhole');
@@ -334,6 +334,7 @@ export function createUniverseJSpace(store, auth, options) {
         if (!object(input)) throw new Error('Provide a passage observation.');
         input = { ...old, ...input };
         const edge = connection(map, input.connection_id), from = system(input.from_system_id), to = system(input.to_system_id);
+        if (edge.kind !== 'wormhole') throw new Error('Passage observations apply only to wormholes.');
         if (!((edge.from_system_id === from && edge.to_system_id === to) || (edge.from_system_id === to && edge.to_system_id === from))) throw new Error('Passage endpoints must match the observed connection.');
         const occurred_at = date(input.occurred_at, iso());
         if (!occurred_at || Date.parse(occurred_at) > now() + 300000) throw new Error('Passages must describe travel already observed.');
@@ -345,11 +346,11 @@ export function createUniverseJSpace(store, auth, options) {
             pilot_name: clean(input.pilot_name, 100), ship_name: clean(input.ship_name, 160), ship_type_id, mass_kg, notes: clean(input.notes, 2000), source: old?.source || 'manual_observation', reviewed: true,
             ...(old?.sample_key ? { sample_key: old.sample_key, sampled_previous_at: old.sampled_previous_at } : {}), created_at: old?.created_at || iso(), updated_at: iso() };
     }
-    function comment(map, input) {
+    function comment(map, input, author = null) {
         if (!object(input)) throw new Error('Provide a comment.');
         const body = clean(input.body, 4000); if (!body) throw new Error('Write a comment first.');
         const system_id = input.system_id == null ? null : mapNode(map, input.system_id), edge = input.connection_id == null ? null : connection(map, input.connection_id);
-        return { id: randomUUID(), body, system_id, connection_id: edge?.id || null, created_at: iso() };
+        return { id: randomUUID(), body, system_id, connection_id: edge?.id || null, author_id: author?.id || null, author_name: author?.name || '', created_at: iso() };
     }
     function ping(map, input) {
         if (!object(input)) throw new Error('Provide a map ping.');
@@ -367,7 +368,12 @@ export function createUniverseJSpace(store, auth, options) {
         }
         map.connections = map.connections.map(edge => {
             const link = canonical.get(edge.link_id);
-            const details = edge.kind === 'gate' ? { kind: 'gate', active: true, confirmed: true, accessible: true, expired: false } : link || { kind: edge.kind || 'wormhole', active: false, confirmed: false, accessible: false, expired: true, missing: true };
+            const details = edge.kind === 'gate' ? { kind: 'gate', active: gates.has(`${edge.from_system_id}:${edge.to_system_id}`), confirmed: true, accessible: true, expired: false } : link || { kind: edge.kind || 'wormhole', active: false, confirmed: false, accessible: false, expired: true, missing: true };
+            if (edge.kind !== 'wormhole') {
+                const result = { ...details, ...edge, active: details.active === true, updated_at: link?.updated_at || null };
+                for (const key of ['life_status', 'life_band', 'life_observed_at', 'duration_hours', 'expires_at', 'mass', 'wh_type', 'max_ship_size', 'max_jump_mass_kg', 'type_status', 'from_signature', 'to_signature', 'from_signature_id', 'to_signature_id', 'from_signature_record_id', 'to_signature_record_id']) delete result[key];
+                return result;
+            }
             const aggregate = passagesByEdge.get(edge.id) || { count: 0, mass: 0, unweighed: 0 };
             const endpointSignature = side => {
                 const recordId = link?.[side + '_signature_record_id'] || edge[side + '_signature_id'];
@@ -434,7 +440,7 @@ export function createUniverseJSpace(store, auth, options) {
         const id = pilot(characterId, true);
         getLinks(id, key);
         atomic(() => { const map = loaded(id, key); editable(map); checkRevision(map, input);
-            for (const edge of map.connections) if (edge.kind === 'wormhole' && edge.link_id) deleteLink(id, edge.link_id);
+            for (const link of rows(id, 'link')) if (link.map_id === map.id) deleteLink(id, link.id);
             operations.removeMapScope(id, map.id);
             store.db.prepare('DELETE FROM settings WHERE key=?').run('universe:navigation:' + id + ':' + map.id);
             deleteRow.run(id, 'jspace_map', map.id); deleteRow.run(id, 'jspace_undo', map.id); });
@@ -463,11 +469,16 @@ export function createUniverseJSpace(store, auth, options) {
         if (from === to) throw new Error('Choose two different endpoints.');
         if (known && (from !== known.from_system_id || to !== known.to_system_id)) throw new Error('An observed link keeps its original endpoints. Create another connection for a different pair.');
         const kind = choose(input.kind, ['wormhole', 'ansiblex', 'gate'], previous?.kind || known?.kind || 'wormhole');
-        if (known && kind !== known.kind) throw new Error('An observed connection keeps its original kind. Add a separate connection for a different type of travel.');
-        const life_status = choose(input.life_status, LIFE, known?.life_status || previous?.life_status || 'unknown');
+        if ((known && kind !== known.kind) || (previous && kind !== previous.kind)) throw new Error('An observed connection keeps its original kind. Add a separate connection for a different type of travel.');
+        const life_status = kind === 'wormhole' ? choose(input.life_status, LIFE, known?.life_status || previous?.life_status || 'unknown') : undefined;
+        if (kind !== 'wormhole' && ['life_status', 'life_band', 'duration_hours', 'expires_at', 'mass', 'max_ship_size', 'wh_type', 'from_signature', 'to_signature'].some(key => own(input, key))) throw new Error('Lifetime, mass and signature conditions apply only to wormholes.');
         let link = null;
         if (kind === 'gate') {
             if (!gates.has(`${from}:${to}`)) throw new Error('Only real stargates in the static atlas can be shown as gate connections.');
+        } else if (kind === 'ansiblex' && known && !known.map_id) {
+            // A diagram references the configured network without changing its access decisions.
+            if (['enabled', 'accessible', 'reverse_accessible', 'confirmed', 'directional', 'structure_id', 'reverse_structure_id', 'owner_alliance_id', 'capital_system_id'].some(key => own(input, key) && input[key] !== known[key])) throw new Error('Edit configured Ansiblex access in Universe Settings.');
+            link = known;
         } else {
             const supplied = { ...input, map_id: map.id, id: known?.id, kind, life_status, from_system_id: from, to_system_id: to, confirmed: boolean(input.confirmed, known?.confirmed || false), accessible: boolean(input.accessible, known?.accessible || false) };
             if (life_status === 'collapsed') { supplied.enabled = false; supplied.confirmed = false; if (kind === 'wormhole') supplied.duration_hours = 0; }
@@ -478,17 +489,50 @@ export function createUniverseJSpace(store, auth, options) {
             forgetMapConnections(map, [link]);
             return null;
         }
-        const edge = { id: previous?.id || randomUUID(), link_id: link?.id || null, kind, from_system_id: from, to_system_id: to, life_status,
-            notes: clean(input.notes ?? previous?.notes, 2000) };
-        const signatures = map.kind === 'tracking_source' ? [] : operations.state(id, map.id).signatures;
+        const edge = { id: previous?.id || randomUUID(), link_id: link?.id || null, kind, from_system_id: from, to_system_id: to, ...(kind === 'wormhole' ? { life_status } : {}),
+            notes: clean(input.notes ?? previous?.notes, 2000),
+            from_port: choose(input.from_port, ['left', 'right', 'top', 'bottom', null], previous?.from_port || null),
+            to_port: choose(input.to_port, ['left', 'right', 'top', 'bottom', null], previous?.to_port || null) };
+        const signatures = map.kind === 'tracking_source' || kind !== 'wormhole' ? [] : operations.state(id, map.id).signatures;
         for (const side of ['from', 'to']) {
             const signature = signatures.find(row => row.system_id === edge[side + '_system_id'] && row.signature_id === link?.[side + '_signature']);
             if (signature) edge[side + '_signature_id'] = signature.id;
-            else if (previous && own(previous, side + '_signature_id') && input[side + '_signature'] === undefined) edge[side + '_signature_id'] = previous[side + '_signature_id'];
+            else if (kind === 'wormhole' && previous && own(previous, side + '_signature_id') && input[side + '_signature'] === undefined) edge[side + '_signature_id'] = previous[side + '_signature_id'];
         }
         if (!previous && map.connections.some(row => row.link_id && row.link_id === edge.link_id || kind === 'gate' && row.kind === 'gate' && [row.from_system_id, row.to_system_id].sort().join(':') === [from, to].sort().join(':'))) throw new Error('This connection is already on the chain.');
         if (previous) map.connections = map.connections.map(row => row.id === edge.id ? edge : row); else map.connections.push(edge);
         return edge;
+    }
+    function addGroup(id, map, input) {
+        if (!object(input.group)) throw new Error('Choose a region or constellation to place.');
+        const kind = choose(input.group.kind, ['region', 'constellation']);
+        const groupId = Number(input.group.id), key = kind + '_id';
+        if (!Number.isSafeInteger(groupId) || !atlas[kind === 'region' ? 'regions' : 'constellations'].some(row => row[key] === groupId)) throw new Error('Choose a region or constellation in the bundled atlas.');
+        const members = new Set(atlas.systems.filter(row => row[key] === groupId).map(row => row.system_id));
+        if (!members.size || members.size > LIMITS.nodes) throw new Error('This group is empty or exceeds the map system limit.');
+        const present = new Set(map.nodes.map(row => row.system_id)), missing = new Set([...members].filter(id => !present.has(id)));
+        const positions = array(input.positions, LIMITS.nodes, 'system positions'), seen = new Set();
+        if (positions.length !== missing.size) throw new Error('Provide positions for every new system in the group.');
+        for (const value of positions) {
+            if (!object(value)) throw new Error('Provide valid system positions.');
+            const system_id = system(value.system_id);
+            if (!missing.has(system_id) || seen.has(system_id)) throw new Error('Place each new group system once without moving existing systems.');
+            if (!Number.isFinite(value.x) || !Number.isFinite(value.y)) throw new Error('Provide both coordinates for every new system.');
+            seen.add(system_id); map.nodes.push(restoreNode(map, { system_id, x: coordinate(value.x), y: coordinate(value.y) }));
+        }
+        const pairs = new Set(map.connections.filter(row => row.kind === 'gate').map(row => [row.from_system_id, row.to_system_id].sort((a,b) => a-b).join(':')));
+        for (const gate of atlas.gates) {
+            if (!members.has(gate.from_system_id) || !members.has(gate.to_system_id)) continue;
+            const pair = [gate.from_system_id, gate.to_system_id].sort((a,b) => a-b).join(':');
+            if (pairs.has(pair)) continue;
+            saveConnection(id, map, { kind: 'gate', from_system_id: gate.from_system_id, to_system_id: gate.to_system_id }); pairs.add(pair);
+        }
+        const references = new Set(map.connections.map(row => row.link_id).filter(Boolean));
+        for (const link of getLinks(id, map.id)) {
+            if (link.kind !== 'ansiblex' || link.map_id || !members.has(link.from_system_id) || !members.has(link.to_system_id) || references.has(link.id)) continue;
+            saveConnection(id, map, { kind: 'ansiblex', link_id: link.id }); references.add(link.id);
+        }
+        capacity(map);
     }
     function command(characterId, key, input = {}) {
         const id = pilot(characterId, true), op = clean(input.op, 60);
@@ -509,6 +553,7 @@ export function createUniverseJSpace(store, auth, options) {
                     if (own(input, 'scope')) map.scope = validateJSpaceScope(input.scope, getScopeContext(id));
                     break;
                 }
+                case 'group.add': addGroup(id, map, input); break;
                 case 'node.save': {
                     const source = input.node, previous = map.nodes.find(row => row.system_id === Number(source?.system_id)), next = previous ? node(source, previous, map.nodes.length) : restoreNode(map, source);
                     if (previous?.locked && !next.locked) next.prune_grace_at = iso();
@@ -532,7 +577,7 @@ export function createUniverseJSpace(store, auth, options) {
                     if (!systemIds.size) throw new Error('Select at least one system to remove.');
                     if (map.nodes.some(row => systemIds.has(row.system_id) && row.locked)) throw new Error('Unlock this system before removing it.');
                     const attached = new Set(map.connections.filter(row => systemIds.has(row.from_system_id) || systemIds.has(row.to_system_id)).map(row => row.id));
-                    for (const edge of map.connections) if (attached.has(edge.id) && edge.kind === 'wormhole' && edge.link_id) linksToForget.add(edge.link_id);
+                    for (const edge of map.connections) if (attached.has(edge.id) && edge.link_id && read(id, 'link', edge.link_id)?.map_id === map.id) linksToForget.add(edge.link_id);
                     markDetached(map, map.connections.filter(row => attached.has(row.id)));
                     archiveNodes(map, systemIds);
                     // Observation history remains private and exportable even when its card is removed.
@@ -541,7 +586,7 @@ export function createUniverseJSpace(store, auth, options) {
                 case 'connection.save': saveConnection(id, map, input.connection); undoable = false; break;
                 case 'connection.remove': {
                     const edge = connection(map, input.connection_id);
-                    if (edge.link_id) linksToForget.add(edge.link_id);
+                    if (edge.link_id && read(id, 'link', edge.link_id)?.map_id === map.id) linksToForget.add(edge.link_id);
                     undoable = false;
                     markDetached(map, [edge]);
                     map.connections = map.connections.filter(row => row.id !== edge.id); break;
@@ -567,7 +612,7 @@ export function createUniverseJSpace(store, auth, options) {
                     if (!map.observations.some(row => row.id === input.observation_id)) throw new Error('Observation not found on this chain.');
                     map.observations = map.observations.filter(row => row.id !== input.observation_id); break;
                 }
-                case 'comment.add': map.comments.unshift(comment(map, input.comment)); break;
+                case 'comment.add': map.comments.unshift(comment(map, input.comment, auth.characters().find(row => row.id === id))); break;
                 case 'comment.remove': {
                     if (!map.comments.some(row => row.id === input.comment_id)) throw new Error('Comment not found on this chain.');
                     map.comments = map.comments.filter(row => row.id !== input.comment_id); break;
@@ -705,6 +750,8 @@ export function createUniverseJSpace(store, auth, options) {
             if (native && row.id) { if (edgeIds.has(row.id)) throw new Error('Duplicate imported connection ID.'); edgeIds.set(row.id, edge.id); }
             if (kind === 'gate') {
                 if (!gates.has(`${from}:${to}`)) throw new Error('An imported gate is absent from the static atlas.');
+            } else if (kind === 'ansiblex' && native && row.link_id && getLinks(id).some(link => link.id === row.link_id && link.kind === 'ansiblex' && link.from_system_id === from && link.to_system_id === to)) {
+                edge.link_id = row.link_id; delete edge.life_status;
             } else {
                 const candidate = { kind, map_id: map.id, from_system_id: from, to_system_id: to, label: native ? clean(row.label, 160) : '', confirmed: false, accessible: false, enabled: true,
                     life_status: edge.life_status, mass: native ? choose(row.mass, ['unknown', 'stable', 'reduced', 'critical'], 'unknown') : ['stable', 'reduced', 'critical'][row.mass_status] || 'unknown',
@@ -720,6 +767,11 @@ export function createUniverseJSpace(store, auth, options) {
                 // A duration label describes the imported observation; do not rebase its expiry.
                 if (native && kind === 'wormhole' && [1, 4, 4.5, 16, 24, 48].includes(row.duration_hours)) prepared.duration_hours = row.duration_hours;
                 prepared.source = 'import'; edge.link_id = prepared.id; links.push(prepared);
+            }
+            if (kind !== 'wormhole') delete edge.life_status;
+            if (native) {
+                edge.from_port = choose(row.from_port, ['left', 'right', 'top', 'bottom', null], null);
+                edge.to_port = choose(row.to_port, ['left', 'right', 'top', 'bottom', null], null);
             }
             map.connections.push(edge);
         }
@@ -764,12 +816,13 @@ export function createUniverseJSpace(store, auth, options) {
                 const connection_id = row.connection_id ? edgeIds.get(row.connection_id) : null;
                 if (row.connection_id && !connection_id) continue;
                 const historyMap = { ...map, nodes: row.system_id == null ? map.nodes : [...map.nodes, { system_id: system(row.system_id) }] };
-                const saved = comment(historyMap, { ...row, connection_id });
+                const author = { id: Number.isSafeInteger(row.author_id) && row.author_id > 0 ? row.author_id : null, name: clean(row.author_name, 160) };
+                const saved = comment(historyMap, { ...row, connection_id }, author);
                 saved.created_at = date(row.created_at, saved.created_at); map.comments.push(saved);
             }
             for (const row of array(source.passages || [], LIMITS.passages, 'passages')) {
                 const connection_id = edgeIds.get(row.connection_id);
-                if (!connection_id) continue;
+                if (!connection_id || map.connections.find(edge => edge.id === connection_id)?.kind !== 'wormhole') continue;
                 const saved = passage(map, { ...row, connection_id });
                 if (row.source === 'sampled_location') { saved.source = 'sampled_location'; saved.reviewed = boolean(row.reviewed); saved.sampled_previous_at = date(row.sampled_previous_at); }
                 saved.created_at = date(row.created_at, saved.created_at); saved.updated_at = date(row.updated_at, saved.updated_at); map.passages.push(saved);

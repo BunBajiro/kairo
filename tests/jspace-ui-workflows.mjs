@@ -16,7 +16,7 @@ export async function jspaceAcceptance(ui){
  const closeSheet=async()=>{const label=await evaluate("document.querySelector('.jspace-sheet')?.getAttribute('aria-label')");if(label)await click('[aria-label='+JSON.stringify('Close '+label)+']');};
  const selectNode=async system=>{await click('[aria-label='+JSON.stringify('Select '+system.name)+']');await waitFor('!!document.querySelector('+JSON.stringify(selected)+')');};
  const selectEdge=async id=>{if(await evaluate("!!document.querySelector('[aria-label=\"Close selected map context\"]')"))await click('[aria-label="Close selected map context"]');await click('[data-connection-label='+JSON.stringify(id)+']');};
- const addNode=async system=>{await fill('[aria-label="Find a system to add to chain"]',system.name);await clickElement('Array.from(document.querySelectorAll(".jspace-quick-results button")).find(e=>e.querySelector("strong")?.textContent==='+JSON.stringify(system.name)+')');await waitFor('!!document.querySelector('+JSON.stringify(node(system.system_id))+') && !document.querySelector(".jspace-sheet")');};
+ const addNode=async system=>{await fill('[aria-label="Find a system to add to chain"]',system.name);await clickElement('Array.from(document.querySelectorAll(".map-add-search [role=option]")).find(e=>e.querySelector("strong")?.textContent==='+JSON.stringify(system.name)+')');await waitFor('!!document.querySelector('+JSON.stringify(node(system.system_id))+') && !document.querySelector(".jspace-sheet")');};
  const nativeSelect=async(label,value)=>{await waitFor('!!document.querySelector('+JSON.stringify('[aria-label='+JSON.stringify(label)+']')+')');await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify('[aria-label='+JSON.stringify(label)+']')});if(!Array.from(e.options).some(o=>o.value===${JSON.stringify(String(value))}))throw new Error('Missing native option');e.focus();Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(e,${JSON.stringify(String(value))});e.dispatchEvent(new Event('change',{bubbles:true}));})()`);};
  const inputValue=async(label,value)=>evaluate(`(()=>{const e=document.querySelector(${JSON.stringify('[aria-label='+JSON.stringify(label)+']')});Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,${JSON.stringify(value)});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
  const toggle=async text=>clickElement('Array.from(document.querySelectorAll(".jspace-sheet label")).find(e=>e.textContent.includes('+JSON.stringify(text)+'))?.querySelector("input[type=checkbox]")');
@@ -47,7 +47,7 @@ export async function jspaceAcceptance(ui){
  if(await evaluate("!!document.querySelector('[aria-label=\"Back to J-Space maps\"]')"))await click('[aria-label="Back to J-Space maps"]');
  await waitFor("!!document.querySelector('.jspace-welcome') && !document.querySelector('[data-testid=\"jspace-map\"]')");
  assert.equal(await evaluate("!!document.querySelector('.jspace-source-notice') || Array.from(document.querySelectorAll('.jspace-map-library-card')).some(row=>row.textContent.includes('Live source'))"),false,'The service source never replaces or appears among the user’s map choices');
- await screenshot('jspace-map-landing');await click('[aria-label="J-Space settings"]');await button('View live source',sheet);await waitFor("!!document.querySelector('.jspace-source-notice')");
+ await screenshot('jspace-map-landing');await click('[aria-label="Maps settings"]');await button('View live source',sheet);await waitFor("!!document.querySelector('.jspace-source-notice')");
  assert.equal(await evaluate('!!document.querySelector('+JSON.stringify('[aria-label="Add system"],[aria-label="Connect systems"],[aria-label="Map pilots"],[aria-label="Map settings and export"],.jspace-connection-handle')+')'),false,'The source exposes inspection and camera controls without editing tools');
  await button('Create new map','.jspace-source-notice');await waitFor("document.querySelector('.jspace-sheet')?.getAttribute('aria-modal')==='true'");
  await fill('[aria-label="J-Space map name"]','Interactive source copy');await fill('[aria-label="J-Space map description"]','A separately tracked expedition');
@@ -127,7 +127,7 @@ export async function jspaceAcceptance(ui){
  await click('[aria-label="Fit chain"]');await delay(650);
  const compact=await evaluate(`Array.from(document.querySelectorAll('.jspace-node')).map(e=>({width:e.offsetWidth,height:e.offsetHeight,identity:parseFloat(getComputedStyle(e.querySelector('.jspace-node-name strong')).fontSize),text:e.innerText,ports:Array.from(e.querySelectorAll('.jspace-connection-handle')).map(p=>({disabled:p.disabled,opacity:getComputedStyle(p).opacity,width:p.getBoundingClientRect().width,height:p.getBoundingClientRect().height}))}))`);
  assert.ok(compact.every(row=>row.width<=280&&row.height<=100&&row.identity>=14),'Compact cards retain a readable system identity: '+JSON.stringify(compact));
- assert.ok(compact.every(row=>row.ports.length===2&&row.ports.every(port=>!port.disabled&&Number(port.opacity)>0&&port.width>=16&&port.height>=16)),'Both connection ports are visibly usable on each private card');
+ assert.ok(compact.every(row=>row.ports.length===4&&row.ports.every(port=>!port.disabled&&Number(port.opacity)>0&&port.width>=16&&port.height>=16)),'Four connection tabs are visibly usable on each private card');
  assert.ok(compact.every(row=>!/(?:No effect|Status unknown|Reference only)/i.test(row.text)),'Default and reference boilerplate does not consume space on compact cards');
  const navBeforePorts=JSON.stringify((await mapApi('/universe/navigation?character=42')).itinerary);
  const originalPositionRevision=(await mapState()).revision;
@@ -218,7 +218,7 @@ export async function jspaceAcceptance(ui){
  await click('[aria-label='+JSON.stringify('Actions for '+systems.jita.name)+']');
  const systemMenu=await evaluate("Array.from(document.querySelectorAll('.jspace-map-menu button')).map(row=>row.textContent.trim())");assert.equal(systemMenu.filter(value=>value==='System details').length,1);assert.equal(systemMenu.some(value=>['Inspect system','Edit system details','Open notebook','Structures','Timers','Field reports','Field notes'].includes(value)),false,'The system menu has one unified details destination');
  assert.deepEqual(await evaluate("(()=>{const e=document.querySelector('.jspace-map-menu a');return {href:e.href,target:e.target,rel:e.rel};})()"),{href:`https://zkillboard.com/system/${systems.jita.system_id}/`,target:'_blank',rel:'noopener noreferrer'});
- await button('View in K-Space','.jspace-map-menu');await waitFor("location.hash==='#universe-kspace' && !!document.querySelector('.universe-module canvas')");
+ await button('View in Atlas','.jspace-map-menu');await waitFor("location.hash==='#universe-kspace' && !!document.querySelector('.universe-module canvas')");
  await space('J-Space');await settle();await openMap(directMap.id);await waitFor('!!document.querySelector('+JSON.stringify(node(home.system_id))+')');await click('[aria-label="Fit chain"]');await delay(650);await selectEdge(drawn.id);
  checks.push('Right-click lifetime and mass changes persist lifetime, mass and ship size with separate line colors; system menus have one System details destination plus distinct map, zKillboard and K-Space actions');
 
@@ -416,7 +416,21 @@ export async function jspaceAcceptance(ui){
  assert.equal((await mapState()).observations.length,2,'D-scan review does not save or remove observations');await button('Record 2 structure observations','.jspace-dscan-import');await waitFor("document.querySelector('.jspace-dscan-import [role=status]')?.textContent.includes('2')");
  map=await mapState();assert.equal(map.observations.length,4);const scannedStructure=map.observations.find(row=>row.title==='Surveyed Astrahus');assert.ok(scannedStructure);assert.equal(scannedStructure.standing,'unknown');assert.equal(scannedStructure.owner,'');assert.equal(scannedStructure.state,'','D-scan does not invent power state or access');
  await closeSheet();await click(selected+' [aria-label="Notes"]');await fill('[aria-label="J-Space field note"]','Follow the surveyed chain; static labels are reference only.');await button('Save note',sheet);await settle();
- assert.equal((await mapState()).comments.at(-1).system_id,home.system_id);await closeSheet();
+ const savedFieldNote=(await mapState()).comments.find(row=>row.body==='Follow the surveyed chain; static labels are reference only.');
+ assert.equal(savedFieldNote.system_id,home.system_id);assert.equal(savedFieldNote.author_id,42);assert.equal(savedFieldNote.author_name,'Atlas Alpha','Saved note attribution comes from the authenticated selected pilot');
+ assert.equal(await evaluate("document.querySelector('.jspace-note-attribution strong')?.textContent"),'Atlas Alpha');
+ assert.equal(await evaluate("document.querySelector('.jspace-note-portrait')?.dataset.authorId"),'42');
+ assert.match(await evaluate("document.querySelector('.jspace-note-attribution time')?.textContent"),/^\d+ min ago$/);
+ assert.ok(await evaluate("(()=>{const b=document.querySelector('.jspace-note-delete').getBoundingClientRect();return b.width<=30&&b.height<=30})()"),'Note deletion stays a compact control');
+ await fill('[aria-label="Search notes"]','surveyed Alpha');assert.equal(await evaluate("document.querySelectorAll('.jspace-note').length"),1,'Notes search combines body text and author');
+ await fill('[aria-label="Search notes"]','no-such-note-content');assert.equal(await evaluate("document.querySelectorAll('.jspace-note').length"),0);
+ await fill('[aria-label="Search notes"]','');await closeSheet();await click('[aria-label="Close selected map context"]');
+ await selectNode(other);await click(selected+' [aria-label="Notes"]');await fill('[aria-label="J-Space field note"]','Neighbor system scouting note');await button('Save note',sheet);await settle();
+ await fill('[aria-label="Search notes"]','surveyed');assert.equal(await evaluate("document.querySelectorAll('.jspace-note').length"),0,'System notes default to the selected map instance');
+ await button('Entire map','.jspace-note-scope');assert.equal(await evaluate("document.querySelectorAll('.jspace-note').length"),1,'Map-wide note search finds the other system without leaving the map');
+ await click('[aria-label="Open notes at Forward camp"]');await waitFor("document.querySelector('.jspace-sheet h3')?.textContent==='Forward camp' && document.querySelector('.jspace-system-tabs [aria-current=page]')?.textContent==='Notes'");
+ await screenshot('jspace-pilot-notes');await closeSheet();
+ checks.push('Field notes retain trusted pilot attribution, portraits and compact deletion; contextual text/author search can open another system’s notes within the map');
  await button('Rally here',selected);await settle();map=await mapState();assert.equal(map.pings.length,1);assert.equal(map.pings[0].system_id,home.system_id);assert.ok(Date.parse(map.pings[0].expires_at)>Date.now());
  assert.ok(await evaluate('!!document.querySelector('+JSON.stringify(node(home.system_id)+' .jspace-node-rally')+')'),'A local rally is visible on its system card');await button('Clear rally',selected);await settle();assert.equal((await mapState()).pings.length,0);
  await click('[aria-label="Close selected map context"]');
@@ -456,7 +470,7 @@ export async function jspaceAcceptance(ui){
  await choose('Active character','Atlas Alpha');await waitFor("!!document.querySelector('.jspace-map-library') && document.querySelector('.jspace-workspace-stage')?.getAttribute('aria-busy')==='false'");assert.equal(await evaluate("!!document.querySelector('.jspace-sheet')"),false,'Changing pilots does not restore an old system detail sheet over the map landing');
  await openMap(originalId);await waitFor('document.querySelector(".jspace-workspace").dataset.mapId==='+JSON.stringify(originalId));await click('[aria-label="Fit chain"]');await delay(650);await selectNode(home);
  await space('K-Space');
- assert.ok(await evaluate("Array.from(document.querySelectorAll('.universe-tabs button')).some(e=>e.textContent.trim()==='Journey') && Array.from(document.querySelectorAll('.universe-tabs button')).some(e=>e.textContent.includes('Connections & pins'))"),'K-Space retains its established Journey and connection tools');
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-tabs button')).some(e=>/Journey|Connections/.test(e.textContent))"),false,'Atlas leaves connection management in Universe settings and keeps Journey off the player navigation');
  await space('J-Space');await waitFor("!!document.querySelector('.jspace-map-library') && !document.querySelector('[data-testid=\"jspace-map\"]')");assert.equal(await evaluate("!!document.querySelector('.jspace-sheet')"),false,'Page entry keeps the map landing unobstructed');await openMap(originalId);await waitFor('document.querySelector(".jspace-workspace").dataset.mapId==='+JSON.stringify(originalId));await click('[aria-label="Fit chain"]');await delay(650);
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-module .universe-tabs button')).some(e=>e.getClientRects().length&&/Journey|Connections/.test(e.textContent))"),false,'J-Space opens directly into its chain without Journey or Connections tabs');
  assert.equal(await evaluate('!!document.querySelector(".jspace-source-notice")'),false,'Reopening J-Space returns to user map selection, never the service source');
@@ -478,6 +492,8 @@ export async function jspaceAcceptance(ui){
  const afterExpiry=await mapState();assert.ok(Date.now()>=privateExpiry);assert.ok(afterExpiry.nodes.some(row=>row.system_id===home.system_id),'System grace is independent of immediate connection expiry');
  assert.equal(afterExpiry.connections.some(row=>row.id===temporary.id),false);assert.equal(afterExpiry.comments.some(row=>row.connection_id===temporary.id),false);
  assert.equal((await mapState()).connections.some(row=>row.link_id===temporary.link_id),false,'Expired private records are forgotten without user refresh');
+ await selectNode(home);await click(selected+' [aria-label="Notes"]');await button('Entire map','.jspace-note-scope');await fill('[aria-label="Search notes"]','Temporary edge note');
+ assert.equal(await evaluate("document.querySelectorAll('.jspace-note').length"),0,'Map-wide search cannot recover expired connection notes');await closeSheet();
  checks.push('Private lifetime expiry removes its line, closes connection details and forgets data and notes without a refresh, while retaining system cards');
 
  await ensureJSpaceMap('Exit finder survey',true);await addNode(home);await addNode(systems.jita);await selectNode(home);await button('Connect','.jspace-workspace-toolbar');

@@ -5,6 +5,7 @@ import {ChevronDown, Crosshair, Flag, Focus, HelpCircle, LocateFixed, Map as Map
 import {Button} from '@/components/ui/button';
 import type {UniverseAtlas, UniverseBackground, UniverseIndicator, UniverseIntel, UniverseOverlay, UniverseStandingFilter, UniverseSystem, UniverseTerritoryFocus} from './universe-types';
 import type {ReplayMapFrame} from './session-replay';
+import {schematicLayout} from '@/lib/universe-schematic-layout.mjs';
 import {historicalSovereigntyLabel} from './session-replay-sovereignty.mjs';
 import {projectKnownSystems, pointBounds, fitCamera, clampCamera, resizeCamera, geometryRevision, paintRevision, createTerritoryGeometry, territoryComponents, territoryOwnerAt} from './universe-map-math.mjs';
 import type {Geometry, TerritoryStyle} from './universe-map-math.mjs';
@@ -229,14 +230,15 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   }, [intel?.politics?.territory_colours, intel?.politics?.groups, intel?.systems]);
   const knownPoints = useMemo(() => projectKnownSystems(atlas.systems), [atlas.systems]);
   const graph = useMemo(() => buildGateGraph(atlas.gates), [atlas.gates]);
-  const projection = replay || space !== 'known' ? 'physical' : tactical.projection || 'physical';
+  const projection = space !== 'known' || replay && tactical.projection === 'radar' ? 'physical' : tactical.projection || 'physical';
   const tacticalCenter = tactical.centerSystemId || selectedSystemId || currentLocationId || knownPoints[0]?.system.system_id;
-  const localLayout = useMemo(() => projection === 'physical' ? null : tacticalLayout(atlas.systems, graph, {mode: projection, centerSystemId: tacticalCenter, hops: tactical.hops || 3, regionId: focusedRegionId}), [atlas.systems, graph, projection, tacticalCenter, tactical.hops, focusedRegionId]);
-  const allPoints = useMemo(() => space === 'known' ? localLayout?.points || knownPoints : discoveryPoints(atlas, intel, selectedSystemId, replay, tactical.feedsVisible !== false), [knownPoints, localLayout, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' && !replay ? clock : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null, tactical.feedsVisible]);
+  const schematicPoints = useMemo(() => schematicLayout(atlas.systems.filter(system => system.space === 'known')).points, [atlas.systems]);
+  const localLayout = useMemo(() => projection === 'radar' ? tacticalLayout(atlas.systems, graph, {mode: 'radar', centerSystemId: tacticalCenter, hops: tactical.hops || 3}) : null, [atlas.systems, graph, projection, tacticalCenter, tactical.hops]);
+  const allPoints = useMemo(() => space === 'known' ? localLayout?.points || (projection === 'schematic' ? schematicPoints : knownPoints) : discoveryPoints(atlas, intel, selectedSystemId, replay, tactical.feedsVisible !== false), [knownPoints, schematicPoints, projection, localLayout, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' && !replay ? clock : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null, tactical.feedsVisible]);
   const geometryPoints = useMemo(() => allPoints.map(point => ({id: point.system.system_id, x: point.x, y: point.y})), [allPoints]);
   const geometryKey = useMemo(() => geometryRevision(geometryPoints), [geometryPoints]);
   const points = allPoints;
-  const bounds = useMemo(() => {const matching = projection === 'physical' && focusedRegionId ? allPoints.filter(point => point.system.region_id === focusedRegionId) : allPoints; return pointBounds(matching.length ? matching : allPoints);}, [allPoints, focusedRegionId, projection]);
+  const bounds = useMemo(() => {const matching = projection !== 'radar' && focusedRegionId ? allPoints.filter(point => point.system.region_id === focusedRegionId) : allPoints; return pointBounds(matching.length ? matching : allPoints);}, [allPoints, focusedRegionId, projection]);
   const boundsRef = useRef(bounds); boundsRef.current = bounds;
   const fittedScope = useRef({geometryKey, focusedRegionId});
   const territoryStyles = useMemo(() => allPoints.map(point => ({...layerStyle(point, overlays.get(point.system.system_id), background, territoryPalette), dim: !passesStanding(overlays.get(point.system.system_id), standingFilter) || Boolean(focusedRegionId && focusedRegionId !== point.system.region_id)})), [allPoints, overlays, background, standingFilter, focusedRegionId, territoryPalette]);
@@ -463,7 +465,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     };
   }, [cameraMemoryKey,geometryKey,Boolean(replay),animateCamera]);
   useEffect(() => {
-    if (space !== 'known' || projection !== 'physical' || background === 'none' || replay && background !== 'sovereignty') {territory.current = null; lastTerritoryKey.current = ''; redraw(); return;}
+    if (space !== 'known' || projection === 'radar' || background === 'none' || replay && background !== 'sovereignty') {territory.current = null; lastTerritoryKey.current = ''; redraw(); return;}
     if (lastTerritoryKey.current === territoryKey) return;
     // Keep the last complete generation visible while preparing the replacement.
     // Ownership cells survive layer/filter/standing changes and unrelated ESI refreshes.
@@ -579,7 +581,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       if (p) acquisition.current.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
     }
     for (const [systemId, element] of intelPulseNodes.current) {const point = byId.get(systemId), p = point ? screen(point) : null; element.style.visibility = p && p.x >= 0 && p.x <= width && p.y >= 0 && p.y <= height ? 'visible' : 'hidden'; if (p) element.style.transform = `translate3d(${p.x}px,${p.y}px,0)`;}
-    const field = (!replay || background === 'sovereignty') && space === 'known' && projection === 'physical' && background !== 'none' ? territory.current : null;
+    const field = (!replay || background === 'sovereignty') && space === 'known' && projection !== 'radar' && background !== 'none' ? territory.current : null;
     if (projection === 'radar' && localLayout) {
       const origin = byId.get(tacticalCenter || 0), bands = new Map<number, number>();
       if (origin) {
@@ -702,7 +704,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       for (const origin of tactical.rangeOrigins) {const point = byId.get(origin.systemId); if (!point) continue; const p = screen(point); context.strokeStyle = '#dfc6fc'; context.lineWidth = 2; context.beginPath(); context.moveTo(p.x - 11, p.y - 7); context.lineTo(p.x - 11, p.y + 7); context.moveTo(p.x + 11, p.y - 7); context.lineTo(p.x + 11, p.y + 7); context.stroke();register({id:`range-origin:${origin.systemId}`,kind:'range',title:'Jump-range origin',description:`${origin.rangeLy} light years of configured range. Dashed circles show projected outer limits, not guaranteed 3D reach.`,systemId:origin.systemId,systemName:point.system.name,source:'Your capital range origins'},p.x,p.y,14,6);}
     }
     const clustered = new Set<number>(); markerClusters.current = [];
-    if (!replay && projection === 'physical' && camera.scale / baseScale.current < 4) {
+    if (!replay && projection !== 'radar' && camera.scale / baseScale.current < 4) {
       const bins = new Map<string, MarkerCluster>();
       for (const point of visible) {
         const systemId = point.system.system_id, op = operational.get(systemId), relevant = tactical.operationsVisible !== false && op?.reports.length || tactical.pilotsVisible !== false && op && op.pilots.length + op.fleet.length || mapFeeds.get(systemId)?.length;
@@ -735,7 +737,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         const x=p.x-17,y=p.y-11;context.strokeStyle='#c2bbdd';context.lineWidth=1.4;context.strokeRect(x-5,y-6,10,12);context.beginPath();context.moveTo(x-1,y-4);context.lineTo(x-1,y+4);context.stroke();
         register({id:`notebook:${systemId}`,kind:'notebook',title:'Exploration notebook',description:`${op.signatures.length} recorded signatures · ${op.upgrades.length} configured upgrades. Open the notebook to review or update these records.`,systemId,systemName:point.system.name,source:'Your Universe notebook'},x,y,11,7);
       }
-      if (contextMarkers.length && (camera.scale > 1.5 || projection !== 'physical' || systemId === selectedSystemId || contextMarkers.some((marker: any) => ['storm', 'campaign', 'combat'].includes(marker.kind)))) {
+      if (contextMarkers.length && (camera.scale > 1.5 || projection === 'radar' || systemId === selectedSystemId || contextMarkers.some((marker: any) => ['storm', 'campaign', 'combat'].includes(marker.kind)))) {
         const marker = contextMarkers.find((entry: any) => entry.kind === 'campaign') || contextMarkers.find((entry: any) => entry.kind === 'storm') || contextMarkers[0];
         const x = p.x - 17, y = p.y - 11; context.strokeStyle = marker.stale ? '#8694a5' : marker.kind === 'storm' ? '#c6b3ed' : marker.kind === 'campaign' || marker.kind === 'combat' ? '#ebaa87' : '#a9cfeb'; context.fillStyle = context.strokeStyle; context.lineWidth = 1.3;
         context.setLineDash(marker.stale ? [2, 2] : []); context.beginPath();
@@ -780,9 +782,9 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       const colour = point.system.security_known === false ? '#718397' : background === 'none' || background === 'activity' ? securityColour(point.system.security) : layerStyle(point, overlay, background === 'power_blocs' ? 'sovereignty' : background, territoryPalette).colour;
       const radius = highlighted ? 3.8 : Math.max(1.25, Math.min(2.6, camera.scale * .45));
       context.fillStyle = highlighted ? '#d2fae9' : colour;
-      if (point.system.station_count && (camera.scale > 2.8 || projection !== 'physical')) context.fillRect(p.x - radius, p.y - radius, radius * 2, radius * 2);
+      if (point.system.station_count && (camera.scale > 2.8 || projection === 'radar')) context.fillRect(p.x - radius, p.y - radius, radius * 2, radius * 2);
       else {context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill();}
-      if (point.system.station_count && (camera.scale > 2.8 || projection !== 'physical')) register({id:`station:${id}`,kind:'station',title:'NPC station system',description:`The square marks a system with ${point.system.station_count} NPC station${point.system.station_count === 1 ? '' : 's'}. It does not indicate player-structure access.`,systemId:id,systemName:point.system.name,source:'CCP static universe data'},p.x,p.y,7,1);
+      if (point.system.station_count && (camera.scale > 2.8 || projection === 'radar')) register({id:`station:${id}`,kind:'station',title:'NPC station system',description:`The square marks a system with ${point.system.station_count} NPC station${point.system.station_count === 1 ? '' : 's'}. It does not indicate player-structure access.`,systemId:id,systemName:point.system.name,source:'CCP static universe data'},p.x,p.y,7,1);
       if (current) register({id:`location:${id}`,kind:'location',title:replay ? 'Replay location' : locationReady ? 'Your observed location' : 'Last known location',description:replay ? 'The pilot’s recorded location at this replay instant.' : 'The gold reticle marks the current location observation. This is not a safety indicator.',systemId:id,systemName:point.system.name,source:replay ? 'Session replay' : mapLocation?.source === 'chat_log' ? 'Local EVE log' : 'EVE ESI',updatedAt:mapLocation?.updated_at},p.x,p.y,12,5);
       if (!current && (pins.has(id) || visits.has(id) || active)) register({id:`system-context:${id}`,kind:'system',title:pins.has(id) ? 'Pinned system' : active ? 'Selected system' : 'Visited system',description:pins.has(id) ? 'Your saved map pin marks this system.' : active ? 'This is the system selected in the inspector.' : 'This system appears in your recorded journey.',systemId:id,systemName:point.system.name,source:'Your Universe workspace'},p.x,p.y,8,2);
       if (cynoPins.has(id)) { register({id:`cyno:${id}`,kind:'cyno',title:'Cyno observation',description:'A user-recorded cynosural observation. The triangle does not establish that a beacon is online, accessible or safe.',systemId:id,systemName:point.system.name,source:'Your map notes'},p.x,p.y-5,11,7); context.strokeStyle='#dfbe7b';context.lineWidth=1.4;context.beginPath();context.moveTo(p.x,p.y-9);context.lineTo(p.x+8,p.y+6);context.lineTo(p.x-8,p.y+6);context.closePath();context.stroke(); }
@@ -790,7 +792,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         context.strokeStyle = current ? '#f2cb8b' : pins.has(id) ? '#bea3e8' : active || hover ? '#abf1d7' : '#89ceb78c'; context.lineWidth = active || current ? 1.6 : .8; context.beginPath(); context.arc(p.x, p.y, active || current ? 8 : 5.5, 0, Math.PI * 2); context.stroke();
         if (current) {context.beginPath(); context.moveTo(p.x - 12, p.y); context.lineTo(p.x - 9, p.y); context.moveTo(p.x + 9, p.y); context.lineTo(p.x + 12, p.y); context.moveTo(p.x, p.y - 12); context.lineTo(p.x, p.y - 9); context.moveTo(p.x, p.y + 9); context.lineTo(p.x, p.y + 12); context.stroke();}
       }
-      if (active || hover || current || (labels && (projection !== 'physical' || space === 'wormhole' || camera.scale > 5 || (camera.scale > 2.8 && visible.length < 180)))) {
+      if (active || hover || current || (labels && (projection === 'radar' || space === 'wormhole' || camera.scale > 5 || (camera.scale > 2.8 && visible.length < 180)))) {
         systemLabels.push({name: point.system.name, x: p.x, y: p.y, priority: active ? 4 : current ? 3 : hover ? 2 : highlighted ? 1 : 0, dim});
       }
     }
@@ -843,7 +845,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         }
       }
     }
-    if (labels && space === 'known' && projection === 'physical' && (background !== 'power_blocs' && background !== 'sovereignty' || camera.scale > 1.7)) {
+    if (labels && space === 'known' && projection !== 'radar' && (background !== 'power_blocs' && background !== 'sovereignty' || camera.scale > 1.7)) {
       context.font = '14px "Cascadia Code", Consolas, monospace';
       const limit = width < 500 && camera.scale < 1.2 ? 9 : width < 800 && camera.scale < .9 ? 16 : 45;
       let drawn = 0;
@@ -894,7 +896,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     return selected;
   }
   function politicalHit(clientX: number, clientY: number): TerritoryHit | null {
-    if (replay || space !== 'known' || projection !== 'physical' || !['power_blocs', 'sovereignty'].includes(background) || lastTerritoryKey.current !== territoryKey) return null;
+    if (replay || space !== 'known' || projection === 'radar' || !['power_blocs', 'sovereignty'].includes(background) || lastTerritoryKey.current !== territoryKey) return null;
     const rect = canvas.current?.getBoundingClientRect(), field = territory.current;
     if (!rect || !field) return null;
     const owner = territoryOwnerAt(field.geometry, (clientX - rect.left - view.current.x) / view.current.scale, (clientY - rect.top - view.current.y) / view.current.scale);
@@ -938,7 +940,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const historicalOwner = replay && hud?.system.system_id === replay.systemId && hud?.system.space !== 'wormhole' ? historicalSovereigntyLabel(replay.sovereigntyAtVisit) : null;
   const hudBloc = hud && !replay ? overlays.get(hud.system.system_id)?.power_bloc : null;
   const hudBlocColour = hudBloc?.group_id && (hudBloc.source === 'configured' || hudBloc.source === 'inferred') ? territoryPalette.get(`bloc:${hudBloc.group_id}`)?.fill : hud ? layerStyle(hud, overlays.get(hud.system.system_id), 'sovereignty', territoryPalette).colour : null;
-  const territoryHud = !replay && projection === 'physical' && space === 'known' && ['power_blocs', 'sovereignty'].includes(background) && !hoverPoint ? hoveredTerritory || (territoryFocus ? territorySummary.get(territoryFocus.key) : null) : null;
+  const territoryHud = !replay && projection !== 'radar' && space === 'known' && ['power_blocs', 'sovereignty'].includes(background) && !hoverPoint ? hoveredTerritory || (territoryFocus ? territorySummary.get(territoryFocus.key) : null) : null;
   const hudOperations = hud && !replay ? operational.get(hud.system.system_id) : null, hudFeeds = hud && !replay ? feeds.get(hud.system.system_id) || [] : [];
   const hudWatch = hud ? watchDistances.get(hud.system.system_id) : null;
   const routePoints = routeSystemIds.filter(id => byId.has(id) && (!focusedRegionId || byId.get(id)?.system.region_id === focusedRegionId));
@@ -946,13 +948,13 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const hudFW = hud && !replay && indicator === 'fw' ? overlays.get(hud.system.system_id)?.faction_warfare : null;
   return <div className="universe-canvas-shell universe-map-immersive" data-map-space={space} data-map-projection={projection} data-portal-network={portalNetwork || undefined} style={{border: '1px solid #2a3542', background: '#0b1119', overflow: 'hidden'}}>
     <div className="universe-map-toolbar" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '9px 13px', borderBottom: '1px solid #25303d', flexWrap: 'wrap'}}>
-      <div className="universe-map-coordinate-title"><span>{space === 'known' ? projection === 'radar' ? 'Local radar' : projection === 'schematic' ? 'Regional network' : 'New Eden' : 'J-Space'}</span><span>{points.length.toLocaleString()} systems{localLayout?.limited ? ` of ${localLayout.total}` : ''}</span></div>
+      <div className="universe-map-coordinate-title"><span>{space === 'known' ? projection === 'radar' ? 'Local radar' : projection === 'schematic' ? 'New Eden · schematic' : 'New Eden' : 'J-Space'}</span><span>{points.length.toLocaleString()} systems{localLayout?.limited ? ` of ${localLayout.total}` : ''}</span></div>
       <div style={{display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap'}}>
         <Button ref={symbolLauncher} variant="ghost" size="icon" title="Explore map symbols (S)" aria-label="Explore map symbols" aria-expanded={symbolNavigator} onClick={openSymbols}><Shapes size={17}/></Button>
         <Button variant="ghost" size="icon" title="Toggle map labels" aria-label="Toggle map labels" aria-pressed={labels} onClick={() => setLabels(value => !value)}><Type size={17}/></Button>
         <Button variant="ghost" size="icon" title={replay ? 'Centre on replay location' : locationReady ? mapLocation?.source === 'chat_log' ? 'Centre on reported log location' : 'Centre on current location' : 'Centre on last known location'} aria-label={replay ? 'Centre on replay location' : 'Centre on current location'} disabled={!locationId || !byId.has(locationId)} onClick={() => requestSystemFocus(locationId)}><LocateFixed size={17}/></Button>
         <Button variant="ghost" size="icon" title="Focus selected system" aria-label="Focus selected system" disabled={!selectedPoint} onClick={() => requestSystemFocus(selectedSystemId)}><Crosshair size={17}/></Button>
-        {territoryFocus && !replay && space === 'known' && projection === 'physical' && <Button variant="ghost" size="icon" title="Frame selected territory" aria-label="Frame selected territory" onClick={() => onFrameTerritory ? onFrameTerritory() : frameSystems(territoryFocus.systemIds)}><Focus size={17}/></Button>}
+        {territoryFocus && !replay && space === 'known' && projection !== 'radar' && <Button variant="ghost" size="icon" title="Frame selected territory" aria-label="Frame selected territory" onClick={() => onFrameTerritory ? onFrameTerritory() : frameSystems(territoryFocus.systemIds)}><Focus size={17}/></Button>}
         {routeSystemIds.length > 1 && <Button variant="ghost" size="icon" disabled={routePoints.length < 2} title={focusedRegionId ? 'Fit route in current region' : routePoints.length < routeSystemIds.length ? 'Fit route in this space' : 'Fit route'} aria-label="Fit route" onClick={() => frameSystems(routePoints)}><Route size={17}/></Button>}
         <span style={{height: 17, width: 1, background: '#2b3948', margin: '0 5px'}}/>
         <Button variant="ghost" size="icon" title="Zoom out" aria-label="Zoom out" disabled={zoom <= 1.001} onClick={() => zoomAt(1 / 1.4)}><Minus size={17}/></Button>
@@ -963,7 +965,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     </div>
     <div ref={wrapper} className="universe-map-viewport" style={{position: 'relative', width: '100%'}}>
       <div className="universe-map-atmosphere" ref={atmosphere} aria-hidden="true"><svg viewBox="0 0 1000 680" preserveAspectRatio="none" focusable="false">{AMBIENT_STARS.map((star, i) => <circle key={i} cx={star.x} cy={star.y} r={star.r}/>)}</svg></div>
-      <canvas ref={canvas} role="img" tabIndex={0} aria-label={`${space === 'known' ? 'New Eden' : 'Wormhole space'} interactive map showing ${points.length.toLocaleString()} systems. ${projection === 'physical' ? LAYERS[background] + ' background' : projection === 'radar' ? 'Gate-hop radar; schematic, not to scale' : 'Regional network; schematic, not to scale'}. ${INDICATOR_LABELS[indicator]}.`} aria-describedby={helpId}
+      <canvas ref={canvas} role="img" tabIndex={0} aria-label={`${space === 'known' ? 'New Eden' : 'Wormhole space'} interactive map showing ${points.length.toLocaleString()} systems. ${projection === 'physical' ? LAYERS[background] + ' background' : projection === 'radar' ? 'Gate-hop radar; schematic, not to scale' : 'CCP schematic 2D map; not a physical distance projection'}. ${INDICATOR_LABELS[indicator]}.`} aria-describedby={helpId}
         style={{position: 'relative', display: 'block', width: '100%', height: '100%', touchAction: 'none', cursor: dragging ? 'grabbing' : hoveredSymbol || hovered || hoveredTerritory ? 'pointer' : 'grab'}}
         onKeyDown={event => {
           if (event.key.toLowerCase() === 's') {event.preventDefault();openSymbols();}
@@ -1019,7 +1021,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       {!replay && intelPulse && intelPulse.systemIds.map(systemId => <div className="universe-map-intel-pulse-anchor" key={intelPulse.id+':'+systemId} ref={element => {if (element) intelPulseNodes.current.set(systemId, element); else intelPulseNodes.current.delete(systemId);}} aria-hidden="true"><i className="universe-map-intel-pulse"/></div>)}
       <div ref={acquisition} className="universe-map-acquisition-anchor" aria-hidden="true"><div key={`${space}:${replay ? replay.systemId : selectedSystemId}`} className="universe-map-acquisition"><i/><i/><i/><i/></div></div>
       {!points.length && <div style={{position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', pointerEvents: 'none', color: '#8ca2b4', fontSize: 14, padding: 30, textAlign: 'center'}}>{space === 'wormhole' && !allPoints.length ? 'Visit or pin a J-space system, or add a discovered wormhole, to build your connection map.' : 'No systems match this map filter.'}</div>}
-      <div className="universe-map-layer-plaque" key={`${space}:${background}:${projection}`}><span className="universe-map-layer-mark"/>{replay ? 'Session replay' : space === 'known' ? projection === 'radar' ? `${tactical.hops || 3}-jump neighbourhood · gate distance` : projection === 'schematic' ? 'Regional network · schematic' : LAYERS[background] : 'Discovery graph'}{indicator !== 'none' && <span className="universe-map-indicator-tag">{INDICATOR_LABELS[indicator]}</span>}</div>
+      <div className="universe-map-layer-plaque" key={`${space}:${background}:${projection}`}><span className="universe-map-layer-mark"/>{replay ? 'Session replay' : space === 'known' ? projection === 'radar' ? `${tactical.hops || 3}-jump neighbourhood · gate distance` : projection === 'schematic' ? `${LAYERS[background]} · schematic 2D` : LAYERS[background] : 'Discovery graph'}{indicator !== 'none' && <span className="universe-map-indicator-tag">{INDICATOR_LABELS[indicator]}</span>}</div>
       {!replay && <div className="universe-map-operational-status">
         {tactical.operationsVisible !== false && tactical.routeWatch !== false && watchedThreats.length > 0 && <button className="universe-route-watch-status" onClick={() => frameSystems(watchedThreats.map(value => value.systemId))}><span className="universe-operational-dot"/>{watchedThreats.length} reported {watchedThreats.length === 1 ? 'threat' : 'threats'} within 6 gates of {routeSystemIds.length ? 'route' : 'focus'}</button>}
         {tactical.rangeOrigins?.length ? <span className="universe-range-status">{verifiedReachability ? `${reach.size} eligible systems${tactical.rangeOrigins.length > 1 ? ` · ${overlap.size} in every origin’s range` : ''}` : 'Range origins · calculate to verify reachable systems'}</span> : null}
@@ -1057,13 +1059,13 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     </div>
     <details className="universe-map-guide"><summary><HelpCircle size={17}/><span>Map key & controls</span><ChevronDown size={16}/></summary>
     <div className="universe-map-legend" style={{display: 'flex', flexWrap: 'wrap', gap: '8px 16px', alignItems: 'center', padding: '11px 15px', borderTop: '1px solid #25303d', fontSize: 14, color: '#89a0b4'}}>
-      {space === 'wormhole' ? <span>Only discovered systems and their known-space exits. Disconnected discoveries stay on the map.</span> : projection !== 'physical' ? <span>Gate topology · physical territory borders and distance scales are hidden. Node colours retain the selected layer.</span> : background === 'power_blocs' ? <><Legend colour="#b7c8d8" label="Configured bloc" line/><Legend colour="#b7c8d8" label="Inferred group" dashed/><span>Dots show actual owners · unassigned alliances remain separate.</span></> : background === 'standings' ? <><Legend colour={PALETTE.excellent} label="Excellent"/><Legend colour={PALETTE.good} label="Good"/><Legend colour={PALETTE.neutral} label="Neutral"/><Legend colour={PALETTE.bad} label="Bad"/><Legend colour={PALETTE.terrible} label="Terrible"/><Legend colour={PALETTE.unknown} label="Unknown"/></> : background === 'security' || background === 'none' ? <><Legend colour="#85dcb5" label="High security"/><Legend colour="#dfb975" label="Low security"/><Legend colour="#d68092" label="Null / wormhole"/></> : <span>{background === 'sovereignty' ? 'Colour identifies the owning alliance or faction. Borders separate neighbouring territories.' : 'Brighter shading means more reported ship and pod kills.'}</span>}
+      {space === 'wormhole' ? <span>Only discovered systems and their known-space exits. Disconnected discoveries stay on the map.</span> : projection === 'radar' ? <span>Gate topology · physical territory borders and distance scales are hidden. Node colours retain the selected layer.</span> : background === 'power_blocs' ? <><Legend colour="#b7c8d8" label="Configured bloc" line/><Legend colour="#b7c8d8" label="Inferred group" dashed/><span>Dots show actual owners · unassigned alliances remain separate.</span></> : background === 'standings' ? <><Legend colour={PALETTE.excellent} label="Excellent"/><Legend colour={PALETTE.good} label="Good"/><Legend colour={PALETTE.neutral} label="Neutral"/><Legend colour={PALETTE.bad} label="Bad"/><Legend colour={PALETTE.terrible} label="Terrible"/><Legend colour={PALETTE.unknown} label="Unknown"/></> : background === 'security' || background === 'none' ? <><Legend colour="#85dcb5" label="High security"/><Legend colour="#dfb975" label="Low security"/><Legend colour="#d68092" label="Null / wormhole"/></> : <span>{background === 'sovereignty' ? 'Colour identifies the owning alliance or faction. Borders separate neighbouring territories.' : 'Brighter shading means more reported ship and pod kills.'}</span>}
       {routeSystemIds.length > 1 && <Legend colour="#a4f1d4" label="Planned route"/>}{showSpecialLinks && !replay && <><Legend colour="#80ddde" label="Ansiblex" dashed/><Legend colour="#c1a0eb" label="Wormhole" dashed/></>}
       {!replay && routeEdges.some(edge => edge.kind === 'jump') && <Legend colour="#f1c282" label="Jump-drive leg" dashed/>}
       {!replay && <><Legend colour="#f59691" label="Reported threat · triangle" line/><Legend colour="#86d8b7" label="Reported clear · check" line/><Legend colour="#9cabbb" label="Older than 150s · dashed" dashed/><Legend colour="#88d9eb" label="Pilot/fleet count · ? last known" line/></>}
       {replay && <><Legend colour="#e1bb87" label="Recorded transitions" dashed/><Legend colour="#e6a6cb" label="Recent recorded event"/></>}
     </div>
-    {!replay && space === 'known' && projection === 'physical' && (background === 'sovereignty' || background === 'power_blocs') && <div className="universe-map-empire-key">{[500001, 500004, 500003, 500002].map(id => {const faction = FACTION_TERRITORY_COLOURS[id]; return <Legend key={id} colour={faction.fill} label={faction.name}/>;})}</div>}
+    {!replay && space === 'known' && projection !== 'radar' && (background === 'sovereignty' || background === 'power_blocs') && <div className="universe-map-empire-key">{[500001, 500004, 500003, 500002].map(id => {const faction = FACTION_TERRITORY_COLOURS[id]; return <Legend key={id} colour={faction.fill} label={faction.name}/>;})}</div>}
     {!replay && tactical.rangeOrigins?.length ? <p className="universe-map-help">Squares mark destinations verified by the 3D range calculation; gold squares are reachable from every origin. Dashed circles show projected outer limits. The gold outline encloses the projected overlap systems, not a guaranteed reachable area. Cyno availability, permissions and safety are not established by range.</p> : null}
     {!replay && indicator === 'npc_delta' && <p className="universe-map-help">NPC activity change compares two rolling one-hour snapshots, not kills between samples. Green means the total rose; red means it fell. Missing samples stay unavailable.</p>}
     {!replay && indicator === 'fw' && <p className="universe-map-help">Faction warfare: diamonds mark frontlines, squares command operations, and chevrons rearguards. Mark colours identify the current occupier; opposing-front gate lines meet at a white boundary tick. These states are derived from fresh ESI occupancy and the stargate graph.</p>}

@@ -167,3 +167,16 @@
 .jspace-shell .jspace-welcome{overflow:auto}
 @media(max-width:1100px){.jspace-shell>.topbar>.topbar-right{display:none}}
 @media(max-width:700px){.jspace-shell>.topbar{padding:0 8px;gap:8px}.jspace-shell>.topbar>div:first-child{gap:5px}.jspace-shell>.topbar .choice{width:140px}.jspace-shell>.workspace{padding:5px}.jspace-shell .jspace-workspace-toolbar{padding:8px;gap:8px}.jspace-shell .jspace-workspace-footer{padding:3px 6px}}
+
+/* Atlas projection is a persistent workspace preference, within immediate reach. */
+.universe-projection-switch{display:flex;align-items:center;flex-shrink:0;gap:2px;padding:3px;border:1px solid var(--border);border-radius:8px;background:var(--background)}
+.universe-projection-switch button{min-width:38px;min-height:34px;border-radius:5px;color:var(--muted-foreground);font-size:16px;font-weight:700;letter-spacing:.04em;transition:background .16s,color .16s}
+.universe-projection-switch button[aria-pressed=true]{background:color-mix(in srgb,var(--primary) 18%,transparent);color:var(--primary)}
+.universe-projection-switch button:hover{color:var(--foreground);background:color-mix(in srgb,var(--primary) 9%,transparent)}
+.universe-projection-switch button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+/* Replace the retired space-switch slot with a compact projection control. */
+.is-atlas-workspace .universe-command-deck{grid-template-columns:minmax(170px,1fr) auto 165px 46px}
+.is-atlas-workspace .universe-command-deck .universe-search{grid-column:1;grid-row:1}
+.is-atlas-workspace .universe-projection-switch{grid-column:2;grid-row:1;justify-self:start}
+@media(max-width:1100px){.is-atlas-workspace .universe-command-deck{grid-template-columns:minmax(0,1fr) auto 46px}}
+@media(max-width:700px){.is-atlas-workspace .universe-command-deck .universe-search{grid-column:1;grid-row:1}.is-atlas-workspace .universe-workspace-bar>button:nth-last-child(2){grid-column:3;grid-row:1}.is-atlas-workspace .universe-projection-switch button{min-width:32px}}

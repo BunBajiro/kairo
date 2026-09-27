@@ -19,7 +19,7 @@ export type WormholeReference = {
 export type UniverseSystem = {
   system_id: number; name: string; constellation_id: number; constellation_name: string;
   region_id: number; region_name: string; security: number; security_known?:boolean; x: number; y: number; z: number;
-  map_x: number; map_y: number; space: string; planet_count?: number; moon_count?: number;
+  map_x: number; map_y: number; schematic_x?:number; schematic_y?:number; space: string; planet_count?: number; moon_count?: number;
   station_count?: number; effect?: string | null; wormhole_class?: number | null;wormhole?:WormholeReference;
 };
 export type UniverseRegion = {region_id:number;name:string;x?:number;y?:number;z?:number;map_x?:number;map_y?:number;space?:string;[key:string]:unknown};

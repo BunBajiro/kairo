@@ -11,12 +11,16 @@ export function chainZoomLimits(nodes:ChainGeometryNode[], viewport:ChainViewpor
 export function zoomChainAt(camera:ChainCamera,point:ChainPoint,factor:number,limits?:{min:number;max:number}):ChainCamera;
 export function boundChainCamera(camera:ChainCamera,nodes:ChainGeometryNode[],viewport:ChainViewport):ChainCamera;
 export type ChainEdgeGeometry={start:ChainPoint;end:ChainPoint;label:ChainPoint;controls:[ChainPoint,ChainPoint];path:string};
-export function chainEdgeGeometry(from:ChainPoint,to:ChainPoint,parallelOffset?:number):ChainEdgeGeometry;
+export type ChainPort = 'left'|'right'|'top'|'bottom';
+export const CHAIN_PORTS: ChainPort[];
+export function chainPortPoint(node:ChainPoint,port:ChainPort):ChainPoint;
+export function nearestChainPort(node:ChainPoint,point:ChainPoint):ChainPort;
+export function chainEdgeGeometry(from:ChainPoint,to:ChainPoint,parallelOffset?:number,ports?:{from_port?:ChainPort;to_port?:ChainPort}):ChainEdgeGeometry;
 export function placeChainEdgeLabels<T extends ChainEdgeGeometry & {labelWidth?:number;labelHeight?:number}>(edges:T[],nodes:ChainGeometryNode[]):Array<T & {labelBox:{left:number;right:number;top:number;bottom:number};leader:{from:ChainPoint;to:ChainPoint}|null}>;
-export function traceChainPath(nodes:ChainGeometryNode[],connections:Array<{id:string;from_system_id:number;to_system_id:number;expired?:boolean;life_status?:string;enabled?:boolean;expires_at?:string|null}>,fromId:number,toId:number,now?:number):{nodes:number[];edges:string[]};
+export function traceChainPath(nodes:ChainGeometryNode[],connections:Array<{id:string;from_system_id:number;to_system_id:number;kind?:string;directional?:boolean;expired?:boolean;life_status?:string;enabled?:boolean;expires_at?:string|null}>,fromId:number,toId:number,now?:number):{nodes:number[];edges:string[]};
 export function placeChainPopover(point:ChainPoint,size:ChainViewport,viewport:ChainViewport,padding?:number):ChainPoint;
 export function visibleChainLabels(nodes:ChainGeometryNode[],camera:ChainCamera,viewport:ChainViewport,priorityIds?:(number|null|undefined)[]):Set<number>;
 
 export function draggedChainPositions(originals:ChainGeometryNode[],start:ChainPoint,end:ChainPoint,zoom:number):ChainGeometryNode[];
 export function chainConnectionTarget<T extends ChainGeometryNode & {public_report?:boolean}>(nodes:T[],point:ChainPoint,fromId:number,padding?:number):T|null;
-export function chainConnectionPreview(from:ChainPoint,side:'left'|'right',point:ChainPoint,target?:ChainPoint|null,portExtent?:number):string;
+export function chainConnectionPreview(from:ChainPoint,side:ChainPort,point:ChainPoint,target?:ChainPoint|null,portExtent?:number,targetSide?:ChainPort|null):string;

@@ -15,7 +15,7 @@ test('radar includes cross-region gate neighbours and regional schematic retains
  const graph = buildGateGraph([{from_system_id:1,to_system_id:2},{from_system_id:2,to_system_id:3}]);
  const radar=tacticalLayout(systems,graph,{mode:'radar',centerSystemId:1,hops:2});
  assert.deepEqual(new Set(radar.points.map(p=>p.system.system_id)),new Set([1,2,3]));
- const regional=tacticalLayout(systems,graph,{mode:'schematic',centerSystemId:1});
+ const regional=tacticalLayout(systems,graph,{mode:'schematic',centerSystemId:1,regionId:10});
  assert.deepEqual(new Set(regional.points.map(p=>p.system.system_id)),new Set([1,2,4]));
  assert.deepEqual(tacticalLayout([...systems].reverse(),graph,{mode:'radar',centerSystemId:1,hops:2}).points,radar.points);
  assert.equal(new Set(regional.points.map(p=>`${p.x}:${p.y}`)).size,3);
