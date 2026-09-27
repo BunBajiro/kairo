@@ -964,6 +964,7 @@ try{
  await waitFor("document.querySelectorAll('.universe-navigation-route strong').length>2");
  const route=await evaluate("Array.from(document.querySelectorAll('.universe-navigation-route strong')).map(e=>e.textContent)");
  assert.equal(route[0],'Jita');assert.equal(route.at(-1),'Amarr');assert.ok(route.length>2,'Route uses multiple actual stargates');
+ await waitFor("document.querySelector('.universe-canvas-shell .universe-map-legend')?.textContent.includes('Planned route') && document.querySelector('.universe-canvas-shell [aria-label=\"Fit route\"]')?.disabled===false");
  assert.ok(await evaluate("document.querySelector('.universe-canvas-shell').textContent.includes('Planned route')"),'Calculated route is passed to the map');
  await delay(900);const beforeRouteFit=await canvasHash();await click('[aria-label="Fit route"]');await delay(900);assert.notEqual(await canvasHash(),beforeRouteFit,'Fit route reframes the drawn route');
  await screenshot('universe-gate-route');
@@ -1083,7 +1084,8 @@ try{
  await clickElement("Array.from(document.querySelectorAll('.map-add-search [role=option]')).find(e=>e.querySelector('strong')?.textContent==="+JSON.stringify(atlas.wormhole.name)+")");
  await waitFor("document.querySelector('[aria-label=\"Selected map context\"] h3')?.textContent==="+JSON.stringify(atlas.wormhole.name));
  const jspaceBreadcrumb=await evaluate("document.querySelector('[aria-label=\"Selected map context\"] header').textContent");
- assert.ok(jspaceBreadcrumb.includes('J-Space')&&!jspaceBreadcrumb.includes(atlas.wormhole.region_name)&&!jspaceBreadcrumb.includes(atlas.wormhole.constellation_name),'J-space inspection explains system class and discovery context without internal region geography');
+ assert.equal(await evaluate("document.querySelector('[aria-label=\"Selected map context\"] .jspace-context-class').textContent"),'C'+atlas.wormhole.wormhole_class,'The compact system context shows its wormhole class');
+ assert.ok(jspaceBreadcrumb.includes('MAP CONTEXT')&&!jspaceBreadcrumb.includes(atlas.wormhole.region_name)&&!jspaceBreadcrumb.includes(atlas.wormhole.constellation_name),'J-space inspection explains system class and map context without internal region geography');
  await minimumChainZoom('Discovered J-space');
  await screenshot('universe-expired-discovery');checks.push('Map-owned wormhole confirmation, lifetime editing, immediate expiry removal and preserved system knowledge');
  checks.push('J-space keeps system search and discovery context while hiding region navigation, grouping and internal geography');
