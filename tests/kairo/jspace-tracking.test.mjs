@@ -62,18 +62,21 @@ test('adding a map pilot enables tracking and seeds only the current fresh J-Spa
     assert.deepEqual(noScope.nodes.map(row => row.system_id), [W]);
 });
 
-test('one location stream populates entry, internal and exit connections without granting route trust or renewing a known hole', async t => {
+test('normal nonoverlapping ESI cache windows populate entry, internal and exit connections without renewing a known hole', async t => {
     const f = await fixture(t), map = f.create();
     f.command(42, map, 'pilot.add', { character_id: 42 });
-    f.observe(42, A, AT); f.observe(42, W, AT + 20000); f.observe(42, X, AT + 40000); f.observe(42, B, AT + 60000);
+    for (const [index, system] of [A, W, X, B].entries()) {
+        const at = AT + index * 6000;
+        f.observe(42, system, at, { expiresAt: new Date(at + 5000).toISOString() });
+    }
     const populated = f.read(42, map.id);
     assert.deepEqual(new Set(populated.nodes.map(row => row.system_id)), new Set([A, W, X, B]));
     assert.equal(populated.connections.length, 3);
     for (const edge of populated.connections) {
-        assert.equal(edge.duration_hours, 16); assert.equal(edge.confirmed, false); assert.equal(edge.accessible, false); assert.equal(edge.reverse_accessible, false);
+        assert.equal(edge.duration_hours, 16); assert.equal(edge.mass, 'stable'); assert.equal(edge.max_ship_size, 'large'); assert.equal(edge.confirmed, false); assert.equal(edge.accessible, false); assert.equal(edge.reverse_accessible, false);
     }
     const expiry = populated.connections[2].expires_at;
-    f.observe(42, X, AT + 80000);
+    f.observe(42, X, AT + 24000, { expiresAt: new Date(AT + 29000).toISOString() });
     assert.equal(f.count(), 3); assert.equal(f.read(42, map.id).connections[2].expires_at, expiry);
     assert.equal(f.read(42, map.id).passages.length, 0);
 });

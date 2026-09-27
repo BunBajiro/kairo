@@ -93,6 +93,11 @@ export function openStore(dir) {
             db.exec('COMMIT');
         } catch (error) { db.exec('ROLLBACK'); db.close(); throw error; }
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='visits-sovereignty-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+        ALTER TABLE visits ADD COLUMN sovereignty_at_visit TEXT;
+        INSERT INTO migrations VALUES('visits-sovereignty-v080',datetime('now')); COMMIT;`);
+    }
     try {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);
     }

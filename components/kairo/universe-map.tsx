@@ -1,10 +1,11 @@
 "use client";
 
 import {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react';
-import {ChevronDown, Crosshair, Focus, HelpCircle, LocateFixed, Map as MapIcon, Maximize2, Minus, Plus, Route, Shapes, Type, X} from 'lucide-react';
+import {ChevronDown, Crosshair, Flag, Focus, HelpCircle, LocateFixed, Map as MapIcon, Maximize2, Minus, Plus, Route, Shapes, Type, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import type {UniverseAtlas, UniverseBackground, UniverseIndicator, UniverseIntel, UniverseOverlay, UniverseStandingFilter, UniverseSystem, UniverseTerritoryFocus} from './universe-types';
 import type {ReplayMapFrame} from './session-replay';
+import {historicalSovereigntyLabel} from './session-replay-sovereignty.mjs';
 import {projectKnownSystems, pointBounds, fitCamera, clampCamera, resizeCamera, geometryRevision, paintRevision, createTerritoryGeometry, territoryComponents, territoryOwnerAt} from './universe-map-math.mjs';
 import type {Geometry, TerritoryStyle} from './universe-map-math.mjs';
 import {wheelZoomFactor, anchoredWheelCamera, pinchCamera, dragCoast, overviewTransform, overviewViewport, projectedDistanceScale} from './universe-map-navigation.mjs';
@@ -462,7 +463,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     };
   }, [cameraMemoryKey,geometryKey,Boolean(replay),animateCamera]);
   useEffect(() => {
-    if (space !== 'known' || projection !== 'physical' || background === 'none' || replay) {territory.current = null; lastTerritoryKey.current = ''; redraw(); return;}
+    if (space !== 'known' || projection !== 'physical' || background === 'none' || replay && background !== 'sovereignty') {territory.current = null; lastTerritoryKey.current = ''; redraw(); return;}
     if (lastTerritoryKey.current === territoryKey) return;
     // Keep the last complete generation visible while preparing the replacement.
     // Ownership cells survive layer/filter/standing changes and unrelated ESI refreshes.
@@ -578,7 +579,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       if (p) acquisition.current.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
     }
     for (const [systemId, element] of intelPulseNodes.current) {const point = byId.get(systemId), p = point ? screen(point) : null; element.style.visibility = p && p.x >= 0 && p.x <= width && p.y >= 0 && p.y <= height ? 'visible' : 'hidden'; if (p) element.style.transform = `translate3d(${p.x}px,${p.y}px,0)`;}
-    const field = !replay && space === 'known' && projection === 'physical' && background !== 'none' ? territory.current : null;
+    const field = (!replay || background === 'sovereignty') && space === 'known' && projection === 'physical' && background !== 'none' ? territory.current : null;
     if (projection === 'radar' && localLayout) {
       const origin = byId.get(tacticalCenter || 0), bands = new Map<number, number>();
       if (origin) {
@@ -934,6 +935,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const selectedPoint = selectedSystemId ? byId.get(selectedSystemId) : null;
   const locationId = replay ? replay.systemId : mapLocation?.system_id;
   const hud = hoverPoint || selectedPoint;
+  const historicalOwner = replay && hud?.system.system_id === replay.systemId && hud?.system.space !== 'wormhole' ? historicalSovereigntyLabel(replay.sovereigntyAtVisit) : null;
   const hudBloc = hud && !replay ? overlays.get(hud.system.system_id)?.power_bloc : null;
   const hudBlocColour = hudBloc?.group_id && (hudBloc.source === 'configured' || hudBloc.source === 'inferred') ? territoryPalette.get(`bloc:${hudBloc.group_id}`)?.fill : hud ? layerStyle(hud, overlays.get(hud.system.system_id), 'sovereignty', territoryPalette).colour : null;
   const territoryHud = !replay && projection === 'physical' && space === 'known' && ['power_blocs', 'sovereignty'].includes(background) && !hoverPoint ? hoveredTerritory || (territoryFocus ? territorySummary.get(territoryFocus.key) : null) : null;
@@ -1030,6 +1032,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       </div> : hud && <div className="universe-map-hud" key={hud.system.system_id}>
         <div className="universe-map-hud-heading"><strong>{hud.system.name}</strong><span className="universe-map-security-badge" style={{color: hud.system.security_known === false ? '#a2b5c8' : securityColour(hud.system.security)}}>{hud.system.security_known === false ? '?' : hud.system.security.toFixed(1)}</span>{hud.system.system_id === locationId && <span className="universe-map-location-badge">{replay ? 'Replay' : !locationReady ? 'Last known location' : mapLocation?.source === 'chat_log' ? 'Reported location · logs' : 'You are here'}</span>}</div>
         <div className="universe-map-hud-region">{systemLocationLabel(hud.system)}</div>
+        {historicalOwner && <div className="universe-map-hud-owner universe-map-historical-owner" title={historicalOwner.title}><Flag size={14} aria-hidden="true"/><span>{historicalOwner.label}</span></div>}
         {!replay && <div className="universe-map-hud-owner">{sovereigntyName(overlays.get(hud.system.system_id)?.sovereignty) || (hud.system.space === 'wormhole' ? 'Wormhole space' : 'Owner unavailable')}{background === 'power_blocs' && hudBloc && <span className="universe-map-hud-bloc"><i style={{background: hudBlocColour || '#77879a'}}/>{hudBloc.name}<span>{hudBloc.source === 'configured' ? 'Configured' : hudBloc.source === 'inferred' ? 'Inferred' : hudBloc.source === 'independent' ? 'Independent' : 'Unassigned'}</span></span>}</div>}
         {indicator !== 'none' && indicator !== 'fw' && <div className="universe-map-hud-metric"><span>{INDICATOR_LABELS[indicator]}</span><strong>{hudValue === null ? 'Unavailable' : indicator === 'industry' ? hudValue.toFixed(2) + '%' : hudValue.toLocaleString()}</strong></div>}
         {hudFW && <div className="universe-map-fw-state"><strong>{FW_STATES[hudFW.operational_state] || 'State unavailable'}</strong><span style={{color:FACTION_TERRITORY_COLOURS[Number(hudFW.occupier_faction_id ?? hudFW.occupier_id)]?.fill}}>{FACTION_TERRITORY_COLOURS[Number(hudFW.occupier_faction_id ?? hudFW.occupier_id)]?.name || 'Occupier unavailable'}</span><small>{hudFW.operational_state_source === 'derived_gate_adjacency' ? 'Derived from current occupancy and gate adjacency' : 'Awaiting a fresh warfare snapshot'}</small></div>}

@@ -4,9 +4,10 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Activity, ChevronLeft, ChevronRight, Crosshair, Factory, Film, GraduationCap, MapPin, Pause, Play, Rocket, RotateCcw, SkipBack, SkipForward, Skull, Square, Swords, Trophy, Wallet, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {api} from './model';
+import type {ReplaySovereigntyOwner} from './session-replay-sovereignty.mjs';
 import './session-replay.css';
 
-type ReplayVisit = {id: number | string; systemId: number; name: string; entered: string; exited?: string | null; seconds?: number; inferred?: boolean; clipped?: boolean; active?: boolean; coordinates_available?: boolean; location_basis?: string};
+type ReplayVisit = {id: number | string; systemId: number; name: string; entered: string; exited?: string | null; seconds?: number; inferred?: boolean; clipped?: boolean; active?: boolean; coordinates_available?: boolean; location_basis?: string; sovereignty_at_visit?: ReplaySovereigntyOwner | null};
 type ReplayEvent = {id: number | string; type: string; module?: string; summary: string; at: string; system_id?: number | null; system_name?: string | null; visit_id?: number | string | null; location_basis?: string; payload?: unknown};
 type ReplayTravel = {from_visit_id: number | string; to_visit_id: number | string; from_system_id: number; to_system_id: number; at: string; connection_basis: string};
 export type SessionReplayData = {
@@ -17,6 +18,7 @@ export type SessionReplayData = {
 };
 export type ReplayMapFrame = {
   systemId: number | null; follow: boolean; smooth: boolean; focusKey: string;
+  sovereigntyAtVisit?: ReplaySovereigntyOwner | null;
   trailSystemIds: number[]; discoveredSystemIds: number[];
   travel: ReplayTravel[]; allTravel: ReplayTravel[]; eventSystemIds: number[]; at: string;
   events: {id: string | number; systemId: number; summary: string; type: string; locationBasis: string}[];
@@ -109,6 +111,7 @@ export function useSessionReplay(characterId: number) {
   const discoveredSystemIds = useMemo(() => [...new Set(timeline.visits.map(visit => visit.systemId))], [timeline.visits]);
   const frame = useMemo<ReplayMapFrame | null>(() => data ? {
     systemId: currentVisit?.coordinates_available === false ? null : currentVisit?.systemId || null,
+    sovereigntyAtVisit: currentVisit?.sovereignty_at_visit || null,
     follow, smooth, focusKey: `${request?.sessionId}:${currentVisit?.id || 'gap'}:${scrubKey}`,
     trailSystemIds: [...new Set(timeline.visits.filter(visit => visit.start <= at).map(visit => visit.systemId))],
     discoveredSystemIds, allTravel: data.travel,

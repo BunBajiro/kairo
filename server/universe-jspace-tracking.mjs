@@ -287,8 +287,10 @@ export function createJSpaceTracking(store, auth, options) {
             if (Number.isFinite(beforeTime) && at <= beforeTime) continue;
             const from = byId.get(previous?.system_id), to = byId.get(current.system_id);
             const moved = !!from && from.system_id !== to.system_id;
+            // ESI refreshes run after the previous HTTP cache expires. That expiry
+            // limits reuse of a response, not continuity between fresh observations.
             const reliable = moved && previous.source === current.source && at - beforeTime <= MAX_TRANSITION_MS &&
-                Date.parse(previous.expires_at) >= at && !previous.docked && !current.docked &&
+                !previous.docked && !current.docked &&
                 !podLoss.get(id, iso(beforeTime - 60000));
             const boundary = reliable && (from.space === 'wormhole' || to.space === 'wormhole');
             const acceptsTransition = boundary && scopeAcceptsTransition(owner, map, from.system_id, to.system_id);

@@ -10,7 +10,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {openStore} from '../server/store.mjs';
 import {startKairo} from '../server/index.mjs';
 import {projectKnownSystems} from '../components/kairo/universe-map-math.mjs';
-import {jspaceAcceptance} from './jspace-ui-workflows.mjs';
+import {jspaceAcceptance, jspaceReplayAcceptance} from './jspace-ui-workflows.mjs';
 
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(existsSync);
 if(!chrome)throw new Error('Chrome is required for the browser smoke test. Set KAIRO_CHROME_PATH.');
@@ -1085,7 +1085,7 @@ try{
  assert.equal(await evaluate("document.querySelector('.session-replay-status strong').textContent"),'Jita');
  assert.equal(await evaluate("document.querySelector('[aria-label=\"Session replay time\"]').max"),'1800000');
  assert.equal(await evaluate("document.querySelector('.universe-map-layer-plaque').textContent.trim().toLowerCase()"),'session replay','The map explicitly identifies its recorded replay context');
- assert.ok(await evaluate("document.querySelector('.universe-map-footnote').textContent.includes('Current sovereignty and activity are hidden')"),'Replay separates historical observations from current geopolitical data');
+ await waitFor("document.querySelector('.universe-map-footnote')?.textContent.includes('Current sovereignty · cached')");assert.ok(await evaluate("/Current sovereignty · cached [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2} EVE/.test(document.querySelector('.universe-map-footnote').textContent)"),'Replay dates its current-sovereignty backdrop separately from recorded movement');assert.ok(await evaluate("document.querySelector('.universe-module canvas').getAttribute('aria-label').includes('Sovereignty background')"),'K-Space replay uses sovereignty shading');
  assert.equal(await evaluate("!!document.querySelector('.universe-map-intel-pulse,.universe-operational-hud,.universe-map-operational-status')"),false,'Historical replay hides current operational intel, fleet and public-feed markers');
  assert.equal(await evaluate("!!document.querySelector('.universe-portal-networks,.universe-map-context')"),false,'Historical replay never presents current public portal networks or their live map cards');
  assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Play session replay\"]')"),true,'Replay opens paused');
@@ -1140,6 +1140,7 @@ try{
  await viewport(1600);await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:10,y:10});await delay(1100);
  checks.push('Session Show on Map, timeline/play/pause, smooth follow, manual pan, event popup and clean exit');
 
+ await jspaceReplayAcceptance({app,api,evaluate,click,clickElement,button,waitFor,space,screenshot,checks});
  const metrics=await idleMetrics();
  assert.deepEqual(errors,[],'No uncaught browser errors');
  assert.deepEqual(externalCalls,[],'No external ESI or login requests from synthetic fixtures');

@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { openStore } from '../../server/store.mjs';
 import { createUniverse } from '../../server/universe.mjs';
+import { refreshDeadline } from '../../server/polling.mjs';
 
 const AT = Date.parse('2026-09-25T18:00:00Z'), A = 30000001, B = 30000002, W = 31000001, X = 31000002;
 const atlas = { metadata: {}, regions: [], constellations: [], systems: [
@@ -267,6 +268,40 @@ test('the shared selected-location stream expands only subscribed private maps a
     assert.equal(other.connections[0].expires_at, expiry);
     assert.deepEqual(f.service.state(42).links, []); assert.deepEqual(f.service.state(43).links, []);
     assert.equal(f.api.exportMap(42, home.id).map.pilots, undefined, 'map export carries no private tracking telemetry');
+});
+
+test('scheduled ESI refreshes connect J-Space travel and both K-Space endpoints in source, global and scoped maps', async t => {
+    const f = await fixture(t);
+    f.auth.characters = () => [42, 43].map(id => ({ id, scopes: ['esi-location.read_location.v1'] }));
+    const global = f.create('Live chain'), scoped = f.api.create(42, { name: 'Beta exits', scope: { system_ids: [B] } });
+    let sample = null, at = AT;
+    const emit = system_id => {
+        // Core schedules the next request at cache expiry; a fresh response arrives later.
+        if (sample) at = refreshDeadline({ key: 'location', pollInterval: 5 }, sample, null, at) + 750;
+        f.time(at);
+        sample = { status: 'ready', data: { solar_system_id: system_id }, updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 5000).toISOString() };
+        sample.refreshAt = new Date(refreshDeadline({ key: 'location', pollInterval: 5 }, sample, null, at)).toISOString();
+        f.store.saveSnapshot(42, 'location', sample);
+        f.service.observeSelectedLocation(42);
+    };
+    emit(A); emit(W); emit(X);
+    assert.deepEqual(f.api.map(42, scoped.id).nodes, [], 'the scoped map still waits for a matching exit');
+    const sourceId = f.api.state(42).source_map.id, firstSource = f.api.map(42, sourceId).connections[0];
+    emit(B);
+    for (const id of [sourceId, global.id, scoped.id]) {
+        const map = f.api.map(42, id);
+        assert.deepEqual(new Set(map.nodes.map(row => row.system_id)), new Set([A, W, X, B]));
+        assert.deepEqual(map.connections.map(row => [row.from_system_id, row.to_system_id]), [[A, W], [W, X], [X, B]]);
+        for (const edge of map.connections) {
+            assert.equal(edge.duration_hours, 16); assert.equal(edge.mass, 'stable'); assert.equal(edge.max_ship_size, 'large');
+            assert.equal(edge.confirmed, false); assert.equal(edge.accessible, false);
+        }
+    }
+    const copied = f.api.map(42, scoped.id).connections[0];
+    assert.notEqual(copied.link_id, firstSource.link_id); assert.equal(copied.expires_at, firstSource.expires_at);
+    const expiries = f.api.map(42, global.id).connections.map(row => row.expires_at);
+    emit(X);
+    assert.deepEqual(f.api.map(42, global.id).connections.map(row => row.expires_at), expiries, 'returning through a hole cannot renew its timer');
 });
 
 test('scoped maps adopt a source chain when a later exit matches without renewing its lifetime or copying user data', async t => {

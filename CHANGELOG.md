@@ -2,6 +2,18 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.13 — Reliable travel and clearer map entry
+
+- Fixes automatic K→J, J→J and J→K mapping with normal ESI cache refresh intervals. Both K-Space endpoints are displayed; new connections use 16h/Normal/L without resetting existing timers.
+- Restores a map landing with existing maps and Create New Map. The read-only Live source is available only through settings.
+- Uses one floating creation form for name, description, at least one tracked pilot and optional scope, including creation from the source. Tracking is automatic for selected pilots; source copies retain their remaining lifetime.
+- Separates Structures, Timers and Field reports, with distinct icons and counts. A structure with an attached schedule remains a structure.
+- Shows structure counts on system cards, hides zero-count indicators and removes the decorative chain icon from connection labels.
+- Prefills Observation time with current UTC for new records, preserving the original timestamp on ordinary edits. Expiry remains optional.
+- Consolidates system right-click detail shortcuts into one System details action, keeping distinct map and external actions separate.
+- Keeps recorded J-Space entrances, internal travel and exits visible in session replay, including rewind, using historical visits independently of live maps.
+- Restores current sovereignty shading in K-Space replay. The pilot-location readout shows ownership captured at the visit when available; older visits without a capture remain explicitly unrecorded.
+
 ## 0.8.0-rc.12 — Independent maps and live tracking
 
 - Deletes expired, collapsed and manually removed wormhole connections immediately, including their connection notes, passage records, bound signatures, cached routes and undo copies. Connections have no archive or lock; system data and its 30-minute grace period remain.

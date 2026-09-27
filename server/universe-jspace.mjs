@@ -71,7 +71,7 @@ export function createUniverseJSpace(store, auth, options) {
         const previous = scopeContexts; scopeContexts = previous || new Map();
         try { return fn(); } finally { scopeContexts = previous; }
     }
-    const populateScopes = (id, mapId) => withScopeContexts(() => tracking.populateScopes(id, mapId));
+    const populateScopes = (id, mapId, settings) => withScopeContexts(() => tracking.populateScopes(id, mapId, settings));
     const isActivePilot = id => id === store.get('universe:jspace:active_pilot', auth.characters()[0]?.id || 0);
     const tracking = createJSpaceTracking(store, auth, { atlas, now, operations, onChange, saveConnection, isActivePilot,
         hasScope: map => hasJSpaceScope(map.scope), scopeMatches: (id, map, systemId) => matchesJSpaceScope(map.scope, systemId, scopeContext(id)),
@@ -415,8 +415,19 @@ export function createUniverseJSpace(store, auth, options) {
         const id = pilot(characterId, true), map = blank(input);
         if (rows(id, 'jspace_map').filter(row => row.kind !== 'tracking_source').length >= LIMITS.maps) throw new Error('Remove a chain before creating more than 24 maps.');
         map.scope = validateJSpaceScope(input.scope, getScopeContext(id));
-        tracking.rosterCommand(id, map, 'pilot.add', { character_id: id });
-        log(map, 'map.create', 'Created private chain map'); capacity(map); write(id, 'jspace_map', map); tracking.syncMap(id, map); populateScopes(id, map.id); onChange(id); return project(id, loaded(id, map.id));
+        const members = [...new Set(array(input.pilot_ids ?? [id], 100, 'tracked pilots').map(value => pilot(value, true)))];
+        if (!members.length) throw new Error('Select at least one pilot to track on this map.');
+        const copySource = input.source_map_id != null;
+        if (copySource && loaded(id, clean(input.source_map_id, 100)).kind !== 'tracking_source') throw new Error('Choose the live source map to populate a new map.');
+        for (const member of members) tracking.rosterCommand(id, map, 'pilot.add', { character_id: member });
+        log(map, 'map.create', 'Created private chain map'); capacity(map);
+        try {
+            atomic(() => {
+                write(id, 'jspace_map', map); tracking.syncMap(id, map);
+                populateScopes(id, map.id, { includeGlobal: copySource, notify: false });
+            });
+        } catch (error) { tracking.forgetMap(id, map.id); throw error; }
+        onChange(id); return project(id, loaded(id, map.id));
     }
     function checkRevision(map, input) { if (!Number.isSafeInteger(input.revision) || input.revision !== map.revision) throw conflict(map.revision); }
     function remove(characterId, key, input = {}) {

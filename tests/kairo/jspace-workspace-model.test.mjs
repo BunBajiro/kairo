@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {connectionEditorPayload,previewStructureScan,publicChainScene,drawnConnectionPayload,createLayoutSaveQueue,createLayoutSaveScope} from '../../components/kairo/jspace-workspace-model.mjs';
+import {groupSystemObservations,connectionEditorPayload,previewStructureScan,publicChainScene,drawnConnectionPayload,createLayoutSaveQueue,createLayoutSaveScope} from '../../components/kairo/jspace-workspace-model.mjs';
 
 test('drawn connections use mapper defaults without granting route access; later condition edits preserve expiry',()=>{
  const edge=drawnConnectionPayload(31000111,31000222);
@@ -99,4 +99,14 @@ test('private connection lifetime ends at the exact boundary while unknown lifet
  const map={id:'private',nodes,connections:[{...edge,id:'current',expires_at:new Date(now+1).toISOString()},{...edge,id:'unknown',expires_at:null,confirmed:false},{...edge,id:'ended',expires_at:new Date(now).toISOString(),locked:true},{...edge,id:'collapsed',expires_at:new Date(now+1000).toISOString(),life_status:'collapsed'}]};
  const scene=publicChainScene(map,null,[],{},now);assert.deepEqual(scene.connections.map(row=>row.id),['current','unknown']);assert.deepEqual(scene.nodes,nodes);
  assert.deepEqual(publicChainScene(map,null,[],{},now+1).connections.map(row=>row.id),['unknown']);
+});
+
+
+test('structures remain structures with optional schedules and never inflate standalone timer counts',()=>{
+ const structure={id:'keep',kind:'structure',timer_at:'2026-09-28T20:00:00.000Z'}, unscheduled={id:'tower',kind:'structure'}, timer={id:'operation',kind:'timer',timer_at:'2026-09-28T21:00:00.000Z'}, report={id:'hazard',kind:'hazard',timer_at:'2026-09-28T22:00:00.000Z'};
+ const groups=groupSystemObservations([structure,unscheduled,timer,report]);
+ assert.deepEqual(groups.structures,[structure,unscheduled]);assert.deepEqual(groups.timers,[timer]);assert.deepEqual(groups.reports,[report]);
+ assert.equal(groups.structures[0].timer_at,structure.timer_at,'The structure keeps its own schedule');
+ const imported=previewStructureScan('J225111 - Folgers\n1,475 km\nReinforced until 2026.09.28 23:51');
+ assert.equal(groupSystemObservations(imported.rows).structures.length,1);assert.equal(groupSystemObservations(imported.rows).timers.length,0);
 });

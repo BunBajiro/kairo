@@ -1,5 +1,17 @@
 # Validation — 27 September 2026
 
+## Universe 0.8.0-rc.13
+
+A focused correction pass covers normal ESI polling, map entry/creation and structure/report presentation.
+
+- All 554 Node tests pass. Application TypeScript and production compilation pass.
+- Travel regressions reproduce the original missing-link/missing-exit failure using the production refresh deadline and non-overlapping five-second ESI cache windows. K→J→J→K produces both known-space endpoints and default links in source, global and scoped maps; return travel and backfill preserve existing expiry.
+- Map creation validates a nonempty connected-pilot roster, automatically tracks precisely those selected, and rolls back failed source population. Source-based creation respects pilot selection and scope without renewing connection ages.
+- Replay tests cover persisted J-Space visits after connection deletion, expiry and restart without changing live maps. Projection follows entry, internal movement, exit, later K-Space travel and rewind. Current sovereignty is projected without live operational data; historical ownership captures preserve their original holder/name across subsequent changes. Legacy, stale, future, truncated and J-Space ownership remain unavailable.
+- The compiled focused J-Space/replay browser suite passes 32 workflow/layout groups with no console errors. Coverage checks the landing, settings-only source access, shared floating creation form, pilot requirement, separate structure/timer presentation, prefilled observation time, consolidated System details context action, nonzero card badges, actual sovereignty path fills, captured historical-owner labels and read-only mixed-space playback. Desktop/mobile captures were inspected. Exact-commit Actions runs the full combined Universe/replay suite, Sessions and extracted-package tests before the download is advertised.
+
+Existing maps and their data are retained. Main remains unmerged pending the user's review.
+
 ## Universe 0.8.0-rc.12
 
 This pass separates connection lifetime from system retention, isolates mutable J-Space data per map, and uses one location dispatcher with a lightweight live source and configurable map population.

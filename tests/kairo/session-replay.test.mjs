@@ -6,6 +6,9 @@ import { tmpdir } from 'node:os';
 import { openStore } from '../../server/store.mjs';
 import { sessionReport } from '../../server/history.mjs';
 import { sessionReplay, SESSION_REPLAY_EVENT_LIMIT } from '../../server/session-replay.mjs';
+import { getUniverseStatic } from '../../server/universe-static.mjs';
+import { createUniverse } from '../../server/universe.mjs';
+import { sessionReplaySpace } from '../../components/kairo/session-replay-map.mjs';
 
 const epoch = Date.parse('2026-09-18T10:00:00Z'), at = minutes => new Date(epoch + minutes * 60000).toISOString();
 async function storage(t) {
@@ -196,4 +199,58 @@ test('live replay snapshots its end once, performs no writes and enforces pilot 
     assert.throws(() => sessionReplay(store, 'replay', 43), /not found for this character/);
     assert.throws(() => sessionReplay(store, 'replay', 0), /not found for this character/);
     assert.throws(() => sessionReplay(store, 'unknown', 42), /not found for this character/);
+});
+
+test('recorded J-Space movement replays after restart and live connection removal without restoring map entities', async t => {
+    const dir = await mkdtemp(join(tmpdir(), 'kairo-jspace-replay-'));
+    let store = openStore(dir), service, clock = epoch;
+    t.after(async () => { await service?.close(); store.close(); await rm(dir, { recursive: true, force: true }); });
+    const graph = getUniverseStatic(), [first, second] = graph.systems.filter(system => system.space === 'wormhole');
+    const entrance = 30000142, exit = 30000144, ids = [entrance, first.system_id, second.system_id, exit];
+    session(store);
+    for (const [index, id] of ids.slice(1).entries()) visit(store, id, (index + 1) * 10);
+    emit(store, 'ship.changed', 15);
+    emit(store, 'goal.completed', 25, { system_id: second.system_id });
+    service = createUniverse(store, { characters: () => [{ id: 42, scopes: [] }] }, {}, { now: () => clock, noSync: true });
+    let map = service.jspace.create(42, { name: 'Live chain' });
+    const command = (op, extra) => map = service.jspace.command(42, map.id, { revision: map.revision, op, ...extra });
+    for (const system_id of ids) command('node.save', { node: { system_id } });
+    for (const [index, to_system_id] of ids.slice(1).entries()) command('connection.save', { connection: {
+        from_system_id: ids[index], to_system_id, duration_hours: 1, notes: 'Private live connection detail',
+    } });
+    command('connection.remove', { connection_id: map.connections[0].id });
+    clock += 2 * 3600000;
+    assert.equal(service.jspace.map(42, map.id).connections.length, 0, 'The remaining live wormholes expire');
+    assert.equal(store.db.prepare("SELECT COUNT(*) count FROM universe_records WHERE kind='link'").get().count, 0);
+    await service.close(); service = null; store.close(); store = openStore(dir);
+    const before = store.db.prepare('SELECT total_changes() count').get().count;
+    const mapsBefore = store.db.prepare('SELECT * FROM universe_records ORDER BY character_id,kind,id').all();
+    const result = sessionReplay(store, 'replay', 42, { now: () => clock });
+    assert.deepEqual(result.visits.map(row => row.systemId), ids);
+    assert.deepEqual(result.travel.map(row => [row.from_system_id, row.to_system_id]), ids.slice(1).map((id, index) => [ids[index], id]));
+    assert.deepEqual(result.events.map(row => row.system_id), [first.system_id, second.system_id]);
+    assert.deepEqual(result.coverage.missingCoordinateSystemIds, []);
+    assert.equal(result.systems.find(row => row.system_id === first.system_id).wormhole_class_id, first.wormhole_class_id);
+    assert.ok(result.travel.every(row => row.connection_basis === 'observed_transition' && !('expires_at' in row) && !('link_id' in row)));
+    assert.ok(!JSON.stringify(result).includes('Private live connection detail'));
+    assert.equal(store.db.prepare('SELECT total_changes() count').get().count, before, 'Replay performs no writes after restart');
+    assert.deepEqual(store.db.prepare('SELECT * FROM universe_records ORDER BY character_id,kind,id').all(), mapsBefore);
+});
+
+test('replay schematic includes each J-Space entrance and exit then returns to physical K-Space, including rewinds', () => {
+    const ids = [1, 2, 31000001, 31000002, 3, 4, 3, 31000002, 2, 1];
+    const visits = ids.map((systemId, id) => ({ id, systemId }));
+    const systems = new Map(ids.map(id => [id, { space: id >= 31000000 ? 'wormhole' : 'known' }]));
+    const expected = ['known', 'wormhole', 'wormhole', 'wormhole', 'wormhole', 'known', 'wormhole', 'wormhole', 'wormhole', 'known'];
+    for (const index of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 3, 1, 0]) {
+        assert.equal(sessionReplaySpace(visits, index, systems), expected[index], `Visit ${index}`);
+    }
+    assert.equal(sessionReplaySpace(visits, undefined, systems), 'known', 'A recording gap is not placed into a chain');
+});
+
+test('repeated entrance or exit observations cannot switch replay projection during a stationary visit', () => {
+    const ids = [1, 2, 2, 31000001, 3, 3, 4];
+    const visits = ids.map((systemId, id) => ({ id, systemId }));
+    const systems = new Map(ids.map(id => [id, { space: id >= 31000000 ? 'wormhole' : 'known' }]));
+    assert.deepEqual(visits.map(row => sessionReplaySpace(visits, row.id, systems)), ['known', 'wormhole', 'wormhole', 'wormhole', 'wormhole', 'wormhole', 'known']);
 });

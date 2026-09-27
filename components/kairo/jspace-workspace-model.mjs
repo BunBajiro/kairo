@@ -5,6 +5,13 @@ export function connectionHasEnded(connection, now = Date.now()) {
   return connection.life_status === 'collapsed' || connection.expired === true || !!connection.expires_at && Number.isFinite(Date.parse(connection.expires_at)) && Date.parse(connection.expires_at) <= now;
 }
 
+/** A structure may have a schedule; only explicit timer records belong to Timers. */
+export function groupSystemObservations(rows = []) {
+  const groups = {structures: [], timers: [], reports: []};
+  for (const row of rows) groups[row.kind === 'structure' ? 'structures' : row.kind === 'timer' ? 'timers' : 'reports'].push(row);
+  return groups;
+}
+
 /** Read-only public report cards augment the diagram; they never enter saved map state. */
 export function publicChainScene(map, feeds, systems, selectedSources = {}, now = Date.now(), previous = null) {
   if (!map) return null;

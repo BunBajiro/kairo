@@ -1,5 +1,6 @@
 import {snapshotFresh} from './polling.mjs';
 import {sessionCollection} from './session-policy.mjs';
+import {recordedVisitSovereignty} from './visit-sovereignty.mjs';
 
 export const COMBAT_BUFFER_MS = 10 * 60 * 1000;
 const iso = at => new Date(at).toISOString();
@@ -43,7 +44,7 @@ export function sessionRoute(store, session, start, end, names=store.get('names'
     const from = Date.parse(session.started), to = Date.parse(end);
     const rows = store.db.prepare(`SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security FROM visits v
         LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<? ORDER BY at,id`).all(session.character_id,session.started,end);
-    let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, clipped:true} : null;
+    let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, sovereignty_at_visit:start.system.sovereignty_at_visit, clipped:true} : null;
     if (!initial && !start.capturedAt) {
         const prior = store.db.prepare('SELECT * FROM visits WHERE character_id=? AND at<=? ORDER BY at DESC,id DESC LIMIT 1').get(session.character_id,session.started);
         if (prior) initial = {...prior, at:session.started, clipped:true, inferred:true};
@@ -59,7 +60,7 @@ export function sessionRoute(store, session, start, end, names=store.get('names'
     }
     return points.map((v,i) => {
         const entered = Math.max(from,Date.parse(v.at)), exited = Math.min(to,Date.parse(points[i+1]?.at||end));
-        return {id:v.id||'start', systemId:v.system_id, name:v.name, regionId:v.region_id, regionName:v.region_name, security:v.security, entered:iso(entered), exited:iso(exited), seconds:Math.max(0,Math.floor((exited-entered)/1000)), shipTypeId:v.ship_type_id, clipped:!!v.clipped, inferred:!!v.inferred, active:!session.ended && i===points.length-1};
+        return {id:v.id||'start', systemId:v.system_id, name:v.name, regionId:v.region_id, regionName:v.region_name, security:v.security, entered:iso(entered), exited:iso(exited), seconds:Math.max(0,Math.floor((exited-entered)/1000)), shipTypeId:v.ship_type_id, sovereignty_at_visit:recordedVisitSovereignty(v.sovereignty_at_visit,v.system_id), clipped:!!v.clipped, inferred:!!v.inferred, active:!session.ended && i===points.length-1};
     });
 }
 
