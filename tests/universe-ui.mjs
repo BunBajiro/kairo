@@ -19,7 +19,7 @@ const dir=await mkdtemp(join(tmpdir(),'kairo-universe-ui-')),output=process.env.
 await mkdir(output,{recursive:true});
 let app,proc,ws;const pending=new Map(),errors=[],checks=[],renderChecks=[],typeChecks=[],contrastChecks=[],motionChecks=[],mapLayouts=[],paletteChecks=[],territoryChecks=[];let sequence=0;
 const empireColours={500001:'#4f88c6',500004:'#3da891',500003:'#c7a44b',500002:'#b86b4b'};
-const externalCalls=[],recentUniverseRequests=[];let heldBackgroundRequests=null;
+const externalCalls=[],recentUniverseRequests=[];let heldBackgroundRequests=null,staleNavigationSnapshot=null;
 const denyExternal=async url=>{externalCalls.push(String(url));throw new Error('External access is disabled in this synthetic browser test');};
 const appOptions={port:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590),streamPort:Number(process.env.KAIRO_UNIVERSE_TEST_PORT||18590)+1,dataDir:join(dir,'data'),noSync:true,fetcher:denyExternal,universe:{operations:{noSync:true,fetcher:denyExternal},feeds:{noSync:true,fetcher:denyExternal}}};
 function call(method,params={},sessionId){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params,...(sessionId?{sessionId}:{})}));});}
@@ -192,6 +192,14 @@ async function withoutBackgroundRefresh(sample){
   while(heldBackgroundRequests.length){const ids=heldBackgroundRequests.splice(0);await Promise.all(ids.map(requestId=>call('Fetch.continueRequest',{requestId})));}
   await call('Fetch.disable');heldBackgroundRequests=null;
  }
+}
+async function withStaleNavigationSnapshot(snapshot,sample){
+ // Model a pre-mutation background response arriving after Clear acknowledges
+ // its newer revision. Only the disposable browser's Universe GET is replaced.
+ staleNavigationSnapshot={body:Buffer.from(JSON.stringify(snapshot)).toString('base64'),requests:0};
+ await call('Fetch.enable',{patterns:[{urlPattern:app.origin+'/api/universe?character=42',requestStage:'Request'}]});
+ try{await sample();assert.ok(staleNavigationSnapshot.requests>0,'The route regression received a delayed pre-clear Universe snapshot');}
+ finally{await call('Fetch.disable');staleNavigationSnapshot=null;}
 }
 async function pointerNavigation(){
  // This public/no-pilot scenario has one selected system, so its eight-pixel
@@ -748,7 +756,7 @@ async function startBrowser(){
  const browserURL=await new Promise((resolve,reject)=>{let log='';const timer=setTimeout(()=>reject(new Error('Chrome did not start: '+log.slice(-1000))),20000);proc.stderr.on('data',b=>{log+=b;const m=log.match(/DevTools listening on (ws:\/\/[^\s]+)/);if(m){clearTimeout(timer);resolve(m[1]);}});proc.on('error',reject);proc.on('exit',code=>{clearTimeout(timer);reject(new Error('Chrome exited: '+code+' '+log.slice(-1000)));});});
  const endpoint=new URL(browserURL),target=await(await fetch('http://'+endpoint.host+'/json/new?about:blank',{method:'PUT'})).json();
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
- ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);else if(m.method==='Fetch.requestPaused'){if(heldBackgroundRequests&&m.params.request.method==='GET')heldBackgroundRequests.push(m.params.requestId);else void call('Fetch.continueRequest',{requestId:m.params.requestId});}else if(m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/universe')&&m.params.request.method!=='GET'){const {url,method,postData}=m.params.request;recentUniverseRequests.push({url,method,postData});if(recentUniverseRequests.length>20)recentUniverseRequests.shift();}});
+ ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);else if(m.method==='Fetch.requestPaused'){if(staleNavigationSnapshot&&m.params.request.method==='GET'){staleNavigationSnapshot.requests++;void call('Fetch.fulfillRequest',{requestId:m.params.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'application/json'}],body:staleNavigationSnapshot.body});}else if(heldBackgroundRequests&&m.params.request.method==='GET')heldBackgroundRequests.push(m.params.requestId);else void call('Fetch.continueRequest',{requestId:m.params.requestId});}else if(m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/universe')&&m.params.request.method!=='GET'){const {url,method,postData}=m.params.request;recentUniverseRequests.push({url,method,postData});if(recentUniverseRequests.length>20)recentUniverseRequests.shift();}});
  await call('Page.enable');await call('Runtime.enable');await call('Network.enable');await viewport(1600);
 }
 
@@ -979,6 +987,8 @@ try{
  await button('Send to EVE','.universe-navigation-tool');
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-send-waypoints button')).find(e=>e.textContent.trim()==='Append EVE waypoints').disabled"),true,'A pilot without waypoint permission cannot send the planned route');
  await screenshot('universe-ordered-itinerary');
+ const beforeClear=await api('/universe?character=42');
+ await withStaleNavigationSnapshot(beforeClear,async()=>{
  await button('Clear saved itinerary','.universe-navigation-tool');
  await button('Jump route','.universe-navigation-tool');
  assert.ok(await evaluate("document.querySelector('[aria-label=\"Jump ship preset\"]').textContent.includes('My effective range')"),'Switching from gate to jump navigation keeps the custom range preset valid');
@@ -987,6 +997,11 @@ try{
  await waitFor("document.querySelectorAll('.universe-navigation-route strong').length===2");
  assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.universe-navigation-route strong')).map(e=>e.textContent)"),['UALX-3',atlas.nearby.name]);
  assert.ok(await evaluate("document.querySelector('.universe-navigation-route').textContent.includes('LY')"));
+ });
+ const afterClearJump=(await api('/universe/navigation?character=42')).itinerary;
+ assert.deepEqual(afterClearJump.stops.map(stop=>stop.systemId),[atlas.nearby.system_id],'Clearing an itinerary cannot restore its old stops from delayed snapshots');
+ assert.ok(afterClearJump.revision>beforeClear.navigation.itinerary.revision,'The route keeps its acknowledged revision through a stale background response');
+ checks.push('Clearing a route rejects delayed older snapshots and the next jump itinerary contains only its new destination');
  await choose('Jump ship preset','Carrier / force auxiliary / dreadnought');await choose('Jump Drive Calibration','Level 4');
  assert.ok(Math.abs(Number(await evaluate("document.querySelector('[aria-label=\"Jump range in light years\"]').value"))-6.3)<.001,'Hull and calibration update the effective range');
  await button('Calculate jump route');await waitFor("document.querySelectorAll('.universe-navigation-route strong').length===2");

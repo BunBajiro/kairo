@@ -9,6 +9,7 @@ Atlas and Maps now have distinct roles: Atlas owns the remembered physical/schem
 - Notes tests cover trusted pilot authorship, exact hour-boundary/UTC formatting, map-local search, truthful imported attribution and suppression of ended-connection notes.
 - The focused Maps/replay browser suite passes 33 workflow/layout groups. New expansion acceptance passes three additional groups: provisional region/constellation placement with pointer and keyboard movement, permanent-connection controls and four-sided anchors, and landing system/note search into the correct map instance. Initial staged cards fit within the viewport padding after the confirmation bar resizes it.
 - Browser verification also checks the compact remembered Atlas projection switch, Tenerifis schematic geometry, dedicated settings and browser history. Kairo hash traversal is handled before the framework's RSC listener; other document navigation remains outside that handler.
+- A delayed-snapshot browser regression reproduces cleared itinerary stops returning during a switch from gate to jump routing. Navigation now rejects snapshots older than an acknowledged revision and invalidates the old route when clearing it.
 
 Existing user data is retained. Exact-commit Actions runs the combined Universe/replay workflow, Sessions and extracted-package tests before a downloadable candidate is advertised. Main remains unmerged pending review.
 
