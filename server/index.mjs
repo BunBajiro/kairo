@@ -1,12 +1,10 @@
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
-import { spawn } from 'node:child_process';
 import { readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, join, extname, dirname, sep } from 'node:path';
-import { homedir } from 'node:os';
 import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import { openStore } from './store.mjs';
 import { openVault } from './vault.mjs';
@@ -20,6 +18,8 @@ import {changeSession,sessionReport} from './history.mjs';
 import {sessionReplay} from './session-replay.mjs';
 import {getSystem,journeyData,savePlaceNote,setJourneyConnection} from './places.mjs';
 import {listGoals,goalSourceOptions,lookupGoalType} from './goals.mjs';
+import {createDatasetService} from './datasets.mjs';
+import {activeDatasetDirectory, defaultDataDirectory} from './dataset-paths.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function validHost(host, port) { return host === `127.0.0.1:${port}` || host === `localhost:${port}`; }
 export function safeEqual(a, b) { return typeof a === 'string' && typeof b === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b)); }
@@ -29,10 +29,48 @@ export async function startKairo(options = {}) {
     if (!Number.isInteger(port) || !Number.isInteger(streamPort) || port < 1024 || port > 65535 || streamPort < 1024 || streamPort > 65535 || port === streamPort)
         throw new Error('Choose two different local ports between 1024 and 65535.');
     const origin = `http://127.0.0.1:${port}`, streamOrigin = `http://127.0.0.1:${streamPort}`;
-    const dir = options.dataDir || process.env.KAIRO_DATA_DIR || join(process.env.LOCALAPPDATA || process.env.XDG_DATA_HOME || join(homedir(), '.local', 'share'), 'Kairo');
+    const dir = options.dataDir || defaultDataDirectory();
     const store = openStore(dir), vault = openVault(dir), auth = createAuth(store, vault, { origin, fetcher: options.fetcher }), esi = createESI(store, auth, { fetcher: options.fetcher });
     const core = await createCore(store, auth, esi, join(root, 'server', 'modules'),{vault,noSync:options.noSync,obs:options.obs,markets:options.markets,combatFetcher:options.combatFetcher||options.fetcher,sessionFeedFetcher:options.sessionFeedFetcher,universe:options.universe});
-    const sessions = new Map();
+    const sessions = new Map((options.initialSessions || []).filter(([key, value]) => typeof key === 'string' && typeof value?.csrf === 'string' && value.expires > Date.now()));
+    let stopping = false, applyingDataset = false, closing, restartTimer;
+    const requests = new Set();
+    const datasetRecovery = options.datasetRecovery || null;
+    function announce(type, value) {
+        const event = `event: ${type}\ndata: ${JSON.stringify(value)}\n\n`;
+        for (const client of core.uiClients) {
+            if (client.destroyed || client.writableLength > 1000000) client.destroy();
+            else client.write(event);
+        }
+    }
+    function cancelDatasetRestart(message) {
+        applyingDataset = false; clearTimeout(restartTimer); restartTimer = null;
+        void datasets.activationFailed(message).catch(() => {});
+        announce('dataset-restart-cancelled', {message: String(message || 'The update could not be activated. Your current dataset is still in use.')});
+    }
+    let datasets;
+    try {
+    datasets = createDatasetService({...(options.datasets || {}), dataDir: dir,
+        activeDirectory: activeDatasetDirectory, automatic: !options.noSync,
+        onChange: status => announce('datasets', {...status, managedRestart: !!options.onDatasetsReady}),
+        onReady: ready => {
+            if (!options.onDatasetsReady || stopping) return;
+            applyingDataset = true;
+            announce('dataset-restarting', {build: ready.manifest?.build, startedAt: new Date().toISOString()});
+            restartTimer = setTimeout(() => {
+                restartTimer = null;
+                Promise.resolve().then(() => options.onDatasetsReady(ready)).catch(error => cancelDatasetRestart(error.message));
+            }, 300);
+        },
+    });
+    await datasets.ready;
+    } catch (error) {
+        await datasets?.close().catch(() => {});
+        await core.close(); store.close();
+        throw error;
+    }
+    const datasetStatus = () => ({...datasets.status(), managedRestart: !!options.onDatasetsReady});
+    const datasetRevision = datasets.status().datasets.filter(row => row.automatic).map(row => row.build).join(':');
     let universeAtlasResponse;
     async function universeDetail(characterId, systemId) {
         const owner=store.snapshot(0,'sovereignty')?.data?.find(row=>row.system_id===systemId);
@@ -66,14 +104,26 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.15', vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.16', datasetRevision, datasetRecovery, vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+        if (path === '/datasets' && read) return json(res, 200, datasetStatus());
+        if (path === '/datasets/check' && req.method === 'POST') {
+            void datasets.check({install: false}).catch(() => {});
+            return json(res, 202, datasetStatus());
+        }
+        if (path === '/datasets/install' && req.method === 'POST') {
+            void datasets.install().catch(() => {});
+            return json(res, 202, datasetStatus());
+        }
         if (path === '/state' && read) {
             const id = checkedChar(url);
             return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
         }
         if (path === '/events' && read) {
+            if (applyingDataset) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Applying a dataset update.'});}
             res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store', 'Connection': 'keep-alive' });
             res.write(': connected\n\n');
+            res.write(`event: dataset-revision\ndata: ${JSON.stringify({revision: datasetRevision, recovery: datasetRecovery})}\n\n`);
+            res.write(`event: datasets\ndata: ${JSON.stringify(datasetStatus())}\n\n`);
             core.uiClients.add(res);
             res.on('close', () => core.uiClients.delete(res));
             return;
@@ -254,7 +304,7 @@ export async function startKairo(options = {}) {
                 const raw=Buffer.from(JSON.stringify(core.universe.static()));
                 universeAtlasResponse={raw,gzip:gzipSync(raw),etag:'"'+createHash('sha256').update(raw).digest('hex')+'"'};
             }
-            const headers={'Content-Type':'application/json','Cache-Control':'private, max-age=3600',ETag:universeAtlasResponse.etag,Vary:'Accept-Encoding'};
+            const headers={'Content-Type':'application/json','Cache-Control':'private, no-cache',ETag:universeAtlasResponse.etag,Vary:'Accept-Encoding'};
             if(req.headers['if-none-match']===universeAtlasResponse.etag){res.writeHead(304,headers);return res.end();}
             const compressed=/\bgzip\b/.test(req.headers['accept-encoding']||'');
             res.writeHead(200,{...headers,...(compressed?{'Content-Encoding':'gzip'}:{})});
@@ -389,8 +439,9 @@ export async function startKairo(options = {}) {
         }
         catch { }
     } return json(res, 404, { error: 'Page not found.' }); }
-    const dashboard = createServer(async (req, res) => {
+    const handleDashboard = async (req, res) => {
         pageHeaders(res);
+        if (stopping) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Kairo is reconnecting after a dataset update.'});}
         try {
             if (!validHost(req.headers.host, port))
                 return json(res, 403, { error: 'Kairo only accepts local requests.' });
@@ -437,6 +488,11 @@ export async function startKairo(options = {}) {
             else
                 res.end();
         }
+    };
+    const dashboard = createServer((req, res) => {
+        const work = handleDashboard(req, res);
+        requests.add(work);
+        work.then(() => requests.delete(work), () => requests.delete(work));
     });
     const broadcast = createServer(async (req, res) => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors ${origin}; base-uri 'none'; form-action 'none'`); try {
         if (!validHost(req.headers.host, streamPort))
@@ -470,6 +526,7 @@ export async function startKairo(options = {}) {
     catch (e) {
         dashboard.close();
         broadcast.close();
+        await datasets.close();
         await core.close();
         store.close();
         throw e;
@@ -480,23 +537,34 @@ export async function startKairo(options = {}) {
         for (const c of auth.characters())
             if (!c.needsReauth) core.sync(c.id);
     }
-    return { origin, streamOrigin, store, core, auth, dashboard, broadcast, async close() { await core.close(); dashboard.closeAllConnections(); broadcast.closeAllConnections(); await Promise.all([new Promise(r => dashboard.close(r)), new Promise(r => broadcast.close(r))]); store.close(); } };
+    if (!options.deferDatasetStart) datasets.start();
+    return {origin, streamOrigin, store, core, auth, dashboard, broadcast, datasets,
+        startDatasetUpdates: () => datasets.start(), cancelDatasetRestart,
+        exportSessions: () => [...sessions].filter(([, value]) => value.expires > Date.now()),
+        close() {
+            if (closing) return closing;
+            stopping = true; clearTimeout(restartTimer);
+            closing = (async () => {
+                await datasets.close();
+                for (const client of core.uiClients) client.end();
+                core.uiClients.clear();
+                // Drain the handlers themselves, including writes whose client
+                // disconnected early, before collectors and SQLite are closed.
+                await Promise.allSettled([...requests]);
+                await core.close();
+                dashboard.closeAllConnections(); broadcast.closeAllConnections();
+                await Promise.all([new Promise(r => dashboard.close(r)), new Promise(r => broadcast.close(r))]);
+                store.close();
+            })();
+            return closing;
+        },
+    };
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
     try {
-        const app = await startKairo();
-        console.log(`\nKAIRO — Capsuleer operations\n\nDashboard: ${app.origin}\nOBS source: ${app.streamOrigin}/stream\n\nLocal access only. Keep this window open while using Kairo.\n`);
-        if (process.argv.includes('--open')) {
-            const command = process.platform === 'win32' ? 'explorer.exe' : process.platform === 'darwin' ? 'open' : 'xdg-open';
-            const browser = spawn(command, [app.origin], { stdio: 'ignore', detached: true });
-            browser.on('error', () => { });
-            browser.unref();
-        }
-        let closing = false;
-        async function close() { if (closing)
-            return; closing = true; console.log('Saving and shutting down Kairo…'); await app.close(); process.exit(0); }
-        process.on('SIGINT', close);
-        process.on('SIGTERM', close);
+        const {runKairoSupervisor} = await import('./runtime-supervisor.mjs');
+        const supervisor = await runKairoSupervisor({openBrowser: process.argv.includes('--open')});
+        process.exitCode = await supervisor.done;
     }
     catch (e) {
         console.error(e.code === 'EADDRINUSE' ? 'Kairo is already running, or a local port is occupied. Open http://127.0.0.1:4380.' : e.message);

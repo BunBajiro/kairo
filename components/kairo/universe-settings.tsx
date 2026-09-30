@@ -33,12 +33,14 @@ export function UniverseSettings() {
   const [busy, setBusy] = useState(false);
   const sequence = useRef(0);
   const atlasCache = useRef<UniverseAtlas | null>(null);
+  const atlasRevision = useRef(boot.datasetRevision);
   const load = useCallback(async () => {
+    if (atlasRevision.current !== boot.datasetRevision) {atlasCache.current = null; atlasRevision.current = boot.datasetRevision;}
     const request = ++sequence.current;
     setBusy(true);
     try {
       const [staticData, intelligence] = await Promise.all([
-        atlasCache.current ? Promise.resolve(atlasCache.current) : api('/universe/static?v=' + encodeURIComponent(boot.version)),
+        atlasCache.current ? Promise.resolve(atlasCache.current) : api('/universe/static?v=' + encodeURIComponent(boot.datasetRevision || boot.version)),
         api('/universe?character=' + character),
       ]);
       if (request !== sequence.current) return;
@@ -51,7 +53,7 @@ export function UniverseSettings() {
     } finally {
       if (request === sequence.current) setBusy(false);
     }
-  }, [character, boot.version]);
+  }, [character, boot.version, boot.datasetRevision]);
   const hasConnections = visited.has('connections');
   useEffect(() => {
     if (!hasConnections) return;

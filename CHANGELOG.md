@@ -2,6 +2,15 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.16 — Automatic static-data updates
+
+- Checks CCP's SDE metadata at startup and hourly with conditional requests, cache deadlines and retry backoff. One updater serves the application; maps do not poll for SDE updates.
+- Prepares Universe, celestial details, market categories and NPC ownership from one official export in a background worker. No Python or extra runtime installation is required.
+- Activates a validated dataset through a controlled core restart, preserving browser sessions, open pages and unsaved forms. Update, rollback and ordinary disconnect notices are distinct.
+- Adds **Settings → Datasets** with versions, release/update dates, progress and manual controls. Bundled Wanderer and SMT references retain their own provenance.
+- Removes temporary downloads and failed staging files. Retires previous generations after successful activation; restores the prior dataset if startup fails. Concurrent launchers cannot disturb an update.
+- Preserves saved maps, notes, pilots and other user data.
+
 ## 0.8.0-rc.13 — Reliable travel and clearer map entry
 
 - Fixes automatic K→J, J→J and J→K mapping with normal ESI cache refresh intervals. Both K-Space endpoints are displayed; new connections use 16h/Normal/L without resetting existing timers.

@@ -1,11 +1,12 @@
 import {readFileSync} from 'node:fs';
+import {datasetFile} from './dataset-paths.mjs';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createMarketCategories} from './market-categories.mjs';
 import {DAY} from './market-history.mjs';
 import {importRevision} from './import-cache.mjs';
 import {IMPORT_CATEGORIES,DEFAULT_IMPORT_SETTINGS,validateImportSettings,tradingRates,importCategory,buildOpportunity,scenario,packCargo,marketPrice} from './import-math.mjs';
-const owners=JSON.parse(readFileSync(new URL('./data/npc-market-owners.json',import.meta.url),'utf8')).corporations;
+const owners=JSON.parse(readFileSync(datasetFile('npc-market-owners.json'),'utf8')).corporations;
 const taxonomy=createMarketCategories(),JITA=60003760,iso=n=>new Date(n).toISOString();
 const privateKeys={skills:['training','esi-skills.read_skills.v1'],standings:['combat','esi-characters.read_standings.v1'],orders:['wallet','esi-markets.read_character_orders.v1']};
 export function createImports(store,auth,{now=()=>Date.now(),request,refreshCharacter}={}){

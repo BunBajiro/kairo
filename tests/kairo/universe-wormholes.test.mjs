@@ -10,6 +10,17 @@ const atlas = JSON.parse(gunzipSync(readFileSync(atlasFile)));
 const byName = new Map(atlas.systems.map(system => [system.name, system]));
 const reference = name => getWormholeReference(byName.get(name).system_id);
 
+test('active CCP weather overrides pinned weather without changing Wanderer statics', () => {
+    const source = byName.get('J225111'), pinned = reference(source.name);
+    const changed = enrichWormholeSystem({...source, effect: 'Class 3 Wolf Rayet Effects'});
+    assert.equal(changed.wormhole.effect.name, 'Wolf-Rayet Star');
+    assert.equal(changed.wormhole.effect.power, 3);
+    assert.equal(changed.wormhole.statics, pinned.statics);
+    assert.equal(pinned.effect, null);
+    assert.equal(enrichWormholeSystem({...byName.get('J005926'), effect: null}).wormhole.effect, null);
+    assert.equal(reference('J005926').effect.name, 'Red Giant');
+});
+
 test('wormhole reference covers the complete SDE J-space and records exact source provenance', () => {
     const { metadata, types, effects } = getWormholeCatalogue();
     assert.equal(metadata.revision, '6c5d43936e88f1d2acabc4d45fc82cbb67d4a08a');

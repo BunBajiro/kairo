@@ -2,9 +2,11 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.8.0-rc.15 · Universe review build · Windows first · No cloud deployment**
+**Version 0.8.0-rc.16 · Universe review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
+
+**SDE updates:** Kairo checks CCP's latest build at startup and hourly, installs newer data in the background, then briefly reconnects the local core. **Settings → Datasets** lists installed versions, release/update dates and manual check/install actions. The workspace shows an update notice during activation and retains the open page and unsaved forms. Old downloads and retired versions are removed automatically. See [dataset updates and recovery](docs/DATASETS.md).
 
 ## Download the latest release
 
@@ -22,7 +24,7 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version **0.8.0-rc.15** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
+Version **0.8.0-rc.16** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
 
 Configure named power blocs and their member alliances in **Universe → Universe settings → Power blocs**. Unconfigured alliances can use **Inferred Coalitions**, an explicitly uncertain fallback from combat evidence collected locally. Crisp vector borders, bounded zoom and larger visual controls make the political map easier to read. Universe now lists **Atlas**, **Maps** and **Universe settings** in the sidebar. Replay keeps recorded travel while hiding routine system-entry and OPSEC event cards.
 

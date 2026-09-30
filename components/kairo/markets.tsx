@@ -25,9 +25,9 @@ export function Markets(){
  const load=useCallback(async()=>{const ticket=++seq.current;const r=await api('/markets');if(!alive.current||ticket!==seq.current)return;setState(r);setError('');setHubId(id=>r.hubs.some((h:any)=>h.id===id)?id:r.hubs[0]?.id||0);},[]);
  useEffect(()=>{alive.current=true;load().catch(e=>setError(e.message));const timer=setInterval(()=>load().catch(e=>{if(alive.current)setError(e.message);}),4000);return()=>{alive.current=false;seq.current++;clearInterval(timer);};},[load]);
  const hub=state?.hubs.find((h:any)=>h.id===hubId),job=state?.job,running=job?.status==='running',scan=hub?.last_scan;
- const stampKey=scan?.jobId+':'+job?.status+':'+(job?.historyDone||0)+':'+revision;
+ const stampKey=scan?.jobId+':'+job?.status+':'+(job?.historyDone||0)+':'+revision+':'+boot.datasetRevision;
  useEffect(()=>{setPage(0);setSelected(0);setResults(null);setCategoryData(null);},[hubId]);
- useEffect(()=>{if(!hubId)return;let live=true;api('/markets/categories?hub='+hubId).then(r=>{if(live)setCategoryData(r);}).catch(e=>{if(live)setError(e.message);});return()=>{live=false;};},[hubId,scan?.jobId]);
+ useEffect(()=>{if(!hubId)return;let live=true;api('/markets/categories?hub='+hubId).then(r=>{if(live)setCategoryData(r);}).catch(e=>{if(live)setError(e.message);});return()=>{live=false;};},[hubId,scan?.jobId,boot.datasetRevision]);
  function chooseCategory(value:string){setCategory(value);setPage(0);setSelected(0);setResults(null);}
  useEffect(()=>{if(!hubId||category==='choose'){setResults(null);setLoading(false);return;}let live=true;setLoading(true);const t=setTimeout(()=>api('/markets/browse?'+new URLSearchParams({hub:String(hubId),category,query,filter,sort,page:String(page)})).then(r=>{if(live){setResults(r);setLoading(false);}}).catch(e=>{if(live){setError(e.message);setLoading(false);}}),250);return()=>{live=false;clearTimeout(t);};},[hubId,category,query,filter,sort,page,stampKey]);
  async function action(fn:()=>Promise<any>){setBusy(true);try{await fn();await load();setRevision(r=>r+1);}catch(e:any){toast.error(e.message);}finally{setBusy(false);}}

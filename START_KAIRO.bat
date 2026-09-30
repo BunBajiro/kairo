@@ -13,5 +13,5 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-node server/index.mjs --open
+node server/start.mjs --open
 if errorlevel 1 pause

@@ -6,4 +6,4 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 node -e "if(Number(process.versions.node.split('.')[0])<24){console.error('Node.js 24 or newer is required.');process.exit(1)}"
-exec node server/index.mjs --open
+exec node server/start.mjs --open

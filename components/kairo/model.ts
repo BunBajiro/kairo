@@ -78,6 +78,8 @@ export type Bootstrap = {
     stream: StreamConfig;
     streamOrigin: string;
     version: string;
+    datasetRevision?: string;
+    datasetRecovery?: {message: string; failedBuild: number | null} | null;
     vault: string;
     localOnly: boolean;
 };

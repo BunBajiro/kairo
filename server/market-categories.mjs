@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
-const bundled=JSON.parse(readFileSync(new URL('./data/market-categories.json',import.meta.url),'utf8'));
+import {datasetFile} from './dataset-paths.mjs';
+const bundled=JSON.parse(readFileSync(datasetFile('market-categories.json'),'utf8'));
 
 // CCP market groups are separate from inventory groups. Keep their full ancestry
 // and type assignments, so existing order books need no re-scan or per-item ESI call.

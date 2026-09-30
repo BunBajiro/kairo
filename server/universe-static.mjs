@@ -1,10 +1,10 @@
 import { closeSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { enrichWormholeSystem } from './universe-wormholes.mjs';
+import { datasetFile } from './dataset-paths.mjs';
 
 export const LIGHT_YEAR_METRES = 9460000000000000;
-const TOPOLOGY_FILE = new URL('./data/universe.json.gz', import.meta.url);
-const DATA_DIRECTORY = new URL('./data/', import.meta.url);
+const TOPOLOGY_FILE = datasetFile('universe.json.gz');
 const DETAIL_CACHE_LIMIT = 48;
 let topology;
 let detailIndex;
@@ -112,7 +112,7 @@ export function getUniverseSystem(id, { celestials = true } = {}) {
     while (read < length) {
         const position = offset + read, index = Math.floor(position / graph.metadata.detailsChunkBytes);
         const part = graph.metadata.detailsFiles[index], local = position % graph.metadata.detailsChunkBytes;
-        const file = new URL(part.name, DATA_DIRECTORY);
+        const file = datasetFile(part.name);
         let size;
         try { size = statSync(file).size; } catch { size = -1; }
         if (size !== part.bytes) throw new Error('The bundled Universe system index is invalid or its detail shard is truncated. Reinstall this Kairo release.');

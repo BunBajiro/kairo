@@ -72,7 +72,19 @@ export function getWormholeReference(systemId) {
 export function enrichWormholeSystem(system) {
     if (!system || system.space !== 'wormhole') return system;
     const wormhole = getWormholeReference(system.system_id);
-    return wormhole ? { ...system, wormhole } : system;
+    if (!wormhole) return system;
+    // CCP supplies current weather identity/power; statics and modifier tables
+    // retain the separately attributed Wanderer reference.
+    const match = /^Class ([1-6]) (.+) Effects$/.exec(system.effect || '');
+    const name = match?.[2] === 'Wolf Rayet' ? 'Wolf-Rayet Star' : match?.[2];
+    const weather = match && load().catalogue.effects.find(row => row.name === name);
+    const power = match ? Number(match[1]) : null;
+    const effect = weather ? {name: weather.name, power, modifiers: weather.modifiers.map(row => ({name: row.name, value: row.powers[power - 1], positive: row.positive}))} : null;
+    const officialClass = load().catalogue.classes.find(row => row.id === system.wormhole_class);
+    if ((!officialClass || officialClass.id === wormhole.classId) && effect?.name === wormhole.effect?.name && effect?.power === wormhole.effect?.power) return {...system, wormhole};
+    return {...system, wormhole: {...wormhole, effect,
+        ...(officialClass ? {classId: officialClass.id, classLabel: officialClass.label, className: officialClass.name} : {}),
+    }};
 }
 
 /** Type lookup retains unknown K162 values as null and genuine zero regeneration as zero. */

@@ -43,5 +43,5 @@ export function createStream(store, bus, publish = e=>bus.emit(e)) {
             publish({type:'opsec.changed',module:'opsec',characterId:next.characterId,summary:'Broadcast protection: '+old.state+' → '+next.state,payload:{state:next.state,previous:old.state,reason:next.reason}});
         } }, setBindings(next) { bindings = next; changed(); }, connect(res) { clients.add(res); res.write('event: state\ndata: ' + JSON.stringify(state()) + '\n\n'); res.on('close', () => clients.delete(res)); }, close() { for (const t of timers)
             clearTimeout(t); for (const c of clients)
-            c.end(); } };
+            c.end(); clients.clear(); } };
 }

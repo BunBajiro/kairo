@@ -49,6 +49,20 @@ jobs:
           KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-universe-ui
         run: node tests/universe-ui.mjs
 
+      - name: Verify dataset updates and planned reconnects in Chrome
+        env:
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-datasets-ui
+        run: node tests/datasets-ui.mjs
+
+      - name: Upload dataset interface screenshots
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: datasets-interface-check
+          path: ${{ runner.temp }}/kairo-datasets-ui/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Upload Universe interface screenshots
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
