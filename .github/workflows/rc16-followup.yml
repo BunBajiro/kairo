@@ -1,0 +1,105 @@
+name: Internal RC16 targeted follow-up
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths:
+      - 'analysis/rc16/followup/harness/**'
+      - '.github/workflows/rc16-followup.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-rc16-followup
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: checkpoint
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: BunBajiro/kairo
+          ref: 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+          path: kairo-v073
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.19.0'
+      - name: Start fresh follow-up evidence
+        working-directory: checkpoint
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, platform, shutil
+          from pathlib import Path
+          root = Path('analysis/rc16/raw/followup')
+          shutil.rmtree(root, ignore_errors=True)
+          root.mkdir(parents=True)
+          harness = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('analysis/rc16/followup/harness').rglob('*') if p.is_file()}
+          (root / 'github-followup-provenance.json').write_text(json.dumps({
+              'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'runUrl': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+              'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'harnessCommit': os.environ['GITHUB_SHA'],
+              'applicationCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',
+              'baselineCommit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',
+              'platform': platform.platform(), 'harnessSha256': harness,
+              'note': 'Fresh outputs. Sequential runtime lanes with shared flock. Original checkpoint evidence is separate. Expected-bug diagnostics are not safe-behaviour passes.'
+          }, indent=2) + '\n')
+          PY
+      - name: Verify unchanged RC16 application
+        working-directory: checkpoint
+        run: python3 analysis/rc16/harness/verify-source.py | tee analysis/rc16/raw/followup/source-verification.json
+      - name: Install locked dependencies and compile RC16
+        run: |
+          cd "$GITHUB_WORKSPACE/checkpoint"
+          npm run install:ci
+          npm run build
+          cd "$GITHUB_WORKSPACE/kairo-v073"
+          npm run install:ci
+      - name: Measure map independence and dense signatures
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/followup/harness/maps-scaling.mjs diagnostics
+          node analysis/rc16/followup/harness/maps-scaling.mjs timings
+          node analysis/rc16/followup/harness/maps-scaling.mjs timings --reverse
+      - name: Diagnose residency and longer session work
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/followup/harness/memory-runner.mjs --run all
+          python3 analysis/rc16/followup/harness/memory-summarize.py
+      - name: Exercise managed activation with in-flight work
+        working-directory: checkpoint
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/restart-integrated.mjs > analysis/rc16/raw/followup/restart-integrated.json
+      - name: Measure combined operational workloads
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/followup/harness/mixed-run.mjs analysis/rc16/raw/followup/mixed
+          node analysis/rc16/followup/harness/mixed-summary.mjs analysis/rc16/raw/followup/mixed/mixed.json
+      - name: Measure longer replay and browser ownership
+        working-directory: checkpoint
+        env:
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BENCH_SOURCE_COMMIT: 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/frontend-retention-replay.mjs
+      - name: Remeasure corrected legacy backend baseline
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/followup/harness/legacy-corrected-run.mjs "$GITHUB_WORKSPACE/kairo-v073" "$GITHUB_WORKSPACE/checkpoint" analysis/rc16/raw/followup/legacy-corrected
+          python3 analysis/rc16/harness/legacy-summary.py analysis/rc16/raw/followup/legacy-corrected
+      - name: Retain follow-up evidence only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc16-followup-evidence
+          path: checkpoint/analysis/rc16/raw/followup/
+          if-no-files-found: error
+          retention-days: 30
