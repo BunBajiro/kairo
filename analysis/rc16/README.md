@@ -4,9 +4,9 @@
 
 **Recommendation: retain the earlier database/cache optimisations and the updater design. Concentrate RC17 on Maps rendering and refresh work, repeated backend projections, route preparation, and owned shutdown.** The evidence supports focused changes; it does not support replacing SQLite or broadly slowing ESI polling.
 
-This report analyses canonical RC16 `57c8dcc7fbd8fc2b62129498d1819050c78381a1` against released, post-optimisation v0.7.3 `239794774320fcdebaa1d76ce8a77c5c25cfc48c`. Application code, dependencies and version are unchanged. All 637 runtime tests, application type checks, and both production frontend builds passed locally.
+This report analyses canonical RC16 `57c8dcc7fbd8fc2b62129498d1819050c78381a1` against released, post-optimisation v0.7.3 `239794774320fcdebaa1d76ce8a77c5c25cfc48c`. Application code, dependencies and version are unchanged. All 637 runtime tests, application type checks, and both production frontend builds passed locally and on GitHub.
 
-The investigation branch is `perf/rc16-checkpoint-v0.8.0`. Main and the Universe feature branch remain untouched. Local backend, updater, full browser and matched Overview analysis is complete; independent GitHub confirmation is being collected. GitHub publication was initially held by automatic approval review; the user explicitly approved the internal upload and benchmark run on 30 September. The [second-environment workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690) is running at harness commit `0344ff4ec069080a87e19294fa8fddc28f737327`; no successful GitHub performance confirmation is claimed yet.
+The investigation branch is `perf/rc16-checkpoint-v0.8.0`; [draft PR #8](https://github.com/BunBajiro/kairo/pull/8) retains the investigation for review. Main and the Universe feature branch remain untouched. Local analysis and the independent [GitHub workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690) are complete. GitHub passed at measured harness commit `0344ff4ec069080a87e19294fa8fddc28f737327`; later commits retain reports and evidence only. The principal scaling and lifecycle findings reproduce. The local state-HTTP slowdown does not reproduce, and GitHub observes a small Overview-idle overhead absent from the overlapping local ranges. See [GitHub confirmation](reviews/github-confirmation.md).
 
 ## What survived the feature sprint
 
@@ -19,7 +19,7 @@ The old reports and raw workspace/GitHub evidence were recovered from both inves
 | Idle CPU, % of one logical core | 1.32–1.35% | 1.62–1.64% | About +0.29 percentage points; modest absolute increase |
 | Idle process RSS | 82–101 MiB | 168–171 MiB | Meaningful extra residency; no leak conclusion |
 | Largest observed idle loop delay | 36.2–36.8 ms | 55.4–56.9 ms | Higher burst cost in both short observations |
-| Authenticated state HTTP p50 | 40.2–40.3 ms | 44.7–45.6 ms | +12.2%; repeatable advisory regression |
+| Authenticated state HTTP p50 | 40.2–40.3 ms | 44.7–45.6 ms | +12.2% locally; not reproduced on GitHub |
 | Session-report p50 | 92.6–99.5 ms | 84.9–90.3 ms | Earlier large-report benefit retained |
 | Imports after unrelated write | 0.70 ms | 0.69–0.71 ms | Selective cache reuse retained |
 | Cold imports after aged-cache migration | 450–458 ms | 448–472 ms | Broadly unchanged |
@@ -28,7 +28,7 @@ The old reports and raw workspace/GitHub evidence were recovered from both inves
 
 Typical session reports rose from about 15.0 to 16.5–16.8 ms; this smaller cost remains visible despite the faster large fixture. Server `startKairo()` initialisation rose from about 11–18 to 160–173 ms. That is roughly 150 ms extra inside this call, excluding module imports and supervisor launch; it is not a full boot-time measurement.
 
-The large state payload barely changed, so the HTTP slowdown cannot be explained by a large transfer-size increase. Its direct projection/serialization timings are mixed. Profile the HTTP/scheduling phases before choosing a fix. Likewise, the increased memory footprint should be inventoried by static indexes, caches and lifecycle before proposing lazy loading or calling it a leak.
+The large state payload barely changed, so the local HTTP slowdown cannot be explained by a large transfer-size increase. Its direct projection/serialization timings are mixed, and GitHub's paired HTTP measurements show no slowdown. Treat HTTP as an environment-specific profiling lead, not an established general RC16 regression. Likewise, the increased memory footprint should be inventoried by static indexes, caches and lifecycle before proposing lazy loading or calling it a leak.
 
 The database probes retain identical complete cold-import and saved history/source hashes across all four runs. Both builds retain exactly 16,355,000 working-history JSON bytes. Migration, event-batch writes and history writes show no structural regression. **A broad database redesign is not justified by this checkpoint.**
 
@@ -83,7 +83,7 @@ The existing efficient boundaries should remain. Atlas and paused replay did not
 
 A measurement-observer bug in an exploratory browser run was detected and fixed: adjacent samples could retain a prior RAF observer. Final samples use a frozen corrected harness, bind observers to their own sample, and assert strictly increasing timestamps. Exploratory output is retained separately and is not the source of these final figures.
 
-The minimal Overview comparison used the same compiled-browser fixture in balanced order: v0.7.3 consumed 0.224–0.259% of the renderer-main-thread observation budget, RC16 0.243–0.250%, with no long tasks and three requests in each 35-second sample. Those overlapping ranges do **not** demonstrate a broad renderer-idle regression. This is distinct from the backend idle CPU increase above.
+The minimal Overview comparison used the same compiled-browser fixture in balanced order: locally, v0.7.3 consumed 0.224–0.259% of the renderer-main-thread observation budget, RC16 0.243–0.250%, with no long tasks and three requests in each 35-second sample. Those local ranges overlap. GitHub measured 0.184–0.218% versus 0.246–0.256%, a small increase of about 17.6 ms renderer work per 35 seconds, or 0.050 percentage points. This does not establish broad idle equivalence or a large renderer-idle regression. It is distinct from the backend idle CPU increase above.
 
 The statically loaded page JavaScript grew from 831,476 to 1,370,976 bytes; gzip size rose from 238,885 to 388,505 bytes (+62.6%). Navigation-boundary lazy loading is worth considering after the interaction/refresh fixes. It is a payload fact, not a measured 62.6% load-time regression.
 
@@ -136,4 +136,4 @@ The final RC17 review package must contain no analysis harnesses, performance fi
 
 All local timing lanes run sequentially. Source identities, fixture definitions, commands, sample limits and exclusions are documented in [METHOD.md](METHOD.md), with an [independent methodology review](reviews/methodology.md). Short synthetic samples are not production percentile guarantees. Linux headless measurements do not establish Windows/GPU power, physical fan activity, EVE/OBS contention or long-term memory retention.
 
-The independent GitHub confirmation remains pending completion of the authorised workflow. Current findings are a substantial local baseline and code/operation review, not a claim of two-environment verification.
+GitHub independently confirms the retained database/cache benefits, higher backend residency and initialisation cost, large-workload idle stalls, map/route work amplification, Maps style-path cost, refresh multiplication and async-disposal gap. Its own paired comparisons qualify the local HTTP and sparse Overview findings, as documented in the [confirmation report](reviews/github-confirmation.md). Raw files are preserved separately under [raw/github-run](raw/github-run), with source/harness hashes, run metadata, artifact digest and job logs. The real-archive updater install/cancellation remains local-only; GitHub repeats its lightweight cache/scheduler checks. No cross-host absolute timing ratio is used.

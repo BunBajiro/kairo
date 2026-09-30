@@ -15,12 +15,23 @@ The primary report is `../README.md`; commands and limits are in `../METHOD.md`.
 | `frontend-smoke*` | Harness/control-development diagnostics; excluded from final timing tables. |
 | `updater-{light,archive,abort}.json`, `updater-provenance.json` | Completed metadata/cache counts, local real-archive worker/install and cancellation measurements; disclosed reconstructed harness provenance. |
 | `architecture-shutdown.json` | Deterministic reproduction of the known RC16 disposal gap, not a test proving safe shutdown. |
-| `source-verification.json`, build/type/behaviour logs | Source preservation and existing application validation. |
+| `source-verification.json`, `frontend-build.log`, `stable-build.log`, `typecheck.log`, `behaviour-tests.log` | Source preservation and existing application validation. These tracked logs may be hidden by ignore-aware file searches. |
+| `github-run/` | Complete independent GitHub run 36708404690, retained separately from workspace results. See links below. |
 
-GitHub results will be retained separately after the authorised run completes.
-Do not count a configured workflow, missing output, or stale local result as a
-successful GitHub measurement. Historical September checkpoint evidence lives
-under `../historical/`, not in the current workspace comparison.
+The [GitHub workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690)
+completed successfully on 30 September at harness commit `0344ff4ec069080a87e19294fa8fddc28f737327`.
+The downloaded artifact's SHA256 matches GitHub's digest. Extracted files are
+unchanged; the job log and retrieval record were added after download.
+
+- [Run/harness provenance](github-run/github-run-provenance.json), [retrieval and successful job metadata](github-run/retrieval.json), [source verification](github-run/source-verification.json), [complete Actions log](github-run/actions-job.log).
+- [Balanced legacy/database comparison](github-run/github/legacy/comparison.md), with all four original result directories alongside it.
+- [Backend SQL diagnostics](github-run/backend-diagnostics.json), [forward](github-run/backend-timings.json) and [reverse](github-run/backend-timings-reverse.json) timings.
+- [Compiled-browser results](github-run/frontend-browser-github.json), its CPU profile, and all four `frontend-overview-*-github.json` files.
+- [Lightweight updater checks](github-run/updater-light-github.json) and [async-disposal diagnostic](github-run/architecture-shutdown-github.json). The archive install/cancellation was measured locally only.
+
+Historical September checkpoint evidence lives under `../historical/`, not in
+the current workspace or GitHub comparisons. Do not count a configured workflow,
+missing output, or stale result as a successful measurement.
 
 All player/database data in this checkpoint is synthetic. Reports exclude claims
 about physical disk IO from SQL emitted-row counts, desktop GPU FPS from RAF

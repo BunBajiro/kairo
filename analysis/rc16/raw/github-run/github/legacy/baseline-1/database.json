@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "suite": "rc-database",
+  "application": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "environment": {
+    "node": "v24.19.0",
+    "sqlite": "3.53.3",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 2,
+    "platform": "linux",
+    "arch": "x64",
+    "runner": "github-actions"
+  },
+  "fixedTime": "2026-09-18T12:00:00.000Z",
+  "notes": [
+    "Identical legacy stress fixture is seeded before opening each measured application.",
+    "Aged history includes 365 completed days for 5,000 types. The production startup migration runs without benchmark assistance.",
+    "Read and write timings include JSON serialization where a response is measured. No network requests or durability changes.",
+    "Event inserts are 5,000-row committed synthetic batches; their cost is not a measurement of ordinary per-event latency."
+  ],
+  "before": {
+    "historyJsonBytes": 198930000,
+    "historyTypes": 5000,
+    "events": 50000,
+    "characters": 4,
+    "archiveRows": 0
+  },
+  "firstOpenMs": 1158.166894,
+  "after": {
+    "historyJsonBytes": 16355000,
+    "historyTypes": 5000,
+    "events": 50000,
+    "characters": 4,
+    "archiveRows": 0
+  },
+  "agedImports": {
+    "ms": {
+      "samples": [
+        715.1163939999997,
+        595.7377829999996,
+        617.548006
+      ],
+      "p50": 617.548006,
+      "max": 715.1163939999997
+    },
+    "responseBytes": 201044,
+    "outputHash": "1d8e231847808cbb5605976de8b4a19b8f6ca9276b521bdf87de06164b45732e"
+  },
+  "shipEventPlan": [
+    {
+      "id": 4,
+      "parent": 0,
+      "notused": 49,
+      "detail": "SEARCH events USING INDEX idx_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+    }
+  ],
+  "eventIndexBytes": 2400256,
+  "eventInsert": {
+    "rowsPerTransaction": 5000,
+    "ms": {
+      "samples": [
+        24.40900000000056,
+        25.0780850000001,
+        24.51384599999983,
+        24.51633000000038,
+        24.391686999999365
+      ],
+      "p50": 24.51384599999983,
+      "max": 25.0780850000001
+    }
+  },
+  "historyWrite": {
+    "types": 1000,
+    "days": 30,
+    "ms": {
+      "samples": [
+        40.37620700000025,
+        40.570802000000185,
+        40.245654000000286
+      ],
+      "p50": 40.37620700000025,
+      "max": 40.570802000000185
+    },
+    "synchronousBlockMs": {
+      "samples": [
+        2.9349539999993794,
+        2.90715100000034,
+        2.9081429999996544,
+        2.9193240000004153,
+        2.9254259999997885,
+        2.894368000000213,
+        2.905457999999271,
+        2.9167200000001685,
+        2.8949389999997948,
+        3.0850140000002284,
+        2.922199000000546,
+        2.921067000000221,
+        2.9350939999994807,
+        2.972714000000451,
+        2.913402999999562,
+        2.916729999999916,
+        3.1204909999996744,
+        2.9527170000001206,
+        2.9146359999995184,
+        2.9622449999997116,
+        2.9101479999999356,
+        2.9168399999998655,
+        2.9278800000001866,
+        2.9085439999998925,
+        2.934553000000051,
+        2.9237929999999324,
+        2.914936000000125,
+        2.97447800000009,
+        2.9106879999999364,
+        2.896480999999767
+      ],
+      "p50": 2.9193240000004153,
+      "max": 3.1204909999996744
+    },
+    "outputHash": "225622baf5ace59dae5b2348decbeb03d4c6be72a4b31f62c5f354ab1b79e95b"
+  },
+  "complete": true
+}

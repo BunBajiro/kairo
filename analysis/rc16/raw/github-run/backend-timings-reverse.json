@@ -1,0 +1,1011 @@
+{
+  "mode": "timings",
+  "order": "reverse",
+  "recordedAt": "2026-09-30T11:35:03.809Z",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 7763 64-Core Processor",
+  "arch": "x64",
+  "platform": "linux",
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "fixture": {
+    "clock": "2026-09-30T09:00:00.000Z",
+    "systems": 8490,
+    "known": 5485,
+    "wormhole": 2604,
+    "gates": 6989,
+    "nodesPerMap": 100,
+    "linksPerMap": 99,
+    "signaturesPerMap": 100
+  },
+  "methodology": "Three warmups, nine uninstrumented measurements. Wall excludes JSON serialization (separately sampled). p95 is nearest-rank maximum with n=9; descriptive only. No GC forcing. Linux synthetic fixture, not user-machine telemetry.",
+  "networkAttempts": 0,
+  "queryPlans": {},
+  "results": [
+    {
+      "name": "jump-route-pure",
+      "fixture": {},
+      "status": "ok",
+      "minMs": 108.45892800000001,
+      "medianMs": 110.86379899999997,
+      "p95Ms": 138.2217700000001,
+      "samples": [
+        {
+          "wallMs": 110.86379899999997,
+          "cpuMs": 115.528,
+          "serializeMs": 0.07597199999997883,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 111.03514700000005,
+          "cpuMs": 112.924,
+          "serializeMs": 0.037359999999921456,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 114.30628000000002,
+          "cpuMs": 117.193,
+          "serializeMs": 0.03739999999993415,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 138.2217700000001,
+          "cpuMs": 139.398,
+          "serializeMs": 0.04053599999997459,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 111.65672999999992,
+          "cpuMs": 113.072,
+          "serializeMs": 0.036678999999821826,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 108.49097399999982,
+          "cpuMs": 109.889,
+          "serializeMs": 0.0381520000000819,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 109.02329800000007,
+          "cpuMs": 111.837,
+          "serializeMs": 0.051416999999901236,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 108.45892800000001,
+          "cpuMs": 109.746,
+          "serializeMs": 0.059872000000041226,
+          "outputBytes": 1371
+        },
+        {
+          "wallMs": 109.74161200000003,
+          "cpuMs": 112.497,
+          "serializeMs": 0.04827999999997701,
+          "outputBytes": 1371
+        }
+      ]
+    },
+    {
+      "name": "navigation-50-stops",
+      "fixture": {
+        "visits": 10000
+      },
+      "status": "ok",
+      "minMs": 1736.7829810000003,
+      "medianMs": 1764.5575250000002,
+      "p95Ms": 1874.9342179999985,
+      "samples": [
+        {
+          "wallMs": 1764.5575250000002,
+          "cpuMs": 1784.808,
+          "serializeMs": 1.8669740000004822,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1769.425659999999,
+          "cpuMs": 1795.48,
+          "serializeMs": 1.1694590000006428,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1856.6853900000006,
+          "cpuMs": 1989.208,
+          "serializeMs": 1.164679999999862,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1747.6538600000003,
+          "cpuMs": 1770.904,
+          "serializeMs": 1.1629769999999553,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1736.7829810000003,
+          "cpuMs": 1759.278,
+          "serializeMs": 1.1596509999999398,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1746.4169220000003,
+          "cpuMs": 1765.709,
+          "serializeMs": 1.155773999998928,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1808.705700999999,
+          "cpuMs": 1831.048,
+          "serializeMs": 1.181272000001627,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1874.9342179999985,
+          "cpuMs": 2013.149,
+          "serializeMs": 1.2475349999986065,
+          "outputBytes": 396934
+        },
+        {
+          "wallMs": 1747.3469330000007,
+          "cpuMs": 1770.182,
+          "serializeMs": 1.19227200000023,
+          "outputBytes": 396934
+        }
+      ]
+    },
+    {
+      "name": "navigation-10-stops",
+      "fixture": {
+        "visits": 10000
+      },
+      "status": "ok",
+      "minMs": 346.09919300000183,
+      "medianMs": 362.9793030000001,
+      "p95Ms": 419.4794370000018,
+      "samples": [
+        {
+          "wallMs": 384.0515880000021,
+          "cpuMs": 451.417,
+          "serializeMs": 0.21975100000054226,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 419.4794370000018,
+          "cpuMs": 524.01,
+          "serializeMs": 0.20603500000288477,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 346.09919300000183,
+          "cpuMs": 352.41,
+          "serializeMs": 0.20979299999817158,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 362.141684000002,
+          "cpuMs": 379.632,
+          "serializeMs": 0.26605800000106683,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 372.6131060000007,
+          "cpuMs": 394.91,
+          "serializeMs": 0.20904199999858974,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 372.1909760000017,
+          "cpuMs": 391.889,
+          "serializeMs": 2.015063000002556,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 362.9793030000001,
+          "cpuMs": 379.895,
+          "serializeMs": 0.20811899999898742,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 354.18604199999754,
+          "cpuMs": 372.682,
+          "serializeMs": 0.21243699999831733,
+          "outputBytes": 79646
+        },
+        {
+          "wallMs": 351.8028200000008,
+          "cpuMs": 368.036,
+          "serializeMs": 0.21307900000101654,
+          "outputBytes": 79646
+        }
+      ]
+    },
+    {
+      "name": "navigation-1-stops",
+      "fixture": {
+        "visits": 10000
+      },
+      "status": "ok",
+      "minMs": 37.16026200000124,
+      "medianMs": 41.44483300000138,
+      "p95Ms": 46.60146600000007,
+      "samples": [
+        {
+          "wallMs": 46.36096600000019,
+          "cpuMs": 51.97,
+          "serializeMs": 0.04398299999957089,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 37.16026200000124,
+          "cpuMs": 37.175,
+          "serializeMs": 0.04601600000023609,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 40.77458900000056,
+          "cpuMs": 40.76,
+          "serializeMs": 0.04708799999934854,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 41.44483300000138,
+          "cpuMs": 42.725,
+          "serializeMs": 0.04514500000004773,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 37.19852399999945,
+          "cpuMs": 37.214,
+          "serializeMs": 0.048741999999037944,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 46.32151200000226,
+          "cpuMs": 49.895,
+          "serializeMs": 0.04481399999713176,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 43.73861699999907,
+          "cpuMs": 43.571,
+          "serializeMs": 0.04503399999885005,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 38.73227500000212,
+          "cpuMs": 39.615,
+          "serializeMs": 0.044913999998243526,
+          "outputBytes": 8500
+        },
+        {
+          "wallMs": 46.60146600000007,
+          "cpuMs": 52.641,
+          "serializeMs": 0.04516499999954249,
+          "outputBytes": 8500
+        }
+      ]
+    },
+    {
+      "name": "gate-route-service-100000-visits",
+      "fixture": {
+        "visits": 100000
+      },
+      "status": "ok",
+      "minMs": 75.35454100000061,
+      "medianMs": 76.11927199999991,
+      "p95Ms": 86.60962300000028,
+      "samples": [
+        {
+          "wallMs": 77.41823400000067,
+          "cpuMs": 77.405,
+          "serializeMs": 0.06838799999968614,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 75.93591599999854,
+          "cpuMs": 75.919,
+          "serializeMs": 0.06707499999902211,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 86.60962300000028,
+          "cpuMs": 94.441,
+          "serializeMs": 0.061947000001964625,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 76.11927199999991,
+          "cpuMs": 76.137,
+          "serializeMs": 0.06891899999754969,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 75.62143999999898,
+          "cpuMs": 75.627,
+          "serializeMs": 0.0945769999998447,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 80.07426599999962,
+          "cpuMs": 82.937,
+          "serializeMs": 0.06181500000093365,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 75.35454100000061,
+          "cpuMs": 75.375,
+          "serializeMs": 0.06649499999912223,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 76.08313500000077,
+          "cpuMs": 76.101,
+          "serializeMs": 0.06439099999988684,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 78.17547100000229,
+          "cpuMs": 78.463,
+          "serializeMs": 0.06750600000304985,
+          "outputBytes": 5790
+        }
+      ]
+    },
+    {
+      "name": "gate-route-service-0-visits",
+      "fixture": {
+        "visits": 0
+      },
+      "status": "ok",
+      "minMs": 20.690762000001996,
+      "medianMs": 23.775736999999936,
+      "p95Ms": 29.005315999998857,
+      "samples": [
+        {
+          "wallMs": 25.268742000000202,
+          "cpuMs": 35.57,
+          "serializeMs": 0.05910999999832711,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 29.005315999998857,
+          "cpuMs": 35.286,
+          "serializeMs": 0.061354000001301756,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 21.505920999999944,
+          "cpuMs": 20.957,
+          "serializeMs": 0.05636600000070757,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 20.690762000001996,
+          "cpuMs": 20.708,
+          "serializeMs": 0.06210599999758415,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 25.88958199999979,
+          "cpuMs": 28.996,
+          "serializeMs": 0.07950799999889568,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 21.149069999999483,
+          "cpuMs": 21.153,
+          "serializeMs": 0.06165600000167615,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 23.775736999999936,
+          "cpuMs": 28.794,
+          "serializeMs": 0.06149500000174157,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 28.445230999997875,
+          "cpuMs": 34.328,
+          "serializeMs": 0.06568300000071758,
+          "outputBytes": 5790
+        },
+        {
+          "wallMs": 20.77582099999927,
+          "cpuMs": 20.793,
+          "serializeMs": 0.06229700000039884,
+          "outputBytes": 5790
+        }
+      ]
+    },
+    {
+      "name": "gate-route-pure",
+      "fixture": {},
+      "status": "ok",
+      "minMs": 10.420336000002862,
+      "medianMs": 10.582750000001397,
+      "p95Ms": 17.085642999998527,
+      "samples": [
+        {
+          "wallMs": 10.875388000000385,
+          "cpuMs": 10.91,
+          "serializeMs": 0.05981199999951059,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.760261999999784,
+          "cpuMs": 10.77,
+          "serializeMs": 0.06383899999855203,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.616453999999067,
+          "cpuMs": 10.624,
+          "serializeMs": 0.026640000000043074,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.555910999999469,
+          "cpuMs": 10.564,
+          "serializeMs": 0.02486700000008568,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.496129000002838,
+          "cpuMs": 10.483,
+          "serializeMs": 0.0265800000015588,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 17.085642999998527,
+          "cpuMs": 21.64,
+          "serializeMs": 0.07544100000086473,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.522748999999749,
+          "cpuMs": 10.531,
+          "serializeMs": 0.02700100000220118,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.582750000001397,
+          "cpuMs": 10.591,
+          "serializeMs": 0.026630000000295695,
+          "outputBytes": 2561
+        },
+        {
+          "wallMs": 10.420336000002862,
+          "cpuMs": 10.428,
+          "serializeMs": 0.025087000001803972,
+          "outputBytes": 2561
+        }
+      ]
+    },
+    {
+      "name": "universe-tick-24-maps",
+      "fixture": {
+        "maps": 24
+      },
+      "status": null,
+      "minMs": 5.785851000000548,
+      "medianMs": 5.972740999997768,
+      "p95Ms": 7.650169999997161,
+      "samples": [
+        {
+          "wallMs": 6.076203999997233,
+          "cpuMs": 6.089,
+          "serializeMs": 0.006250999998883344,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 5.862084000000323,
+          "cpuMs": 5.869,
+          "serializeMs": 0.006832999999460299,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 5.972740999997768,
+          "cpuMs": 6.142,
+          "serializeMs": 0.004077999998116866,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 5.8981910000002244,
+          "cpuMs": 5.902,
+          "serializeMs": 0.003886999998940155,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 5.8944939999964845,
+          "cpuMs": 6.023,
+          "serializeMs": 0.0022939999980735593,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 5.785851000000548,
+          "cpuMs": 5.789,
+          "serializeMs": 0.0020939999994880054,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 6.921636999999464,
+          "cpuMs": 6.926,
+          "serializeMs": 0.004217999998218147,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 7.650169999997161,
+          "cpuMs": 7.659,
+          "serializeMs": 0.0048790000000735745,
+          "outputBytes": 47
+        },
+        {
+          "wallMs": 6.008988000001409,
+          "cpuMs": 6.015,
+          "serializeMs": 0.0031859999980952125,
+          "outputBytes": 47
+        }
+      ]
+    },
+    {
+      "name": "jspace-map-1-of-24",
+      "fixture": {
+        "maps": 24
+      },
+      "status": null,
+      "minMs": 14.161028999998962,
+      "medianMs": 15.271477999998751,
+      "p95Ms": 15.662710000000516,
+      "samples": [
+        {
+          "wallMs": 14.161028999998962,
+          "cpuMs": 14.179,
+          "serializeMs": 0.736468999999488,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 14.386991999999736,
+          "cpuMs": 14.373,
+          "serializeMs": 0.7407060000005004,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 15.080630000000383,
+          "cpuMs": 15.091,
+          "serializeMs": 0.7225030000008701,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 15.312804999997752,
+          "cpuMs": 15.323,
+          "serializeMs": 0.7493729999987409,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 15.392463999996835,
+          "cpuMs": 15.402,
+          "serializeMs": 0.7235450000007404,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 14.917183999998088,
+          "cpuMs": 14.926,
+          "serializeMs": 0.7521169999999984,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 15.271477999998751,
+          "cpuMs": 15.646,
+          "serializeMs": 0.7408670000004349,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 15.290432999998302,
+          "cpuMs": 15.301,
+          "serializeMs": 0.7550340000016149,
+          "outputBytes": 159608
+        },
+        {
+          "wallMs": 15.662710000000516,
+          "cpuMs": 15.647,
+          "serializeMs": 0.7077449999997043,
+          "outputBytes": 159608
+        }
+      ]
+    },
+    {
+      "name": "jspace-state-24-maps",
+      "fixture": {
+        "maps": 24
+      },
+      "status": null,
+      "minMs": 345.73231400000077,
+      "medianMs": 352.6685759999964,
+      "p95Ms": 399.64506399999664,
+      "samples": [
+        {
+          "wallMs": 345.73231400000077,
+          "cpuMs": 349.115,
+          "serializeMs": 16.750092999995104,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 350.51472099999955,
+          "cpuMs": 353.536,
+          "serializeMs": 15.62242200000037,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 354.3085629999987,
+          "cpuMs": 360.701,
+          "serializeMs": 13.821962000001804,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 348.17579300000216,
+          "cpuMs": 352.207,
+          "serializeMs": 13.920255999997607,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 352.6685759999964,
+          "cpuMs": 356.377,
+          "serializeMs": 14.218524999996589,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 360.6946360000002,
+          "cpuMs": 366.992,
+          "serializeMs": 13.77229900000384,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 389.9055640000006,
+          "cpuMs": 439.448,
+          "serializeMs": 19.64500200000475,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 399.64506399999664,
+          "cpuMs": 423.237,
+          "serializeMs": 13.726423000000068,
+          "outputBytes": 3849148
+        },
+        {
+          "wallMs": 350.95256099999824,
+          "cpuMs": 355.679,
+          "serializeMs": 14.44763299999613,
+          "outputBytes": 3849148
+        }
+      ]
+    },
+    {
+      "name": "jspace-state-8-maps",
+      "fixture": {
+        "maps": 8
+      },
+      "status": null,
+      "minMs": 55.541002999998454,
+      "medianMs": 56.34528900000441,
+      "p95Ms": 62.30657699999574,
+      "samples": [
+        {
+          "wallMs": 58.71500399999786,
+          "cpuMs": 59.979,
+          "serializeMs": 5.098083000004408,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 56.34528900000441,
+          "cpuMs": 56.184,
+          "serializeMs": 5.037348999998358,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 58.483400999997684,
+          "cpuMs": 64.608,
+          "serializeMs": 5.698505999993358,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 62.30657699999574,
+          "cpuMs": 67.239,
+          "serializeMs": 6.190868000005139,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 55.8928820000001,
+          "cpuMs": 55.905,
+          "serializeMs": 5.771052999996755,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 55.541002999998454,
+          "cpuMs": 55.5,
+          "serializeMs": 5.359391999998479,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 55.86010000000533,
+          "cpuMs": 55.874,
+          "serializeMs": 5.758278000001155,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 56.29089699999895,
+          "cpuMs": 56.303,
+          "serializeMs": 5.725978000002215,
+          "outputBytes": 1277288
+        },
+        {
+          "wallMs": 57.33303700000397,
+          "cpuMs": 57.974,
+          "serializeMs": 5.7172619999983,
+          "outputBytes": 1277288
+        }
+      ]
+    },
+    {
+      "name": "jspace-state-1-maps",
+      "fixture": {
+        "maps": 1
+      },
+      "status": null,
+      "minMs": 3.767522000001918,
+      "medianMs": 3.82976900000358,
+      "p95Ms": 4.308465000001888,
+      "samples": [
+        {
+          "wallMs": 3.767522000001918,
+          "cpuMs": 3.783,
+          "serializeMs": 0.7054710000011255,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 3.904128000001947,
+          "cpuMs": 3.909,
+          "serializeMs": 0.7377909999995609,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 3.864823999996588,
+          "cpuMs": 3.87,
+          "serializeMs": 0.709738000005018,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 4.030935000002501,
+          "cpuMs": 4.257,
+          "serializeMs": 0.8075010000029579,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 3.82976900000358,
+          "cpuMs": 3.834,
+          "serializeMs": 0.7121330000009038,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 3.7990609999978915,
+          "cpuMs": 3.803,
+          "serializeMs": 0.6678000000028987,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 4.308465000001888,
+          "cpuMs": 5.304,
+          "serializeMs": 0.6704650000028778,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 3.8256010000040988,
+          "cpuMs": 3.829,
+          "serializeMs": 0.7115120000016759,
+          "outputBytes": 160025
+        },
+        {
+          "wallMs": 3.8001529999964987,
+          "cpuMs": 3.805,
+          "serializeMs": 0.6623300000064773,
+          "outputBytes": 160025
+        }
+      ]
+    },
+    {
+      "name": "universe-state-100000-visits",
+      "fixture": {
+        "visits": 100000
+      },
+      "status": null,
+      "minMs": 183.61159900000348,
+      "medianMs": 186.26945299999352,
+      "p95Ms": 199.24070600000414,
+      "samples": [
+        {
+          "wallMs": 191.15557600000466,
+          "cpuMs": 202.005,
+          "serializeMs": 29.894136000002618,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 199.24070600000414,
+          "cpuMs": 204.44,
+          "serializeMs": 29.117683999997098,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 183.61159900000348,
+          "cpuMs": 183.63,
+          "serializeMs": 27.68888899999729,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 186.26945299999352,
+          "cpuMs": 186.433,
+          "serializeMs": 28.821476000004623,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 195.15651100000105,
+          "cpuMs": 200.017,
+          "serializeMs": 28.091190999999526,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 185.16330000000016,
+          "cpuMs": 185.171,
+          "serializeMs": 28.025438999997277,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 185.9633529999992,
+          "cpuMs": 186.711,
+          "serializeMs": 29.1129940000028,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 195.73901800000021,
+          "cpuMs": 198.552,
+          "serializeMs": 27.76179499999853,
+          "outputBytes": 6432033
+        },
+        {
+          "wallMs": 185.14411700000346,
+          "cpuMs": 185.146,
+          "serializeMs": 31.608013999997638,
+          "outputBytes": 6432033
+        }
+      ]
+    },
+    {
+      "name": "universe-state-10000-visits",
+      "fixture": {
+        "visits": 10000
+      },
+      "status": null,
+      "minMs": 60.16281500000332,
+      "medianMs": 60.961018000001786,
+      "p95Ms": 67.58499599999777,
+      "samples": [
+        {
+          "wallMs": 67.58499599999777,
+          "cpuMs": 73.934,
+          "serializeMs": 28.685162999994645,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 60.20589399999881,
+          "cpuMs": 60.227,
+          "serializeMs": 28.680725000005623,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 60.961018000001786,
+          "cpuMs": 60.98,
+          "serializeMs": 28.706352999994124,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 65.88564300000144,
+          "cpuMs": 69.045,
+          "serializeMs": 27.77164300000004,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 60.184864999995625,
+          "cpuMs": 60.201,
+          "serializeMs": 27.774720000001253,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 60.492851999995764,
+          "cpuMs": 60.89,
+          "serializeMs": 28.518511000002036,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 66.22869799999899,
+          "cpuMs": 70.82,
+          "serializeMs": 28.382157000000007,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 61.01943100000062,
+          "cpuMs": 63.486,
+          "serializeMs": 27.86089599999832,
+          "outputBytes": 6421063
+        },
+        {
+          "wallMs": 60.16281500000332,
+          "cpuMs": 60.827,
+          "serializeMs": 28.83408700000291,
+          "outputBytes": 6421063
+        }
+      ]
+    },
+    {
+      "name": "universe-state-0-visits",
+      "fixture": {
+        "visits": 0
+      },
+      "status": null,
+      "minMs": 13.516177999998035,
+      "medianMs": 13.796151000002283,
+      "p95Ms": 23.403982000003452,
+      "samples": [
+        {
+          "wallMs": 13.651640999996744,
+          "cpuMs": 13.671,
+          "serializeMs": 20.932868999996572,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 13.516177999998035,
+          "cpuMs": 13.532,
+          "serializeMs": 20.903203000001668,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 13.989306000003126,
+          "cpuMs": 13.995,
+          "serializeMs": 20.96215399999346,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 23.403982000003452,
+          "cpuMs": 27.025,
+          "serializeMs": 20.153730999998515,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 13.796151000002283,
+          "cpuMs": 13.785,
+          "serializeMs": 20.180349999995087,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 13.624790000001667,
+          "cpuMs": 13.638,
+          "serializeMs": 20.337799000000814,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 13.728885999997146,
+          "cpuMs": 13.742,
+          "serializeMs": 20.96847600000183,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 13.949338999998872,
+          "cpuMs": 13.962,
+          "serializeMs": 20.066939000003913,
+          "outputBytes": 4396134
+        },
+        {
+          "wallMs": 14.23179700000037,
+          "cpuMs": 14.244,
+          "serializeMs": 27.86650699999882,
+          "outputBytes": 4396134
+        }
+      ]
+    }
+  ]
+}

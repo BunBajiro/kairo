@@ -36,3 +36,27 @@ python analysis/rc16/harness/legacy-summary.py analysis/rc16/raw/legacy-abba
 ```
 
 This writes `comparison.json` / `comparison.md` (and `summary` aliases), retaining every operation's latency/CPU/payload ranges, mean-of-two run ratios, paired advisory flags and database hashes. Timing flags are advisory; invalid/incomplete evidence or mismatching database outputs fail the summary.
+
+## GitHub confirmation and revised confidence
+
+[GitHub run 36708404690](https://github.com/BunBajiro/kairo/actions/runs/36708404690) completed the same ABBA order on Node 24.19.0, Linux, an AMD EPYC 7763 runner with two logical CPUs. All eight backend profile observations and four database reports are complete; every backend request counter is zero, every operation/HTTP series has ten samples, and idle windows span 35.002–35.020 seconds. Harness hashes exactly match the workspace run. Evidence is retained in `../raw/github-run/github/legacy/`.
+
+These are **within-GitHub comparisons**; absolute GitHub and workspace timings are not compared.
+
+| Large fixture measurement | GitHub v0.7.3 | GitHub RC16 | Agreement with workspace |
+|---|---:|---:|---|
+| Idle CPU, percent of one core | 1.63–1.72% | 2.14–2.15% | Higher in both environments; +28.2% in GitHub |
+| Idle RSS | 107.36–125.54 MiB | 192.73–193.65 MiB | Higher residency reproduced |
+| Largest idle loop delay | 43.68–44.89 ms | 76.15–76.15 ms | Higher short-window stalls reproduced |
+| `startKairo()` initialisation | 27.20–28.02 ms | 219.94–231.02 ms | Higher initialisation cost reproduced |
+| State HTTP p50 | 49.97–51.43 ms | 49.43–49.70 ms | Local slowdown **not reproduced**; GitHub mean improves 2.2% |
+| Session report p50 | 114.79–118.04 ms | 110.14–111.80 ms | Prior session benefit retained |
+| Imports after unrelated write p50 | 1.31–1.42 ms | 1.25–1.35 ms | Prior cache benefit retained |
+| Cold aged imports | 617.55–663.19 ms | 621.37–657.56 ms | Broadly unchanged |
+| Working history JSON | 15.60 MiB | 15.60 MiB | Exactly unchanged |
+
+Typical RSS and initialisation also reproduce their increases (93.20–93.44 → 176.57–177.15 MiB; 23.03–24.45 → 212.62–216.80 ms). Typical idle CPU is only 4.7% higher on average, with overlapping run ranges, so the workspace's larger relative increase is not consistent across environments. Typical session p50 is unchanged. Database insert/write costs remain close: 5,000 events take 24.51–24.74 → 24.77–24.90 ms; 1,000 history updates take 40.07–40.38 → 40.17–41.99 ms.
+
+Complete database cold-import and saved history/source hashes match in all four CI runs **and** match all four workspace runs. Working history JSON is exactly 16,355,000 bytes throughout. This confirms the earlier database gains and supplies no measured basis for a broad schema rewrite.
+
+Prioritise attribution/reduction of new resident memory, initialisation work, and large-fixture scheduler stalls; these signals reproduce in both environments. Retain state HTTP as a local investigation lead, not a confirmed general RC16 regression. GitHub also shows some higher state/session p95 observations, but with ten samples these are maxima; they do not establish stable rare-tail regressions or override the preserved session p50 result. No existing scope limitation or correctness claim is expanded by this confirmation.

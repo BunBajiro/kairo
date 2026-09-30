@@ -29,6 +29,18 @@ Actions workflow uploads internal evidence only. It starts with a fresh output
 directory and captures the run URL, harness commit, source identities and hashes.
 Reports cannot inherit a successful old output if a new lane fails.
 
+The independent GitHub run [36708404690](https://github.com/BunBajiro/kairo/actions/runs/36708404690)
+completed successfully on 30 September 2026, using harness commit
+`0344ff4ec069080a87e19294fa8fddc28f737327`. Its artifact is preserved unchanged
+under `raw/github-run`, alongside the retrieved job log and verification record.
+All 20 harness hashes match the local files; the downloaded artifact SHA256
+matches GitHub's published digest. Later report/evidence commits do not alter
+the measured harness. The CI lane uses Node 24.19.0 on an Ubuntu runner and
+independently installs both applications' locked dependencies. Compare versions
+within each host; browser/platform differences preclude cross-host timing ratios.
+CI repeats every lane except real-archive installation/cancellation, which remains
+local evidence. See `reviews/github-confirmation.md` for agreements and exceptions.
+
 ## Five complementary measurement lanes
 
 1. **Matched legacy comparison.** The previous external harness is adapted to

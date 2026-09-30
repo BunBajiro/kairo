@@ -1,0 +1,4691 @@
+{
+  "schema": 1,
+  "harnessSha256": "c30258dfdb20af729510f38c362bad820bff2d090752edd7e916fa223ba3dd4d",
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sourceHashes": {
+    "package.json": "c5a2088e330df7c83c0e5fbd2d4a769f5859485f31700ca8fc08a8e0df2ed7af",
+    "server/index.mjs": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf",
+    "server/store.mjs": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555",
+    "components/kairo/dashboard.tsx": "4fd8f6b7f52a165513746b9b140a1d3d8960d762b9cf1ab2e5559a64d2e14e7b"
+  },
+  "version": "0.8.0-rc.16",
+  "repo": "/home/runner/work/kairo/kairo/checkpoint",
+  "overviewOnly": false,
+  "startedAt": "2026-09-30T11:35:04.488Z",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 2,
+    "totalMemory": 8323964928,
+    "viewport": {
+      "width": 1600,
+      "height": 1050,
+      "dpr": 1
+    },
+    "chromeFlags": [
+      "--headless",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ],
+    "limitations": [
+      "Synthetic connected pilot; no ESI traffic or real player credentials.",
+      "Headless Linux software rendering; no desktop GPU/FPS claim.",
+      "CDP TaskDuration covers renderer main-thread tasks, not total browser/worker/GPU CPU.",
+      "Fixtures span 25/100/300/600 nodes using real bundled gate topology and deterministic grid positions.",
+      "Browser HTTPS and known image CDN HTTP requests blocked using CDP; application CSP restricts connections to same-origin.",
+      "Instrumentation: canvas clearRect counter and long-task observer, CDP metrics at sample boundaries, network events; CPU profile is separate from timed samples.",
+      "Idle samples have no RAF probe. Interaction samples have an RAF interval observer; identical for all sizes.",
+      "List contains all four synthetic maps, total 1025 nodes; map navigation costs include that workspace."
+    ],
+    "smoke": false,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/153.0.8010.52",
+      "revision": "@78e5e45d4bb41035e17ea4da2cc257f496416ac9",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+      "jsVersion": "15.3.76.13"
+    },
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "staticSystems": 8490,
+    "knownSystems": 5485,
+    "gates": 6989,
+    "maps": [
+      {
+        "id": "perf-25",
+        "nodes": 25,
+        "connections": 34
+      },
+      {
+        "id": "perf-100",
+        "nodes": 100,
+        "connections": 139
+      },
+      {
+        "id": "perf-300",
+        "nodes": 300,
+        "connections": 394
+      },
+      {
+        "id": "perf-600",
+        "nodes": 600,
+        "connections": 823
+      }
+    ]
+  },
+  "samples": [
+    {
+      "name": "overview-idle",
+      "domElementCount": 402,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 35002.096257,
+      "taskMs": 74.49000000000005,
+      "scriptMs": 18.24800000000004,
+      "layoutMs": 7.1399999999999935,
+      "recalcMs": 0,
+      "layouts": 35,
+      "recalcs": 0,
+      "heapUsed": 5872340,
+      "heapTotal": 7340032,
+      "domNodes": 533,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "at": 663.055803,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 6.03000000000975,
+          "totalMs": 6.799000000000888,
+          "encodedBytes": 173456
+        },
+        {
+          "at": 663.072533,
+          "url": "/api/timeline?limit=5&character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 3.9699999999811553,
+          "totalMs": 5.277999999975691,
+          "encodedBytes": 662
+        },
+        {
+          "at": 663.072848,
+          "url": "/api/goals?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 5.426999999940563,
+          "totalMs": 5.890000000022155,
+          "encodedBytes": 620
+        }
+      ]
+    },
+    {
+      "name": "atlas-first-open",
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 2048.096666999998,
+      "taskMs": 1007.115,
+      "scriptMs": 544.6189999999999,
+      "layoutMs": 26.957000000000008,
+      "recalcMs": 51.032999999999994,
+      "layouts": 32,
+      "recalcs": 56,
+      "heapUsed": 35271728,
+      "heapTotal": 57659392,
+      "domNodes": 2333,
+      "canvasDraws": 5,
+      "longTasks": [
+        {
+          "start": 37726.69999999995,
+          "duration": 60
+        },
+        {
+          "start": 37787.09999999998,
+          "duration": 57
+        },
+        {
+          "start": 37853.29999999993,
+          "duration": 157
+        },
+        {
+          "start": 38172,
+          "duration": 132
+        },
+        {
+          "start": 38332.19999999995,
+          "duration": 59
+        },
+        {
+          "start": 38755.5,
+          "duration": 61
+        }
+      ],
+      "raf": null,
+      "requests": [
+        {
+          "at": 670.038349,
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 141.63399999995363,
+          "totalMs": 193.90499999997246,
+          "encodedBytes": 867000
+        },
+        {
+          "at": 670.039053,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 264.63699999999335,
+          "totalMs": 274.1809999999987,
+          "encodedBytes": 3950139
+        }
+      ]
+    },
+    {
+      "name": "atlas-idle",
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 12003.354072999995,
+      "taskMs": 75.39099999999999,
+      "scriptMs": 3.7369999999999903,
+      "layoutMs": 2.4119999999999973,
+      "recalcMs": 0,
+      "layouts": 12,
+      "recalcs": 0,
+      "heapUsed": 25185488,
+      "heapTotal": 27308032,
+      "domNodes": 2302,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "atlas-zoom",
+      "repeat": 0,
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 3758.6120519999968,
+      "taskMs": 3197.1299999999997,
+      "scriptMs": 1353.918,
+      "layoutMs": 31.944,
+      "recalcMs": 377.113,
+      "layouts": 92,
+      "recalcs": 97,
+      "heapUsed": 28841324,
+      "heapTotal": 36364288,
+      "domNodes": 2320,
+      "canvasDraws": 83,
+      "longTasks": [
+        {
+          "start": 52579.09999999998,
+          "duration": 58
+        },
+        {
+          "start": 52638,
+          "duration": 57
+        },
+        {
+          "start": 53245.69999999995,
+          "duration": 71
+        },
+        {
+          "start": 53316.79999999993,
+          "duration": 73
+        },
+        {
+          "start": 53390.39999999991,
+          "duration": 77
+        },
+        {
+          "start": 53518.09999999998,
+          "duration": 53
+        },
+        {
+          "start": 53571.59999999998,
+          "duration": 92
+        },
+        {
+          "start": 53665,
+          "duration": 56
+        },
+        {
+          "start": 53886.89999999991,
+          "duration": 69
+        },
+        {
+          "start": 53956,
+          "duration": 60
+        },
+        {
+          "start": 54036.19999999995,
+          "duration": 56
+        },
+        {
+          "start": 54092.79999999993,
+          "duration": 50
+        },
+        {
+          "start": 54883.89999999991,
+          "duration": 62
+        }
+      ],
+      "raf": {
+        "count": 115,
+        "p50": 33.299999999995634,
+        "p95": 66.69999999999709,
+        "max": 83.40000000000146,
+        "over33ms": 40
+      },
+      "requests": []
+    },
+    {
+      "name": "atlas-zoom",
+      "repeat": 1,
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 3715.1867070000008,
+      "taskMs": 3176.1219999999994,
+      "scriptMs": 1124.3499999999997,
+      "layoutMs": 31.935999999999993,
+      "recalcMs": 390.61099999999993,
+      "layouts": 94,
+      "recalcs": 98,
+      "heapUsed": 28002128,
+      "heapTotal": 45277184,
+      "domNodes": 2304,
+      "canvasDraws": 84,
+      "longTasks": [
+        {
+          "start": 57920.89999999991,
+          "duration": 54
+        },
+        {
+          "start": 57975.19999999995,
+          "duration": 51
+        },
+        {
+          "start": 58851.09999999998,
+          "duration": 62
+        },
+        {
+          "start": 58913.29999999993,
+          "duration": 52
+        },
+        {
+          "start": 59049.09999999998,
+          "duration": 53
+        }
+      ],
+      "raf": {
+        "count": 117,
+        "p50": 33.30000000000291,
+        "p95": 50,
+        "max": 66.70000000000437,
+        "over33ms": 44
+      },
+      "requests": [
+        {
+          "at": 693.055613,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 8.73100000001159,
+          "totalMs": 9.919999999965512,
+          "encodedBytes": 173456
+        }
+      ]
+    },
+    {
+      "name": "atlas-zoom",
+      "repeat": 2,
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 3727.991439999998,
+      "taskMs": 3255.821000000001,
+      "scriptMs": 1134.039,
+      "layoutMs": 33.81600000000001,
+      "recalcMs": 408.33699999999993,
+      "layouts": 89,
+      "recalcs": 94,
+      "heapUsed": 32120300,
+      "heapTotal": 45015040,
+      "domNodes": 2311,
+      "canvasDraws": 80,
+      "longTasks": [
+        {
+          "start": 61933,
+          "duration": 57
+        },
+        {
+          "start": 62485.29999999993,
+          "duration": 51
+        },
+        {
+          "start": 62539.29999999993,
+          "duration": 63
+        },
+        {
+          "start": 63223.89999999991,
+          "duration": 55
+        },
+        {
+          "start": 63279.39999999991,
+          "duration": 66
+        },
+        {
+          "start": 63348.39999999991,
+          "duration": 66
+        },
+        {
+          "start": 63415.29999999993,
+          "duration": 58
+        },
+        {
+          "start": 63524.19999999995,
+          "duration": 59
+        },
+        {
+          "start": 63583.5,
+          "duration": 71
+        },
+        {
+          "start": 63723.59999999998,
+          "duration": 59
+        },
+        {
+          "start": 64073.29999999993,
+          "duration": 53
+        },
+        {
+          "start": 64127.29999999993,
+          "duration": 53
+        },
+        {
+          "start": 64180.39999999991,
+          "duration": 53
+        },
+        {
+          "start": 64355.29999999993,
+          "duration": 64
+        },
+        {
+          "start": 64599.09999999998,
+          "duration": 56
+        }
+      ],
+      "raf": {
+        "count": 109,
+        "p50": 33.30000000000291,
+        "p95": 66.69999999999709,
+        "max": 83.40000000000146,
+        "over33ms": 44
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-open-25",
+      "nodes": 25,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "0.6139079990671642",
+      "windowMs": 1589.4180780000024,
+      "taskMs": 101.06900000000074,
+      "scriptMs": 48.75600000000002,
+      "layoutMs": 5.041000000000018,
+      "recalcMs": 19.216999999999818,
+      "layouts": 5,
+      "recalcs": 13,
+      "heapUsed": 30200152,
+      "heapTotal": 41398272,
+      "domNodes": 1726,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 67379,
+          "duration": 62
+        }
+      ],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-idle-25",
+      "nodes": 25,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "0.6139079990671642",
+      "windowMs": 8002.144351999988,
+      "taskMs": 20.839999999999748,
+      "scriptMs": 2.5889999999995084,
+      "layoutMs": 1.3859999999999983,
+      "recalcMs": 0,
+      "layouts": 8,
+      "recalcs": 0,
+      "heapUsed": 30230892,
+      "heapTotal": 41398272,
+      "domNodes": 1726,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-25",
+      "nodes": 25,
+      "repeat": 0,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "1.8",
+      "windowMs": 3696.861763000008,
+      "taskMs": 1302.2369999999999,
+      "scriptMs": 182.65200000000004,
+      "layoutMs": 15.921999999999992,
+      "recalcMs": 705.39,
+      "layouts": 48,
+      "recalcs": 67,
+      "heapUsed": 17674040,
+      "heapTotal": 36356096,
+      "domNodes": 1569,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": {
+        "count": 161,
+        "p50": 16.69999999999709,
+        "p95": 50,
+        "max": 66.70000000001164,
+        "over33ms": 18
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-25",
+      "nodes": 25,
+      "repeat": 1,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "1.8",
+      "windowMs": 3691.7090549999994,
+      "taskMs": 1212.6990000000005,
+      "scriptMs": 173.73700000000002,
+      "layoutMs": 13.428999999999968,
+      "recalcMs": 599.5749999999997,
+      "layouts": 47,
+      "recalcs": 65,
+      "heapUsed": 18062928,
+      "heapTotal": 36618240,
+      "domNodes": 1569,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": {
+        "count": 160,
+        "p50": 16.69999999999709,
+        "p95": 50,
+        "max": 66.70000000001164,
+        "over33ms": 18
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-25",
+      "nodes": 25,
+      "repeat": 2,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "1.8",
+      "windowMs": 3694.544332000005,
+      "taskMs": 1256.9519999999984,
+      "scriptMs": 177.08299999999966,
+      "layoutMs": 13.645999999999992,
+      "recalcMs": 643.7479999999999,
+      "layouts": 45,
+      "recalcs": 65,
+      "heapUsed": 17793384,
+      "heapTotal": 36618240,
+      "domNodes": 1569,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": {
+        "count": 164,
+        "p50": 16.69999999999709,
+        "p95": 50,
+        "max": 83.30000000000291,
+        "over33ms": 16
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-pan-25",
+      "nodes": 25,
+      "domElementCount": 1325,
+      "mapNodes": 25,
+      "camera": "1.8",
+      "windowMs": 1198.1870409999974,
+      "taskMs": 358.91200000000015,
+      "scriptMs": 74.43199999999983,
+      "layoutMs": 7.397000000000043,
+      "recalcMs": 77.42400000000016,
+      "layouts": 37,
+      "recalcs": 46,
+      "heapUsed": 22277032,
+      "heapTotal": 37482496,
+      "domNodes": 1712,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": {
+        "count": 61,
+        "p50": 16.69999999999709,
+        "p95": 33.30000000000291,
+        "max": 66.69999999999709,
+        "over33ms": 3
+      },
+      "requests": [
+        {
+          "at": 723.055629,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 10.068000000046595,
+          "totalMs": 11.595000000056643,
+          "encodedBytes": 173456
+        },
+        {
+          "at": 723.855478,
+          "url": "/api/universe/jspace/maps/perf-25/commands?character=42",
+          "method": "POST",
+          "status": 200,
+          "responseHeadersMs": 43.524000000047636,
+          "totalMs": 12.462000000027729,
+          "encodedBytes": 11639
+        }
+      ]
+    },
+    {
+      "name": "maps-open-100",
+      "nodes": 100,
+      "domElementCount": 3560,
+      "mapNodes": 100,
+      "camera": "0.2896608164612676",
+      "windowMs": 1754.1582270000072,
+      "taskMs": 415.16900000000237,
+      "scriptMs": 125.99099999999996,
+      "layoutMs": 8.419999999999984,
+      "recalcMs": 55.49900000000019,
+      "layouts": 4,
+      "recalcs": 5,
+      "heapUsed": 29920020,
+      "heapTotal": 45580288,
+      "domNodes": 4475,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 91728.5,
+          "duration": 67
+        }
+      ],
+      "raf": null,
+      "requests": [
+        {
+          "at": 724.324179,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 128.2170000000633,
+          "totalMs": 139.16500000004817,
+          "encodedBytes": 3950139
+        }
+      ]
+    },
+    {
+      "name": "maps-idle-100",
+      "nodes": 100,
+      "domElementCount": 3560,
+      "mapNodes": 100,
+      "camera": "0.2896608164612676",
+      "windowMs": 8002.60051199999,
+      "taskMs": 71.94100000000248,
+      "scriptMs": 11.194999999999844,
+      "layoutMs": 1.599000000000017,
+      "recalcMs": 0,
+      "layouts": 8,
+      "recalcs": 0,
+      "heapUsed": 32136768,
+      "heapTotal": 47910912,
+      "domNodes": 4475,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-100",
+      "nodes": 100,
+      "repeat": 0,
+      "domElementCount": 3560,
+      "mapNodes": 100,
+      "camera": "1.1049683245135025",
+      "windowMs": 3691.4178989999928,
+      "taskMs": 2621.9970000000003,
+      "scriptMs": 410.2179999999995,
+      "layoutMs": 10.312999999999962,
+      "recalcMs": 1418.5850000000003,
+      "layouts": 44,
+      "recalcs": 60,
+      "heapUsed": 38074384,
+      "heapTotal": 49598464,
+      "domNodes": 4475,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 102557.59999999998,
+          "duration": 51
+        },
+        {
+          "start": 102618.09999999998,
+          "duration": 52
+        },
+        {
+          "start": 102678.8999999999,
+          "duration": 52
+        },
+        {
+          "start": 103091.8999999999,
+          "duration": 50
+        },
+        {
+          "start": 103150.29999999993,
+          "duration": 51
+        },
+        {
+          "start": 103210.29999999993,
+          "duration": 52
+        },
+        {
+          "start": 103270.3999999999,
+          "duration": 53
+        },
+        {
+          "start": 103332.09999999998,
+          "duration": 52
+        },
+        {
+          "start": 104434.29999999993,
+          "duration": 50
+        },
+        {
+          "start": 104499.69999999995,
+          "duration": 59
+        },
+        {
+          "start": 104872.59999999998,
+          "duration": 51
+        },
+        {
+          "start": 105057,
+          "duration": 50
+        },
+        {
+          "start": 105117.29999999993,
+          "duration": 50
+        },
+        {
+          "start": 105175,
+          "duration": 50
+        },
+        {
+          "start": 105557.79999999993,
+          "duration": 59
+        },
+        {
+          "start": 105625.19999999995,
+          "duration": 51
+        },
+        {
+          "start": 105684.19999999995,
+          "duration": 52
+        },
+        {
+          "start": 105743.79999999993,
+          "duration": 50
+        },
+        {
+          "start": 105802.59999999998,
+          "duration": 50
+        }
+      ],
+      "raf": {
+        "count": 109,
+        "p50": 16.70000000001164,
+        "p95": 66.70000000001164,
+        "max": 133.39999999999418,
+        "over33ms": 35
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-100",
+      "nodes": 100,
+      "repeat": 1,
+      "domElementCount": 3560,
+      "mapNodes": 100,
+      "camera": "1.1049683245135025",
+      "windowMs": 3702.9422170000034,
+      "taskMs": 2329.7039999999997,
+      "scriptMs": 374.3730000000003,
+      "layoutMs": 10.525000000000006,
+      "recalcMs": 1350.2919999999997,
+      "layouts": 41,
+      "recalcs": 59,
+      "heapUsed": 47486216,
+      "heapTotal": 66637824,
+      "domNodes": 4475,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 107019.5,
+          "duration": 55
+        },
+        {
+          "start": 107084.69999999995,
+          "duration": 52
+        },
+        {
+          "start": 107146.19999999995,
+          "duration": 52
+        },
+        {
+          "start": 107207.8999999999,
+          "duration": 52
+        },
+        {
+          "start": 107270.5,
+          "duration": 51
+        },
+        {
+          "start": 107627.29999999993,
+          "duration": 53
+        },
+        {
+          "start": 107762.3999999999,
+          "duration": 53
+        },
+        {
+          "start": 107823.5,
+          "duration": 54
+        },
+        {
+          "start": 107887.3999999999,
+          "duration": 53
+        },
+        {
+          "start": 108236.29999999993,
+          "duration": 61
+        },
+        {
+          "start": 108320.59999999998,
+          "duration": 51
+        },
+        {
+          "start": 108388.19999999995,
+          "duration": 64
+        },
+        {
+          "start": 108851.79999999993,
+          "duration": 51
+        },
+        {
+          "start": 108954.59999999998,
+          "duration": 60
+        },
+        {
+          "start": 109023.19999999995,
+          "duration": 54
+        },
+        {
+          "start": 110199.69999999995,
+          "duration": 51
+        },
+        {
+          "start": 110257.5,
+          "duration": 50
+        },
+        {
+          "start": 110316,
+          "duration": 52
+        }
+      ],
+      "raf": {
+        "count": 122,
+        "p50": 16.69999999999709,
+        "p95": 66.70000000001164,
+        "max": 116.59999999999127,
+        "over33ms": 34
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-100",
+      "nodes": 100,
+      "repeat": 2,
+      "domElementCount": 3560,
+      "mapNodes": 100,
+      "camera": "1.1049683245135025",
+      "windowMs": 3705.7216650000046,
+      "taskMs": 2448.912,
+      "scriptMs": 400.4309999999993,
+      "layoutMs": 10.371999999999993,
+      "recalcMs": 1434.5290000000005,
+      "layouts": 41,
+      "recalcs": 59,
+      "heapUsed": 32516032,
+      "heapTotal": 83415040,
+      "domNodes": 4475,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 111547.09999999998,
+          "duration": 53
+        },
+        {
+          "start": 111689.19999999995,
+          "duration": 52
+        },
+        {
+          "start": 112166,
+          "duration": 57
+        },
+        {
+          "start": 112232.29999999993,
+          "duration": 52
+        },
+        {
+          "start": 112294,
+          "duration": 55
+        },
+        {
+          "start": 112358,
+          "duration": 51
+        },
+        {
+          "start": 112419.59999999998,
+          "duration": 53
+        },
+        {
+          "start": 112776.69999999995,
+          "duration": 53
+        },
+        {
+          "start": 112839,
+          "duration": 53
+        },
+        {
+          "start": 112901.29999999993,
+          "duration": 51
+        },
+        {
+          "start": 112961.8999999999,
+          "duration": 56
+        },
+        {
+          "start": 113392.29999999993,
+          "duration": 53
+        },
+        {
+          "start": 113453.3999999999,
+          "duration": 52
+        },
+        {
+          "start": 113513.3999999999,
+          "duration": 52
+        },
+        {
+          "start": 113574.29999999993,
+          "duration": 52
+        },
+        {
+          "start": 114101.79999999993,
+          "duration": 103
+        },
+        {
+          "start": 114247,
+          "duration": 65
+        }
+      ],
+      "raf": {
+        "count": 115,
+        "p50": 16.69999999999709,
+        "p95": 83.30000000000291,
+        "max": 100,
+        "over33ms": 32
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-pan-100",
+      "nodes": 100,
+      "domElementCount": 3602,
+      "mapNodes": 100,
+      "camera": "1.1049683245135025",
+      "windowMs": 1494.0465149999945,
+      "taskMs": 982.7150000000024,
+      "scriptMs": 153.09300000000013,
+      "layoutMs": 6.954000000000016,
+      "recalcMs": 241.59500000000023,
+      "layouts": 62,
+      "recalcs": 66,
+      "heapUsed": 44181200,
+      "heapTotal": 83415040,
+      "domNodes": 4556,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 115093.09999999998,
+          "duration": 62
+        }
+      ],
+      "raf": {
+        "count": 52,
+        "p50": 16.79999999998836,
+        "p95": 50,
+        "max": 66.69999999999709,
+        "over33ms": 13
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-open-300",
+      "nodes": 300,
+      "domElementCount": 9757,
+      "mapNodes": 300,
+      "camera": "0.1665256515688259",
+      "windowMs": 1868.8943629999994,
+      "taskMs": 496.17900000000145,
+      "scriptMs": 117.54500000000067,
+      "layoutMs": 21.668999999999993,
+      "recalcMs": 182.41100000000012,
+      "layouts": 5,
+      "recalcs": 4,
+      "heapUsed": 31375804,
+      "heapTotal": 89182208,
+      "domNodes": 13220,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 116573.3999999999,
+          "duration": 156
+        },
+        {
+          "start": 116729.3999999999,
+          "duration": 177
+        },
+        {
+          "start": 116953.3999999999,
+          "duration": 50
+        }
+      ],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-idle-300",
+      "nodes": 300,
+      "domElementCount": 9757,
+      "mapNodes": 300,
+      "camera": "0.1665256515688259",
+      "windowMs": 8001.404938000007,
+      "taskMs": 571.9549999999991,
+      "scriptMs": 180.14499999999956,
+      "layoutMs": 1.5129999999999866,
+      "recalcMs": 74.87399999999944,
+      "layouts": 9,
+      "recalcs": 1,
+      "heapUsed": 38355656,
+      "heapTotal": 92532736,
+      "domNodes": 12440,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "at": 753.055721,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 6.048000000077991,
+          "totalMs": 6.930000000011205,
+          "encodedBytes": 173456
+        },
+        {
+          "at": 758.016585,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 42.973000000074535,
+          "totalMs": 51.723000000038155,
+          "encodedBytes": 3950139
+        },
+        {
+          "at": 758.297682,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 46.97699999996985,
+          "totalMs": 46.234000000026754,
+          "encodedBytes": 386352
+        }
+      ]
+    },
+    {
+      "name": "maps-zoom-300",
+      "nodes": 300,
+      "repeat": 0,
+      "domElementCount": 9757,
+      "mapNodes": 300,
+      "camera": "0.6352449476960216",
+      "windowMs": 4683.714461999989,
+      "taskMs": 4209.5970000000025,
+      "scriptMs": 883.3520000000003,
+      "layoutMs": 6.956000000000017,
+      "recalcMs": 2270.545,
+      "layouts": 29,
+      "recalcs": 46,
+      "heapUsed": 44447368,
+      "heapTotal": 103337984,
+      "domNodes": 12438,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 127381.59999999998,
+          "duration": 95
+        },
+        {
+          "start": 127502.3999999999,
+          "duration": 91
+        },
+        {
+          "start": 127644,
+          "duration": 107
+        },
+        {
+          "start": 127779.69999999995,
+          "duration": 107
+        },
+        {
+          "start": 127913.59999999998,
+          "duration": 106
+        },
+        {
+          "start": 128099.29999999993,
+          "duration": 90
+        },
+        {
+          "start": 128214.8999999999,
+          "duration": 106
+        },
+        {
+          "start": 128345.8999999999,
+          "duration": 108
+        },
+        {
+          "start": 128479.5,
+          "duration": 167
+        },
+        {
+          "start": 129134.8999999999,
+          "duration": 64
+        },
+        {
+          "start": 129283.5,
+          "duration": 110
+        },
+        {
+          "start": 129417,
+          "duration": 107
+        },
+        {
+          "start": 129548.19999999995,
+          "duration": 109
+        },
+        {
+          "start": 129681.5,
+          "duration": 108
+        },
+        {
+          "start": 129869.3999999999,
+          "duration": 90
+        },
+        {
+          "start": 129990.79999999993,
+          "duration": 111
+        },
+        {
+          "start": 130126.29999999993,
+          "duration": 108
+        },
+        {
+          "start": 130259.3999999999,
+          "duration": 108
+        },
+        {
+          "start": 130391.09999999998,
+          "duration": 123
+        },
+        {
+          "start": 130579.5,
+          "duration": 94
+        },
+        {
+          "start": 130697.69999999995,
+          "duration": 108
+        },
+        {
+          "start": 130829,
+          "duration": 123
+        },
+        {
+          "start": 130977.09999999998,
+          "duration": 113
+        },
+        {
+          "start": 131124,
+          "duration": 119
+        },
+        {
+          "start": 131454.8999999999,
+          "duration": 117
+        },
+        {
+          "start": 131596.09999999998,
+          "duration": 99
+        },
+        {
+          "start": 131725.19999999995,
+          "duration": 105
+        },
+        {
+          "start": 131858.8999999999,
+          "duration": 102
+        }
+      ],
+      "raf": {
+        "count": 52,
+        "p50": 83.19999999999709,
+        "p95": 150,
+        "max": 683.3000000000029,
+        "over33ms": 33
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-300",
+      "nodes": 300,
+      "repeat": 1,
+      "domElementCount": 9757,
+      "mapNodes": 300,
+      "camera": "0.6352449476960216",
+      "windowMs": 4268.769704000006,
+      "taskMs": 4034.435000000002,
+      "scriptMs": 762.0730000000009,
+      "layoutMs": 7.313999999999988,
+      "recalcMs": 2334.0449999999996,
+      "layouts": 29,
+      "recalcs": 46,
+      "heapUsed": 47608252,
+      "heapTotal": 103337984,
+      "domNodes": 12438,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 132926.29999999993,
+          "duration": 116
+        },
+        {
+          "start": 133066.59999999998,
+          "duration": 91
+        },
+        {
+          "start": 133223.69999999995,
+          "duration": 102
+        },
+        {
+          "start": 133349.5,
+          "duration": 113
+        },
+        {
+          "start": 133537.29999999993,
+          "duration": 102
+        },
+        {
+          "start": 133662.8999999999,
+          "duration": 111
+        },
+        {
+          "start": 133798.3999999999,
+          "duration": 113
+        },
+        {
+          "start": 133937,
+          "duration": 115
+        },
+        {
+          "start": 134075.5,
+          "duration": 119
+        },
+        {
+          "start": 134287.29999999993,
+          "duration": 99
+        },
+        {
+          "start": 134410.5,
+          "duration": 118
+        },
+        {
+          "start": 134564.29999999993,
+          "duration": 131
+        },
+        {
+          "start": 134718.3999999999,
+          "duration": 109
+        },
+        {
+          "start": 134852.09999999998,
+          "duration": 116
+        },
+        {
+          "start": 135046.09999999998,
+          "duration": 99
+        },
+        {
+          "start": 135168.8999999999,
+          "duration": 114
+        },
+        {
+          "start": 135306.19999999995,
+          "duration": 128
+        },
+        {
+          "start": 135458,
+          "duration": 115
+        },
+        {
+          "start": 135604.59999999998,
+          "duration": 132
+        },
+        {
+          "start": 135812.79999999993,
+          "duration": 99
+        },
+        {
+          "start": 135936,
+          "duration": 115
+        },
+        {
+          "start": 136076,
+          "duration": 114
+        },
+        {
+          "start": 136214.79999999993,
+          "duration": 115
+        },
+        {
+          "start": 136352.59999999998,
+          "duration": 113
+        },
+        {
+          "start": 136547.3999999999,
+          "duration": 108
+        },
+        {
+          "start": 136680.79999999993,
+          "duration": 126
+        },
+        {
+          "start": 136831,
+          "duration": 116
+        },
+        {
+          "start": 136974.59999999998,
+          "duration": 115
+        }
+      ],
+      "raf": {
+        "count": 55,
+        "p50": 83.30000000001746,
+        "p95": 150,
+        "max": 166.69999999998254,
+        "over33ms": 29
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-300",
+      "nodes": 300,
+      "repeat": 2,
+      "domElementCount": 9757,
+      "mapNodes": 300,
+      "camera": "0.6352449476960216",
+      "windowMs": 4140.20898700002,
+      "taskMs": 3850.371000000003,
+      "scriptMs": 706.4909999999998,
+      "layoutMs": 7.124000000000019,
+      "recalcMs": 2232.6740000000013,
+      "layouts": 30,
+      "recalcs": 46,
+      "heapUsed": 59783852,
+      "heapTotal": 102551552,
+      "domNodes": 12438,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 138334,
+          "duration": 117
+        },
+        {
+          "start": 138476.29999999993,
+          "duration": 95
+        },
+        {
+          "start": 138634.79999999993,
+          "duration": 100
+        },
+        {
+          "start": 138758.09999999998,
+          "duration": 110
+        },
+        {
+          "start": 138963.69999999995,
+          "duration": 90
+        },
+        {
+          "start": 139078.8999999999,
+          "duration": 112
+        },
+        {
+          "start": 139214.69999999995,
+          "duration": 111
+        },
+        {
+          "start": 139349.79999999993,
+          "duration": 113
+        },
+        {
+          "start": 139488.8999999999,
+          "duration": 110
+        },
+        {
+          "start": 139679.19999999995,
+          "duration": 90
+        },
+        {
+          "start": 139793.3999999999,
+          "duration": 111
+        },
+        {
+          "start": 139929.19999999995,
+          "duration": 118
+        },
+        {
+          "start": 140072.79999999993,
+          "duration": 104
+        },
+        {
+          "start": 140208.8999999999,
+          "duration": 110
+        },
+        {
+          "start": 140395.8999999999,
+          "duration": 90
+        },
+        {
+          "start": 140509.29999999993,
+          "duration": 113
+        },
+        {
+          "start": 140646.59999999998,
+          "duration": 109
+        },
+        {
+          "start": 140778.79999999993,
+          "duration": 111
+        },
+        {
+          "start": 140912.3999999999,
+          "duration": 109
+        },
+        {
+          "start": 141113,
+          "duration": 93
+        },
+        {
+          "start": 141228.59999999998,
+          "duration": 110
+        },
+        {
+          "start": 141363.8999999999,
+          "duration": 111
+        },
+        {
+          "start": 141499.79999999993,
+          "duration": 111
+        },
+        {
+          "start": 141635.3999999999,
+          "duration": 117
+        },
+        {
+          "start": 141829.29999999993,
+          "duration": 97
+        },
+        {
+          "start": 141948.69999999995,
+          "duration": 129
+        },
+        {
+          "start": 142104.09999999998,
+          "duration": 110
+        },
+        {
+          "start": 142238.09999999998,
+          "duration": 108
+        }
+      ],
+      "raf": {
+        "count": 58,
+        "p50": 33.30000000001746,
+        "p95": 150,
+        "max": 183.39999999999418,
+        "over33ms": 28
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-pan-300",
+      "nodes": 300,
+      "domElementCount": 9799,
+      "mapNodes": 300,
+      "camera": "0.6352449476960216",
+      "windowMs": 2153.026638999989,
+      "taskMs": 1729.0890000000018,
+      "scriptMs": 369.0680000000004,
+      "layoutMs": 4.168999999999978,
+      "recalcMs": 572.1740000000004,
+      "layouts": 29,
+      "recalcs": 55,
+      "heapUsed": 37458928,
+      "heapTotal": 103862272,
+      "domNodes": 12528,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 142448.79999999993,
+          "duration": 114
+        },
+        {
+          "start": 142619.5,
+          "duration": 55
+        },
+        {
+          "start": 142855.59999999998,
+          "duration": 85
+        },
+        {
+          "start": 143234.09999999998,
+          "duration": 75
+        },
+        {
+          "start": 143387.5,
+          "duration": 103
+        },
+        {
+          "start": 143491.3999999999,
+          "duration": 94
+        },
+        {
+          "start": 143645.29999999993,
+          "duration": 110
+        },
+        {
+          "start": 143755.8999999999,
+          "duration": 86
+        },
+        {
+          "start": 144003.69999999995,
+          "duration": 52
+        },
+        {
+          "start": 144056.5,
+          "duration": 73
+        },
+        {
+          "start": 144155.69999999995,
+          "duration": 86
+        },
+        {
+          "start": 144255.5,
+          "duration": 80
+        }
+      ],
+      "raf": {
+        "count": 50,
+        "p50": 16.70000000001164,
+        "p95": 116.70000000001164,
+        "max": 166.60000000000582,
+        "over33ms": 15
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-open-600",
+      "nodes": 600,
+      "domElementCount": 19281,
+      "mapNodes": 600,
+      "camera": "0.116851806640625",
+      "windowMs": 2635.292493999994,
+      "taskMs": 1594.7800000000002,
+      "scriptMs": 230.95599999999905,
+      "layoutMs": 39.68300000000002,
+      "recalcMs": 610.0729999999999,
+      "layouts": 6,
+      "recalcs": 10,
+      "heapUsed": 32745032,
+      "heapTotal": 99930112,
+      "domNodes": 24592,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 144556.19999999995,
+          "duration": 344
+        },
+        {
+          "start": 144900.8999999999,
+          "duration": 381
+        },
+        {
+          "start": 145283.3999999999,
+          "duration": 276
+        },
+        {
+          "start": 145559.69999999995,
+          "duration": 121
+        },
+        {
+          "start": 145687.29999999993,
+          "duration": 55
+        }
+      ],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-idle-600",
+      "nodes": 600,
+      "domElementCount": 19281,
+      "mapNodes": 600,
+      "camera": "0.116851806640625",
+      "windowMs": 35002.107308000006,
+      "taskMs": 1134.1990000000023,
+      "scriptMs": 158.01500000000067,
+      "layoutMs": 6.53999999999999,
+      "recalcMs": 0,
+      "layouts": 35,
+      "recalcs": 0,
+      "heapUsed": 37281820,
+      "heapTotal": 41209856,
+      "domNodes": 24595,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 155824,
+          "duration": 57
+        },
+        {
+          "start": 180608.8999999999,
+          "duration": 51
+        }
+      ],
+      "raf": null,
+      "requests": [
+        {
+          "at": 783.055665,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 5.683999999973821,
+          "totalMs": 6.158000000027641,
+          "encodedBytes": 173456
+        },
+        {
+          "at": 813.055682,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 5.755999999905725,
+          "totalMs": 6.974999999897591,
+          "encodedBytes": 173456
+        }
+      ]
+    },
+    {
+      "name": "maps-zoom-600",
+      "nodes": 600,
+      "repeat": 0,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.4457542672753334",
+      "windowMs": 6403.2359149999975,
+      "taskMs": 5889.617000000001,
+      "scriptMs": 1251.4310000000003,
+      "layoutMs": 9.743999999999975,
+      "recalcMs": 2924.0579999999986,
+      "layouts": 20,
+      "recalcs": 36,
+      "heapUsed": 56082116,
+      "heapTotal": 109629440,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 183344.19999999995,
+          "duration": 53
+        },
+        {
+          "start": 183451.3999999999,
+          "duration": 51
+        },
+        {
+          "start": 183502.3999999999,
+          "duration": 239
+        },
+        {
+          "start": 183742.09999999998,
+          "duration": 50
+        },
+        {
+          "start": 183792.69999999995,
+          "duration": 260
+        },
+        {
+          "start": 184052.79999999993,
+          "duration": 91
+        },
+        {
+          "start": 184144.59999999998,
+          "duration": 55
+        },
+        {
+          "start": 184349.29999999993,
+          "duration": 65
+        },
+        {
+          "start": 184543.09999999998,
+          "duration": 236
+        },
+        {
+          "start": 184826.5,
+          "duration": 207
+        },
+        {
+          "start": 185226.59999999998,
+          "duration": 63
+        },
+        {
+          "start": 185401.69999999995,
+          "duration": 202
+        },
+        {
+          "start": 185603.69999999995,
+          "duration": 58
+        },
+        {
+          "start": 185662.19999999995,
+          "duration": 249
+        },
+        {
+          "start": 185961.09999999998,
+          "duration": 277
+        },
+        {
+          "start": 186240.59999999998,
+          "duration": 62
+        },
+        {
+          "start": 186473.19999999995,
+          "duration": 65
+        },
+        {
+          "start": 186685.3999999999,
+          "duration": 141
+        },
+        {
+          "start": 186827.3999999999,
+          "duration": 99
+        },
+        {
+          "start": 186976.3999999999,
+          "duration": 206
+        },
+        {
+          "start": 187183.19999999995,
+          "duration": 55
+        },
+        {
+          "start": 187512.69999999995,
+          "duration": 118
+        },
+        {
+          "start": 188181.29999999993,
+          "duration": 209
+        },
+        {
+          "start": 188436.19999999995,
+          "duration": 228
+        },
+        {
+          "start": 188665.09999999998,
+          "duration": 63
+        },
+        {
+          "start": 188728.09999999998,
+          "duration": 215
+        },
+        {
+          "start": 189130,
+          "duration": 92
+        },
+        {
+          "start": 189224,
+          "duration": 50
+        },
+        {
+          "start": 189274.5,
+          "duration": 191
+        },
+        {
+          "start": 189514.29999999993,
+          "duration": 206
+        }
+      ],
+      "raf": {
+        "count": 44,
+        "p50": 50,
+        "p95": 333.20000000001164,
+        "max": 833.1999999999825,
+        "over33ms": 25
+      },
+      "requests": [
+        {
+          "at": 818.36937,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 327.590999999984,
+          "totalMs": 638.176000000044,
+          "encodedBytes": 3950139
+        },
+        {
+          "at": 818.696699,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 378.8289999999961,
+          "totalMs": 91.84400000003734,
+          "encodedBytes": 386352
+        }
+      ]
+    },
+    {
+      "name": "maps-zoom-600",
+      "nodes": 600,
+      "repeat": 1,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.4457542672753334",
+      "windowMs": 5780.721283000021,
+      "taskMs": 5169.122999999999,
+      "scriptMs": 976.8469999999993,
+      "layoutMs": 5.618999999999986,
+      "recalcMs": 2778.512000000003,
+      "layouts": 19,
+      "recalcs": 35,
+      "heapUsed": 73475608,
+      "heapTotal": 118542336,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 191535.8999999999,
+          "duration": 92
+        },
+        {
+          "start": 191731,
+          "duration": 258
+        },
+        {
+          "start": 192037.79999999993,
+          "duration": 180
+        },
+        {
+          "start": 192218.79999999993,
+          "duration": 71
+        },
+        {
+          "start": 192501.79999999993,
+          "duration": 65
+        },
+        {
+          "start": 192698.79999999993,
+          "duration": 206
+        },
+        {
+          "start": 192951.79999999993,
+          "duration": 230
+        },
+        {
+          "start": 193228.19999999995,
+          "duration": 249
+        },
+        {
+          "start": 193594,
+          "duration": 207
+        },
+        {
+          "start": 193847.19999999995,
+          "duration": 228
+        },
+        {
+          "start": 194122.5,
+          "duration": 238
+        },
+        {
+          "start": 194479.29999999993,
+          "duration": 249
+        },
+        {
+          "start": 194774.69999999995,
+          "duration": 204
+        },
+        {
+          "start": 195025.8999999999,
+          "duration": 217
+        },
+        {
+          "start": 195392.3999999999,
+          "duration": 204
+        },
+        {
+          "start": 195639.8999999999,
+          "duration": 237
+        },
+        {
+          "start": 195920.8999999999,
+          "duration": 219
+        },
+        {
+          "start": 196251.5,
+          "duration": 179
+        },
+        {
+          "start": 196476.29999999993,
+          "duration": 215
+        }
+      ],
+      "raf": {
+        "count": 40,
+        "p50": 50,
+        "p95": 299.8999999999942,
+        "max": 300.1000000000058,
+        "over33ms": 23
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-600",
+      "nodes": 600,
+      "repeat": 2,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.4457542672753334",
+      "windowMs": 5967.819912999985,
+      "taskMs": 5780.377000000001,
+      "scriptMs": 1201.4390000000005,
+      "layoutMs": 6.4549999999999885,
+      "recalcMs": 3026.053000000001,
+      "layouts": 25,
+      "recalcs": 39,
+      "heapUsed": 52192780,
+      "heapTotal": 113299456,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 198517.69999999995,
+          "duration": 70
+        },
+        {
+          "start": 198650.19999999995,
+          "duration": 57
+        },
+        {
+          "start": 198707.3999999999,
+          "duration": 232
+        },
+        {
+          "start": 198983.59999999998,
+          "duration": 171
+        },
+        {
+          "start": 199155.3999999999,
+          "duration": 73
+        },
+        {
+          "start": 199423.59999999998,
+          "duration": 64
+        },
+        {
+          "start": 199597.29999999993,
+          "duration": 189
+        },
+        {
+          "start": 199786.5,
+          "duration": 58
+        },
+        {
+          "start": 199845,
+          "duration": 208
+        },
+        {
+          "start": 200097.3999999999,
+          "duration": 229
+        },
+        {
+          "start": 200512.8999999999,
+          "duration": 65
+        },
+        {
+          "start": 200694.59999999998,
+          "duration": 189
+        },
+        {
+          "start": 200883.8999999999,
+          "duration": 67
+        },
+        {
+          "start": 200951.69999999995,
+          "duration": 203
+        },
+        {
+          "start": 201200.5,
+          "duration": 248
+        },
+        {
+          "start": 201630.79999999993,
+          "duration": 65
+        },
+        {
+          "start": 201806,
+          "duration": 197
+        },
+        {
+          "start": 202003.59999999998,
+          "duration": 59
+        },
+        {
+          "start": 202063,
+          "duration": 215
+        },
+        {
+          "start": 202323.29999999993,
+          "duration": 236
+        },
+        {
+          "start": 202746.8999999999,
+          "duration": 66
+        },
+        {
+          "start": 202940.19999999995,
+          "duration": 194
+        },
+        {
+          "start": 203135.09999999998,
+          "duration": 57
+        },
+        {
+          "start": 203192.19999999995,
+          "duration": 206
+        },
+        {
+          "start": 203443.5,
+          "duration": 205
+        },
+        {
+          "start": 203758.09999999998,
+          "duration": 194
+        },
+        {
+          "start": 203995.5,
+          "duration": 214
+        },
+        {
+          "start": 204210.79999999993,
+          "duration": 56
+        },
+        {
+          "start": 204266.8999999999,
+          "duration": 220
+        }
+      ],
+      "raf": {
+        "count": 44,
+        "p50": 50,
+        "p95": 283.30000000001746,
+        "max": 283.4000000000233,
+        "over33ms": 24
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-pan-600",
+      "nodes": 600,
+      "domElementCount": 19320,
+      "mapNodes": 600,
+      "camera": "0.4457542672753334",
+      "windowMs": 5265.0393469999835,
+      "taskMs": 5154.025000000004,
+      "scriptMs": 1087.226000000001,
+      "layoutMs": 9.498000000000006,
+      "recalcMs": 1666.6739999999968,
+      "layouts": 40,
+      "recalcs": 48,
+      "heapUsed": 59189264,
+      "heapTotal": 107794432,
+      "domNodes": 24695,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 204788.19999999995,
+          "duration": 86
+        },
+        {
+          "start": 204875,
+          "duration": 269
+        },
+        {
+          "start": 205144.19999999995,
+          "duration": 85
+        },
+        {
+          "start": 205293.19999999995,
+          "duration": 107
+        },
+        {
+          "start": 205485.8999999999,
+          "duration": 86
+        },
+        {
+          "start": 205621.29999999993,
+          "duration": 75
+        },
+        {
+          "start": 205745.69999999995,
+          "duration": 75
+        },
+        {
+          "start": 205821.3999999999,
+          "duration": 58
+        },
+        {
+          "start": 205906.69999999995,
+          "duration": 169
+        },
+        {
+          "start": 206076.29999999993,
+          "duration": 151
+        },
+        {
+          "start": 206227.79999999993,
+          "duration": 53
+        },
+        {
+          "start": 206460.8999999999,
+          "duration": 53
+        },
+        {
+          "start": 206514.5,
+          "duration": 165
+        },
+        {
+          "start": 206679.59999999998,
+          "duration": 63
+        },
+        {
+          "start": 206778,
+          "duration": 211
+        },
+        {
+          "start": 206989.19999999995,
+          "duration": 161
+        },
+        {
+          "start": 207151.19999999995,
+          "duration": 75
+        },
+        {
+          "start": 207273.79999999993,
+          "duration": 99
+        },
+        {
+          "start": 207477.19999999995,
+          "duration": 215
+        },
+        {
+          "start": 207692.29999999993,
+          "duration": 145
+        },
+        {
+          "start": 207837.59999999998,
+          "duration": 104
+        },
+        {
+          "start": 207941.79999999993,
+          "duration": 51
+        },
+        {
+          "start": 207993.3999999999,
+          "duration": 106
+        },
+        {
+          "start": 208153.59999999998,
+          "duration": 240
+        },
+        {
+          "start": 208393.69999999995,
+          "duration": 148
+        },
+        {
+          "start": 208541.8999999999,
+          "duration": 69
+        },
+        {
+          "start": 208657.5,
+          "duration": 199
+        },
+        {
+          "start": 208856.69999999995,
+          "duration": 146
+        },
+        {
+          "start": 209002.8999999999,
+          "duration": 57
+        },
+        {
+          "start": 209065.29999999993,
+          "duration": 62
+        },
+        {
+          "start": 209171.79999999993,
+          "duration": 168
+        },
+        {
+          "start": 209340.79999999993,
+          "duration": 144
+        },
+        {
+          "start": 209485.69999999995,
+          "duration": 79
+        },
+        {
+          "start": 209617.29999999993,
+          "duration": 96
+        },
+        {
+          "start": 209715.59999999998,
+          "duration": 108
+        },
+        {
+          "start": 209824.3999999999,
+          "duration": 68
+        },
+        {
+          "start": 209898,
+          "duration": 68
+        }
+      ],
+      "raf": {
+        "count": 28,
+        "p50": 183.30000000001746,
+        "p95": 250,
+        "max": 433.3999999999942,
+        "over33ms": 27
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-identical-refresh-burst-10",
+      "nodes": 600,
+      "domElementCount": 19320,
+      "mapNodes": 600,
+      "camera": "0.4457542672753334",
+      "windowMs": 2565.530147000012,
+      "taskMs": 333.872999999997,
+      "scriptMs": 168.88400000000203,
+      "layoutMs": 0.3630000000000022,
+      "recalcMs": 0,
+      "layouts": 2,
+      "recalcs": 0,
+      "heapUsed": 56336068,
+      "heapTotal": 113561600,
+      "domNodes": 24684,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 210490.69999999995,
+          "duration": 58
+        }
+      ],
+      "raf": null,
+      "requests": [
+        {
+          "at": 842.515269,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 31.87100000002374,
+          "totalMs": 34.938000000011016,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.516201,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 57.95899999998255,
+          "totalMs": 59.30799999998726,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.516663,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 81.33999999995467,
+          "totalMs": 84.1930000000275,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.516843,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 104.66599999995196,
+          "totalMs": 108.30899999996291,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.516987,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 130.12300000002597,
+          "totalMs": 131.32200000006833,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.517169,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 151.95900000003348,
+          "totalMs": 154.99799999997776,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.517379,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 175.80399999997098,
+          "totalMs": 177.33699999996588,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.517521,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 200.30499999995754,
+          "totalMs": 202.0270000000437,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.517677,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 221.32299999998395,
+          "totalMs": 223.1859999999415,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.517825,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 242.20200000002023,
+          "totalMs": 243.54900000003,
+          "encodedBytes": 386352
+        },
+        {
+          "at": 842.842685,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 42.51299999998537,
+          "totalMs": 68.52900000001227,
+          "encodedBytes": 3950139
+        },
+        {
+          "at": 843.055627,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 5.649000000062188,
+          "totalMs": 5.287000000066655,
+          "encodedBytes": 173456
+        }
+      ]
+    },
+    {
+      "name": "maps-zoom-style-probe",
+      "nodes": 600,
+      "phase": "baseline",
+      "index": 0,
+      "intervention": "Analysis-only transient CSS registration changes --chain-zoom inheritance; no application source edit.",
+      "domElementCount": 19317,
+      "mapNodes": 600,
+      "camera": "0.2282261848449707",
+      "windowMs": 3634.9437409999955,
+      "taskMs": 3562.560000000005,
+      "scriptMs": 698.4470000000016,
+      "layoutMs": 3.638999999999948,
+      "recalcMs": 1835.4490000000005,
+      "layouts": 10,
+      "recalcs": 20,
+      "heapUsed": 61839492,
+      "heapTotal": 122998784,
+      "domNodes": 24634,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 214037.8999999999,
+          "duration": 74
+        },
+        {
+          "start": 214117.3999999999,
+          "duration": 81
+        },
+        {
+          "start": 214323.3999999999,
+          "duration": 236
+        },
+        {
+          "start": 214600.3999999999,
+          "duration": 231
+        },
+        {
+          "start": 214831.59999999998,
+          "duration": 95
+        },
+        {
+          "start": 215186.3999999999,
+          "duration": 87
+        },
+        {
+          "start": 215364.69999999995,
+          "duration": 57
+        },
+        {
+          "start": 215472.5,
+          "duration": 293
+        },
+        {
+          "start": 215771.3999999999,
+          "duration": 91
+        },
+        {
+          "start": 215863.29999999993,
+          "duration": 366
+        },
+        {
+          "start": 216236.29999999993,
+          "duration": 58
+        },
+        {
+          "start": 216526.79999999993,
+          "duration": 102
+        },
+        {
+          "start": 216728,
+          "duration": 82
+        },
+        {
+          "start": 216855,
+          "duration": 292
+        },
+        {
+          "start": 217147.5,
+          "duration": 89
+        }
+      ],
+      "raf": {
+        "count": 17,
+        "p50": 100.10000000000582,
+        "p95": 416.5999999999767,
+        "max": 433.4000000000233,
+        "over33ms": 15
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-style-probe",
+      "nodes": 600,
+      "phase": "noninherited",
+      "index": 1,
+      "intervention": "Analysis-only transient CSS registration changes --chain-zoom inheritance; no application source edit.",
+      "domElementCount": 19318,
+      "mapNodes": 600,
+      "camera": "0.2282261848449707",
+      "windowMs": 2722.963050999999,
+      "taskMs": 2557.3209999999876,
+      "scriptMs": 895.3969999999991,
+      "layoutMs": 3.6660000000000026,
+      "recalcMs": 6.613000000001534,
+      "layouts": 11,
+      "recalcs": 22,
+      "heapUsed": 70224216,
+      "heapTotal": 114348032,
+      "domNodes": 24636,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 219462.09999999998,
+          "duration": 117
+        },
+        {
+          "start": 219611.5,
+          "duration": 85
+        },
+        {
+          "start": 219715.8999999999,
+          "duration": 95
+        },
+        {
+          "start": 219811.5,
+          "duration": 132
+        },
+        {
+          "start": 219944.5,
+          "duration": 101
+        },
+        {
+          "start": 220045.8999999999,
+          "duration": 129
+        },
+        {
+          "start": 220175.3999999999,
+          "duration": 79
+        },
+        {
+          "start": 220255,
+          "duration": 134
+        },
+        {
+          "start": 220658.8999999999,
+          "duration": 63
+        },
+        {
+          "start": 220781.8999999999,
+          "duration": 95
+        },
+        {
+          "start": 220929,
+          "duration": 128
+        },
+        {
+          "start": 221108.29999999993,
+          "duration": 122
+        },
+        {
+          "start": 221236.29999999993,
+          "duration": 66
+        },
+        {
+          "start": 221302.79999999993,
+          "duration": 128
+        },
+        {
+          "start": 221531.79999999993,
+          "duration": 51
+        },
+        {
+          "start": 221628.09999999998,
+          "duration": 94
+        },
+        {
+          "start": 221766.79999999993,
+          "duration": 135
+        },
+        {
+          "start": 221902.69999999995,
+          "duration": 52
+        },
+        {
+          "start": 221955.3999999999,
+          "duration": 140
+        }
+      ],
+      "raf": {
+        "count": 23,
+        "p50": 116.58599999998114,
+        "p95": 216.60000000000582,
+        "max": 233.29999999998836,
+        "over33ms": 17
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-style-probe",
+      "nodes": 600,
+      "phase": "noninherited",
+      "index": 2,
+      "intervention": "Analysis-only transient CSS registration changes --chain-zoom inheritance; no application source edit.",
+      "domElementCount": 19318,
+      "mapNodes": 600,
+      "camera": "0.2282261848449707",
+      "windowMs": 2687.905721999996,
+      "taskMs": 2466.714999999994,
+      "scriptMs": 932.6080000000019,
+      "layoutMs": 3.1909999999999994,
+      "recalcMs": 5.709000000003073,
+      "layouts": 12,
+      "recalcs": 22,
+      "heapUsed": 45673532,
+      "heapTotal": 115134464,
+      "domNodes": 24655,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 223581.59999999998,
+          "duration": 124
+        },
+        {
+          "start": 223709.5,
+          "duration": 58
+        },
+        {
+          "start": 223838.79999999993,
+          "duration": 79
+        },
+        {
+          "start": 223918.69999999995,
+          "duration": 134
+        },
+        {
+          "start": 224053.59999999998,
+          "duration": 55
+        },
+        {
+          "start": 224118.8999999999,
+          "duration": 178
+        },
+        {
+          "start": 224297.09999999998,
+          "duration": 92
+        },
+        {
+          "start": 224389.29999999993,
+          "duration": 143
+        },
+        {
+          "start": 224705.09999999998,
+          "duration": 71
+        },
+        {
+          "start": 224776.09999999998,
+          "duration": 99
+        },
+        {
+          "start": 224920.3999999999,
+          "duration": 106
+        },
+        {
+          "start": 225026.5,
+          "duration": 53
+        },
+        {
+          "start": 225130.5,
+          "duration": 142
+        },
+        {
+          "start": 225272.8999999999,
+          "duration": 138
+        },
+        {
+          "start": 225411.69999999995,
+          "duration": 118
+        },
+        {
+          "start": 225637.69999999995,
+          "duration": 58
+        },
+        {
+          "start": 225740,
+          "duration": 95
+        },
+        {
+          "start": 225835.3999999999,
+          "duration": 88
+        },
+        {
+          "start": 225923.3999999999,
+          "duration": 108
+        },
+        {
+          "start": 226075.19999999995,
+          "duration": 143
+        },
+        {
+          "start": 226218.3999999999,
+          "duration": 69
+        }
+      ],
+      "raf": {
+        "count": 22,
+        "p50": 100,
+        "p95": 266.6000000000058,
+        "max": 300,
+        "over33ms": 18
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-style-probe",
+      "nodes": 600,
+      "phase": "baseline",
+      "index": 3,
+      "intervention": "Analysis-only transient CSS registration changes --chain-zoom inheritance; no application source edit.",
+      "domElementCount": 19317,
+      "mapNodes": 600,
+      "camera": "0.2282261848449707",
+      "windowMs": 4023.7914000000164,
+      "taskMs": 3884.3030000000026,
+      "scriptMs": 754.3579999999998,
+      "layoutMs": 3.8000000000000256,
+      "recalcMs": 1784.360999999997,
+      "layouts": 12,
+      "recalcs": 21,
+      "heapUsed": 60019960,
+      "heapTotal": 107532288,
+      "domNodes": 24634,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 227496.79999999993,
+          "duration": 397
+        },
+        {
+          "start": 227897.29999999993,
+          "duration": 64
+        },
+        {
+          "start": 227962.19999999995,
+          "duration": 305
+        },
+        {
+          "start": 228326,
+          "duration": 96
+        },
+        {
+          "start": 228447.8999999999,
+          "duration": 50
+        },
+        {
+          "start": 228542.59999999998,
+          "duration": 367
+        },
+        {
+          "start": 228954.59999999998,
+          "duration": 314
+        },
+        {
+          "start": 229315.3999999999,
+          "duration": 308
+        },
+        {
+          "start": 229765.3999999999,
+          "duration": 61
+        },
+        {
+          "start": 229827,
+          "duration": 362
+        },
+        {
+          "start": 230189.5,
+          "duration": 96
+        },
+        {
+          "start": 230285.59999999998,
+          "duration": 476
+        },
+        {
+          "start": 230830.8999999999,
+          "duration": 131
+        },
+        {
+          "start": 231165,
+          "duration": 119
+        },
+        {
+          "start": 231386.29999999993,
+          "duration": 57
+        },
+        {
+          "start": 231488,
+          "duration": 186
+        },
+        {
+          "start": 231719.69999999995,
+          "duration": 202
+        }
+      ],
+      "raf": {
+        "count": 20,
+        "p50": 99.89999999999418,
+        "p95": 500,
+        "max": 633.3000000000175,
+        "over33ms": 16
+      },
+      "requests": []
+    },
+    {
+      "name": "atlas-replay-playback-60x",
+      "visits": 10,
+      "events": 0,
+      "speed": 60,
+      "domElementCount": 555,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 12076.373086000007,
+      "taskMs": 4183.384000000004,
+      "scriptMs": 1949.657000000002,
+      "layoutMs": 71.86499999999995,
+      "recalcMs": 572.4040000000059,
+      "layouts": 225,
+      "recalcs": 656,
+      "heapUsed": 72872228,
+      "heapTotal": 108658688,
+      "domNodes": 1227,
+      "canvasDraws": 181,
+      "longTasks": [],
+      "raf": {
+        "count": 670,
+        "p50": 16.699999999982538,
+        "p95": 33.29999999998836,
+        "max": 50,
+        "over33ms": 11
+      },
+      "requests": [
+        {
+          "at": 873.05562,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 8.840000000077453,
+          "totalMs": 7.903000000055727,
+          "encodedBytes": 173456
+        }
+      ]
+    },
+    {
+      "name": "atlas-replay-paused",
+      "domElementCount": 555,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 8003.234620999981,
+      "taskMs": 266.9230000000056,
+      "scriptMs": 1.8740000000008195,
+      "layoutMs": 1.3400000000000079,
+      "recalcMs": 0,
+      "layouts": 8,
+      "recalcs": 0,
+      "heapUsed": 22744628,
+      "heapTotal": 48365568,
+      "domNodes": 740,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    }
+  ],
+  "requests": [
+    {
+      "at": 632.985721,
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 23.56299999996736,
+      "totalMs": 11.09699999994973,
+      "encodedBytes": 7009
+    },
+    {
+      "at": 633.016144,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 59.399999999982356,
+      "totalMs": 21.664999999984502,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 633.050499,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 25.973000000021784,
+      "totalMs": 8.420000000000982,
+      "encodedBytes": 662
+    },
+    {
+      "at": 633.052817,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 48.76799999999548,
+      "totalMs": 11.794000000008964,
+      "encodedBytes": 620
+    },
+    {
+      "at": 633.053181,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.143999999998414,
+      "totalMs": 21.0500000000593,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 633.069894,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 35.73400000004767,
+      "totalMs": 17.036000000075546,
+      "encodedBytes": 638
+    },
+    {
+      "at": 633.076361,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 29.462999999964268
+    },
+    {
+      "at": 633.157694,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.651999999964573,
+      "totalMs": 6.66599999999562,
+      "encodedBytes": 662
+    },
+    {
+      "at": 633.158123,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.924999999976535,
+      "totalMs": 8.470999999985906,
+      "encodedBytes": 620
+    },
+    {
+      "at": 663.055803,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.03000000000975,
+      "totalMs": 6.799000000000888,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 663.072533,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.9699999999811553,
+      "totalMs": 5.277999999975691,
+      "encodedBytes": 662
+    },
+    {
+      "at": 663.072848,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.426999999940563,
+      "totalMs": 5.890000000022155,
+      "encodedBytes": 620
+    },
+    {
+      "at": 670.038349,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 141.63399999995363,
+      "totalMs": 193.90499999997246,
+      "encodedBytes": 867000
+    },
+    {
+      "at": 670.039053,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 264.63699999999335,
+      "totalMs": 274.1809999999987,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 693.055613,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.73100000001159,
+      "totalMs": 9.919999999965512,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 698.015048,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 144.91399999997157,
+      "totalMs": 167.58600000002843,
+      "encodedBytes": 696
+    },
+    {
+      "at": 698.015416,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 61.37300000000323,
+      "totalMs": 108.35500000007414,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 698.279561,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.345000000002074,
+      "totalMs": 42.08300000004783,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 723.055629,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.068000000046595,
+      "totalMs": 11.595000000056643,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 723.855478,
+      "url": "/api/universe/jspace/maps/perf-25/commands?character=42",
+      "method": "POST",
+      "status": 200,
+      "responseHeadersMs": 43.524000000047636,
+      "totalMs": 12.462000000027729,
+      "encodedBytes": 11639
+    },
+    {
+      "at": 724.324179,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 128.2170000000633,
+      "totalMs": 139.16500000004817,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 753.055721,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.048000000077991,
+      "totalMs": 6.930000000011205,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 758.016585,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 42.973000000074535,
+      "totalMs": 51.723000000038155,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 758.297682,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 46.97699999996985,
+      "totalMs": 46.234000000026754,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 783.055665,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.683999999973821,
+      "totalMs": 6.158000000027641,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 813.055682,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.755999999905725,
+      "totalMs": 6.974999999897591,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 818.36937,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 327.590999999984,
+      "totalMs": 638.176000000044,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 818.696699,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 378.8289999999961,
+      "totalMs": 91.84400000003734,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.515269,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 31.87100000002374,
+      "totalMs": 34.938000000011016,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.516201,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 57.95899999998255,
+      "totalMs": 59.30799999998726,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.516663,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 81.33999999995467,
+      "totalMs": 84.1930000000275,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.516843,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 104.66599999995196,
+      "totalMs": 108.30899999996291,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.516987,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 130.12300000002597,
+      "totalMs": 131.32200000006833,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.517169,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 151.95900000003348,
+      "totalMs": 154.99799999997776,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.517379,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 175.80399999997098,
+      "totalMs": 177.33699999996588,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.517521,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 200.30499999995754,
+      "totalMs": 202.0270000000437,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.517677,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 221.32299999998395,
+      "totalMs": 223.1859999999415,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.517825,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 242.20200000002023,
+      "totalMs": 243.54900000003,
+      "encodedBytes": 386352
+    },
+    {
+      "at": 842.842685,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 42.51299999998537,
+      "totalMs": 68.52900000001227,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 843.055627,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.649000000062188,
+      "totalMs": 5.287000000066655,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 869.046029,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 47.524000000066735,
+      "totalMs": 4.566000000068016,
+      "encodedBytes": 662
+    },
+    {
+      "at": 869.047225,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 46.55600000000959,
+      "totalMs": 11.060999999926935,
+      "encodedBytes": 620
+    },
+    {
+      "at": 870.621092,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 116.53100000000904,
+      "totalMs": 136.77000000006956,
+      "encodedBytes": 696
+    },
+    {
+      "at": 870.62157,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 60.22399999994832,
+      "totalMs": 81.58700000001318,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 870.635625,
+      "url": "/api/sessions/frontend-replay/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 102.25800000000618,
+      "totalMs": 54.084999999986394,
+      "encodedBytes": 13222
+    },
+    {
+      "at": 873.05562,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.840000000077453,
+      "totalMs": 7.903000000055727,
+      "encodedBytes": 173456
+    }
+  ],
+  "errors": [],
+  "startup": {
+    "rendererMetrics": {
+      "Timestamp": 634.932717,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 6,
+      "Frames": 5,
+      "JSEventListeners": 730,
+      "LayoutObjects": 528,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 595,
+      "Resources": 17,
+      "ContextLifecycleStateObservers": 14,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 6,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 1,
+      "ArrayBufferContents": 4,
+      "LayoutCount": 7,
+      "RecalcStyleCount": 21,
+      "LayoutDuration": 0.07695,
+      "RecalcStyleDuration": 0.051276,
+      "DevToolsCommandDuration": 0.004435,
+      "ScriptDuration": 0.28983,
+      "V8CompileDuration": 0.003977,
+      "TaskDuration": 0.633112,
+      "TaskOtherDuration": 0.206644,
+      "ThreadTime": 0.261545,
+      "ProcessTime": 0.57,
+      "JSHeapUsedSize": 6017924,
+      "JSHeapTotalSize": 11010048,
+      "FirstMeaningfulPaint": 632.828194,
+      "DomContentLoaded": 632.766454,
+      "NavigationStart": 632.45675
+    },
+    "navigation": [
+      {
+        "name": "http://127.0.0.1:18690/#overview",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 313.29999999993015,
+        "navigationId": 9042,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 1.5,
+        "domainLookupStart": 1.5,
+        "domainLookupEnd": 1.5,
+        "connectStart": 1.5,
+        "secureConnectionStart": 0,
+        "connectEnd": 1.5,
+        "requestStart": 4.799999999930151,
+        "responseStart": 20.29999999993015,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 20.29999999993015,
+        "responseEnd": 24.899999999906868,
+        "transferSize": 42044,
+        "encodedBodySize": 41744,
+        "decodedBodySize": 41744,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 309.39999999990687,
+        "domContentLoadedEventStart": 309.5999999999767,
+        "domContentLoadedEventEnd": 309.79999999993015,
+        "domComplete": 313.19999999995343,
+        "loadEventStart": 313.19999999995343,
+        "loadEventEnd": 313.29999999993015,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {}
+      }
+    ],
+    "resources": [
+      {
+        "url": "/assets/index-CHEJzzKn.css",
+        "duration": 66.79999999993015,
+        "transferSize": 252165,
+        "decodedBodySize": 251865
+      },
+      {
+        "url": "/assets/page-CnUOy8A_.css",
+        "duration": 70.20000000006985,
+        "transferSize": 294683,
+        "decodedBodySize": 294383
+      },
+      {
+        "url": "/assets/layout-segment-context-F8na14EU.js",
+        "duration": 52.10000000009313,
+        "transferSize": 588,
+        "decodedBodySize": 288
+      },
+      {
+        "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+        "duration": 52.199999999953434,
+        "transferSize": 994,
+        "decodedBodySize": 694
+      },
+      {
+        "url": "/assets/index-BK3v5X-6.js",
+        "duration": 56.09999999997672,
+        "transferSize": 81046,
+        "decodedBodySize": 80746
+      },
+      {
+        "url": "/assets/framework-CXnKph_e.js",
+        "duration": 84.19999999995343,
+        "transferSize": 190105,
+        "decodedBodySize": 189805
+      },
+      {
+        "url": "/assets/page-VWkA-JTO.js",
+        "duration": 124.5,
+        "transferSize": 1371276,
+        "decodedBodySize": 1370976
+      }
+    ]
+  },
+  "externalFetches": [],
+  "blockedBrowserExternalAttempts": [
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    }
+  ],
+  "controls": {
+    "successfulBrowserExternalResponses": 0,
+    "rendererExceptions": 0,
+    "deniedBackendFetchAttempts": 0
+  },
+  "endedAt": "2026-09-30T11:39:27.388Z"
+}

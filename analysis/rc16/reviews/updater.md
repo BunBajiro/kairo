@@ -83,3 +83,7 @@ timeout 30s node analysis/rc16/harness/updater-bench.mjs abort /absolute/path/ev
 ```
 
 Each normal run creates and removes its own temporary data directory. The external `timeout` is an analysis safeguard, not a production conversion watchdog. If that safeguard kills a run, preserve the failure and inspect/remove its `kairo-rc16-updater-*` temp directory before rerunning; do not count an empty redirected result as a pass.
+
+## GitHub confirmation
+
+The successful [GitHub run 36708404690](https://github.com/BunBajiro/kairo/actions/runs/36708404690) repeats the lightweight lane in `raw/github-run/updater-light-github.json`: 100 concurrent checks share one fetch; 1,000 cached checks fetch nothing; simulated startup plus 24 hourly checks issues 25 requests and leaves one timer. All five lightweight measurements complete. The real archive install and cancellation above remain local-only; no loaded-app conversion or end-to-end reconnect result is inferred from CI.

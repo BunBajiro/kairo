@@ -109,3 +109,26 @@ node analysis/rc16/harness/backend-universe.mjs timings
 node analysis/rc16/harness/backend-universe.mjs timings --reverse
 node analysis/rc16/harness/backend-universe.mjs diagnostics universe-state-100000-visits
 ```
+
+## GitHub Actions evidence addendum
+
+The successful CI run's `raw/github-run/backend-diagnostics.json`, `backend-timings.json`, and `backend-timings-reverse.json` reproduce all 15 scenarios on Node 24.19.0 / Linux x64 / AMD EPYC 7763. Both timing passes contain nine valid samples per case (270 timed samples total); the second pass uses the exact reverse case order. The source SHA, fixed clock, atlas, and fixture sizes match the local runs. All route/navigation results record `status: ok`, and all three files record zero external request attempts.
+
+Diagnostic results match the local run exactly: SQL executions, result-row counts, body/value bytes, response bytes, mutation counts, per-query breakdowns, and result statuses. The CI query plans also match the local targeted query-plan capture. Consequently, the work-amplification findings are reproducible independently of machine speed.
+
+| CI workload | Median range across forward/reverse runs (ms) |
+|---|---:|
+| Universe state, 0 / 10k / 100k visits | 13.80–16.77 / 60.96–69.14 / 186.02–186.27 |
+| Maps state, 1 / 8 / 24 maps | 3.83–4.23 / 56.34–58.77 / 352.67–356.25 |
+| Selected map among 24 | 14.54–15.27 |
+| Offline housekeeping tick, 24 maps | 5.97–6.03 |
+| Pure gate planner | 10.58–10.61 |
+| Gate route service, 0 / 100k visits | 22.51–23.78 / 76.12–78.01 |
+| Navigation, 1 / 10 / 50 stops | 38.50–41.44 / 362.98–375.08 / 1764.56–1817.22 |
+| Pure physical jump planner | 110.86–113.09 |
+
+Within CI, the 24-map request takes roughly 84–92 times the one-map request despite containing 24 times the map content. The 10k→100k history cases have almost identical output size, while state service time rises approximately 2.7–3.1 times. The 50-stop request remains a sustained 1.76–1.82-second operation. These independently support the same priorities: batch map projection, coalesce refreshes, reuse itinerary context/graph preparation, and remove unnecessary history aggregation. CI serialization adds approximately 28.8 ms for the 100k-history Universe response and 14.2 ms for the 24-map response, outside the service times shown.
+
+There is no material contradiction with the local conclusions. Absolute timing differs by host and run order, so no cross-host regression percentage is claimed. The 3-second tick remains an offline/noSync housekeeping measurement, and the 24-map / 50-stop / 100k-history cases remain supported-limit or long-history stress rather than estimates of ordinary usage. p95 values remain small-sample maxima, not reliable tail-percentile estimates.
+
+For the later RC17 comparison, add explicit workload-result assertions to the internal harness before interpreting faster results: successful route/navigation status plus expected map, node, canonical-link, and signature counts. Current raw statuses, exact response-byte equality, and identical per-query diagnostics corroborate the completed workload; future empty or failed outputs must not be accepted as performance improvements. This addendum changed only the review document; it did not alter or rerun the harness.

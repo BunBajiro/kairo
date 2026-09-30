@@ -75,3 +75,7 @@ These checks establish implementation continuity, not a timing result. RC16's ne
 ## Structural recommendation
 
 Keep the shared SQLite connection, ESI limiter, semantic bus and separate private-dashboard/OBS boundaries. Consolidate lifecycle ownership, content-change invalidation and cache-retention rules at those boundaries. Extract route handlers or source adapters only where this makes a tested ownership contract simpler; file size alone is not a refactoring justification. `docs/ARCHITECTURE.md` also needs updating: it still describes one process and lists the removed Journey module while RC16 has a supervisor/child runtime and Universe history.
+
+## GitHub confirmation
+
+The successful [GitHub run 36708404690](https://github.com/BunBajiro/kairo/actions/runs/36708404690) independently reproduces all three controlled disposal scenarios in `raw/github-run/architecture-shutdown-github.json`. Deferred completion still attempts a publish after listener disposal; closing the in-memory SQLite store first produces caught `ERR_INVALID_STATE` (database is not open). All expected diagnostic assertions pass with zero network attempts and zero unhandled rejections. This confirms the identified ownership gap, not safe application shutdown or a measured full-supervisor failure frequency.
