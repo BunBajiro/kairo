@@ -56,9 +56,11 @@ jobs:
           }, indent=2) + '\n')
           PY
       - name: Verify unchanged RC16 application
+        id: verify
         working-directory: checkpoint
         run: python3 analysis/rc16/harness/verify-source.py | tee analysis/rc16/raw/followup/source-verification.json
       - name: Install locked dependencies and compile RC16
+        id: compile
         run: |
           cd "$GITHUB_WORKSPACE/checkpoint"
           npm run install:ci
@@ -80,17 +82,24 @@ jobs:
         working-directory: checkpoint
         run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/restart-integrated.mjs > analysis/rc16/raw/followup/restart-integrated.json
       - name: Measure combined operational workloads
+        id: mixed
         working-directory: checkpoint
         run: |
           node analysis/rc16/followup/harness/mixed-run.mjs analysis/rc16/raw/followup/mixed
           node analysis/rc16/followup/harness/mixed-summary.mjs analysis/rc16/raw/followup/mixed/mixed.json
+      - name: Diagnose mixed dashboard event stream failure
+        if: ${{ failure() && steps.mixed.outcome == 'failure' }}
+        working-directory: checkpoint
+        run: KAIRO_PERF_APP_ROOT="$PWD" node analysis/rc16/followup/harness/mixed-diagnostic/mixed-run.mjs analysis/rc16/raw/followup/mixed-diagnostic
       - name: Measure longer replay and browser ownership
+        if: ${{ always() && !cancelled() && steps.verify.outcome == 'success' && steps.compile.outcome == 'success' }}
         working-directory: checkpoint
         env:
           KAIRO_CHROME_PATH: /usr/bin/google-chrome
           KAIRO_BENCH_SOURCE_COMMIT: 57c8dcc7fbd8fc2b62129498d1819050c78381a1
         run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/frontend-retention-replay.mjs
       - name: Remeasure corrected legacy backend baseline
+        if: ${{ always() && !cancelled() && steps.verify.outcome == 'success' && steps.compile.outcome == 'success' }}
         working-directory: checkpoint
         run: |
           node analysis/rc16/followup/harness/legacy-corrected-run.mjs "$GITHUB_WORKSPACE/kairo-v073" "$GITHUB_WORKSPACE/checkpoint" analysis/rc16/raw/followup/legacy-corrected
