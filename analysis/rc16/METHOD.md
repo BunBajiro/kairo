@@ -3,6 +3,13 @@
 This branch is internal evidence only. Do not merge it, package it for users, or
 use it as the RC17 implementation base. The application remains RC16.
 
+The [follow-up](followup/README.md) extends this method with independent Maps
+scaling controls, mixed workloads, managed restart, memory and longer Sessions.
+It also corrects a discovered storm-cache shape defect in the original legacy
+fixture. Original local/GitHub idle windows executed only a partial RC16
+background workload; use the separately labelled corrected backend ABBA for a
+healthy-feed comparison. The original database lane remains valid and frozen.
+
 ## Source identity and isolation
 
 | Role | Canonical GitHub commit |

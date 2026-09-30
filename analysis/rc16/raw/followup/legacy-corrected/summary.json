@@ -1,0 +1,2287 @@
+{
+  "schemaVersion": 1,
+  "complete": true,
+  "settings": {
+    "iterations": 10,
+    "warmups": 3,
+    "idleSeconds": 35,
+    "serialization": true,
+    "scope": "controlled-legacy-warm-cache-corrected-storms",
+    "newUniverseTicks": "enabled",
+    "datasetAutomaticStart": "deferred",
+    "network": "all worker fetch calls blocked; expect zero",
+    "publicFeedCaches": "thera/turnur/wormhole_types/combat empty arrays; storms {storms:[],points:[]}; all ready with +7-day expiry and next_at; real tick success audited"
+  },
+  "backend": [
+    {
+      "profile": "typical",
+      "metric": "idle_cpu",
+      "unit": "% one core",
+      "pairs": [
+        {
+          "baseline": 0.63654100410127,
+          "candidate": 0.983829765186553,
+          "delta": 0.34728876108528295,
+          "percent": 54.55874151824966
+        },
+        {
+          "baseline": 0.9197711936147177,
+          "candidate": 0.9355307207199957,
+          "delta": 0.01575952710527795,
+          "percent": 1.7134182082114036
+        }
+      ],
+      "baselineRange": [
+        0.63654100410127,
+        0.9197711936147177
+      ],
+      "candidateRange": [
+        0.9355307207199957,
+        0.983829765186553
+      ],
+      "changeOfMeanPercent": 23.327471745281137,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_rss",
+      "unit": "MiB",
+      "pairs": [
+        {
+          "baseline": 68.54296875,
+          "candidate": 144.5234375,
+          "delta": 75.98046875,
+          "percent": 110.85085769647232
+        },
+        {
+          "baseline": 68.96484375,
+          "candidate": 150.81640625,
+          "delta": 81.8515625,
+          "percent": 118.68592466723307
+        }
+      ],
+      "baselineRange": [
+        68.54296875,
+        68.96484375
+      ],
+      "candidateRange": [
+        144.5234375,
+        150.81640625
+      ],
+      "changeOfMeanPercent": 114.7804102039657,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 14.860287,
+          "candidate": 22.511615,
+          "delta": 7.6513279999999995,
+          "percent": 51.48842683859336
+        },
+        {
+          "baseline": 22.151167,
+          "candidate": 23.855103,
+          "delta": 1.7039359999999988,
+          "percent": 7.692308039571905
+        }
+      ],
+      "baselineRange": [
+        14.860287,
+        22.151167
+      ],
+      "candidateRange": [
+        22.511615,
+        23.855103
+      ],
+      "changeOfMeanPercent": 25.276672459287862,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_loop_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 10.231807,
+          "candidate": 10.223615,
+          "delta": -0.008191999999999311,
+          "percent": -0.08006405906599845
+        },
+        {
+          "baseline": 10.297343,
+          "candidate": 10.182655,
+          "delta": -0.11468799999999924,
+          "percent": -1.1137630357656247
+        }
+      ],
+      "baselineRange": [
+        10.231807,
+        10.297343
+      ],
+      "candidateRange": [
+        10.182655,
+        10.223615
+      ],
+      "changeOfMeanPercent": -0.5985635060389849,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 13.669242999999994,
+          "candidate": 150.649578,
+          "delta": 136.980335,
+          "percent": 1002.1062249021402
+        },
+        {
+          "baseline": 14.151218,
+          "candidate": 158.392122,
+          "delta": 144.240904,
+          "percent": 1019.2826087478829
+        }
+      ],
+      "baselineRange": [
+        13.669242999999994,
+        14.151218
+      ],
+      "candidateRange": [
+        150.649578,
+        158.392122
+      ],
+      "changeOfMeanPercent": 1010.8432027779843,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "typical",
+      "metric": "state_http",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 9.59915799999726,
+          "candidate": 9.671992000003229,
+          "delta": 0.07283400000596885,
+          "percent": 0.758754049115451
+        },
+        {
+          "baseline": 9.862723999998707,
+          "candidate": 9.673975000005157,
+          "delta": -0.18874899999354966,
+          "percent": -1.9137613502474005
+        }
+      ],
+      "baselineRange": [
+        9.59915799999726,
+        9.862723999998707
+      ],
+      "candidateRange": [
+        9.671992000003229,
+        9.673975000005157
+      ],
+      "changeOfMeanPercent": -0.5956001582354875,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_http_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 13.711789000000863,
+          "candidate": 10.677231000001484,
+          "delta": -3.034557999999379,
+          "percent": -22.131014413941084
+        },
+        {
+          "baseline": 12.604857999998785,
+          "candidate": 10.5105290000065,
+          "delta": -2.0943289999922854,
+          "percent": -16.615252627141754
+        }
+      ],
+      "baselineRange": [
+        12.604857999998785,
+        13.711789000000863
+      ],
+      "candidateRange": [
+        10.5105290000065,
+        10.677231000001484
+      ],
+      "changeOfMeanPercent": -19.489135526998304,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.08072900000115624,
+          "candidate": 0.07615200000145705,
+          "delta": -0.004576999999699183,
+          "percent": -5.669585898046092
+        },
+        {
+          "baseline": 0.07978800000273623,
+          "candidate": 0.07426999999734107,
+          "delta": -0.005518000005395152,
+          "percent": -6.91582694791939
+        }
+      ],
+      "baselineRange": [
+        0.07978800000273623,
+        0.08072900000115624
+      ],
+      "candidateRange": [
+        0.07426999999734107,
+        0.07615200000145705
+      ],
+      "changeOfMeanPercent": -6.2890534989126,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.1301930000045104,
+          "candidate": 0.11457900000095833,
+          "delta": -0.015614000003552064,
+          "percent": -11.99296429378779
+        },
+        {
+          "baseline": 0.20160899999609683,
+          "candidate": 0.12115900000208057,
+          "delta": -0.08044999999401625,
+          "percent": -39.90397253871294
+        }
+      ],
+      "baselineRange": [
+        0.1301930000045104,
+        0.20160899999609683
+      ],
+      "candidateRange": [
+        0.11457900000095833,
+        0.12115900000208057
+      ],
+      "changeOfMeanPercent": -28.952206435582816,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.084,
+          "candidate": 0.08,
+          "delta": -0.0040000000000000036,
+          "percent": -4.761904761904767
+        },
+        {
+          "baseline": 0.08,
+          "candidate": 0.076,
+          "delta": -0.0040000000000000036,
+          "percent": -5.000000000000004
+        }
+      ],
+      "baselineRange": [
+        0.08,
+        0.084
+      ],
+      "candidateRange": [
+        0.076,
+        0.08
+      ],
+      "changeOfMeanPercent": -4.878048780487809,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "candidateRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 4.284850999996706,
+          "candidate": 4.508060000000114,
+          "delta": 0.2232090000034077,
+          "percent": 5.209259318552251
+        },
+        {
+          "baseline": 5.346051000000443,
+          "candidate": 3.9886100000003353,
+          "delta": -1.357441000000108,
+          "percent": -25.391471199956673
+        }
+      ],
+      "baselineRange": [
+        4.284850999996706,
+        5.346051000000443
+      ],
+      "candidateRange": [
+        3.9886100000003353,
+        4.508060000000114
+      ],
+      "changeOfMeanPercent": -11.77700697190186,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 5.830301000001782,
+          "candidate": 5.973250999995798,
+          "delta": 0.14294999999401625,
+          "percent": 2.451845968055033
+        },
+        {
+          "baseline": 6.649192999997467,
+          "candidate": 5.291701000001922,
+          "delta": -1.3574919999955455,
+          "percent": -20.415891071233194
+        }
+      ],
+      "baselineRange": [
+        5.830301000001782,
+        6.649192999997467
+      ],
+      "candidateRange": [
+        5.291701000001922,
+        5.973250999995798
+      ],
+      "changeOfMeanPercent": -9.732301646217401,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 4.28,
+          "candidate": 4.52,
+          "delta": 0.23999999999999932,
+          "percent": 5.607476635513997
+        },
+        {
+          "baseline": 5.336,
+          "candidate": 3.972,
+          "delta": -1.3640000000000003,
+          "percent": -25.56221889055472
+        }
+      ],
+      "baselineRange": [
+        4.28,
+        5.336
+      ],
+      "candidateRange": [
+        3.972,
+        4.52
+      ],
+      "changeOfMeanPercent": -11.688851913477539,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 537.64453125,
+          "candidate": 538.126953125,
+          "delta": 0.482421875,
+          "percent": 0.08972877932533763
+        },
+        {
+          "baseline": 537.64453125,
+          "candidate": 538.126953125,
+          "delta": 0.482421875,
+          "percent": 0.08972877932533763
+        }
+      ],
+      "baselineRange": [
+        537.64453125,
+        537.64453125
+      ],
+      "candidateRange": [
+        538.126953125,
+        538.126953125
+      ],
+      "changeOfMeanPercent": 0.08972877932533763,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.9993730000060168,
+          "candidate": 1.908939000000828,
+          "delta": -0.09043400000518886,
+          "percent": -4.523117997738124
+        },
+        {
+          "baseline": 2.4206469999990077,
+          "candidate": 1.917451000001165,
+          "delta": -0.5031959999978426,
+          "percent": -20.78766544638887
+        }
+      ],
+      "baselineRange": [
+        1.9993730000060168,
+        2.4206469999990077
+      ],
+      "candidateRange": [
+        1.908939000000828,
+        1.917451000001165
+      ],
+      "changeOfMeanPercent": -13.43048221506592,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 3.442653000005521,
+          "candidate": 2.6413439999960246,
+          "delta": -0.8013090000094962,
+          "percent": -23.275915406176896
+        },
+        {
+          "baseline": 4.3102880000005825,
+          "candidate": 2.0769880000007106,
+          "delta": -2.233299999999872,
+          "percent": -51.81324310578713
+        }
+      ],
+      "baselineRange": [
+        3.442653000005521,
+        4.3102880000005825
+      ],
+      "candidateRange": [
+        2.0769880000007106,
+        2.6413439999960246
+      ],
+      "changeOfMeanPercent": -39.141391634567825,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 2.02,
+          "candidate": 1.907,
+          "delta": -0.11299999999999999,
+          "percent": -5.594059405940599
+        },
+        {
+          "baseline": 2.416,
+          "candidate": 1.928,
+          "delta": -0.488,
+          "percent": -20.198675496688743
+        }
+      ],
+      "baselineRange": [
+        2.02,
+        2.416
+      ],
+      "candidateRange": [
+        1.907,
+        1.928
+      ],
+      "changeOfMeanPercent": -13.548241659152394,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 155.52734375,
+          "candidate": 163.73046875,
+          "delta": 8.203125,
+          "percent": 5.27439407258572
+        },
+        {
+          "baseline": 155.52734375,
+          "candidate": 163.73046875,
+          "delta": 8.203125,
+          "percent": 5.27439407258572
+        }
+      ],
+      "baselineRange": [
+        155.52734375,
+        155.52734375
+      ],
+      "candidateRange": [
+        163.73046875,
+        163.73046875
+      ],
+      "changeOfMeanPercent": 5.27439407258572,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 15.513041999998677,
+          "candidate": 15.488520000006247,
+          "delta": -0.02452199999243021,
+          "percent": -0.15807344550754499
+        },
+        {
+          "baseline": 16.805551999997988,
+          "candidate": 14.595607000002929,
+          "delta": -2.2099449999950593,
+          "percent": -13.150088732552934
+        }
+      ],
+      "baselineRange": [
+        15.513041999998677,
+        16.805551999997988
+      ],
+      "candidateRange": [
+        14.595607000002929,
+        15.488520000006247
+      ],
+      "changeOfMeanPercent": -6.913874409226217,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 18.912319000002753,
+          "candidate": 16.068419000002905,
+          "delta": -2.8438999999998487,
+          "percent": -15.03728865825198
+        },
+        {
+          "baseline": 21.28617200000008,
+          "candidate": 21.302755999997316,
+          "delta": 0.016583999997237697,
+          "percent": 0.07790973406227586
+        }
+      ],
+      "baselineRange": [
+        18.912319000002753,
+        21.28617200000008
+      ],
+      "candidateRange": [
+        16.068419000002905,
+        21.302755999997316
+      ],
+      "changeOfMeanPercent": -7.033388392620044,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 17.078,
+          "candidate": 15.862,
+          "delta": -1.2159999999999993,
+          "percent": -7.120271694577818
+        },
+        {
+          "baseline": 19.482,
+          "candidate": 15.696,
+          "delta": -3.7859999999999996,
+          "percent": -19.43332306744687
+        }
+      ],
+      "baselineRange": [
+        17.078,
+        19.482
+      ],
+      "candidateRange": [
+        15.696,
+        15.862
+      ],
+      "changeOfMeanPercent": -13.681619256017507,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 445.31640625,
+          "candidate": 469.92578125,
+          "delta": 24.609375,
+          "percent": 5.5262673134446105
+        },
+        {
+          "baseline": 445.31640625,
+          "candidate": 469.92578125,
+          "delta": 24.609375,
+          "percent": 5.5262673134446105
+        }
+      ],
+      "baselineRange": [
+        445.31640625,
+        445.31640625
+      ],
+      "candidateRange": [
+        469.92578125,
+        469.92578125
+      ],
+      "changeOfMeanPercent": 5.5262673134446105,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 2.081294000003254,
+          "candidate": 1.9983809999976074,
+          "delta": -0.08291300000564661,
+          "percent": -3.983723587610255
+        },
+        {
+          "baseline": 2.2321369999990566,
+          "candidate": 2.069446000001335,
+          "delta": -0.16269099999772152,
+          "percent": -7.2885759251242295
+        }
+      ],
+      "baselineRange": [
+        2.081294000003254,
+        2.2321369999990566
+      ],
+      "candidateRange": [
+        1.9983809999976074,
+        2.069446000001335
+      ],
+      "changeOfMeanPercent": -5.693935987459553,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 2.7396109999972396,
+          "candidate": 5.19792199999938,
+          "delta": 2.4583110000021406,
+          "percent": 89.73211890318069
+        },
+        {
+          "baseline": 2.8587160000024596,
+          "candidate": 2.7342419999986305,
+          "delta": -0.12447400000382913,
+          "percent": -4.354192581694793
+        }
+      ],
+      "baselineRange": [
+        2.7396109999972396,
+        2.8587160000024596
+      ],
+      "candidateRange": [
+        2.7342419999986305,
+        5.19792199999938
+      ],
+      "changeOfMeanPercent": 41.6881150386256,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 2.079,
+          "candidate": 2.024,
+          "delta": -0.05500000000000016,
+          "percent": -2.645502645502651
+        },
+        {
+          "baseline": 2.356,
+          "candidate": 2.066,
+          "delta": -0.29000000000000004,
+          "percent": -12.30899830220713
+        }
+      ],
+      "baselineRange": [
+        2.079,
+        2.356
+      ],
+      "candidateRange": [
+        2.024,
+        2.066
+      ],
+      "changeOfMeanPercent": -7.779030439684343,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 58.8837890625,
+          "candidate": 58.8837890625,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 58.8837890625,
+          "candidate": 58.8837890625,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        58.8837890625,
+        58.8837890625
+      ],
+      "candidateRange": [
+        58.8837890625,
+        58.8837890625
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.679909999998927,
+          "candidate": 6.446923000003153,
+          "delta": -0.23298699999577366,
+          "percent": -3.4878763336004703
+        },
+        {
+          "baseline": 8.754993000002287,
+          "candidate": 6.355617000001075,
+          "delta": -2.3993760000012117,
+          "percent": -27.4058014666669
+        }
+      ],
+      "baselineRange": [
+        6.679909999998927,
+        8.754993000002287
+      ],
+      "candidateRange": [
+        6.355617000001075,
+        6.446923000003153
+      ],
+      "changeOfMeanPercent": -17.05461317117949,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 7.988598999996611,
+          "candidate": 6.7543080000032205,
+          "delta": -1.2342909999933909,
+          "percent": -15.450656616935143
+        },
+        {
+          "baseline": 11.823409999997239,
+          "candidate": 7.659399000003759,
+          "delta": -4.164010999993479,
+          "percent": -35.21835917044619
+        }
+      ],
+      "baselineRange": [
+        7.988598999996611,
+        11.823409999997239
+      ],
+      "candidateRange": [
+        6.7543080000032205,
+        7.659399000003759
+      ],
+      "changeOfMeanPercent": -27.247625417435184,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.682,
+          "candidate": 6.503,
+          "delta": -0.17900000000000027,
+          "percent": -2.6788386710565715
+        },
+        {
+          "baseline": 8.748,
+          "candidate": 6.376,
+          "delta": -2.371999999999999,
+          "percent": -27.11476909007772
+        }
+      ],
+      "baselineRange": [
+        6.682,
+        8.748
+      ],
+      "candidateRange": [
+        6.376,
+        6.503
+      ],
+      "changeOfMeanPercent": -16.532728451069335,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 39.3427734375,
+          "candidate": 39.3427734375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 39.3427734375,
+          "candidate": 39.3427734375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        39.3427734375,
+        39.3427734375
+      ],
+      "candidateRange": [
+        39.3427734375,
+        39.3427734375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.62937399999646,
+          "candidate": 0.6515950000029989,
+          "delta": 0.022221000006538816,
+          "percent": 3.530651092460735
+        },
+        {
+          "baseline": 0.6605389999967883,
+          "candidate": 0.5754830000005313,
+          "delta": -0.08505599999625701,
+          "percent": -12.876756708789427
+        }
+      ],
+      "baselineRange": [
+        0.62937399999646,
+        0.6605389999967883
+      ],
+      "candidateRange": [
+        0.5754830000005313,
+        0.6515950000029989
+      ],
+      "changeOfMeanPercent": -4.871258758540076,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.7938579999972717,
+          "candidate": 0.9117909999986296,
+          "delta": 0.11793300000135787,
+          "percent": 14.855679479423678
+        },
+        {
+          "baseline": 1.018249000000651,
+          "candidate": 0.8921919999993406,
+          "delta": -0.12605700000131037,
+          "percent": -12.379781369903608
+        }
+      ],
+      "baselineRange": [
+        0.7938579999972717,
+        1.018249000000651
+      ],
+      "candidateRange": [
+        0.8921919999993406,
+        0.9117909999986296
+      ],
+      "changeOfMeanPercent": -0.4483178973405999,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.628,
+          "candidate": 0.649,
+          "delta": 0.02100000000000002,
+          "percent": 3.343949044585992
+        },
+        {
+          "baseline": 0.657,
+          "candidate": 0.574,
+          "delta": -0.08300000000000007,
+          "percent": -12.633181126331827
+        }
+      ],
+      "baselineRange": [
+        0.628,
+        0.657
+      ],
+      "candidateRange": [
+        0.574,
+        0.649
+      ],
+      "changeOfMeanPercent": -4.824902723735425,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "candidateRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.6060789999974077,
+          "candidate": 0.6507840000049328,
+          "delta": 0.044705000007525086,
+          "percent": 7.376101136603697
+        },
+        {
+          "baseline": 0.6619209999989835,
+          "candidate": 0.5975760000001173,
+          "delta": -0.06434499999886611,
+          "percent": -9.720948572256349
+        }
+      ],
+      "baselineRange": [
+        0.6060789999974077,
+        0.6619209999989835
+      ],
+      "candidateRange": [
+        0.5975760000001173,
+        0.6507840000049328
+      ],
+      "changeOfMeanPercent": -1.5488958983751466,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.7534470000027795,
+          "candidate": 1.0833950000014738,
+          "delta": 0.3299479999986943,
+          "percent": 43.791799555572865
+        },
+        {
+          "baseline": 0.908887000005052,
+          "candidate": 0.6887209999986226,
+          "delta": -0.22016600000642939,
+          "percent": -24.223693374996625
+        }
+      ],
+      "baselineRange": [
+        0.7534470000027795,
+        0.908887000005052
+      ],
+      "candidateRange": [
+        0.6887209999986226,
+        1.0833950000014738
+      ],
+      "changeOfMeanPercent": 6.604087986634921,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.606,
+          "candidate": 0.649,
+          "delta": 0.04300000000000004,
+          "percent": 7.095709570957109
+        },
+        {
+          "baseline": 0.66,
+          "candidate": 0.596,
+          "delta": -0.06400000000000006,
+          "percent": -9.696969696969704
+        }
+      ],
+      "baselineRange": [
+        0.606,
+        0.66
+      ],
+      "candidateRange": [
+        0.596,
+        0.649
+      ],
+      "changeOfMeanPercent": -1.6587677725118377,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "candidateRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_cpu",
+      "unit": "% one core",
+      "pairs": [
+        {
+          "baseline": 1.5514556960074404,
+          "candidate": 1.661931931262803,
+          "delta": 0.11047623525536254,
+          "percent": 7.12081147658068
+        },
+        {
+          "baseline": 1.3644934003319404,
+          "candidate": 1.6661986945551615,
+          "delta": 0.301705294223221,
+          "percent": 22.111158188806556
+        }
+      ],
+      "baselineRange": [
+        1.3644934003319404,
+        1.5514556960074404
+      ],
+      "candidateRange": [
+        1.661931931262803,
+        1.6661986945551615
+      ],
+      "changeOfMeanPercent": 14.135415806676033,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_rss",
+      "unit": "MiB",
+      "pairs": [
+        {
+          "baseline": 101.69921875,
+          "candidate": 171.9453125,
+          "delta": 70.24609375,
+          "percent": 69.07240253504898
+        },
+        {
+          "baseline": 101.57421875,
+          "candidate": 172.55078125,
+          "delta": 70.9765625,
+          "percent": 69.87655270545707
+        }
+      ],
+      "baselineRange": [
+        101.57421875,
+        101.69921875
+      ],
+      "candidateRange": [
+        171.9453125,
+        172.55078125
+      ],
+      "changeOfMeanPercent": 69.47423037011416,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 42.303487,
+          "candidate": 58.916863,
+          "delta": 16.613376000000002,
+          "percent": 39.27188319014932
+        },
+        {
+          "baseline": 39.550975,
+          "candidate": 59.637759,
+          "delta": 20.086784,
+          "percent": 50.787076677629315
+        }
+      ],
+      "baselineRange": [
+        39.550975,
+        42.303487
+      ],
+      "candidateRange": [
+        58.916863,
+        59.637759
+      ],
+      "changeOfMeanPercent": 44.835869790458084,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 10.289151,
+          "candidate": 10.231807,
+          "delta": -0.057344000000000506,
+          "percent": -0.5573248949305998
+        },
+        {
+          "baseline": 10.190847,
+          "candidate": 10.215423,
+          "delta": 0.02457599999999971,
+          "percent": 0.24115757993423692
+        }
+      ],
+      "baselineRange": [
+        10.190847,
+        10.289151
+      ],
+      "candidateRange": [
+        10.215423,
+        10.231807
+      ],
+      "changeOfMeanPercent": -0.16000001562502808,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 15.988826000000017,
+          "candidate": 154.198935,
+          "delta": 138.210109,
+          "percent": 864.4168683804543
+        },
+        {
+          "baseline": 16.152635000000032,
+          "candidate": 164.52050600000007,
+          "delta": 148.36787100000004,
+          "percent": 918.5366412353138
+        }
+      ],
+      "baselineRange": [
+        15.988826000000017,
+        16.152635000000032
+      ],
+      "candidateRange": [
+        154.198935,
+        164.52050600000007
+      ],
+      "changeOfMeanPercent": 891.6146655561164,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_http",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 40.068027000001166,
+          "candidate": 41.95047799999884,
+          "delta": 1.8824509999976726,
+          "percent": 4.698137495009713
+        },
+        {
+          "baseline": 39.684330999996746,
+          "candidate": 44.05647100000351,
+          "delta": 4.372140000006766,
+          "percent": 11.017295466079858
+        }
+      ],
+      "baselineRange": [
+        39.684330999996746,
+        40.068027000001166
+      ],
+      "candidateRange": [
+        41.95047799999884,
+        44.05647100000351
+      ],
+      "changeOfMeanPercent": 7.842515452652332,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_http_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 51.88255999999819,
+          "candidate": 54.281134000004386,
+          "delta": 2.3985740000061924,
+          "percent": 4.623083363670322
+        },
+        {
+          "baseline": 46.91894100001082,
+          "candidate": 68.63553500000853,
+          "delta": 21.716593999997713,
+          "percent": 46.28534561339035
+        }
+      ],
+      "baselineRange": [
+        46.91894100001082,
+        51.88255999999819
+      ],
+      "candidateRange": [
+        54.281134000004386,
+        68.63553500000853
+      ],
+      "changeOfMeanPercent": 24.407693968132847,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.08535700000356883,
+          "candidate": 0.08608699999604141,
+          "delta": 0.0007299999924725853,
+          "percent": 0.855231548018387
+        },
+        {
+          "baseline": 0.08181199999671662,
+          "candidate": 0.10404399999970337,
+          "delta": 0.02223200000298675,
+          "percent": 27.17449763345108
+        }
+      ],
+      "baselineRange": [
+        0.08181199999671662,
+        0.08535700000356883
+      ],
+      "candidateRange": [
+        0.08608699999604141,
+        0.10404399999970337
+      ],
+      "changeOfMeanPercent": 13.73580029516246,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.1576340000028722,
+          "candidate": 0.2887080000000424,
+          "delta": 0.13107399999717018,
+          "percent": 83.15084308891605
+        },
+        {
+          "baseline": 0.1942479999997886,
+          "candidate": 0.3723020000034012,
+          "delta": 0.1780540000036126,
+          "percent": 91.6632346298579
+        }
+      ],
+      "baselineRange": [
+        0.1576340000028722,
+        0.1942479999997886
+      ],
+      "candidateRange": [
+        0.2887080000000424,
+        0.3723020000034012
+      ],
+      "changeOfMeanPercent": 87.84990422881684,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.097,
+          "candidate": 0.086,
+          "delta": -0.01100000000000001,
+          "percent": -11.340206185567025
+        },
+        {
+          "baseline": 0.108,
+          "candidate": 0.119,
+          "delta": 0.010999999999999996,
+          "percent": 10.185185185185187
+        }
+      ],
+      "baselineRange": [
+        0.097,
+        0.108
+      ],
+      "candidateRange": [
+        0.086,
+        0.119
+      ],
+      "changeOfMeanPercent": -1.1102230246251565e-14,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "candidateRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 28.358719999996538,
+          "candidate": 22.180724999998347,
+          "delta": -6.177994999998191,
+          "percent": -21.78516872411359
+        },
+        {
+          "baseline": 25.408318999994663,
+          "candidate": 22.966489999998885,
+          "delta": -2.441828999995778,
+          "percent": -9.610352420387558
+        }
+      ],
+      "baselineRange": [
+        25.408318999994663,
+        28.358719999996538
+      ],
+      "candidateRange": [
+        22.180724999998347,
+        22.966489999998885
+      ],
+      "changeOfMeanPercent": -16.0317997053834,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 32.408409999996366,
+          "candidate": 34.01051300000108,
+          "delta": 1.6021030000047176,
+          "percent": 4.9434791771793
+        },
+        {
+          "baseline": 33.24152499999764,
+          "candidate": 30.419613999998546,
+          "delta": -2.8219109999990906,
+          "percent": -8.489114142625198
+        }
+      ],
+      "baselineRange": [
+        32.408409999996366,
+        33.24152499999764
+      ],
+      "candidateRange": [
+        30.419613999998546,
+        34.01051300000108
+      ],
+      "changeOfMeanPercent": -1.8580490597507549,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 28.339,
+          "candidate": 22.166,
+          "delta": -6.172999999999998,
+          "percent": -21.782702283072798
+        },
+        {
+          "baseline": 25.463,
+          "candidate": 22.949,
+          "delta": -2.5139999999999993,
+          "percent": -9.873149275419236
+        }
+      ],
+      "baselineRange": [
+        25.463,
+        28.339
+      ],
+      "candidateRange": [
+        22.166,
+        22.949
+      ],
+      "changeOfMeanPercent": -16.14623991673172,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 3390.97265625,
+          "candidate": 3391.455078125,
+          "delta": 0.482421875,
+          "percent": 0.014226651875559604
+        },
+        {
+          "baseline": 3390.97265625,
+          "candidate": 3391.455078125,
+          "delta": 0.482421875,
+          "percent": 0.014226651875559604
+        }
+      ],
+      "baselineRange": [
+        3390.97265625,
+        3390.97265625
+      ],
+      "candidateRange": [
+        3391.455078125,
+        3391.455078125
+      ],
+      "changeOfMeanPercent": 0.014226651875559604,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 4.628797999997914,
+          "candidate": 3.5556890000007115,
+          "delta": -1.0731089999972028,
+          "percent": -23.183318865884537
+        },
+        {
+          "baseline": 3.8783560000010766,
+          "candidate": 3.7900360000057844,
+          "delta": -0.08831999999529216,
+          "percent": -2.277253557828829
+        }
+      ],
+      "baselineRange": [
+        3.8783560000010766,
+        4.628797999997914
+      ],
+      "candidateRange": [
+        3.5556890000007115,
+        3.7900360000057844
+      ],
+      "changeOfMeanPercent": -13.652380102589333,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 5.64147999999841,
+          "candidate": 3.864715999996406,
+          "delta": -1.7767640000020037,
+          "percent": -31.494643249688103
+        },
+        {
+          "baseline": 4.062579999997979,
+          "candidate": 6.332173000002513,
+          "delta": 2.2695930000045337,
+          "percent": 55.86580448891254
+        }
+      ],
+      "baselineRange": [
+        4.062579999997979,
+        5.64147999999841
+      ],
+      "candidateRange": [
+        3.864715999996406,
+        6.332173000002513
+      ],
+      "changeOfMeanPercent": 5.078585664172652,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 4.746,
+          "candidate": 3.722,
+          "delta": -1.0240000000000005,
+          "percent": -21.57606405394017
+        },
+        {
+          "baseline": 3.869,
+          "candidate": 3.882,
+          "delta": 0.0129999999999999,
+          "percent": 0.3360041354355081
+        }
+      ],
+      "baselineRange": [
+        3.869,
+        4.746
+      ],
+      "candidateRange": [
+        3.722,
+        3.882
+      ],
+      "changeOfMeanPercent": -11.735345327916423,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 238.5986328125,
+          "candidate": 252.2705078125,
+          "delta": 13.671875,
+          "percent": 5.730072649135365
+        },
+        {
+          "baseline": 238.5986328125,
+          "candidate": 252.2705078125,
+          "delta": 13.671875,
+          "percent": 5.730072649135365
+        }
+      ],
+      "baselineRange": [
+        238.5986328125,
+        238.5986328125
+      ],
+      "candidateRange": [
+        252.2705078125,
+        252.2705078125
+      ],
+      "changeOfMeanPercent": 5.730072649135365,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 90.28196400000161,
+          "candidate": 86.74333900000056,
+          "delta": -3.5386250000010477,
+          "percent": -3.9195259420818362
+        },
+        {
+          "baseline": 103.56219299999793,
+          "candidate": 95.23524400000315,
+          "delta": -8.326948999994784,
+          "percent": -8.040529809942276
+        }
+      ],
+      "baselineRange": [
+        90.28196400000161,
+        103.56219299999793
+      ],
+      "candidateRange": [
+        86.74333900000056,
+        95.23524400000315
+      ],
+      "changeOfMeanPercent": -6.121192500012196,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 139.417975999997,
+          "candidate": 97.85652600000321,
+          "delta": -41.56144999999378,
+          "percent": -29.8106823757036
+        },
+        {
+          "baseline": 111.62754300000233,
+          "candidate": 105.58729400000448,
+          "delta": -6.040248999997857,
+          "percent": -5.41107403931459
+        }
+      ],
+      "baselineRange": [
+        111.62754300000233,
+        139.417975999997
+      ],
+      "candidateRange": [
+        97.85652600000321,
+        105.58729400000448
+      ],
+      "changeOfMeanPercent": -18.961381660826127,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 94.103,
+          "candidate": 88.677,
+          "delta": -5.425999999999988,
+          "percent": -5.766022337226218
+        },
+        {
+          "baseline": 111.351,
+          "candidate": 100.107,
+          "delta": -11.244,
+          "percent": -10.09779885227793
+        }
+      ],
+      "baselineRange": [
+        94.103,
+        111.351
+      ],
+      "candidateRange": [
+        88.677,
+        100.107
+      ],
+      "changeOfMeanPercent": -8.113738355057587,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 2613.1103515625,
+          "candidate": 2777.1728515625,
+          "delta": 164.0625,
+          "percent": 6.278437491241018
+        },
+        {
+          "baseline": 2613.1103515625,
+          "candidate": 2777.1728515625,
+          "delta": 164.0625,
+          "percent": 6.278437491241018
+        }
+      ],
+      "baselineRange": [
+        2613.1103515625,
+        2613.1103515625
+      ],
+      "candidateRange": [
+        2777.1728515625,
+        2777.1728515625
+      ],
+      "changeOfMeanPercent": 6.278437491241018,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.921575000000303,
+          "candidate": 6.566359999997076,
+          "delta": -0.35521500000322703,
+          "percent": -5.131996691550866
+        },
+        {
+          "baseline": 6.982265999999072,
+          "candidate": 6.828729000000749,
+          "delta": -0.15353699999832315,
+          "percent": -2.1989566137747163
+        }
+      ],
+      "baselineRange": [
+        6.921575000000303,
+        6.982265999999072
+      ],
+      "candidateRange": [
+        6.566359999997076,
+        6.828729000000749
+      ],
+      "changeOfMeanPercent": -3.65907521527018,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 9.43687299999874,
+          "candidate": 6.88119700000243,
+          "delta": -2.5556759999963106,
+          "percent": -27.081809832522396
+        },
+        {
+          "baseline": 10.005095000000438,
+          "candidate": 8.421978999998828,
+          "delta": -1.5831160000016098,
+          "percent": -15.8230981315174
+        }
+      ],
+      "baselineRange": [
+        9.43687299999874,
+        10.005095000000438
+      ],
+      "candidateRange": [
+        6.88119700000243,
+        8.421978999998828
+      ],
+      "changeOfMeanPercent": -21.28792723040227,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.998,
+          "candidate": 6.56,
+          "delta": -0.4380000000000006,
+          "percent": -6.2589311231780576
+        },
+        {
+          "baseline": 6.974,
+          "candidate": 6.824,
+          "delta": -0.15000000000000036,
+          "percent": -2.150845999426443
+        }
+      ],
+      "baselineRange": [
+        6.974,
+        6.998
+      ],
+      "candidateRange": [
+        6.56,
+        6.824
+      ],
+      "changeOfMeanPercent": -4.208416833667339,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 58.9814453125,
+          "candidate": 58.9814453125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 58.9814453125,
+          "candidate": 58.9814453125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        58.9814453125,
+        58.9814453125
+      ],
+      "candidateRange": [
+        58.9814453125,
+        58.9814453125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 37.200041000003694,
+          "candidate": 33.86190400000487,
+          "delta": -3.3381369999988237,
+          "percent": -8.973476669013591
+        },
+        {
+          "baseline": 36.250755000000936,
+          "candidate": 36.212916999997105,
+          "delta": -0.03783800000383053,
+          "percent": -0.10437851571319934
+        }
+      ],
+      "baselineRange": [
+        36.250755000000936,
+        37.200041000003694
+      ],
+      "candidateRange": [
+        33.86190400000487,
+        36.212916999997105
+      ],
+      "changeOfMeanPercent": -4.596240182342537,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 43.52059599999484,
+          "candidate": 43.437802000000374,
+          "delta": -0.08279399999446468,
+          "percent": -0.1902409608417921
+        },
+        {
+          "baseline": 46.75572999999713,
+          "candidate": 41.56029200000194,
+          "delta": -5.1954379999951925,
+          "percent": -11.111874416238422
+        }
+      ],
+      "baselineRange": [
+        43.52059599999484,
+        46.75572999999713
+      ],
+      "candidateRange": [
+        41.56029200000194,
+        43.437802000000374
+      ],
+      "changeOfMeanPercent": -5.84675100755665,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 37.186,
+          "candidate": 33.978,
+          "delta": -3.2079999999999984,
+          "percent": -8.62690259775184
+        },
+        {
+          "baseline": 36.238,
+          "candidate": 36.234,
+          "delta": -0.003999999999997783,
+          "percent": -0.011038136762508977
+        }
+      ],
+      "baselineRange": [
+        36.238,
+        37.186
+      ],
+      "candidateRange": [
+        33.978,
+        36.234
+      ],
+      "changeOfMeanPercent": -4.374591414251472,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 39.34375,
+          "candidate": 39.34375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 39.34375,
+          "candidate": 39.34375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        39.34375,
+        39.34375
+      ],
+      "candidateRange": [
+        39.34375,
+        39.34375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.7083800000036717,
+          "candidate": 0.7429610000035609,
+          "delta": 0.03458099999988917,
+          "percent": 4.881701911362546
+        },
+        {
+          "baseline": 0.7710420000003069,
+          "candidate": 0.7506020000000717,
+          "delta": -0.02044000000023516,
+          "percent": -2.650958054195107
+        }
+      ],
+      "baselineRange": [
+        0.7083800000036717,
+        0.7710420000003069
+      ],
+      "candidateRange": [
+        0.7429610000035609,
+        0.7506020000000717
+      ],
+      "changeOfMeanPercent": 0.9558462696658498,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.1082420000020647,
+          "candidate": 1.2152209999985644,
+          "delta": 0.10697899999649962,
+          "percent": 9.653036069405442
+        },
+        {
+          "baseline": 1.2535769999958575,
+          "candidate": 1.0966149999949266,
+          "delta": -0.15696200000093086,
+          "percent": -12.521129535836216
+        }
+      ],
+      "baselineRange": [
+        1.1082420000020647,
+        1.2535769999958575
+      ],
+      "candidateRange": [
+        1.0966149999949266,
+        1.2152209999985644
+      ],
+      "changeOfMeanPercent": -2.11629256960314,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.703,
+          "candidate": 0.74,
+          "delta": 0.03700000000000003,
+          "percent": 5.263157894736836
+        },
+        {
+          "baseline": 0.768,
+          "candidate": 0.749,
+          "delta": -0.019000000000000017,
+          "percent": -2.473958333333337
+        }
+      ],
+      "baselineRange": [
+        0.703,
+        0.768
+      ],
+      "candidateRange": [
+        0.74,
+        0.749
+      ],
+      "changeOfMeanPercent": 1.223657375934728,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "candidateRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.7492400000046473,
+          "candidate": 0.730582999996841,
+          "delta": -0.018657000007806346,
+          "percent": -2.4901233259957634
+        },
+        {
+          "baseline": 0.7212990000043646,
+          "candidate": 0.7324549999975716,
+          "delta": 0.011155999993206933,
+          "percent": 1.5466540218604719
+        }
+      ],
+      "baselineRange": [
+        0.7212990000043646,
+        0.7492400000046473
+      ],
+      "candidateRange": [
+        0.730582999996841,
+        0.7324549999975716
+      ],
+      "changeOfMeanPercent": -0.5100850786380673,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.1033549999992829,
+          "candidate": 1.0401419999980135,
+          "delta": -0.06321300000126939,
+          "percent": -5.729162418379441
+        },
+        {
+          "baseline": 1.1734990000040852,
+          "candidate": 1.2856099999989965,
+          "delta": 0.11211099999491125,
+          "percent": 9.553565873896863
+        }
+      ],
+      "baselineRange": [
+        1.1033549999992829,
+        1.1734990000040852
+      ],
+      "candidateRange": [
+        1.0401419999980135,
+        1.2856099999989965
+      ],
+      "changeOfMeanPercent": 2.1476124509331562,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.746,
+          "candidate": 0.728,
+          "delta": -0.018000000000000016,
+          "percent": -2.4128686327077764
+        },
+        {
+          "baseline": 0.719,
+          "candidate": 0.729,
+          "delta": 0.010000000000000009,
+          "percent": 1.3908205841446364
+        }
+      ],
+      "baselineRange": [
+        0.719,
+        0.746
+      ],
+      "candidateRange": [
+        0.728,
+        0.729
+      ],
+      "changeOfMeanPercent": -0.546075085324238,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "candidateRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    }
+  ],
+  "database": {},
+  "notes": [
+    "Two repetitions per source on one machine; ranges are observations, not confidence intervals.",
+    "Expanded RC16 catalogs/response fields are intentional; current cross-version complete backend response equivalence was not tested.",
+    "Fixture fingerprints capture workload counts; frozen harness hashes and source manifests support seeder provenance.",
+    "Database complete output hashes are required to agree across all four runs."
+  ],
+  "databaseSummary": []
+}

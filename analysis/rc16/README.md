@@ -4,9 +4,11 @@
 
 **Recommendation: retain the earlier database/cache optimisations and the updater design. Concentrate RC17 on Maps rendering and refresh work, repeated backend projections, route preparation, and owned shutdown.** The evidence supports focused changes; it does not support replacing SQLite or broadly slowing ESI polling.
 
+**Follow-up and expanded scope:** the [follow-up checkpoint](followup/README.md) adds Maps-independence, mixed-workload, managed-restart, memory and replay evidence, the Journey retirement decision, and whole-application refactoring coverage. The pass covers Kairo's existing foundations as well as RC1–RC16 features. A malformed storm cache was discovered in the original legacy idle fixture; those frozen results below are qualified. The [corrected local backend comparison](reviews/followup-legacy-corrected.md) is complete; dedicated follow-up CI is still running. Application source remains unchanged.
+
 This report analyses canonical RC16 `57c8dcc7fbd8fc2b62129498d1819050c78381a1` against released, post-optimisation v0.7.3 `239794774320fcdebaa1d76ce8a77c5c25cfc48c`. Application code, dependencies and version are unchanged. All 637 runtime tests, application type checks, and both production frontend builds passed locally and on GitHub.
 
-The investigation branch is `perf/rc16-checkpoint-v0.8.0`; [draft PR #8](https://github.com/BunBajiro/kairo/pull/8) retains the investigation for review. Main and the Universe feature branch remain untouched. Local analysis and the independent [GitHub workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690) are complete. GitHub passed at measured harness commit `0344ff4ec069080a87e19294fa8fddc28f737327`; later commits retain reports and evidence only. The principal scaling and lifecycle findings reproduce. The local state-HTTP slowdown does not reproduce, and GitHub observes a small Overview-idle overhead absent from the overlapping local ranges. See [GitHub confirmation](reviews/github-confirmation.md).
+The investigation branch is `perf/rc16-checkpoint-v0.8.0`; [draft PR #8](https://github.com/BunBajiro/kairo/pull/8) retains the investigation for review. Main and the Universe feature branch remain untouched. The original local checkpoint and independent [GitHub workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690) are complete. GitHub passed at measured harness commit `0344ff4ec069080a87e19294fa8fddc28f737327`; later investigation commits contain analysis material only. The principal scaling and lifecycle findings reproduce. The local state-HTTP slowdown does not reproduce, and GitHub observes a small Overview-idle overhead absent from the overlapping local ranges. See [GitHub confirmation](reviews/github-confirmation.md), together with the legacy-fixture qualification below.
 
 ## What survived the feature sprint
 
@@ -14,7 +16,7 @@ The previous checkpoint's targeted improvements remain present in the code and e
 
 The old reports and raw workspace/GitHub evidence were recovered from both investigation branches. Their absolute timings provide historical context; the table below comes from a fresh, same-machine **v0.7.3 → RC16 → RC16 → v0.7.3** comparison. Numbers from different dates or machines are not divided together.
 
-| Large legacy workload | Post-optimisation v0.7.3 | RC16 | Finding |
+| Original large legacy workload | Post-optimisation v0.7.3 | RC16 | Finding |
 |---|---:|---:|---|
 | Idle CPU, % of one logical core | 1.32–1.35% | 1.62–1.64% | About +0.29 percentage points; modest absolute increase |
 | Idle process RSS | 82–101 MiB | 168–171 MiB | Meaningful extra residency; no leak conclusion |
@@ -26,7 +28,11 @@ The old reports and raw workspace/GitHub evidence were recovered from both inves
 | 1,000 history updates | 34.9–35.1 ms | 33.9–34.4 ms | No observed degradation |
 | Working history JSON | 15.60 MiB | 15.60 MiB | Bounded working set retained exactly |
 
-Typical session reports rose from about 15.0 to 16.5–16.8 ms; this smaller cost remains visible despite the faster large fixture. Server `startKairo()` initialisation rose from about 11–18 to 160–173 ms. That is roughly 150 ms extra inside this call, excluding module imports and supervisor launch; it is not a full boot-time measurement.
+**Idle-fixture qualification:** the original local and GitHub harness seeded `storms.data` as `[]`; RC16 requires `{storms:[],points:[]}`. Its background feed projection rejected inside `Promise.allSettled`, beyond the original completion checks. v0.7.3 has no equivalent Universe feed service. The original idle CPU/RSS/delay rows therefore describe a partial RC16 background workload, not a fully healthy warm-cache path. Frozen evidence remains intact. The [corrected backend follow-up](followup/README.md) adds real feed/tick-success guards; use its completed comparison for implementation acceptance. Direct common operations and the separate database probes retain their checked meanings.
+
+The corrected stress comparison records idle CPU **1.364–1.551% → 1.662–1.666%**, RSS **101.57–101.70 → 171.95–172.55 MiB**, and maximum idle loop delay **39.55–42.30 → 58.92–59.64 ms**, with 12 successful real Universe ticks and no rejected subtasks in every RC16 idle observation. It retains higher residency/startup work; the modest HTTP increase is below the checkpoint's repeated 10% plus 1 ms signal rule. Small tick-audit overhead and feed-state warmup are disclosed; these local magnitudes are not portable budgets.
+
+The original typical session-report increase (about 15.0 to 16.5–16.8 ms) does not persist in the corrected comparison, which records 15.51–16.81 versus 14.60–15.49 ms. Server `startKairo()` initialisation remains higher: corrected stress observations are 15.99–16.15 versus 154.20–164.52 ms. This call excludes module imports and supervisor launch; it is not a full boot-time measurement.
 
 The large state payload barely changed, so the local HTTP slowdown cannot be explained by a large transfer-size increase. Its direct projection/serialization timings are mixed, and GitHub's paired HTTP measurements show no slowdown. Treat HTTP as an environment-specific profiling lead, not an established general RC16 regression. Likewise, the increased memory footprint should be inventoried by static indexes, caches and lifecycle before proposing lazy loading or calling it a leak.
 
@@ -58,7 +64,7 @@ The strongest causal evidence is the read-count diagnostic. A full 24-map respon
 
 Routing also constructs full live context, including travel history that an ordinary route does not use. A 50-stop itinerary repeats that preparation for every leg, including 50 history aggregations. Build one bounded context/graph per planning request and keep unrelated history out of route preparation. Preserve route policy, dynamic access, wormhole expiry/mass, map scope, warnings and itinerary ordering.
 
-For Universe state, share one history aggregation across consumers and invalidate it from actual visit/annotation changes if caching is warranted. Existing indexes still require grouping/sorting; an extra index must earn its write/storage cost in a measured before/after test. Existing heap-based routing and jump spatial indexing should remain.
+The follow-up product decision supersedes caching the lifetime aggregate: retire the standalone Journey log, My footprint/visit counts and exploration percentages, and remove their aggregation from ordinary Universe/routing reads. Give Sessions an explicit bounded travel service and future session-owned movement recording; give discovery a minimal per-pilot identity contract. Preserve old session evidence, documented compatibility/export behavior, and the separate general activity/OBS event contract, which can still record events outside Sessions. The [dependency and upgrade matrix](reviews/followup-methodology.md) defines the required caller migration. Existing heap-based routing and jump spatial indexing should remain.
 
 [Backend review and source references](reviews/backend.md) · [Timing data](raw/backend-timings.json) · [Reverse-order data](raw/backend-timings-reverse.json)
 
@@ -79,7 +85,7 @@ A reversible **analysis-only** browser experiment isolated the CSS contribution.
 
 Refresh amplification is separately confirmed. Ten identical change events triggered **ten complete Maps requests plus one Universe request**, returning about **7.45 MiB** of loopback responses in the four-map fixture. Ignoring stale responses does not avoid server work or transport. Coalesce matching changes, share scoped invalidation ownership, and request compact map summaries plus selected detail. Preserve the newest revision and pilot/map identity while writes are in flight.
 
-The existing efficient boundaries should remain. Atlas and paused replay did not continuously repaint during their idle samples; each observed one paint, with paused replay's paint coinciding with the fallback state refresh. Some idle windows include ordinary periodic state/Universe/Maps polling, so they are not evidence of an endless animation loop. Atlas/ref-based camera and territory-worker ownership are useful existing patterns. Keep Atlas scope focused this sprint.
+The existing efficient boundaries should remain. Atlas and paused replay did not continuously repaint during their idle samples; each observed one paint, with paused replay's paint coinciding with the fallback state refresh. Some idle windows include ordinary periodic state/Universe/Maps polling, so they are not evidence of an endless animation loop. Atlas/ref-based camera and territory-worker ownership are useful existing patterns to preserve when shared frontend services change.
 
 A measurement-observer bug in an exploratory browser run was detected and fixed: adjacent samples could retain a prior RAF observer. Final samples use a frozen corrected harness, bind observers to their own sample, and assert strictly increasing timestamps. Exploratory output is retained separately and is not the source of these final figures.
 
@@ -107,11 +113,11 @@ Worker allocation/compression tuning is a later measured opportunity, after the 
 
 Introduce a bounded quiesce/drain phase before closing storage. Preserve accepted history events, handle rejected lookups, and avoid deadlocking nested semantic events. The new planned dataset restarts make this shared lifecycle boundary especially important. Turn the diagnostic into a behaviour regression test in the implementation branch.
 
-Other consolidation opportunities are narrower and have not yet been assigned measured gains:
+The [follow-up](followup/README.md) has now measured connected protocol traffic and live-session cache-hit work, and extends the structural review across legacy Kairo services. Other candidates need explicit contracts and measured gains before expansion:
 
 - Identical public combat valuations currently rewrite ledger rows; new politics triggers turn those writes into additional queued work. Make content changes idempotent while preserving corrected values and missing-event repair.
 - Live-session route targets are rebuilt on the three-second tick before the two-minute feed deadline is checked. Move cheap eligibility/deadline checks earlier, retaining explicit and end-of-session rechecks.
-- Unchanged widget projections still broadcast, and full names dictionaries are serialised per client. Measure connected dashboard/OBS workloads before changing shared projection/SSE ownership.
+- Unchanged widget projections still broadcast, and full names dictionaries are serialised per client. The follow-up connected protocol workload confirms repeated binding/state content; consolidate shared projection/SSE ownership while preserving freshness, protection and liveness.
 - Give replaceable HTTP/job caches explicit retention policies. Keep durable player history distinct from disposable cache data; do not add routine blocking vacuum work.
 - Extract common ESI transport policy helpers for reads and commands, while preserving their different retry/cache semantics. Update architecture documentation to reflect the supervisor/child model and Universe history ownership.
 
@@ -125,8 +131,8 @@ Other consolidation opportunities are narrower and have not yet been assigned me
 | 2 | Maps camera/scene isolation and scoped refresh coalescing | Repeated browser interaction and burst measurements; keyboard, drag, selection, save ordering, revision and expiry behaviour preserved |
 | 3 | Batch Maps projection reads; compact chooser/selected detail | Link/signature reads scale with data once per request; complete decoded map data and access scopes remain equivalent |
 | 4 | Reuse itinerary context/graph; remove unrelated route history | Same routes, costs, warnings and dynamic policy, with material latency reduction on 10/50-stop fixtures |
-| 5 | Share visit aggregates; investigate state/RSS overhead | Concrete dependency invalidation, migration/write-cost checks, phase profiling; no broad cache rewrite without evidence |
-| 6 | Selected no-op write, cadence and transport-policy consolidation | Domain-specific behaviour tests and counters; measured benefit before expanding scope |
+| 5 | Retire lifetime Journey presentation/aggregation; separate session travel, discovery and general activity services | Old/new Sessions, replay/combat, saved settings, discovery, compatibility/export and observation-boundary races preserve their approved contracts |
+| 6 | Whole-Kairo data preparation, lifecycle and policy consolidation, including existing Core/ESI/auth/market/asset/goal/UI paths | Separate measured costs from structural-only candidates; domain-specific behavior and meaningful no-change decisions; no general rewrite without evidence |
 
 Start that work from **clean canonical RC16**, retaining this branch as external evidence. Rerun common and new workloads in balanced order with the same fixture/runtime/browser within each environment. Compare output correctness alongside time and memory. Keep the existing 637 runtime tests and Universe/Maps/replay/reconnect acceptance checks, adding focused regressions for changed contracts.
 

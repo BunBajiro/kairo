@@ -2,6 +2,12 @@
 
 The primary report is `../README.md`; commands and limits are in `../METHOD.md`.
 
+The [follow-up report](../followup/README.md) indexes new data under `followup/`,
+including corrected legacy backend ABBA. A malformed original storm-cache
+fixture makes the original backend idle windows partial-workload observations;
+they remain preserved, with the corrected series superseding healthy-idle claims.
+Failed smoke/CI attempts are retained and never counted as successful timings.
+
 | Files | Status and use |
 |---|---|
 | `legacy-abba/` | Completed fresh same-machine v0.7.3 → RC16 → RC16 → v0.7.3 backend/database runs, provenance and generated comparisons. |

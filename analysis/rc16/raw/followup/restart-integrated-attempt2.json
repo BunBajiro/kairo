@@ -1,0 +1,441 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-30T12:20:11.253Z",
+  "lane": "followup-managed-restart",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "boundaries": [
+    "Actual production supervisor, real forked child processes, runtime-child lifecycle, startKairo, HTTP/core/SQLite/ESI and frontend dataset-connection coordinator.",
+    "Actual dataset service stages a coherent copied-bundled generation through an injected fixture builder; actual prepare/commit/cleanup activates it. No full archive conversion is measured.",
+    "Supported fetcher options serve synthetic public ESI/CCP responses; noSync disables live periodic collectors; a synthetic identity requires no valid credentials.",
+    "HTTP accepted writes/reads and dashboard/OBS SSE use loopback networking. This is not a browser or OBS executable test.",
+    "Bus ship observation is injected through harness IPC into the real core bus. Normal and forced-late response schedules are separate.",
+    "The late-bus scenario deliberately resolves names at actual SQLite close and permits 100 ms child-exit observation grace. It diagnoses an ownership gap, not ordinary restart timing."
+  ],
+  "scenarios": [],
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sources": [
+    {
+      "path": "server/runtime-supervisor.mjs",
+      "sha256": "3357dcd24688bd005cdf951b0abae8e56efd6a9910ba041dfa40d79d04bc9636"
+    },
+    {
+      "path": "server/runtime-child.mjs",
+      "sha256": "9d4da98f658a88baf59275674a7cb99cd41175e3ce603e27f56fbc52c0774e06"
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf"
+    },
+    {
+      "path": "server/core.mjs",
+      "sha256": "5de982005a326b3b2ccc294b105511607ed6f965158ee550e177922e33f0df33"
+    },
+    {
+      "path": "server/store.mjs",
+      "sha256": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555"
+    },
+    {
+      "path": "server/esi.mjs",
+      "sha256": "681d17b215f408d1af374444e94686a1ad963ab33bb4f17c6733ec988084afae"
+    },
+    {
+      "path": "server/bus.mjs",
+      "sha256": "e6e8d9d9764b83432a1eaf6d44394518cb66b4832857b5283a91163b674b055d"
+    },
+    {
+      "path": "server/universe-history.mjs",
+      "sha256": "d700f786519d8d83fed002fd56b5beeef7b18c70053cd4d2991d76511ac1e1f0"
+    },
+    {
+      "path": "server/datasets.mjs",
+      "sha256": "7dd095c3eba4d16365d97d6e6758f615262a18c966803f02074742de6863c2ed"
+    },
+    {
+      "path": "components/kairo/dataset-connection.mjs",
+      "sha256": "d73c0a0da18c1941076aeed56649f24a12c1db33217df289b95383306cb056ba"
+    },
+    {
+      "path": "tests/helpers/dataset-fixture.mjs",
+      "sha256": "765cbb19b8c1e2053f768274b4613b2bf619b408edb94e00f875fd8ced92df35"
+    },
+    {
+      "path": "analysis/rc16/followup/harness/restart-child.mjs",
+      "sha256": "e64f07a422d27c9fc89ae2e574f6a8a3ee95af777c192623176490a175c6db37"
+    },
+    {
+      "path": "analysis/rc16/followup/harness/restart-integrated.mjs",
+      "sha256": "c0c936b84733adbb76c007c4d68fa57568f03d064a3009ca93dccf08d4ff1e54"
+    }
+  ],
+  "completed": false,
+  "error": {
+    "name": "Error",
+    "message": "Timed out: accepted semantic event persists while handlers hold shutdown open",
+    "stack": "Error: Timed out: accepted semantic event persists while handlers hold shutdown open\n    at until (file:///workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc16/followup/harness/restart-integrated.mjs:30:11)\n    at async scenario (file:///workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc16/followup/harness/restart-integrated.mjs:165:13)\n    at async file:///workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc16/followup/harness/restart-integrated.mjs:249:79",
+    "context": {
+      "label": "drain-accepted",
+      "trace": [
+        {
+          "order": 1,
+          "event": "fork",
+          "generation": 1,
+          "pid": 26
+        },
+        {
+          "order": 2,
+          "event": "parent:start",
+          "generation": 1
+        },
+        {
+          "order": 3,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 26,
+          "changes": 1
+        },
+        {
+          "order": 4,
+          "event": "child:runtime-created",
+          "generation": 1,
+          "pid": 26,
+          "summary": {
+            "generation": 1,
+            "scenario": "drain-accepted",
+            "pid": 26,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": false,
+            "closeStarted": false,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 5,
+          "event": "runtime:ready",
+          "generation": 1,
+          "pid": 26
+        },
+        {
+          "order": 6,
+          "event": "parent:activated",
+          "generation": 1
+        },
+        {
+          "order": 7,
+          "event": "dashboard:dataset-revision",
+          "revision": "3503375:3494416:3494416"
+        },
+        {
+          "order": 8,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 9,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 10,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 26,
+          "changes": 1
+        },
+        {
+          "order": 11,
+          "event": "dashboard:changed"
+        },
+        {
+          "order": 12,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 13,
+          "event": "child:ship-observation-dispatched",
+          "generation": 1,
+          "pid": 26
+        },
+        {
+          "order": 14,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 26,
+          "key": "bus-names"
+        },
+        {
+          "order": 15,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 26,
+          "key": "accepted-read"
+        },
+        {
+          "order": 16,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 26,
+          "key": "accepted-goal"
+        },
+        {
+          "order": 17,
+          "event": "three-work-items-in-flight"
+        },
+        {
+          "order": 18,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 19,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 20,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 21,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 22,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 23,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 24,
+          "event": "dashboard:dataset-restarting"
+        },
+        {
+          "order": 25,
+          "event": "coordinator:restarting"
+        },
+        {
+          "order": 26,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 27,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 28,
+          "event": "runtime:dataset-ready",
+          "generation": 1,
+          "pid": 26
+        },
+        {
+          "order": 29,
+          "event": "parent:stop",
+          "generation": 1
+        },
+        {
+          "order": 30,
+          "event": "child:close-started",
+          "generation": 1,
+          "pid": 26,
+          "pending": [
+            "bus-names",
+            "accepted-read",
+            "accepted-goal"
+          ]
+        },
+        {
+          "order": 31,
+          "event": "old-dashboard-disconnected"
+        },
+        {
+          "order": 32,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 26,
+          "key": "bus-names",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 33,
+          "event": "child:fake-names-response",
+          "generation": 1,
+          "pid": 26,
+          "ids": [
+            910002
+          ],
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 34,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 26,
+          "changes": 1
+        },
+        {
+          "order": 35,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 26,
+          "key": "accepted-goal",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 36,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 26,
+          "key": "accepted-read",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 37,
+          "event": "child:fake-names-response",
+          "generation": 1,
+          "pid": 26,
+          "ids": [
+            99000091
+          ],
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 38,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 26,
+          "changes": 1
+        },
+        {
+          "order": 39,
+          "event": "old-obs-disconnected"
+        },
+        {
+          "order": 40,
+          "event": "child:database-closed",
+          "generation": 1,
+          "pid": 26,
+          "pending": []
+        },
+        {
+          "order": 41,
+          "event": "child:close-returned",
+          "generation": 1,
+          "pid": 26,
+          "summary": {
+            "generation": 1,
+            "scenario": "drain-accepted",
+            "pid": 26,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/names",
+                "method": "POST"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/names",
+                "method": "POST"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/types/910001",
+                "method": "GET"
+              },
+              {
+                "origin": "https://developers.eveonline.com",
+                "path": "/static-data/tranquility/latest.jsonl",
+                "method": "GET"
+              },
+              {
+                "origin": "https://developers.eveonline.com",
+                "path": "/static-data/tranquility/eve-online-static-data-9000001-jsonl.zip",
+                "method": "GET"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/groups/25",
+                "method": "GET"
+              }
+            ],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": true,
+            "closeStarted": true,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 42,
+          "event": "runtime:stopped",
+          "generation": 1,
+          "pid": 26,
+          "sessionCount": 1
+        },
+        {
+          "order": 43,
+          "event": "exit",
+          "generation": 1,
+          "pid": 26,
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "childSummaries": [
+        {
+          "type": "probe-final",
+          "generation": 1,
+          "scenario": "drain-accepted",
+          "pid": 26,
+          "externalNetworkAttempts": 0,
+          "fakeRequests": [
+            {
+              "origin": "https://esi.evetech.net",
+              "path": "/universe/names",
+              "method": "POST"
+            },
+            {
+              "origin": "https://esi.evetech.net",
+              "path": "/universe/names",
+              "method": "POST"
+            },
+            {
+              "origin": "https://esi.evetech.net",
+              "path": "/universe/types/910001",
+              "method": "GET"
+            },
+            {
+              "origin": "https://developers.eveonline.com",
+              "path": "/static-data/tranquility/latest.jsonl",
+              "method": "GET"
+            },
+            {
+              "origin": "https://developers.eveonline.com",
+              "path": "/static-data/tranquility/eve-online-static-data-9000001-jsonl.zip",
+              "method": "GET"
+            },
+            {
+              "origin": "https://esi.evetech.net",
+              "path": "/universe/groups/25",
+              "method": "GET"
+            }
+          ],
+          "pending": [],
+          "postCloseOperations": [],
+          "errors": [],
+          "databaseClosed": true,
+          "closeStarted": true,
+          "exitGraceUsed": false
+        }
+      ],
+      "stderr": []
+    }
+  },
+  "finishedAt": "2026-09-30T12:20:16.309Z"
+}

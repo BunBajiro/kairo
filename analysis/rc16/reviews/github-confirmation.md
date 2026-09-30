@@ -1,5 +1,14 @@
 # Independent GitHub confirmation
 
+**Follow-up qualification:** the later investigation found a malformed synthetic
+storm cache in the original legacy fixture. Its RC16 idle collector rejected a
+feed subtask, so the idle numbers below describe a partial workload. They remain
+historical evidence, not a complete healthy-feed comparison. See the
+[follow-up](../followup/README.md) and
+[corrected local backend comparison](followup-legacy-corrected.md); the original
+database and direct-operation checks are retained. New GitHub runs are reported
+separately, including any failures.
+
 Run [36708404690](https://github.com/BunBajiro/kairo/actions/runs/36708404690) completed successfully on 30 September 2026, 11:25–11:42 UTC. All measurement and validation steps passed. This confirms the analysis workflow completed; it does not imply RC16 is free of the diagnosed performance or shutdown issues.
 
 ## Identity and evidence integrity

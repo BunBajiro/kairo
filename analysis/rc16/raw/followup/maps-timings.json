@@ -1,0 +1,1074 @@
+{
+  "mode": "timings",
+  "order": "forward",
+  "recordedAt": "2026-09-30T12:17:06.580Z",
+  "referenceSource": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "testedSourceRoot": "/workspace/scratch/a2f3334402fc/kairo-analysis",
+  "testedSourceGitHeadBefore": "2007c002a1eb9e3327df0c85ea9e3fabe3345fbb",
+  "testedSourceGitHead": "2007c002a1eb9e3327df0c85ea9e3fabe3345fbb",
+  "testedFiles": {
+    "server/universe.mjs": "eaa03fa260a70df38d58f43de6eff6d9ef045cd451f02215c07f782695e42747",
+    "server/universe-jspace.mjs": "32f6c3e101bc746ff6d2afd41ed1cc31520afa62b0983b6afa01f0c9247abd6a",
+    "server/universe-operations.mjs": "7ac22c446db3c7991d3ddfcd194e01d915327ff1dea9b87b1a8d8b2e672cbb7b",
+    "server/universe-jspace-tracking.mjs": "2dc948a1130f028a20d3fb364c615162ee2f812ddc12948fe056d4ff2e43c057",
+    "server/store.mjs": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555"
+  },
+  "sourceAndHarnessStableDuringRun": true,
+  "harnessSha256": "a38c8e0823722033e8d9a8e927588c238eec2eac01fd0d8c34da6126dcf35e17",
+  "lockFile": "/tmp/kairo-rc16-benchmark.lock",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "platform": "linux",
+  "arch": "x64",
+  "atlas": {
+    "systems": 8490,
+    "gates": 6989,
+    "wormholes": 2604
+  },
+  "clock": "2026-09-30T09:00:00.000Z",
+  "networkAttempts": 0,
+  "methodology": "Three warmups, seven uninstrumented measurements; serialization separate; checks outside measured durations. Independent reverse-order repeat recommended. maxMs is observed maximum, not an estimated percentile. No forced GC.",
+  "fixtureNotes": [
+    "No user accounts, external collectors, visits, optional feeds, undo, passages, intel, observations or tracked pilots.",
+    "Independence holds selected-map records constant while adding0/7/23 unrelated maps; full-list contrast repeats identical fixtures.",
+    "Constant-links family fixes720total canonical links, zero signatures and60nodes per map; map/node/document totals vary and are reported.",
+    "Dense family uses100nodes, 0/100/1000 unbound Data Site signatures and100/1000 connections. Exact S×E filter work can be counted; timing also includes larger signature records and output, so not all added latency can be attributed to that loop."
+  ],
+  "results": [
+    {
+      "name": "independence-selected-1-maps",
+      "family": "independence",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "canonicalBytes": 47916,
+        "mapDocumentBytes": 32402,
+        "signatureBytes": 49782
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "minMs": 3.8661789999999883,
+      "medianMs": 4.519886999999983,
+      "maxMs": 5.601330000000019,
+      "samples": [
+        {
+          "wallMs": 4.06364099999999,
+          "cpuMs": 4.963,
+          "serializeMs": 0.805954000000014,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 5.401653999999979,
+          "cpuMs": 5.418,
+          "serializeMs": 1.0479930000000195,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 5.601330000000019,
+          "cpuMs": 7.103,
+          "serializeMs": 0.7332470000000058,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 4.198551000000009,
+          "cpuMs": 4.297,
+          "serializeMs": 0.769800000000032,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 4.519886999999983,
+          "cpuMs": 4.63,
+          "serializeMs": 0.7524849999999788,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 3.8661789999999883,
+          "cpuMs": 4.081,
+          "serializeMs": 0.821392000000003,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 4.710399999999993,
+          "cpuMs": 4.731,
+          "serializeMs": 0.7737970000000018,
+          "outputBytes": 229559
+        }
+      ]
+    },
+    {
+      "name": "independence-list-1-maps",
+      "family": "independence",
+      "action": "list",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "canonicalBytes": 47916,
+        "mapDocumentBytes": 32402,
+        "signatureBytes": 49782
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "minMs": 3.814201999999966,
+      "medianMs": 3.934960999999987,
+      "maxMs": 4.575220000000002,
+      "samples": [
+        {
+          "wallMs": 3.934960999999987,
+          "cpuMs": 3.951,
+          "serializeMs": 0.7797950000000355,
+          "outputBytes": 229976
+        },
+        {
+          "wallMs": 4.575220000000002,
+          "cpuMs": 4.583,
+          "serializeMs": 0.7399970000000167,
+          "outputBytes": 229976
+        },
+        {
+          "wallMs": 3.9389170000000036,
+          "cpuMs": 4.169,
+          "serializeMs": 0.705174999999997,
+          "outputBytes": 229976
+        },
+        {
+          "wallMs": 3.890174000000002,
+          "cpuMs": 3.898,
+          "serializeMs": 0.7480489999999804,
+          "outputBytes": 229976
+        },
+        {
+          "wallMs": 3.9214509999999905,
+          "cpuMs": 3.923,
+          "serializeMs": 0.7926740000000336,
+          "outputBytes": 229976
+        },
+        {
+          "wallMs": 4.02513399999998,
+          "cpuMs": 4.032,
+          "serializeMs": 0.7345189999999775,
+          "outputBytes": 229976
+        },
+        {
+          "wallMs": 3.814201999999966,
+          "cpuMs": 3.822,
+          "serializeMs": 0.7461250000000064,
+          "outputBytes": 229976
+        }
+      ]
+    },
+    {
+      "name": "independence-selected-8-maps",
+      "family": "independence",
+      "action": "selected",
+      "fixture": {
+        "maps": 8,
+        "nodes": 800,
+        "links": 792,
+        "signatures": 800,
+        "canonicalBytes": 383328,
+        "mapDocumentBytes": 259216,
+        "signatureBytes": 398256
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "minMs": 5.63488000000001,
+      "medianMs": 5.725414000000001,
+      "maxMs": 6.378421000000003,
+      "samples": [
+        {
+          "wallMs": 5.725414000000001,
+          "cpuMs": 5.745,
+          "serializeMs": 0.7099520000000439,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 5.679515999999978,
+          "cpuMs": 5.688,
+          "serializeMs": 0.7397659999999746,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 5.63488000000001,
+          "cpuMs": 5.642,
+          "serializeMs": 0.7196360000000368,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 6.312363000000062,
+          "cpuMs": 6.321,
+          "serializeMs": 0.7246440000000121,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 6.378421000000003,
+          "cpuMs": 6.732,
+          "serializeMs": 0.7213489999999183,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 5.663002000000006,
+          "cpuMs": 5.671,
+          "serializeMs": 0.7893290000000661,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 6.150213000000008,
+          "cpuMs": 6.473,
+          "serializeMs": 0.7500410000000102,
+          "outputBytes": 229559
+        }
+      ]
+    },
+    {
+      "name": "independence-list-8-maps",
+      "family": "independence",
+      "action": "list",
+      "fixture": {
+        "maps": 8,
+        "nodes": 800,
+        "links": 792,
+        "signatures": 800,
+        "canonicalBytes": 383328,
+        "mapDocumentBytes": 259216,
+        "signatureBytes": 398256
+      },
+      "correctness": {
+        "maps": 8,
+        "nodes": 800,
+        "links": 792,
+        "signatures": 800,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "minMs": 48.86251500000003,
+      "medianMs": 51.018839999999955,
+      "maxMs": 57.766249000000016,
+      "samples": [
+        {
+          "wallMs": 54.30582100000004,
+          "cpuMs": 55.174,
+          "serializeMs": 8.257486000000085,
+          "outputBytes": 1836896
+        },
+        {
+          "wallMs": 57.766249000000016,
+          "cpuMs": 69.167,
+          "serializeMs": 5.926171000000068,
+          "outputBytes": 1836896
+        },
+        {
+          "wallMs": 48.86251500000003,
+          "cpuMs": 49.79,
+          "serializeMs": 5.813484000000017,
+          "outputBytes": 1836896
+        },
+        {
+          "wallMs": 50.12244199999998,
+          "cpuMs": 55.221,
+          "serializeMs": 6.150214000000005,
+          "outputBytes": 1836896
+        },
+        {
+          "wallMs": 49.52624800000012,
+          "cpuMs": 49.537,
+          "serializeMs": 6.276761000000079,
+          "outputBytes": 1836896
+        },
+        {
+          "wallMs": 51.75537099999997,
+          "cpuMs": 55.932,
+          "serializeMs": 6.781699000000117,
+          "outputBytes": 1836896
+        },
+        {
+          "wallMs": 51.018839999999955,
+          "cpuMs": 58.528,
+          "serializeMs": 6.282079000000067,
+          "outputBytes": 1836896
+        }
+      ]
+    },
+    {
+      "name": "independence-selected-24-maps",
+      "family": "independence",
+      "action": "selected",
+      "fixture": {
+        "maps": 24,
+        "nodes": 2400,
+        "links": 2376,
+        "signatures": 2400,
+        "canonicalBytes": 1149984,
+        "mapDocumentBytes": 777648,
+        "signatureBytes": 1194768
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "minMs": 12.78490499999998,
+      "medianMs": 13.518421999999873,
+      "maxMs": 16.505468000000064,
+      "samples": [
+        {
+          "wallMs": 14.136988999999858,
+          "cpuMs": 14.16,
+          "serializeMs": 0.8967489999999998,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 13.95033199999989,
+          "cpuMs": 13.969,
+          "serializeMs": 0.7622989999999845,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 16.505468000000064,
+          "cpuMs": 16.524,
+          "serializeMs": 0.7297810000000027,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 13.518421999999873,
+          "cpuMs": 13.531,
+          "serializeMs": 0.742289000000028,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 12.78490499999998,
+          "cpuMs": 12.798,
+          "serializeMs": 0.7196659999999611,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 12.866084999999885,
+          "cpuMs": 12.877,
+          "serializeMs": 0.7481980000000021,
+          "outputBytes": 229559
+        },
+        {
+          "wallMs": 12.874818000000005,
+          "cpuMs": 12.889,
+          "serializeMs": 0.8057750000000397,
+          "outputBytes": 229559
+        }
+      ]
+    },
+    {
+      "name": "independence-list-24-maps",
+      "family": "independence",
+      "action": "list",
+      "fixture": {
+        "maps": 24,
+        "nodes": 2400,
+        "links": 2376,
+        "signatures": 2400,
+        "canonicalBytes": 1149984,
+        "mapDocumentBytes": 777648,
+        "signatureBytes": 1194768
+      },
+      "correctness": {
+        "maps": 24,
+        "nodes": 2400,
+        "links": 2376,
+        "signatures": 2400,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "minMs": 322.94105500000023,
+      "medianMs": 341.55220899999995,
+      "maxMs": 354.88870499999985,
+      "samples": [
+        {
+          "wallMs": 354.88870499999985,
+          "cpuMs": 364.073,
+          "serializeMs": 41.37367800000038,
+          "outputBytes": 5509856
+        },
+        {
+          "wallMs": 334.73131600000033,
+          "cpuMs": 356.974,
+          "serializeMs": 53.11191199999985,
+          "outputBytes": 5509856
+        },
+        {
+          "wallMs": 341.55220899999995,
+          "cpuMs": 354.343,
+          "serializeMs": 35.90120900000011,
+          "outputBytes": 5509856
+        },
+        {
+          "wallMs": 322.94105500000023,
+          "cpuMs": 328.842,
+          "serializeMs": 39.20777799999996,
+          "outputBytes": 5509856
+        },
+        {
+          "wallMs": 330.6543650000003,
+          "cpuMs": 349.364,
+          "serializeMs": 34.06725099999949,
+          "outputBytes": 5509856
+        },
+        {
+          "wallMs": 346.8115969999999,
+          "cpuMs": 368.22,
+          "serializeMs": 32.92954599999939,
+          "outputBytes": 5509856
+        },
+        {
+          "wallMs": 348.2661769999995,
+          "cpuMs": 367.207,
+          "serializeMs": 31.64942499999961,
+          "outputBytes": 5509856
+        }
+      ]
+    },
+    {
+      "name": "constant-links-list-1-maps",
+      "family": "constant-links",
+      "action": "list",
+      "fixture": {
+        "maps": 1,
+        "nodes": 60,
+        "links": 720,
+        "signatures": 0,
+        "canonicalBytes": 329760,
+        "mapDocumentBytes": 100765,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 60,
+        "links": 720,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 10.724240000000464,
+      "medianMs": 11.68844799999988,
+      "maxMs": 21.670008000000053,
+      "samples": [
+        {
+          "wallMs": 11.326723000000129,
+          "cpuMs": 12.412,
+          "serializeMs": 2.223265000000538,
+          "outputBytes": 662195
+        },
+        {
+          "wallMs": 11.68844799999988,
+          "cpuMs": 13.322,
+          "serializeMs": 2.1870600000002014,
+          "outputBytes": 662195
+        },
+        {
+          "wallMs": 10.724240000000464,
+          "cpuMs": 10.736,
+          "serializeMs": 2.042867000000115,
+          "outputBytes": 662195
+        },
+        {
+          "wallMs": 18.628342000000885,
+          "cpuMs": 18.643,
+          "serializeMs": 4.129648000000088,
+          "outputBytes": 662195
+        },
+        {
+          "wallMs": 21.670008000000053,
+          "cpuMs": 21.687,
+          "serializeMs": 2.186749999999847,
+          "outputBytes": 662195
+        },
+        {
+          "wallMs": 10.952268000000004,
+          "cpuMs": 10.965,
+          "serializeMs": 1.9816659999996773,
+          "outputBytes": 662195
+        },
+        {
+          "wallMs": 14.293067999999948,
+          "cpuMs": 15.251,
+          "serializeMs": 2.1079630000003817,
+          "outputBytes": 662195
+        }
+      ]
+    },
+    {
+      "name": "constant-links-list-8-maps",
+      "family": "constant-links",
+      "action": "list",
+      "fixture": {
+        "maps": 8,
+        "nodes": 480,
+        "links": 720,
+        "signatures": 0,
+        "canonicalBytes": 329760,
+        "mapDocumentBytes": 186200,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 8,
+        "nodes": 480,
+        "links": 720,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 34.47738500000014,
+      "medianMs": 35.00940300000002,
+      "maxMs": 42.492325000000164,
+      "samples": [
+        {
+          "wallMs": 40.498671000000286,
+          "cpuMs": 40.527,
+          "serializeMs": 3.710909000000356,
+          "outputBytes": 757648
+        },
+        {
+          "wallMs": 42.492325000000164,
+          "cpuMs": 51.921,
+          "serializeMs": 2.9042230000004565,
+          "outputBytes": 757648
+        },
+        {
+          "wallMs": 34.47738500000014,
+          "cpuMs": 34.875,
+          "serializeMs": 2.574485000000095,
+          "outputBytes": 757648
+        },
+        {
+          "wallMs": 34.60228999999981,
+          "cpuMs": 35.285,
+          "serializeMs": 3.1659700000000157,
+          "outputBytes": 757648
+        },
+        {
+          "wallMs": 35.32470100000046,
+          "cpuMs": 35.343,
+          "serializeMs": 3.834111000000121,
+          "outputBytes": 757648
+        },
+        {
+          "wallMs": 34.670852000000195,
+          "cpuMs": 34.91,
+          "serializeMs": 2.8483699999997043,
+          "outputBytes": 757648
+        },
+        {
+          "wallMs": 35.00940300000002,
+          "cpuMs": 35.027,
+          "serializeMs": 2.51511599999958,
+          "outputBytes": 757648
+        }
+      ]
+    },
+    {
+      "name": "constant-links-list-24-maps",
+      "family": "constant-links",
+      "action": "list",
+      "fixture": {
+        "maps": 24,
+        "nodes": 1440,
+        "links": 720,
+        "signatures": 0,
+        "canonicalBytes": 329760,
+        "mapDocumentBytes": 381480,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 24,
+        "nodes": 1440,
+        "links": 720,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 90.45719199999985,
+      "medianMs": 94.28941899999973,
+      "maxMs": 97.85990700000002,
+      "samples": [
+        {
+          "wallMs": 94.65089400000033,
+          "cpuMs": 94.939,
+          "serializeMs": 3.3908540000002176,
+          "outputBytes": 976040
+        },
+        {
+          "wallMs": 94.28941899999973,
+          "cpuMs": 101.739,
+          "serializeMs": 3.4521450000002005,
+          "outputBytes": 976040
+        },
+        {
+          "wallMs": 93.13762200000019,
+          "cpuMs": 93.16,
+          "serializeMs": 3.483212000000094,
+          "outputBytes": 976040
+        },
+        {
+          "wallMs": 95.82849299999998,
+          "cpuMs": 97.286,
+          "serializeMs": 3.490092000000004,
+          "outputBytes": 976040
+        },
+        {
+          "wallMs": 97.85990700000002,
+          "cpuMs": 97.883,
+          "serializeMs": 3.636037999999644,
+          "outputBytes": 976040
+        },
+        {
+          "wallMs": 90.45719199999985,
+          "cpuMs": 90.496,
+          "serializeMs": 4.908795000000282,
+          "outputBytes": 976040
+        },
+        {
+          "wallMs": 93.96316699999988,
+          "cpuMs": 95.334,
+          "serializeMs": 3.6928319999997257,
+          "outputBytes": 976040
+        }
+      ]
+    },
+    {
+      "name": "dense-selected-0-signatures-100-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 0,
+        "canonicalBytes": 45800,
+        "mapDocumentBytes": 32525,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 1.536036000000422,
+      "medianMs": 1.5688950000003388,
+      "maxMs": 1.697266000000127,
+      "samples": [
+        {
+          "wallMs": 1.5632059999998091,
+          "cpuMs": 1.584,
+          "serializeMs": 0.40439900000001217,
+          "outputBytes": 111604
+        },
+        {
+          "wallMs": 1.5428560000000289,
+          "cpuMs": 1.547,
+          "serializeMs": 0.3993220000002111,
+          "outputBytes": 111604
+        },
+        {
+          "wallMs": 1.5688950000003388,
+          "cpuMs": 1.572,
+          "serializeMs": 0.392441000000872,
+          "outputBytes": 111604
+        },
+        {
+          "wallMs": 1.536036000000422,
+          "cpuMs": 1.539,
+          "serializeMs": 0.3925520000002507,
+          "outputBytes": 111604
+        },
+        {
+          "wallMs": 1.6291039999996428,
+          "cpuMs": 1.633,
+          "serializeMs": 0.373873999999887,
+          "outputBytes": 111604
+        },
+        {
+          "wallMs": 1.697266000000127,
+          "cpuMs": 1.702,
+          "serializeMs": 0.3785100000004604,
+          "outputBytes": 111604
+        },
+        {
+          "wallMs": 1.5729110000002038,
+          "cpuMs": 1.576,
+          "serializeMs": 0.38583099999959813,
+          "outputBytes": 111604
+        }
+      ]
+    },
+    {
+      "name": "dense-selected-0-signatures-1000-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 0,
+        "canonicalBytes": 458000,
+        "mapDocumentBytes": 143225,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 9.92901299999994,
+      "medianMs": 10.078384999999798,
+      "maxMs": 10.186464000000342,
+      "samples": [
+        {
+          "wallMs": 10.152683999999681,
+          "cpuMs": 17.242,
+          "serializeMs": 2.712539000000106,
+          "outputBytes": 921370
+        },
+        {
+          "wallMs": 9.92901299999994,
+          "cpuMs": 16.661,
+          "serializeMs": 2.659230000000207,
+          "outputBytes": 921370
+        },
+        {
+          "wallMs": 9.952597999999853,
+          "cpuMs": 9.962,
+          "serializeMs": 2.8212899999998626,
+          "outputBytes": 921370
+        },
+        {
+          "wallMs": 10.107476999999562,
+          "cpuMs": 9.978,
+          "serializeMs": 2.704297000000224,
+          "outputBytes": 921370
+        },
+        {
+          "wallMs": 10.186464000000342,
+          "cpuMs": 10.197,
+          "serializeMs": 2.9411479999998846,
+          "outputBytes": 921370
+        },
+        {
+          "wallMs": 10.078384999999798,
+          "cpuMs": 10.08,
+          "serializeMs": 2.906286999999793,
+          "outputBytes": 921370
+        },
+        {
+          "wallMs": 10.06130900000062,
+          "cpuMs": 10.114,
+          "serializeMs": 2.662735999999313,
+          "outputBytes": 921370
+        }
+      ]
+    },
+    {
+      "name": "dense-selected-100-signatures-100-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 100,
+        "canonicalBytes": 45800,
+        "mapDocumentBytes": 32525,
+        "signatureBytes": 49882
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 1.9697379999997793,
+      "medianMs": 2.0258319999993546,
+      "maxMs": 9.663459999999759,
+      "samples": [
+        {
+          "wallMs": 1.9697379999997793,
+          "cpuMs": 1.98,
+          "serializeMs": 0.7601459999996223,
+          "outputBytes": 220466
+        },
+        {
+          "wallMs": 2.013364000000365,
+          "cpuMs": 2.018,
+          "serializeMs": 0.7100730000001931,
+          "outputBytes": 220466
+        },
+        {
+          "wallMs": 2.0258319999993546,
+          "cpuMs": 2.03,
+          "serializeMs": 0.707698000000164,
+          "outputBytes": 220466
+        },
+        {
+          "wallMs": 2.162694000000556,
+          "cpuMs": 2.557,
+          "serializeMs": 0.7243639999996958,
+          "outputBytes": 220466
+        },
+        {
+          "wallMs": 9.663459999999759,
+          "cpuMs": 22.685,
+          "serializeMs": 0.7522749999998268,
+          "outputBytes": 220466
+        },
+        {
+          "wallMs": 2.1920780000000377,
+          "cpuMs": 2.197,
+          "serializeMs": 0.6901630000002115,
+          "outputBytes": 220466
+        },
+        {
+          "wallMs": 2.020633999999518,
+          "cpuMs": 2.025,
+          "serializeMs": 0.7852430000002641,
+          "outputBytes": 220466
+        }
+      ]
+    },
+    {
+      "name": "dense-selected-100-signatures-1000-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 100,
+        "canonicalBytes": 458000,
+        "mapDocumentBytes": 143225,
+        "signatureBytes": 49882
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 11.384550000000672,
+      "medianMs": 11.664784999999938,
+      "maxMs": 17.029124000000593,
+      "samples": [
+        {
+          "wallMs": 11.485740000000078,
+          "cpuMs": 11.506,
+          "serializeMs": 2.987716999999975,
+          "outputBytes": 1030232
+        },
+        {
+          "wallMs": 11.484989000000496,
+          "cpuMs": 11.499,
+          "serializeMs": 3.1214749999999185,
+          "outputBytes": 1030232
+        },
+        {
+          "wallMs": 12.430349999999635,
+          "cpuMs": 12.442,
+          "serializeMs": 2.9949679999999717,
+          "outputBytes": 1030232
+        },
+        {
+          "wallMs": 11.664784999999938,
+          "cpuMs": 11.669,
+          "serializeMs": 3.3041259999999966,
+          "outputBytes": 1030232
+        },
+        {
+          "wallMs": 15.274923999999373,
+          "cpuMs": 15.287,
+          "serializeMs": 3.0698190000002796,
+          "outputBytes": 1030232
+        },
+        {
+          "wallMs": 17.029124000000593,
+          "cpuMs": 24.262,
+          "serializeMs": 3.0388929999999164,
+          "outputBytes": 1030232
+        },
+        {
+          "wallMs": 11.384550000000672,
+          "cpuMs": 11.394,
+          "serializeMs": 3.0188029999999344,
+          "outputBytes": 1030232
+        }
+      ]
+    },
+    {
+      "name": "dense-selected-1000-signatures-100-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 1000,
+        "canonicalBytes": 45800,
+        "mapDocumentBytes": 32525,
+        "signatureBytes": 500783
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 1000,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 6.046299000000545,
+      "medianMs": 6.18660699999964,
+      "maxMs": 6.386714000000211,
+      "samples": [
+        {
+          "wallMs": 6.046299000000545,
+          "cpuMs": 6.063,
+          "serializeMs": 3.8953529999998864,
+          "outputBytes": 1204168
+        },
+        {
+          "wallMs": 6.3620270000001256,
+          "cpuMs": 6.369,
+          "serializeMs": 3.9498729999995703,
+          "outputBytes": 1204168
+        },
+        {
+          "wallMs": 6.12123100000008,
+          "cpuMs": 6.127,
+          "serializeMs": 3.850615000000289,
+          "outputBytes": 1204168
+        },
+        {
+          "wallMs": 6.292123999999603,
+          "cpuMs": 6.299,
+          "serializeMs": 3.917464999999538,
+          "outputBytes": 1204168
+        },
+        {
+          "wallMs": 6.18660699999964,
+          "cpuMs": 6.193,
+          "serializeMs": 3.9789959999998246,
+          "outputBytes": 1204168
+        },
+        {
+          "wallMs": 6.386714000000211,
+          "cpuMs": 6.394,
+          "serializeMs": 4.242355999999745,
+          "outputBytes": 1204168
+        },
+        {
+          "wallMs": 6.065126999999848,
+          "cpuMs": 6.075,
+          "serializeMs": 4.216266999999789,
+          "outputBytes": 1204168
+        }
+      ]
+    },
+    {
+      "name": "dense-selected-1000-signatures-1000-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 1000,
+        "canonicalBytes": 458000,
+        "mapDocumentBytes": 143225,
+        "signatureBytes": 500783
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 1000,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "minMs": 19.782874999999876,
+      "medianMs": 23.363781000000017,
+      "maxMs": 29.5312899999999,
+      "samples": [
+        {
+          "wallMs": 23.363781000000017,
+          "cpuMs": 23.864,
+          "serializeMs": 8.249574999999822,
+          "outputBytes": 2013934
+        },
+        {
+          "wallMs": 26.430975999999646,
+          "cpuMs": 26.468,
+          "serializeMs": 6.267778000000362,
+          "outputBytes": 2013934
+        },
+        {
+          "wallMs": 25.894071000000622,
+          "cpuMs": 25.977,
+          "serializeMs": 6.208208999999442,
+          "outputBytes": 2013934
+        },
+        {
+          "wallMs": 29.5312899999999,
+          "cpuMs": 36.591,
+          "serializeMs": 6.556445999999596,
+          "outputBytes": 2013934
+        },
+        {
+          "wallMs": 22.65367900000001,
+          "cpuMs": 22.673,
+          "serializeMs": 6.6310160000002725,
+          "outputBytes": 2013934
+        },
+        {
+          "wallMs": 19.782874999999876,
+          "cpuMs": 19.799,
+          "serializeMs": 6.273917000000438,
+          "outputBytes": 2013934
+        },
+        {
+          "wallMs": 20.011043000000427,
+          "cpuMs": 20.028,
+          "serializeMs": 5.979460000000472,
+          "outputBytes": 2013934
+        }
+      ]
+    }
+  ]
+}
