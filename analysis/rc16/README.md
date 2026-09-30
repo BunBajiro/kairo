@@ -6,7 +6,7 @@
 
 This report analyses canonical RC16 `57c8dcc7fbd8fc2b62129498d1819050c78381a1` against released, post-optimisation v0.7.3 `239794774320fcdebaa1d76ce8a77c5c25cfc48c`. Application code, dependencies and version are unchanged. All 637 runtime tests, application type checks, and both production frontend builds passed locally.
 
-The investigation branch is `perf/rc16-checkpoint-v0.8.0`. Main and the Universe feature branch remain untouched. Local backend/updater analysis is complete; final browser measurements are being collected. GitHub publication was initially held by automatic approval review; the user explicitly approved the internal upload and benchmark run on 30 September. The second-environment workflow is being prepared/run; no successful GitHub performance confirmation is claimed yet.
+The investigation branch is `perf/rc16-checkpoint-v0.8.0`. Main and the Universe feature branch remain untouched. Local backend, updater, full browser and matched Overview analysis is complete; independent GitHub confirmation is being collected. GitHub publication was initially held by automatic approval review; the user explicitly approved the internal upload and benchmark run on 30 September. The [second-environment workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690) is running at harness commit `0344ff4ec069080a87e19294fa8fddc28f737327`; no successful GitHub performance confirmation is claimed yet.
 
 ## What survived the feature sprint
 
@@ -62,11 +62,32 @@ For Universe state, share one history aggregation across consumers and invalidat
 
 [Backend review and source references](reviews/backend.md) · [Timing data](raw/backend-timings.json) · [Reverse-order data](raw/backend-timings-reverse.json)
 
-## Browser findings
+## Browser findings: Maps interaction is the clearest frontend target
 
-Final browser measurements are pending. The completed code review and diagnostic smoke identify two coordinated targets: Maps rebuilds its scene through React camera-state updates, while matching change events immediately reload the complete map list. The final report will distinguish measured interaction cost, idle work, payloads and request amplification.
+The compiled RC16 browser run exercises real controls in headless Chromium with software rendering. The table contains three repeated six-click zoom samples per map size; the RAF column is an observed callback-interval statistic, **not a Windows desktop FPS claim**.
 
-[Frontend review](reviews/frontend.md)
+| Map systems | Main-thread task time per zoom sample | Observed RAF p95 range | Renderer tasks over 50 ms |
+|---|---:|---:|---:|
+| 25 | 1.15–1.24 seconds | 16.7 ms | 0 |
+| 100 | 2.22–2.40 seconds | 50.0 ms | 0–3 |
+| 300 | 3.37–3.48 seconds | 116.6–116.7 ms | 30–31 |
+| 600 | 5.17–5.33 seconds | 233.3–250.0 ms | 21–26 |
+
+The 600-node scripted pan also consumed about 4.22 seconds of main-thread task time. Large views therefore incur real interaction work, even when most scene content has not changed. Two concrete contributors are visible: each camera animation updates React state and regenerates scene elements, and it writes an inherited `--chain-zoom` CSS property each frame.
+
+A reversible **analysis-only** browser experiment isolated the CSS contribution. In an A–B–B–A sequence on the same 600-node map, temporarily registering that property as a non-inheriting numeric property reduced three-click style-recalculation time from **1,209/1,264 ms to 7.9/6.9 ms**. Total main-thread work fell from **2,475/2,523 ms to 1,610/1,535 ms**; observed RAF p95 fell from about 217 to 100 ms. Removing that registration restored the slowdown. The probe changes registration/type metadata as well as inheritance, so it isolates the custom-property style path rather than inheritance alone. Source review found no consumers of the property. This is strong evidence for a small first change, followed by measuring the remaining React/scene cost. No application source was modified by the experiment.
+
+Refresh amplification is separately confirmed. Ten identical change events triggered **ten complete Maps requests plus one Universe request**, returning about **7.45 MiB** of loopback responses in the four-map fixture. Ignoring stale responses does not avoid server work or transport. Coalesce matching changes, share scoped invalidation ownership, and request compact map summaries plus selected detail. Preserve the newest revision and pilot/map identity while writes are in flight.
+
+The existing efficient boundaries should remain. Atlas and paused replay did not continuously repaint during their idle samples; each observed one paint, with paused replay's paint coinciding with the fallback state refresh. Some idle windows include ordinary periodic state/Universe/Maps polling, so they are not evidence of an endless animation loop. Atlas/ref-based camera and territory-worker ownership are useful existing patterns. Keep Atlas scope focused this sprint.
+
+A measurement-observer bug in an exploratory browser run was detected and fixed: adjacent samples could retain a prior RAF observer. Final samples use a frozen corrected harness, bind observers to their own sample, and assert strictly increasing timestamps. Exploratory output is retained separately and is not the source of these final figures.
+
+The minimal Overview comparison used the same compiled-browser fixture in balanced order: v0.7.3 consumed 0.224–0.259% of the renderer-main-thread observation budget, RC16 0.243–0.250%, with no long tasks and three requests in each 35-second sample. Those overlapping ranges do **not** demonstrate a broad renderer-idle regression. This is distinct from the backend idle CPU increase above.
+
+The statically loaded page JavaScript grew from 831,476 to 1,370,976 bytes; gzip size rose from 238,885 to 388,505 bytes (+62.6%). Navigation-boundary lazy loading is worth considering after the interaction/refresh fixes. It is a payload fact, not a measured 62.6% load-time regression.
+
+[Frontend review](reviews/frontend.md) · [Final browser data](raw/frontend-browser.json)
 
 ## Updater: retain the design and budget its peak work
 

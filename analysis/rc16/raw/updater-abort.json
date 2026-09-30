@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-30T11:05:16.267Z",
+  "mode": "abort",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "notes": [
+    "Analysis-only harness; production modules are imported without modification.",
+    "Timings are local elapsed and process CPU. RSS includes worker threads; JS heap snapshots report the main thread.",
+    "Event-loop delay uses a 5 ms histogram; memory sampled every 100 ms; disk every 1000 ms (sampled peaks are lower bounds)."
+  ],
+  "measurements": [
+    {
+      "label": "bundled_inventory_before_archive",
+      "elapsedMs": 16.461188999999997,
+      "cpuUserMs": 7.831,
+      "cpuSystemMs": 11.34,
+      "eventLoop": {
+        "activeMs": 16.367148999115468,
+        "idleMs": 0.11796599999999999,
+        "utilization": 0.9928440899559191,
+        "delayMeanMs": 5.6832,
+        "delayP99Ms": 5.685247,
+        "delayMaxMs": 5.685247,
+        "samples": 1
+      },
+      "memory": {
+        "rssBefore": 39714816,
+        "rssAfter": 48963584,
+        "peakRss": 48963584,
+        "peakMainHeapUsed": 13661760,
+        "processMaxRssKiB": 47944
+      },
+      "disk": {
+        "finalBytes": 0,
+        "sampledPeakBytes": 0,
+        "samples": 0
+      }
+    },
+    {
+      "label": "archive_download_then_real_worker_abort",
+      "elapsedMs": 1143.8246570000001,
+      "cpuUserMs": 1367.732,
+      "cpuSystemMs": 235.397,
+      "eventLoop": {
+        "activeMs": 140.9959719999695,
+        "idleMs": 1002.8477740000001,
+        "utilization": 0.12326506351329324,
+        "delayMeanMs": 5.083158959641255,
+        "delayP99Ms": 5.709823,
+        "delayMaxMs": 6.672383,
+        "samples": 223
+      },
+      "memory": {
+        "rssBefore": 49094656,
+        "rssAfter": 174669824,
+        "peakRss": 185950208,
+        "peakMainHeapUsed": 13725328,
+        "processMaxRssKiB": 182616
+      },
+      "disk": {
+        "finalBytes": 196,
+        "sampledPeakBytes": 99197455,
+        "samples": 1
+      },
+      "result": {
+        "cancellationMs": 6.775628999999981,
+        "phase": "idle",
+        "remaining": [
+          {
+            "name": "state.json",
+            "bytes": 196
+          }
+        ]
+      }
+    }
+  ],
+  "input": {
+    "archiveBasename": "eve-online-static-data-3552227-jsonl.zip",
+    "archiveBytes": 99197259,
+    "expectedBuild": 3552227
+  },
+  "phases": [
+    {
+      "atMs": 17.031042999999997,
+      "phase": "idle::",
+      "rss": 48963584
+    },
+    {
+      "atMs": 18.379880999999997,
+      "phase": "checking::",
+      "rss": 49094656
+    },
+    {
+      "atMs": 25.900453999999996,
+      "phase": "downloading:Downloading the official SDE:",
+      "rss": 49618944
+    },
+    {
+      "atMs": 29.207032999999996,
+      "phase": "downloading:Downloading the official SDE:0",
+      "rss": 49881088
+    },
+    {
+      "atMs": 155.160285,
+      "phase": "building:Preparing and validating the new dataset:",
+      "rss": 108789760
+    },
+    {
+      "atMs": 213.83295499999997,
+      "phase": "building:Validating the official archive:",
+      "rss": 106127360
+    },
+    {
+      "atMs": 1161.484271,
+      "phase": "idle::",
+      "rss": 174669824
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "createdAt": "2026-09-30T11:11:33.348125+00:00",
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sourceBranch": "feature/universe-v0.8.0",
+  "localRestoredCommit": "36c69fb8de75ae7a6f673233d560753540c7c759",
+  "sourceManifest": {
+    "path": "analysis/rc16/rc16-source-manifest.json",
+    "sha256": "2f5edc18d320384a405383c1ba51fbd858a56e95beb309f81d9c94b90039b0d7"
+  },
+  "sourceRelationship": "Canonical RC16 is the GitHub commit. Local synthetic commit contains restored source; all used/reviewed production files listed here independently match canonical Git blob IDs. Checkpoint-only workflow and AGENTS edits are outside these production modules.",
+  "harness": {
+    "measuredPathAtRun": "analysis/rc16/harness/updater-bench.mjs",
+    "measuredHarnessSha256": "c93068167f1ecdb243141917519dbe91b877f1f59880ef60388b35875ff8b4a1",
+    "measuredSourceSnapshotPath": "analysis/rc16/harness/updater-bench-measured-20260930.mjs",
+    "measuredHashCapturedAtRun": false,
+    "measuredHashReconstruction": "Reconstructed exact measured source by reversing the one documented post-run field-name change: distinctStatusTransitions: phases.length -> statusEmissions: phases.length. Hash generated after measurement; not a contemporaneous capture. Successful measured light/archive/abort runs all used that pre-rename code.",
+    "currentPath": "analysis/rc16/harness/updater-bench.mjs",
+    "currentSha256": "20668819a60279f6bda7f8add664b8346bd8794bacf5442669760ed678b80305",
+    "postMeasurementChange": "Rename result.statusEmissions to result.distinctStatusTransitions; no execution or measurement logic changed.",
+    "currentHarnessUsedForTheseSamples": false
+  },
+  "productionUsedByHarness": [
+    {
+      "path": "server/datasets.mjs",
+      "bytes": 23239,
+      "sha256": "7dd095c3eba4d16365d97d6e6758f615262a18c966803f02074742de6863c2ed",
+      "gitBlobSha": "6d56e73e8b645aac3e56e771ecf798ef2f15aba5",
+      "canonicalGitBlobSha": "6d56e73e8b645aac3e56e771ecf798ef2f15aba5",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/sde-build.mjs",
+      "bytes": 20521,
+      "sha256": "864024417f75b35a15ccd7652a949c0ca1db573070b0208715fd71262f0d8955",
+      "gitBlobSha": "3b13a1cfb05589f30ce79c54764e0541b7e33883",
+      "canonicalGitBlobSha": "3b13a1cfb05589f30ce79c54764e0541b7e33883",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/sde-archive.mjs",
+      "bytes": 7291,
+      "sha256": "57641ad7d71fa9bb431ea2359c2af743f38b7abe0276ef8e2011e6d213059826",
+      "gitBlobSha": "725b6f48eb1750b46d7dc9664780768ab0c6aceb",
+      "canonicalGitBlobSha": "725b6f48eb1750b46d7dc9664780768ab0c6aceb",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/sde-worker.mjs",
+      "bytes": 507,
+      "sha256": "bb89ca5c0bf3dbe95db395ac26e447c9106d0c9ce8291c018207f7a4104f08ab",
+      "gitBlobSha": "2be2a187bff060d6d3e4b1a6aa12df7336ae7cb6",
+      "canonicalGitBlobSha": "2be2a187bff060d6d3e4b1a6aa12df7336ae7cb6",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/data/universe-provenance.json",
+      "bytes": 2805,
+      "sha256": "c88cdf70ba9ecfb347a27a38314d4f546e3e1a56ebcc614bb749cb742df7778c",
+      "gitBlobSha": "8f64c5fe051ac6fa066764283357de23f39eb036",
+      "canonicalGitBlobSha": "8f64c5fe051ac6fa066764283357de23f39eb036",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/data/market-categories.json",
+      "bytes": 499018,
+      "sha256": "043c10f621a4d4e235e59330dba0a88f7733b2acf639d67bc316745e8fa669b1",
+      "gitBlobSha": "52fbf4aa392c60e66a70de6c3a82596d21709966",
+      "canonicalGitBlobSha": "52fbf4aa392c60e66a70de6c3a82596d21709966",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/data/npc-market-owners.json",
+      "bytes": 16536,
+      "sha256": "ac03138c36976194bcbf66746c42eee23d407547df8b71e43a42e1116d2d5677",
+      "gitBlobSha": "8cab0362290f186251268311d74bbf6401417ece",
+      "canonicalGitBlobSha": "8cab0362290f186251268311d74bbf6401417ece",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/data/universe-wormholes.json",
+      "bytes": 629624,
+      "sha256": "62d38911e132b108bd04322704a3f86bbcbbb9c7c43577a8f6cfbeca33a4fb16",
+      "gitBlobSha": "ebc8930ece6f0f6b5b74ef9e0773a83b8928a415",
+      "canonicalGitBlobSha": "ebc8930ece6f0f6b5b74ef9e0773a83b8928a415",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/data/universe-destinations.json",
+      "bytes": 41934,
+      "sha256": "8f90a9fb5191dc98696fd32a474617cc84c9e0a9af752442a619bd99ed0cb3cd",
+      "gitBlobSha": "9c531c9784d96fde0a1e3bdba077a06efa6ce17a",
+      "canonicalGitBlobSha": "9c531c9784d96fde0a1e3bdba077a06efa6ce17a",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/data/universe-points.json",
+      "bytes": 534044,
+      "sha256": "6f5a2a00a177679c1f182c0500c310b21b99f95117906983c524bda84b632e23",
+      "gitBlobSha": "2b53b0281ca70c9bfca56868c5c07387f515c870",
+      "canonicalGitBlobSha": "2b53b0281ca70c9bfca56868c5c07387f515c870",
+      "matchesCanonical": true
+    }
+  ],
+  "additionalProductionReviewedOnly": [
+    {
+      "path": "server/runtime-supervisor.mjs",
+      "bytes": 10676,
+      "sha256": "3357dcd24688bd005cdf951b0abae8e56efd6a9910ba041dfa40d79d04bc9636",
+      "gitBlobSha": "e7978446294281eaca341cb4e568a089a87288e3",
+      "canonicalGitBlobSha": "e7978446294281eaca341cb4e568a089a87288e3",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/runtime-child.mjs",
+      "bytes": 3335,
+      "sha256": "9d4da98f658a88baf59275674a7cb99cd41175e3ce603e27f56fbc52c0774e06",
+      "gitBlobSha": "2f121356f3e7690cadcfb43490f10c6b4feb20cf",
+      "canonicalGitBlobSha": "2f121356f3e7690cadcfb43490f10c6b4feb20cf",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/runtime-lock.mjs",
+      "bytes": 988,
+      "sha256": "7f59922015b75028ee922d21d547f9df87da3e40346b2a5944ce6c0016bc84af",
+      "gitBlobSha": "62677c0ab7354ffc6f747839fb42ee58fb09fb9b",
+      "canonicalGitBlobSha": "62677c0ab7354ffc6f747839fb42ee58fb09fb9b",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/dataset-paths.mjs",
+      "bytes": 985,
+      "sha256": "e84e434fd7e6e6a36f7f569c3a8886d3c80d8c152bfd5cc69abd0fe9a4b7bbd1",
+      "gitBlobSha": "16bffd23693094266e9a0d54115074955a66e868",
+      "canonicalGitBlobSha": "16bffd23693094266e9a0d54115074955a66e868",
+      "matchesCanonical": true
+    },
+    {
+      "path": "server/index.mjs",
+      "bytes": 50345,
+      "sha256": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf",
+      "gitBlobSha": "9b9d7c8f94f9fc715816ae8837711130e74eaf71",
+      "canonicalGitBlobSha": "9b9d7c8f94f9fc715816ae8837711130e74eaf71",
+      "matchesCanonical": true
+    }
+  ],
+  "inputArchive": {
+    "name": "eve-online-static-data-3552227-jsonl.zip",
+    "bytes": 99197259,
+    "sha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83",
+    "hashSource": "Production builder returned sourceArchiveSha256 in updater-archive.json."
+  },
+  "samples": [
+    {
+      "path": "analysis/rc16/raw/updater-light.json",
+      "mode": "light",
+      "generatedAt": "2026-09-30T11:04:47.143Z",
+      "sha256": "f6ac16513a3a91e39b73d38b1c4eb21fdacf427e085b4f22553b998063369ba6",
+      "measuredHarnessSha256": "c93068167f1ecdb243141917519dbe91b877f1f59880ef60388b35875ff8b4a1",
+      "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "measurementValuesChangedAfterRun": false,
+      "postMeasurementMetadataChange": null
+    },
+    {
+      "path": "analysis/rc16/raw/updater-archive.json",
+      "mode": "archive",
+      "generatedAt": "2026-09-30T11:04:47.806Z",
+      "sha256": "8813f6d8062717486a9b435e44822eb3e1d87a181d5cf0446532a224a0ca6339",
+      "measuredHarnessSha256": "c93068167f1ecdb243141917519dbe91b877f1f59880ef60388b35875ff8b4a1",
+      "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "measurementValuesChangedAfterRun": false,
+      "postMeasurementMetadataChange": "Renamed misleading result.statusEmissions to result.distinctStatusTransitions; same numeric value42 and same phases; JSON formatting rewritten."
+    },
+    {
+      "path": "analysis/rc16/raw/updater-abort.json",
+      "mode": "abort",
+      "generatedAt": "2026-09-30T11:05:16.267Z",
+      "sha256": "250693f7f95f22753ce1fddca1f94ca5849f1cbf91894d1dfcf2fdc77044f88e",
+      "measuredHarnessSha256": "c93068167f1ecdb243141917519dbe91b877f1f59880ef60388b35875ff8b4a1",
+      "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "measurementValuesChangedAfterRun": false,
+      "postMeasurementMetadataChange": null
+    }
+  ],
+  "timingsRerunForProvenanceCorrection": false
+}

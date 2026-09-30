@@ -1,0 +1,224 @@
+{
+  "mode": "diagnostics",
+  "order": "forward",
+  "recordedAt": "2026-09-30T11:07:22.893Z",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "arch": "x64",
+  "platform": "linux",
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "fixture": {
+    "clock": "2026-09-30T09:00:00.000Z",
+    "systems": 8490,
+    "known": 5485,
+    "wormhole": 2604,
+    "gates": 6989,
+    "nodesPerMap": 100,
+    "linksPerMap": 99,
+    "signaturesPerMap": 100
+  },
+  "methodology": "Single workload invocation with SQL instrumentation; not latency evidence. Reads count emitted rows and body/value bytes, not SQLite pages or physical IO.",
+  "networkAttempts": 0,
+  "queryPlans": {
+    "overlayVisits": {
+      "sql": "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id",
+      "plan": [
+        {
+          "id": 7,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH visits USING INDEX idx_visits_character_at (character_id=?)"
+        },
+        {
+          "id": 14,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR GROUP BY"
+        }
+      ]
+    },
+    "journeyVisits": {
+      "sql": "SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? GROUP BY v.system_id ORDER BY last DESC",
+      "plan": [
+        {
+          "id": 11,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=?)"
+        },
+        {
+          "id": 18,
+          "parent": 0,
+          "notused": 45,
+          "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+        },
+        {
+          "id": 23,
+          "parent": 0,
+          "notused": 46,
+          "detail": "SEARCH n USING INDEX sqlite_autoindex_place_notes_1 (kind=? AND entity_id=?) LEFT-JOIN"
+        },
+        {
+          "id": 32,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR GROUP BY"
+        },
+        {
+          "id": 122,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ]
+    },
+    "nextWormholeExpiry": {
+      "sql": "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1",
+      "plan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 216,
+          "detail": "SCAN universe_records"
+        },
+        {
+          "id": 28,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ]
+    },
+    "pilotLinks": {
+      "sql": "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id",
+      "plan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 61,
+          "detail": "SEARCH universe_records USING INDEX idx_universe_records_character_kind (character_id=? AND kind=?)"
+        },
+        {
+          "id": 25,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "name": "universe-state-100000-visits",
+      "fixture": {
+        "visits": 100000
+      },
+      "outputBytes": 6432033,
+      "status": null,
+      "totals": {
+        "calls": 86,
+        "rows": 11490,
+        "jsonBytes": 1287265,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 44,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 22,
+          "rows": 20,
+          "jsonBytes": 1287265,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=pin]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=view]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=structure]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.*,u.region_id,u.region_name,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? ORDER BY at DESC,id DESC LIMIT 500": {
+          "calls": 1,
+          "rows": 500,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT from_visit_id,to_visit_id FROM journey_hidden_links WHERE character_id=?": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? GROUP BY v.system_id ORDER BY last DESC": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    }
+  ]
+}

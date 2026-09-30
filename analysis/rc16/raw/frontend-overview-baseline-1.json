@@ -1,0 +1,348 @@
+{
+  "schema": 1,
+  "harnessSha256": "c30258dfdb20af729510f38c362bad820bff2d090752edd7e916fa223ba3dd4d",
+  "sourceCommit": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "sourceHashes": {
+    "package.json": "14e8d3058277022cce02ebbbc8c469dc701842dc6b8d94d6a573a2f67851e095",
+    "server/index.mjs": "f67fb7f23754463c8e41bfefd0a69e0222a483252cd8baf981a95acd4d17eb27",
+    "server/store.mjs": "040a0b27b723cb14180c537504bbdbed7f1ddb6411dccf37bead34cda58277cd",
+    "components/kairo/dashboard.tsx": "3accdd617aa327e0ed0f0208f7aad73b09c522ffc3a39069acd1ed929b3c7137"
+  },
+  "version": "0.7.3",
+  "repo": "/workspace/scratch/a2f3334402fc/kairo-v073",
+  "overviewOnly": true,
+  "startedAt": "2026-09-30T11:24:49.743Z",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "totalMemory": 10451464192,
+    "viewport": {
+      "width": 1600,
+      "height": 1050,
+      "dpr": 1
+    },
+    "chromeFlags": [
+      "--headless",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ],
+    "limitations": [
+      "Synthetic connected pilot; no ESI traffic or real player credentials.",
+      "Headless Linux software rendering; no desktop GPU/FPS claim.",
+      "CDP TaskDuration covers renderer main-thread tasks, not total browser/worker/GPU CPU.",
+      "Fixtures span 25/100/300/600 nodes using real bundled gate topology and deterministic grid positions.",
+      "Browser HTTPS and known image CDN HTTP requests blocked using CDP; application CSP restricts connections to same-origin.",
+      "Instrumentation: canvas clearRect counter and long-task observer, CDP metrics at sample boundaries, network events; CPU profile is separate from timed samples.",
+      "Idle samples have no RAF probe. Interaction samples have an RAF interval observer; identical for all sizes.",
+      "List contains all four synthetic maps, total 1025 nodes; map navigation costs include that workspace."
+    ],
+    "smoke": false,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/153.0.8010.0",
+      "revision": "@86cee6df69e0463a839c0cc8435c9d4c259434d3",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+      "jsVersion": "15.3.76"
+    },
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "characters": 1,
+    "profile": true,
+    "location": true,
+    "maps": []
+  },
+  "samples": [
+    {
+      "name": "overview-idle",
+      "domElementCount": 376,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 35002.552009,
+      "taskMs": 78.30000000000001,
+      "scriptMs": 15.755999999999993,
+      "layoutMs": 8.281000000000004,
+      "recalcMs": 0,
+      "layouts": 35,
+      "recalcs": 0,
+      "heapUsed": 4385752,
+      "heapTotal": 5242880,
+      "domNodes": 499,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "at": 5999.60929,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 3.1899999994493555,
+          "totalMs": 3.260999999838532,
+          "encodedBytes": 3110
+        },
+        {
+          "at": 5999.616378,
+          "url": "/api/timeline?limit=5&character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 2.16900000032183,
+          "totalMs": 3.2760000003690948,
+          "encodedBytes": 662
+        },
+        {
+          "at": 5999.616712,
+          "url": "/api/goals?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 2.457999999933236,
+          "totalMs": 3.2030000002123415,
+          "encodedBytes": 620
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "at": 5969.591939,
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.8739999999961583,
+      "totalMs": 4.1790000004766625,
+      "encodedBytes": 6943
+    },
+    {
+      "at": 5969.597183,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.6050000000032,
+      "totalMs": 2.427000000352564,
+      "encodedBytes": 3110
+    },
+    {
+      "at": 5969.607832,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.320000000618165,
+      "totalMs": 3.072000000429398,
+      "encodedBytes": 662
+    },
+    {
+      "at": 5969.608507,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.923999999969965,
+      "totalMs": 3.275000000030559,
+      "encodedBytes": 620
+    },
+    {
+      "at": 5969.608729,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.93700000073295,
+      "totalMs": 3.943000000617758,
+      "encodedBytes": 3110
+    },
+    {
+      "at": 5969.615023,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 13.573999999607622
+    },
+    {
+      "at": 5969.651401,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 2.884999999878346,
+      "totalMs": 3.568000000086613,
+      "encodedBytes": 662
+    },
+    {
+      "at": 5969.651613,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.3240000002479064,
+      "totalMs": 3.552000000127009,
+      "encodedBytes": 620
+    },
+    {
+      "at": 5999.60929,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.1899999994493555,
+      "totalMs": 3.260999999838532,
+      "encodedBytes": 3110
+    },
+    {
+      "at": 5999.616378,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 2.16900000032183,
+      "totalMs": 3.2760000003690948,
+      "encodedBytes": 662
+    },
+    {
+      "at": 5999.616712,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 2.457999999933236,
+      "totalMs": 3.2030000002123415,
+      "encodedBytes": 620
+    }
+  ],
+  "errors": [],
+  "startup": {
+    "rendererMetrics": {
+      "Timestamp": 5971.501888,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 4,
+      "Frames": 4,
+      "JSEventListeners": 703,
+      "LayoutObjects": 496,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 554,
+      "Resources": 14,
+      "ContextLifecycleStateObservers": 5,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 4,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 1,
+      "ArrayBufferContents": 3,
+      "LayoutCount": 7,
+      "RecalcStyleCount": 21,
+      "LayoutDuration": 0.045423,
+      "RecalcStyleDuration": 0.011343,
+      "DevToolsCommandDuration": 0.000507,
+      "ScriptDuration": 0.0767,
+      "V8CompileDuration": 0.000208,
+      "TaskDuration": 0.178027,
+      "TaskOtherDuration": 0.043846,
+      "ThreadTime": 0.130865,
+      "ProcessTime": 0,
+      "JSHeapUsedSize": 4896028,
+      "JSHeapTotalSize": 8650752,
+      "FirstMeaningfulPaint": 5969.562863,
+      "DomContentLoaded": 5969.540529,
+      "NavigationStart": 5969.46779
+    },
+    "navigation": [
+      {
+        "name": "http://127.0.0.1:18690/#overview",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 72.79999999981374,
+        "navigationId": 8094,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.10000000055879354,
+        "domainLookupStart": 2.6000000005587935,
+        "domainLookupEnd": 2.7000000001862645,
+        "connectStart": 2.7000000001862645,
+        "secureConnectionStart": 0,
+        "connectEnd": 2.7999999998137355,
+        "requestStart": 2.900000000372529,
+        "responseStart": 6.7000000001862645,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 6.7000000001862645,
+        "responseEnd": 7.7000000001862645,
+        "transferSize": 34930,
+        "encodedBodySize": 34630,
+        "decodedBodySize": 34630,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 72.70000000018626,
+        "domContentLoadedEventStart": 72.79999999981374,
+        "domContentLoadedEventEnd": 72.79999999981374,
+        "domComplete": 72.79999999981374,
+        "loadEventStart": 72.79999999981374,
+        "loadEventEnd": 72.79999999981374,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {}
+      }
+    ],
+    "resources": [
+      {
+        "url": "/assets/index-BRPbP2Gm.css",
+        "duration": 8,
+        "transferSize": 250854,
+        "decodedBodySize": 250554
+      },
+      {
+        "url": "/assets/layout-segment-context-BI8dtZr5.js",
+        "duration": 10.899999999441206,
+        "transferSize": 588,
+        "decodedBodySize": 288
+      },
+      {
+        "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+        "duration": 12.100000000558794,
+        "transferSize": 994,
+        "decodedBodySize": 694
+      },
+      {
+        "url": "/assets/index-ByuYj22d.js",
+        "duration": 12.399999999441206,
+        "transferSize": 81017,
+        "decodedBodySize": 80717
+      },
+      {
+        "url": "/assets/framework-CXnKph_e.js",
+        "duration": 13.299999999813735,
+        "transferSize": 190105,
+        "decodedBodySize": 189805
+      },
+      {
+        "url": "/assets/page-sEU0xt2E.js",
+        "duration": 16.09999999962747,
+        "transferSize": 831776,
+        "decodedBodySize": 831476
+      }
+    ]
+  },
+  "externalFetches": [],
+  "blockedBrowserExternalAttempts": [],
+  "controls": {
+    "successfulBrowserExternalResponses": 0,
+    "rendererExceptions": 0,
+    "deniedBackendFetchAttempts": 0
+  },
+  "endedAt": "2026-09-30T11:25:26.990Z"
+}

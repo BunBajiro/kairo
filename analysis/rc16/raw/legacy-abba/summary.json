@@ -1,0 +1,2911 @@
+{
+  "schemaVersion": 1,
+  "complete": true,
+  "settings": {
+    "iterations": 10,
+    "warmups": 3,
+    "idleSeconds": 35,
+    "serialization": true,
+    "scope": "controlled-legacy-warm-cache",
+    "newUniverseTicks": "enabled",
+    "datasetAutomaticStart": "deferred",
+    "network": "all worker fetch calls blocked; expect zero",
+    "publicFeedCaches": "thera/turnur/storms/wormhole_types/combat empty ready with +7-day expiry and next_at"
+  },
+  "backend": [
+    {
+      "profile": "typical",
+      "metric": "idle_cpu",
+      "unit": "% one core",
+      "pairs": [
+        {
+          "baseline": 0.5805494171937298,
+          "candidate": 0.7180851418969136,
+          "delta": 0.13753572470318387,
+          "percent": 23.69061455061079
+        },
+        {
+          "baseline": 0.6038135764032858,
+          "candidate": 0.8339393858584708,
+          "delta": 0.23012580945518502,
+          "percent": 38.11206280355055
+        }
+      ],
+      "baselineRange": [
+        0.5805494171937298,
+        0.6038135764032858
+      ],
+      "candidateRange": [
+        0.7180851418969136,
+        0.8339393858584708
+      ],
+      "changeOfMeanPercent": 31.04297720766742,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_rss",
+      "unit": "MiB",
+      "pairs": [
+        {
+          "baseline": 68.7890625,
+          "candidate": 148.14453125,
+          "delta": 79.35546875,
+          "percent": 115.36059057353776
+        },
+        {
+          "baseline": 68.46875,
+          "candidate": 133.94921875,
+          "delta": 65.48046875,
+          "percent": 95.63555454130534
+        }
+      ],
+      "baselineRange": [
+        68.46875,
+        68.7890625
+      ],
+      "candidateRange": [
+        133.94921875,
+        148.14453125
+      ],
+      "changeOfMeanPercent": 105.52108828049404,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 14.770175,
+          "candidate": 15.491071,
+          "delta": 0.7208959999999998,
+          "percent": 4.880754628838191
+        },
+        {
+          "baseline": 14.213119,
+          "candidate": 17.350655,
+          "delta": 3.137535999999999,
+          "percent": 22.074929507027964
+        }
+      ],
+      "baselineRange": [
+        14.213119,
+        14.770175
+      ],
+      "candidateRange": [
+        15.491071,
+        17.350655
+      ],
+      "changeOfMeanPercent": 13.312606910725888,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_loop_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 10.199039,
+          "candidate": 10.223615,
+          "delta": 0.02457599999999971,
+          "percent": 0.24096387904781746
+        },
+        {
+          "baseline": 10.207231,
+          "candidate": 10.190847,
+          "delta": -0.016384000000000398,
+          "percent": -0.16051365938519746
+        }
+      ],
+      "baselineRange": [
+        10.199039,
+        10.207231
+      ],
+      "candidateRange": [
+        10.190847,
+        10.223615
+      ],
+      "changeOfMeanPercent": 0.04014452420750825,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 11.698594999999983,
+          "candidate": 172.69235299999997,
+          "delta": 160.99375799999999,
+          "percent": 1376.180284897462
+        },
+        {
+          "baseline": 11.071716999999978,
+          "candidate": 160.24705699999998,
+          "delta": 149.17534,
+          "percent": 1347.3550669692904
+        }
+      ],
+      "baselineRange": [
+        11.071716999999978,
+        11.698594999999983
+      ],
+      "candidateRange": [
+        160.24705699999998,
+        172.69235299999997
+      ],
+      "changeOfMeanPercent": 1362.1644622172964,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "typical",
+      "metric": "state_http",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 10.379132999994908,
+          "candidate": 10.805805000003602,
+          "delta": 0.42667200000869343,
+          "percent": 4.110863595339831
+        },
+        {
+          "baseline": 8.950284000005922,
+          "candidate": 11.006483999997727,
+          "delta": 2.0561999999918044,
+          "percent": 22.973572682056176
+        }
+      ],
+      "baselineRange": [
+        8.950284000005922,
+        10.379132999994908
+      ],
+      "candidateRange": [
+        10.805805000003602,
+        11.006483999997727
+      ],
+      "changeOfMeanPercent": 12.845043386463196,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_http_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 13.848799000006693,
+          "candidate": 11.73867899999459,
+          "delta": -2.1101200000121025,
+          "percent": -15.236844725749021
+        },
+        {
+          "baseline": 9.783618000001297,
+          "candidate": 16.41148599999724,
+          "delta": 6.627867999995942,
+          "percent": 67.7445501244536
+        }
+      ],
+      "baselineRange": [
+        9.783618000001297,
+        13.848799000006693
+      ],
+      "candidateRange": [
+        11.73867899999459,
+        16.41148599999724
+      ],
+      "changeOfMeanPercent": 19.116741211795272,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.07457000000431435,
+          "candidate": 0.07813599999644794,
+          "delta": 0.003565999992133584,
+          "percent": 4.782083937142634
+        },
+        {
+          "baseline": 0.0704840000034892,
+          "candidate": 0.07865699999820208,
+          "delta": 0.008172999994712882,
+          "percent": 11.595539405124988
+        }
+      ],
+      "baselineRange": [
+        0.0704840000034892,
+        0.07457000000431435
+      ],
+      "candidateRange": [
+        0.07813599999644794,
+        0.07865699999820208
+      ],
+      "changeOfMeanPercent": 8.09284817117415,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.09005299999989802,
+          "candidate": 0.1531269999977667,
+          "delta": 0.06307399999786867,
+          "percent": 70.04097586747815
+        },
+        {
+          "baseline": 0.1028119999973569,
+          "candidate": 0.2938750000030268,
+          "delta": 0.1910630000056699,
+          "percent": 185.83725636169098
+        }
+      ],
+      "baselineRange": [
+        0.09005299999989802,
+        0.1028119999973569
+      ],
+      "candidateRange": [
+        0.1531269999977667,
+        0.2938750000030268
+      ],
+      "changeOfMeanPercent": 131.7693723626141,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.077,
+          "candidate": 0.079,
+          "delta": 0.0020000000000000018,
+          "percent": 2.5974025974025983
+        },
+        {
+          "baseline": 0.072,
+          "candidate": 0.078,
+          "delta": 0.006000000000000005,
+          "percent": 8.333333333333348
+        }
+      ],
+      "baselineRange": [
+        0.072,
+        0.077
+      ],
+      "candidateRange": [
+        0.078,
+        0.079
+      ],
+      "changeOfMeanPercent": 5.369127516778538,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "candidateRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 3.9854359999953886,
+          "candidate": 4.610974000002898,
+          "delta": 0.6255380000075093,
+          "percent": 15.695597671327132
+        },
+        {
+          "baseline": 4.114668000001984,
+          "candidate": 4.081207000002905,
+          "delta": -0.03346099999907892,
+          "percent": -0.8132126334144729
+        }
+      ],
+      "baselineRange": [
+        3.9854359999953886,
+        4.114668000001984
+      ],
+      "candidateRange": [
+        4.081207000002905,
+        4.610974000002898
+      ],
+      "changeOfMeanPercent": 7.309498742344811,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 4.917665999993915,
+          "candidate": 5.085586999994121,
+          "delta": 0.16792100000020582,
+          "percent": 3.4146483311476183
+        },
+        {
+          "baseline": 7.3707869999998366,
+          "candidate": 4.427589999999327,
+          "delta": -2.9431970000005094,
+          "percent": -39.930566437485915
+        }
+      ],
+      "baselineRange": [
+        4.917665999993915,
+        7.3707869999998366
+      ],
+      "candidateRange": [
+        4.427589999999327,
+        5.085586999994121
+      ],
+      "changeOfMeanPercent": -22.584421326278537,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 3.972,
+          "candidate": 5.081,
+          "delta": 1.1090000000000004,
+          "percent": 27.920443101712
+        },
+        {
+          "baseline": 4.111,
+          "candidate": 4.077,
+          "delta": -0.03399999999999981,
+          "percent": -0.827049379712963
+        }
+      ],
+      "baselineRange": [
+        3.972,
+        4.111
+      ],
+      "candidateRange": [
+        4.077,
+        5.081
+      ],
+      "changeOfMeanPercent": 13.299517505876546,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 537.64453125,
+          "candidate": 538.126953125,
+          "delta": 0.482421875,
+          "percent": 0.08972877932533763
+        },
+        {
+          "baseline": 537.64453125,
+          "candidate": 538.126953125,
+          "delta": 0.482421875,
+          "percent": 0.08972877932533763
+        }
+      ],
+      "baselineRange": [
+        537.64453125,
+        537.64453125
+      ],
+      "candidateRange": [
+        538.126953125,
+        538.126953125
+      ],
+      "changeOfMeanPercent": 0.08972877932533763,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.8376630000057048,
+          "candidate": 1.8706229999952484,
+          "delta": 0.032959999989543576,
+          "percent": 1.7935823918444838
+        },
+        {
+          "baseline": 1.833997999994608,
+          "candidate": 1.8548889999947278,
+          "delta": 0.020891000000119675,
+          "percent": 1.1390961167995428
+        }
+      ],
+      "baselineRange": [
+        1.833997999994608,
+        1.8376630000057048
+      ],
+      "candidateRange": [
+        1.8548889999947278,
+        1.8706229999952484
+      ],
+      "changeOfMeanPercent": 1.4666659037873675,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 2.3430109999972046,
+          "candidate": 2.031641999994463,
+          "delta": -0.3113690000027418,
+          "percent": -13.289267528112902
+        },
+        {
+          "baseline": 2.828432000002067,
+          "candidate": 2.1876310000006924,
+          "delta": -0.6408010000013746,
+          "percent": -22.65569757381144
+        }
+      ],
+      "baselineRange": [
+        2.3430109999972046,
+        2.828432000002067
+      ],
+      "candidateRange": [
+        2.031641999994463,
+        2.1876310000006924
+      ],
+      "changeOfMeanPercent": -18.41207570119695,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.884,
+          "candidate": 1.867,
+          "delta": -0.016999999999999904,
+          "percent": -0.9023354564755781
+        },
+        {
+          "baseline": 1.872,
+          "candidate": 1.873,
+          "delta": 0.0009999999999998899,
+          "percent": 0.05341880341880323
+        }
+      ],
+      "baselineRange": [
+        1.872,
+        1.884
+      ],
+      "candidateRange": [
+        1.867,
+        1.873
+      ],
+      "changeOfMeanPercent": -0.42598509052182987,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 155.52734375,
+          "candidate": 163.73046875,
+          "delta": 8.203125,
+          "percent": 5.27439407258572
+        },
+        {
+          "baseline": 155.52734375,
+          "candidate": 163.73046875,
+          "delta": 8.203125,
+          "percent": 5.27439407258572
+        }
+      ],
+      "baselineRange": [
+        155.52734375,
+        155.52734375
+      ],
+      "candidateRange": [
+        163.73046875,
+        163.73046875
+      ],
+      "changeOfMeanPercent": 5.27439407258572,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 15.034476000000723,
+          "candidate": 16.457762999998522,
+          "delta": 1.4232869999977993,
+          "percent": 9.466821457546848
+        },
+        {
+          "baseline": 15.034349000001384,
+          "candidate": 16.79376400000183,
+          "delta": 1.7594150000004447,
+          "percent": 11.702635079179569
+        }
+      ],
+      "baselineRange": [
+        15.034349000001384,
+        15.034476000000723
+      ],
+      "candidateRange": [
+        16.457762999998522,
+        16.79376400000183
+      ],
+      "changeOfMeanPercent": 10.584723546723286,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 18.638535999998567,
+          "candidate": 25.966245000003255,
+          "delta": 7.327709000004688,
+          "percent": 39.31483137948846
+        },
+        {
+          "baseline": 18.67359099999885,
+          "candidate": 20.21961900000315,
+          "delta": 1.5460280000042985,
+          "percent": 8.27922170944193
+        }
+      ],
+      "baselineRange": [
+        18.638535999998567,
+        18.67359099999885
+      ],
+      "candidateRange": [
+        20.21961900000315,
+        25.966245000003255
+      ],
+      "changeOfMeanPercent": 23.78244746007003,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 16.82,
+          "candidate": 17.252,
+          "delta": 0.4319999999999986,
+          "percent": 2.568370986920332
+        },
+        {
+          "baseline": 16.459,
+          "candidate": 18.013,
+          "delta": 1.554000000000002,
+          "percent": 9.441642870162227
+        }
+      ],
+      "baselineRange": [
+        16.459,
+        16.82
+      ],
+      "candidateRange": [
+        17.252,
+        18.013
+      ],
+      "changeOfMeanPercent": 5.96772739565492,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 445.31640625,
+          "candidate": 469.92578125,
+          "delta": 24.609375,
+          "percent": 5.5262673134446105
+        },
+        {
+          "baseline": 445.31640625,
+          "candidate": 469.92578125,
+          "delta": 24.609375,
+          "percent": 5.5262673134446105
+        }
+      ],
+      "baselineRange": [
+        445.31640625,
+        445.31640625
+      ],
+      "candidateRange": [
+        469.92578125,
+        469.92578125
+      ],
+      "changeOfMeanPercent": 5.5262673134446105,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.9727730000013253,
+          "candidate": 2.069426999994903,
+          "delta": 0.0966539999935776,
+          "percent": 4.899397953718587
+        },
+        {
+          "baseline": 2.0704079999995884,
+          "candidate": 2.151246999994328,
+          "delta": 0.08083899999473942,
+          "percent": 3.9044961183861027
+        }
+      ],
+      "baselineRange": [
+        1.9727730000013253,
+        2.0704079999995884
+      ],
+      "candidateRange": [
+        2.069426999994903,
+        2.151246999994328
+      ],
+      "changeOfMeanPercent": 4.389934558662523,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 2.4856630000067526,
+          "candidate": 3.7771079999947688,
+          "delta": 1.2914449999880162,
+          "percent": 51.95575586813288
+        },
+        {
+          "baseline": 2.2573950000005425,
+          "candidate": 2.600061999997706,
+          "delta": 0.34266699999716366,
+          "percent": 15.179753653971995
+        }
+      ],
+      "baselineRange": [
+        2.2573950000005425,
+        2.4856630000067526
+      ],
+      "candidateRange": [
+        2.600061999997706,
+        3.7771079999947688
+      ],
+      "changeOfMeanPercent": 34.45270962283544,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 1.971,
+          "candidate": 2.066,
+          "delta": 0.09499999999999975,
+          "percent": 4.8198883815322
+        },
+        {
+          "baseline": 2.096,
+          "candidate": 2.169,
+          "delta": 0.07299999999999995,
+          "percent": 3.482824427480913
+        }
+      ],
+      "baselineRange": [
+        1.971,
+        2.096
+      ],
+      "candidateRange": [
+        2.066,
+        2.169
+      ],
+      "changeOfMeanPercent": 4.13080895008604,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 58.8837890625,
+          "candidate": 58.8837890625,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 58.8837890625,
+          "candidate": 58.8837890625,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        58.8837890625,
+        58.8837890625
+      ],
+      "candidateRange": [
+        58.8837890625,
+        58.8837890625
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.557906999994884,
+          "candidate": 6.885735999996541,
+          "delta": 0.3278290000016568,
+          "percent": 4.998988244296743
+        },
+        {
+          "baseline": 6.77465900000243,
+          "candidate": 6.757552000002761,
+          "delta": -0.017106999999668915,
+          "percent": -0.25251455460212346
+        }
+      ],
+      "baselineRange": [
+        6.557906999994884,
+        6.77465900000243
+      ],
+      "candidateRange": [
+        6.757552000002761,
+        6.885735999996541
+      ],
+      "changeOfMeanPercent": 2.330549123117409,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.99024699999427,
+          "candidate": 10.429667999997037,
+          "delta": 3.439421000002767,
+          "percent": 49.203139746071734
+        },
+        {
+          "baseline": 7.933315999995102,
+          "candidate": 7.328317999999854,
+          "delta": -0.6049979999952484,
+          "percent": -7.626041871969069
+        }
+      ],
+      "baselineRange": [
+        6.99024699999427,
+        7.933315999995102
+      ],
+      "candidateRange": [
+        7.328317999999854,
+        10.429667999997037
+      ],
+      "changeOfMeanPercent": 18.99293754453637,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 6.588,
+          "candidate": 7.036,
+          "delta": 0.4479999999999995,
+          "percent": 6.800242865816619
+        },
+        {
+          "baseline": 6.786,
+          "candidate": 6.887,
+          "delta": 0.10099999999999998,
+          "percent": 1.4883583849101045
+        }
+      ],
+      "baselineRange": [
+        6.588,
+        6.786
+      ],
+      "candidateRange": [
+        6.887,
+        7.036
+      ],
+      "changeOfMeanPercent": 4.104979811574694,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 39.3427734375,
+          "candidate": 39.3427734375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 39.3427734375,
+          "candidate": 39.3427734375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        39.3427734375,
+        39.3427734375
+      ],
+      "candidateRange": [
+        39.3427734375,
+        39.3427734375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.5555030000032275,
+          "candidate": 0.6288219999987632,
+          "delta": 0.0733189999955357,
+          "percent": 13.198668593168673
+        },
+        {
+          "baseline": 0.636954000001424,
+          "candidate": 0.657113000001118,
+          "delta": 0.02015899999969406,
+          "percent": 3.1649067279032606
+        }
+      ],
+      "baselineRange": [
+        0.5555030000032275,
+        0.636954000001424
+      ],
+      "candidateRange": [
+        0.6288219999987632,
+        0.657113000001118
+      ],
+      "changeOfMeanPercent": 7.839108663445726,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.8003959999987273,
+          "candidate": 0.7992240000021411,
+          "delta": -0.001171999996586237,
+          "percent": -0.14642751795213016
+        },
+        {
+          "baseline": 1.0053199999965727,
+          "candidate": 0.912622999996529,
+          "delta": -0.09269700000004377,
+          "percent": -9.22064616245174
+        }
+      ],
+      "baselineRange": [
+        0.8003959999987273,
+        1.0053199999965727
+      ],
+      "candidateRange": [
+        0.7992240000021411,
+        0.912622999996529
+      ],
+      "changeOfMeanPercent": -5.198436520298555,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.554,
+          "candidate": 0.627,
+          "delta": 0.07299999999999995,
+          "percent": 13.176895306859194
+        },
+        {
+          "baseline": 0.635,
+          "candidate": 0.655,
+          "delta": 0.020000000000000018,
+          "percent": 3.149606299212593
+        }
+      ],
+      "baselineRange": [
+        0.554,
+        0.635
+      ],
+      "candidateRange": [
+        0.627,
+        0.655
+      ],
+      "changeOfMeanPercent": 7.821698906644237,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "candidateRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.5794590000004973,
+          "candidate": 0.6099140000005718,
+          "delta": 0.030455000000074506,
+          "percent": 5.2557644285529115
+        },
+        {
+          "baseline": 0.5802899999980582,
+          "candidate": 0.6176249999989523,
+          "delta": 0.03733500000089407,
+          "percent": 6.433852039673105
+        }
+      ],
+      "baselineRange": [
+        0.5794590000004973,
+        0.5802899999980582
+      ],
+      "candidateRange": [
+        0.6099140000005718,
+        0.6176249999989523
+      ],
+      "changeOfMeanPercent": 5.8452303042341835,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.6621410000007018,
+          "candidate": 0.8784620000005816,
+          "delta": 0.21632099999987986,
+          "percent": 32.669929818520615
+        },
+        {
+          "baseline": 0.6886610000001383,
+          "candidate": 0.7522939999980736,
+          "delta": 0.06363299999793526,
+          "percent": 9.240105073166994
+        }
+      ],
+      "baselineRange": [
+        0.6621410000007018,
+        0.6886610000001383
+      ],
+      "candidateRange": [
+        0.7522939999980736,
+        0.8784620000005816
+      ],
+      "changeOfMeanPercent": 20.72502113541741,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.578,
+          "candidate": 0.61,
+          "delta": 0.03200000000000003,
+          "percent": 5.536332179930792
+        },
+        {
+          "baseline": 0.58,
+          "candidate": 0.615,
+          "delta": 0.03500000000000003,
+          "percent": 6.034482758620685
+        }
+      ],
+      "baselineRange": [
+        0.578,
+        0.58
+      ],
+      "candidateRange": [
+        0.61,
+        0.615
+      ],
+      "changeOfMeanPercent": 5.785837651122638,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 171.20703125,
+          "candidate": 171.20703125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "candidateRange": [
+        171.20703125,
+        171.20703125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_cpu",
+      "unit": "% one core",
+      "pairs": [
+        {
+          "baseline": 1.3452678496795438,
+          "candidate": 1.637669662620901,
+          "delta": 0.29240181294135725,
+          "percent": 21.735583215715025
+        },
+        {
+          "baseline": 1.321842989323323,
+          "candidate": 1.616697131591442,
+          "delta": 0.294854142268119,
+          "percent": 22.30629088701832
+        }
+      ],
+      "baselineRange": [
+        1.321842989323323,
+        1.3452678496795438
+      ],
+      "candidateRange": [
+        1.616697131591442,
+        1.637669662620901
+      ],
+      "changeOfMeanPercent": 22.01843082865762,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_rss",
+      "unit": "MiB",
+      "pairs": [
+        {
+          "baseline": 101.421875,
+          "candidate": 167.85546875,
+          "delta": 66.43359375,
+          "percent": 65.50223386227083
+        },
+        {
+          "baseline": 82.1484375,
+          "candidate": 170.82421875,
+          "delta": 88.67578125,
+          "percent": 107.94579172610557
+        }
+      ],
+      "baselineRange": [
+        82.1484375,
+        101.421875
+      ],
+      "candidateRange": [
+        167.85546875,
+        170.82421875
+      ],
+      "changeOfMeanPercent": 84.49589309273524,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 36.175871,
+          "candidate": 55.410687,
+          "delta": 19.234816000000002,
+          "percent": 53.170291324844676
+        },
+        {
+          "baseline": 36.831231,
+          "candidate": 56.918015,
+          "delta": 20.086783999999994,
+          "percent": 54.53736802877969
+        }
+      ],
+      "baselineRange": [
+        36.175871,
+        36.831231
+      ],
+      "candidateRange": [
+        55.410687,
+        56.918015
+      ],
+      "changeOfMeanPercent": 53.85996556882917,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 10.190847,
+          "candidate": 10.190847,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 10.182655,
+          "candidate": 10.223615,
+          "delta": 0.04096000000000011,
+          "percent": 0.4022526541457072
+        }
+      ],
+      "baselineRange": [
+        10.182655,
+        10.190847
+      ],
+      "candidateRange": [
+        10.190847,
+        10.223615
+      ],
+      "changeOfMeanPercent": 0.20104545600456714,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 17.667446999999925,
+          "candidate": 164.37625000000003,
+          "delta": 146.7088030000001,
+          "percent": 830.3905086003695
+        },
+        {
+          "baseline": 14.931016,
+          "candidate": 168.69500100000005,
+          "delta": 153.76398500000005,
+          "percent": 1029.8293498580408
+        }
+      ],
+      "baselineRange": [
+        14.931016,
+        17.667446999999925
+      ],
+      "candidateRange": [
+        164.37625000000003,
+        168.69500100000005
+      ],
+      "changeOfMeanPercent": 921.7391261667792,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_http",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 40.29725600000529,
+          "candidate": 44.71955999999773,
+          "delta": 4.422303999992437,
+          "percent": 10.974206283405152
+        },
+        {
+          "baseline": 40.21730000000389,
+          "candidate": 45.62851499998942,
+          "delta": 5.411214999985532,
+          "percent": 13.454943519293948
+        }
+      ],
+      "baselineRange": [
+        40.21730000000389,
+        40.29725600000529
+      ],
+      "candidateRange": [
+        44.71955999999773,
+        45.62851499998942
+      ],
+      "changeOfMeanPercent": 12.213343137577315,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_http_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 48.505913999993936,
+          "candidate": 107.90357799999765,
+          "delta": 59.397664000003715,
+          "percent": 122.45447843743578
+        },
+        {
+          "baseline": 50.45545199999469,
+          "candidate": 70.25044600000547,
+          "delta": 19.794994000010774,
+          "percent": 39.23261652677863
+        }
+      ],
+      "baselineRange": [
+        48.505913999993936,
+        50.45545199999469
+      ],
+      "candidateRange": [
+        70.25044600000547,
+        107.90357799999765
+      ],
+      "changeOfMeanPercent": 80.02381252500454,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": true
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.07805500000540633,
+          "candidate": 0.09128600000258302,
+          "delta": 0.013230999997176696,
+          "percent": 16.950867972916896
+        },
+        {
+          "baseline": 0.09141600000293693,
+          "candidate": 0.08521599999949103,
+          "delta": -0.0062000000034458935,
+          "percent": -6.782182553652216
+        }
+      ],
+      "baselineRange": [
+        0.07805500000540633,
+        0.09141600000293693
+      ],
+      "candidateRange": [
+        0.08521599999949103,
+        0.09128600000258302
+      ],
+      "changeOfMeanPercent": 4.148792414858393,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.11271700000361307,
+          "candidate": 0.1857049999962328,
+          "delta": 0.07298799999261973,
+          "percent": 64.75332025362648
+        },
+        {
+          "baseline": 0.11041400000249268,
+          "candidate": 0.1070190000027651,
+          "delta": -0.003394999999727588,
+          "percent": -3.0747912399251343
+        }
+      ],
+      "baselineRange": [
+        0.11041400000249268,
+        0.11271700000361307
+      ],
+      "candidateRange": [
+        0.1070190000027651,
+        0.1857049999962328
+      ],
+      "changeOfMeanPercent": 31.189301348081532,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.078,
+          "candidate": 0.107,
+          "delta": 0.028999999999999998,
+          "percent": 37.17948717948718
+        },
+        {
+          "baseline": 0.089,
+          "candidate": 0.083,
+          "delta": -0.0059999999999999915,
+          "percent": -6.741573033707859
+        }
+      ],
+      "baselineRange": [
+        0.078,
+        0.089
+      ],
+      "candidateRange": [
+        0.083,
+        0.107
+      ],
+      "changeOfMeanPercent": 13.772455089820369,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 0.646484375,
+          "candidate": 0.646484375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "candidateRange": [
+        0.646484375,
+        0.646484375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 22.917597999999998,
+          "candidate": 25.596877000003587,
+          "delta": 2.6792790000035893,
+          "percent": 11.690924153585325
+        },
+        {
+          "baseline": 23.97498700000142,
+          "candidate": 21.89234099999885,
+          "delta": -2.082646000002569,
+          "percent": -8.686745064772905
+        }
+      ],
+      "baselineRange": [
+        22.917597999999998,
+        23.97498700000142
+      ],
+      "candidateRange": [
+        21.89234099999885,
+        25.596877000003587
+      ],
+      "changeOfMeanPercent": 1.27233975265173,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 29.499370999998064,
+          "candidate": 31.132273000002897,
+          "delta": 1.632902000004833,
+          "percent": 5.535379042505473
+        },
+        {
+          "baseline": 27.142210000005434,
+          "candidate": 27.688114000004134,
+          "delta": 0.5459039999986999,
+          "percent": 2.01127321614043
+        }
+      ],
+      "baselineRange": [
+        27.142210000005434,
+        29.499370999998064
+      ],
+      "candidateRange": [
+        27.688114000004134,
+        31.132273000002897
+      ],
+      "changeOfMeanPercent": 3.8466546334633644,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 22.899,
+          "candidate": 25.448,
+          "delta": 2.5489999999999995,
+          "percent": 11.131490458098604
+        },
+        {
+          "baseline": 25.649,
+          "candidate": 21.883,
+          "delta": -3.766000000000002,
+          "percent": -14.682833638738357
+        }
+      ],
+      "baselineRange": [
+        22.899,
+        25.649
+      ],
+      "candidateRange": [
+        21.883,
+        25.448
+      ],
+      "changeOfMeanPercent": -2.5067973963912027,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 3390.97265625,
+          "candidate": 3391.455078125,
+          "delta": 0.482421875,
+          "percent": 0.014226651875559604
+        },
+        {
+          "baseline": 3390.97265625,
+          "candidate": 3391.455078125,
+          "delta": 0.482421875,
+          "percent": 0.014226651875559604
+        }
+      ],
+      "baselineRange": [
+        3390.97265625,
+        3390.97265625
+      ],
+      "candidateRange": [
+        3391.455078125,
+        3391.455078125
+      ],
+      "changeOfMeanPercent": 0.014226651875559604,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 3.721734999999171,
+          "candidate": 3.840743000000657,
+          "delta": 0.11900800000148593,
+          "percent": 3.197648408645759
+        },
+        {
+          "baseline": 3.969462000000931,
+          "candidate": 3.669307000003755,
+          "delta": -0.30015499999717576,
+          "percent": -7.561604066170813
+        }
+      ],
+      "baselineRange": [
+        3.721734999999171,
+        3.969462000000931
+      ],
+      "candidateRange": [
+        3.669307000003755,
+        3.840743000000657
+      ],
+      "changeOfMeanPercent": -2.3552510746466027,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 4.045574000003398,
+          "candidate": 4.5978850000028615,
+          "delta": 0.5523109999994631,
+          "percent": 13.65222833642392
+        },
+        {
+          "baseline": 4.506067000002076,
+          "candidate": 3.97433999999339,
+          "delta": -0.5317270000086864,
+          "percent": -11.800246201586473
+        }
+      ],
+      "baselineRange": [
+        4.045574000003398,
+        4.506067000002076
+      ],
+      "candidateRange": [
+        3.97433999999339,
+        4.5978850000028615
+      ],
+      "changeOfMeanPercent": 0.24070233994579748,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 3.734,
+          "candidate": 3.89,
+          "delta": 0.15600000000000014,
+          "percent": 4.1778253883235195
+        },
+        {
+          "baseline": 4.015,
+          "candidate": 3.827,
+          "delta": -0.18799999999999972,
+          "percent": -4.682440846824399
+        }
+      ],
+      "baselineRange": [
+        3.734,
+        4.015
+      ],
+      "candidateRange": [
+        3.827,
+        3.89
+      ],
+      "changeOfMeanPercent": -0.4129565105174704,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 238.5986328125,
+          "candidate": 252.2705078125,
+          "delta": 13.671875,
+          "percent": 5.730072649135365
+        },
+        {
+          "baseline": 238.5986328125,
+          "candidate": 252.2705078125,
+          "delta": 13.671875,
+          "percent": 5.730072649135365
+        }
+      ],
+      "baselineRange": [
+        238.5986328125,
+        238.5986328125
+      ],
+      "candidateRange": [
+        252.2705078125,
+        252.2705078125
+      ],
+      "changeOfMeanPercent": 5.730072649135365,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 99.51182300000073,
+          "candidate": 90.33583400000498,
+          "delta": -9.175988999995752,
+          "percent": -9.221003819813134
+        },
+        {
+          "baseline": 92.60733900000196,
+          "candidate": 84.87399000000005,
+          "delta": -7.733349000001908,
+          "percent": -8.350686979572696
+        }
+      ],
+      "baselineRange": [
+        92.60733900000196,
+        99.51182300000073
+      ],
+      "candidateRange": [
+        84.87399000000005,
+        90.33583400000498
+      ],
+      "changeOfMeanPercent": -8.801484362084311,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 106.25485400000616,
+          "candidate": 103.4298259999996,
+          "delta": -2.8250280000065686,
+          "percent": -2.658728419133116
+        },
+        {
+          "baseline": 101.82624999999825,
+          "candidate": 99.97791199999483,
+          "delta": -1.848338000003423,
+          "percent": -1.8151881268370973
+        }
+      ],
+      "baselineRange": [
+        101.82624999999825,
+        106.25485400000616
+      ],
+      "candidateRange": [
+        99.97791199999483,
+        103.4298259999996
+      ],
+      "changeOfMeanPercent": -2.2459348351063557,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 103.821,
+          "candidate": 91.289,
+          "delta": -12.531999999999996,
+          "percent": -12.070775661956635
+        },
+        {
+          "baseline": 97.739,
+          "candidate": 84.86,
+          "delta": -12.879000000000005,
+          "percent": -13.176930396259435
+        }
+      ],
+      "baselineRange": [
+        97.739,
+        103.821
+      ],
+      "candidateRange": [
+        84.86,
+        91.289
+      ],
+      "changeOfMeanPercent": -12.607164119865056,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 2613.1103515625,
+          "candidate": 2777.1728515625,
+          "delta": 164.0625,
+          "percent": 6.278437491241018
+        },
+        {
+          "baseline": 2613.1103515625,
+          "candidate": 2777.1728515625,
+          "delta": 164.0625,
+          "percent": 6.278437491241018
+        }
+      ],
+      "baselineRange": [
+        2613.1103515625,
+        2613.1103515625
+      ],
+      "candidateRange": [
+        2777.1728515625,
+        2777.1728515625
+      ],
+      "changeOfMeanPercent": 6.278437491241018,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 7.162423000001581,
+          "candidate": 6.648853999999119,
+          "delta": -0.5135690000024624,
+          "percent": -7.170324902653036
+        },
+        {
+          "baseline": 6.676973999994516,
+          "candidate": 6.555123000005551,
+          "delta": -0.12185099998896476,
+          "percent": -1.8249434547605636
+        }
+      ],
+      "baselineRange": [
+        6.676973999994516,
+        7.162423000001581
+      ],
+      "candidateRange": [
+        6.555123000005551,
+        6.648853999999119
+      ],
+      "changeOfMeanPercent": -4.591385014763338,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 9.347070000003441,
+          "candidate": 7.360758999995596,
+          "delta": -1.986311000007845,
+          "percent": -21.25062720196932
+        },
+        {
+          "baseline": 7.190824999997858,
+          "candidate": 6.710274000004574,
+          "delta": -0.48055099999328377,
+          "percent": -6.68283541865401
+        }
+      ],
+      "baselineRange": [
+        7.190824999997858,
+        9.347070000003441
+      ],
+      "candidateRange": [
+        6.710274000004574,
+        7.360758999995596
+      ],
+      "changeOfMeanPercent": -14.916420741581293,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 7.257,
+          "candidate": 6.721,
+          "delta": -0.5359999999999996,
+          "percent": -7.385972164806387
+        },
+        {
+          "baseline": 6.766,
+          "candidate": 6.55,
+          "delta": -0.2160000000000002,
+          "percent": -3.1924327519952778
+        }
+      ],
+      "baselineRange": [
+        6.766,
+        7.257
+      ],
+      "candidateRange": [
+        6.55,
+        6.721
+      ],
+      "changeOfMeanPercent": -5.36261855523068,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 58.9814453125,
+          "candidate": 58.9814453125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 58.9814453125,
+          "candidate": 58.9814453125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        58.9814453125,
+        58.9814453125
+      ],
+      "candidateRange": [
+        58.9814453125,
+        58.9814453125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 36.54960700000083,
+          "candidate": 33.86779600000591,
+          "delta": -2.681810999994923,
+          "percent": -7.337455092184331
+        },
+        {
+          "baseline": 33.63871699999436,
+          "candidate": 35.13057800000388,
+          "delta": 1.4918610000095214,
+          "percent": 4.4349521416342075
+        }
+      ],
+      "baselineRange": [
+        33.63871699999436,
+        36.54960700000083
+      ],
+      "candidateRange": [
+        33.86779600000591,
+        35.13057800000388
+      ],
+      "changeOfMeanPercent": -1.695367451693941,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 39.51642400000128,
+          "candidate": 37.342772000003606,
+          "delta": -2.1736519999976736,
+          "percent": -5.500629307949534
+        },
+        {
+          "baseline": 35.52022600000055,
+          "candidate": 44.164715999999316,
+          "delta": 8.644489999998768,
+          "percent": 24.336810244390428
+        }
+      ],
+      "baselineRange": [
+        35.52022600000055,
+        39.51642400000128
+      ],
+      "candidateRange": [
+        37.342772000003606,
+        44.164715999999316
+      ],
+      "changeOfMeanPercent": 8.623569948819586,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 36.735,
+          "candidate": 33.854,
+          "delta": -2.8810000000000002,
+          "percent": -7.842656866748332
+        },
+        {
+          "baseline": 33.627,
+          "candidate": 35.119,
+          "delta": 1.4919999999999973,
+          "percent": 4.436910815713557
+        }
+      ],
+      "baselineRange": [
+        33.627,
+        36.735
+      ],
+      "candidateRange": [
+        33.854,
+        35.119
+      ],
+      "changeOfMeanPercent": -1.974076916517431,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 39.34375,
+          "candidate": 39.34375,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 39.34375,
+          "candidate": 39.34375,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        39.34375,
+        39.34375
+      ],
+      "candidateRange": [
+        39.34375,
+        39.34375
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.6882499999992433,
+          "candidate": 1.0984779999998864,
+          "delta": 0.4102280000006431,
+          "percent": 59.60450417742014
+        },
+        {
+          "baseline": 0.6653559999977006,
+          "candidate": 0.7322149999963585,
+          "delta": 0.06685899999865796,
+          "percent": 10.04860555836109
+        }
+      ],
+      "baselineRange": [
+        0.6653559999977006,
+        0.6882499999992433
+      ],
+      "candidateRange": [
+        0.7322149999963585,
+        1.0984779999998864
+      ],
+      "changeOfMeanPercent": 35.24563277647841,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.9332829999984824,
+          "candidate": 1.3762689999930444,
+          "delta": 0.442985999994562,
+          "percent": 47.46534545205285
+        },
+        {
+          "baseline": 0.9775789999985136,
+          "candidate": 0.9948440000007395,
+          "delta": 0.01726500000222586,
+          "percent": 1.7660976762238212
+        }
+      ],
+      "baselineRange": [
+        0.9332829999984824,
+        0.9775789999985136
+      ],
+      "candidateRange": [
+        0.9948440000007395,
+        1.3762689999930444
+      ],
+      "changeOfMeanPercent": 24.08604075006522,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.688,
+          "candidate": 1.136,
+          "delta": 0.44799999999999995,
+          "percent": 65.11627906976744
+        },
+        {
+          "baseline": 0.663,
+          "candidate": 0.729,
+          "delta": 0.06599999999999995,
+          "percent": 9.954751131221705
+        }
+      ],
+      "baselineRange": [
+        0.663,
+        0.688
+      ],
+      "candidateRange": [
+        0.729,
+        1.136
+      ],
+      "changeOfMeanPercent": 38.04589193190229,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "candidateRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.6994360000026063,
+          "candidate": 0.7148600000000442,
+          "delta": 0.015423999997437932,
+          "percent": 2.205205336496907
+        },
+        {
+          "baseline": 0.7004480000032345,
+          "candidate": 0.6853249999985565,
+          "delta": -0.015123000004678033,
+          "percent": -2.159046782146312
+        }
+      ],
+      "baselineRange": [
+        0.6994360000026063,
+        0.7004480000032345
+      ],
+      "candidateRange": [
+        0.6853249999985565,
+        0.7148600000000442
+      ],
+      "changeOfMeanPercent": 0.021501781058907987,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_p95",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.8158590000020922,
+          "candidate": 0.8027689999944414,
+          "delta": -0.013090000007650815,
+          "percent": -1.6044439060692195
+        },
+        {
+          "baseline": 1.7767429999948945,
+          "candidate": 1.083184999995865,
+          "delta": -0.6935579999990296,
+          "percent": -39.03535851842514
+        }
+      ],
+      "baselineRange": [
+        0.8158590000020922,
+        1.7767429999948945
+      ],
+      "candidateRange": [
+        0.8027689999944414,
+        1.083184999995865
+      ],
+      "changeOfMeanPercent": -27.256323955913853,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_cpu_p50",
+      "unit": "ms",
+      "pairs": [
+        {
+          "baseline": 0.697,
+          "candidate": 0.715,
+          "delta": 0.018000000000000016,
+          "percent": 2.582496413199431
+        },
+        {
+          "baseline": 0.698,
+          "candidate": 0.683,
+          "delta": -0.014999999999999902,
+          "percent": -2.1489971346704717
+        }
+      ],
+      "baselineRange": [
+        0.697,
+        0.698
+      ],
+      "candidateRange": [
+        0.683,
+        0.715
+      ],
+      "changeOfMeanPercent": 0.21505376344086446,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_payload",
+      "unit": "KiB",
+      "pairs": [
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "baseline": 196.33203125,
+          "candidate": 196.33203125,
+          "delta": 0.0,
+          "percent": 0.0
+        }
+      ],
+      "baselineRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "candidateRange": [
+        196.33203125,
+        196.33203125
+      ],
+      "changeOfMeanPercent": 0.0,
+      "consistentLatencyRegressionOver10PercentAnd1Ms": false
+    }
+  ],
+  "database": {
+    "baseline-1": {
+      "schemaVersion": 1,
+      "suite": "rc-database",
+      "application": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+      "environment": {
+        "node": "v24.19.0",
+        "sqlite": "3.53.3",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logicalCpus": 9,
+        "platform": "linux",
+        "arch": "x64",
+        "runner": "workspace"
+      },
+      "fixedTime": "2026-09-18T12:00:00.000Z",
+      "notes": [
+        "Identical legacy stress fixture is seeded before opening each measured application.",
+        "Aged history includes 365 completed days for 5,000 types. The production startup migration runs without benchmark assistance.",
+        "Read and write timings include JSON serialization where a response is measured. No network requests or durability changes.",
+        "Event inserts are 5,000-row committed synthetic batches; their cost is not a measurement of ordinary per-event latency."
+      ],
+      "before": {
+        "historyJsonBytes": 198930000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "firstOpenMs": 909.476272,
+      "after": {
+        "historyJsonBytes": 16355000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "agedImports": {
+        "ms": {
+          "samples": [
+            495.08908900000006,
+            450.38042700000005,
+            441.313619
+          ],
+          "p50": 450.38042700000005,
+          "max": 495.08908900000006
+        },
+        "responseBytes": 201044,
+        "outputHash": "1d8e231847808cbb5605976de8b4a19b8f6ca9276b521bdf87de06164b45732e"
+      },
+      "shipEventPlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH events USING INDEX idx_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+        }
+      ],
+      "eventIndexBytes": 2400256,
+      "eventInsert": {
+        "rowsPerTransaction": 5000,
+        "ms": {
+          "samples": [
+            17.9298060000001,
+            19.519051000000218,
+            18.437429000000066,
+            18.623865000000023,
+            19.750935000000027
+          ],
+          "p50": 18.623865000000023,
+          "max": 19.750935000000027
+        }
+      },
+      "historyWrite": {
+        "types": 1000,
+        "days": 30,
+        "ms": {
+          "samples": [
+            35.05592200000001,
+            34.42970500000001,
+            35.04695900000024
+          ],
+          "p50": 35.04695900000024,
+          "max": 35.05592200000001
+        },
+        "synchronousBlockMs": {
+          "samples": [
+            2.197765999999774,
+            2.196284000000105,
+            2.1816429999998945,
+            2.4734749999997803,
+            3.045161999999891,
+            2.2777750000000196,
+            2.28598699999975,
+            2.651618999999755,
+            2.3602270000001226,
+            2.2107860000000983,
+            2.206970000000183,
+            2.361229000000094,
+            2.375159000000167,
+            2.454265999999734,
+            2.280859999999848,
+            2.2207900000003065,
+            2.1785869999998795,
+            2.1837560000003577,
+            2.2031440000000657,
+            2.8378350000002683,
+            2.5915399999998954,
+            2.3533769999999095,
+            2.4690890000001673,
+            2.463480000000345,
+            2.2294629999996687,
+            2.176625000000058,
+            2.1686429999999746,
+            2.240230000000338,
+            2.477310999999645,
+            2.291584999999941
+          ],
+          "p50": 2.28598699999975,
+          "max": 3.045161999999891
+        },
+        "outputHash": "225622baf5ace59dae5b2348decbeb03d4c6be72a4b31f62c5f354ab1b79e95b"
+      },
+      "complete": true
+    },
+    "candidate-1": {
+      "schemaVersion": 1,
+      "suite": "rc-database",
+      "application": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "environment": {
+        "node": "v24.19.0",
+        "sqlite": "3.53.3",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logicalCpus": 9,
+        "platform": "linux",
+        "arch": "x64",
+        "runner": "workspace"
+      },
+      "fixedTime": "2026-09-18T12:00:00.000Z",
+      "notes": [
+        "Identical legacy stress fixture is seeded before opening each measured application.",
+        "Aged history includes 365 completed days for 5,000 types. The production startup migration runs without benchmark assistance.",
+        "Read and write timings include JSON serialization where a response is measured. No network requests or durability changes.",
+        "Event inserts are 5,000-row committed synthetic batches; their cost is not a measurement of ordinary per-event latency."
+      ],
+      "before": {
+        "historyJsonBytes": 198930000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "firstOpenMs": 907.246212,
+      "after": {
+        "historyJsonBytes": 16355000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "agedImports": {
+        "ms": {
+          "samples": [
+            526.3161169999998,
+            444.2378570000001,
+            448.43220199999996
+          ],
+          "p50": 448.43220199999996,
+          "max": 526.3161169999998
+        },
+        "responseBytes": 201044,
+        "outputHash": "1d8e231847808cbb5605976de8b4a19b8f6ca9276b521bdf87de06164b45732e"
+      },
+      "shipEventPlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH events USING INDEX idx_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+        }
+      ],
+      "eventIndexBytes": 2400256,
+      "eventInsert": {
+        "rowsPerTransaction": 5000,
+        "ms": {
+          "samples": [
+            18.19259800000009,
+            17.965741999999864,
+            18.124786999999742,
+            17.778453999999783,
+            17.893335000000206
+          ],
+          "p50": 17.965741999999864,
+          "max": 18.19259800000009
+        }
+      },
+      "historyWrite": {
+        "types": 1000,
+        "days": 30,
+        "ms": {
+          "samples": [
+            35.85872600000039,
+            34.36422100000027,
+            34.43661299999985
+          ],
+          "p50": 34.43661299999985,
+          "max": 35.85872600000039
+        },
+        "synchronousBlockMs": {
+          "samples": [
+            2.4518530000000283,
+            2.376390999999785,
+            2.6646089999999276,
+            2.221150999999736,
+            3.061866999999893,
+            2.199999999999818,
+            2.309042000000318,
+            2.2652670000002217,
+            2.379685999999765,
+            2.344994999999926,
+            2.2945800000002237,
+            2.6872220000000198,
+            2.7246979999999894,
+            2.1855389999996078,
+            2.30433499999981,
+            2.283133999999791,
+            2.196545000000242,
+            2.2000200000002224,
+            2.214672000000064,
+            2.1972960000002786,
+            2.202112999999372,
+            2.230706000000282,
+            2.217865999999958,
+            2.2042060000003403,
+            2.283343999999488,
+            2.3264179999996486,
+            2.5976390000005267,
+            2.5267049999993105,
+            2.3611390000005485,
+            2.3162819999997737
+          ],
+          "p50": 2.30433499999981,
+          "max": 3.061866999999893
+        },
+        "outputHash": "225622baf5ace59dae5b2348decbeb03d4c6be72a4b31f62c5f354ab1b79e95b"
+      },
+      "complete": true
+    },
+    "candidate-2": {
+      "schemaVersion": 1,
+      "suite": "rc-database",
+      "application": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "environment": {
+        "node": "v24.19.0",
+        "sqlite": "3.53.3",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logicalCpus": 9,
+        "platform": "linux",
+        "arch": "x64",
+        "runner": "workspace"
+      },
+      "fixedTime": "2026-09-18T12:00:00.000Z",
+      "notes": [
+        "Identical legacy stress fixture is seeded before opening each measured application.",
+        "Aged history includes 365 completed days for 5,000 types. The production startup migration runs without benchmark assistance.",
+        "Read and write timings include JSON serialization where a response is measured. No network requests or durability changes.",
+        "Event inserts are 5,000-row committed synthetic batches; their cost is not a measurement of ordinary per-event latency."
+      ],
+      "before": {
+        "historyJsonBytes": 198930000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "firstOpenMs": 920.0161999999999,
+      "after": {
+        "historyJsonBytes": 16355000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "agedImports": {
+        "ms": {
+          "samples": [
+            510.496447,
+            471.60172599999987,
+            459.9660249999997
+          ],
+          "p50": 471.60172599999987,
+          "max": 510.496447
+        },
+        "responseBytes": 201044,
+        "outputHash": "1d8e231847808cbb5605976de8b4a19b8f6ca9276b521bdf87de06164b45732e"
+      },
+      "shipEventPlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH events USING INDEX idx_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+        }
+      ],
+      "eventIndexBytes": 2400256,
+      "eventInsert": {
+        "rowsPerTransaction": 5000,
+        "ms": {
+          "samples": [
+            18.23716400000012,
+            19.00841700000001,
+            18.16137200000003,
+            18.583296000000246,
+            18.560813000000053
+          ],
+          "p50": 18.560813000000053,
+          "max": 19.00841700000001
+        }
+      },
+      "historyWrite": {
+        "types": 1000,
+        "days": 30,
+        "ms": {
+          "samples": [
+            33.873993999999584,
+            35.96823200000017,
+            33.702870000000075
+          ],
+          "p50": 33.873993999999584,
+          "max": 35.96823200000017
+        },
+        "synchronousBlockMs": {
+          "samples": [
+            2.3995249999998123,
+            2.3332769999997254,
+            2.19646400000056,
+            2.1947419999996782,
+            2.2436240000006364,
+            2.1964649999999892,
+            2.203795999999784,
+            2.1742819999999483,
+            2.2535390000002735,
+            2.1954939999995986,
+            3.181484000000637,
+            2.261421000000155,
+            2.3194069999999556,
+            2.2922770000004675,
+            2.2806790000004185,
+            2.281930999999531,
+            2.5677050000003874,
+            2.237685999999485,
+            3.109668000000056,
+            2.313438000000133,
+            2.4194049999996423,
+            2.3261069999998654,
+            2.3690200000000914,
+            2.2231940000001487,
+            2.5232190000006085,
+            2.4248740000002726,
+            2.2879809999994905,
+            2.6435069999997722,
+            2.2594579999995403,
+            2.257144000000153
+          ],
+          "p50": 2.2879809999994905,
+          "max": 3.181484000000637
+        },
+        "outputHash": "225622baf5ace59dae5b2348decbeb03d4c6be72a4b31f62c5f354ab1b79e95b"
+      },
+      "complete": true
+    },
+    "baseline-2": {
+      "schemaVersion": 1,
+      "suite": "rc-database",
+      "application": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+      "environment": {
+        "node": "v24.19.0",
+        "sqlite": "3.53.3",
+        "cpu": "AMD EPYC 9V74 80-Core Processor",
+        "logicalCpus": 9,
+        "platform": "linux",
+        "arch": "x64",
+        "runner": "workspace"
+      },
+      "fixedTime": "2026-09-18T12:00:00.000Z",
+      "notes": [
+        "Identical legacy stress fixture is seeded before opening each measured application.",
+        "Aged history includes 365 completed days for 5,000 types. The production startup migration runs without benchmark assistance.",
+        "Read and write timings include JSON serialization where a response is measured. No network requests or durability changes.",
+        "Event inserts are 5,000-row committed synthetic batches; their cost is not a measurement of ordinary per-event latency."
+      ],
+      "before": {
+        "historyJsonBytes": 198930000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "firstOpenMs": 915.002395,
+      "after": {
+        "historyJsonBytes": 16355000,
+        "historyTypes": 5000,
+        "events": 50000,
+        "characters": 4,
+        "archiveRows": 0
+      },
+      "agedImports": {
+        "ms": {
+          "samples": [
+            508.3305260000002,
+            454.4556560000001,
+            458.32554900000014
+          ],
+          "p50": 458.32554900000014,
+          "max": 508.3305260000002
+        },
+        "responseBytes": 201044,
+        "outputHash": "1d8e231847808cbb5605976de8b4a19b8f6ca9276b521bdf87de06164b45732e"
+      },
+      "shipEventPlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH events USING INDEX idx_events_character_type_at (character_id=? AND type=? AND at>? AND at<?)"
+        }
+      ],
+      "eventIndexBytes": 2400256,
+      "eventInsert": {
+        "rowsPerTransaction": 5000,
+        "ms": {
+          "samples": [
+            18.42842699999983,
+            18.010627999999997,
+            18.841077999999925,
+            17.540781000000152,
+            17.794938000000002
+          ],
+          "p50": 18.010627999999997,
+          "max": 18.841077999999925
+        }
+      },
+      "historyWrite": {
+        "types": 1000,
+        "days": 30,
+        "ms": {
+          "samples": [
+            36.702894999999444,
+            34.82155800000055,
+            34.938922000000275
+          ],
+          "p50": 34.938922000000275,
+          "max": 36.702894999999444
+        },
+        "synchronousBlockMs": {
+          "samples": [
+            2.678088000000116,
+            2.3643130000000383,
+            2.2428930000005494,
+            2.920628000000761,
+            2.7031749999996464,
+            2.4551979999996547,
+            2.9393260000006194,
+            2.4113229999993564,
+            2.386645999999928,
+            2.3948090000003504,
+            2.6447189999998955,
+            2.269822999999633,
+            2.245437000000493,
+            2.2406700000001365,
+            2.6541330000000016,
+            2.5487370000000737,
+            2.299036999999771,
+            2.28957199999968,
+            2.263423999999759,
+            2.2920869999998104,
+            2.3467869999994946,
+            2.3331069999994725,
+            2.256234000000404,
+            2.2674000000006345,
+            2.4588340000000244,
+            2.361598999999842,
+            2.313148000000183,
+            2.2329090000002907,
+            2.4860340000004726,
+            2.3460860000004686
+          ],
+          "p50": 2.361598999999842,
+          "max": 2.9393260000006194
+        },
+        "outputHash": "225622baf5ace59dae5b2348decbeb03d4c6be72a4b31f62c5f354ab1b79e95b"
+      },
+      "complete": true
+    }
+  },
+  "notes": [
+    "Two repetitions per source on one machine; ranges are observations, not confidence intervals.",
+    "Expanded RC16 catalogs/response fields are intentional; current cross-version complete backend response equivalence was not tested.",
+    "Fixture fingerprints capture workload counts; frozen harness hashes and source manifests support seeder provenance.",
+    "Database complete output hashes are required to agree across all four runs."
+  ],
+  "databaseSummary": [
+    {
+      "metric": "firstOpenMs",
+      "baselineRange": [
+        909.476272,
+        915.002395
+      ],
+      "candidateRange": [
+        907.246212,
+        920.0161999999999
+      ],
+      "changeOfMeanPercent": 0.15257755820063945,
+      "pairs": [
+        {
+          "baseline": 909.476272,
+          "candidate": 907.246212,
+          "delta": -2.2300599999999804,
+          "percent": -0.24520265878910097
+        },
+        {
+          "baseline": 915.002395,
+          "candidate": 920.0161999999999,
+          "delta": 5.013804999999934,
+          "percent": 0.5479553963353201
+        }
+      ]
+    },
+    {
+      "metric": "agedImportsMs",
+      "baselineRange": [
+        450.38042700000005,
+        458.32554900000014
+      ],
+      "candidateRange": [
+        448.43220199999996,
+        471.60172599999987
+      ],
+      "changeOfMeanPercent": 1.24660256443605,
+      "pairs": [
+        {
+          "baseline": 450.38042700000005,
+          "candidate": 448.43220199999996,
+          "delta": -1.9482250000000931,
+          "percent": -0.4325731943941924
+        },
+        {
+          "baseline": 458.32554900000014,
+          "candidate": 471.60172599999987,
+          "delta": 13.276176999999734,
+          "percent": 2.896669633400628
+        }
+      ]
+    },
+    {
+      "metric": "eventInsertMs",
+      "baselineRange": [
+        18.010627999999997,
+        18.623865000000023
+      ],
+      "candidateRange": [
+        17.965741999999864,
+        18.560813000000053
+      ],
+      "changeOfMeanPercent": -0.2946348950430555,
+      "pairs": [
+        {
+          "baseline": 18.623865000000023,
+          "candidate": 17.965741999999864,
+          "delta": -0.6581230000001597,
+          "percent": -3.5337616547379325
+        },
+        {
+          "baseline": 18.010627999999997,
+          "candidate": 18.560813000000053,
+          "delta": 0.5501850000000559,
+          "percent": 3.0547796556569695
+        }
+      ]
+    },
+    {
+      "metric": "historyWriteMs",
+      "baselineRange": [
+        34.938922000000275,
+        35.04695900000024
+      ],
+      "candidateRange": [
+        33.873993999999584,
+        34.43661299999985
+      ],
+      "changeOfMeanPercent": -2.393731387050868,
+      "pairs": [
+        {
+          "baseline": 35.04695900000024,
+          "candidate": 34.43661299999985,
+          "delta": -0.6103460000003906,
+          "percent": -1.7415091563304674
+        },
+        {
+          "baseline": 34.938922000000275,
+          "candidate": 33.873993999999584,
+          "delta": -1.064928000000691,
+          "percent": -3.0479703981727946
+        }
+      ]
+    },
+    {
+      "metric": "historyWriteMaxBlockMs",
+      "baselineRange": [
+        2.9393260000006194,
+        3.045161999999891
+      ],
+      "candidateRange": [
+        3.061866999999893,
+        3.181484000000637
+      ],
+      "changeOfMeanPercent": 4.3255663642403075,
+      "pairs": [
+        {
+          "baseline": 3.045161999999891,
+          "candidate": 3.061866999999893,
+          "delta": 0.016705000000001746,
+          "percent": 0.5485750840185988
+        },
+        {
+          "baseline": 2.9393260000006194,
+          "candidate": 3.181484000000637,
+          "delta": 0.24215800000001764,
+          "percent": 8.238555369495138
+        }
+      ]
+    }
+  ]
+}

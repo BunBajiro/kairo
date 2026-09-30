@@ -12,10 +12,12 @@ Two review issues were raised and addressed by their owners:
 
 | Issue | Resolution / evidence rule |
 |---|---|
-| Updater review named the incidental local reconstruction commit | Root established exact source-tree correspondence and requested canonical commit plus module/harness hashes in updater provenance. |
+| Updater review named the incidental local reconstruction commit | Root established exact source-tree correspondence. `raw/updater-provenance.json` now records the canonical commit, module hashes and the explicitly disclosed reconstruction of the measured harness before its post-run field-name correction. |
 | CI uploaded the entire previously committed `raw` directory, allowing old workspace successes to accompany a failed current lane | CI now deletes and recreates that directory before measurement, records run URL/attempt, application/baseline/harness commits and harness hashes, and writes a fresh source-verification result. Missing lanes are not passes. |
 
-The browser owner is adding explicit failure checks for unexpected renderer exceptions and denied backend fetch attempts. Blocked expected remote image requests remain separately recorded rather than misclassified as backend traffic. A result with a `failure`, incomplete state, unexpected request attempts, missing required scenarios, or failed Actions job must remain visible as a failure.
+The final local browser run has explicit failure checks for unexpected renderer exceptions, successful external browser responses and denied backend fetch attempts. All three counters are zero in `raw/frontend-browser.json`, which has 37 completed samples and an end timestamp. Its recorded harness SHA-256 equals the current file, `c30258dfdb20af729510f38c362bad820bff2d090752edd7e916fa223ba3dd4d`. Blocked expected remote image requests remain separately recorded rather than misclassified as backend traffic. A result with a `failure`, incomplete state, unexpected request attempts, missing required scenarios, or failed Actions job must remain visible as a failure.
+
+The authorised [GitHub workflow](https://github.com/BunBajiro/kairo/actions/runs/36708404690) is running at harness commit `0344ff4ec069080a87e19294fa8fddc28f737327` at this review update. Successful second-environment completion is pending; no CI pass is inferred from publication or local success. The minimal local Overview ABBA lane is complete: all four files have end timestamps and passing controls, no long tasks and three requests per 35-second sample. Its overlapping renderer task-time shares (v0.7.3: 0.224–0.259%; RC16: 0.243–0.250%) do not demonstrate a renderer-idle regression.
 
 ## Comparison lanes and permitted conclusions
 
@@ -52,6 +54,14 @@ The browser fixture uses four saved maps totaling 1,025 nodes with real gates an
 
 The same-host ABBA comparison is stronger evidence than cross-date raw comparisons. Its two runs still require restraint: shared cloud-host load, CPU frequency, garbage collection and filesystem cache are not perfectly controlled. Consistent large changes backed by read-count/source evidence deserve more weight than small relative changes from sub-millisecond baselines.
 
+## Final browser observer and diagnostic review
+
+An exploratory run exposed a harness bug: an RAF callback retained from a previous sample could append into the next sample's observation array. The corrected harness binds each callback to its original sample object, stops when that identity changes, and rejects non-positive frame intervals. The complete corrected rerun, rather than the retained `frontend-exploratory-raf-observer.*` files, supplies the reported interaction figures. The final harness and result hashes agree.
+
+The transient style diagnostic compares four 600-node three-click windows in A–B–B–A order. B registers `--chain-zoom` as a non-inheriting numeric property; A has no such registration. This changes registration/typing as well as inheritance, so it identifies the custom-property style path rather than separately isolating inheritance as the only possible mechanism. The measured recalculation times are 1,208.9/7.9/6.9/1,263.7 ms and task times 2,474.8/1,609.7/1,535.4/2,522.6 ms. The restored A cost and repeated B effect make this useful causal evidence for a narrow patch, not proof of the exact RC17 gain before that patch is measured.
+
+Normal polls remain enabled in these browser samples: the first 600-node six-click zoom overlaps two requests and the first B style window overlaps a `/state` request. Other repeats corroborate the large observed difference without those polls. These are not grounds to discard the run, but the durations should not be presented as perfectly isolated animation costs. The final Atlas idle sample contains one paint and one long task, while paused replay contains one paint coinciding with `/state`; neither sample demonstrates a sustained idle paint loop.
+
 ## Required boundaries for RC17 retesting
 
 1. Start implementation from clean canonical RC16, never the instrumented analysis branch. Keep external harnesses separately addressable and preserve the exact source/harness/output provenance for each before/after run.
@@ -61,4 +71,4 @@ The same-host ABBA comparison is stronger evidence than cross-date raw compariso
 5. The current isolated updater run does not settle contention or reconnect cost. If updater/lifecycle changes are implemented, add loaded-app conversion and end-to-end managed restart measurements before drawing those conclusions.
 6. Keep source-only, browser and packaging gates. Verify the extracted RC17 artifact contains no checkpoint harnesses, profiles, synthetic fixtures or reports. Do not remove production updater workers/integrity checks simply because analysis also observes them.
 
-No additional broad benchmark campaign is required merely to decorate this analysis. Resolve actual failed lanes and ambiguous high-impact findings; retain explicit uncertainty for unmeasured paths. The current design supports prioritising optimisations once the in-flight measurements and CI results are collected.
+No additional broad benchmark campaign is required merely to decorate this analysis. Resolve actual failed lanes and ambiguous high-impact findings; retain explicit uncertainty for unmeasured paths. The completed local evidence supports prioritising optimisations. Complete independent CI evidence before claiming second-environment confirmation.

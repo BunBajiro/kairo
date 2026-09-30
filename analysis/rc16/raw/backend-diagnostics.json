@@ -1,0 +1,1139 @@
+{
+  "mode": "diagnostics",
+  "recordedAt": "2026-09-30T11:04:53.452Z",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "arch": "x64",
+  "platform": "linux",
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "fixture": {
+    "clock": "2026-09-30T09:00:00.000Z",
+    "systems": 8490,
+    "known": 5485,
+    "wormhole": 2604,
+    "gates": 6989,
+    "nodesPerMap": 100,
+    "linksPerMap": 99,
+    "signaturesPerMap": 100
+  },
+  "methodology": "Single workload invocation with SQL instrumentation; not latency evidence. Reads count emitted rows and body/value bytes, not SQLite pages or physical IO.",
+  "networkAttempts": 0,
+  "results": [
+    {
+      "name": "universe-state-0-visits",
+      "fixture": {
+        "visits": 0
+      },
+      "outputBytes": 4396134,
+      "status": null,
+      "totals": {
+        "calls": 86,
+        "rows": 20,
+        "jsonBytes": 1287265,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 44,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 22,
+          "rows": 20,
+          "jsonBytes": 1287265,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=pin]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=view]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=structure]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.*,u.region_id,u.region_name,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? ORDER BY at DESC,id DESC LIMIT 500": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT from_visit_id,to_visit_id FROM journey_hidden_links WHERE character_id=?": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? GROUP BY v.system_id ORDER BY last DESC": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "universe-state-10000-visits",
+      "fixture": {
+        "visits": 10000
+      },
+      "outputBytes": 6421063,
+      "status": null,
+      "totals": {
+        "calls": 86,
+        "rows": 11490,
+        "jsonBytes": 1287265,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 44,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 22,
+          "rows": 20,
+          "jsonBytes": 1287265,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=pin]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=view]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=structure]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.*,u.region_id,u.region_name,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? ORDER BY at DESC,id DESC LIMIT 500": {
+          "calls": 1,
+          "rows": 500,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT from_visit_id,to_visit_id FROM journey_hidden_links WHERE character_id=?": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? GROUP BY v.system_id ORDER BY last DESC": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "universe-state-100000-visits",
+      "fixture": {
+        "visits": 100000
+      },
+      "outputBytes": 6432033,
+      "status": null,
+      "totals": {
+        "calls": 86,
+        "rows": 11490,
+        "jsonBytes": 1287265,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 44,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 22,
+          "rows": 20,
+          "jsonBytes": 1287265,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=pin]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=view]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=structure]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.*,u.region_id,u.region_name,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? ORDER BY at DESC,id DESC LIMIT 500": {
+          "calls": 1,
+          "rows": 500,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT from_visit_id,to_visit_id FROM journey_hidden_links WHERE character_id=?": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? GROUP BY v.system_id ORDER BY last DESC": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "jspace-state-1-maps",
+      "fixture": {
+        "maps": 1
+      },
+      "outputBytes": 160025,
+      "status": null,
+      "totals": {
+        "calls": 234,
+        "rows": 509,
+        "jsonBytes": 243179,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 6,
+          "rows": 5,
+          "jsonBytes": 47817,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 2,
+          "rows": 2,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 2,
+          "rows": 198,
+          "jsonBytes": 80132,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 2,
+          "jsonBytes": 23717,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 198,
+          "rows": 198,
+          "jsonBytes": 45125,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 23334,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 2,
+          "jsonBytes": 264,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 22790,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "jspace-state-8-maps",
+      "fixture": {
+        "maps": 8
+      },
+      "outputBytes": 1277288,
+      "status": null,
+      "totals": {
+        "calls": 1816,
+        "rows": 9581,
+        "jsonBytes": 4178404,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 27,
+          "rows": 19,
+          "jsonBytes": 374493,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 9,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 9,
+          "rows": 9,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 9,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 9,
+          "rows": 7128,
+          "jsonBytes": 2884752,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 9,
+          "jsonBytes": 187055,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 1584,
+          "rows": 1584,
+          "jsonBytes": 361000,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 8,
+          "rows": 8,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 8,
+          "rows": 8,
+          "jsonBytes": 186672,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 80,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 32,
+          "rows": 16,
+          "jsonBytes": 2112,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 40,
+          "rows": 800,
+          "jsonBytes": 182320,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "jspace-state-24-maps",
+      "fixture": {
+        "maps": 24
+      },
+      "outputBytes": 3849148,
+      "status": null,
+      "totals": {
+        "calls": 5432,
+        "rows": 66749,
+        "jsonBytes": 28075636,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 75,
+          "rows": 51,
+          "jsonBytes": 1126781,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 25,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 25,
+          "rows": 25,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 25,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 25,
+          "rows": 59400,
+          "jsonBytes": 24178200,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 25,
+          "jsonBytes": 563199,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4752,
+          "rows": 4752,
+          "jsonBytes": 1088544,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 24,
+          "rows": 24,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 24,
+          "rows": 24,
+          "jsonBytes": 562816,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 240,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 96,
+          "rows": 48,
+          "jsonBytes": 6336,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 120,
+          "rows": 2400,
+          "jsonBytes": 549760,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "jspace-map-1-of-24",
+      "fixture": {
+        "maps": 24
+      },
+      "outputBytes": 159608,
+      "status": null,
+      "totals": {
+        "calls": 227,
+        "rows": 2682,
+        "jsonBytes": 1128643,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 70002,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 2376,
+          "jsonBytes": 967128,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 198,
+          "rows": 198,
+          "jsonBytes": 45125,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 23334,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 2,
+          "jsonBytes": 264,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 22790,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "universe-tick-24-maps",
+      "fixture": {
+        "maps": 24
+      },
+      "outputBytes": 47,
+      "status": null,
+      "totals": {
+        "calls": 11,
+        "rows": 2,
+        "jsonBytes": 383,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE kind='jspace_map' AND json_extract(body,'$.kind')='tracking_source'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 383,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 8,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "gate-route-pure",
+      "fixture": {},
+      "outputBytes": 2561,
+      "status": "ok",
+      "totals": {
+        "calls": 0,
+        "rows": 0,
+        "jsonBytes": 0,
+        "changes": 0
+      },
+      "sql": {}
+    },
+    {
+      "name": "gate-route-service-0-visits",
+      "fixture": {
+        "visits": 0
+      },
+      "outputBytes": 5790,
+      "status": "ok",
+      "totals": {
+        "calls": 41,
+        "rows": 15,
+        "jsonBytes": 752388,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 18,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 15,
+          "rows": 15,
+          "jsonBytes": 752388,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "gate-route-service-100000-visits",
+      "fixture": {
+        "visits": 100000
+      },
+      "outputBytes": 5790,
+      "status": "ok",
+      "totals": {
+        "calls": 41,
+        "rows": 5500,
+        "jsonBytes": 752388,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 18,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 15,
+          "rows": 15,
+          "jsonBytes": 752388,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      }
+    },
+    {
+      "name": "navigation-1-stops",
+      "fixture": {
+        "visits": 10000
+      },
+      "outputBytes": 8500,
+      "status": "ok",
+      "totals": {
+        "calls": 63,
+        "rows": 5506,
+        "jsonBytes": 1296622,
+        "changes": 1
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 36,
+          "rows": 3,
+          "jsonBytes": 9621,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 18,
+          "rows": 18,
+          "jsonBytes": 1287001,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 1,
+          "rows": 5485,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 1
+        }
+      }
+    },
+    {
+      "name": "navigation-10-stops",
+      "fixture": {
+        "visits": 10000
+      },
+      "outputBytes": 79646,
+      "status": "ok",
+      "totals": {
+        "calls": 432,
+        "rows": 55006,
+        "jsonBytes": 8140652,
+        "changes": 1
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 198,
+          "rows": 3,
+          "jsonBytes": 82159,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 153,
+          "rows": 153,
+          "jsonBytes": 8058493,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 20,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 10,
+          "rows": 54850,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 1
+        }
+      }
+    },
+    {
+      "name": "navigation-50-stops",
+      "fixture": {
+        "visits": 10000
+      },
+      "outputBytes": 396934,
+      "status": "ok",
+      "totals": {
+        "calls": 2072,
+        "rows": 275006,
+        "jsonBytes": 38559772,
+        "changes": 1
+      },
+      "sql": {
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 918,
+          "rows": 3,
+          "jsonBytes": 405759,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 753,
+          "rows": 753,
+          "jsonBytes": 38154013,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 100,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+          "calls": 50,
+          "rows": 274250,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT * FROM place_notes WHERE kind='system'": {
+          "calls": 50,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 50,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 50,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 50,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 50,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 1
+        }
+      }
+    },
+    {
+      "name": "jump-route-pure",
+      "fixture": {},
+      "outputBytes": 1371,
+      "status": "ok",
+      "totals": {
+        "calls": 0,
+        "rows": 0,
+        "jsonBytes": 0,
+        "changes": 0
+      },
+      "sql": {}
+    }
+  ]
+}

@@ -1,0 +1,2112 @@
+{
+  "schema": 1,
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sourceHashes": {
+    "package.json": "c5a2088e330df7c83c0e5fbd2d4a769f5859485f31700ca8fc08a8e0df2ed7af",
+    "server/index.mjs": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf",
+    "server/store.mjs": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555",
+    "components/kairo/dashboard.tsx": "4fd8f6b7f52a165513746b9b140a1d3d8960d762b9cf1ab2e5559a64d2e14e7b"
+  },
+  "version": "0.8.0-rc.16",
+  "repo": "/workspace/scratch/a2f3334402fc/kairo-analysis",
+  "overviewOnly": false,
+  "startedAt": "2026-09-30T11:15:24.229Z",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "totalMemory": 10451464192,
+    "viewport": {
+      "width": 1600,
+      "height": 1050,
+      "dpr": 1
+    },
+    "chromeFlags": [
+      "--headless",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ],
+    "limitations": [
+      "Synthetic connected pilot; no ESI traffic or real player credentials.",
+      "Headless Linux software rendering; no desktop GPU/FPS claim.",
+      "CDP TaskDuration covers renderer main-thread tasks, not total browser/worker/GPU CPU.",
+      "Fixtures span 25/100/300/600 nodes using real bundled gate topology and deterministic grid positions.",
+      "Browser HTTPS and known image CDN HTTP requests blocked using CDP; application CSP restricts connections to same-origin.",
+      "Instrumentation: canvas clearRect counter and long-task observer, CDP metrics at sample boundaries, network events; CPU profile is separate from timed samples.",
+      "Idle samples have no RAF probe. Interaction samples have an RAF interval observer; identical for all sizes.",
+      "List contains all four synthetic maps, total 1025 nodes; map navigation costs include that workspace."
+    ],
+    "smoke": true,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/153.0.8010.0",
+      "revision": "@86cee6df69e0463a839c0cc8435c9d4c259434d3",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+      "jsVersion": "15.3.76"
+    },
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "staticSystems": 8490,
+    "knownSystems": 5485,
+    "gates": 6989,
+    "maps": [
+      {
+        "id": "perf-25",
+        "nodes": 25,
+        "connections": 34
+      },
+      {
+        "id": "perf-100",
+        "nodes": 100,
+        "connections": 139
+      },
+      {
+        "id": "perf-300",
+        "nodes": 300,
+        "connections": 394
+      },
+      {
+        "id": "perf-600",
+        "nodes": 600,
+        "connections": 823
+      }
+    ]
+  },
+  "samples": [
+    {
+      "name": "overview-idle",
+      "domElementCount": 402,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 1001.8200270000002,
+      "taskMs": 1.5999999999999903,
+      "scriptMs": 0.38799999999999946,
+      "layoutMs": 0.2020000000000008,
+      "recalcMs": 0,
+      "layouts": 1,
+      "recalcs": 0,
+      "heapUsed": 6526268,
+      "heapTotal": 10485760,
+      "domNodes": 588,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "atlas-first-open",
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 1795.934878,
+      "taskMs": 563.704,
+      "scriptMs": 284.415,
+      "layoutMs": 29.699999999999996,
+      "recalcMs": 36.623000000000005,
+      "layouts": 30,
+      "recalcs": 54,
+      "heapUsed": 27714124,
+      "heapTotal": 57716736,
+      "domNodes": 2304,
+      "canvasDraws": 5,
+      "longTasks": [
+        {
+          "start": 3301.899999999441,
+          "duration": 89
+        },
+        {
+          "start": 3498.2999999998137,
+          "duration": 50
+        }
+      ],
+      "raf": null,
+      "requests": [
+        {
+          "at": 5407.175225,
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 119.44899999980407,
+          "totalMs": 131.78500000049098,
+          "encodedBytes": 867000
+        },
+        {
+          "at": 5407.175607,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 171.02900000008958,
+          "totalMs": 266.37899999968795,
+          "encodedBytes": 3950139
+        }
+      ]
+    },
+    {
+      "name": "atlas-idle",
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 1002.1644829999996,
+      "taskMs": 2.695000000000003,
+      "scriptMs": 0.8079999999999754,
+      "layoutMs": 0.9630000000000055,
+      "recalcMs": 0,
+      "layouts": 1,
+      "recalcs": 0,
+      "heapUsed": 27718456,
+      "heapTotal": 57716736,
+      "domNodes": 2304,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "atlas-zoom",
+      "repeat": 0,
+      "domElementCount": 1285,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 611.8747949999997,
+      "taskMs": 525.2880000000001,
+      "scriptMs": 189.61400000000006,
+      "layoutMs": 4.197999999999993,
+      "recalcMs": 44.284,
+      "layouts": 14,
+      "recalcs": 16,
+      "heapUsed": 50242612,
+      "heapTotal": 85647360,
+      "domNodes": 2318,
+      "canvasDraws": 12,
+      "longTasks": [
+        {
+          "start": 7041.5,
+          "duration": 56
+        },
+        {
+          "start": 7097.899999999441,
+          "duration": 54
+        },
+        {
+          "start": 7153.299999999814,
+          "duration": 59
+        }
+      ],
+      "raf": {
+        "count": 18,
+        "p50": 33.30000000000018,
+        "p95": 50.099999999999454,
+        "max": 66.69999999999982,
+        "over33ms": 6
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-open-25",
+      "nodes": 25,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "0.6139079990671642",
+      "windowMs": 1566.2007400000002,
+      "taskMs": 181.05800000000016,
+      "scriptMs": 30.141000000000084,
+      "layoutMs": 6.1000000000000085,
+      "recalcMs": 16.232999999999997,
+      "layouts": 14,
+      "recalcs": 18,
+      "heapUsed": 49590908,
+      "heapTotal": 99540992,
+      "domNodes": 3803,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-idle-25",
+      "nodes": 25,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "0.6139079990671642",
+      "windowMs": 1002.9041070000003,
+      "taskMs": 2.3900000000001143,
+      "scriptMs": 0.29799999999990945,
+      "layoutMs": 0.1799999999999996,
+      "recalcMs": 0,
+      "layouts": 1,
+      "recalcs": 0,
+      "heapUsed": 49611872,
+      "heapTotal": 99540992,
+      "domNodes": 3803,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-25",
+      "nodes": 25,
+      "repeat": 0,
+      "domElementCount": 1221,
+      "mapNodes": 25,
+      "camera": "0.7673849988339553",
+      "windowMs": 614.1014320000013,
+      "taskMs": 237.7530000000001,
+      "scriptMs": 43.34199999999999,
+      "layoutMs": 3.2500000000000027,
+      "recalcMs": 115.98500000000001,
+      "layouts": 17,
+      "recalcs": 31,
+      "heapUsed": 19462512,
+      "heapTotal": 97435648,
+      "domNodes": 1569,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": {
+        "count": 37,
+        "p50": 16.69999999999891,
+        "p95": 16.700000000000728,
+        "max": 16.700000000000728,
+        "over33ms": 0
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-open-600",
+      "nodes": 600,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.116851806640625",
+      "windowMs": 2110.1659580000014,
+      "taskMs": 772.146,
+      "scriptMs": 168.28900000000002,
+      "layoutMs": 54.328,
+      "recalcMs": 244.44099999999997,
+      "layouts": 5,
+      "recalcs": 3,
+      "heapUsed": 28418352,
+      "heapTotal": 92454912,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 13136.599999999627,
+          "duration": 258
+        },
+        {
+          "start": 13395.5,
+          "duration": 304
+        },
+        {
+          "start": 13742.799999999814,
+          "duration": 70
+        }
+      ],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-idle-600",
+      "nodes": 600,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.116851806640625",
+      "windowMs": 1001.3998730000021,
+      "taskMs": 3.2449999999997203,
+      "scriptMs": 0.2609999999999557,
+      "layoutMs": 0.17200000000000548,
+      "recalcMs": 0,
+      "layouts": 1,
+      "recalcs": 0,
+      "heapUsed": 28423496,
+      "heapTotal": 92454912,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": []
+    },
+    {
+      "name": "maps-zoom-600",
+      "nodes": 600,
+      "repeat": 0,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.14606475830078125",
+      "windowMs": 666.2210159999995,
+      "taskMs": 653.3600000000001,
+      "scriptMs": 104.28999999999999,
+      "layoutMs": 1.1150000000000049,
+      "recalcMs": 356.089,
+      "layouts": 4,
+      "recalcs": 12,
+      "heapUsed": 61657024,
+      "heapTotal": 100843520,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [
+        {
+          "start": 17241.099999999627,
+          "duration": 190
+        },
+        {
+          "start": 17456.799999999814,
+          "duration": 179
+        }
+      ],
+      "raf": {
+        "count": 7,
+        "p50": 16.700000000000728,
+        "p95": 200,
+        "max": 216.60000000000218,
+        "over33ms": 2
+      },
+      "requests": []
+    },
+    {
+      "name": "maps-identical-refresh-burst-10",
+      "nodes": 600,
+      "domElementCount": 19278,
+      "mapNodes": 600,
+      "camera": "0.14606475830078125",
+      "windowMs": 2561.3790340000014,
+      "taskMs": 254.67700000000005,
+      "scriptMs": 117.3709999999999,
+      "layoutMs": 0.5450000000000177,
+      "recalcMs": 0,
+      "layouts": 3,
+      "recalcs": 0,
+      "heapUsed": 56182648,
+      "heapTotal": 101736448,
+      "domNodes": 24587,
+      "canvasDraws": 0,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "at": 5422.109483,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 20.818999999391963,
+          "totalMs": 21.40899999994872,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.109653,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 39.83899999911955,
+          "totalMs": 40.460999999595515,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.109723,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 58.96100000063598,
+          "totalMs": 58.637000000089756,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.109776,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 72.95699999940553,
+          "totalMs": 73.24499999958789,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.109825,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 88.06000000004133,
+          "totalMs": 88.27900000051159,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.109925,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 103.3900000002177,
+          "totalMs": 102.81800000029762,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.110038,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 117.2950000000128,
+          "totalMs": 117.65699999978096,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.110183,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 134.1389999997773,
+          "totalMs": 131.4330000004702,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.110293,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 153.1089999998585,
+          "totalMs": 145.44800000021496,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.1104,
+          "url": "/api/universe/jspace?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 160.85300000031566,
+          "totalMs": 159.92800000003626,
+          "encodedBytes": 386227
+        },
+        {
+          "at": 5422.41087,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 45.43600000033621,
+          "totalMs": 50.46100000072329,
+          "encodedBytes": 3950139
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "at": 5404.211216,
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.496000000377535,
+      "totalMs": 5.522000000382832,
+      "encodedBytes": 7009
+    },
+    {
+      "at": 5404.221592,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.99600000049395,
+      "totalMs": 4.834000000300875,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 5404.233367,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.43300000018644,
+      "totalMs": 2.908999999817752,
+      "encodedBytes": 662
+    },
+    {
+      "at": 5404.233613,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.430000000080327,
+      "totalMs": 3.561999999874388,
+      "encodedBytes": 620
+    },
+    {
+      "at": 5404.233773,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.73900000029971,
+      "totalMs": 7.308999999622756,
+      "encodedBytes": 173456
+    },
+    {
+      "at": 5404.239079,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 14.57600000048842,
+      "totalMs": 3.764000000046508,
+      "encodedBytes": 638
+    },
+    {
+      "at": 5404.239765,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 13.99299999957293
+    },
+    {
+      "at": 5404.266683,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 2.822000000378466,
+      "totalMs": 2.8330000004643807,
+      "encodedBytes": 662
+    },
+    {
+      "at": 5404.2669,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 2.7589999999690917,
+      "totalMs": 2.734000000600645,
+      "encodedBytes": 620
+    },
+    {
+      "at": 5407.175225,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 119.44899999980407,
+      "totalMs": 131.78500000049098,
+      "encodedBytes": 867000
+    },
+    {
+      "at": 5407.175607,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 171.02900000008958,
+      "totalMs": 266.37899999968795,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 5411.497773,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 34.01500000018132,
+      "totalMs": 74.54500000039843,
+      "encodedBytes": 696
+    },
+    {
+      "at": 5411.498048,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 32.85499999947206,
+      "totalMs": 41.261999999733234,
+      "encodedBytes": 3950139
+    },
+    {
+      "at": 5411.624997,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.582000000104017,
+      "totalMs": 20.73999999993248,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.109483,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.818999999391963,
+      "totalMs": 21.40899999994872,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.109653,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 39.83899999911955,
+      "totalMs": 40.460999999595515,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.109723,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 58.96100000063598,
+      "totalMs": 58.637000000089756,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.109776,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 72.95699999940553,
+      "totalMs": 73.24499999958789,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.109825,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 88.06000000004133,
+      "totalMs": 88.27900000051159,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.109925,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 103.3900000002177,
+      "totalMs": 102.81800000029762,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.110038,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 117.2950000000128,
+      "totalMs": 117.65699999978096,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.110183,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 134.1389999997773,
+      "totalMs": 131.4330000004702,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.110293,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 153.1089999998585,
+      "totalMs": 145.44800000021496,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.1104,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 160.85300000031566,
+      "totalMs": 159.92800000003626,
+      "encodedBytes": 386227
+    },
+    {
+      "at": 5422.41087,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 45.43600000033621,
+      "totalMs": 50.46100000072329,
+      "encodedBytes": 3950139
+    }
+  ],
+  "errors": [],
+  "startup": {
+    "rendererMetrics": {
+      "Timestamp": 5406.123948,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 4,
+      "Frames": 4,
+      "JSEventListeners": 730,
+      "LayoutObjects": 523,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 587,
+      "Resources": 16,
+      "ContextLifecycleStateObservers": 5,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 4,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 1,
+      "ArrayBufferContents": 4,
+      "LayoutCount": 6,
+      "RecalcStyleCount": 18,
+      "LayoutDuration": 0.04152,
+      "RecalcStyleDuration": 0.013412,
+      "DevToolsCommandDuration": 0.000992,
+      "ScriptDuration": 0.098134,
+      "V8CompileDuration": 0.00032,
+      "TaskDuration": 0.21212,
+      "TaskOtherDuration": 0.057742,
+      "ThreadTime": 0.177189,
+      "ProcessTime": 0,
+      "JSHeapUsedSize": 6289636,
+      "JSHeapTotalSize": 10485760,
+      "FirstMeaningfulPaint": 5404.168681,
+      "DomContentLoaded": 5404.091594,
+      "NavigationStart": 5404.045722
+    },
+    "navigation": [
+      {
+        "name": "http://127.0.0.1:18690/#overview",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 54.09999999962747,
+        "navigationId": 347,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.20000000018626451,
+        "domainLookupStart": 3.8999999994412065,
+        "domainLookupEnd": 4.099999999627471,
+        "connectStart": 4.099999999627471,
+        "secureConnectionStart": 0,
+        "connectEnd": 4.3999999994412065,
+        "requestStart": 4.7000000001862645,
+        "responseStart": 8.200000000186265,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 8.200000000186265,
+        "responseEnd": 9.700000000186265,
+        "transferSize": 42044,
+        "encodedBodySize": 41744,
+        "decodedBodySize": 41744,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 45.89999999944121,
+        "domContentLoadedEventStart": 45.89999999944121,
+        "domContentLoadedEventEnd": 45.89999999944121,
+        "domComplete": 54.09999999962747,
+        "loadEventStart": 54.09999999962747,
+        "loadEventEnd": 54.09999999962747,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {}
+      }
+    ],
+    "resources": [
+      {
+        "url": "/assets/index-CHEJzzKn.css",
+        "duration": 13.399999999441206,
+        "transferSize": 252165,
+        "decodedBodySize": 251865
+      },
+      {
+        "url": "/assets/page-CnUOy8A_.css",
+        "duration": 13.700000000186265,
+        "transferSize": 294683,
+        "decodedBodySize": 294383
+      },
+      {
+        "url": "/assets/layout-segment-context-CyGPHnzF.js",
+        "duration": 11.099999999627471,
+        "transferSize": 588,
+        "decodedBodySize": 288
+      },
+      {
+        "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+        "duration": 12.099999999627471,
+        "transferSize": 994,
+        "decodedBodySize": 694
+      },
+      {
+        "url": "/assets/index-DQ9clOmq.js",
+        "duration": 13.100000000558794,
+        "transferSize": 81046,
+        "decodedBodySize": 80746
+      },
+      {
+        "url": "/assets/framework-CXnKph_e.js",
+        "duration": 13.600000000558794,
+        "transferSize": 190105,
+        "decodedBodySize": 189805
+      },
+      {
+        "url": "/assets/page-VWkA-JTO.js",
+        "duration": 19.300000000745058,
+        "transferSize": 1371276,
+        "decodedBodySize": 1370976
+      }
+    ]
+  },
+  "externalFetches": [],
+  "blockedBrowserExternalAttempts": [
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/78/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/80/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/77/logo?size=32",
+      "method": "GET"
+    },
+    {
+      "url": "https://images.evetech.net/alliances/79/logo?size=32",
+      "method": "GET"
+    }
+  ],
+  "controls": {
+    "successfulBrowserExternalResponses": 0,
+    "rendererExceptions": 0,
+    "deniedBackendFetchAttempts": 0
+  },
+  "endedAt": "2026-09-30T11:15:49.030Z"
+}

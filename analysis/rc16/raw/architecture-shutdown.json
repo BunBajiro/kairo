@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-30T11:08:24.911Z",
+  "mode": "deterministic-shutdown-diagnostic",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "notes": [
+    "Asserts the observed RC16 gap; it is not a test asserting correct shutdown behavior.",
+    "Uses the real semantic bus and Universe history subscriber with controlled deferred names and in-memory SQLite.",
+    "A listener wrapper records rejection then rethrows it to the unchanged real bus, which catches it.",
+    "Disposal/store-close ordering is controlled; this does not launch the full core or supervisor.",
+    "No wall-clock sleeps, external requests, CPU timings or production edits."
+  ],
+  "scenarios": [
+    {
+      "label": "dispose_listener_then_resolve_names",
+      "assertionsPassed": true,
+      "emitReturnType": "undefined",
+      "busHasDrain": false,
+      "namesRequests": 1,
+      "disposed": true,
+      "databaseClosedBeforeNameSettlement": false,
+      "latePublishAttempts": 1,
+      "completedPublishes": 1,
+      "capturedCallbackErrors": [],
+      "unhandledRejections": 0
+    },
+    {
+      "label": "dispose_listener_close_database_then_resolve_names",
+      "assertionsPassed": true,
+      "emitReturnType": "undefined",
+      "busHasDrain": false,
+      "namesRequests": 1,
+      "disposed": true,
+      "databaseClosedBeforeNameSettlement": true,
+      "latePublishAttempts": 1,
+      "completedPublishes": 0,
+      "capturedCallbackErrors": [
+        {
+          "type": "data.ship",
+          "afterDisposal": true,
+          "databaseClosed": true,
+          "name": "Error",
+          "code": "ERR_INVALID_STATE",
+          "message": "database is not open"
+        }
+      ],
+      "unhandledRejections": 0
+    },
+    {
+      "label": "dispose_listener_then_reject_names",
+      "assertionsPassed": true,
+      "emitReturnType": "undefined",
+      "busHasDrain": false,
+      "namesRequests": 1,
+      "disposed": true,
+      "databaseClosedBeforeNameSettlement": false,
+      "latePublishAttempts": 0,
+      "completedPublishes": 0,
+      "capturedCallbackErrors": [
+        {
+          "type": "data.ship",
+          "afterDisposal": true,
+          "databaseClosed": false,
+          "name": "Error",
+          "code": null,
+          "message": "Synthetic deferred name lookup failure"
+        }
+      ],
+      "unhandledRejections": 0
+    }
+  ],
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sourceFiles": [
+    {
+      "path": "server/bus.mjs",
+      "sha256": "e6e8d9d9764b83432a1eaf6d44394518cb66b4832857b5283a91163b674b055d"
+    },
+    {
+      "path": "server/universe-history.mjs",
+      "sha256": "d700f786519d8d83fed002fd56b5beeef7b18c70053cd4d2991d76511ac1e1f0"
+    },
+    {
+      "path": "server/core.mjs",
+      "sha256": "5de982005a326b3b2ccc294b105511607ed6f965158ee550e177922e33f0df33"
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf"
+    },
+    {
+      "path": "analysis/rc16/harness/architecture-shutdown.mjs",
+      "sha256": "d28329ea8c04d4a81c2b476a0cf6e21f0d0f31e93b181da13aafb81bd15176ab"
+    }
+  ],
+  "assertionsPassed": true,
+  "networkAttempts": 0,
+  "unhandledRejections": []
+}

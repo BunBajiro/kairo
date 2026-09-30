@@ -1,0 +1,286 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-30T11:04:47.143Z",
+  "mode": "light",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "notes": [
+    "Analysis-only harness; production modules are imported without modification.",
+    "Timings are local elapsed and process CPU. RSS includes worker threads; JS heap snapshots report the main thread.",
+    "Event-loop delay uses a 5 ms histogram; memory sampled every 100 ms; disk every 1000 ms (sampled peaks are lower bounds)."
+  ],
+  "measurements": [
+    {
+      "label": "bundled_inventory_first_service",
+      "elapsedMs": 17.727216,
+      "cpuUserMs": 15.123,
+      "cpuSystemMs": 6.026,
+      "eventLoop": {
+        "activeMs": 17.563291999937473,
+        "idleMs": 0.21012199999999998,
+        "utilization": 0.9881777355773776,
+        "delayMeanMs": 6.699008,
+        "delayP99Ms": 6.701055,
+        "delayMaxMs": 6.701055,
+        "samples": 1
+      },
+      "memory": {
+        "rssBefore": 39976960,
+        "rssAfter": 48816128,
+        "peakRss": 48816128,
+        "peakMainHeapUsed": 13651056,
+        "processMaxRssKiB": 47672
+      },
+      "disk": {
+        "finalBytes": 0,
+        "sampledPeakBytes": 0,
+        "samples": 0
+      },
+      "result": {
+        "datasets": [
+          {
+            "id": "universe",
+            "name": "Universe & celestial data",
+            "provider": "CCP Games",
+            "version": "3503375",
+            "build": 3503375,
+            "releasedAt": "2026-09-10T11:09:04Z",
+            "updatedAt": null,
+            "automatic": true
+          },
+          {
+            "id": "market-categories",
+            "name": "Market categories & volumes",
+            "provider": "CCP Games",
+            "version": "3494416",
+            "build": 3494416,
+            "releasedAt": null,
+            "updatedAt": null,
+            "automatic": true
+          },
+          {
+            "id": "npc-market-owners",
+            "name": "NPC market owners",
+            "provider": "CCP Games",
+            "version": "3494416",
+            "build": 3494416,
+            "releasedAt": null,
+            "updatedAt": null,
+            "automatic": true
+          },
+          {
+            "id": "wormholes",
+            "name": "Wormhole classes, effects & statics",
+            "provider": "Wanderer",
+            "version": "6c5d43936e88",
+            "build": null,
+            "releasedAt": null,
+            "updatedAt": null,
+            "automatic": false
+          },
+          {
+            "id": "destinations",
+            "name": "Destination references",
+            "provider": "Wanderer",
+            "version": "6c5d43936e88",
+            "build": null,
+            "releasedAt": null,
+            "updatedAt": null,
+            "automatic": false
+          },
+          {
+            "id": "points",
+            "name": "Landmarks & historical references",
+            "provider": "SMT",
+            "version": "6b3b4c6a213a",
+            "build": null,
+            "releasedAt": null,
+            "updatedAt": null,
+            "automatic": false
+          }
+        ]
+      }
+    },
+    {
+      "label": "100_concurrent_metadata_checks",
+      "elapsedMs": 9.399096,
+      "cpuUserMs": 9.749,
+      "cpuSystemMs": 0,
+      "eventLoop": {
+        "activeMs": 8.963048999950288,
+        "idleMs": 0.45487500000000003,
+        "utilization": 0.9517011392317032,
+        "delayMeanMs": null,
+        "delayP99Ms": null,
+        "delayMaxMs": null,
+        "samples": 0
+      },
+      "memory": {
+        "rssBefore": 48816128,
+        "rssAfter": 49602560,
+        "peakRss": 49602560,
+        "peakMainHeapUsed": 14041472,
+        "processMaxRssKiB": 48440
+      },
+      "disk": {
+        "finalBytes": 190,
+        "sampledPeakBytes": 190,
+        "samples": 0
+      },
+      "result": {
+        "requests": 1
+      }
+    },
+    {
+      "label": "1000_cached_manual_checks",
+      "elapsedMs": 5.4536700000000025,
+      "cpuUserMs": 7.627,
+      "cpuSystemMs": 1.432,
+      "eventLoop": {
+        "activeMs": 5.5034440001472795,
+        "idleMs": 0,
+        "utilization": 1,
+        "delayMeanMs": null,
+        "delayP99Ms": null,
+        "delayMaxMs": null,
+        "samples": 0
+      },
+      "memory": {
+        "rssBefore": 49733632,
+        "rssAfter": 55021568,
+        "peakRss": 55021568,
+        "peakMainHeapUsed": 14073368,
+        "processMaxRssKiB": 53732
+      },
+      "disk": {
+        "finalBytes": 190,
+        "sampledPeakBytes": 190,
+        "samples": 0
+      },
+      "result": {
+        "requests": 0,
+        "statusEmissions": 4000
+      }
+    },
+    {
+      "label": "24_hours_scheduler_simulation",
+      "elapsedMs": 21.159835999999984,
+      "cpuUserMs": 10.245,
+      "cpuSystemMs": 8.549,
+      "eventLoop": {
+        "activeMs": 9.006633999651548,
+        "idleMs": 12.183297,
+        "utilization": 0.42504310182981037,
+        "delayMeanMs": 5.011456,
+        "delayP99Ms": 5.181439,
+        "delayMaxMs": 5.181439,
+        "samples": 3
+      },
+      "memory": {
+        "rssBefore": 55021568,
+        "rssAfter": 55414784,
+        "peakRss": 55414784,
+        "peakMainHeapUsed": 10832008,
+        "processMaxRssKiB": 54116
+      },
+      "disk": {
+        "finalBytes": 190,
+        "sampledPeakBytes": 190,
+        "samples": 0
+      },
+      "result": {
+        "note": "Clock advanced; this is an operation-count check, not a 24-hour idle CPU measurement.",
+        "requests": 25,
+        "firedTimers": 25,
+        "delaysMs": [
+          1000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000,
+          3600000
+        ],
+        "remainingTimers": 1,
+        "conditionalHeaders": {
+          "Accept": "application/jsonl, application/json",
+          "User-Agent": "Kairo/0.8 SDE updater",
+          "If-None-Match": "\"analysis-sde\""
+        }
+      }
+    },
+    {
+      "label": "bundled_inventory_20_services_warm_process",
+      "elapsedMs": 247.53517499999998,
+      "cpuUserMs": 217.434,
+      "cpuSystemMs": 78.421,
+      "eventLoop": {
+        "activeMs": 238.12712199926784,
+        "idleMs": 9.448002,
+        "utilization": 0.9618378379564987,
+        "delayMeanMs": 6.484792888888889,
+        "delayP99Ms": 11.927551,
+        "delayMaxMs": 11.927551,
+        "samples": 36
+      },
+      "memory": {
+        "rssBefore": 55414784,
+        "rssAfter": 91480064,
+        "peakRss": 91480064,
+        "peakMainHeapUsed": 36341592,
+        "processMaxRssKiB": 96212
+      },
+      "disk": {
+        "finalBytes": 190,
+        "sampledPeakBytes": 190,
+        "samples": 0
+      },
+      "result": {
+        "timesMs": [
+          16.332368000000002,
+          11.403785999999997,
+          11.335730999999981,
+          9.354871000000003,
+          10.673023999999998,
+          14.41578899999999,
+          11.217421000000002,
+          9.236885999999998,
+          13.329790000000003,
+          12.807896999999997,
+          13.890701999999976,
+          9.800891999999976,
+          8.940988000000004,
+          11.456023999999957,
+          20.699599999999975,
+          17.920060999999976,
+          15.835057000000006,
+          10.131201000000033,
+          9.404203999999993,
+          9.110617999999988
+        ]
+      }
+    }
+  ]
+}
