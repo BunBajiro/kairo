@@ -1,0 +1,120 @@
+name: Internal RC16 performance checkpoint
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths:
+      - 'analysis/rc16/harness/**'
+      - 'analysis/rc16/rc16-source-manifest.json'
+      - '.github/workflows/rc16-performance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-rc16-performance
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: checkpoint
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: BunBajiro/kairo
+          ref: 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+          path: baseline
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.19.0'
+      - name: Start a fresh evidence directory
+        working-directory: checkpoint
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, platform, shutil
+          from pathlib import Path
+          root = Path('analysis/rc16/raw')
+          shutil.rmtree(root, ignore_errors=True)
+          root.mkdir(parents=True)
+          harness = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('analysis/rc16/harness').rglob('*') if p.is_file()}
+          (root / 'github-run-provenance.json').write_text(json.dumps({
+              'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'runUrl': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+              'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'harnessCommit': os.environ['GITHUB_SHA'],
+              'applicationCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',
+              'baselineCommit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',
+              'platform': platform.platform(), 'harnessSha256': harness,
+              'note': 'Fresh output directory. Successful completion is determined from Actions job status and each complete result; absent files are not passes.'
+          }, indent=2) + '\n')
+          PY
+      - name: Verify unchanged application source
+        working-directory: checkpoint
+        run: python3 analysis/rc16/harness/verify-source.py | tee analysis/rc16/raw/source-verification.json
+      - name: Compile both production frontends
+        run: |
+          cd "$GITHUB_WORKSPACE/checkpoint"
+          npm run install:ci
+          npm run build
+          cd "$GITHUB_WORKSPACE/baseline"
+          npm run install:ci
+          npm run build
+      - name: Confirm existing behaviour
+        working-directory: checkpoint
+        run: |
+          npm run check:kairo
+          npm run test:kairo
+      - name: Remeasure legacy workloads in balanced sequential order
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/harness/legacy/abba.mjs "$GITHUB_WORKSPACE/baseline" "$GITHUB_WORKSPACE/checkpoint" analysis/rc16/raw/github/legacy
+          python3 analysis/rc16/harness/legacy-summary.py analysis/rc16/raw/github/legacy
+      - name: Measure Universe and Maps scaling sequentially
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/harness/backend-universe.mjs diagnostics
+          node analysis/rc16/harness/backend-universe.mjs timings
+          node analysis/rc16/harness/backend-universe.mjs timings --reverse
+      - name: Check lightweight updater work
+        working-directory: checkpoint
+        run: node analysis/rc16/harness/updater-bench.mjs light > analysis/rc16/raw/updater-light-github.json
+      - name: Reproduce asynchronous disposal diagnostic
+        working-directory: checkpoint
+        run: node analysis/rc16/harness/architecture-shutdown.mjs > analysis/rc16/raw/architecture-shutdown-github.json
+      - name: Measure compiled browser workloads
+        working-directory: checkpoint
+        env:
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_FRONTEND_OUTPUT: analysis/rc16/raw/frontend-browser-github.json
+          KAIRO_BENCH_SOURCE_COMMIT: 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+          KAIRO_FRONTEND_STYLE_PROBE: '1'
+        run: node analysis/rc16/harness/frontend-browser.mjs
+      - name: Compare minimal Overview in balanced order
+        working-directory: checkpoint
+        env:
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_FRONTEND_OVERVIEW: '1'
+        run: |
+          for observation in baseline-1 candidate-1 candidate-2 baseline-2; do
+            case "$observation" in
+              baseline-*) export KAIRO_BENCH_REPO="$GITHUB_WORKSPACE/baseline" KAIRO_BENCH_SOURCE_COMMIT=239794774320fcdebaa1d76ce8a77c5c25cfc48c ;;
+              candidate-*) export KAIRO_BENCH_REPO="$GITHUB_WORKSPACE/checkpoint" KAIRO_BENCH_SOURCE_COMMIT=57c8dcc7fbd8fc2b62129498d1819050c78381a1 ;;
+            esac
+            KAIRO_FRONTEND_OUTPUT="analysis/rc16/raw/frontend-overview-$observation-github.json" node analysis/rc16/harness/frontend-browser.mjs
+          done
+      - name: Retain internal evidence only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc16-performance-evidence
+          path: checkpoint/analysis/rc16/raw/
+          if-no-files-found: error
+          retention-days: 30

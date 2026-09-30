@@ -1,0 +1,77 @@
+name: Kairo RC three-build performance comparison
+on:
+  push:
+    branches: ['perf/database-review-v0.7.3']
+    paths-ignore: ['docs/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: kairo-rc-performance-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  benchmark:
+    name: Compare 0.7.2, pre-DB 0.7.3 and RC1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: b151125cd7b26611364923f00683b1c6f1c1bdd6
+          path: baseline
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ff8bbc530ce278a883f8b1831407095a14d3277d
+          path: predb
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: 5a58faff44e6292705550ea5e3994d341b748455
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Prepare clean disposable application checkouts
+        run: |
+          npm run install:ci
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          def dependencies(path):
+              data=json.loads(Path(path).read_text())
+              data.pop('version',None)
+              data['packages'][''].pop('version',None)
+              return data
+          reference=dependencies('package-lock.json')
+          for name in ['baseline','predb','candidate']:
+              assert dependencies(name+'/package-lock.json')==reference, name+' dependency lock changed'
+          PY
+          for checkout in baseline predb candidate; do
+            ln -s "$GITHUB_WORKSPACE/node_modules" "$checkout/node_modules"
+            cp -R tests/performance "$checkout/tests/performance"
+            git -C "$checkout" diff --exit-code
+            (cd "$checkout" && npm run build && npm run test:kairo && npm run check:kairo)
+          done
+          npm run test:perf
+      - name: Compare behaviour and repeated performance in ABC/CBA order
+        run: node tests/performance/rc-suite.mjs baseline predb candidate performance-results/rc
+      - name: Summarise measurements
+        if: always()
+        run: |
+          if test -f performance-results/rc/comparison.md; then
+            cat performance-results/rc/comparison.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Retain raw three-build evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: kairo-rc-three-build-comparison-${{ github.sha }}
+          path: performance-results/rc/
+          if-no-files-found: warn
+          retention-days: 30

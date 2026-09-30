@@ -1,0 +1,1050 @@
+{
+  "checks": [
+    {
+      "run": 1,
+      "name": "stress idle CPU",
+      "baseline": 15.274733613209609,
+      "candidate": 1.4044245327545675,
+      "ratio": 0.09194428972168911,
+      "requiredRatioBelow": 0.5,
+      "passed": true
+    },
+    {
+      "run": 1,
+      "name": "stress imports after unrelated write",
+      "baseline": 469.21398300000146,
+      "candidate": 0.6793800000014016,
+      "ratio": 0.0014479108138629353,
+      "requiredRatioBelow": 0.1,
+      "passed": true
+    },
+    {
+      "run": 1,
+      "name": "stress session latency",
+      "baseline": 181.39846699999907,
+      "candidate": 112.044762000005,
+      "ratio": 0.617672044604465,
+      "requiredRatioBelow": 0.8,
+      "passed": true
+    },
+    {
+      "run": 2,
+      "name": "stress idle CPU",
+      "baseline": 14.661220869716766,
+      "candidate": 1.2592971394995363,
+      "ratio": 0.08589306106837637,
+      "requiredRatioBelow": 0.5,
+      "passed": true
+    },
+    {
+      "run": 2,
+      "name": "stress imports after unrelated write",
+      "baseline": 483.319199000005,
+      "candidate": 0.696977000006882,
+      "ratio": 0.0014420635502354103,
+      "requiredRatioBelow": 0.1,
+      "passed": true
+    },
+    {
+      "run": 2,
+      "name": "stress session latency",
+      "baseline": 189.19124600000214,
+      "candidate": 109.79578899999615,
+      "ratio": 0.5803428611067708,
+      "requiredRatioBelow": 0.8,
+      "passed": true
+    }
+  ],
+  "rows": [
+    {
+      "run": 1,
+      "metrics": [
+        {
+          "metric": "typical/idle/cpuPercentOneCore",
+          "baseline": 2.1505005231295553,
+          "current": 0.6305181450308982,
+          "delta": -1.519982378098657,
+          "percent": -70.68040029521477
+        },
+        {
+          "metric": "typical/idle/rssBytes",
+          "baseline": 98955264,
+          "current": 71999488,
+          "delta": -26955776,
+          "percent": -27.240365909184984
+        },
+        {
+          "metric": "typical/http/p50Ms",
+          "baseline": 10.325702000001911,
+          "current": 9.468303999994532,
+          "delta": -0.8573980000073789,
+          "percent": -8.303532292595895
+        },
+        {
+          "metric": "typical/opsec/p50Ms",
+          "baseline": 2.2641160000057425,
+          "current": 0.06939299999794457,
+          "delta": -2.194723000007798,
+          "percent": -96.93509519840113
+        },
+        {
+          "metric": "typical/opsec/p95Ms",
+          "baseline": 2.9972969999944326,
+          "current": 0.1280209999968065,
+          "delta": -2.869275999997626,
+          "percent": -95.72878496868864
+        },
+        {
+          "metric": "typical/opsec/cpuP50Ms",
+          "baseline": 2.26,
+          "current": 0.07,
+          "delta": -2.19,
+          "percent": -96.90265486725663
+        },
+        {
+          "metric": "typical/opsec/responseBytes",
+          "baseline": 662,
+          "current": 662,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/state/p50Ms",
+          "baseline": 4.1994940000004135,
+          "current": 4.00574599999527,
+          "delta": -0.1937480000051437,
+          "percent": -4.613603448537484
+        },
+        {
+          "metric": "typical/state/p95Ms",
+          "baseline": 4.746696999995038,
+          "current": 4.936860000001616,
+          "delta": 0.19016300000657793,
+          "percent": 4.006217376141286
+        },
+        {
+          "metric": "typical/state/cpuP50Ms",
+          "baseline": 4.223,
+          "current": 4,
+          "delta": -0.22299999999999986,
+          "percent": -5.280606204120286
+        },
+        {
+          "metric": "typical/state/responseBytes",
+          "baseline": 550548,
+          "current": 550548,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/journey/p50Ms",
+          "baseline": 1.916849999994156,
+          "current": 1.7528660000025411,
+          "delta": -0.16398399999161484,
+          "percent": -8.554868664325054
+        },
+        {
+          "metric": "typical/journey/p95Ms",
+          "baseline": 2.274571999994805,
+          "current": 1.9704100000017206,
+          "delta": -0.30416199999308446,
+          "percent": -13.372273992372152
+        },
+        {
+          "metric": "typical/journey/cpuP50Ms",
+          "baseline": 1.955,
+          "current": 1.768,
+          "delta": -0.18700000000000006,
+          "percent": -9.565217391304348
+        },
+        {
+          "metric": "typical/journey/responseBytes",
+          "baseline": 159260,
+          "current": 159260,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/session/p50Ms",
+          "baseline": 28.403410999999323,
+          "current": 17.715549999993527,
+          "delta": -10.687861000005796,
+          "percent": -37.62879395015638
+        },
+        {
+          "metric": "typical/session/p95Ms",
+          "baseline": 29.33661900000152,
+          "current": 20.60913299999811,
+          "delta": -8.72748600000341,
+          "percent": -29.749460904144943
+        },
+        {
+          "metric": "typical/session/cpuP50Ms",
+          "baseline": 28.493,
+          "current": 18.721,
+          "delta": -9.771999999999998,
+          "percent": -34.29614291229425
+        },
+        {
+          "metric": "typical/session/responseBytes",
+          "baseline": 456004,
+          "current": 456004,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/market_browse/p50Ms",
+          "baseline": 2.127132999994501,
+          "current": 1.9430389999979525,
+          "delta": -0.18409399999654852,
+          "percent": -8.654559916893978
+        },
+        {
+          "metric": "typical/market_browse/p95Ms",
+          "baseline": 2.5337069999950472,
+          "current": 2.1984789999987697,
+          "delta": -0.3352279999962775,
+          "percent": -13.230732677335332
+        },
+        {
+          "metric": "typical/market_browse/cpuP50Ms",
+          "baseline": 2.17,
+          "current": 1.947,
+          "delta": -0.22299999999999986,
+          "percent": -10.276497695852527
+        },
+        {
+          "metric": "typical/market_browse/responseBytes",
+          "baseline": 60297,
+          "current": 60297,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/market_report/p50Ms",
+          "baseline": 6.995310999998765,
+          "current": 6.492622999998275,
+          "delta": -0.5026880000004894,
+          "percent": -7.186070783708942
+        },
+        {
+          "metric": "typical/market_report/p95Ms",
+          "baseline": 7.920637000002898,
+          "current": 7.395256000003428,
+          "delta": -0.5253809999994701,
+          "percent": -6.633064992112092
+        },
+        {
+          "metric": "typical/market_report/cpuP50Ms",
+          "baseline": 7.078,
+          "current": 6.59,
+          "delta": -0.48800000000000043,
+          "percent": -6.8946029951963865
+        },
+        {
+          "metric": "typical/market_report/responseBytes",
+          "baseline": 40287,
+          "current": 40287,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/imports_warm/p50Ms",
+          "baseline": 0.5403829999995651,
+          "current": 0.6163959999976214,
+          "delta": 0.07601299999805633,
+          "percent": 14.066504682441439
+        },
+        {
+          "metric": "typical/imports_warm/p95Ms",
+          "baseline": 0.8204299999997602,
+          "current": 0.8039759999956004,
+          "delta": -0.016454000004159752,
+          "percent": -2.005533684063787
+        },
+        {
+          "metric": "typical/imports_warm/cpuP50Ms",
+          "baseline": 0.539,
+          "current": 0.574,
+          "delta": 0.03499999999999992,
+          "percent": 6.493506493506485
+        },
+        {
+          "metric": "typical/imports_warm/responseBytes",
+          "baseline": 175316,
+          "current": 175316,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/imports_after_write/p50Ms",
+          "baseline": 101.27290499999799,
+          "current": 0.601384000001417,
+          "delta": -100.67152099999657,
+          "percent": -99.40617483027525
+        },
+        {
+          "metric": "typical/imports_after_write/p95Ms",
+          "baseline": 130.2806899999996,
+          "current": 0.7532500000015716,
+          "delta": -129.52743999999802,
+          "percent": -99.42182529122192
+        },
+        {
+          "metric": "typical/imports_after_write/cpuP50Ms",
+          "baseline": 119.253,
+          "current": 0.599,
+          "delta": -118.654,
+          "percent": -99.49770655664847
+        },
+        {
+          "metric": "typical/imports_after_write/responseBytes",
+          "baseline": 175316,
+          "current": 175316,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/idle/cpuPercentOneCore",
+          "baseline": 15.274733613209609,
+          "current": 1.4044245327545675,
+          "delta": -13.87030908045504,
+          "percent": -90.80557102783109
+        },
+        {
+          "metric": "stress/idle/rssBytes",
+          "baseline": 156119040,
+          "current": 104300544,
+          "delta": -51818496,
+          "percent": -33.19165682802046
+        },
+        {
+          "metric": "stress/http/p50Ms",
+          "baseline": 39.360565000009956,
+          "current": 36.206486999988556,
+          "delta": -3.1540780000214,
+          "percent": -8.01329452466092
+        },
+        {
+          "metric": "stress/opsec/p50Ms",
+          "baseline": 9.779841999996279,
+          "current": 0.09968800000206102,
+          "delta": -9.680153999994218,
+          "percent": -98.98067882894122
+        },
+        {
+          "metric": "stress/opsec/p95Ms",
+          "baseline": 11.721889000000374,
+          "current": 0.24564499999542022,
+          "delta": -11.476244000004954,
+          "percent": -97.9043906660828
+        },
+        {
+          "metric": "stress/opsec/cpuP50Ms",
+          "baseline": 9.769,
+          "current": 0.128,
+          "delta": -9.641,
+          "percent": -98.68973282833453
+        },
+        {
+          "metric": "stress/opsec/responseBytes",
+          "baseline": 662,
+          "current": 662,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/state/p50Ms",
+          "baseline": 21.77386600000318,
+          "current": 21.45213700000022,
+          "delta": -0.3217290000029607,
+          "percent": -1.4775924496040926
+        },
+        {
+          "metric": "stress/state/p95Ms",
+          "baseline": 25.075564999999187,
+          "current": 27.96989400000166,
+          "delta": 2.8943290000024717,
+          "percent": 11.542427857567983
+        },
+        {
+          "metric": "stress/state/cpuP50Ms",
+          "baseline": 21.755,
+          "current": 21.435,
+          "delta": -0.3200000000000003,
+          "percent": -1.4709262238565834
+        },
+        {
+          "metric": "stress/state/responseBytes",
+          "baseline": 3472356,
+          "current": 3472356,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/journey/p50Ms",
+          "baseline": 3.4773699999932433,
+          "current": 3.684519000002183,
+          "delta": 0.20714900000893977,
+          "percent": 5.957059502133566
+        },
+        {
+          "metric": "stress/journey/p95Ms",
+          "baseline": 3.762334999999439,
+          "current": 5.660256000002846,
+          "delta": 1.8979210000034072,
+          "percent": 50.44529527550552
+        },
+        {
+          "metric": "stress/journey/cpuP50Ms",
+          "baseline": 3.473,
+          "current": 3.687,
+          "delta": 0.21399999999999997,
+          "percent": 6.161819752375464
+        },
+        {
+          "metric": "stress/journey/responseBytes",
+          "baseline": 244325,
+          "current": 244325,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/session/p50Ms",
+          "baseline": 181.39846699999907,
+          "current": 112.044762000005,
+          "delta": -69.35370499999408,
+          "percent": -38.2327955395535
+        },
+        {
+          "metric": "stress/session/p95Ms",
+          "baseline": 209.55931899999996,
+          "current": 122.94715300000098,
+          "delta": -86.61216599999898,
+          "percent": -41.330620090437975
+        },
+        {
+          "metric": "stress/session/cpuP50Ms",
+          "baseline": 200.359,
+          "current": 115.219,
+          "delta": -85.14000000000001,
+          "percent": -42.49372376584032
+        },
+        {
+          "metric": "stress/session/responseBytes",
+          "baseline": 2675825,
+          "current": 2675825,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/market_browse/p50Ms",
+          "baseline": 6.41388900000311,
+          "current": 6.329941999996663,
+          "delta": -0.08394700000644661,
+          "percent": -1.3088315062266598
+        },
+        {
+          "metric": "stress/market_browse/p95Ms",
+          "baseline": 7.539432999998098,
+          "current": 6.906518999996479,
+          "delta": -0.6329140000016196,
+          "percent": -8.394716154408155
+        },
+        {
+          "metric": "stress/market_browse/cpuP50Ms",
+          "baseline": 6.411,
+          "current": 6.326,
+          "delta": -0.08499999999999996,
+          "percent": -1.3258462018405859
+        },
+        {
+          "metric": "stress/market_browse/responseBytes",
+          "baseline": 60397,
+          "current": 60397,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/market_report/p50Ms",
+          "baseline": 36.188883000002534,
+          "current": 33.87961599999835,
+          "delta": -2.3092670000041835,
+          "percent": -6.381150255463874
+        },
+        {
+          "metric": "stress/market_report/p95Ms",
+          "baseline": 38.33111800000188,
+          "current": 36.47114899999724,
+          "delta": -1.8599690000046394,
+          "percent": -4.852373468482051
+        },
+        {
+          "metric": "stress/market_report/cpuP50Ms",
+          "baseline": 36.173,
+          "current": 33.863,
+          "delta": -2.3100000000000023,
+          "percent": -6.385978492245603
+        },
+        {
+          "metric": "stress/market_report/responseBytes",
+          "baseline": 40288,
+          "current": 40288,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/imports_warm/p50Ms",
+          "baseline": 1.1102810000011232,
+          "current": 0.700211000003037,
+          "delta": -0.41006999999808613,
+          "percent": -36.93389331148342
+        },
+        {
+          "metric": "stress/imports_warm/p95Ms",
+          "baseline": 2.545885999999882,
+          "current": 0.910795000003418,
+          "delta": -1.6350909999964642,
+          "percent": -64.22483174802564
+        },
+        {
+          "metric": "stress/imports_warm/cpuP50Ms",
+          "baseline": 1.109,
+          "current": 0.698,
+          "delta": -0.41100000000000003,
+          "percent": -37.06041478809738
+        },
+        {
+          "metric": "stress/imports_warm/responseBytes",
+          "baseline": 201044,
+          "current": 201044,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/imports_after_write/p50Ms",
+          "baseline": 469.21398300000146,
+          "current": 0.6793800000014016,
+          "delta": -468.53460300000006,
+          "percent": -99.8552089186137
+        },
+        {
+          "metric": "stress/imports_after_write/p95Ms",
+          "baseline": 1023.7165969999987,
+          "current": 0.8763230000040494,
+          "delta": -1022.8402739999947,
+          "percent": -99.91439789072756
+        },
+        {
+          "metric": "stress/imports_after_write/cpuP50Ms",
+          "baseline": 562.352,
+          "current": 0.68,
+          "delta": -561.672,
+          "percent": -99.8790792955302
+        },
+        {
+          "metric": "stress/imports_after_write/responseBytes",
+          "baseline": 201044,
+          "current": 201044,
+          "delta": 0,
+          "percent": 0
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "metrics": [
+        {
+          "metric": "typical/idle/cpuPercentOneCore",
+          "baseline": 1.9722981620909514,
+          "current": 0.7031474495857368,
+          "delta": -1.2691507125052146,
+          "percent": -64.34882599899154
+        },
+        {
+          "metric": "typical/idle/rssBytes",
+          "baseline": 106557440,
+          "current": 71643136,
+          "delta": -34914304,
+          "percent": -32.765712089179324
+        },
+        {
+          "metric": "typical/http/p50Ms",
+          "baseline": 10.04024400000344,
+          "current": 10.35451699999976,
+          "delta": 0.3142729999963194,
+          "percent": 3.1301330923452886
+        },
+        {
+          "metric": "typical/opsec/p50Ms",
+          "baseline": 2.295203000001493,
+          "current": 0.07269799999630777,
+          "delta": -2.222505000005185,
+          "percent": -96.83261132038166
+        },
+        {
+          "metric": "typical/opsec/p95Ms",
+          "baseline": 2.4299339999997756,
+          "current": 0.12148100000194972,
+          "delta": -2.308452999997826,
+          "percent": -95.0006461080029
+        },
+        {
+          "metric": "typical/opsec/cpuP50Ms",
+          "baseline": 2.292,
+          "current": 0.077,
+          "delta": -2.215,
+          "percent": -96.64048865619547
+        },
+        {
+          "metric": "typical/opsec/responseBytes",
+          "baseline": 662,
+          "current": 662,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/state/p50Ms",
+          "baseline": 4.1934760000003735,
+          "current": 4.063221000003978,
+          "delta": -0.13025499999639578,
+          "percent": -3.106134385802717
+        },
+        {
+          "metric": "typical/state/p95Ms",
+          "baseline": 4.435365000004822,
+          "current": 5.448872000000847,
+          "delta": 1.0135069999960251,
+          "percent": 22.850588395654547
+        },
+        {
+          "metric": "typical/state/cpuP50Ms",
+          "baseline": 4.19,
+          "current": 4.06,
+          "delta": -0.13000000000000078,
+          "percent": -3.1026252983293756
+        },
+        {
+          "metric": "typical/state/responseBytes",
+          "baseline": 550548,
+          "current": 550548,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/journey/p50Ms",
+          "baseline": 1.774849000001268,
+          "current": 1.7758299999986775,
+          "delta": 0.0009809999974095263,
+          "percent": 0.05527230752637724
+        },
+        {
+          "metric": "typical/journey/p95Ms",
+          "baseline": 2.100343000005523,
+          "current": 2.187974000000395,
+          "delta": 0.08763099999487167,
+          "percent": 4.172223298510835
+        },
+        {
+          "metric": "typical/journey/cpuP50Ms",
+          "baseline": 1.783,
+          "current": 1.859,
+          "delta": 0.07600000000000007,
+          "percent": 4.262478968031402
+        },
+        {
+          "metric": "typical/journey/responseBytes",
+          "baseline": 159260,
+          "current": 159260,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/session/p50Ms",
+          "baseline": 24.43126900000061,
+          "current": 18.11033899999893,
+          "delta": -6.320930000001681,
+          "percent": -25.872295049436534
+        },
+        {
+          "metric": "typical/session/p95Ms",
+          "baseline": 25.336334999999963,
+          "current": 23.869832999997016,
+          "delta": -1.4665020000029472,
+          "percent": -5.788137866044751
+        },
+        {
+          "metric": "typical/session/cpuP50Ms",
+          "baseline": 25.433,
+          "current": 19.152,
+          "delta": -6.280999999999999,
+          "percent": -24.696260763574873
+        },
+        {
+          "metric": "typical/session/responseBytes",
+          "baseline": 456004,
+          "current": 456004,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/market_browse/p50Ms",
+          "baseline": 1.9668650000021444,
+          "current": 2.01029899999412,
+          "delta": 0.043433999991975725,
+          "percent": 2.2082857741598128
+        },
+        {
+          "metric": "typical/market_browse/p95Ms",
+          "baseline": 2.129917000005662,
+          "current": 2.5018899999995483,
+          "delta": 0.37197299999388633,
+          "percent": 17.46420165635081
+        },
+        {
+          "metric": "typical/market_browse/cpuP50Ms",
+          "baseline": 1.965,
+          "current": 2.006,
+          "delta": 0.0409999999999997,
+          "percent": 2.0865139949109324
+        },
+        {
+          "metric": "typical/market_browse/responseBytes",
+          "baseline": 60297,
+          "current": 60297,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/market_report/p50Ms",
+          "baseline": 6.921972999996797,
+          "current": 6.758539999995264,
+          "delta": -0.1634330000015325,
+          "percent": -2.361075375497823
+        },
+        {
+          "metric": "typical/market_report/p95Ms",
+          "baseline": 8.276396999994176,
+          "current": 7.173005000004196,
+          "delta": -1.1033919999899808,
+          "percent": -13.33179159954213
+        },
+        {
+          "metric": "typical/market_report/cpuP50Ms",
+          "baseline": 6.981,
+          "current": 6.755,
+          "delta": -0.22599999999999998,
+          "percent": -3.237358544621116
+        },
+        {
+          "metric": "typical/market_report/responseBytes",
+          "baseline": 40287,
+          "current": 40287,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/imports_warm/p50Ms",
+          "baseline": 0.5169279999972787,
+          "current": 0.5591219999987516,
+          "delta": 0.04219400000147289,
+          "percent": 8.162452024594335
+        },
+        {
+          "metric": "typical/imports_warm/p95Ms",
+          "baseline": 0.8396389999979874,
+          "current": 0.7753329999977723,
+          "delta": -0.06430600000021514,
+          "percent": -7.658767637087993
+        },
+        {
+          "metric": "typical/imports_warm/cpuP50Ms",
+          "baseline": 0.516,
+          "current": 0.558,
+          "delta": 0.04200000000000004,
+          "percent": 8.139534883720945
+        },
+        {
+          "metric": "typical/imports_warm/responseBytes",
+          "baseline": 175316,
+          "current": 175316,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "typical/imports_after_write/p50Ms",
+          "baseline": 93.02222500000062,
+          "current": 0.5690059999978985,
+          "delta": -92.45321900000272,
+          "percent": -99.38831177173209
+        },
+        {
+          "metric": "typical/imports_after_write/p95Ms",
+          "baseline": 129.7935789999974,
+          "current": 0.7153640000033192,
+          "delta": -129.0782149999941,
+          "percent": -99.4488448461666
+        },
+        {
+          "metric": "typical/imports_after_write/cpuP50Ms",
+          "baseline": 105.43,
+          "current": 0.567,
+          "delta": -104.86300000000001,
+          "percent": -99.46220240918144
+        },
+        {
+          "metric": "typical/imports_after_write/responseBytes",
+          "baseline": 175316,
+          "current": 175316,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/idle/cpuPercentOneCore",
+          "baseline": 14.661220869716766,
+          "current": 1.2592971394995363,
+          "delta": -13.40192373021723,
+          "percent": -91.41069389316236
+        },
+        {
+          "metric": "stress/idle/rssBytes",
+          "baseline": 159109120,
+          "current": 106029056,
+          "delta": -53080064,
+          "percent": -33.36079289483847
+        },
+        {
+          "metric": "stress/http/p50Ms",
+          "baseline": 47.14228100000764,
+          "current": 37.11211299999559,
+          "delta": -10.030168000012054,
+          "percent": -21.27637396249542
+        },
+        {
+          "metric": "stress/opsec/p50Ms",
+          "baseline": 10.426296000005095,
+          "current": 0.07826599999680184,
+          "delta": -10.348030000008293,
+          "percent": -99.24934032184811
+        },
+        {
+          "metric": "stress/opsec/p95Ms",
+          "baseline": 18.130283999998937,
+          "current": 0.16906100000051083,
+          "delta": -17.961222999998427,
+          "percent": -99.06752150159082
+        },
+        {
+          "metric": "stress/opsec/cpuP50Ms",
+          "baseline": 10.436,
+          "current": 0.078,
+          "delta": -10.358,
+          "percent": -99.25258719816021
+        },
+        {
+          "metric": "stress/opsec/responseBytes",
+          "baseline": 662,
+          "current": 662,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/state/p50Ms",
+          "baseline": 22.449627000001783,
+          "current": 21.08596299999772,
+          "delta": -1.3636640000040643,
+          "percent": -6.074328094644765
+        },
+        {
+          "metric": "stress/state/p95Ms",
+          "baseline": 27.818280999999843,
+          "current": 25.529921000001195,
+          "delta": -2.2883599999986473,
+          "percent": -8.226101389940876
+        },
+        {
+          "metric": "stress/state/cpuP50Ms",
+          "baseline": 22.435,
+          "current": 21.072,
+          "delta": -1.3629999999999995,
+          "percent": -6.0753287274348144
+        },
+        {
+          "metric": "stress/state/responseBytes",
+          "baseline": 3472356,
+          "current": 3472356,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/journey/p50Ms",
+          "baseline": 3.7973969999948167,
+          "current": 3.687051999993855,
+          "delta": -0.11034500000096159,
+          "percent": -2.9058062667957074
+        },
+        {
+          "metric": "stress/journey/p95Ms",
+          "baseline": 4.029533000000811,
+          "current": 3.7611130000004778,
+          "delta": -0.26842000000033295,
+          "percent": -6.661317825174251
+        },
+        {
+          "metric": "stress/journey/cpuP50Ms",
+          "baseline": 3.794,
+          "current": 3.691,
+          "delta": -0.1030000000000002,
+          "percent": -2.7148128624143397
+        },
+        {
+          "metric": "stress/journey/responseBytes",
+          "baseline": 244325,
+          "current": 244325,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/session/p50Ms",
+          "baseline": 189.19124600000214,
+          "current": 109.79578899999615,
+          "delta": -79.39545700000599,
+          "percent": -41.96571388932292
+        },
+        {
+          "metric": "stress/session/p95Ms",
+          "baseline": 217.77031400000124,
+          "current": 121.70082999999431,
+          "delta": -96.06948400000692,
+          "percent": -44.115050502249076
+        },
+        {
+          "metric": "stress/session/cpuP50Ms",
+          "baseline": 193.545,
+          "current": 113.8,
+          "delta": -79.74499999999999,
+          "percent": -41.20230437365987
+        },
+        {
+          "metric": "stress/session/responseBytes",
+          "baseline": 2675825,
+          "current": 2675825,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/market_browse/p50Ms",
+          "baseline": 6.335052000002179,
+          "current": 6.4612879999986035,
+          "delta": 0.12623599999642465,
+          "percent": 1.992659255147089
+        },
+        {
+          "metric": "stress/market_browse/p95Ms",
+          "baseline": 6.784098999996786,
+          "current": 6.900681000006443,
+          "delta": 0.11658200000965735,
+          "percent": 1.7184595921980517
+        },
+        {
+          "metric": "stress/market_browse/cpuP50Ms",
+          "baseline": 6.34,
+          "current": 6.458,
+          "delta": 0.11800000000000033,
+          "percent": 1.8611987381703443
+        },
+        {
+          "metric": "stress/market_browse/responseBytes",
+          "baseline": 60397,
+          "current": 60397,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/market_report/p50Ms",
+          "baseline": 34.196036000001186,
+          "current": 33.71483199999784,
+          "delta": -0.48120400000334485,
+          "percent": -1.4071923424204158
+        },
+        {
+          "metric": "stress/market_report/p95Ms",
+          "baseline": 36.66739100000268,
+          "current": 41.946011,
+          "delta": 5.278619999997318,
+          "percent": 14.395951978140275
+        },
+        {
+          "metric": "stress/market_report/cpuP50Ms",
+          "baseline": 34.183,
+          "current": 33.699,
+          "delta": -0.48400000000000176,
+          "percent": -1.4159084925255305
+        },
+        {
+          "metric": "stress/market_report/responseBytes",
+          "baseline": 40288,
+          "current": 40288,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/imports_warm/p50Ms",
+          "baseline": 0.5941630000015721,
+          "current": 0.6898460000011255,
+          "delta": 0.09568299999955343,
+          "percent": 16.103830093644376
+        },
+        {
+          "metric": "stress/imports_warm/p95Ms",
+          "baseline": 0.8262990000002901,
+          "current": 1.0247529999978724,
+          "delta": 0.1984539999975823,
+          "percent": 24.0172141074251
+        },
+        {
+          "metric": "stress/imports_warm/cpuP50Ms",
+          "baseline": 0.593,
+          "current": 0.688,
+          "delta": 0.09499999999999997,
+          "percent": 16.0202360876897
+        },
+        {
+          "metric": "stress/imports_warm/responseBytes",
+          "baseline": 201044,
+          "current": 201044,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "metric": "stress/imports_after_write/p50Ms",
+          "baseline": 483.319199000005,
+          "current": 0.696977000006882,
+          "delta": -482.62222199999815,
+          "percent": -99.85579364497646
+        },
+        {
+          "metric": "stress/imports_after_write/p95Ms",
+          "baseline": 1029.7343859999964,
+          "current": 0.9317450000016834,
+          "delta": -1028.8026409999948,
+          "percent": -99.90951598658164
+        },
+        {
+          "metric": "stress/imports_after_write/cpuP50Ms",
+          "baseline": 591.595,
+          "current": 0.695,
+          "delta": -590.9,
+          "percent": -99.88252098141464
+        },
+        {
+          "metric": "stress/imports_after_write/responseBytes",
+          "baseline": 201044,
+          "current": 201044,
+          "delta": 0,
+          "percent": 0
+        }
+      ]
+    }
+  ]
+}

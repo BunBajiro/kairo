@@ -1,0 +1,64 @@
+# RC16 checkpoint measurement review
+
+This independent review reads the internal harnesses, available raw evidence, application call sites and CI workflow. It adds no application changes and runs no competing timing workload. The benchmark owners run their suites sequentially. Final conclusions depend on completed result files and the actual CI job outcome; a configured workflow is not evidence that it passed.
+
+## Source identity and evidence controls
+
+The canonical RC16 application is `57c8dcc7fbd8fc2b62129498d1819050c78381a1` on `feature/universe-v0.8.0`. The local reconstructed Git history also contains `36c69fb8de75ae7a6f673233d560753540c7c759`; the root investigation verified its application tree as identical to canonical RC16. Use the canonical commit in findings, with local reconstruction identity only as supporting provenance. The unchanged-source checker compares Git blob SHA-1 identities for all 405 non-exempt original files, including dependencies and binary data. Only branch instructions and the user-build workflow are exempt. New investigation files remain under `analysis/rc16` and its dedicated workflow.
+
+The released post-optimisation baseline is pinned to `239794774320fcdebaa1d76ce8a77c5c25cfc48c`. Retained older 0.7.3 checkpoint reports establish what was measured then; their raw numbers must not be divided into today's RC16 numbers as though host, fixtures and measurement environment were unchanged.
+
+Two review issues were raised and addressed by their owners:
+
+| Issue | Resolution / evidence rule |
+|---|---|
+| Updater review named the incidental local reconstruction commit | Root established exact source-tree correspondence and requested canonical commit plus module/harness hashes in updater provenance. |
+| CI uploaded the entire previously committed `raw` directory, allowing old workspace successes to accompany a failed current lane | CI now deletes and recreates that directory before measurement, records run URL/attempt, application/baseline/harness commits and harness hashes, and writes a fresh source-verification result. Missing lanes are not passes. |
+
+The browser owner is adding explicit failure checks for unexpected renderer exceptions and denied backend fetch attempts. Blocked expected remote image requests remain separately recorded rather than misclassified as backend traffic. A result with a `failure`, incomplete state, unexpected request attempts, missing required scenarios, or failed Actions job must remain visible as a failure.
+
+## Comparison lanes and permitted conclusions
+
+| Lane | What it measures | What it does not establish |
+|---|---|---|
+| Legacy backend ABBA | Same common operation families against released 0.7.3 and RC16 on this host, with fresh process per fixture and A–B–B–A order | Full real-player behavior, internet effects, a Windows CPU budget, or complete decoded-response equivalence |
+| Legacy database ABBA | Identical pinned pre-migration stress fixture; actual opening/migration; aged imports; committed event batches; production history-write entry points | Ordinary single-event latency, whole network refresh latency, or physical file shrink from fewer JSON bytes |
+| Universe/Maps component lanes | Real production service projections, routing and itinerary costs across synthetic size changes; SQL diagnostic amplification | Historical percentage regression for features absent from 0.7.3; authenticated HTTP/transport latency; live ingestion cost |
+| Compiled browser lanes | Renderer main-thread tasks, long tasks, request count and reproducible interaction behavior in headless Chrome | Whole-browser/GPU CPU, desktop FPS, EVE/OBS contention or real user's fan behavior |
+| Updater lanes | Real local archive pipeline and worker conversion; cancellation; scheduling/coalescing operation counts | Internet download time, steady-state 24-hour CPU, simultaneous loaded-app restart or historical updater speedup |
+| Shutdown diagnostic | Real subscriber/bus behavior under deterministic deferred name resolution and disposal ordering | Frequency of the race in a live session or a full supervisor end-to-end restart test |
+
+A common-workload slowdown and a new feature's absolute cost are both useful findings, but are different claims. The current known-common workload is the cleanest regression comparison; the new scaling lanes identify where RC17 work has the highest value.
+
+## Fixture and caller correspondence
+
+The legacy profiles retain the previous workload sizes and use real market taxonomy IDs. Direct inspection confirmed that `server/data/market-categories.json` and `server/import-math.mjs` are byte-identical across the two application checkouts. The first 5,000 eligible IDs therefore match. The catalog has new Universe datasets/scopes, which intentionally adds ordinary RC16 work and some response fields. The workload fingerprint encodes fixture version and counts, not complete contents; shared harness hashes and pinned source files are necessary provenance alongside it. Count and successful-opportunity assertions are useful partial semantic checks, not full-response equivalence. Historical decoded-equivalence reports apply to their original commits only.
+
+Legacy idle leaves the real scheduler and RC16 Universe ticks enabled. It seeds fresh public feed/cache state and defers automatic SDE startup. This answers the controlled warm-cache idle question, including newly introduced scheduled work. It does not answer the first-launch/missing-cache or failed-network question. Backend worker fetch attempts are rejected, counted and required to remain zero. Timed operations include full JSON serialization; the loopback `/api/state` lane separately measures the real HTTP route.
+
+The Universe component harness calls the same `core.universe.state`, `jspace.state`, `jspace.map` and route methods exposed by `server/index.mjs`. Its navigation lane calls production `navigation.plan`, which recalculates all pending legs rather than returning a memoized answer. Calls use real bundled static systems/gates, fresh status snapshots, map-scoped links/signatures and fixed logical time. The lazily created discovery source is seeded outside measurement. Private map counts are within the application's 24-map limit; the discovery source is distinct and does not consume a private-map slot. Synthetic maps omit active pilot tracking, comments and passage history, so they isolate projection scaling rather than cover every maximal document shape.
+
+SQL instrumentation and elapsed timing are separate modes. Emitted rows and `body`/`value` byte totals reveal repeated reads/parses; they do not measure physical SQLite IO, pages read, or total allocation. Component wall time excludes JSON serialization, which is sampled separately. Do not compare that wall number directly with serialization-inclusive legacy/HTTP time.
+
+The browser fixture uses four saved maps totaling 1,025 nodes with real gates and deterministic grid positions. It exercises bounded supported map sizes through real controls. Small and large map navigation share the same four-map workspace, so list fetch cost is part of the common context. Map-open/Atlas-open sample windows include an intentional 1.5-second post-readiness wait: the window length is not user-visible open latency. Minimal overview comparison uses the same profile/location fixture with each checkout's compiled frontend; it is separate from prior richer browser fixtures and from new Maps/Atlas workloads.
+
+## Sampling and interpretation
+
+- Legacy operations: three warmups, ten measured samples per process, two runs per application. The nearest-rank p95 with ten samples is the maximum observed sample. Report per-run medians/ranges and absolute changes, especially for tiny operations. Do not call these stable tail-latency percentiles or confidence intervals.
+- Universe component timings: three warmups and nine samples, forward and reverse scenario order. The reported p95 is explicitly the maximum for nine samples. Ordering reversal helps spot process/JIT/GC sensitivity but does not create independent hardware repetitions. No forced GC is used.
+- Database timings: one warmup, three measured expensive operations; five event-batch samples after warmup. Maximum synchronous block duration is a burst indicator. Compare complete fixed-time result hashes alongside latency, and keep initial opening/migration separate.
+- Browser interactions: repeated scripted clicks and fixed spacing provide a reproducible workload. RAF observers run during interactions only; idle samples have no added continuous RAF loop. CDP TaskDuration is renderer task time, not process CPU. Request timings are loopback observations. Long-task and canvas counters add small observer overhead, consistently applied.
+- Updater: one real-archive install and one cancellation establish scale and isolation, not a statistically repeated speedup. RSS includes worker threads; main-thread heap excludes worker heap. Sampled disk/RSS peaks are lower bounds. A 5 ms event-loop histogram has a measurement floor; a result near 5–6 ms is not proof of that much application-induced blocking.
+
+The same-host ABBA comparison is stronger evidence than cross-date raw comparisons. Its two runs still require restraint: shared cloud-host load, CPU frequency, garbage collection and filesystem cache are not perfectly controlled. Consistent large changes backed by read-count/source evidence deserve more weight than small relative changes from sub-millisecond baselines.
+
+## Required boundaries for RC17 retesting
+
+1. Start implementation from clean canonical RC16, never the instrumented analysis branch. Keep external harnesses separately addressable and preserve the exact source/harness/output provenance for each before/after run.
+2. For changed paths, require correct decoded output, not merely shorter execution. Add explicit successful-route/status and expected map/node/link/signature cardinality assertions to the new component lanes before using them as RC17 acceptance gates. Existing raw route/navigation outputs report `ok` and SQL diagnostics corroborate the present workload; future regressions must fail loudly rather than return an empty fast response.
+3. Compare new features to the newly established RC16 baseline. Retain common legacy operations to detect collateral regressions. Use identical fixture, Node/browser build, flags and environment within each comparison, with sequential balanced ordering.
+4. Retest the concrete change's behavior and performance: event coalescing must preserve newest scoped revision; projection caches must honor data/freshness dependencies; camera isolation must retain keyboard/pointer/save semantics; shutdown ownership needs an integrated deferred-completion restart test in addition to the diagnostic.
+5. The current isolated updater run does not settle contention or reconnect cost. If updater/lifecycle changes are implemented, add loaded-app conversion and end-to-end managed restart measurements before drawing those conclusions.
+6. Keep source-only, browser and packaging gates. Verify the extracted RC17 artifact contains no checkpoint harnesses, profiles, synthetic fixtures or reports. Do not remove production updater workers/integrity checks simply because analysis also observes them.
+
+No additional broad benchmark campaign is required merely to decorate this analysis. Resolve actual failed lanes and ambiguous high-impact findings; retain explicit uncertainty for unmeasured paths. The current design supports prioritising optimisations once the in-flight measurements and CI results are collected.
