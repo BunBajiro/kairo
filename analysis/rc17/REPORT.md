@@ -9,10 +9,12 @@ shutdown contracts. These are whole-Kairo changes, including legacy systems;
 the pass is not limited to features introduced between RC1 and RC16.
 
 The first measurements do **not** show a general reduction in memory or idle CPU.
-They expose a slower extreme Session route read, increased Core import time,
-and small recurring latency costs. Those findings led to a separate refined
-candidate. Its new measurements and the independent three-version GitHub run
-are pending below. The initial measurements retain their original commit labels.
+They exposed a slower extreme Session route read, increased Core import time,
+and small recurring latency costs. A separate refined candidate removes the
+extreme route-read regression and most of the extra import cost, while a small
+import overhead remains. Fresh Maps/routes/memory results are recorded below;
+the independent three-version GitHub run is underway. The initial measurements
+retain their original commit labels.
 
 RC17 is the **internal optimised candidate with benchmarking harnesses**, not the
 user-facing release name. The current deliverable is that instrumented runtime,
@@ -36,8 +38,9 @@ The initial RC16 source/build fingerprint is
 initial RC17 is
 `7e1aaeefaa28d131d858e8dc86355f7fb56ce6f5c60366ebcd46309349502c93`.
 They cover clean source checkouts and the compiled browser assets, with identical
-file sets and bytes verified after measurement. The refined run receives its own
-manifest; its numbers must never inherit the earlier fingerprint.
+file sets and bytes verified after measurement. The refined source/build fingerprint
+is `b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82`;
+its numbers never inherit the earlier fingerprint.
 
 | Evidence family | Method and environment | How it may be used |
 |---|---|---|
@@ -147,7 +150,8 @@ Browser changes isolate camera frames, coalesce refresh bursts, and maintain
 scaled geometry/hit targets. The requested focus-based detail is a per-pilot
 Mapper preference in Universe, **off by default**. Collapsed groups preserve real
 boundary systems and underlying canonical coordinates/edges. Compiled-browser
-correctness is separate from the pending fresh camera performance comparison.
+correctness is separate from the fresh camera performance comparison recorded
+in the refined results below.
 See [Maps measurements](reviews/maps-results-local.md) and
 [browser review](reviews/maps-browser.md).
 
@@ -204,9 +208,9 @@ a plateau; normal managed activation replaces the child process.
 
 Initial Core module import is 41.311–41.346 → 59.889–65.175 ms, approximately
 21 ms higher on average. Construction after import is about 5 ms lower. The
-refined candidate makes an eagerly created internationalised date formatter
-lazy and cached. That source explanation is a hypothesis until the fresh import
-measurement confirms its effect; it is not a whole-app boot claim.
+refined candidate makes an eagerly created internationalised number formatter
+lazy and cached. The fresh refined comparison below supports removal of most
+of the extra import cost, while retaining a residual; it is not a whole-app boot claim.
 
 The matched-descriptor, different-date mixed comparison is strongly directional:
 loaded dashboard p95 changes from **987.10–1,012.19 to 95.19–97.27 ms**, and
@@ -239,7 +243,7 @@ evidence without an isolated measured speedup; those distinctions remain.
 | Area | New or clarified boundary | Required contract / evidence |
 |---|---|---|
 | Journey, Sessions, discovery, activity | Session travel, durable membership and activity publication have separate owners | Preserved old evidence; explicit ownership and observation-time tests |
-| Itineraries | One relevant-pilot context and graph/index per plan, reused across legs/alternatives | Complete fixed-clock route equality and fresh 1/10/50-stop scaling pending |
+| Itineraries | One relevant-pilot context and graph/index per plan, reused across legs/alternatives | Complete fixed-clock route equality and fresh 1/10/50-stop local ABBA pass; independent CI pending |
 | Maps | Request-local preparation, summary/detail reads and one refresh owner | Access/revision/expiry equality, SQL body counts and browser controls |
 | Goals and combat | Shared request inputs; changed-content writes; service transaction boundary | Per-record accounting, missing-event repair and reentrant completion tests |
 | Assets | Iterative linear containment with cached paths | Duplicate/orphan/cycle fallback behaviour retained |
@@ -283,7 +287,7 @@ changes still receive compatibility checks here.
 ## Refined candidate completion record
 
 This section records reviewed local findings for `05d0d4b36c154329006d6772769063db874762da`
-while independent CI and camera acceptance remain pending. Initial059 observations
+while independent CI remains pending. Initial059 observations
 above will not be overwritten. The refined
 source includes the Session allocation change, lazy formatter construction and
 the recorded associated source refinement; read its exact diff and test record
@@ -303,7 +307,7 @@ calls become 32 rather than 69/492/2,372. These are isolated gate-itinerary
 measurements including acceptance/save/returned clone, not browser or jump-route
 latency claims.
 
-The accepted fresh [memory/Sessions review](reviews/memory-results-local.md)
+The accepted fresh [memory/Sessions review](reviews/memory-results-refined.md)
 removes the earlier extreme direct-route regression: 10,000-visit route medians
 are 47.13–47.20 ms versus matched RC16's 48.96–50.92 ms. The not-due path still
 avoids visit SQL. Lazy formatter creation reduces the prior candidate's import
@@ -320,21 +324,49 @@ third run has a separate, write-once schema-2 completion record (SHA-256
 and verified child/source/harness hashes. The runner now distinguishes progress
 from immutable completion. These invalid attempts remain retained and labelled.
 
+The accepted [camera ABBA](reviews/camera-results-local.md) uses fresh browsers
+and the same canonical 100/600-node graphs, viewport, zoom and real background
+pan gestures. Focus detail stays off and sizes stay at 100%. Means of two
+renderer-main-thread task-duration observations are:
+
+| Populated nodes / action | RC16 task work | Refined RC17 task work | Change |
+|---|---:|---:|---:|
+| 100 / zoom | 1,099.06 ms | 715.76 ms | −34.9% |
+| 100 / pan | 315.16 ms | 247.86 ms | −21.4% |
+| 600 / zoom | 2,372.77 ms | 1,110.42 ms | −53.2% |
+| 600 / pan | 2,253.02 ms | 959.58 ms | −57.4% |
+
+Task-work ranges do not overlap across the two observations per source, but
+prescribed waits mean these reductions are not equivalent elapsed-action
+speedups. At 600 nodes, candidate RAF p95 still reaches 116.7–150 ms on zoom
+and 33.4–50 ms on pan under headless software rendering. Dense-scene style work
+and stalls remain; no desktop GPU FPS guarantee follows. Active heap/DOM and
+bounded retained heap are broadly neutral. Unmount/request guards pass without
+proving long-term leak freedom. **0.7.3 camera performance is not measured**.
+
+Two failed camera adapter attempts remain excluded: a fixed pointer origin hit
+a connection rather than the background, and a redundant synthetic selection
+event was not a native interaction. The corrected adapter verifies real camera
+movement and equivalent origins. Diagnostic long-task callbacks can cross sample
+boundaries, so they do not supply a comparative claim; mutation counts are not
+React commit/remount counts. These observer limits do not affect the separate
+CDP task-duration and RAF comparisons.
+
 | Gate | Status in this report |
 |---|---|
-| Exact clean refined source/build fingerprint | Await new retained manifest |
+| Exact clean refined source/build fingerprint | Verified locally: `b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82` |
 | Types, complete regression suite and compiled build | [Refined test-build run 37076793860](https://github.com/BunBajiro/kairo/actions/runs/37076793860) succeeds; internal implementation verification, not user-release approval |
 | Fresh Maps and isolated routes | Reviewed local results above; independent CI pending |
 | Fresh bounded memory and Session route/not-due controls | Third run accepted; invalid earlier progress-manifest attempts excluded |
 | Mixed continuity, OPSEC, restart and compiled Mapper correctness | Local lane commands succeed; detailed review/independent CI pending |
-| Fresh browser-camera ABBA | Running / results to review |
-| Same-job 0.7.3→RC16 and RC16→refined-RC17 backend comparisons | Workflow prepared; independent result pending |
+| Fresh browser-camera ABBA | Accepted local third attempt; source/asset/graph/viewport/gesture/RAF guards pass; independent CI pending |
+| Same-job 0.7.3→RC16 and RC16→refined-RC17 backend comparisons | [Run 37078241973](https://github.com/BunBajiro/kairo/actions/runs/37078241973) underway at harness commit `82394c58d0a7d8987877835b693f31f09c3c0d7f`; no result yet |
 | Source/harness verification after every lane | Must pass before accepting that lane |
 | Downloaded internal bundle archive/hash and evidence review | Pending workflow completion/retrieval |
 
 Remaining interpretation questions include the residual import cost, whether
 typical idle/tail costs reproduce in
-CI, how much browser camera work is removed at 100/600 populated nodes, and
+CI, whether the local camera savings repeat on its browser/host, and
 whether the earlier constrained-runner SSE failure is absent with full privacy
 and completeness controls. Those are acceptance questions, not assumed fixes.
 
