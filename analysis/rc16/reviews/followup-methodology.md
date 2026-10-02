@@ -1,6 +1,6 @@
 # Targeted follow-up: methodology and refactoring acceptance
 
-Status: independent source/design and local evidence review completed for all five follow-up lanes and the corrected legacy backend comparison. Dedicated follow-up GitHub confirmation is in progress; no CI success is claimed here. Production RC16 remains unchanged. The user approved targeted additional analysis followed by incremental optimisation and refactoring; the original checkpoint's measured harnesses remain frozen.
+Status: independent source/design and local evidence review completed for all five follow-up lanes and the corrected legacy backend comparison. Both dedicated follow-up GitHub runs failed dashboard SSE continuity. The second trace confirms Core's backlog cutoff destroyed a large frame; Maps, memory, restart and browser lanes complete. Corrected backend CI needs the missing v0.7.3 client build before retry; see the [partial-run review](followup-github.md). No complete CI success is claimed here. Production RC16 remains unchanged. The user approved targeted additional analysis followed by incremental optimisation and refactoring; the original checkpoint's measured harnesses remain frozen.
 
 New harnesses belong under `analysis/rc16/followup/harness/`, with separate evidence under `analysis/rc16/raw/followup/`. Preparation may be parallel; runtime measurements require the root-assigned timing slot and `flock /tmp/kairo-rc16-benchmark.lock`. This reviewer reads code and evidence without competing benchmark execution.
 

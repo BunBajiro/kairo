@@ -1,0 +1,6978 @@
+{
+  "schema": 2,
+  "purpose": "bounded browser replay scaling and retained ownership diagnostics",
+  "retention": [
+    {
+      "label": "before-navigation-warmup",
+      "completedCycles": 0,
+      "at": "2026-09-30T13:02:48.665Z",
+      "quiescenceMs": 2000,
+      "forcedGcPasses": 3,
+      "overview": {
+        "pilot": "42",
+        "elements": 432,
+        "canvases": 0,
+        "mapNodes": 0,
+        "replayControls": 0
+      },
+      "listeners": {
+        "window": {
+          "popstate:true": 1,
+          "popstate:false": 2,
+          "pagehide:false": 1,
+          "pageshow:false": 1,
+          "keydown:false": 2,
+          "hashchange:false": 1,
+          "kairo:workspace-traverse:false": 1
+        },
+        "document": {
+          "input:true": 1,
+          "compositionstart:true": 1,
+          "compositionupdate:true": 1,
+          "compositionend:true": 1,
+          "drop:true": 1,
+          "paste:true": 1,
+          "keydown:true": 1,
+          "keyup:true": 1,
+          "keypress:true": 1,
+          "abort:true": 1,
+          "auxclick:true": 1,
+          "beforetoggle:true": 1,
+          "cancel:true": 1,
+          "canplay:true": 1,
+          "canplaythrough:true": 1,
+          "click:true": 1,
+          "close:true": 1,
+          "contextmenu:true": 1,
+          "copy:true": 1,
+          "cut:true": 1,
+          "drag:true": 1,
+          "dragend:true": 1,
+          "dragenter:true": 1,
+          "dragexit:true": 1,
+          "dragleave:true": 1,
+          "dragover:true": 1,
+          "dragstart:true": 1,
+          "durationchange:true": 1,
+          "emptied:true": 1,
+          "encrypted:true": 1,
+          "ended:true": 1,
+          "error:true": 1,
+          "gotpointercapture:true": 1,
+          "invalid:true": 1,
+          "load:true": 1,
+          "loadeddata:true": 1,
+          "loadedmetadata:true": 1,
+          "loadstart:true": 1,
+          "lostpointercapture:true": 1,
+          "mousedown:true": 1,
+          "mousemove:true": 1,
+          "mouseout:true": 1,
+          "mouseover:true": 1,
+          "mouseup:true": 1,
+          "pause:true": 1,
+          "play:true": 1,
+          "playing:true": 1,
+          "pointercancel:true": 1,
+          "pointerdown:true": 1,
+          "pointermove:true": 1,
+          "pointerout:true": 1,
+          "pointerover:true": 1,
+          "pointerup:true": 1,
+          "progress:true": 1,
+          "ratechange:true": 1,
+          "reset:true": 1,
+          "resize:true": 1,
+          "seeked:true": 1,
+          "seeking:true": 1,
+          "stalled:true": 1,
+          "submit:true": 1,
+          "suspend:true": 1,
+          "timeupdate:true": 1,
+          "touchcancel:true": 1,
+          "touchend:true": 1,
+          "touchstart:true": 1,
+          "volumechange:true": 1,
+          "scroll:true": 1,
+          "toggle:true": 1,
+          "touchmove:true": 1,
+          "waiting:true": 1,
+          "wheel:true": 1,
+          "scrollend:true": 1,
+          "animationend:true": 1,
+          "animationiteration:true": 1,
+          "animationstart:true": 1,
+          "dblclick:true": 1,
+          "focusin:true": 1,
+          "focusout:true": 1,
+          "transitionrun:true": 1,
+          "transitionstart:true": 1,
+          "transitioncancel:true": 1,
+          "transitionend:true": 1,
+          "change:true": 1,
+          "textInput:true": 1,
+          "input:false": 1,
+          "compositionstart:false": 1,
+          "compositionupdate:false": 1,
+          "compositionend:false": 1,
+          "drop:false": 1,
+          "paste:false": 1,
+          "keydown:false": 2,
+          "keyup:false": 1,
+          "keypress:false": 1,
+          "auxclick:false": 1,
+          "click:false": 1,
+          "contextmenu:false": 1,
+          "copy:false": 1,
+          "cut:false": 1,
+          "drag:false": 1,
+          "dragend:false": 1,
+          "dragenter:false": 1,
+          "dragexit:false": 1,
+          "dragleave:false": 1,
+          "dragover:false": 1,
+          "dragstart:false": 1,
+          "gotpointercapture:false": 1,
+          "lostpointercapture:false": 1,
+          "mousedown:false": 1,
+          "mousemove:false": 1,
+          "mouseout:false": 1,
+          "mouseover:false": 1,
+          "mouseup:false": 1,
+          "pointercancel:false": 1,
+          "pointerdown:false": 1,
+          "pointermove:false": 1,
+          "pointerout:false": 1,
+          "pointerover:false": 1,
+          "pointerup:false": 1,
+          "reset:false": 1,
+          "submit:false": 1,
+          "touchcancel:false": 1,
+          "touchend:false": 1,
+          "touchstart:false": 1,
+          "touchmove:false": 1,
+          "wheel:false": 1,
+          "animationend:false": 1,
+          "animationiteration:false": 1,
+          "animationstart:false": 1,
+          "dblclick:false": 1,
+          "focusin:false": 1,
+          "focusout:false": 1,
+          "transitionrun:false": 1,
+          "transitionstart:false": 1,
+          "transitioncancel:false": 1,
+          "transitionend:false": 1,
+          "change:false": 1,
+          "textInput:false": 1
+        }
+      },
+      "gc": [
+        {
+          "heap": {
+            "usedSize": 7936804,
+            "totalSize": 8945664,
+            "embedderHeapUsedSize": 3254640,
+            "backingStorageSize": 1684705
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 7936804,
+            "totalSize": 8683520,
+            "embedderHeapUsedSize": 2842344,
+            "backingStorageSize": 1684705
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 7936804,
+            "totalSize": 8683520,
+            "embedderHeapUsedSize": 2842344,
+            "backingStorageSize": 1684705
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        }
+      ],
+      "targets": [
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/"
+        },
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html"
+        },
+        {
+          "type": "page",
+          "url": "about:blank"
+        },
+        {
+          "type": "page",
+          "url": "/"
+        }
+      ]
+    },
+    {
+      "label": "warmed-baseline",
+      "completedCycles": 0,
+      "at": "2026-09-30T13:03:09.484Z",
+      "quiescenceMs": 2000,
+      "forcedGcPasses": 3,
+      "overview": {
+        "pilot": "42",
+        "elements": 432,
+        "canvases": 0,
+        "mapNodes": 0,
+        "replayControls": 0
+      },
+      "listeners": {
+        "window": {
+          "popstate:true": 1,
+          "popstate:false": 2,
+          "pagehide:false": 1,
+          "pageshow:false": 1,
+          "keydown:false": 2,
+          "hashchange:false": 1,
+          "kairo:workspace-traverse:false": 1
+        },
+        "document": {
+          "input:true": 1,
+          "compositionstart:true": 1,
+          "compositionupdate:true": 1,
+          "compositionend:true": 1,
+          "drop:true": 1,
+          "paste:true": 1,
+          "keydown:true": 1,
+          "keyup:true": 1,
+          "keypress:true": 1,
+          "abort:true": 1,
+          "auxclick:true": 1,
+          "beforetoggle:true": 1,
+          "cancel:true": 1,
+          "canplay:true": 1,
+          "canplaythrough:true": 1,
+          "click:true": 1,
+          "close:true": 1,
+          "contextmenu:true": 1,
+          "copy:true": 1,
+          "cut:true": 1,
+          "drag:true": 1,
+          "dragend:true": 1,
+          "dragenter:true": 1,
+          "dragexit:true": 1,
+          "dragleave:true": 1,
+          "dragover:true": 1,
+          "dragstart:true": 1,
+          "durationchange:true": 1,
+          "emptied:true": 1,
+          "encrypted:true": 1,
+          "ended:true": 1,
+          "error:true": 1,
+          "gotpointercapture:true": 1,
+          "invalid:true": 1,
+          "load:true": 1,
+          "loadeddata:true": 1,
+          "loadedmetadata:true": 1,
+          "loadstart:true": 1,
+          "lostpointercapture:true": 1,
+          "mousedown:true": 1,
+          "mousemove:true": 1,
+          "mouseout:true": 1,
+          "mouseover:true": 1,
+          "mouseup:true": 1,
+          "pause:true": 1,
+          "play:true": 1,
+          "playing:true": 1,
+          "pointercancel:true": 1,
+          "pointerdown:true": 1,
+          "pointermove:true": 1,
+          "pointerout:true": 1,
+          "pointerover:true": 1,
+          "pointerup:true": 1,
+          "progress:true": 1,
+          "ratechange:true": 1,
+          "reset:true": 1,
+          "resize:true": 1,
+          "seeked:true": 1,
+          "seeking:true": 1,
+          "stalled:true": 1,
+          "submit:true": 1,
+          "suspend:true": 1,
+          "timeupdate:true": 1,
+          "touchcancel:true": 1,
+          "touchend:true": 1,
+          "touchstart:true": 1,
+          "volumechange:true": 1,
+          "scroll:true": 1,
+          "toggle:true": 1,
+          "touchmove:true": 1,
+          "waiting:true": 1,
+          "wheel:true": 1,
+          "scrollend:true": 1,
+          "animationend:true": 1,
+          "animationiteration:true": 1,
+          "animationstart:true": 1,
+          "dblclick:true": 1,
+          "focusin:true": 1,
+          "focusout:true": 1,
+          "transitionrun:true": 1,
+          "transitionstart:true": 1,
+          "transitioncancel:true": 1,
+          "transitionend:true": 1,
+          "change:true": 1,
+          "textInput:true": 1,
+          "input:false": 1,
+          "compositionstart:false": 1,
+          "compositionupdate:false": 1,
+          "compositionend:false": 1,
+          "drop:false": 1,
+          "paste:false": 1,
+          "keydown:false": 2,
+          "keyup:false": 1,
+          "keypress:false": 1,
+          "auxclick:false": 1,
+          "click:false": 1,
+          "contextmenu:false": 1,
+          "copy:false": 1,
+          "cut:false": 1,
+          "drag:false": 1,
+          "dragend:false": 1,
+          "dragenter:false": 1,
+          "dragexit:false": 1,
+          "dragleave:false": 1,
+          "dragover:false": 1,
+          "dragstart:false": 1,
+          "gotpointercapture:false": 1,
+          "lostpointercapture:false": 1,
+          "mousedown:false": 1,
+          "mousemove:false": 1,
+          "mouseout:false": 1,
+          "mouseover:false": 1,
+          "mouseup:false": 1,
+          "pointercancel:false": 1,
+          "pointerdown:false": 1,
+          "pointermove:false": 1,
+          "pointerout:false": 1,
+          "pointerover:false": 1,
+          "pointerup:false": 1,
+          "reset:false": 1,
+          "submit:false": 1,
+          "touchcancel:false": 1,
+          "touchend:false": 1,
+          "touchstart:false": 1,
+          "touchmove:false": 1,
+          "wheel:false": 1,
+          "animationend:false": 1,
+          "animationiteration:false": 1,
+          "animationstart:false": 1,
+          "dblclick:false": 1,
+          "focusin:false": 1,
+          "focusout:false": 1,
+          "transitionrun:false": 1,
+          "transitionstart:false": 1,
+          "transitioncancel:false": 1,
+          "transitionend:false": 1,
+          "change:false": 1,
+          "textInput:false": 1
+        }
+      },
+      "gc": [
+        {
+          "heap": {
+            "usedSize": 9359516,
+            "totalSize": 10915840,
+            "embedderHeapUsedSize": 3523880,
+            "backingStorageSize": 1692707
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9358312,
+            "totalSize": 10129408,
+            "embedderHeapUsedSize": 3008272,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9358312,
+            "totalSize": 10129408,
+            "embedderHeapUsedSize": 3059976,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        }
+      ],
+      "targets": [
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/"
+        },
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html"
+        },
+        {
+          "type": "page",
+          "url": "about:blank"
+        },
+        {
+          "type": "page",
+          "url": "/"
+        }
+      ]
+    },
+    {
+      "label": "after-batch-1",
+      "completedCycles": 4,
+      "at": "2026-09-30T13:03:47.428Z",
+      "quiescenceMs": 2000,
+      "forcedGcPasses": 3,
+      "overview": {
+        "pilot": "42",
+        "elements": 432,
+        "canvases": 0,
+        "mapNodes": 0,
+        "replayControls": 0
+      },
+      "listeners": {
+        "window": {
+          "popstate:true": 1,
+          "popstate:false": 2,
+          "pagehide:false": 1,
+          "pageshow:false": 1,
+          "keydown:false": 2,
+          "hashchange:false": 1,
+          "kairo:workspace-traverse:false": 1
+        },
+        "document": {
+          "input:true": 1,
+          "compositionstart:true": 1,
+          "compositionupdate:true": 1,
+          "compositionend:true": 1,
+          "drop:true": 1,
+          "paste:true": 1,
+          "keydown:true": 1,
+          "keyup:true": 1,
+          "keypress:true": 1,
+          "abort:true": 1,
+          "auxclick:true": 1,
+          "beforetoggle:true": 1,
+          "cancel:true": 1,
+          "canplay:true": 1,
+          "canplaythrough:true": 1,
+          "click:true": 1,
+          "close:true": 1,
+          "contextmenu:true": 1,
+          "copy:true": 1,
+          "cut:true": 1,
+          "drag:true": 1,
+          "dragend:true": 1,
+          "dragenter:true": 1,
+          "dragexit:true": 1,
+          "dragleave:true": 1,
+          "dragover:true": 1,
+          "dragstart:true": 1,
+          "durationchange:true": 1,
+          "emptied:true": 1,
+          "encrypted:true": 1,
+          "ended:true": 1,
+          "error:true": 1,
+          "gotpointercapture:true": 1,
+          "invalid:true": 1,
+          "load:true": 1,
+          "loadeddata:true": 1,
+          "loadedmetadata:true": 1,
+          "loadstart:true": 1,
+          "lostpointercapture:true": 1,
+          "mousedown:true": 1,
+          "mousemove:true": 1,
+          "mouseout:true": 1,
+          "mouseover:true": 1,
+          "mouseup:true": 1,
+          "pause:true": 1,
+          "play:true": 1,
+          "playing:true": 1,
+          "pointercancel:true": 1,
+          "pointerdown:true": 1,
+          "pointermove:true": 1,
+          "pointerout:true": 1,
+          "pointerover:true": 1,
+          "pointerup:true": 1,
+          "progress:true": 1,
+          "ratechange:true": 1,
+          "reset:true": 1,
+          "resize:true": 1,
+          "seeked:true": 1,
+          "seeking:true": 1,
+          "stalled:true": 1,
+          "submit:true": 1,
+          "suspend:true": 1,
+          "timeupdate:true": 1,
+          "touchcancel:true": 1,
+          "touchend:true": 1,
+          "touchstart:true": 1,
+          "volumechange:true": 1,
+          "scroll:true": 1,
+          "toggle:true": 1,
+          "touchmove:true": 1,
+          "waiting:true": 1,
+          "wheel:true": 1,
+          "scrollend:true": 1,
+          "animationend:true": 1,
+          "animationiteration:true": 1,
+          "animationstart:true": 1,
+          "dblclick:true": 1,
+          "focusin:true": 1,
+          "focusout:true": 1,
+          "transitionrun:true": 1,
+          "transitionstart:true": 1,
+          "transitioncancel:true": 1,
+          "transitionend:true": 1,
+          "change:true": 1,
+          "textInput:true": 1,
+          "input:false": 1,
+          "compositionstart:false": 1,
+          "compositionupdate:false": 1,
+          "compositionend:false": 1,
+          "drop:false": 1,
+          "paste:false": 1,
+          "keydown:false": 2,
+          "keyup:false": 1,
+          "keypress:false": 1,
+          "auxclick:false": 1,
+          "click:false": 1,
+          "contextmenu:false": 1,
+          "copy:false": 1,
+          "cut:false": 1,
+          "drag:false": 1,
+          "dragend:false": 1,
+          "dragenter:false": 1,
+          "dragexit:false": 1,
+          "dragleave:false": 1,
+          "dragover:false": 1,
+          "dragstart:false": 1,
+          "gotpointercapture:false": 1,
+          "lostpointercapture:false": 1,
+          "mousedown:false": 1,
+          "mousemove:false": 1,
+          "mouseout:false": 1,
+          "mouseover:false": 1,
+          "mouseup:false": 1,
+          "pointercancel:false": 1,
+          "pointerdown:false": 1,
+          "pointermove:false": 1,
+          "pointerout:false": 1,
+          "pointerover:false": 1,
+          "pointerup:false": 1,
+          "reset:false": 1,
+          "submit:false": 1,
+          "touchcancel:false": 1,
+          "touchend:false": 1,
+          "touchstart:false": 1,
+          "touchmove:false": 1,
+          "wheel:false": 1,
+          "animationend:false": 1,
+          "animationiteration:false": 1,
+          "animationstart:false": 1,
+          "dblclick:false": 1,
+          "focusin:false": 1,
+          "focusout:false": 1,
+          "transitionrun:false": 1,
+          "transitionstart:false": 1,
+          "transitioncancel:false": 1,
+          "transitionend:false": 1,
+          "change:false": 1,
+          "textInput:false": 1
+        }
+      },
+      "gc": [
+        {
+          "heap": {
+            "usedSize": 9694700,
+            "totalSize": 10653696,
+            "embedderHeapUsedSize": 3790768,
+            "backingStorageSize": 1692707
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9693496,
+            "totalSize": 10391552,
+            "embedderHeapUsedSize": 3321840,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9693496,
+            "totalSize": 10391552,
+            "embedderHeapUsedSize": 3321840,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        }
+      ],
+      "targets": [
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/"
+        },
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html"
+        },
+        {
+          "type": "page",
+          "url": "about:blank"
+        },
+        {
+          "type": "page",
+          "url": "/"
+        }
+      ]
+    },
+    {
+      "label": "after-batch-2",
+      "completedCycles": 8,
+      "at": "2026-09-30T13:04:25.036Z",
+      "quiescenceMs": 2000,
+      "forcedGcPasses": 3,
+      "overview": {
+        "pilot": "42",
+        "elements": 432,
+        "canvases": 0,
+        "mapNodes": 0,
+        "replayControls": 0
+      },
+      "listeners": {
+        "window": {
+          "popstate:true": 1,
+          "popstate:false": 2,
+          "pagehide:false": 1,
+          "pageshow:false": 1,
+          "keydown:false": 2,
+          "hashchange:false": 1,
+          "kairo:workspace-traverse:false": 1
+        },
+        "document": {
+          "input:true": 1,
+          "compositionstart:true": 1,
+          "compositionupdate:true": 1,
+          "compositionend:true": 1,
+          "drop:true": 1,
+          "paste:true": 1,
+          "keydown:true": 1,
+          "keyup:true": 1,
+          "keypress:true": 1,
+          "abort:true": 1,
+          "auxclick:true": 1,
+          "beforetoggle:true": 1,
+          "cancel:true": 1,
+          "canplay:true": 1,
+          "canplaythrough:true": 1,
+          "click:true": 1,
+          "close:true": 1,
+          "contextmenu:true": 1,
+          "copy:true": 1,
+          "cut:true": 1,
+          "drag:true": 1,
+          "dragend:true": 1,
+          "dragenter:true": 1,
+          "dragexit:true": 1,
+          "dragleave:true": 1,
+          "dragover:true": 1,
+          "dragstart:true": 1,
+          "durationchange:true": 1,
+          "emptied:true": 1,
+          "encrypted:true": 1,
+          "ended:true": 1,
+          "error:true": 1,
+          "gotpointercapture:true": 1,
+          "invalid:true": 1,
+          "load:true": 1,
+          "loadeddata:true": 1,
+          "loadedmetadata:true": 1,
+          "loadstart:true": 1,
+          "lostpointercapture:true": 1,
+          "mousedown:true": 1,
+          "mousemove:true": 1,
+          "mouseout:true": 1,
+          "mouseover:true": 1,
+          "mouseup:true": 1,
+          "pause:true": 1,
+          "play:true": 1,
+          "playing:true": 1,
+          "pointercancel:true": 1,
+          "pointerdown:true": 1,
+          "pointermove:true": 1,
+          "pointerout:true": 1,
+          "pointerover:true": 1,
+          "pointerup:true": 1,
+          "progress:true": 1,
+          "ratechange:true": 1,
+          "reset:true": 1,
+          "resize:true": 1,
+          "seeked:true": 1,
+          "seeking:true": 1,
+          "stalled:true": 1,
+          "submit:true": 1,
+          "suspend:true": 1,
+          "timeupdate:true": 1,
+          "touchcancel:true": 1,
+          "touchend:true": 1,
+          "touchstart:true": 1,
+          "volumechange:true": 1,
+          "scroll:true": 1,
+          "toggle:true": 1,
+          "touchmove:true": 1,
+          "waiting:true": 1,
+          "wheel:true": 1,
+          "scrollend:true": 1,
+          "animationend:true": 1,
+          "animationiteration:true": 1,
+          "animationstart:true": 1,
+          "dblclick:true": 1,
+          "focusin:true": 1,
+          "focusout:true": 1,
+          "transitionrun:true": 1,
+          "transitionstart:true": 1,
+          "transitioncancel:true": 1,
+          "transitionend:true": 1,
+          "change:true": 1,
+          "textInput:true": 1,
+          "input:false": 1,
+          "compositionstart:false": 1,
+          "compositionupdate:false": 1,
+          "compositionend:false": 1,
+          "drop:false": 1,
+          "paste:false": 1,
+          "keydown:false": 2,
+          "keyup:false": 1,
+          "keypress:false": 1,
+          "auxclick:false": 1,
+          "click:false": 1,
+          "contextmenu:false": 1,
+          "copy:false": 1,
+          "cut:false": 1,
+          "drag:false": 1,
+          "dragend:false": 1,
+          "dragenter:false": 1,
+          "dragexit:false": 1,
+          "dragleave:false": 1,
+          "dragover:false": 1,
+          "dragstart:false": 1,
+          "gotpointercapture:false": 1,
+          "lostpointercapture:false": 1,
+          "mousedown:false": 1,
+          "mousemove:false": 1,
+          "mouseout:false": 1,
+          "mouseover:false": 1,
+          "mouseup:false": 1,
+          "pointercancel:false": 1,
+          "pointerdown:false": 1,
+          "pointermove:false": 1,
+          "pointerout:false": 1,
+          "pointerover:false": 1,
+          "pointerup:false": 1,
+          "reset:false": 1,
+          "submit:false": 1,
+          "touchcancel:false": 1,
+          "touchend:false": 1,
+          "touchstart:false": 1,
+          "touchmove:false": 1,
+          "wheel:false": 1,
+          "animationend:false": 1,
+          "animationiteration:false": 1,
+          "animationstart:false": 1,
+          "dblclick:false": 1,
+          "focusin:false": 1,
+          "focusout:false": 1,
+          "transitionrun:false": 1,
+          "transitionstart:false": 1,
+          "transitioncancel:false": 1,
+          "transitionend:false": 1,
+          "change:false": 1,
+          "textInput:false": 1
+        }
+      },
+      "gc": [
+        {
+          "heap": {
+            "usedSize": 9776068,
+            "totalSize": 10653696,
+            "embedderHeapUsedSize": 3767848,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9776068,
+            "totalSize": 10653696,
+            "embedderHeapUsedSize": 3316160,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9776068,
+            "totalSize": 10653696,
+            "embedderHeapUsedSize": 3316160,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        }
+      ],
+      "targets": [
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/"
+        },
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html"
+        },
+        {
+          "type": "page",
+          "url": "about:blank"
+        },
+        {
+          "type": "page",
+          "url": "/"
+        }
+      ]
+    },
+    {
+      "label": "after-batch-3",
+      "completedCycles": 12,
+      "at": "2026-09-30T13:05:02.305Z",
+      "quiescenceMs": 2000,
+      "forcedGcPasses": 3,
+      "overview": {
+        "pilot": "42",
+        "elements": 432,
+        "canvases": 0,
+        "mapNodes": 0,
+        "replayControls": 0
+      },
+      "listeners": {
+        "window": {
+          "popstate:true": 1,
+          "popstate:false": 2,
+          "pagehide:false": 1,
+          "pageshow:false": 1,
+          "keydown:false": 2,
+          "hashchange:false": 1,
+          "kairo:workspace-traverse:false": 1
+        },
+        "document": {
+          "input:true": 1,
+          "compositionstart:true": 1,
+          "compositionupdate:true": 1,
+          "compositionend:true": 1,
+          "drop:true": 1,
+          "paste:true": 1,
+          "keydown:true": 1,
+          "keyup:true": 1,
+          "keypress:true": 1,
+          "abort:true": 1,
+          "auxclick:true": 1,
+          "beforetoggle:true": 1,
+          "cancel:true": 1,
+          "canplay:true": 1,
+          "canplaythrough:true": 1,
+          "click:true": 1,
+          "close:true": 1,
+          "contextmenu:true": 1,
+          "copy:true": 1,
+          "cut:true": 1,
+          "drag:true": 1,
+          "dragend:true": 1,
+          "dragenter:true": 1,
+          "dragexit:true": 1,
+          "dragleave:true": 1,
+          "dragover:true": 1,
+          "dragstart:true": 1,
+          "durationchange:true": 1,
+          "emptied:true": 1,
+          "encrypted:true": 1,
+          "ended:true": 1,
+          "error:true": 1,
+          "gotpointercapture:true": 1,
+          "invalid:true": 1,
+          "load:true": 1,
+          "loadeddata:true": 1,
+          "loadedmetadata:true": 1,
+          "loadstart:true": 1,
+          "lostpointercapture:true": 1,
+          "mousedown:true": 1,
+          "mousemove:true": 1,
+          "mouseout:true": 1,
+          "mouseover:true": 1,
+          "mouseup:true": 1,
+          "pause:true": 1,
+          "play:true": 1,
+          "playing:true": 1,
+          "pointercancel:true": 1,
+          "pointerdown:true": 1,
+          "pointermove:true": 1,
+          "pointerout:true": 1,
+          "pointerover:true": 1,
+          "pointerup:true": 1,
+          "progress:true": 1,
+          "ratechange:true": 1,
+          "reset:true": 1,
+          "resize:true": 1,
+          "seeked:true": 1,
+          "seeking:true": 1,
+          "stalled:true": 1,
+          "submit:true": 1,
+          "suspend:true": 1,
+          "timeupdate:true": 1,
+          "touchcancel:true": 1,
+          "touchend:true": 1,
+          "touchstart:true": 1,
+          "volumechange:true": 1,
+          "scroll:true": 1,
+          "toggle:true": 1,
+          "touchmove:true": 1,
+          "waiting:true": 1,
+          "wheel:true": 1,
+          "scrollend:true": 1,
+          "animationend:true": 1,
+          "animationiteration:true": 1,
+          "animationstart:true": 1,
+          "dblclick:true": 1,
+          "focusin:true": 1,
+          "focusout:true": 1,
+          "transitionrun:true": 1,
+          "transitionstart:true": 1,
+          "transitioncancel:true": 1,
+          "transitionend:true": 1,
+          "change:true": 1,
+          "textInput:true": 1,
+          "input:false": 1,
+          "compositionstart:false": 1,
+          "compositionupdate:false": 1,
+          "compositionend:false": 1,
+          "drop:false": 1,
+          "paste:false": 1,
+          "keydown:false": 2,
+          "keyup:false": 1,
+          "keypress:false": 1,
+          "auxclick:false": 1,
+          "click:false": 1,
+          "contextmenu:false": 1,
+          "copy:false": 1,
+          "cut:false": 1,
+          "drag:false": 1,
+          "dragend:false": 1,
+          "dragenter:false": 1,
+          "dragexit:false": 1,
+          "dragleave:false": 1,
+          "dragover:false": 1,
+          "dragstart:false": 1,
+          "gotpointercapture:false": 1,
+          "lostpointercapture:false": 1,
+          "mousedown:false": 1,
+          "mousemove:false": 1,
+          "mouseout:false": 1,
+          "mouseover:false": 1,
+          "mouseup:false": 1,
+          "pointercancel:false": 1,
+          "pointerdown:false": 1,
+          "pointermove:false": 1,
+          "pointerout:false": 1,
+          "pointerover:false": 1,
+          "pointerup:false": 1,
+          "reset:false": 1,
+          "submit:false": 1,
+          "touchcancel:false": 1,
+          "touchend:false": 1,
+          "touchstart:false": 1,
+          "touchmove:false": 1,
+          "wheel:false": 1,
+          "animationend:false": 1,
+          "animationiteration:false": 1,
+          "animationstart:false": 1,
+          "dblclick:false": 1,
+          "focusin:false": 1,
+          "focusout:false": 1,
+          "transitionrun:false": 1,
+          "transitionstart:false": 1,
+          "transitioncancel:false": 1,
+          "transitionend:false": 1,
+          "change:false": 1,
+          "textInput:false": 1
+        }
+      },
+      "gc": [
+        {
+          "heap": {
+            "usedSize": 9847036,
+            "totalSize": 11440128,
+            "embedderHeapUsedSize": 3916728,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9848240,
+            "totalSize": 11177984,
+            "embedderHeapUsedSize": 4066416,
+            "backingStorageSize": 1692707
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        },
+        {
+          "heap": {
+            "usedSize": 9847036,
+            "totalSize": 10915840,
+            "embedderHeapUsedSize": 3526616,
+            "backingStorageSize": 1692666
+          },
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 612
+          }
+        }
+      ],
+      "targets": [
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/"
+        },
+        {
+          "type": "browser_ui",
+          "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html"
+        },
+        {
+          "type": "page",
+          "url": "about:blank"
+        },
+        {
+          "type": "page",
+          "url": "/"
+        }
+      ]
+    }
+  ],
+  "ownership": [
+    {
+      "label": "after-replay-10",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-replay-100",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-replay-1000",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-warmup-0",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-warmup-1",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-1",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-2",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-3",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-4",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-5",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-6",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-7",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-8",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-9",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-10",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-11",
+      "requests": [],
+      "staleUniverseRequests": 0
+    },
+    {
+      "label": "after-cycle-12",
+      "requests": [],
+      "staleUniverseRequests": 0
+    }
+  ],
+  "harnessSha256": "9b95f023147dfa5317c15ab203b8d1b6e9f65dac5e26121c69995a2390a67ca5",
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sourceHashes": {
+    "package.json": "c5a2088e330df7c83c0e5fbd2d4a769f5859485f31700ca8fc08a8e0df2ed7af",
+    "server/index.mjs": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf",
+    "server/store.mjs": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555",
+    "components/kairo/dashboard.tsx": "4fd8f6b7f52a165513746b9b140a1d3d8960d762b9cf1ab2e5559a64d2e14e7b",
+    "components/kairo/session-replay.tsx": "ebae48030dc69cbea81daaef2d091c0832e464adeaf9c06d3ddcd71dba4622a9",
+    "components/kairo/universe.tsx": "3542f253faba6d194f3231a565a8f3d9bc63f4ff8db4ab6a641dfd1990977679",
+    "server/universe-static.mjs": "5575dff32baf40aa07cef700ab474a012f2a3688c2e590842758eeb9adb81931"
+  },
+  "version": "0.8.0-rc.16",
+  "repo": "/home/runner/work/kairo/kairo/checkpoint",
+  "overviewOnly": false,
+  "startedAt": "2026-09-30T13:01:48.897Z",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 2,
+    "totalMemory": 8323969024,
+    "viewport": {
+      "width": 1600,
+      "height": 1050,
+      "dpr": 1
+    },
+    "chromeFlags": [
+      "--headless",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ],
+    "limitations": [
+      "Synthetic connected pilot; no ESI traffic or real player credentials.",
+      "Headless Linux software rendering; no desktop GPU/FPS claim.",
+      "CDP TaskDuration covers renderer main-thread tasks, not total browser/worker/GPU CPU.",
+      "Two synthetic pilots each own 25/100-node maps. Replay uses 10/100/1000 contiguous real-gate visits at 60-second spacing and one meaningful event per five visits.",
+      "Browser HTTPS and known image CDN HTTP requests blocked using CDP; application CSP restricts connections to same-origin.",
+      "Instrumentation: canvas clearRect counter and long-task observer, CDP metrics and network events; no CPU profile. Forced GC, DOM counters and global listener inspection run outside timed samples.",
+      "Idle samples have no RAF probe. Interaction samples have an RAF interval observer; identical for all sizes.",
+      "Retention snapshots use three explicit GC passes after two seconds on Overview; this is retained-heap diagnosis, not natural-GC memory or desktop residency. No leak inference from RSS."
+    ],
+    "smoke": false,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/154.0.8037.57",
+      "revision": "@73c14f6228d7cd537c855007e8f88678969cc0eb",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "jsVersion": "15.4.80.11"
+    },
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "characters": [
+      {
+        "id": 42,
+        "name": "Synthetic Followup Pilot 42"
+      },
+      {
+        "id": 43,
+        "name": "Synthetic Followup Pilot 43"
+      }
+    ],
+    "maps": [
+      {
+        "id": "followup-42-25",
+        "characterId": 42,
+        "nodes": 25,
+        "connections": 34
+      },
+      {
+        "id": "followup-42-100",
+        "characterId": 42,
+        "nodes": 100,
+        "connections": 139
+      },
+      {
+        "id": "followup-43-25",
+        "characterId": 43,
+        "nodes": 25,
+        "connections": 34
+      },
+      {
+        "id": "followup-43-100",
+        "characterId": 43,
+        "nodes": 100,
+        "connections": 139
+      }
+    ],
+    "replays": [
+      {
+        "id": "followup-replay-10",
+        "characterId": 42,
+        "visits": 10,
+        "events": 2,
+        "travel": 9,
+        "durationMs": 600000,
+        "uniqueSystems": 7,
+        "firstSystem": "Jita",
+        "lastSystem": "Mitsolen",
+        "started": "2026-09-20T13:01:49.091Z",
+        "ended": "2026-09-20T13:11:49.091Z",
+        "routeSha256": "43f586d8a02950b3e34af53929496afa4f844c49892f840ac2859a02ec2df6e3",
+        "validated": {
+          "visits": 10,
+          "events": 2,
+          "travel": 9,
+          "durationMs": 600000,
+          "uniqueSystems": 7,
+          "owner": 42,
+          "live": false,
+          "gaps": 0,
+          "missingCoordinates": 0,
+          "inferredVisits": 0,
+          "truncated": false,
+          "routeSha256": "43f586d8a02950b3e34af53929496afa4f844c49892f840ac2859a02ec2df6e3"
+        },
+        "responseBytes": 11379,
+        "endTransition": {
+          "playing": false,
+          "elapsed": 600000,
+          "duration": 600000,
+          "location": "Mitsolen",
+          "title": "10-visit synthetic recorded journey"
+        }
+      },
+      {
+        "id": "followup-replay-100",
+        "characterId": 42,
+        "visits": 100,
+        "events": 20,
+        "travel": 99,
+        "durationMs": 6000000,
+        "uniqueSystems": 11,
+        "firstSystem": "Jita",
+        "lastSystem": "Kylmabe",
+        "started": "2026-09-22T13:01:49.091Z",
+        "ended": "2026-09-22T14:41:49.091Z",
+        "routeSha256": "8541a91473f32e9d3a29c99dc950a25ce3e14ba6544ad52aa228354db9fad1b6",
+        "validated": {
+          "visits": 100,
+          "events": 20,
+          "travel": 99,
+          "durationMs": 6000000,
+          "uniqueSystems": 11,
+          "owner": 42,
+          "live": false,
+          "gaps": 0,
+          "missingCoordinates": 0,
+          "inferredVisits": 0,
+          "truncated": false,
+          "routeSha256": "8541a91473f32e9d3a29c99dc950a25ce3e14ba6544ad52aa228354db9fad1b6"
+        },
+        "responseBytes": 70537,
+        "endTransition": {
+          "playing": false,
+          "elapsed": 6000000,
+          "duration": 6000000,
+          "location": "Kylmabe",
+          "title": "100-visit synthetic recorded journey"
+        }
+      },
+      {
+        "id": "followup-replay-1000",
+        "characterId": 42,
+        "visits": 1000,
+        "events": 200,
+        "travel": 999,
+        "durationMs": 60000000,
+        "uniqueSystems": 11,
+        "firstSystem": "Jita",
+        "lastSystem": "Itamo",
+        "started": "2026-09-24T13:01:49.091Z",
+        "ended": "2026-09-25T05:41:49.091Z",
+        "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358",
+        "validated": {
+          "visits": 1000,
+          "events": 200,
+          "travel": 999,
+          "durationMs": 60000000,
+          "uniqueSystems": 11,
+          "owner": 42,
+          "live": false,
+          "gaps": 0,
+          "missingCoordinates": 0,
+          "inferredVisits": 0,
+          "truncated": false,
+          "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358"
+        },
+        "responseBytes": 640522,
+        "endTransition": {
+          "playing": false,
+          "elapsed": 60000000,
+          "duration": 60000000,
+          "location": "Itamo",
+          "title": "1000-visit synthetic recorded journey"
+        }
+      }
+    ],
+    "spacingMs": 60000,
+    "staticSystems": 8490,
+    "knownSystems": 5485,
+    "gates": 6989
+  },
+  "samples": [
+    {
+      "name": "replay-prepare",
+      "visits": 10,
+      "warmAtlas": true,
+      "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+      "domElementCount": 557,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 951.3312589999987,
+      "taskMs": 308.8799999999998,
+      "scriptMs": 132.81200000000015,
+      "layoutMs": 7.1569999999999965,
+      "recalcMs": 29.223,
+      "layouts": 15,
+      "recalcs": 32,
+      "heapUsed": 39198572,
+      "heapTotal": 79900672,
+      "domNodes": 3100,
+      "canvasDraws": 3,
+      "longTasks": [
+        {
+          "start": 6834.899999999994,
+          "duration": 52
+        }
+      ],
+      "raf": null,
+      "requests": [
+        {
+          "requestId": "3927.32",
+          "at": 236.774565,
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 38.128000000000384,
+          "totalMs": 63.66400000001704,
+          "encodedBytes": 696
+        },
+        {
+          "requestId": "3927.33",
+          "at": 236.775275,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 36.356000000012045,
+          "totalMs": 40.26700000000005,
+          "encodedBytes": 745086
+        },
+        {
+          "requestId": "3927.34",
+          "at": 236.785392,
+          "url": "/api/sessions/followup-replay-10/replay?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 65.0630000000092,
+          "totalMs": 31.35000000000332,
+          "encodedBytes": 12000
+        }
+      ]
+    },
+    {
+      "name": "replay-playback-start-60x",
+      "visits": 10,
+      "speed": 60,
+      "domElementCount": 586,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6066.080113,
+      "taskMs": 2578.966,
+      "scriptMs": 671.9329999999999,
+      "layoutMs": 87.793,
+      "recalcMs": 808.3000000000001,
+      "layouts": 218,
+      "recalcs": 330,
+      "heapUsed": 37472752,
+      "heapTotal": 91676672,
+      "domNodes": 1074,
+      "canvasDraws": 171,
+      "longTasks": [],
+      "raf": {
+        "count": 288,
+        "p50": 16.699999999999818,
+        "p95": 50,
+        "max": 100,
+        "over33ms": 18
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 360000,
+        "duration": 600000,
+        "location": "Itamo",
+        "title": "10-visit synthetic recorded journey"
+      }
+    },
+    {
+      "name": "replay-prepare",
+      "visits": 100,
+      "warmAtlas": true,
+      "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+      "domElementCount": 575,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 919.0522000000019,
+      "taskMs": 358.0379999999996,
+      "scriptMs": 76.90200000000003,
+      "layoutMs": 4.632999999999998,
+      "recalcMs": 33.57600000000005,
+      "layouts": 16,
+      "recalcs": 33,
+      "heapUsed": 16443436,
+      "heapTotal": 100851712,
+      "domNodes": 2228,
+      "canvasDraws": 3,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "requestId": "3927.39",
+          "at": 245.758103,
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 44.8769999999854,
+          "totalMs": 66.13699999999767,
+          "encodedBytes": 696
+        },
+        {
+          "requestId": "3927.40",
+          "at": 245.758831,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 25.484000000005835,
+          "totalMs": 29.266000000006898,
+          "encodedBytes": 745086
+        },
+        {
+          "requestId": "3927.41",
+          "at": 245.769361,
+          "url": "/api/sessions/followup-replay-100/replay?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 35.56699999998614,
+          "totalMs": 24.42099999998959,
+          "encodedBytes": 71159
+        }
+      ]
+    },
+    {
+      "name": "replay-playback-start-60x",
+      "visits": 100,
+      "speed": 60,
+      "domElementCount": 604,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6079.526846000001,
+      "taskMs": 2386.082,
+      "scriptMs": 518.062,
+      "layoutMs": 82.18,
+      "recalcMs": 820.4279999999999,
+      "layouts": 250,
+      "recalcs": 363,
+      "heapUsed": 27512180,
+      "heapTotal": 99016704,
+      "domNodes": 2347,
+      "canvasDraws": 204,
+      "longTasks": [],
+      "raf": {
+        "count": 327,
+        "p50": 16.700000000000728,
+        "p95": 33.29999999999927,
+        "max": 66.60000000000218,
+        "over33ms": 11
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 360000,
+        "duration": 6000000,
+        "location": "Itamo",
+        "title": "100-visit synthetic recorded journey"
+      }
+    },
+    {
+      "name": "replay-playback-middle-60x",
+      "visits": 100,
+      "speed": 60,
+      "startElapsed": 3000000,
+      "domElementCount": 652,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6144.220307000003,
+      "taskMs": 2679.6659999999993,
+      "scriptMs": 516.6859999999999,
+      "layoutMs": 90.26899999999999,
+      "recalcMs": 979.2770000000002,
+      "layouts": 243,
+      "recalcs": 363,
+      "heapUsed": 31288604,
+      "heapTotal": 98492416,
+      "domNodes": 2445,
+      "canvasDraws": 198,
+      "longTasks": [],
+      "raf": {
+        "count": 322,
+        "p50": 16.700000000000728,
+        "p95": 33.30000000000291,
+        "max": 66.60000000000218,
+        "over33ms": 14
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 3360000,
+        "duration": 6000000,
+        "location": "Itamo",
+        "title": "100-visit synthetic recorded journey"
+      }
+    },
+    {
+      "name": "replay-prepare",
+      "visits": 1000,
+      "warmAtlas": true,
+      "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+      "domElementCount": 655,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 974.816439000002,
+      "taskMs": 310.20000000000005,
+      "scriptMs": 120.85800000000013,
+      "layoutMs": 4.305000000000003,
+      "recalcMs": 28.506999999999838,
+      "layouts": 15,
+      "recalcs": 32,
+      "heapUsed": 53441712,
+      "heapTotal": 110469120,
+      "domNodes": 5348,
+      "canvasDraws": 3,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "requestId": "3927.46",
+          "at": 261.373281,
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 41.14899999996169,
+          "totalMs": 81.7700000000059,
+          "encodedBytes": 696
+        },
+        {
+          "requestId": "3927.47",
+          "at": 261.37378,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 28.772000000003572,
+          "totalMs": 34.39500000001772,
+          "encodedBytes": 745086
+        },
+        {
+          "requestId": "3927.48",
+          "at": 261.389569,
+          "url": "/api/sessions/followup-replay-1000/replay?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 73.23999999999842,
+          "totalMs": 48.07800000003226,
+          "encodedBytes": 641144
+        },
+        {
+          "requestId": "3927.49",
+          "at": 261.395289,
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 69.84099999999671,
+          "totalMs": 40.352999999981876,
+          "encodedBytes": 4523
+        }
+      ]
+    },
+    {
+      "name": "replay-playback-start-60x",
+      "visits": 1000,
+      "speed": 60,
+      "domElementCount": 684,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6082.992309000001,
+      "taskMs": 3080.4539999999997,
+      "scriptMs": 710.9950000000005,
+      "layoutMs": 94.91199999999999,
+      "recalcMs": 1011.79,
+      "layouts": 191,
+      "recalcs": 290,
+      "heapUsed": 47430788,
+      "heapTotal": 103473152,
+      "domNodes": 2708,
+      "canvasDraws": 130,
+      "longTasks": [],
+      "raf": {
+        "count": 247,
+        "p50": 16.700000000000728,
+        "p95": 50,
+        "max": 83.40000000000146,
+        "over33ms": 42
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 360000,
+        "duration": 60000000,
+        "location": "Itamo",
+        "title": "1000-visit synthetic recorded journey"
+      }
+    },
+    {
+      "name": "replay-playback-middle-60x",
+      "visits": 1000,
+      "speed": 60,
+      "startElapsed": 30000000,
+      "domElementCount": 732,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6187.268797999997,
+      "taskMs": 3694.0739999999987,
+      "scriptMs": 714.798,
+      "layoutMs": 80.46600000000004,
+      "recalcMs": 1083.3649999999998,
+      "layouts": 167,
+      "recalcs": 265,
+      "heapUsed": 35058508,
+      "heapTotal": 112386048,
+      "domNodes": 2917,
+      "canvasDraws": 124,
+      "longTasks": [],
+      "raf": {
+        "count": 226,
+        "p50": 16.700000000004366,
+        "p95": 50.099999999998545,
+        "max": 83.30000000000291,
+        "over33ms": 56
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 30360000,
+        "duration": 60000000,
+        "location": "Maurasi",
+        "title": "1000-visit synthetic recorded journey"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "requestId": "3927.18",
+      "at": 231.291743,
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.81000000001177,
+      "totalMs": 8.721000000008416,
+      "encodedBytes": 7088
+    },
+    {
+      "requestId": "3927.19",
+      "at": 231.333286,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 75.47600000000898,
+      "totalMs": 7.900000000006457,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.20",
+      "at": 231.357422,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 96.84799999999427,
+      "totalMs": 4.643999999984771,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.21",
+      "at": 231.357877,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 96.66100000001165,
+      "totalMs": 5.996000000010326,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.22",
+      "at": 231.359163,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 95.55600000001618,
+      "totalMs": 7.279000000011138,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.23",
+      "at": 231.402726,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 56.20700000000056,
+      "totalMs": 12.00099999999793,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.24",
+      "at": 231.45399,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.850999999997839
+    },
+    {
+      "requestId": "3927.25",
+      "at": 231.493533,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.795999999975493,
+      "totalMs": 8.153999999990447,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.26",
+      "at": 231.493947,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.16600000000767,
+      "totalMs": 7.954000000012229,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.27",
+      "at": 234.077948,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 147.47300000001928,
+      "totalMs": 184.24400000000674,
+      "encodedBytes": 867000
+    },
+    {
+      "requestId": "3927.28",
+      "at": 234.078519,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 240.04600000000664,
+      "totalMs": 191.59899999999652,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.30",
+      "at": 236.000237,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.838000000011561,
+      "totalMs": 5.672000000004118,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.31",
+      "at": 236.000694,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.766999999991867,
+      "totalMs": 9.230999999999767,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.32",
+      "at": 236.774565,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 38.128000000000384,
+      "totalMs": 63.66400000001704,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.33",
+      "at": 236.775275,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 36.356000000012045,
+      "totalMs": 40.26700000000005,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.34",
+      "at": 236.785392,
+      "url": "/api/sessions/followup-replay-10/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 65.0630000000092,
+      "totalMs": 31.35000000000332,
+      "encodedBytes": 12000
+    },
+    {
+      "requestId": "3927.36",
+      "at": 243.971035,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 109.69299999999294,
+      "totalMs": 50.93299999998635,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.37",
+      "at": 244.21346,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.189999999994598,
+      "totalMs": 4.077999999992699,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.38",
+      "at": 244.214844,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.39500000001226,
+      "totalMs": 5.63900000000217,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.39",
+      "at": 245.758103,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 44.8769999999854,
+      "totalMs": 66.13699999999767,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.40",
+      "at": 245.758831,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 25.484000000005835,
+      "totalMs": 29.266000000006898,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.41",
+      "at": 245.769361,
+      "url": "/api/sessions/followup-replay-100/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 35.56699999998614,
+      "totalMs": 24.42099999998959,
+      "encodedBytes": 71159
+    },
+    {
+      "requestId": "3927.43",
+      "at": 259.600358,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 95.75699999999188,
+      "totalMs": 33.29299999995783,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.44",
+      "at": 259.813113,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.851000000040585,
+      "totalMs": 6.395999999995183,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.45",
+      "at": 259.81346,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.89499999998634,
+      "totalMs": 8.346999999957916,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.46",
+      "at": 261.373281,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.14899999996169,
+      "totalMs": 81.7700000000059,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.47",
+      "at": 261.37378,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.772000000003572,
+      "totalMs": 34.39500000001772,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.48",
+      "at": 261.389569,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 73.23999999999842,
+      "totalMs": 48.07800000003226,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.49",
+      "at": 261.395289,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 69.84099999999671,
+      "totalMs": 40.352999999981876,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.51",
+      "at": 275.476676,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 83.84300000000167,
+      "totalMs": 31.522999999992862,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.52",
+      "at": 275.659839,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.485000000036052,
+      "totalMs": 7.7080000000364635,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.53",
+      "at": 275.660658,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.521999999975833,
+      "totalMs": 7.03699999996843,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.54",
+      "at": 279.817381,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 43.99599999999282,
+      "totalMs": 63.0390000000034,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.55",
+      "at": 279.817884,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.567999999997483,
+      "totalMs": 30.69700000003195,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.57",
+      "at": 281.314311,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 36.09300000005078,
+      "totalMs": 67.57600000003094,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.58",
+      "at": 281.314838,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 34.05800000001591,
+      "totalMs": 39.00599999997212,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.59",
+      "at": 281.450042,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.121999999986201,
+      "totalMs": 13.806999999985692,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.60",
+      "at": 282.944394,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.858000000004267,
+      "totalMs": 15.328000000010888,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.61",
+      "at": 282.944814,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 43.06900000000269,
+      "totalMs": 31.97499999998854,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.62",
+      "at": 282.945328,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 43.11599999999771,
+      "totalMs": 30.55699999998751,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.63",
+      "at": 282.958197,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 31.514000000015585,
+      "totalMs": 27.75000000002592,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.64",
+      "at": 283.013994,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.644999999987249,
+      "totalMs": 14.564999999947759,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.65",
+      "at": 284.296687,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.66499999998905,
+      "totalMs": 9.76399999996147,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.66",
+      "at": 284.298241,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.343999999970492,
+      "totalMs": 10.00299999998333,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.67",
+      "at": 284.716848,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.639999999957126,
+      "totalMs": 4.413999999997031,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.68",
+      "at": 284.717236,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.444999999994707,
+      "totalMs": 6.045999999969354,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.69",
+      "at": 284.717633,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.124000000042543,
+      "totalMs": 8.35299999999961,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.70",
+      "at": 284.719205,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 11.855000000025484,
+      "totalMs": 9.458999999992557,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.71",
+      "at": 284.739052,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.25299999995832,
+      "totalMs": 4.378999999971711,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.72",
+      "at": 284.73943,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.062999999983276,
+      "totalMs": 4.141999999944801,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.73",
+      "at": 285.458947,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 56.993999999974676,
+      "totalMs": 76.77400000000034,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.74",
+      "at": 285.459465,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.393999999991593,
+      "totalMs": 35.27299999996103,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.75",
+      "at": 285.468106,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 49.52000000002954,
+      "totalMs": 44.73000000001548,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.77",
+      "at": 286.487123,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.52300000000787,
+      "totalMs": 30.335999999977048,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.78",
+      "at": 286.487525,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.399999999977354,
+      "totalMs": 34.8809999999844,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.79",
+      "at": 286.503093,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 37.950000000023465,
+      "totalMs": 24.371000000030563,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.80",
+      "at": 286.949844,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 72.39800000002106,
+      "totalMs": 16.302999999993517,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.81",
+      "at": 287.107682,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.123999999971602,
+      "totalMs": 4.587000000014996,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.82",
+      "at": 287.108187,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.874000000034357,
+      "totalMs": 6.399999999985084,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.83",
+      "at": 287.516037,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.244999999997617,
+      "totalMs": 6.371999999998934,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.84",
+      "at": 287.516404,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.093999999980952,
+      "totalMs": 6.150999999988471,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.85",
+      "at": 287.516763,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.895999999969263,
+      "totalMs": 8.215999999947599,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.86",
+      "at": 287.518955,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 19.34399999998959,
+      "totalMs": 9.99699999999848,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.87",
+      "at": 287.536849,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.384999999999309,
+      "totalMs": 5.767999999989115,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.88",
+      "at": 287.537304,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.109000000014021,
+      "totalMs": 8.499999999969532,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.89",
+      "at": 288.718949,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 35.53599999997914,
+      "totalMs": 66.46699999998873,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.90",
+      "at": 288.719828,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 32.93700000000399,
+      "totalMs": 40.01499999998259,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.93",
+      "at": 290.277696,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.146000000015647,
+      "totalMs": 45.190999999988435,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.94",
+      "at": 290.279121,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 47.27200000002085,
+      "totalMs": 48.01300000002584,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.95",
+      "at": 290.404863,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.381000000028507,
+      "totalMs": 11.41699999999446,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.96",
+      "at": 291.394865,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.361000000017157,
+      "totalMs": 3.500000000030923,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.97",
+      "at": 291.810835,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.68100000000641,
+      "totalMs": 15.339999999980591,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.98",
+      "at": 291.811498,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.42400000002999,
+      "totalMs": 39.23900000000913,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.99",
+      "at": 291.811889,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.26699999997163,
+      "totalMs": 36.30499999997028,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.100",
+      "at": 291.833005,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 19.826999999963846,
+      "totalMs": 15.822000000014214,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.101",
+      "at": 291.891612,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.486999999974614,
+      "totalMs": 27.77299999996785,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.102",
+      "at": 293.112223,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.014000000003307,
+      "totalMs": 4.468000000031225,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.103",
+      "at": 293.112676,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.7629999999549,
+      "totalMs": 5.711999999959971,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.104",
+      "at": 293.53354,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.007999999970707,
+      "totalMs": 5.1459999999678985,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.105",
+      "at": 293.533962,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.333000000036009,
+      "totalMs": 8.176000000048589,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.106",
+      "at": 293.534372,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.091999999962354,
+      "totalMs": 10.248999999987518,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.107",
+      "at": 293.535967,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 12.712999999962449,
+      "totalMs": 11.251999999956297,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.108",
+      "at": 293.557746,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.796999999972741,
+      "totalMs": 6.0750000000098225,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.109",
+      "at": 293.558126,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.766999999977543,
+      "totalMs": 8.185999999966498,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.110",
+      "at": 294.304509,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 30.015999999989162,
+      "totalMs": 67.13799999999992,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.111",
+      "at": 294.305538,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.533999999969637,
+      "totalMs": 37.21100000001343,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.112",
+      "at": 294.312663,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 76.88300000000936,
+      "totalMs": 53.629000000000815,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.114",
+      "at": 295.399214,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 76.3960000000452,
+      "totalMs": 30.692000000044573,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.115",
+      "at": 295.399836,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 76.1550000000284,
+      "totalMs": 25.030000000015207,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.116",
+      "at": 295.427071,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 50.06199999996852,
+      "totalMs": 7.504999999980555,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.117",
+      "at": 295.866204,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 112.98700000003237,
+      "totalMs": 21.661999999992076,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.118",
+      "at": 296.028071,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.275999999981195,
+      "totalMs": 7.258999999976368,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.119",
+      "at": 296.028499,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.08200000001625,
+      "totalMs": 9.115000000008422,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.120",
+      "at": 296.462422,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.864999999981137,
+      "totalMs": 4.355999999972937,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.121",
+      "at": 296.462831,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.34999999997899,
+      "totalMs": 12.652000000002772,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.122",
+      "at": 296.464299,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.15800000000445,
+      "totalMs": 17.663000000027296,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.123",
+      "at": 296.46752,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 15.027000000031876,
+      "totalMs": 13.997000000017579,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.124",
+      "at": 296.4938,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.798999999977241,
+      "totalMs": 6.264999999984866,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.125",
+      "at": 296.494541,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.288999999957468,
+      "totalMs": 6.025999999963005,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.126",
+      "at": 300.636736,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.870000000006712,
+      "totalMs": 44.501000000025215,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.127",
+      "at": 300.638132,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 51.72600000003058,
+      "totalMs": 36.732000000029075,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.129",
+      "at": 302.112279,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.788999999983844,
+      "totalMs": 60.407999999995354,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.130",
+      "at": 302.112919,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 58.00600000003442,
+      "totalMs": 55.52400000004809,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.131",
+      "at": 302.233221,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.98699999995779,
+      "totalMs": 19.687999999973727,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.132",
+      "at": 303.666312,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 37.00800000001436,
+      "totalMs": 15.003999999976259,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.133",
+      "at": 303.666734,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 81.86699999998837,
+      "totalMs": 80.66499999995358,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.134",
+      "at": 303.667118,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 110.40700000000925,
+      "totalMs": 87.77900000001182,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.135",
+      "at": 303.68358,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 92.33299999999645,
+      "totalMs": 71.16000000002032,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.136",
+      "at": 303.79388,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.412999999985914,
+      "totalMs": 18.799999999998818,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.137",
+      "at": 305.061573,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.49099999998316,
+      "totalMs": 4.975999999999203,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.138",
+      "at": 305.06194,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.341000000020813,
+      "totalMs": 5.144000000029791,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.139",
+      "at": 305.482632,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.51799999999048,
+      "totalMs": 5.599999999958527,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.140",
+      "at": 305.483067,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.450999999989108,
+      "totalMs": 6.674999999972897,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.141",
+      "at": 305.483438,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.49199999999928,
+      "totalMs": 9.132000000022344,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.142",
+      "at": 305.484674,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 9.586000000012973,
+      "totalMs": 7.759000000021388,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.143",
+      "at": 305.502864,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.315000000029158,
+      "totalMs": 5.816000000038457,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.144",
+      "at": 305.503262,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.1059999999883985,
+      "totalMs": 5.583000000001448,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.145",
+      "at": 306.238316,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 29.901999999992768,
+      "totalMs": 75.52500000002738,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.146",
+      "at": 306.238809,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 27.2499999999809,
+      "totalMs": 37.93100000001459,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.147",
+      "at": 306.248368,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 73.78299999999172,
+      "totalMs": 45.72999999999183,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.149",
+      "at": 307.288429,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.477000000009866,
+      "totalMs": 23.6850000000004,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.150",
+      "at": 307.288906,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.01900000000569,
+      "totalMs": 18.70000000002392,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.151",
+      "at": 307.308585,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 21.671000000026197,
+      "totalMs": 6.669999999985521,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.152",
+      "at": 307.732416,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 88.38700000001154,
+      "totalMs": 25.88300000002164,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.153",
+      "at": 307.923918,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.819999999976517,
+      "totalMs": 5.33300000000736,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.154",
+      "at": 307.924391,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.676999999996497,
+      "totalMs": 11.867999999992662,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.155",
+      "at": 308.334597,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.921000000043477,
+      "totalMs": 7.239000000026863,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.156",
+      "at": 308.335305,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.405000000015207,
+      "totalMs": 9.869999999978063,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.157",
+      "at": 308.33614,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.307000000011612,
+      "totalMs": 9.199000000023716,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.158",
+      "at": 308.337987,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 22.564999999985957,
+      "totalMs": 10.339999999985139,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.159",
+      "at": 308.356405,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.053000000018073,
+      "totalMs": 4.8929999999813845,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.160",
+      "at": 308.356917,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.734999999968295,
+      "totalMs": 4.524000000003525,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.161",
+      "at": 309.530722,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 33.862999999996646,
+      "totalMs": 59.60499999997637,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.162",
+      "at": 309.531248,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.39899999996942,
+      "totalMs": 29.888999999968746,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.164",
+      "at": 310.912682,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.866999999966993,
+      "totalMs": 49.92099999998345,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.165",
+      "at": 310.913834,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 55.421999999964555,
+      "totalMs": 43.86299999998755,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.166",
+      "at": 311.027422,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.797999999975218,
+      "totalMs": 13.267999999982294,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.167",
+      "at": 312.451061,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 23.92800000001216,
+      "totalMs": 16.015000000038526,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.168",
+      "at": 312.451583,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 35.86999999998852,
+      "totalMs": 32.396999999946274,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.169",
+      "at": 312.451928,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 36.91900000001169,
+      "totalMs": 31.268000000011398,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.170",
+      "at": 312.463799,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 25.351000000000568,
+      "totalMs": 22.474999999985812,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.171",
+      "at": 312.511913,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.92999999998301,
+      "totalMs": 14.868000000035408,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.172",
+      "at": 313.730779,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.597999999987678,
+      "totalMs": 6.387000000017906,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.173",
+      "at": 313.731244,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.416999999989912,
+      "totalMs": 6.336999999973614,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.174",
+      "at": 314.148373,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.534999999994852,
+      "totalMs": 4.84199999999646,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.175",
+      "at": 314.14877,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.405999999979485,
+      "totalMs": 6.530999999995402,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.176",
+      "at": 314.149168,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.787000000026637,
+      "totalMs": 8.23400000001584,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.177",
+      "at": 314.150613,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 25.155999999981304,
+      "totalMs": 12.19599999996035,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.178",
+      "at": 314.170651,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.5949999999807005,
+      "totalMs": 3.6159999999654246,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.179",
+      "at": 314.1713,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.413000000018656,
+      "totalMs": 6.934000000001106,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.180",
+      "at": 314.908216,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 33.316000000013446,
+      "totalMs": 70.86100000003626,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.181",
+      "at": 314.908692,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 32.55300000000716,
+      "totalMs": 34.83400000004622,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.182",
+      "at": 314.917041,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 75.85000000000264,
+      "totalMs": 56.78299999999581,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.184",
+      "at": 315.945852,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.92300000002069,
+      "totalMs": 22.105000000010477,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.185",
+      "at": 315.948359,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 38.73500000003105,
+      "totalMs": 22.21700000001192,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.186",
+      "at": 315.96325,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 24.047999999993408,
+      "totalMs": 11.037999999985004,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.187",
+      "at": 316.387785,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 78.74399999997195,
+      "totalMs": 24.165999999979704,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.188",
+      "at": 316.566773,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.928999999985535,
+      "totalMs": 5.173000000013417,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.189",
+      "at": 316.567452,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.472999999999956,
+      "totalMs": 7.868999999971038,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.190",
+      "at": 316.984585,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.732999999996991,
+      "totalMs": 5.171000000018466,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.191",
+      "at": 316.984926,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.062000000052194,
+      "totalMs": 8.27100000003611,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.192",
+      "at": 316.985303,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.411000000009608,
+      "totalMs": 10.072000000036496,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.193",
+      "at": 316.986733,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 24.24300000001267,
+      "totalMs": 11.36500000001206,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.194",
+      "at": 317.006537,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.879000000016731,
+      "totalMs": 6.934000000001106,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.195",
+      "at": 317.007137,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.405000000015207,
+      "totalMs": 6.776999999999589,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.196",
+      "at": 318.188634,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 31.43000000000029,
+      "totalMs": 65.06000000001677,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.197",
+      "at": 318.189193,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.507999999987987,
+      "totalMs": 37.74500000002945,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.199",
+      "at": 319.675896,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 51.32199999997056,
+      "totalMs": 69.59899999998242,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.200",
+      "at": 319.676481,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 29.85799999999017,
+      "totalMs": 31.514999999956217,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.201",
+      "at": 319.799134,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.965000000008786,
+      "totalMs": 24.14400000003525,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.202",
+      "at": 321.174714,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.642999999978656,
+      "totalMs": 17.511000000013155,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.203",
+      "at": 321.175442,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 45.50400000005084,
+      "totalMs": 36.858000000052016,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.204",
+      "at": 321.175813,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 47.713999999984935,
+      "totalMs": 43.378000000018346,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.205",
+      "at": 321.190886,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 45.06800000001476,
+      "totalMs": 33.981000000039785,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.206",
+      "at": 321.2438,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.236999999985073,
+      "totalMs": 22.52499999997326,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.207",
+      "at": 321.394834,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 2.809000000013384,
+      "totalMs": 2.384000000006381,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.208",
+      "at": 322.52809,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.09299999997438,
+      "totalMs": 7.8249999999684405,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.209",
+      "at": 322.530431,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.798000000003867,
+      "totalMs": 6.067999999970652,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.210",
+      "at": 322.948562,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.683000000028642,
+      "totalMs": 6.742000000031112,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.211",
+      "at": 322.94891,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.588999999981752,
+      "totalMs": 6.570000000010623,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.212",
+      "at": 322.949435,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.941000000002532,
+      "totalMs": 8.010000000012951,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.213",
+      "at": 322.951419,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 23.036999999987984,
+      "totalMs": 10.49599999998918,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.214",
+      "at": 322.971196,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.503999999968983,
+      "totalMs": 7.461999999975433,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.215",
+      "at": 322.971621,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.335999999995238,
+      "totalMs": 7.194999999967422,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.216",
+      "at": 323.70668,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.64700000001176,
+      "totalMs": 82.57099999997308,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.217",
+      "at": 323.707165,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 39.807000000052994,
+      "totalMs": 43.42000000002599,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.218",
+      "at": 323.717994,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 77.80200000001969,
+      "totalMs": 48.800000000028376,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.220",
+      "at": 324.752388,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.155000000027485,
+      "totalMs": 24.270000000001346,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.221",
+      "at": 324.75285,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.30899999997973,
+      "totalMs": 26.762999999959902,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.222",
+      "at": 324.770897,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 36.91500000002179,
+      "totalMs": 15.891000000010536,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.223",
+      "at": 325.202302,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 74.41400000004705,
+      "totalMs": 22.868000000016764,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.224",
+      "at": 325.373953,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.751000000046588,
+      "totalMs": 4.827000000034332,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.225",
+      "at": 325.374416,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.507999999977983,
+      "totalMs": 7.117999999991298,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.226",
+      "at": 325.779954,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.80600000002596,
+      "totalMs": 4.431000000010954,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.227",
+      "at": 325.780578,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.389999999996235,
+      "totalMs": 4.363000000012107,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.228",
+      "at": 325.780936,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.245000000021264,
+      "totalMs": 6.635000000017044,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.229",
+      "at": 325.785124,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 16.972000000009757,
+      "totalMs": 7.555000000024847,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.230",
+      "at": 325.800692,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.236999999989166,
+      "totalMs": 4.0709999999535285,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.231",
+      "at": 325.801059,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.445999999968535,
+      "totalMs": 8.154999999987922,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.232",
+      "at": 326.972424,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 27.088999999989483,
+      "totalMs": 50.501999999994496,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.233",
+      "at": 326.972941,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 23.264999999980773,
+      "totalMs": 26.896000000022013,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.235",
+      "at": 328.272765,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 44.399999999996,
+      "totalMs": 63.72500000003356,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.236",
+      "at": 328.273305,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 27.557999999999083,
+      "totalMs": 29.597000000023854,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.237",
+      "at": 328.39382,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.277999999981148,
+      "totalMs": 19.94600000000446,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.238",
+      "at": 329.787163,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.97699999997849,
+      "totalMs": 19.459999999980937,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.239",
+      "at": 329.788146,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 33.83200000001807,
+      "totalMs": 35.23300000000518,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.240",
+      "at": 329.789179,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.79600000000073,
+      "totalMs": 34.76799999998548,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.241",
+      "at": 329.801125,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 41.38799999998355,
+      "totalMs": 29.170999999962532,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.242",
+      "at": 329.853201,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.26699999998027,
+      "totalMs": 19.414999999980864,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.243",
+      "at": 331.099347,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.004999999983283,
+      "totalMs": 9.27599999999984,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.244",
+      "at": 331.099769,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.810000000020864,
+      "totalMs": 9.024000000010801,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.245",
+      "at": 331.515499,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.257999999997992,
+      "totalMs": 5.488000000013926,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.246",
+      "at": 331.515882,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.17000000004964,
+      "totalMs": 5.303000000026259,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.247",
+      "at": 331.516364,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.878999999988537,
+      "totalMs": 9.0460000000121,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.248",
+      "at": 331.518038,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 9.427000000016506,
+      "totalMs": 9.18699999999717,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.249",
+      "at": 331.538425,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.269999999981792,
+      "totalMs": 3.482999999960157,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.250",
+      "at": 331.538844,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.015999999997803,
+      "totalMs": 3.256000000021686,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.251",
+      "at": 332.274506,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 31.452999999999065,
+      "totalMs": 75.14900000001035,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.252",
+      "at": 332.275207,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 30.498999999963416,
+      "totalMs": 35.573999999996886,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.253",
+      "at": 332.282909,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 77.45399999998881,
+      "totalMs": 55.762999999956264,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.255",
+      "at": 333.320981,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 56.732000000010885,
+      "totalMs": 24.539000000004307,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.256",
+      "at": 333.322084,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 58.34399999997686,
+      "totalMs": 26.312999999959175,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.257",
+      "at": 333.339083,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 42.951999999957025,
+      "totalMs": 13.034000000004653,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.258",
+      "at": 333.806685,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 68.1069999999977,
+      "totalMs": 18.070999999963533,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.259",
+      "at": 333.977851,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 23.056999999994332,
+      "totalMs": 9.582000000023072,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.260",
+      "at": 333.978507,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.5930000000385,
+      "totalMs": 9.141999999997097,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.261",
+      "at": 334.380208,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.196000000017193,
+      "totalMs": 5.24799999999459,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.262",
+      "at": 334.380558,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.44400000001633,
+      "totalMs": 7.852000000013959,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.263",
+      "at": 334.3809,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.400000000013733,
+      "totalMs": 8.053000000018073,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.264",
+      "at": 334.382678,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 10.877999999991061,
+      "totalMs": 7.520999999997002,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.265",
+      "at": 334.402565,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.056999999998425,
+      "totalMs": 4.23399999999674,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.266",
+      "at": 334.402895,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.005000000016025,
+      "totalMs": 5.363999999985936,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.267",
+      "at": 338.584058,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 45.24799999995821,
+      "totalMs": 63.65699999997787,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.268",
+      "at": 338.584602,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.22699999995848,
+      "totalMs": 32.692999999994754,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.270",
+      "at": 340.099282,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 29.207999999982803,
+      "totalMs": 52.07300000000714,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.271",
+      "at": 340.099983,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.09899999999743,
+      "totalMs": 31.177000000013777,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.272",
+      "at": 340.213824,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.439999999993233,
+      "totalMs": 10.029000000031374,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.273",
+      "at": 341.614225,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.653000000010252,
+      "totalMs": 12.580000000014024,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.274",
+      "at": 341.614776,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 37.15199999999186,
+      "totalMs": 33.61000000001013,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.275",
+      "at": 341.615288,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 52.63499999995247,
+      "totalMs": 38.43000000000529,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.276",
+      "at": 341.629,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 23.516999999969812,
+      "totalMs": 21.85599999995702,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.277",
+      "at": 341.680231,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 13.364000000024134,
+      "totalMs": 15.028000000029351,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.278",
+      "at": 342.936803,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.802999999991243,
+      "totalMs": 4.25999999998794,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.279",
+      "at": 342.937345,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.651000000033946,
+      "totalMs": 9.646000000032018,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.280",
+      "at": 343.347177,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.063000000002376,
+      "totalMs": 4.716000000030363,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.281",
+      "at": 343.347506,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.201999999992495,
+      "totalMs": 8.571000000017648,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.282",
+      "at": 343.347832,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.225000000024465,
+      "totalMs": 8.943000000044776,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.283",
+      "at": 343.349434,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 19.51600000001008,
+      "totalMs": 9.265000000027612,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.284",
+      "at": 343.367903,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.868999999994685,
+      "totalMs": 6.596999999999298,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.285",
+      "at": 343.368233,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.722000000024764,
+      "totalMs": 6.562000000030821,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.286",
+      "at": 344.100002,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.2079999999914435,
+      "totalMs": 62.89299999997411,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.287",
+      "at": 344.100526,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 72.37700000001723,
+      "totalMs": 37.40099999998847,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.288",
+      "at": 344.107663,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 98.17399999997178,
+      "totalMs": 59.504000000004,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.290",
+      "at": 345.152261,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.47400000001744,
+      "totalMs": 31.12199999998211,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.291",
+      "at": 345.152666,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.36899999999832,
+      "totalMs": 28.993000000014035,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.292",
+      "at": 345.166825,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 26.769000000001597,
+      "totalMs": 20.104000000003452,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.293",
+      "at": 345.603563,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 84.56200000000536,
+      "totalMs": 19.53299999996716,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.294",
+      "at": 345.739749,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.907999999991716,
+      "totalMs": 4.83299999996234,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.295",
+      "at": 345.741255,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 25.70599999995693,
+      "totalMs": 3.7179999999921165,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.296",
+      "at": 346.163153,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.42899999998781,
+      "totalMs": 5.680999999981395,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.297",
+      "at": 346.163544,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.29199999999264,
+      "totalMs": 6.32100000001401,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.298",
+      "at": 346.163919,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.474000000006981,
+      "totalMs": 11.567999999954282,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.299",
+      "at": 346.165693,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 33.186000000000604,
+      "totalMs": 19.66400000003432,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.300",
+      "at": 346.189874,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.373000000039156,
+      "totalMs": 3.8970000000517757,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.301",
+      "at": 346.190397,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.019999999964057,
+      "totalMs": 5.310000000008586,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.302",
+      "at": 347.366827,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.65600000001268,
+      "totalMs": 61.64100000000872,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.303",
+      "at": 347.367408,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 25.850999999988744,
+      "totalMs": 29.04200000000401,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.305",
+      "at": 348.695922,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 35.46000000000049,
+      "totalMs": 60.01800000001367,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.306",
+      "at": 348.697056,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 27.55200000001423,
+      "totalMs": 30.337000000031367,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.307",
+      "at": 348.813618,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.49099999995451,
+      "totalMs": 14.025000000003729,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.308",
+      "at": 350.194761,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.56099999995331,
+      "totalMs": 14.069999999946958,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.309",
+      "at": 350.195377,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 39.55799999999954,
+      "totalMs": 47.03299999999899,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.310",
+      "at": 350.195737,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 43.192999999973836,
+      "totalMs": 42.86200000001372,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.311",
+      "at": 350.206709,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 45.85700000001225,
+      "totalMs": 34.83900000003359,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.312",
+      "at": 350.250371,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.77100000004839,
+      "totalMs": 19.902000000001863,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.313",
+      "at": 351.394812,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.451999999981581,
+      "totalMs": 2.9490000000009786,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.314",
+      "at": 351.527572,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.31899999996267,
+      "totalMs": 6.512999999984004,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.315",
+      "at": 351.528285,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.925999999998112,
+      "totalMs": 7.680999999990945,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.316",
+      "at": 351.94611,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.864000000016858,
+      "totalMs": 5.663000000026841,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.317",
+      "at": 351.946437,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.843000000013035,
+      "totalMs": 6.622999999990498,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.318",
+      "at": 351.946875,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.793000000011489,
+      "totalMs": 9.554000000036922,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.319",
+      "at": 351.948406,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 19.863000000043485,
+      "totalMs": 10.863000000028933,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.320",
+      "at": 351.966948,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.858999999996286,
+      "totalMs": 3.678999999976895,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.321",
+      "at": 351.967332,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.870000000025357,
+      "totalMs": 5.540999999993801,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.322",
+      "at": 352.697575,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 49.232000000017706,
+      "totalMs": 78.37400000005346,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.323",
+      "at": 352.698062,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 29.183999999986554,
+      "totalMs": 35.72500000001355,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.324",
+      "at": 352.711205,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 74.91599999997334,
+      "totalMs": 50.63999999998714,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.326",
+      "at": 353.758741,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 74.41399999999021,
+      "totalMs": 44.13299999998799,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.327",
+      "at": 353.759271,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 76.46599999998216,
+      "totalMs": 50.173999999969965,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.328",
+      "at": 353.780505,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 56.21600000000626,
+      "totalMs": 39.08200000000761,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.329",
+      "at": 354.248822,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 66.04199999998173,
+      "totalMs": 17.51600000000053,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.330",
+      "at": 354.377888,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.963000000027932,
+      "totalMs": 8.113000000037118,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.331",
+      "at": 354.378349,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.87900000001264,
+      "totalMs": 9.942999999964286,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.332",
+      "at": 354.778983,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.082000000011249,
+      "totalMs": 4.55800000003137,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.333",
+      "at": 354.779459,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.854000000018459,
+      "totalMs": 6.590000000016971,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.334",
+      "at": 354.779904,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.547999999995227,
+      "totalMs": 7.252999999991516,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.335",
+      "at": 354.781634,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 19.49000000001888,
+      "totalMs": 9.651000000019394,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.336",
+      "at": 354.799486,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.91700000002038,
+      "totalMs": 6.283999999993739,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.337",
+      "at": 354.800086,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.240000000000691,
+      "totalMs": 5.868999999961488,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.338",
+      "at": 355.971753,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.055000000013024,
+      "totalMs": 48.915000000022246,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.339",
+      "at": 355.97271,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 54.440999999997075,
+      "totalMs": 41.21700000001738,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.341",
+      "at": 357.28842,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.23200000005454,
+      "totalMs": 50.62900000001491,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.342",
+      "at": 357.289385,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 58.20400000004611,
+      "totalMs": 39.39700000000812,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.343",
+      "at": 357.402136,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.38800000003448,
+      "totalMs": 11.086000000034346,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.344",
+      "at": 358.840973,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.223999999961052,
+      "totalMs": 20.676999999977852,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.345",
+      "at": 358.841731,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 39.71799999999348,
+      "totalMs": 42.655000000024756,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.346",
+      "at": 358.842385,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 39.34300000003077,
+      "totalMs": 37.58700000003046,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.347",
+      "at": 358.851751,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 46.208000000035554,
+      "totalMs": 38.530000000037035,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.348",
+      "at": 358.90613,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.730999999964297,
+      "totalMs": 12.089000000003125,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.349",
+      "at": 360.146366,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.01199999997516,
+      "totalMs": 4.342000000008284,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.350",
+      "at": 360.149119,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.511000000036802,
+      "totalMs": 4.3750000000386535,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.351",
+      "at": 360.56287,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.243000000026314,
+      "totalMs": 5.635000000040691,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.352",
+      "at": 360.563214,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.119999999995798,
+      "totalMs": 5.4409999999620595,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.353",
+      "at": 360.563521,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.971000000030926,
+      "totalMs": 7.4830000000361,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.354",
+      "at": 360.565,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 12.283000000024913,
+      "totalMs": 9.964000000024953,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.355",
+      "at": 360.587989,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.371000000034655,
+      "totalMs": 7.553000000029897,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.356",
+      "at": 360.588378,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.967000000041025,
+      "totalMs": 7.340999999996711,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.357",
+      "at": 361.307066,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 56.45499999997128,
+      "totalMs": 78.76299999998082,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.358",
+      "at": 361.30749,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 27.28300000001127,
+      "totalMs": 35.04100000003518,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.359",
+      "at": 361.317686,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 48.3960000000252,
+      "totalMs": 45.88800000004767,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.361",
+      "at": 362.318596,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 42.24099999998998,
+      "totalMs": 27.346999999963373,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.362",
+      "at": 362.318992,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 42.10900000003903,
+      "totalMs": 24.661000000037347,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.363",
+      "at": 362.334385,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 26.963000000023385,
+      "totalMs": 13.711000000000695,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.364",
+      "at": 362.762267,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 66.39100000001008,
+      "totalMs": 17.52699999997276,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.365",
+      "at": 362.894058,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.025000000036925,
+      "totalMs": 5.8220000000233085,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.366",
+      "at": 362.894722,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.629000000013548,
+      "totalMs": 5.875000000003183,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.367",
+      "at": 363.297636,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.285999999984142,
+      "totalMs": 8.488999999997304,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.368",
+      "at": 363.297982,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.727000000007592,
+      "totalMs": 8.314999999981865,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.369",
+      "at": 363.298357,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.601999999982127,
+      "totalMs": 8.775000000014188,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.370",
+      "at": 363.300049,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 10.400000000004184,
+      "totalMs": 8.487000000002354,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.371",
+      "at": 363.318816,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.070999999996275,
+      "totalMs": 3.8289999999960855,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.372",
+      "at": 363.319311,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.845999999995911,
+      "totalMs": 5.04399999999805,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.373",
+      "at": 364.479192,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.683000000000902,
+      "totalMs": 59.62299999998777,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.374",
+      "at": 364.479755,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.854000000014366,
+      "totalMs": 27.87599999999202,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.377",
+      "at": 365.988172,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.046999999967284,
+      "totalMs": 47.591999999951895,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.378",
+      "at": 365.991262,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 53.20399999999381,
+      "totalMs": 39.2879999999991,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.379",
+      "at": 366.1086,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.465999999951237,
+      "totalMs": 9.692999999970198,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.380",
+      "at": 367.491782,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.77199999999857,
+      "totalMs": 11.5690000000086,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.381",
+      "at": 367.492323,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.726000000006024,
+      "totalMs": 30.332999999984622,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.382",
+      "at": 367.492656,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 39.631999999983236,
+      "totalMs": 30.27500000001737,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.383",
+      "at": 367.506666,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 26.658999999995103,
+      "totalMs": 20.434000000022934,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.384",
+      "at": 367.547338,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.62699999996221,
+      "totalMs": 29.538000000002285,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.385",
+      "at": 368.801615,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 18.452999999965414,
+      "totalMs": 4.80899999996609,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.386",
+      "at": 368.803381,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.937999999981912,
+      "totalMs": 6.112999999970725,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.387",
+      "at": 369.211638,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.120000000028995,
+      "totalMs": 5.296999999984564,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.388",
+      "at": 369.212313,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.445000000004256,
+      "totalMs": 5.743999999992866,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.389",
+      "at": 369.213146,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.065999999994801,
+      "totalMs": 7.2309999999902175,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.390",
+      "at": 369.215081,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 18.191000000001623,
+      "totalMs": 9.986000000026252,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.391",
+      "at": 369.232201,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.347000000038406,
+      "totalMs": 5.561000000000149,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.392",
+      "at": 369.232553,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.2309999999902175,
+      "totalMs": 5.955000000028576,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.393",
+      "at": 369.963606,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.117999999949006,
+      "totalMs": 55.71599999996124,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.394",
+      "at": 369.965803,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 67.73900000001731,
+      "totalMs": 33.78200000003062,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.395",
+      "at": 369.983871,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 80.99199999998064,
+      "totalMs": 41.75499999996646,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.397",
+      "at": 371.017651,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.275999999982105,
+      "totalMs": 21.644999999978154,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.398",
+      "at": 371.018093,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.457999999977346,
+      "totalMs": 24.39499999996997,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.399",
+      "at": 371.033447,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 26.85699999994995,
+      "totalMs": 11.889999999993961,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.400",
+      "at": 371.452809,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 67.27499999999509,
+      "totalMs": 17.063000000007378,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.401",
+      "at": 371.575658,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.45500000000311,
+      "totalMs": 6.446000000039476,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.402",
+      "at": 371.576134,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.79799999998977,
+      "totalMs": 6.305999999995038,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.403",
+      "at": 371.995753,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.083000000008724,
+      "totalMs": 4.453000000012253,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.404",
+      "at": 371.99612,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.273999999981243,
+      "totalMs": 4.391999999995733,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.405",
+      "at": 371.996462,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.98899999999503,
+      "totalMs": 7.296999999994114,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.406",
+      "at": 372.00058,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 7.4149999999804095,
+      "totalMs": 6.401999999980035,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.407",
+      "at": 372.017305,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.389999999953488,
+      "totalMs": 3.621999999950276,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.408",
+      "at": 372.017621,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.2669999999798165,
+      "totalMs": 3.6690000000021428,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.409",
+      "at": 376.19021,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.904000000001815,
+      "totalMs": 57.70000000001119,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.410",
+      "at": 376.190713,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.338999999997668,
+      "totalMs": 28.036999999983436,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.412",
+      "at": 377.665935,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 30.020000000035907,
+      "totalMs": 53.14400000003161,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.413",
+      "at": 377.666475,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.05799999998726,
+      "totalMs": 33.16100000000688,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.414",
+      "at": 377.791193,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 13.78999999997177,
+      "totalMs": 12.439999999969586,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.415",
+      "at": 379.19125,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 22.575999999958185,
+      "totalMs": 13.691999999991822,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.416",
+      "at": 379.193396,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 31.571999999982836,
+      "totalMs": 33.58500000001641,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.417",
+      "at": 379.194746,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 49.993999999969674,
+      "totalMs": 37.35399999999345,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.418",
+      "at": 379.207213,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 37.20699999996668,
+      "totalMs": 22.12999999994736,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.419",
+      "at": 379.256679,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.397999999976037,
+      "totalMs": 10.100999999963278,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.420",
+      "at": 380.508181,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.04400000004125,
+      "totalMs": 2.4420000000304753,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.421",
+      "at": 380.509472,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.6849999999813,
+      "totalMs": 4.935999999986507,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.422",
+      "at": 380.929702,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.397999999999683,
+      "totalMs": 9.943999999961761,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.423",
+      "at": 380.930103,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.63800000001902,
+      "totalMs": 10.143000000027769,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.424",
+      "at": 380.930644,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.702000000004318,
+      "totalMs": 10.202000000049338,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.425",
+      "at": 380.932831,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 24.213999999972202,
+      "totalMs": 14.283999999975094,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.426",
+      "at": 380.951516,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.84899999995514,
+      "totalMs": 3.2169999999496213,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.427",
+      "at": 380.951938,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.56499999999005,
+      "totalMs": 3.1979999999975917,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.428",
+      "at": 381.394919,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.0289999999695283,
+      "totalMs": 2.4980000000027758,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.429",
+      "at": 381.402359,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.235999999991691,
+      "totalMs": 3.647000000000844,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.430",
+      "at": 381.402702,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.113000000018019,
+      "totalMs": 3.470000000049822,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.431",
+      "at": 381.670739,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 29.09999999997126,
+      "totalMs": 68.30599999995002,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.432",
+      "at": 381.671326,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 25.947999999971216,
+      "totalMs": 38.4239999999636,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.433",
+      "at": 381.6836,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 70.22299999999859,
+      "totalMs": 38.54400000000169,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.435",
+      "at": 382.718603,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.27900000005502,
+      "totalMs": 29.062000000010357,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.436",
+      "at": 382.719106,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 40.10399999998526,
+      "totalMs": 31.86399999998457,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.437",
+      "at": 382.73249,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 27.35699999999497,
+      "totalMs": 22.341000000039912,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.438",
+      "at": 383.164472,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 77.02699999998686,
+      "totalMs": 15.876999999989039,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.439",
+      "at": 383.331093,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.056999999984782,
+      "totalMs": 11.500000000012278,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.440",
+      "at": 383.332705,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.704000000047017,
+      "totalMs": 10.179000000050564,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.441",
+      "at": 383.735635,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.360999999988962,
+      "totalMs": 5.605000000002747,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.442",
+      "at": 383.736202,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.052000000030148,
+      "totalMs": 5.8989999999994325,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.443",
+      "at": 383.736616,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.77100000000064,
+      "totalMs": 7.4569999999880565,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.444",
+      "at": 383.740481,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 20.254000000022643,
+      "totalMs": 7.8920000000266555,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.445",
+      "at": 383.755613,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.297000000017761,
+      "totalMs": 2.506000000039421,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.446",
+      "at": 383.756629,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.487000000016451,
+      "totalMs": 4.357000000027256,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.447",
+      "at": 384.934584,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 23.29000000003134,
+      "totalMs": 47.708000000000084,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.448",
+      "at": 384.935251,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.353000000033262,
+      "totalMs": 26.371999999980744,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.450",
+      "at": 386.288802,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 46.412000000032094,
+      "totalMs": 67.15600000001132,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.451",
+      "at": 386.289325,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 32.13399999998501,
+      "totalMs": 35.11299999996709,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.452",
+      "at": 386.411978,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.98100000002978,
+      "totalMs": 19.164000000046144,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.453",
+      "at": 387.7884,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.58699999995406,
+      "totalMs": 16.7449999999576,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.454",
+      "at": 387.789172,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 35.460999999997966,
+      "totalMs": 37.7550000000042,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.455",
+      "at": 387.78951,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 58.29599999998436,
+      "totalMs": 40.881000000013046,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.456",
+      "at": 387.801423,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 47.09800000000541,
+      "totalMs": 34.41400000002659,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.457",
+      "at": 387.859482,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.584999999958654,
+      "totalMs": 11.283999999989192,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.458",
+      "at": 389.084398,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.60499999996091,
+      "totalMs": 6.892999999990934,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.459",
+      "at": 389.085194,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 26.175000000023374,
+      "totalMs": 8.78499999998894,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.460",
+      "at": 389.494696,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.895000000004984,
+      "totalMs": 7.300000000043383,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.461",
+      "at": 389.495078,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.734000000013566,
+      "totalMs": 7.330000000024484,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.462",
+      "at": 389.495427,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.891999999974814,
+      "totalMs": 8.78099999999904,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.463",
+      "at": 389.496714,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 13.93799999999601,
+      "totalMs": 11.347000000000662,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.464",
+      "at": 389.518481,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.3039999999764404,
+      "totalMs": 6.185000000016316,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.465",
+      "at": 389.518851,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.441000000014355,
+      "totalMs": 8.531000000004951,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.466",
+      "at": 390.23749,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.788000000014563,
+      "totalMs": 57.749999999998636,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.467",
+      "at": 390.238261,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 68.73999999999114,
+      "totalMs": 41.64799999995239,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.468",
+      "at": 390.247749,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 94.76000000000795,
+      "totalMs": 60.663999999974294,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.470",
+      "at": 391.21567,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 53.516000000001895,
+      "totalMs": 23.44199999998864,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.471",
+      "at": 391.216146,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 53.33899999999403,
+      "totalMs": 25.695000000041546,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.472",
+      "at": 391.231586,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 38.10500000003003,
+      "totalMs": 19.35800000001109,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.473",
+      "at": 391.680545,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 66.23200000001361,
+      "totalMs": 18.818000000010215,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.474",
+      "at": 391.835621,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 13.086999999984528,
+      "totalMs": 3.7370000000009895,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.475",
+      "at": 391.836287,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 12.966999999946438,
+      "totalMs": 6.421999999986383,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.476",
+      "at": 392.248152,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.555999999975029,
+      "totalMs": 6.016999999985728,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.477",
+      "at": 392.248613,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.320000000002437,
+      "totalMs": 7.379000000014457,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.478",
+      "at": 392.249001,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.89799999999741,
+      "totalMs": 9.495999999955984,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.479",
+      "at": 392.252329,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 23.07300000001078,
+      "totalMs": 11.542000000019925,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.480",
+      "at": 392.270325,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.136000000002696,
+      "totalMs": 6.235000000003765,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.481",
+      "at": 392.270642,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.090000000005148,
+      "totalMs": 6.061999999985801,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.482",
+      "at": 393.431988,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 28.480000000001837,
+      "totalMs": 52.181000000018685,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.483",
+      "at": 393.432491,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 27.72799999996778,
+      "totalMs": 28.98099999998749,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.485",
+      "at": 394.737721,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 44.07399999996642,
+      "totalMs": 62.34799999998586,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.486",
+      "at": 394.738595,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 25.651000000038948,
+      "totalMs": 28.993000000014035,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.487",
+      "at": 394.854751,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.81599999995342,
+      "totalMs": 11.680999999953201,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.488",
+      "at": 396.222652,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.202000000040243,
+      "totalMs": 20.18100000003642,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.489",
+      "at": 396.2233,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.50400000003174,
+      "totalMs": 46.668000000011034,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.490",
+      "at": 396.223664,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 41.768999999987955,
+      "totalMs": 42.00700000001234,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.491",
+      "at": 396.232807,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 33.364000000005944,
+      "totalMs": 34.13600000004635,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.492",
+      "at": 396.276056,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 21.269000000017968,
+      "totalMs": 23.324000000002343,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.493",
+      "at": 397.526335,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.01300000001038,
+      "totalMs": 6.531999999992877,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.494",
+      "at": 397.526737,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.856999999949494,
+      "totalMs": 7.845999999972264,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.495",
+      "at": 397.944607,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.163999999974749,
+      "totalMs": 4.86799999998766,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.496",
+      "at": 397.944932,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.26000000001659,
+      "totalMs": 6.221999999979744,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.497",
+      "at": 397.945275,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.050000000035197,
+      "totalMs": 7.783000000017637,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.498",
+      "at": 397.946707,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 20.11099999998578,
+      "totalMs": 9.486999999978707,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.499",
+      "at": 397.964589,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.629000000008546,
+      "totalMs": 5.10500000001457,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.500",
+      "at": 397.964965,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.6679999999669235,
+      "totalMs": 4.878000000019256,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.501",
+      "at": 398.699993,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.27400000000489,
+      "totalMs": 50.83799999999883,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.502",
+      "at": 398.700669,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 61.60899999997582,
+      "totalMs": 39.56799999997429,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.503",
+      "at": 398.70966,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 99.09300000003896,
+      "totalMs": 62.62400000002799,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.505",
+      "at": 399.666907,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 43.20799999999281,
+      "totalMs": 18.840000000011514,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.506",
+      "at": 399.668813,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 42.24499999997988,
+      "totalMs": 15.764999999987594,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.507",
+      "at": 399.689368,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 23.177999999973053,
+      "totalMs": 6.0869999999795255,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.508",
+      "at": 400.111332,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 67.39599999997381,
+      "totalMs": 16.40199999997094,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.509",
+      "at": 400.297925,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 20.137999999974454,
+      "totalMs": 7.647999999960575,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.510",
+      "at": 400.298415,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.905000000051132,
+      "totalMs": 8.981000000005679,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.511",
+      "at": 400.710985,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.346000000026834,
+      "totalMs": 7.459999999980482,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.512",
+      "at": 400.711376,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.393000000021857,
+      "totalMs": 7.518000000004577,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.513",
+      "at": 400.71175,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.190000000022792,
+      "totalMs": 8.98499999999558,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.514",
+      "at": 400.713048,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 19.592999999986205,
+      "totalMs": 10.540999999989253,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.515",
+      "at": 400.731445,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.365000000016607,
+      "totalMs": 6.0330000000021755,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.516",
+      "at": 400.731857,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 6.1289999999871725,
+      "totalMs": 6.561000000033346,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.517",
+      "at": 401.909898,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.81799999998202,
+      "totalMs": 55.57099999998627,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.518",
+      "at": 401.910408,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 22.479999999973188,
+      "totalMs": 28.16699999999628,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.520",
+      "at": 403.23578,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 24.636000000043623,
+      "totalMs": 57.983000000035645,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.521",
+      "at": 403.240404,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 61.12100000001419,
+      "totalMs": 46.22999999998001,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.522",
+      "at": 403.356526,
+      "url": "/api/universe/jspace?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.14100000004737,
+      "totalMs": 18.93400000000156,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.523",
+      "at": 404.75728,
+      "url": "/api/universe/jspace?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 22.644000000013875,
+      "totalMs": 22.160000000042146,
+      "encodedBytes": 52731
+    },
+    {
+      "requestId": "3927.524",
+      "at": 404.758147,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 33.829999999966276,
+      "totalMs": 37.46300000000247,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.525",
+      "at": 404.758718,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 45.06800000001476,
+      "totalMs": 35.76200000003382,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.526",
+      "at": 404.769782,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 43.14499999998134,
+      "totalMs": 31.150999999965734,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.527",
+      "at": 404.821775,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 11.33399999997664,
+      "totalMs": 12.409999999988486,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.528",
+      "at": 406.044562,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 22.590000000036525,
+      "totalMs": 2.280000000041582,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.529",
+      "at": 406.047919,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 19.472000000007483,
+      "totalMs": 4.06500000002552,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.530",
+      "at": 406.4609,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.625000000004547,
+      "totalMs": 4.445000000032451,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.531",
+      "at": 406.46129,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.473999999987882,
+      "totalMs": 7.44299999996656,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.532",
+      "at": 406.461935,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 10.005000000035125,
+      "totalMs": 6.9890000000327746,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.533",
+      "at": 406.46522,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 23.27300000001742,
+      "totalMs": 9.128000000032443,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.534",
+      "at": 406.483814,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.76100000003089,
+      "totalMs": 8.825999999999112,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.535",
+      "at": 406.484304,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.50200000000268,
+      "totalMs": 14.319000000000415,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.536",
+      "at": 407.230269,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 17.91299999996454,
+      "totalMs": 51.834999999982756,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "3927.537",
+      "at": 407.231969,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 61.25400000001946,
+      "totalMs": 47.638000000006286,
+      "encodedBytes": 745086
+    },
+    {
+      "requestId": "3927.538",
+      "at": 407.24872,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 92.73999999999205,
+      "totalMs": 60.69600000000719,
+      "encodedBytes": 641144
+    },
+    {
+      "requestId": "3927.540",
+      "at": 408.215055,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 50.88399999999638,
+      "totalMs": 34.930999999971846,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.541",
+      "at": 408.215556,
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 50.815000000000055,
+      "totalMs": 37.8210000000081,
+      "encodedBytes": 3325
+    },
+    {
+      "requestId": "3927.542",
+      "at": 408.229183,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 37.399000000050364,
+      "totalMs": 28.40800000001309,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.543",
+      "at": 408.679541,
+      "url": "/api/universe?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 68.06800000003932,
+      "totalMs": 19.746000000054664,
+      "encodedBytes": 544091
+    },
+    {
+      "requestId": "3927.544",
+      "at": 408.847558,
+      "url": "/api/timeline?limit=5&character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 14.207999999996446,
+      "totalMs": 4.09100000001672,
+      "encodedBytes": 662
+    },
+    {
+      "requestId": "3927.545",
+      "at": 408.848895,
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 13.103000000000975,
+      "totalMs": 5.429999999989832,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.546",
+      "at": 409.260796,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.204999999951724,
+      "totalMs": 5.2069999999844185,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.547",
+      "at": 409.261166,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.5670000000041,
+      "totalMs": 6.296000000020285,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.548",
+      "at": 409.261627,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.613999999999123,
+      "totalMs": 8.925000000033378,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.549",
+      "at": 409.263192,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 21.168999999986227,
+      "totalMs": 15.687000000013995,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "3927.550",
+      "at": 409.280884,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 8.439000000009855,
+      "totalMs": 4.566000000011172,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.551",
+      "at": 409.281647,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.87699999995084,
+      "totalMs": 3.9299999999684587,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "3927.552",
+      "at": 411.394933,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.5310000000094988,
+      "totalMs": 2.9780000000414475,
+      "encodedBytes": 4523
+    },
+    {
+      "requestId": "3927.553",
+      "at": 411.403059,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.46199999998953,
+      "totalMs": 5.153000000007069,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "3927.554",
+      "at": 411.403409,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 5.515000000002601,
+      "totalMs": 4.974000000004253,
+      "encodedBytes": 620
+    }
+  ],
+  "errors": [],
+  "startup": {
+    "rendererMetrics": {
+      "Timestamp": 233.389088,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 6,
+      "Frames": 5,
+      "JSEventListeners": 702,
+      "LayoutObjects": 584,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 631,
+      "Resources": 17,
+      "ContextLifecycleStateObservers": 14,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 6,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 1,
+      "ArrayBufferContents": 4,
+      "LayoutCount": 10,
+      "RecalcStyleCount": 24,
+      "LayoutDuration": 0.081794,
+      "RecalcStyleDuration": 0.093925,
+      "DevToolsCommandDuration": 0.011976,
+      "ScriptDuration": 0.695337,
+      "V8CompileDuration": 0.004255,
+      "TaskDuration": 1.335674,
+      "TaskOtherDuration": 0.448387,
+      "ThreadTime": 0.255922,
+      "ProcessTime": 0.56,
+      "JSHeapUsedSize": 6248880,
+      "JSHeapTotalSize": 9961472,
+      "FirstMeaningfulPaint": 230.662285,
+      "DomContentLoaded": 230.601452,
+      "NavigationStart": 230.048307
+    },
+    "navigation": [
+      {
+        "name": "http://127.0.0.1:18690/#overview",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 554.6000000000058,
+        "navigationId": 2105,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 1.3000000000174623,
+        "domainLookupStart": 1.3000000000174623,
+        "domainLookupEnd": 1.3000000000174623,
+        "connectStart": 1.3000000000174623,
+        "secureConnectionStart": 0,
+        "connectEnd": 1.3000000000174623,
+        "requestStart": 4.800000000017462,
+        "responseStart": 21.20000000001164,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 21.20000000001164,
+        "responseEnd": 32,
+        "transferSize": 42044,
+        "encodedBodySize": 41744,
+        "decodedBodySize": 41744,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 552.8999999999942,
+        "domContentLoadedEventStart": 553,
+        "domContentLoadedEventEnd": 553,
+        "domComplete": 554.5,
+        "loadEventStart": 554.6000000000058,
+        "loadEventEnd": 554.6000000000058,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {}
+      }
+    ],
+    "resources": [
+      {
+        "url": "/assets/index-BnBpgIpV.css",
+        "duration": 63.70000000001164,
+        "transferSize": 252201,
+        "decodedBodySize": 251901
+      },
+      {
+        "url": "/assets/page-CnUOy8A_.css",
+        "duration": 65.79999999998836,
+        "transferSize": 294683,
+        "decodedBodySize": 294383
+      },
+      {
+        "url": "/assets/layout-segment-context-F8na14EU.js",
+        "duration": 54.40000000002328,
+        "transferSize": 588,
+        "decodedBodySize": 288
+      },
+      {
+        "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+        "duration": 56.70000000001164,
+        "transferSize": 994,
+        "decodedBodySize": 694
+      },
+      {
+        "url": "/assets/index-BK3v5X-6.js",
+        "duration": 59.5,
+        "transferSize": 81046,
+        "decodedBodySize": 80746
+      },
+      {
+        "url": "/assets/framework-CXnKph_e.js",
+        "duration": 65.5,
+        "transferSize": 190105,
+        "decodedBodySize": 189805
+      },
+      {
+        "url": "/assets/page-VWkA-JTO.js",
+        "duration": 106.30000000001746,
+        "transferSize": 1371276,
+        "decodedBodySize": 1370976
+      }
+    ]
+  },
+  "builtAssetHashes": {
+    "/assets/index-BnBpgIpV.css": "d4a6e37a2893c9aac087191f83dd4bac25fab02140a9a2432a6a804fd7a76214",
+    "/assets/page-CnUOy8A_.css": "844c1a56da777e3e81487e8e8348fa586c9b5f32004716d38af6298cd4f353af",
+    "/assets/layout-segment-context-F8na14EU.js": "fffd2317d24d522f271586db5228f3671a9483453a91125269135dfbf6d606e9",
+    "/assets/rolldown-runtime-S-ySWqyJ.js": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+    "/assets/index-BK3v5X-6.js": "6456fae959f4c2a4240b1bf092a583889c1441f0e9106576552dfa69ab4f8ef8",
+    "/assets/framework-CXnKph_e.js": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12",
+    "/assets/page-VWkA-JTO.js": "99755df2c040ac84baa180f98d664f19d9219cdebc48ea830a48a3e4e432e99d"
+  },
+  "retentionMethod": {
+    "warmupCycles": 2,
+    "measuredCycles": 12,
+    "batches": 3,
+    "cyclesPerBatch": 4,
+    "scope": "browser main renderer only; no RSS or backend retained-memory claim",
+    "gcTiming": "All explicit GC after replay timed samples, at quiescent Overview checkpoints only",
+    "expectedStable": "Global window/document listener signatures; no map/replay DOM on Overview; no universe requests after scoped event while unmounted. Browser internal cache growth may remain."
+  },
+  "eventSourceRequests": [
+    {
+      "requestId": "3927.24",
+      "at": 231.45399,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.850999999997839
+    }
+  ],
+  "externalFetches": [],
+  "blockedBrowserExternalAttempts": [],
+  "controls": {
+    "successfulBrowserExternalResponses": 0,
+    "rendererExceptions": 0,
+    "deniedBackendFetchAttempts": 0
+  },
+  "endedAt": "2026-09-30T13:05:02.307Z"
+}

@@ -1,0 +1,616 @@
+﻿2026-09-30T12:39:23.7153080Z Current runner version: '2.337.0'
+2026-09-30T12:39:23.7209828Z ##[group]Runner Image Provisioner
+2026-09-30T12:39:23.7231731Z Hosted Compute Agent
+2026-09-30T12:39:23.7232865Z Version: 20260828.587
+2026-09-30T12:39:23.7234116Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-30T12:39:23.7235355Z Build Date: 2026-08-28T16:44:25Z
+2026-09-30T12:39:23.7237076Z Worker ID: {bcc259fe-45a4-47ac-9a28-42c674ebe317}
+2026-09-30T12:39:23.7238341Z Azure Region: centralus
+2026-09-30T12:39:23.7239306Z ##[endgroup]
+2026-09-30T12:39:23.7242117Z ##[group]Operating System
+2026-09-30T12:39:23.7243232Z Ubuntu
+2026-09-30T12:39:23.7244330Z 24.04.5
+2026-09-30T12:39:23.7245347Z LTS
+2026-09-30T12:39:23.7246306Z ##[endgroup]
+2026-09-30T12:39:23.7247481Z ##[group]Runner Image
+2026-09-30T12:39:23.7248612Z Image: ubuntu-24.04
+2026-09-30T12:39:23.7249644Z Version: 20260920.314.1
+2026-09-30T12:39:23.7272414Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-30T12:39:23.7275498Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260920.314
+2026-09-30T12:39:23.7277308Z ##[endgroup]
+2026-09-30T12:39:23.7279452Z ##[group]GITHUB_TOKEN Permissions
+2026-09-30T12:39:23.7282847Z Contents: read
+2026-09-30T12:39:23.7284049Z Metadata: read
+2026-09-30T12:39:23.7285120Z ##[endgroup]
+2026-09-30T12:39:23.7288517Z Secret source: Actions
+2026-09-30T12:39:23.7290252Z Cache mode: write
+2026-09-30T12:39:23.7312251Z Prepare workflow directory
+2026-09-30T12:39:23.8322365Z Prepare all required actions
+2026-09-30T12:39:23.8456425Z Getting action download info
+2026-09-30T12:39:24.1705367Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-30T12:39:24.2801146Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-09-30T12:39:24.3712476Z Download action repository 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-09-30T12:39:24.5743667Z Complete job name: measure
+2026-09-30T12:39:24.6801241Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-30T12:39:24.6803216Z with:
+2026-09-30T12:39:24.6803910Z   path: checkpoint
+2026-09-30T12:39:24.6804677Z   persist-credentials: false
+2026-09-30T12:39:24.6805558Z   repository: BunBajiro/kairo
+2026-09-30T12:39:24.6813686Z   token: ***
+2026-09-30T12:39:24.6814455Z   ssh-strict: true
+2026-09-30T12:39:24.6815216Z   ssh-user: git
+2026-09-30T12:39:24.6815925Z   clean: true
+2026-09-30T12:39:24.6816826Z   sparse-checkout-cone-mode: true
+2026-09-30T12:39:24.6817712Z   fetch-depth: 1
+2026-09-30T12:39:24.6818427Z   fetch-tags: false
+2026-09-30T12:39:24.6819159Z   show-progress: true
+2026-09-30T12:39:24.6819909Z   lfs: false
+2026-09-30T12:39:24.6820594Z   submodules: false
+2026-09-30T12:39:24.6821587Z   set-safe-directory: true
+2026-09-30T12:39:24.6822468Z   allow-unsafe-pr-checkout: false
+2026-09-30T12:39:24.6823861Z ##[endgroup]
+2026-09-30T12:39:24.8391957Z Syncing repository: BunBajiro/kairo
+2026-09-30T12:39:24.8419224Z ##[group]Getting Git version info
+2026-09-30T12:39:24.8420756Z Working directory is '/home/runner/work/kairo/kairo/checkpoint'
+2026-09-30T12:39:24.8423554Z [command]/usr/bin/git version
+2026-09-30T12:39:24.8593149Z git version 2.55.0
+2026-09-30T12:39:24.8622704Z ##[endgroup]
+2026-09-30T12:39:24.8648693Z Temporarily overriding HOME='/home/runner/work/_temp/cc5f6b7a-a96b-4e70-9c62-c38afe963efc' before making global git config changes
+2026-09-30T12:39:24.8666588Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-30T12:39:24.8830227Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/checkpoint
+2026-09-30T12:39:24.8842241Z ##[group]Determining repository object format
+2026-09-30T12:39:24.8846532Z ##[endgroup]
+2026-09-30T12:39:24.8847887Z ##[group]Initializing the repository
+2026-09-30T12:39:24.8850311Z [command]/usr/bin/git init /home/runner/work/kairo/kairo/checkpoint
+2026-09-30T12:39:24.8954130Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-30T12:39:24.8972349Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-30T12:39:24.8982697Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-30T12:39:24.8984099Z hint: call:
+2026-09-30T12:39:24.8984944Z hint:
+2026-09-30T12:39:24.8985912Z hint: 	git config --global init.defaultBranch <name>
+2026-09-30T12:39:24.8987069Z hint:
+2026-09-30T12:39:24.8988173Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-30T12:39:24.8989976Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-30T12:39:24.8991869Z hint:
+2026-09-30T12:39:24.8992752Z hint: 	git branch -m <name>
+2026-09-30T12:39:24.8993677Z hint:
+2026-09-30T12:39:24.8994830Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-30T12:39:24.8996812Z Initialized empty Git repository in /home/runner/work/kairo/kairo/checkpoint/.git/
+2026-09-30T12:39:24.8999844Z [command]/usr/bin/git remote add origin https://github.com/BunBajiro/kairo
+2026-09-30T12:39:24.9079691Z ##[endgroup]
+2026-09-30T12:39:24.9081176Z ##[group]Disabling automatic garbage collection
+2026-09-30T12:39:24.9085145Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-30T12:39:24.9327816Z ##[endgroup]
+2026-09-30T12:39:24.9332687Z ##[group]Setting up auth
+2026-09-30T12:39:24.9333873Z Removing SSH command configuration
+2026-09-30T12:39:24.9335502Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-30T12:39:24.9348196Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-30T12:39:24.9916258Z Removing HTTP extra header
+2026-09-30T12:39:24.9918642Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-30T12:39:24.9926059Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-30T12:39:25.0171785Z Removing includeIf entries pointing to credentials config files
+2026-09-30T12:39:25.0175309Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-30T12:39:25.0215408Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-30T12:39:25.0479817Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-30T12:39:25.0525421Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path /home/runner/work/_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:25.0564546Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:25.0605878Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/checkpoint/.git.path /github/runner_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:25.0649875Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path /github/runner_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:25.0686886Z ##[endgroup]
+2026-09-30T12:39:25.0690626Z ##[group]Fetching the repository
+2026-09-30T12:39:25.0695200Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4d9366c3889c0d9df49dd2022e46d92c7e5b443a:refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+2026-09-30T12:39:26.3967077Z From https://github.com/BunBajiro/kairo
+2026-09-30T12:39:26.4083733Z  * [new ref]         4d9366c3889c0d9df49dd2022e46d92c7e5b443a -> origin/perf/rc16-checkpoint-v0.8.0
+2026-09-30T12:39:26.4090594Z [command]/usr/bin/git branch --list --remote origin/perf/rc16-checkpoint-v0.8.0
+2026-09-30T12:39:26.4093316Z   origin/perf/rc16-checkpoint-v0.8.0
+2026-09-30T12:39:26.4097529Z [command]/usr/bin/git rev-parse refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+2026-09-30T12:39:26.4099766Z 4d9366c3889c0d9df49dd2022e46d92c7e5b443a
+2026-09-30T12:39:26.4104506Z ##[endgroup]
+2026-09-30T12:39:26.4106870Z ##[group]Determining the checkout info
+2026-09-30T12:39:26.4109558Z ##[endgroup]
+2026-09-30T12:39:26.4111249Z [command]/usr/bin/git sparse-checkout disable
+2026-09-30T12:39:26.4168611Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-30T12:39:26.4203313Z ##[group]Checking out the ref
+2026-09-30T12:39:26.4207792Z [command]/usr/bin/git checkout --progress --force -B perf/rc16-checkpoint-v0.8.0 refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+2026-09-30T12:39:26.5779103Z Switched to a new branch 'perf/rc16-checkpoint-v0.8.0'
+2026-09-30T12:39:26.5793385Z branch 'perf/rc16-checkpoint-v0.8.0' set up to track 'origin/perf/rc16-checkpoint-v0.8.0'.
+2026-09-30T12:39:26.5801787Z ##[endgroup]
+2026-09-30T12:39:26.5864252Z [command]/usr/bin/git log -1 --format=%H
+2026-09-30T12:39:26.5890320Z 4d9366c3889c0d9df49dd2022e46d92c7e5b443a
+2026-09-30T12:39:26.5906926Z ##[group]Removing auth
+2026-09-30T12:39:26.5916784Z Removing SSH command configuration
+2026-09-30T12:39:26.5919876Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-30T12:39:26.5965272Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-30T12:39:26.6372469Z Removing HTTP extra header
+2026-09-30T12:39:26.6374245Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-30T12:39:26.6426159Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-30T12:39:26.6671202Z Removing includeIf entries pointing to credentials config files
+2026-09-30T12:39:26.6674196Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-30T12:39:26.6708697Z includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path
+2026-09-30T12:39:26.6710119Z includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path
+2026-09-30T12:39:26.6719150Z includeif.gitdir:/github/workspace/checkpoint/.git.path
+2026-09-30T12:39:26.6720544Z includeif.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path
+2026-09-30T12:39:26.6723213Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path
+2026-09-30T12:39:26.6752948Z /home/runner/work/_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:26.6773833Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-f6bab75c\-7eb9\-4e26\-98c1\-d0d022215acd\.config
+2026-09-30T12:39:26.6805924Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path
+2026-09-30T12:39:26.6844588Z /home/runner/work/_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:26.6853516Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-f6bab75c\-7eb9\-4e26\-98c1\-d0d022215acd\.config
+2026-09-30T12:39:26.6908181Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/checkpoint/.git.path
+2026-09-30T12:39:26.6982568Z /github/runner_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:26.6987748Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/checkpoint/.git.path \/github\/runner_temp\/git\-credentials\-f6bab75c\-7eb9\-4e26\-98c1\-d0d022215acd\.config
+2026-09-30T12:39:26.7026081Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path
+2026-09-30T12:39:26.7055959Z /github/runner_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config
+2026-09-30T12:39:26.7063797Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-f6bab75c\-7eb9\-4e26\-98c1\-d0d022215acd\.config
+2026-09-30T12:39:26.7104270Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-30T12:39:26.7345160Z Removing credentials config '/home/runner/work/_temp/git-credentials-f6bab75c-7eb9-4e26-98c1-d0d022215acd.config'
+2026-09-30T12:39:26.7363907Z ##[endgroup]
+2026-09-30T12:39:26.7640728Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-30T12:39:26.7641547Z with:
+2026-09-30T12:39:26.7641957Z   repository: BunBajiro/kairo
+2026-09-30T12:39:26.7642431Z   ref: 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+2026-09-30T12:39:26.7642911Z   path: kairo-v073
+2026-09-30T12:39:26.7643306Z   persist-credentials: false
+2026-09-30T12:39:26.7646094Z   token: ***
+2026-09-30T12:39:26.7646468Z   ssh-strict: true
+2026-09-30T12:39:26.7646841Z   ssh-user: git
+2026-09-30T12:39:26.7647212Z   clean: true
+2026-09-30T12:39:26.7647644Z   sparse-checkout-cone-mode: true
+2026-09-30T12:39:26.7648075Z   fetch-depth: 1
+2026-09-30T12:39:26.7648446Z   fetch-tags: false
+2026-09-30T12:39:26.7648826Z   show-progress: true
+2026-09-30T12:39:26.7649206Z   lfs: false
+2026-09-30T12:39:26.7649591Z   submodules: false
+2026-09-30T12:39:26.7649971Z   set-safe-directory: true
+2026-09-30T12:39:26.7650394Z   allow-unsafe-pr-checkout: false
+2026-09-30T12:39:26.7650824Z ##[endgroup]
+2026-09-30T12:39:26.8570207Z Syncing repository: BunBajiro/kairo
+2026-09-30T12:39:26.8586355Z ##[group]Getting Git version info
+2026-09-30T12:39:26.8591081Z Working directory is '/home/runner/work/kairo/kairo/kairo-v073'
+2026-09-30T12:39:26.8633128Z [command]/usr/bin/git version
+2026-09-30T12:39:26.8716106Z git version 2.55.0
+2026-09-30T12:39:26.8775808Z ##[endgroup]
+2026-09-30T12:39:26.8779221Z Temporarily overriding HOME='/home/runner/work/_temp/9d33f84b-1f54-4e81-a19c-c74ec615bcf5' before making global git config changes
+2026-09-30T12:39:26.8781240Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-30T12:39:26.8783340Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/kairo-v073
+2026-09-30T12:39:26.8837979Z ##[group]Determining repository object format
+2026-09-30T12:39:26.8839521Z ##[endgroup]
+2026-09-30T12:39:26.8840867Z ##[group]Initializing the repository
+2026-09-30T12:39:26.8842562Z [command]/usr/bin/git init /home/runner/work/kairo/kairo/kairo-v073
+2026-09-30T12:39:26.8912645Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-30T12:39:26.8914709Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-30T12:39:26.8932834Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-30T12:39:26.8982254Z hint: call:
+2026-09-30T12:39:26.8983340Z hint:
+2026-09-30T12:39:26.9002557Z hint: 	git config --global init.defaultBranch <name>
+2026-09-30T12:39:26.9022406Z hint:
+2026-09-30T12:39:26.9042447Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-30T12:39:26.9044172Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-30T12:39:26.9062243Z hint:
+2026-09-30T12:39:26.9082328Z hint: 	git branch -m <name>
+2026-09-30T12:39:26.9102204Z hint:
+2026-09-30T12:39:26.9122463Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-30T12:39:26.9124400Z Initialized empty Git repository in /home/runner/work/kairo/kairo/kairo-v073/.git/
+2026-09-30T12:39:26.9182538Z [command]/usr/bin/git remote add origin https://github.com/BunBajiro/kairo
+2026-09-30T12:39:26.9222751Z ##[endgroup]
+2026-09-30T12:39:26.9251227Z ##[group]Disabling automatic garbage collection
+2026-09-30T12:39:26.9272421Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-30T12:39:26.9312816Z ##[endgroup]
+2026-09-30T12:39:26.9332858Z ##[group]Setting up auth
+2026-09-30T12:39:26.9352203Z Removing SSH command configuration
+2026-09-30T12:39:26.9353689Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-30T12:39:26.9413208Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-30T12:39:26.9440112Z Removing HTTP extra header
+2026-09-30T12:39:26.9463138Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-30T12:39:26.9543748Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-30T12:39:27.0153193Z Removing includeIf entries pointing to credentials config files
+2026-09-30T12:39:27.0172486Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-30T12:39:27.0232762Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-30T12:39:27.0526560Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-30T12:39:27.0573158Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git.path /home/runner/work/_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.0633559Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.0675890Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/kairo-v073/.git.path /github/runner_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.0718796Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/kairo-v073/.git/worktrees/*.path /github/runner_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.0771091Z ##[endgroup]
+2026-09-30T12:39:27.0772956Z ##[group]Fetching the repository
+2026-09-30T12:39:27.0774856Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+2026-09-30T12:39:27.6583618Z From https://github.com/BunBajiro/kairo
+2026-09-30T12:39:27.6594678Z  * branch            239794774320fcdebaa1d76ce8a77c5c25cfc48c -> FETCH_HEAD
+2026-09-30T12:39:27.6623033Z [command]/usr/bin/git rev-parse --verify --quiet 239794774320fcdebaa1d76ce8a77c5c25cfc48c^{object}
+2026-09-30T12:39:27.6635613Z 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+2026-09-30T12:39:27.6639880Z ##[endgroup]
+2026-09-30T12:39:27.6641121Z ##[group]Determining the checkout info
+2026-09-30T12:39:27.6642771Z ##[endgroup]
+2026-09-30T12:39:27.6645965Z [command]/usr/bin/git sparse-checkout disable
+2026-09-30T12:39:27.6705709Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-30T12:39:27.6751784Z ##[group]Checking out the ref
+2026-09-30T12:39:27.6753035Z [command]/usr/bin/git checkout --progress --force 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+2026-09-30T12:39:27.6953524Z Note: switching to '239794774320fcdebaa1d76ce8a77c5c25cfc48c'.
+2026-09-30T12:39:27.6955592Z 
+2026-09-30T12:39:27.6956507Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-30T12:39:27.6957808Z changes and commit them, and you can discard any commits you make in this
+2026-09-30T12:39:27.6959057Z state without impacting any branches by switching back to a branch.
+2026-09-30T12:39:27.6959828Z 
+2026-09-30T12:39:27.6962562Z If you want to create a new branch to retain commits you create, you may
+2026-09-30T12:39:27.6963988Z do so (now or later) by using -c with the switch command. Example:
+2026-09-30T12:39:27.6967543Z 
+2026-09-30T12:39:27.6968083Z   git switch -c <new-branch-name>
+2026-09-30T12:39:27.6969128Z 
+2026-09-30T12:39:27.6969713Z Or undo this operation with:
+2026-09-30T12:39:27.6970693Z 
+2026-09-30T12:39:27.6971207Z   git switch -
+2026-09-30T12:39:27.6972348Z 
+2026-09-30T12:39:27.6973152Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-30T12:39:27.6974232Z 
+2026-09-30T12:39:27.6975100Z HEAD is now at 2397947 Merge approved Kairo 0.7.3 optimisation and database improvements (#5)
+2026-09-30T12:39:27.6978040Z ##[endgroup]
+2026-09-30T12:39:27.7022762Z [command]/usr/bin/git log -1 --format=%H
+2026-09-30T12:39:27.7056589Z 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+2026-09-30T12:39:27.7066621Z ##[group]Removing auth
+2026-09-30T12:39:27.7067511Z Removing SSH command configuration
+2026-09-30T12:39:27.7072149Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-30T12:39:27.7110878Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-30T12:39:27.7363475Z Removing HTTP extra header
+2026-09-30T12:39:27.7364777Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-30T12:39:27.7402939Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-30T12:39:27.7646880Z Removing includeIf entries pointing to credentials config files
+2026-09-30T12:39:27.7650541Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-30T12:39:27.7682909Z includeif.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git.path
+2026-09-30T12:39:27.7691707Z includeif.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git/worktrees/*.path
+2026-09-30T12:39:27.7702591Z includeif.gitdir:/github/workspace/kairo-v073/.git.path
+2026-09-30T12:39:27.7703885Z includeif.gitdir:/github/workspace/kairo-v073/.git/worktrees/*.path
+2026-09-30T12:39:27.7706948Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git.path
+2026-09-30T12:39:27.7725335Z /home/runner/work/_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.7738340Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-ad00058e\-3b41\-4da6\-8379\-baba955baa72\.config
+2026-09-30T12:39:27.7780337Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git/worktrees/*.path
+2026-09-30T12:39:27.7810377Z /home/runner/work/_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.7832312Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/kairo-v073/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-ad00058e\-3b41\-4da6\-8379\-baba955baa72\.config
+2026-09-30T12:39:27.7873943Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/kairo-v073/.git.path
+2026-09-30T12:39:27.7919406Z /github/runner_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.7930984Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/kairo-v073/.git.path \/github\/runner_temp\/git\-credentials\-ad00058e\-3b41\-4da6\-8379\-baba955baa72\.config
+2026-09-30T12:39:27.7982259Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/kairo-v073/.git/worktrees/*.path
+2026-09-30T12:39:27.8017364Z /github/runner_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config
+2026-09-30T12:39:27.8030496Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/kairo-v073/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ad00058e\-3b41\-4da6\-8379\-baba955baa72\.config
+2026-09-30T12:39:27.8061983Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-30T12:39:27.8302764Z Removing credentials config '/home/runner/work/_temp/git-credentials-ad00058e-3b41-4da6-8379-baba955baa72.config'
+2026-09-30T12:39:27.8313712Z ##[endgroup]
+2026-09-30T12:39:27.8588729Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+2026-09-30T12:39:27.8589193Z with:
+2026-09-30T12:39:27.8589440Z   node-version: 24.19.0
+2026-09-30T12:39:27.8589717Z   check-latest: false
+2026-09-30T12:39:27.8592613Z   token: ***
+2026-09-30T12:39:27.8592913Z   package-manager-cache: true
+2026-09-30T12:39:27.8593220Z ##[endgroup]
+2026-09-30T12:39:27.9977344Z Attempting to download 24.19.0...
+2026-09-30T12:39:28.8677374Z Acquiring 24.19.0 - x64 from https://github.com/actions/node-versions/releases/download/24.19.0-30872449280/node-24.19.0-linux-x64.tar.gz
+2026-09-30T12:39:29.5335192Z Extracting ...
+2026-09-30T12:39:29.5483052Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/886972f4-2b54-4622-ac65-d6952b2797c5 -f /home/runner/work/_temp/69e20f58-4155-4dbb-8bc0-60c5ed237466
+2026-09-30T12:39:30.9334525Z Adding to the cache ...
+2026-09-30T12:39:34.4503877Z ##[group]Environment details
+2026-09-30T12:39:34.9037526Z node: v24.19.0
+2026-09-30T12:39:34.9038096Z npm: 11.17.0
+2026-09-30T12:39:34.9038421Z yarn: 1.22.22
+2026-09-30T12:39:34.9038937Z ##[endgroup]
+2026-09-30T12:39:34.9237971Z ##[group]Run python3 - <<'PY'
+2026-09-30T12:39:34.9238563Z [36;1mpython3 - <<'PY'[0m
+2026-09-30T12:39:34.9239153Z [36;1mimport datetime, hashlib, json, os, platform, shutil[0m
+2026-09-30T12:39:34.9239807Z [36;1mfrom pathlib import Path[0m
+2026-09-30T12:39:34.9240317Z [36;1mroot = Path('analysis/rc16/raw/followup')[0m
+2026-09-30T12:39:34.9240900Z [36;1mshutil.rmtree(root, ignore_errors=True)[0m
+2026-09-30T12:39:34.9241678Z [36;1mroot.mkdir(parents=True)[0m
+2026-09-30T12:39:34.9242705Z [36;1mharness = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('analysis/rc16/followup/harness').rglob('*') if p.is_file()}[0m
+2026-09-30T12:39:34.9243971Z [36;1m(root / 'github-followup-provenance.json').write_text(json.dumps({[0m
+2026-09-30T12:39:34.9244888Z [36;1m    'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),[0m
+2026-09-30T12:39:34.9246125Z [36;1m    'runUrl': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",[0m
+2026-09-30T12:39:34.9247180Z [36;1m    'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],[0m
+2026-09-30T12:39:34.9247844Z [36;1m    'harnessCommit': os.environ['GITHUB_SHA'],[0m
+2026-09-30T12:39:34.9248620Z [36;1m    'applicationCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',[0m
+2026-09-30T12:39:34.9249500Z [36;1m    'baselineCommit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',[0m
+2026-09-30T12:39:34.9250340Z [36;1m    'platform': platform.platform(), 'harnessSha256': harness,[0m
+2026-09-30T12:39:34.9252235Z [36;1m    'note': 'Fresh outputs. Sequential runtime lanes with shared flock. Original checkpoint evidence is separate. Expected-bug diagnostics are not safe-behaviour passes.'[0m
+2026-09-30T12:39:34.9276319Z [36;1m}, indent=2) + '\n')[0m
+2026-09-30T12:39:34.9276716Z [36;1mPY[0m
+2026-09-30T12:39:34.9643046Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:39:34.9643405Z ##[endgroup]
+2026-09-30T12:39:35.0193916Z ##[group]Run python3 analysis/rc16/harness/verify-source.py | tee analysis/rc16/raw/followup/source-verification.json
+2026-09-30T12:39:35.0194778Z [36;1mpython3 analysis/rc16/harness/verify-source.py | tee analysis/rc16/raw/followup/source-verification.json[0m
+2026-09-30T12:39:35.0259866Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:39:35.0260132Z ##[endgroup]
+2026-09-30T12:39:35.1038692Z {
+2026-09-30T12:39:35.1039630Z   "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+2026-09-30T12:39:35.1040466Z   "checkedFiles": 405,
+2026-09-30T12:39:35.1041483Z   "permittedInvestigationChanges": [
+2026-09-30T12:39:35.1042516Z     ".github/workflows/test-build.yml",
+2026-09-30T12:39:35.1043143Z     "AGENTS.md"
+2026-09-30T12:39:35.1043613Z   ],
+2026-09-30T12:39:35.1044038Z   "errors": []
+2026-09-30T12:39:35.1044492Z }
+2026-09-30T12:39:35.1119183Z ##[group]Run cd "$GITHUB_WORKSPACE/checkpoint"
+2026-09-30T12:39:35.1119596Z [36;1mcd "$GITHUB_WORKSPACE/checkpoint"[0m
+2026-09-30T12:39:35.1119887Z [36;1mnpm run install:ci[0m
+2026-09-30T12:39:35.1120123Z [36;1mnpm run build[0m
+2026-09-30T12:39:35.1120365Z [36;1mcd "$GITHUB_WORKSPACE/kairo-v073"[0m
+2026-09-30T12:39:35.1120658Z [36;1mnpm run install:ci[0m
+2026-09-30T12:39:35.1186195Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:39:35.1186468Z ##[endgroup]
+2026-09-30T12:39:35.2239967Z 
+2026-09-30T12:39:35.2241259Z > kairo-capsuleer-operations@0.8.0-rc.16 install:ci
+2026-09-30T12:39:35.2242826Z > bash scripts/install-ci.sh
+2026-09-30T12:39:35.2243520Z 
+2026-09-30T12:39:35.2412456Z /usr/bin/flock
+2026-09-30T12:39:35.2413126Z /usr/bin/timeout
+2026-09-30T12:39:35.2414236Z /usr/bin/curl
+2026-09-30T12:39:35.2415456Z /usr/bin/sha256sum
+2026-09-30T12:39:35.2416370Z [sites] validating writable install environment
+2026-09-30T12:39:35.3654314Z [sites] environment passed: HOME=/home/runner/work/kairo/kairo/checkpoint/.sites-runtime/home, cache=/home/runner/work/kairo/kairo/checkpoint/.sites-runtime/npm-cache
+2026-09-30T12:39:35.8614704Z [sites] downloading the complete locked vinext tarball
+2026-09-30T12:39:36.0663210Z [sites] verifying locked vinext tarball integrity
+2026-09-30T12:39:36.1232920Z [sites] network and integrity preflight passed
+2026-09-30T12:39:36.1239949Z [sites] running exactly one bounded npm ci
+2026-09-30T12:40:05.2275044Z npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+2026-09-30T12:40:05.2857750Z npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+2026-09-30T12:40:11.8173702Z 
+2026-09-30T12:40:11.8174575Z added 673 packages in 36s
+2026-09-30T12:40:11.8191056Z npm warn allow-scripts 7 packages have install scripts not yet covered by allowScripts:
+2026-09-30T12:40:11.8192719Z npm warn allow-scripts   esbuild@0.18.20 (postinstall: node install.js)
+2026-09-30T12:40:11.8196171Z npm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)
+2026-09-30T12:40:11.8208752Z npm warn allow-scripts   esbuild@0.28.0 (postinstall: node install.js)
+2026-09-30T12:40:11.8210183Z npm warn allow-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-09-30T12:40:11.8212115Z npm warn allow-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-09-30T12:40:11.8213611Z npm warn allow-scripts   workerd@1.20260515.1 (postinstall: node install.js)
+2026-09-30T12:40:11.8219631Z npm warn allow-scripts   esbuild@0.27.3 (postinstall: node install.js)
+2026-09-30T12:40:11.8220497Z npm warn allow-scripts
+2026-09-30T12:40:11.8222120Z npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+2026-09-30T12:40:11.9106501Z [sites] npm ci passed and vinext is available
+2026-09-30T12:40:12.0165832Z 
+2026-09-30T12:40:12.0166754Z > kairo-capsuleer-operations@0.8.0-rc.16 build
+2026-09-30T12:40:12.0167767Z > bash scripts/build-verified.sh
+2026-09-30T12:40:12.0168255Z 
+2026-09-30T12:40:12.0329975Z /usr/bin/timeout
+2026-09-30T12:40:12.0330695Z Running bounded vinext build...
+2026-09-30T12:40:12.3676139Z 
+2026-09-30T12:40:12.3692369Z   vinext build  (Vite 8.0.13)
+2026-09-30T12:40:12.3715696Z 
+2026-09-30T12:40:14.3400690Z [34m[1/5] analyze client references...[39m
+2026-09-30T12:40:14.3857766Z [2K
+2026-09-30T12:40:15.8470369Z transforming...✓ 132 modules transformed.
+2026-09-30T12:40:15.8704731Z rendering chunks...
+2026-09-30T12:40:15.8774666Z [32m✓ built in 1.53s[39m
+2026-09-30T12:40:15.8863495Z [34m[2/5] analyze server references...[39m
+2026-09-30T12:40:15.9084058Z [2K
+2026-09-30T12:40:17.6348087Z transforming...✓ 868 modules transformed.
+2026-09-30T12:40:17.6591560Z rendering chunks...
+2026-09-30T12:40:17.6645615Z [32m✓ built in 1.78s[39m
+2026-09-30T12:40:17.6698470Z [34m[3/5] build rsc environment...[39m
+2026-09-30T12:40:17.6869152Z [2K
+2026-09-30T12:40:18.6893537Z transforming...✓ 138 modules transformed.
+2026-09-30T12:40:18.7873463Z rendering chunks...
+2026-09-30T12:40:18.8232511Z computing gzip size...
+2026-09-30T12:40:18.8374989Z [32m✓ built in 1.17s[39m
+2026-09-30T12:40:18.8437327Z [34m[4/5] build client environment...[39m
+2026-09-30T12:40:18.8601797Z [2K
+2026-09-30T12:40:21.6276771Z transforming...✓ 2646 modules transformed.
+2026-09-30T12:40:21.8278283Z rendering chunks...
+2026-09-30T12:40:22.1230013Z computing gzip size...
+2026-09-30T12:40:22.1516534Z [33m[plugin builtin:vite-reporter] 
+2026-09-30T12:40:22.1517798Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-09-30T12:40:22.1524320Z - Using dynamic import() to code-split the application
+2026-09-30T12:40:22.1526054Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-09-30T12:40:22.1528090Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-09-30T12:40:22.1539372Z [33m[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+2026-09-30T12:40:22.1540535Z   - rsc:virtual-client-package (28%)
+2026-09-30T12:40:22.1541206Z   - vinext:jsx-in-js (20%)
+2026-09-30T12:40:22.1542080Z   - vinext:react-canary (12%)
+2026-09-30T12:40:22.1542678Z   - rsc:scan-strip (9%)
+2026-09-30T12:40:22.1543257Z   - rsc:scan-strip (5%)
+2026-09-30T12:40:22.1544189Z See https://rolldown.rs/options/checks#plugintimings for more details.
+2026-09-30T12:40:22.1545266Z [39m
+2026-09-30T12:40:22.1545752Z [32m✓ built in 3.31s[39m
+2026-09-30T12:40:22.1635287Z [34m[5/5] build ssr environment...[39m
+2026-09-30T12:40:22.1816387Z [2K
+2026-09-30T12:40:23.8962536Z transforming...✓ 879 modules transformed.
+2026-09-30T12:40:24.0858854Z rendering chunks...
+2026-09-30T12:40:24.3042459Z computing gzip size...
+2026-09-30T12:40:24.3467357Z [32m✓ built in 2.18s[39m
+2026-09-30T12:40:24.3525217Z [0m  Pre-rendering all routes (output: 'export')...
+2026-09-30T12:40:24.3973230Z [vinext] Production server for prerendering running at http://127.0.0.1:34813
+2026-09-30T12:40:24.5782830Z   Prerendered 2 routes (0 skipped).
+2026-09-30T12:40:24.5802540Z [0m
+2026-09-30T12:40:24.5812136Z   Route (app)
+2026-09-30T12:40:24.5832155Z   ─ ○ /
+2026-09-30T12:40:24.5836819Z 
+2026-09-30T12:40:24.5854189Z   ○ Static
+2026-09-30T12:40:24.5862162Z 
+2026-09-30T12:40:24.5863122Z   ○ Routes marked static were confirmed by speculative prerender (attempted render
+2026-09-30T12:40:24.5864240Z     succeeded without dynamic API usage).
+2026-09-30T12:40:24.5864883Z 
+2026-09-30T12:40:24.5865483Z   Build complete. Run `vinext start` to start the production server.
+2026-09-30T12:40:24.5866199Z 
+2026-09-30T12:40:24.7732191Z 
+2026-09-30T12:40:24.7732960Z > kairo-capsuleer-operations@0.7.3 install:ci
+2026-09-30T12:40:24.7733676Z > bash scripts/install-ci.sh
+2026-09-30T12:40:24.7733985Z 
+2026-09-30T12:40:24.7899180Z /usr/bin/flock
+2026-09-30T12:40:24.7902929Z /usr/bin/timeout
+2026-09-30T12:40:24.7903623Z /usr/bin/curl
+2026-09-30T12:40:24.7904231Z /usr/bin/sha256sum
+2026-09-30T12:40:24.7905069Z [sites] validating writable install environment
+2026-09-30T12:40:24.9143962Z [sites] environment passed: HOME=/home/runner/work/kairo/kairo/kairo-v073/.sites-runtime/home, cache=/home/runner/work/kairo/kairo/kairo-v073/.sites-runtime/npm-cache
+2026-09-30T12:40:25.3519970Z [sites] downloading the complete locked vinext tarball
+2026-09-30T12:40:25.4723881Z [sites] verifying locked vinext tarball integrity
+2026-09-30T12:40:25.5108396Z [sites] network and integrity preflight passed
+2026-09-30T12:40:25.5109439Z [sites] running exactly one bounded npm ci
+2026-09-30T12:40:51.1202744Z npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+2026-09-30T12:40:51.1597977Z npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+2026-09-30T12:40:56.7494043Z 
+2026-09-30T12:40:56.7494786Z added 673 packages in 31s
+2026-09-30T12:40:56.7511997Z npm warn allow-scripts 7 packages have install scripts not yet covered by allowScripts:
+2026-09-30T12:40:56.7513811Z npm warn allow-scripts   esbuild@0.18.20 (postinstall: node install.js)
+2026-09-30T12:40:56.7515128Z npm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)
+2026-09-30T12:40:56.7516357Z npm warn allow-scripts   esbuild@0.28.0 (postinstall: node install.js)
+2026-09-30T12:40:56.7517660Z npm warn allow-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-09-30T12:40:56.7519253Z npm warn allow-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-09-30T12:40:56.7547409Z npm warn allow-scripts   workerd@1.20260515.1 (postinstall: node install.js)
+2026-09-30T12:40:56.7553634Z npm warn allow-scripts   esbuild@0.27.3 (postinstall: node install.js)
+2026-09-30T12:40:56.7554537Z npm warn allow-scripts
+2026-09-30T12:40:56.7555896Z npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+2026-09-30T12:40:56.8460746Z [sites] npm ci passed and vinext is available
+2026-09-30T12:40:56.8553611Z ##[group]Run node analysis/rc16/followup/harness/maps-scaling.mjs diagnostics
+2026-09-30T12:40:56.8554225Z [36;1mnode analysis/rc16/followup/harness/maps-scaling.mjs diagnostics[0m
+2026-09-30T12:40:56.8554724Z [36;1mnode analysis/rc16/followup/harness/maps-scaling.mjs timings[0m
+2026-09-30T12:40:56.8555242Z [36;1mnode analysis/rc16/followup/harness/maps-scaling.mjs timings --reverse[0m
+2026-09-30T12:40:56.8621202Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:40:56.8621800Z ##[endgroup]
+2026-09-30T12:40:57.1909859Z independence-selected-1-maps verified
+2026-09-30T12:40:57.2717909Z independence-list-1-maps verified
+2026-09-30T12:40:57.3732583Z independence-selected-8-maps verified
+2026-09-30T12:40:57.5505870Z independence-list-8-maps verified
+2026-09-30T12:40:57.6963051Z independence-selected-24-maps verified
+2026-09-30T12:40:58.3189226Z independence-list-24-maps verified
+2026-09-30T12:40:58.3962850Z constant-links-list-1-maps verified
+2026-09-30T12:40:58.4927095Z constant-links-list-8-maps verified
+2026-09-30T12:40:58.6731212Z constant-links-list-24-maps verified
+2026-09-30T12:40:58.7193025Z dense-selected-0-signatures-100-links verified
+2026-09-30T12:40:58.8057791Z dense-selected-0-signatures-1000-links verified
+2026-09-30T12:40:58.8542850Z dense-selected-100-signatures-100-links verified
+2026-09-30T12:40:58.9255956Z dense-selected-100-signatures-1000-links verified
+2026-09-30T12:40:58.9885594Z dense-selected-1000-signatures-100-links verified
+2026-09-30T12:40:59.1041729Z dense-selected-1000-signatures-1000-links verified
+2026-09-30T12:40:59.1192862Z /home/runner/work/kairo/kairo/checkpoint/analysis/rc16/raw/followup/maps-diagnostics.json
+2026-09-30T12:40:59.5210983Z independence-selected-1-maps verified
+2026-09-30T12:40:59.6713937Z independence-list-1-maps verified
+2026-09-30T12:40:59.8421173Z independence-selected-8-maps verified
+2026-09-30T12:41:00.8853667Z independence-list-8-maps verified
+2026-09-30T12:41:01.2024166Z independence-selected-24-maps verified
+2026-09-30T12:41:05.5839811Z independence-list-24-maps verified
+2026-09-30T12:41:05.8429942Z constant-links-list-1-maps verified
+2026-09-30T12:41:06.3522922Z constant-links-list-8-maps verified
+2026-09-30T12:41:07.5221973Z constant-links-list-24-maps verified
+2026-09-30T12:41:07.5891293Z dense-selected-0-signatures-100-links verified
+2026-09-30T12:41:07.8186663Z dense-selected-0-signatures-1000-links verified
+2026-09-30T12:41:07.9188777Z dense-selected-100-signatures-100-links verified
+2026-09-30T12:41:08.1542949Z dense-selected-100-signatures-1000-links verified
+2026-09-30T12:41:08.3173531Z dense-selected-1000-signatures-100-links verified
+2026-09-30T12:41:08.6845337Z dense-selected-1000-signatures-1000-links verified
+2026-09-30T12:41:08.6987425Z /home/runner/work/kairo/kairo/checkpoint/analysis/rc16/raw/followup/maps-timings.json
+2026-09-30T12:41:09.4846485Z dense-selected-1000-signatures-1000-links verified
+2026-09-30T12:41:09.6686316Z dense-selected-1000-signatures-100-links verified
+2026-09-30T12:41:09.9358259Z dense-selected-100-signatures-1000-links verified
+2026-09-30T12:41:10.0709058Z dense-selected-100-signatures-100-links verified
+2026-09-30T12:41:10.3259481Z dense-selected-0-signatures-1000-links verified
+2026-09-30T12:41:10.3949144Z dense-selected-0-signatures-100-links verified
+2026-09-30T12:41:11.5963820Z constant-links-list-24-maps verified
+2026-09-30T12:41:12.0981063Z constant-links-list-8-maps verified
+2026-09-30T12:41:12.2893920Z constant-links-list-1-maps verified
+2026-09-30T12:41:16.5695522Z independence-list-24-maps verified
+2026-09-30T12:41:16.8399658Z independence-selected-24-maps verified
+2026-09-30T12:41:17.6236734Z independence-list-8-maps verified
+2026-09-30T12:41:17.7735392Z independence-selected-8-maps verified
+2026-09-30T12:41:17.8909848Z independence-list-1-maps verified
+2026-09-30T12:41:17.9933034Z independence-selected-1-maps verified
+2026-09-30T12:41:18.0046209Z /home/runner/work/kairo/kairo/checkpoint/analysis/rc16/raw/followup/maps-timings-reverse.json
+2026-09-30T12:41:18.0541093Z ##[group]Run node analysis/rc16/followup/harness/memory-runner.mjs --run all
+2026-09-30T12:41:18.0542027Z [36;1mnode analysis/rc16/followup/harness/memory-runner.mjs --run all[0m
+2026-09-30T12:41:18.0542522Z [36;1mpython3 analysis/rc16/followup/harness/memory-summarize.py[0m
+2026-09-30T12:41:18.0607133Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:41:18.0607399Z ##[endgroup]
+2026-09-30T12:41:18.2922491Z memory-residency-ordinary-v073-1.json complete
+2026-09-30T12:41:18.7099225Z memory-residency-ordinary-rc16-2.json complete
+2026-09-30T12:41:19.1156176Z memory-residency-ordinary-rc16-3.json complete
+2026-09-30T12:41:19.2579918Z memory-residency-ordinary-v073-4.json complete
+2026-09-30T12:41:19.5923478Z memory-residency-retention-v073-1.json complete
+2026-09-30T12:41:21.7671066Z memory-residency-retention-rc16-2.json complete
+2026-09-30T12:41:24.0057452Z memory-residency-retention-rc16-3.json complete
+2026-09-30T12:41:24.3439835Z memory-residency-retention-v073-4.json complete
+2026-09-30T12:41:27.2392005Z memory-sessions-timings-v073-1.json complete
+2026-09-30T12:41:30.2700355Z memory-sessions-timings-rc16-2.json complete
+2026-09-30T12:41:33.2932302Z memory-sessions-timings-rc16-3.json complete
+2026-09-30T12:41:36.4293472Z memory-sessions-timings-v073-4.json complete
+2026-09-30T12:41:37.6311179Z memory-sessions-diagnostics-v073-1.json complete
+2026-09-30T12:41:38.9109769Z memory-sessions-diagnostics-rc16-2.json complete
+2026-09-30T12:41:38.9572871Z /home/runner/work/kairo/kairo/checkpoint/analysis/rc16/raw/followup/memory-summary.json
+2026-09-30T12:41:38.9721013Z ##[group]Run flock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/restart-integrated.mjs > analysis/rc16/raw/followup/restart-integrated.json
+2026-09-30T12:41:38.9722540Z [36;1mflock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/restart-integrated.mjs > analysis/rc16/raw/followup/restart-integrated.json[0m
+2026-09-30T12:41:38.9785658Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:41:38.9785920Z ##[endgroup]
+2026-09-30T12:41:42.2966174Z ##[group]Run node analysis/rc16/followup/harness/mixed-run.mjs analysis/rc16/raw/followup/mixed
+2026-09-30T12:41:42.2967721Z [36;1mnode analysis/rc16/followup/harness/mixed-run.mjs analysis/rc16/raw/followup/mixed[0m
+2026-09-30T12:41:42.2969004Z [36;1mnode analysis/rc16/followup/harness/mixed-summary.mjs analysis/rc16/raw/followup/mixed/mixed.json[0m
+2026-09-30T12:41:42.3037604Z shell: /usr/bin/bash -e {0}
+2026-09-30T12:41:42.3037868Z ##[endgroup]
+2026-09-30T12:41:42.5307521Z MIXED quiet-1
+2026-09-30T12:42:12.3098968Z node:internal/modules/run_main:107
+2026-09-30T12:42:12.3099716Z     triggerUncaughtException(
+2026-09-30T12:42:12.3100251Z     ^
+2026-09-30T12:42:12.3100527Z 
+2026-09-30T12:42:12.3101110Z AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+2026-09-30T12:42:12.3102015Z 
+2026-09-30T12:42:12.3102243Z 0 !== 1
+2026-09-30T12:42:12.3102522Z 
+2026-09-30T12:42:12.3103410Z     at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/mixed-run.mjs:50:147
+2026-09-30T12:42:12.3105602Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+2026-09-30T12:42:12.3107710Z   generatedMessage: true,
+2026-09-30T12:42:12.3125125Z   code: 'ERR_ASSERTION',
+2026-09-30T12:42:12.3125635Z   actual: 0,
+2026-09-30T12:42:12.3126067Z   expected: 1,
+2026-09-30T12:42:12.3126517Z   operator: 'strictEqual',
+2026-09-30T12:42:12.3126988Z   diff: 'simple'
+2026-09-30T12:42:12.3127393Z }
+2026-09-30T12:42:12.3127643Z 
+2026-09-30T12:42:12.3127869Z Node.js v24.19.0
+2026-09-30T12:42:12.3383644Z ##[error]Process completed with exit code 1.
+2026-09-30T12:42:12.3467791Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-09-30T12:42:12.3468222Z with:
+2026-09-30T12:42:12.3468450Z   name: internal-rc16-followup-evidence
+2026-09-30T12:42:12.3468761Z   path: checkpoint/analysis/rc16/raw/followup/
+2026-09-30T12:42:12.3469078Z   if-no-files-found: error
+2026-09-30T12:42:12.3469312Z   retention-days: 30
+2026-09-30T12:42:12.3469529Z   compression-level: 6
+2026-09-30T12:42:12.3469743Z   overwrite: false
+2026-09-30T12:42:12.3469967Z   include-hidden-files: false
+2026-09-30T12:42:12.3470204Z   archive: true
+2026-09-30T12:42:12.3470397Z ##[endgroup]
+2026-09-30T12:42:12.5099848Z With the provided path, there will be 23 files uploaded
+2026-09-30T12:42:12.5105233Z Artifact name is valid!
+2026-09-30T12:42:12.5105977Z Root directory input is valid!
+2026-09-30T12:42:12.7946459Z Uploading artifact: internal-rc16-followup-evidence.zip
+2026-09-30T12:42:12.8003229Z Beginning upload of artifact content to blob storage
+2026-09-30T12:42:14.1147471Z Uploaded bytes 141457
+2026-09-30T12:42:14.2003254Z Finished uploading artifact content to blob storage!
+2026-09-30T12:42:14.2006303Z SHA256 digest of uploaded artifact is b303f8f2a1edcec57361192a779556289111ff0b96295c46f8191fdb066709b4
+2026-09-30T12:42:14.2007654Z Finalizing artifact upload
+2026-09-30T12:42:14.5305422Z Artifact internal-rc16-followup-evidence successfully finalized. Artifact ID 11096411503
+2026-09-30T12:42:14.5307387Z Artifact internal-rc16-followup-evidence has been successfully uploaded! Final size is 141457 bytes. Artifact ID is 11096411503
+2026-09-30T12:42:14.5309232Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/36716150075/artifacts/11096411503
+2026-09-30T12:42:14.5495230Z Post job cleanup.
+2026-09-30T12:42:14.6464222Z [command]/usr/bin/git version
+2026-09-30T12:42:14.6496411Z git version 2.55.0
+2026-09-30T12:42:14.6584661Z Temporarily overriding HOME='/home/runner/work/_temp/c47f2d8a-d513-4873-83f6-08703805fd88' before making global git config changes
+2026-09-30T12:42:14.6592616Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-30T12:42:14.6594179Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/kairo-v073
+2026-09-30T12:42:14.6634618Z Removing SSH command configuration
+2026-09-30T12:42:14.6635679Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-30T12:42:14.6727184Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-30T12:42:14.7100318Z Removing HTTP extra header
+2026-09-30T12:42:14.7102052Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-30T12:42:14.7173609Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-30T12:42:14.7659557Z Removing includeIf entries pointing to credentials config files
+2026-09-30T12:42:14.7664415Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-30T12:42:14.7762944Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-30T12:42:14.8509584Z Post job cleanup.
+2026-09-30T12:42:14.9672297Z [command]/usr/bin/git version
+2026-09-30T12:42:14.9772535Z git version 2.55.0
+2026-09-30T12:42:14.9843123Z Temporarily overriding HOME='/home/runner/work/_temp/3a5e8cad-3dae-4c5a-ac00-1415bd297f33' before making global git config changes
+2026-09-30T12:42:14.9862750Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-30T12:42:14.9864744Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/checkpoint
+2026-09-30T12:42:14.9943625Z Removing SSH command configuration
+2026-09-30T12:42:14.9944597Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-30T12:42:14.9988045Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-30T12:42:15.0347497Z Removing HTTP extra header
+2026-09-30T12:42:15.0348822Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-30T12:42:15.0403268Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-30T12:42:15.0792326Z Removing includeIf entries pointing to credentials config files
+2026-09-30T12:42:15.0814272Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-30T12:42:15.0852766Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-30T12:42:15.1330612Z Cleaning up orphan processes
+

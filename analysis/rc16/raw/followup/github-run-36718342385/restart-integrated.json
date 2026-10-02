@@ -1,0 +1,1185 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-30T13:00:45.067Z",
+  "lane": "followup-managed-restart",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "boundaries": [
+    "Actual production supervisor, real forked child processes, runtime-child lifecycle, startKairo, HTTP/core/SQLite/ESI and frontend dataset-connection coordinator.",
+    "Actual dataset service stages a coherent copied-bundled generation through an injected fixture builder; actual prepare/commit/cleanup activates it. No full archive conversion is measured.",
+    "Supported fetcher options serve synthetic public ESI/CCP responses; noSync disables live periodic collectors; a synthetic identity requires no valid credentials.",
+    "HTTP accepted writes/reads and dashboard/OBS SSE use loopback networking. This is not a browser or OBS executable test.",
+    "Bus ship observation is injected through harness IPC into the real core bus. Normal and forced-late response schedules are separate.",
+    "The late-bus scenario deliberately resolves names at actual SQLite close and permits 100 ms child-exit observation grace. It diagnoses an ownership gap, not ordinary restart timing."
+  ],
+  "scenarios": [
+    {
+      "label": "drain-accepted",
+      "completed": true,
+      "classification": "accepted-handler-drain-and-reconnect-controls-passed",
+      "assertionsPassed": true,
+      "acceptedGoalStatus": 201,
+      "acceptedReadStatus": 200,
+      "newWriteDuringCloseStatus": 503,
+      "activeSessionRetained": true,
+      "goalRowsRetained": 1,
+      "goalEventsRetained": 1,
+      "shipEventsRetained": 1,
+      "sameCookieAccepted": true,
+      "csrfPreserved": true,
+      "postRestartCSRFWriteStatus": 200,
+      "oldExitedBeforeNewFork": true,
+      "distinctPIDs": true,
+      "newGenerationBuild": 9000001,
+      "retainedGenerationCount": 1,
+      "plannedNoticeBeforeClose": true,
+      "connectionStates": [
+        "restarting",
+        "refreshing",
+        "idle"
+      ],
+      "refreshes": [
+        "9000001:9000001:9000001"
+      ],
+      "completions": [
+        "9000001:9000001:9000001"
+      ],
+      "allOBSStatesProtected": true,
+      "sessionSecretOnDatasetDisk": false,
+      "oldChild": {
+        "type": "probe-final",
+        "generation": 1,
+        "scenario": "drain-accepted",
+        "pid": 3695,
+        "externalNetworkAttempts": 0,
+        "fakeRequests": [
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/names",
+            "method": "POST"
+          },
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/types/910001",
+            "method": "GET"
+          },
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/names",
+            "method": "POST"
+          },
+          {
+            "origin": "https://developers.eveonline.com",
+            "path": "/static-data/tranquility/latest.jsonl",
+            "method": "GET"
+          },
+          {
+            "origin": "https://developers.eveonline.com",
+            "path": "/static-data/tranquility/eve-online-static-data-9000001-jsonl.zip",
+            "method": "GET"
+          },
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/groups/25",
+            "method": "GET"
+          }
+        ],
+        "pending": [],
+        "postCloseOperations": [],
+        "errors": [],
+        "databaseClosed": true,
+        "closeStarted": true,
+        "exitGraceUsed": false
+      },
+      "trace": [
+        {
+          "order": 1,
+          "event": "fork",
+          "generation": 1,
+          "pid": 3695
+        },
+        {
+          "order": 2,
+          "event": "parent:start",
+          "generation": 1
+        },
+        {
+          "order": 3,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3695,
+          "changes": 1
+        },
+        {
+          "order": 4,
+          "event": "child:runtime-created",
+          "generation": 1,
+          "pid": 3695,
+          "summary": {
+            "generation": 1,
+            "scenario": "drain-accepted",
+            "pid": 3695,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": false,
+            "closeStarted": false,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 5,
+          "event": "runtime:ready",
+          "generation": 1,
+          "pid": 3695
+        },
+        {
+          "order": 6,
+          "event": "parent:activated",
+          "generation": 1
+        },
+        {
+          "order": 7,
+          "event": "dashboard:dataset-revision",
+          "revision": "3503375:3494416:3494416"
+        },
+        {
+          "order": 8,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 9,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 10,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3695,
+          "changes": 1
+        },
+        {
+          "order": 11,
+          "event": "dashboard:changed"
+        },
+        {
+          "order": 12,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 13,
+          "event": "child:ship-observation-dispatched",
+          "generation": 1,
+          "pid": 3695
+        },
+        {
+          "order": 14,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 3695,
+          "key": "bus-names"
+        },
+        {
+          "order": 15,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 3695,
+          "key": "accepted-goal"
+        },
+        {
+          "order": 16,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 3695,
+          "key": "accepted-read"
+        },
+        {
+          "order": 17,
+          "event": "three-work-items-in-flight"
+        },
+        {
+          "order": 18,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 19,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 20,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 21,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 22,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 23,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 24,
+          "event": "dashboard:dataset-restarting"
+        },
+        {
+          "order": 25,
+          "event": "coordinator:restarting"
+        },
+        {
+          "order": 26,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 27,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 28,
+          "event": "runtime:dataset-ready",
+          "generation": 1,
+          "pid": 3695
+        },
+        {
+          "order": 29,
+          "event": "parent:stop",
+          "generation": 1
+        },
+        {
+          "order": 30,
+          "event": "child:close-started",
+          "generation": 1,
+          "pid": 3695,
+          "pending": [
+            "bus-names",
+            "accepted-goal",
+            "accepted-read"
+          ]
+        },
+        {
+          "order": 31,
+          "event": "old-dashboard-disconnected"
+        },
+        {
+          "order": 32,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 3695,
+          "key": "bus-names",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 33,
+          "event": "child:fake-names-response",
+          "generation": 1,
+          "pid": 3695,
+          "ids": [
+            910002
+          ],
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 34,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3695,
+          "changes": 1
+        },
+        {
+          "order": 35,
+          "event": "child:ship-event-persisted",
+          "generation": 1,
+          "pid": 3695,
+          "semanticType": "ship.changed",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 36,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 3695,
+          "key": "accepted-read",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 37,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 3695,
+          "key": "accepted-goal",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 38,
+          "event": "child:fake-names-response",
+          "generation": 1,
+          "pid": 3695,
+          "ids": [
+            99000091
+          ],
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 39,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3695,
+          "changes": 1
+        },
+        {
+          "order": 40,
+          "event": "accepted-http-completed"
+        },
+        {
+          "order": 41,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 42,
+          "event": "old-obs-disconnected"
+        },
+        {
+          "order": 43,
+          "event": "child:database-closed",
+          "generation": 1,
+          "pid": 3695,
+          "pending": []
+        },
+        {
+          "order": 44,
+          "event": "child:close-returned",
+          "generation": 1,
+          "pid": 3695,
+          "summary": {
+            "generation": 1,
+            "scenario": "drain-accepted",
+            "pid": 3695,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/names",
+                "method": "POST"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/types/910001",
+                "method": "GET"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/names",
+                "method": "POST"
+              },
+              {
+                "origin": "https://developers.eveonline.com",
+                "path": "/static-data/tranquility/latest.jsonl",
+                "method": "GET"
+              },
+              {
+                "origin": "https://developers.eveonline.com",
+                "path": "/static-data/tranquility/eve-online-static-data-9000001-jsonl.zip",
+                "method": "GET"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/groups/25",
+                "method": "GET"
+              }
+            ],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": true,
+            "closeStarted": true,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 45,
+          "event": "runtime:stopped",
+          "generation": 1,
+          "pid": 3695,
+          "sessionCount": 1
+        },
+        {
+          "order": 46,
+          "event": "exit",
+          "generation": 1,
+          "pid": 3695,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "order": 47,
+          "event": "fork",
+          "generation": 2,
+          "pid": 3708
+        },
+        {
+          "order": 48,
+          "event": "parent:start",
+          "generation": 2
+        },
+        {
+          "order": 49,
+          "event": "child:semantic-insert",
+          "generation": 2,
+          "pid": 3708,
+          "changes": 1
+        },
+        {
+          "order": 50,
+          "event": "child:runtime-created",
+          "generation": 2,
+          "pid": 3708,
+          "summary": {
+            "generation": 2,
+            "scenario": "drain-accepted",
+            "pid": 3708,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": false,
+            "closeStarted": false,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 51,
+          "event": "runtime:ready",
+          "generation": 2,
+          "pid": 3708
+        },
+        {
+          "order": 52,
+          "event": "parent:activated",
+          "generation": 2
+        },
+        {
+          "order": 53,
+          "event": "dashboard:dataset-revision",
+          "revision": "9000001:9000001:9000001"
+        },
+        {
+          "order": 54,
+          "event": "coordinator:refreshing"
+        },
+        {
+          "order": 55,
+          "event": "new-obs:state"
+        },
+        {
+          "order": 56,
+          "event": "coordinator:idle"
+        },
+        {
+          "order": 57,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 58,
+          "event": "parent:stop",
+          "generation": 2
+        },
+        {
+          "order": 59,
+          "event": "child:close-started",
+          "generation": 2,
+          "pid": 3708,
+          "pending": []
+        },
+        {
+          "order": 60,
+          "event": "child:database-closed",
+          "generation": 2,
+          "pid": 3708,
+          "pending": []
+        },
+        {
+          "order": 61,
+          "event": "child:close-returned",
+          "generation": 2,
+          "pid": 3708,
+          "summary": {
+            "generation": 2,
+            "scenario": "drain-accepted",
+            "pid": 3708,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": true,
+            "closeStarted": true,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 62,
+          "event": "runtime:stopped",
+          "generation": 2,
+          "pid": 3708,
+          "sessionCount": 0
+        },
+        {
+          "order": 63,
+          "event": "exit",
+          "generation": 2,
+          "pid": 3708,
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "stderr": []
+    },
+    {
+      "label": "late-bus",
+      "completed": true,
+      "classification": "known-ownership-gap-reproduced; NOT a safe-shutdown pass",
+      "assertionsPassed": true,
+      "acceptedGoalStatus": 201,
+      "acceptedReadStatus": 200,
+      "newWriteDuringCloseStatus": 503,
+      "activeSessionRetained": true,
+      "goalRowsRetained": 1,
+      "goalEventsRetained": 1,
+      "shipEventsRetained": 0,
+      "sameCookieAccepted": true,
+      "csrfPreserved": true,
+      "postRestartCSRFWriteStatus": 200,
+      "oldExitedBeforeNewFork": true,
+      "distinctPIDs": true,
+      "newGenerationBuild": 9000001,
+      "retainedGenerationCount": 1,
+      "plannedNoticeBeforeClose": true,
+      "connectionStates": [
+        "restarting",
+        "refreshing",
+        "idle"
+      ],
+      "refreshes": [
+        "9000001:9000001:9000001"
+      ],
+      "completions": [
+        "9000001:9000001:9000001"
+      ],
+      "allOBSStatesProtected": true,
+      "sessionSecretOnDatasetDisk": false,
+      "oldChild": {
+        "type": "probe-final",
+        "generation": 1,
+        "scenario": "late-bus",
+        "pid": 3720,
+        "externalNetworkAttempts": 0,
+        "fakeRequests": [
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/names",
+            "method": "POST"
+          },
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/types/910001",
+            "method": "GET"
+          },
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/names",
+            "method": "POST"
+          },
+          {
+            "origin": "https://developers.eveonline.com",
+            "path": "/static-data/tranquility/latest.jsonl",
+            "method": "GET"
+          },
+          {
+            "origin": "https://developers.eveonline.com",
+            "path": "/static-data/tranquility/eve-online-static-data-9000001-jsonl.zip",
+            "method": "GET"
+          },
+          {
+            "origin": "https://esi.evetech.net",
+            "path": "/universe/groups/25",
+            "method": "GET"
+          }
+        ],
+        "pending": [],
+        "postCloseOperations": [
+          {
+            "method": "run",
+            "sql": "INSERT cache"
+          },
+          {
+            "method": "run",
+            "sql": "INSERT cache"
+          },
+          {
+            "method": "prepare",
+            "sql": "INSERT events"
+          }
+        ],
+        "errors": [
+          {
+            "source": "prepared-statement",
+            "method": "run",
+            "code": "ERR_INVALID_STATE",
+            "message": "statement has been finalized",
+            "afterDatabaseClose": true
+          },
+          {
+            "source": "prepared-statement",
+            "method": "run",
+            "code": "ERR_INVALID_STATE",
+            "message": "statement has been finalized",
+            "afterDatabaseClose": true
+          },
+          {
+            "source": "prepare",
+            "code": "ERR_INVALID_STATE",
+            "message": "database is not open",
+            "afterDatabaseClose": true
+          }
+        ],
+        "databaseClosed": true,
+        "closeStarted": true,
+        "exitGraceUsed": true
+      },
+      "trace": [
+        {
+          "order": 1,
+          "event": "fork",
+          "generation": 1,
+          "pid": 3720
+        },
+        {
+          "order": 2,
+          "event": "parent:start",
+          "generation": 1
+        },
+        {
+          "order": 3,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3720,
+          "changes": 1
+        },
+        {
+          "order": 4,
+          "event": "child:runtime-created",
+          "generation": 1,
+          "pid": 3720,
+          "summary": {
+            "generation": 1,
+            "scenario": "late-bus",
+            "pid": 3720,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": false,
+            "closeStarted": false,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 5,
+          "event": "runtime:ready",
+          "generation": 1,
+          "pid": 3720
+        },
+        {
+          "order": 6,
+          "event": "parent:activated",
+          "generation": 1
+        },
+        {
+          "order": 7,
+          "event": "dashboard:dataset-revision",
+          "revision": "3503375:3494416:3494416"
+        },
+        {
+          "order": 8,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 9,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 10,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3720,
+          "changes": 1
+        },
+        {
+          "order": 11,
+          "event": "dashboard:changed"
+        },
+        {
+          "order": 12,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 13,
+          "event": "child:ship-observation-dispatched",
+          "generation": 1,
+          "pid": 3720
+        },
+        {
+          "order": 14,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 3720,
+          "key": "bus-names"
+        },
+        {
+          "order": 15,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 3720,
+          "key": "accepted-goal"
+        },
+        {
+          "order": 16,
+          "event": "child:gate-pending",
+          "generation": 1,
+          "pid": 3720,
+          "key": "accepted-read"
+        },
+        {
+          "order": 17,
+          "event": "three-work-items-in-flight"
+        },
+        {
+          "order": 18,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 19,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 20,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 21,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 22,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 23,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 24,
+          "event": "dashboard:dataset-restarting"
+        },
+        {
+          "order": 25,
+          "event": "coordinator:restarting"
+        },
+        {
+          "order": 26,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 27,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 28,
+          "event": "runtime:dataset-ready",
+          "generation": 1,
+          "pid": 3720
+        },
+        {
+          "order": 29,
+          "event": "parent:stop",
+          "generation": 1
+        },
+        {
+          "order": 30,
+          "event": "child:close-started",
+          "generation": 1,
+          "pid": 3720,
+          "pending": [
+            "bus-names",
+            "accepted-goal",
+            "accepted-read"
+          ]
+        },
+        {
+          "order": 31,
+          "event": "old-dashboard-disconnected"
+        },
+        {
+          "order": 32,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 3720,
+          "key": "accepted-read",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 33,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 3720,
+          "key": "accepted-goal",
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 34,
+          "event": "child:fake-names-response",
+          "generation": 1,
+          "pid": 3720,
+          "ids": [
+            99000091
+          ],
+          "afterDatabaseClose": false
+        },
+        {
+          "order": 35,
+          "event": "child:semantic-insert",
+          "generation": 1,
+          "pid": 3720,
+          "changes": 1
+        },
+        {
+          "order": 36,
+          "event": "accepted-http-completed"
+        },
+        {
+          "order": 37,
+          "event": "old-obs:state"
+        },
+        {
+          "order": 38,
+          "event": "old-obs-disconnected"
+        },
+        {
+          "order": 39,
+          "event": "child:database-closed",
+          "generation": 1,
+          "pid": 3720,
+          "pending": [
+            "bus-names"
+          ]
+        },
+        {
+          "order": 40,
+          "event": "child:gate-released",
+          "generation": 1,
+          "pid": 3720,
+          "key": "bus-names",
+          "afterDatabaseClose": true
+        },
+        {
+          "order": 41,
+          "event": "child:fake-names-response",
+          "generation": 1,
+          "pid": 3720,
+          "ids": [
+            910002
+          ],
+          "afterDatabaseClose": true
+        },
+        {
+          "order": 42,
+          "event": "child:close-returned",
+          "generation": 1,
+          "pid": 3720,
+          "summary": {
+            "generation": 1,
+            "scenario": "late-bus",
+            "pid": 3720,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/names",
+                "method": "POST"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/types/910001",
+                "method": "GET"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/names",
+                "method": "POST"
+              },
+              {
+                "origin": "https://developers.eveonline.com",
+                "path": "/static-data/tranquility/latest.jsonl",
+                "method": "GET"
+              },
+              {
+                "origin": "https://developers.eveonline.com",
+                "path": "/static-data/tranquility/eve-online-static-data-9000001-jsonl.zip",
+                "method": "GET"
+              },
+              {
+                "origin": "https://esi.evetech.net",
+                "path": "/universe/groups/25",
+                "method": "GET"
+              }
+            ],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": true,
+            "closeStarted": true,
+            "exitGraceUsed": true
+          }
+        },
+        {
+          "order": 43,
+          "event": "runtime:stopped",
+          "generation": 1,
+          "pid": 3720,
+          "sessionCount": 1
+        },
+        {
+          "order": 44,
+          "event": "child:observed-sql-error",
+          "generation": 1,
+          "pid": 3720,
+          "source": "prepared-statement",
+          "method": "run",
+          "code": "ERR_INVALID_STATE",
+          "message": "statement has been finalized",
+          "afterDatabaseClose": true
+        },
+        {
+          "order": 45,
+          "event": "child:observed-sql-error",
+          "generation": 1,
+          "pid": 3720,
+          "source": "prepared-statement",
+          "method": "run",
+          "code": "ERR_INVALID_STATE",
+          "message": "statement has been finalized",
+          "afterDatabaseClose": true
+        },
+        {
+          "order": 46,
+          "event": "child:observed-sql-error",
+          "generation": 1,
+          "pid": 3720,
+          "source": "prepare",
+          "code": "ERR_INVALID_STATE",
+          "message": "database is not open",
+          "afterDatabaseClose": true
+        },
+        {
+          "order": 47,
+          "event": "exit",
+          "generation": 1,
+          "pid": 3720,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "order": 48,
+          "event": "fork",
+          "generation": 2,
+          "pid": 3732
+        },
+        {
+          "order": 49,
+          "event": "parent:start",
+          "generation": 2
+        },
+        {
+          "order": 50,
+          "event": "child:semantic-insert",
+          "generation": 2,
+          "pid": 3732,
+          "changes": 1
+        },
+        {
+          "order": 51,
+          "event": "child:runtime-created",
+          "generation": 2,
+          "pid": 3732,
+          "summary": {
+            "generation": 2,
+            "scenario": "late-bus",
+            "pid": 3732,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": false,
+            "closeStarted": false,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 52,
+          "event": "runtime:ready",
+          "generation": 2,
+          "pid": 3732
+        },
+        {
+          "order": 53,
+          "event": "parent:activated",
+          "generation": 2
+        },
+        {
+          "order": 54,
+          "event": "dashboard:dataset-revision",
+          "revision": "9000001:9000001:9000001"
+        },
+        {
+          "order": 55,
+          "event": "coordinator:refreshing"
+        },
+        {
+          "order": 56,
+          "event": "new-obs:state"
+        },
+        {
+          "order": 57,
+          "event": "coordinator:idle"
+        },
+        {
+          "order": 58,
+          "event": "dashboard:datasets"
+        },
+        {
+          "order": 59,
+          "event": "parent:stop",
+          "generation": 2
+        },
+        {
+          "order": 60,
+          "event": "child:close-started",
+          "generation": 2,
+          "pid": 3732,
+          "pending": []
+        },
+        {
+          "order": 61,
+          "event": "child:database-closed",
+          "generation": 2,
+          "pid": 3732,
+          "pending": []
+        },
+        {
+          "order": 62,
+          "event": "child:close-returned",
+          "generation": 2,
+          "pid": 3732,
+          "summary": {
+            "generation": 2,
+            "scenario": "late-bus",
+            "pid": 3732,
+            "externalNetworkAttempts": 0,
+            "fakeRequests": [],
+            "pending": [],
+            "postCloseOperations": [],
+            "errors": [],
+            "databaseClosed": true,
+            "closeStarted": true,
+            "exitGraceUsed": false
+          }
+        },
+        {
+          "order": 63,
+          "event": "runtime:stopped",
+          "generation": 2,
+          "pid": 3732,
+          "sessionCount": 0
+        },
+        {
+          "order": 64,
+          "event": "exit",
+          "generation": 2,
+          "pid": 3732,
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "stderr": []
+    }
+  ],
+  "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "sources": [
+    {
+      "path": "server/runtime-supervisor.mjs",
+      "sha256": "3357dcd24688bd005cdf951b0abae8e56efd6a9910ba041dfa40d79d04bc9636"
+    },
+    {
+      "path": "server/runtime-child.mjs",
+      "sha256": "9d4da98f658a88baf59275674a7cb99cd41175e3ce603e27f56fbc52c0774e06"
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "a680a0b47b82e67ac57ff603565f5e8d6f01e5dff2966c832dfe8f5d6fc5cdaf"
+    },
+    {
+      "path": "server/core.mjs",
+      "sha256": "5de982005a326b3b2ccc294b105511607ed6f965158ee550e177922e33f0df33"
+    },
+    {
+      "path": "server/store.mjs",
+      "sha256": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555"
+    },
+    {
+      "path": "server/esi.mjs",
+      "sha256": "681d17b215f408d1af374444e94686a1ad963ab33bb4f17c6733ec988084afae"
+    },
+    {
+      "path": "server/bus.mjs",
+      "sha256": "e6e8d9d9764b83432a1eaf6d44394518cb66b4832857b5283a91163b674b055d"
+    },
+    {
+      "path": "server/universe-history.mjs",
+      "sha256": "d700f786519d8d83fed002fd56b5beeef7b18c70053cd4d2991d76511ac1e1f0"
+    },
+    {
+      "path": "server/datasets.mjs",
+      "sha256": "7dd095c3eba4d16365d97d6e6758f615262a18c966803f02074742de6863c2ed"
+    },
+    {
+      "path": "components/kairo/dataset-connection.mjs",
+      "sha256": "d73c0a0da18c1941076aeed56649f24a12c1db33217df289b95383306cb056ba"
+    },
+    {
+      "path": "tests/helpers/dataset-fixture.mjs",
+      "sha256": "765cbb19b8c1e2053f768274b4613b2bf619b408edb94e00f875fd8ced92df35"
+    },
+    {
+      "path": "analysis/rc16/followup/harness/restart-child.mjs",
+      "sha256": "afa748d2b518664e083f17fcdaa9f8d9c5a340a22d491ffe660cd555511cea35"
+    },
+    {
+      "path": "analysis/rc16/followup/harness/restart-integrated.mjs",
+      "sha256": "c0c936b84733adbb76c007c4d68fa57568f03d064a3009ca93dccf08d4ff1e54"
+    }
+  ],
+  "completed": true,
+  "safetyConclusion": "Tracked HTTP drain and reconnect controls passed; forced-late asynchronous bus work still lacks ownership. Do not interpret diagnostic assertion success as lossless shutdown.",
+  "finishedAt": "2026-09-30T13:00:48.405Z"
+}

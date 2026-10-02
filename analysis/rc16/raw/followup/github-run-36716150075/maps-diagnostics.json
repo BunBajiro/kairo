@@ -1,0 +1,1551 @@
+{
+  "mode": "diagnostics",
+  "order": "forward",
+  "recordedAt": "2026-09-30T12:40:59.116Z",
+  "referenceSource": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "testedSourceRoot": "/home/runner/work/kairo/kairo/checkpoint",
+  "testedSourceGitHeadBefore": "4d9366c3889c0d9df49dd2022e46d92c7e5b443a",
+  "testedSourceGitHead": "4d9366c3889c0d9df49dd2022e46d92c7e5b443a",
+  "testedFiles": {
+    "server/universe.mjs": "eaa03fa260a70df38d58f43de6eff6d9ef045cd451f02215c07f782695e42747",
+    "server/universe-jspace.mjs": "32f6c3e101bc746ff6d2afd41ed1cc31520afa62b0983b6afa01f0c9247abd6a",
+    "server/universe-operations.mjs": "7ac22c446db3c7991d3ddfcd194e01d915327ff1dea9b87b1a8d8b2e672cbb7b",
+    "server/universe-jspace-tracking.mjs": "2dc948a1130f028a20d3fb364c615162ee2f812ddc12948fe056d4ff2e43c057",
+    "server/store.mjs": "7f90cb07c6609ddba501df0f8ee1d8c53fe773958739f8492b817c7b0d4d4555"
+  },
+  "sourceAndHarnessStableDuringRun": true,
+  "harnessSha256": "a38c8e0823722033e8d9a8e927588c238eec2eac01fd0d8c34da6126dcf35e17",
+  "lockFile": "/tmp/kairo-rc16-benchmark.lock",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 7763 64-Core Processor",
+  "platform": "linux",
+  "arch": "x64",
+  "atlas": {
+    "systems": 8490,
+    "gates": 6989,
+    "wormholes": 2604
+  },
+  "clock": "2026-09-30T09:00:00.000Z",
+  "networkAttempts": 0,
+  "methodology": "One real service invocation per fixture; instrumented SQL and projected-edge filter counts, never latency evidence. Correctness cardinalities, binding sets, revisions, access/expiry flags and full selected-object digest asserted.",
+  "fixtureNotes": [
+    "No user accounts, external collectors, visits, optional feeds, undo, passages, intel, observations or tracked pilots.",
+    "Independence holds selected-map records constant while adding0/7/23 unrelated maps; full-list contrast repeats identical fixtures.",
+    "Constant-links family fixes720total canonical links, zero signatures and60nodes per map; map/node/document totals vary and are reported.",
+    "Dense family uses100nodes, 0/100/1000 unbound Data Site signatures and100/1000 connections. Exact S×E filter work can be counted; timing also includes larger signature records and output, so not all added latency can be attributed to that loop."
+  ],
+  "results": [
+    {
+      "name": "independence-selected-1-maps",
+      "family": "independence",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "canonicalBytes": 47916,
+        "mapDocumentBytes": 32402,
+        "signatureBytes": 49782
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "outputBytes": 229559,
+      "totals": {
+        "calls": 227,
+        "rows": 403,
+        "jsonBytes": 325875,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 97206,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 99,
+          "jsonBytes": 47916,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 198,
+          "rows": 198,
+          "jsonBytes": 98569,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32402,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 49782,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 100,
+        "predicateVisits": 9900,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "independence-list-1-maps",
+      "family": "independence",
+      "action": "list",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "canonicalBytes": 47916,
+        "mapDocumentBytes": 32402,
+        "signatureBytes": 49782
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "outputBytes": 229976,
+      "totals": {
+        "calls": 234,
+        "rows": 507,
+        "jsonBytes": 375323,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 6,
+          "rows": 5,
+          "jsonBytes": 65953,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 2,
+          "rows": 2,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 2,
+          "rows": 198,
+          "jsonBytes": 95832,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 2,
+          "jsonBytes": 32785,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 198,
+          "rows": 198,
+          "jsonBytes": 98569,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32402,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 49782,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 100,
+        "predicateVisits": 9900,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:407:149\n    at Array.map (<anonymous>)\n    at Object.state (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:407:136)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:62)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "independence-selected-8-maps",
+      "family": "independence",
+      "action": "selected",
+      "fixture": {
+        "maps": 8,
+        "nodes": 800,
+        "links": 792,
+        "signatures": 800,
+        "canonicalBytes": 383328,
+        "mapDocumentBytes": 259216,
+        "signatureBytes": 398256
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "outputBytes": 229559,
+      "totals": {
+        "calls": 227,
+        "rows": 1096,
+        "jsonBytes": 661287,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 97206,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 792,
+          "jsonBytes": 383328,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 198,
+          "rows": 198,
+          "jsonBytes": 98569,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32402,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 49782,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 100,
+        "predicateVisits": 9900,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "independence-list-8-maps",
+      "family": "independence",
+      "action": "list",
+      "fixture": {
+        "maps": 8,
+        "nodes": 800,
+        "links": 792,
+        "signatures": 800,
+        "canonicalBytes": 383328,
+        "mapDocumentBytes": 259216,
+        "signatureBytes": 398256
+      },
+      "correctness": {
+        "maps": 8,
+        "nodes": 800,
+        "links": 792,
+        "signatures": 800,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "outputBytes": 1836896,
+      "totals": {
+        "calls": 1816,
+        "rows": 9565,
+        "jsonBytes": 5675156,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 27,
+          "rows": 19,
+          "jsonBytes": 519581,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 9,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 9,
+          "rows": 9,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 9,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 9,
+          "rows": 7128,
+          "jsonBytes": 3449952,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 9,
+          "jsonBytes": 259599,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 1584,
+          "rows": 1584,
+          "jsonBytes": 788552,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 8,
+          "rows": 8,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 8,
+          "rows": 8,
+          "jsonBytes": 259216,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 80,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 32,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 40,
+          "rows": 800,
+          "jsonBytes": 398256,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 800,
+        "predicateVisits": 79200,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:407:149\n    at Array.map (<anonymous>)\n    at Object.state (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:407:136)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:62)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "independence-selected-24-maps",
+      "family": "independence",
+      "action": "selected",
+      "fixture": {
+        "maps": 24,
+        "nodes": 2400,
+        "links": 2376,
+        "signatures": 2400,
+        "canonicalBytes": 1149984,
+        "mapDocumentBytes": 777648,
+        "signatureBytes": 1194768
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "outputBytes": 229559,
+      "totals": {
+        "calls": 227,
+        "rows": 2680,
+        "jsonBytes": 1427943,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 97206,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 2376,
+          "jsonBytes": 1149984,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 198,
+          "rows": 198,
+          "jsonBytes": 98569,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32402,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 49782,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 100,
+        "predicateVisits": 9900,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "independence-list-24-maps",
+      "family": "independence",
+      "action": "list",
+      "fixture": {
+        "maps": 24,
+        "nodes": 2400,
+        "links": 2376,
+        "signatures": 2400,
+        "canonicalBytes": 1149984,
+        "mapDocumentBytes": 777648,
+        "signatureBytes": 1194768
+      },
+      "correctness": {
+        "maps": 24,
+        "nodes": 2400,
+        "links": 2376,
+        "signatures": 2400,
+        "revision": 7,
+        "selectedSemanticDigest": "b38a1d82a5af13ada4c466aa907a3ba81261dbb4d5f37953789899e55bcbbd7c"
+      },
+      "outputBytes": 5509856,
+      "totals": {
+        "calls": 5432,
+        "rows": 66701,
+        "jsonBytes": 35422148,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 75,
+          "rows": 51,
+          "jsonBytes": 1556445,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 25,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 25,
+          "rows": 25,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 25,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 25,
+          "rows": 59400,
+          "jsonBytes": 28749600,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 25,
+          "jsonBytes": 778031,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4752,
+          "rows": 4752,
+          "jsonBytes": 2365656,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 24,
+          "rows": 24,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 24,
+          "rows": 24,
+          "jsonBytes": 777648,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 240,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 96,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 120,
+          "rows": 2400,
+          "jsonBytes": 1194768,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 2400,
+        "predicateVisits": 237600,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:407:149\n    at Array.map (<anonymous>)\n    at Object.state (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:407:136)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:62)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "constant-links-list-1-maps",
+      "family": "constant-links",
+      "action": "list",
+      "fixture": {
+        "maps": 1,
+        "nodes": 60,
+        "links": 720,
+        "signatures": 0,
+        "canonicalBytes": 329760,
+        "mapDocumentBytes": 100765,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 60,
+        "links": 720,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 662195,
+      "totals": {
+        "calls": 36,
+        "rows": 1451,
+        "jsonBytes": 1064112,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 6,
+          "rows": 5,
+          "jsonBytes": 202679,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 2,
+          "rows": 2,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 2,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 2,
+          "rows": 1440,
+          "jsonBytes": 659520,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 2,
+          "jsonBytes": 101148,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 100765,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 0,
+        "predicateVisits": 0,
+        "firstStack": null
+      }
+    },
+    {
+      "name": "constant-links-list-8-maps",
+      "family": "constant-links",
+      "action": "list",
+      "fixture": {
+        "maps": 8,
+        "nodes": 480,
+        "links": 720,
+        "signatures": 0,
+        "canonicalBytes": 329760,
+        "mapDocumentBytes": 186200,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 8,
+        "nodes": 480,
+        "links": 720,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 757648,
+      "totals": {
+        "calls": 232,
+        "rows": 6533,
+        "jsonBytes": 3714172,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 27,
+          "rows": 19,
+          "jsonBytes": 373549,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 9,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 9,
+          "rows": 9,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 9,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 9,
+          "rows": 6480,
+          "jsonBytes": 2967840,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 9,
+          "jsonBytes": 186583,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 8,
+          "rows": 8,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 8,
+          "rows": 8,
+          "jsonBytes": 186200,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 80,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 32,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 40,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 0,
+        "predicateVisits": 0,
+        "firstStack": null
+      }
+    },
+    {
+      "name": "constant-links-list-24-maps",
+      "family": "constant-links",
+      "action": "list",
+      "fixture": {
+        "maps": 24,
+        "nodes": 1440,
+        "links": 720,
+        "signatures": 0,
+        "canonicalBytes": 329760,
+        "mapDocumentBytes": 381480,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 24,
+        "nodes": 1440,
+        "links": 720,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 976040,
+      "totals": {
+        "calls": 680,
+        "rows": 18149,
+        "jsonBytes": 9771452,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 75,
+          "rows": 51,
+          "jsonBytes": 764109,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 25,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 25,
+          "rows": 25,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 25,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 25,
+          "rows": 18000,
+          "jsonBytes": 8244000,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=jspace_map]": {
+          "calls": 1,
+          "rows": 25,
+          "jsonBytes": 381863,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 24,
+          "rows": 24,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 24,
+          "rows": 24,
+          "jsonBytes": 381480,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 240,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 96,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 120,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 0,
+        "predicateVisits": 0,
+        "firstStack": null
+      }
+    },
+    {
+      "name": "dense-selected-0-signatures-100-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 0,
+        "canonicalBytes": 45800,
+        "mapDocumentBytes": 32525,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 111604,
+      "totals": {
+        "calls": 29,
+        "rows": 106,
+        "jsonBytes": 175900,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 97575,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 100,
+          "jsonBytes": 45800,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32525,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 0,
+        "predicateVisits": 0,
+        "firstStack": null
+      }
+    },
+    {
+      "name": "dense-selected-0-signatures-1000-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 0,
+        "canonicalBytes": 458000,
+        "mapDocumentBytes": 143225,
+        "signatureBytes": 0
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 0,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 921370,
+      "totals": {
+        "calls": 29,
+        "rows": 1006,
+        "jsonBytes": 1030900,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 429675,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 1000,
+          "jsonBytes": 458000,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 143225,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 0,
+        "predicateVisits": 0,
+        "firstStack": null
+      }
+    },
+    {
+      "name": "dense-selected-100-signatures-100-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 100,
+        "canonicalBytes": 45800,
+        "mapDocumentBytes": 32525,
+        "signatureBytes": 49882
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 220466,
+      "totals": {
+        "calls": 29,
+        "rows": 206,
+        "jsonBytes": 225782,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 97575,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 100,
+          "jsonBytes": 45800,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32525,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 49882,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 100,
+        "predicateVisits": 10000,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "dense-selected-100-signatures-1000-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 100,
+        "canonicalBytes": 458000,
+        "mapDocumentBytes": 143225,
+        "signatureBytes": 49882
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 100,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 1030232,
+      "totals": {
+        "calls": 29,
+        "rows": 1106,
+        "jsonBytes": 1080782,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 429675,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 1000,
+          "jsonBytes": 458000,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 143225,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 100,
+          "jsonBytes": 49882,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 100,
+        "predicateVisits": 100000,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "dense-selected-1000-signatures-100-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 1000,
+        "canonicalBytes": 45800,
+        "mapDocumentBytes": 32525,
+        "signatureBytes": 500783
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 100,
+        "signatures": 1000,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 1204168,
+      "totals": {
+        "calls": 29,
+        "rows": 1106,
+        "jsonBytes": 676683,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 97575,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 100,
+          "jsonBytes": 45800,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 32525,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 1000,
+          "jsonBytes": 500783,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 1000,
+        "predicateVisits": 100000,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    },
+    {
+      "name": "dense-selected-1000-signatures-1000-links",
+      "family": "dense",
+      "action": "selected",
+      "fixture": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 1000,
+        "canonicalBytes": 458000,
+        "mapDocumentBytes": 143225,
+        "signatureBytes": 500783
+      },
+      "correctness": {
+        "maps": 1,
+        "nodes": 100,
+        "links": 1000,
+        "signatures": 1000,
+        "revision": 7,
+        "selectedSemanticDigest": null
+      },
+      "outputBytes": 2013934,
+      "totals": {
+        "calls": 29,
+        "rows": 2006,
+        "jsonBytes": 1531683,
+        "changes": 0
+      },
+      "sql": {
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?": {
+          "calls": 4,
+          "rows": 3,
+          "jsonBytes": 429675,
+          "changes": 0
+        },
+        "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=list]": {
+          "calls": 1,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id [kind=link]": {
+          "calls": 1,
+          "rows": 1000,
+          "jsonBytes": 458000,
+          "changes": 0
+        },
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='universe_records'": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?": {
+          "calls": 1,
+          "rows": 1,
+          "jsonBytes": 143225,
+          "changes": 0
+        },
+        "SELECT value FROM settings WHERE key=?": {
+          "calls": 10,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+          "calls": 4,
+          "rows": 0,
+          "jsonBytes": 0,
+          "changes": 0
+        },
+        "SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id LIMIT 1001": {
+          "calls": 5,
+          "rows": 1000,
+          "jsonBytes": 500783,
+          "changes": 0
+        }
+      },
+      "signatureEdgeScan": {
+        "calls": 1000,
+        "predicateVisits": 1000000,
+        "firstStack": "Error: projection filter diagnostic\n    at Array.filter (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:82:53)\n    at file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:396:45\n    at Array.map (<anonymous>)\n    at project (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:393:79)\n    at Object.map (file:///home/runner/work/kairo/kairo/checkpoint/server/universe-jspace.mjs:871:88)\n    at call (file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:216:92)\n    at file:///home/runner/work/kairo/kairo/checkpoint/analysis/rc16/followup/harness/maps-scaling.mjs:221:26"
+      }
+    }
+  ]
+}
