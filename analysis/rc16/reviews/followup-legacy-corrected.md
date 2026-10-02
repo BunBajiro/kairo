@@ -1,6 +1,6 @@
 # Corrected warm-cache backend comparison
 
-The corrected backend-only ABBA completed successfully. RC16's successful background feed path still uses more idle CPU and memory and has longer maximum event-loop stalls than v0.7.3 in this fixture. Startup remains the clearest cross-version latency increase. The smaller dashboard HTTP difference does not meet the checkpoint's two-repeat 10% plus 1 ms signal rule.
+The corrected backend-only ABBA completed successfully both locally and in the focused GitHub rerun. RC16's successful background feed path still uses more idle CPU and memory and has longer maximum event-loop stalls than v0.7.3 in this fixture. Startup remains the clearest cross-version latency increase. The smaller dashboard HTTP difference does not meet the checkpoint's two-repeat 10% plus 1 ms signal rule.
 
 ## Method and correction
 
@@ -32,4 +32,23 @@ The stress HTTP mean increase was 7.84%, so the original local result should not
 
 This run supersedes the original idle comparison's claim to a successful RC16 feed projection. Original local and GitHub measurements remain available with that qualification. Database/schema/aged-history probes were not rerun: their original source/output hashes and working JSON equality remain the applicable evidence. The generated summary's empty database section means unmeasured in this rerun; it is not a failed equivalence test.
 
-The corrected backend lane should be repeated on the same CI runner class before treating local magnitudes as portable. It is already included in the dedicated follow-up workflow. No application source, dependency, or frozen initial harness was changed.
+## Independent corrected GitHub result
+
+[Run 37073070547](https://github.com/BunBajiro/kairo/actions/runs/37073070547) succeeds after restoring the prerequisite that both applications are built. It ran only the corrected backend lane; it does not repeat or clear the earlier mixed SSE failure. Harness/workflow commit is `827a0475acc1457b1943d130bf92f66f38e93c2e`; measured application sources are unchanged v0.7.3 and RC16. The 336.980-second ABBA started at 22:34:24.848 UTC on 2 October 2026, using Node 24.19.0, Linux x64, two logical CPUs on AMD EPYC 7763. This host differs from the local EPYC 9V74, so compare changes within each environment only.
+
+The [retained artifact, log and validation](../raw/followup/github-run-37073070547/) include four complete backend reports, eight typical/stress observations and an independently recomputed matching summary. All 195/405 source blobs and eight corrected helper hashes verified at both ends. All 23 workflow-recorded harness hashes match. Every RC16 idle profile reports 12 real ticks and 12 successes with zero rejections; the final stress HTTP meter reaches 13 successful ticks. No external requests occurred. The RC16 report's `dirty:true` records generated analysis outputs in the investigation checkout, not changed application files; the protected source verifier is authoritative for that distinction.
+
+| Metric | CI typical v0.7.3 → RC16 | CI stress v0.7.3 → RC16 |
+|---|---|---|
+| Idle CPU | 0.623–0.630 → 0.752–1.038% | 1.538–1.543 → 2.217–2.257% |
+| Idle RSS | 93.09–93.91 → 172.46–177.86 MiB | 107.63–125.97 → 222.00–222.06 MiB |
+| Maximum idle event-loop delay | 13.17–15.52 → 21.43–30.83 ms | 41.98–42.86 → 80.81–83.23 ms |
+| `startKairo` startup | 20.06–23.33 → 218.94–226.00 ms | 26.18–26.72 → 216.96–223.96 ms |
+| Dashboard state HTTP p50 | 12.51–13.31 → 12.68–14.42 ms | 49.64–51.37 → 48.45–50.38 ms |
+| Session report p50 | 20.42–21.15 → 20.10–21.60 ms | 113.70–116.26 → 112.74–113.26 ms |
+
+The higher startup, residency and recurring stall costs reproduce, with different magnitudes. Stress HTTP changes −2.16% by the ratio of CI means, versus +7.84% locally; neither supports a general RC16 HTTP regression claim. Session medians remain similar or slightly better and selective import-cache reuse remains intact.
+
+One narrower CI tail signal deserves retention: stress Session report p95 is 130.28–132.62 ms in v0.7.3 versus 147.54–149.47 ms in RC16, +12.97% by the ratio of means and over 1 ms in both repetitions. With ten samples, this nearest-rank p95 is the **largest observed sample**, not a stable population percentile. The new candidate ABBA retains it for comparison; it does not establish a whole-session median regression or attribute the tail to a particular subsystem.
+
+The archive is artifact `11256137304`, 48,345 bytes, SHA-256 `43349f8792506740f4cf8f7a82a9d2c077989f0d94c9b09a4be915dd2f98c992`. No application source, dependency, or frozen initial harness was changed. No database probe was repeated; the empty database summary remains an unmeasured lane, not failed equality.

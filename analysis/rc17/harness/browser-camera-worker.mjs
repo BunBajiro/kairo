@@ -1,0 +1,89 @@
+// Bounded camera adapter derived from the frozen RC16 frontend-browser and
+// retention fixtures. No production hooks, patches, counters or external IO.
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
+import {tmpdir,cpus,totalmem} from 'node:os';
+import {join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {setTimeout as delay} from 'node:timers/promises';
+import {loadSourceManifest,verifySource} from './source-manifest.mjs';
+
+const [rootArg,outputArg,manifestArg]=process.argv.slice(2),repo=resolve(rootArg),output=resolve(outputArg),source=await loadSourceManifest(manifestArg,repo);
+assert.equal(process.env.KAIRO_CAMERA_LOCKED,'1','Run through browser-camera-run.mjs to acquire the timing lock');
+const {openStore}=await import(pathToFileURL(join(repo,'server/store.mjs'))),{startKairo}=await import(pathToFileURL(join(repo,'server/index.mjs'))),{getUniverseStatic}=await import(pathToFileURL(join(repo,'server/universe-static.mjs')));
+const dir=await mkdtemp(join(tmpdir(),'kairo-camera-')),dataDir=join(dir,'data'),hash=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
+const result={schemaVersion:1,run:process.env.KAIRO_CAMERA_RUN,startedAt:new Date().toISOString(),source:{commit:source.sourceCommit,fingerprint:source.fingerprint,dirty:source.dirty},
+ environment:{node:process.version,cpu:cpus()[0]?.model,logicalCpus:cpus().length,totalMemory:totalmem(),viewport:{width:1600,height:1050,dpr:1}},fixture:{},samples:[],diagnostics:{},requests:[],errors:[],external:[],complete:false,
+ limitations:['Headless Linux software rendering; no desktop GPU or whole-process CPU claim.','CDP task/script/style/layout durations measure renderer main-thread work. RAF intervals include compositor/vsync and instrumentation; they are not whole-application FPS.','Two map sizes, two fresh browser repetitions per application, one zoom and one pan sample at each size; bounded comparative evidence, not a broad statistical confidence interval.','Only camera timings: map load/transport and off-by-default display features are outside the measured windows.','Style mutation diagnostics and forced-GC retention run only after all timed samples. DOM mutation counts do not count React commits.','The retained-heap check uses two map mount/unmount cycles; no general leak claim.']};
+let app,proc,ws,sequence=0;const pending=new Map();
+function call(method,params={}){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout '+method));},20000);pending.set(id,{resolve:x=>{clearTimeout(timer);resolve(x);},reject:x=>{clearTimeout(timer);reject(x);}});ws.send(JSON.stringify({id,method,params}));});}
+async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.exception?.description||r.exceptionDetails.text);return r.result.value;}
+async function waitFor(expression){for(let i=0;i<300;i++){if(await evaluate(expression))return;await delay(50);}throw Error('Condition failed: '+expression);}
+const metrics=async()=>Object.fromEntries((await call('Performance.getMetrics')).metrics.map(row=>[row.name,row.value]));
+async function click(selector){const p=await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e||e.disabled)throw Error('Unavailable click target');const r=e.getBoundingClientRect(),p={x:r.x+r.width/2,y:r.y+r.height/2};if(!e.contains(document.elementFromPoint(p.x,p.y)))throw Error('Covered click target');return p;})()`);for(const type of ['mouseMoved','mousePressed','mouseReleased'])await call('Input.dispatchMouseEvent',{type,...p,...(type==='mouseMoved'?{}:{button:'left',clickCount:1})});}
+const camera=()=>evaluate("(()=>{const d=document.querySelector('[data-testid=\"jspace-map\"]').dataset,w=document.querySelector('.jspace-map-world');return {zoom:Number(d.cameraZoom),transform:w.style.transform};})()");
+const semantic=map=>({nodes:map.nodes.map(n=>({id:n.system_id,x:n.x,y:n.y})),connections:map.connections.map(e=>({id:e.id,kind:e.kind,from:e.from_system_id,to:e.to_system_id}))});
+const fixtures=new Map();
+function seed(){
+ const atlas=getUniverseStatic(),known=atlas.systems.filter(s=>s.space==='known'),byId=new Map(known.map(s=>[s.system_id,s])),adj=new Map();
+ for(const g of atlas.gates)for(const [a,b] of [[g.from_system_id,g.to_system_id],[g.to_system_id,g.from_system_id]]){if(!adj.has(a))adj.set(a,[]);adj.get(a).push(b);}
+ const queue=[known.find(s=>s.name==='Jita').system_id],seen=new Set(queue);
+ for(let i=0;i<queue.length&&queue.length<600;i++)for(const id of adj.get(queue[i])||[])if(byId.has(id)&&!seen.has(id)){seen.add(id);queue.push(id);if(queue.length>=600)break;}
+ assert.equal(queue.length,600);const db=openStore(dataDir),at=new Date().toISOString();
+ db.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)').run(42,'Synthetic Camera Pilot','[]','synthetic-unusable-token');
+ db.db.exec('CREATE TABLE IF NOT EXISTS universe_records(character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,PRIMARY KEY(character_id,kind,id))');
+ for(const n of [100,600]){const ids=new Set(queue.slice(0,n)),nodes=[...ids].map((system_id,i)=>({system_id,x:i%Math.ceil(Math.sqrt(n))*340,y:Math.floor(i/Math.ceil(Math.sqrt(n)))*240,alias:'',label:'',description:'',status:'unknown',role:'',locked:false,tags:[]}));
+  const connections=atlas.gates.filter(g=>ids.has(g.from_system_id)&&ids.has(g.to_system_id)).map((g,i)=>({id:`camera-${n}-edge-${i}`,kind:'gate',from_system_id:g.from_system_id,to_system_id:g.to_system_id})).slice(0,1000);
+  const map={id:'camera-'+n,name:n+'-system camera fixture',description:'Synthetic camera comparison',revision:1,scope:null,scope_version:2,created_at:at,updated_at:at,track_passages:false,nodes,connections,passages:[],observations:[],comments:[],pings:[],activity:[],pilots:[]};
+  db.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?)').run(42,'jspace_map',map.id,JSON.stringify(map),at);fixtures.set(n,semantic(map));
+ }
+ db.close();result.fixture={maps:[...fixtures].map(([nodes,map])=>({nodes,connections:map.connections.length,digest:hash(map)})),digest:hash([...fixtures]),layout:'RC16 frozen frontend fixture: BFS from Jita, bundled gate order, deterministic 340×240 grid; map sizes 100/600 only'};
+}
+async function openMap(n){if(await evaluate("!!document.querySelector('[aria-label=\"Active J-Space map\"]')"))await evaluate(`(()=>{const e=document.querySelector('[aria-label="Active J-Space map"]');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(e,'camera-${n}');e.dispatchEvent(new Event('change',{bubbles:true}));})()`);else await click(`[aria-label="Open map ${n}-system camera fixture"]`);
+ await waitFor(`document.querySelector('[aria-label="Active J-Space map"]')?.value==='camera-${n}' && document.querySelectorAll('.jspace-node').length===${n} && document.querySelector('.jspace-workspace-stage')?.getAttribute('aria-busy')==='false'`);await delay(400);
+ assert.deepEqual(semantic(app.core.universe.jspace.map(42,'camera-'+n)),fixtures.get(n),'Returned canonical graph is preserved');
+ assert.equal(await evaluate("Array.from(document.querySelectorAll('.jspace-node')).every(n=>!n.dataset.displayScale||n.dataset.displayScale==='1')"),true,'Default node scales are unchanged');
+}
+async function fit(){await click('[aria-label="Fit chain"]');await delay(400);}
+async function zoom(){for(let i=0;i<3;i++){await click('[aria-label="Zoom in on chain"]');await delay(600);}}
+async function pan(){const p=await evaluate("(()=>{const r=document.querySelector('.jspace-map-viewport').getBoundingClientRect();return{x:r.x+12,y:r.y+r.height/2};})()");await call('Input.dispatchMouseEvent',{type:'mouseMoved',...p});await call('Input.dispatchMouseEvent',{type:'mousePressed',...p,button:'middle',buttons:4,clickCount:1});for(let i=1;i<=24;i++){await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:p.x+i*8,y:p.y+Math.sin(i/4)*60,button:'middle',buttons:4});await delay(20);}await call('Input.dispatchMouseEvent',{type:'mouseReleased',x:p.x+192,y:p.y+Math.sin(6)*60,button:'middle',buttons:0,clickCount:1});await delay(300);}
+function percentile(values,p){if(!values.length)return null;const sorted=[...values].sort((a,b)=>a-b);return sorted[Math.floor((sorted.length-1)*p)];}
+async function sample(name,n,action,{frames=true}={}){
+ const beforeCamera=await camera(),networkStart=result.requests.length,mapViewport=await evaluate("(()=>{const r=document.querySelector('.jspace-map-viewport').getBoundingClientRect();return {width:r.width,height:r.height};})()");
+ await evaluate(`window.__sample={active:true,longTasks:[],frames:[],last:null,framesOn:${frames}};if(window.__sample.framesOn){const s=window.__sample;requestAnimationFrame(function tick(t){if(window.__sample!==s||!s.framesOn)return;if(s.last!==null)s.frames.push(t-s.last);s.last=t;requestAnimationFrame(tick);});}`);
+ const first=await metrics(),start=performance.now();await action();const last=await metrics(),windowMs=performance.now()-start;
+ const observed=await evaluate('window.__sample.framesOn=false;window.__sample.active=false;window.__sample'),afterCamera=await camera();
+ if(frames)assert.ok(observed.frames.length>0,'Interaction window must contain observed RAF intervals');
+ assert.ok(observed.frames.every(value=>value>0),'RAF timestamps strictly increase');
+ if(name==='zoom')assert.ok(Math.abs(afterCamera.zoom-beforeCamera.zoom*1.25**3)<.001,'Three zoom commands must produce the intended final zoom');
+ if(name==='pan')assert.notEqual(afterCamera.transform,beforeCamera.transform,'Pointer pan must change camera position');
+ result.samples.push({name,nodes:n,mapViewport,windowMs,taskMs:(last.TaskDuration-first.TaskDuration)*1000,scriptMs:(last.ScriptDuration-first.ScriptDuration)*1000,recalcMs:(last.RecalcStyleDuration-first.RecalcStyleDuration)*1000,layoutMs:(last.LayoutDuration-first.LayoutDuration)*1000,recalcs:last.RecalcStyleCount-first.RecalcStyleCount,layouts:last.LayoutCount-first.LayoutCount,heapUsed:last.JSHeapUsedSize,domNodes:last.Nodes,
+  raf:frames?{count:observed.frames.length,p50:percentile(observed.frames,.5),p95:percentile(observed.frames,.95),max:Math.max(0,...observed.frames),over33ms:observed.frames.filter(n=>n>33.4).length}:null,longTasks:observed.longTasks,beforeCamera,afterCamera,requests:result.requests.slice(networkStart)});
+}
+async function goOverview(){await click('[data-route="overview"]');await waitFor("location.hash==='#overview'&&!document.querySelector('.jspace-map')");await delay(400);}
+async function goMaps(){await click('[data-route="universe-jspace"]');await waitFor("!!document.querySelector('[aria-label=\"Open map 100-system camera fixture\"]')");}
+async function retained(label){await delay(500);for(let i=0;i<2;i++){await call('HeapProfiler.collectGarbage');await delay(60);}return {label,heap:await call('Runtime.getHeapUsage'),dom:await call('Memory.getDOMCounters'),visible:await evaluate("({elements:document.querySelectorAll('*').length,mapNodes:document.querySelectorAll('.jspace-node').length,canvases:document.querySelectorAll('.universe-module canvas').length})")};}
+try{
+ seed();const deny=async url=>{result.external.push(String(url));throw Error('External fetch forbidden');};app=await startKairo({port:18692,streamPort:18693,dataDir,noSync:true,fetcher:deny,universe:{operations:{noSync:true,fetcher:deny},feeds:{noSync:true,fetcher:deny}}});
+ proc=spawn(process.env.KAIRO_CHROME_PATH||'/tmp/kairo-chromium',['--headless','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--no-first-run','--remote-debugging-port=0','--user-data-dir='+join(dir,'chrome'),'about:blank'],{stdio:['ignore','ignore','pipe']});
+ const endpoint=await new Promise((resolve,reject)=>{let log='';const timer=setTimeout(()=>reject(Error('Chrome launch timeout '+log.slice(-1000))),20000);proc.stderr.on('data',chunk=>{log+=chunk;const m=log.match(/DevTools listening on (ws:\/\/[^\s]+)/);if(m){clearTimeout(timer);resolve(m[1]);}});proc.on('error',reject);});
+ const target=await(await fetch('http://'+new URL(endpoint).host+'/json/new?about:blank',{method:'PUT'})).json();ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
+ ws.addEventListener('message',event=>{const m=JSON.parse(event.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p?.reject(Error(JSON.stringify(m.error))):p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')result.errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);else if(m.method==='Network.requestWillBeSent'&&m.params.request.url.includes('/api/'))result.requests.push({url:new URL(m.params.request.url).pathname+new URL(m.params.request.url).search,method:m.params.request.method});});
+ await call('Page.enable');await call('Runtime.enable');await call('Network.enable');await call('Network.setBlockedURLs',{urls:['https://*','http://images.evetech.net/*','http://web.ccpgamescdn.com/*']});await call('Performance.enable');result.environment.browser=await call('Browser.getVersion');
+ await call('Emulation.setDeviceMetricsOverride',{width:1600,height:1050,deviceScaleFactor:1,mobile:false});await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
+ await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__sample={active:false,framesOn:false};new PerformanceObserver(list=>{if(window.__sample.active)window.__sample.longTasks.push(...list.getEntries().map(e=>({start:e.startTime,duration:e.duration})));}).observe({entryTypes:['longtask']});"});
+ await call('Page.navigate',{url:app.origin+'/#universe-jspace'});await waitFor("document.querySelectorAll('.jspace-map-library-card').length===2&&!!document.querySelector('.connection-status.online')");
+ result.environment.webgl=await evaluate("(()=>{const c=document.createElement('canvas'),g=c.getContext('webgl');if(!g)return null;const e=g.getExtension('WEBGL_debug_renderer_info');return {vendor:e&&g.getParameter(e.UNMASKED_VENDOR_WEBGL),renderer:e&&g.getParameter(e.UNMASKED_RENDERER_WEBGL)};})()");
+ const sizes=process.argv.includes('--reverse')?[600,100]:[100,600];result.sizeOrder=sizes;
+ for(const n of sizes){await openMap(n);await fit();await click('[aria-label="Zoom in on chain"]');await delay(400);await fit();await sample('idle',n,()=>delay(1000),{frames:false});await sample('zoom',n,zoom);await sample('pan',n,pan);assert.deepEqual(semantic(app.core.universe.jspace.map(42,'camera-'+n)),fixtures.get(n),'Camera actions must not mutate map topology/coordinates');}
+ // Diagnostic observers and forced GC begin only after every timed window.
+ await openMap(600);await fit();await evaluate("(()=>{const root=document.querySelector('[data-testid=\"jspace-map\"]');window.__styleMutations={style:0,otherAttributes:0,byClass:{},sceneNodeChanges:0};window.__cameraMutationObserver=new MutationObserver(records=>{const s=window.__styleMutations;for(const r of records){if(r.type==='childList'){s.sceneNodeChanges+=r.addedNodes.length+r.removedNodes.length;continue;}if(r.attributeName==='style'){s.style++;const key=r.target.classList?.[0]||r.target.tagName;s.byClass[key]=(s.byClass[key]||0)+1;}else s.otherAttributes++;}});window.__cameraMutationObserver.observe(root,{subtree:true,attributes:true,childList:true});})()");
+ await zoom();await pan();result.diagnostics.styleMutations=await evaluate('window.__cameraMutationObserver.disconnect();window.__styleMutations');
+ result.diagnostics.active600=await retained('600-node map after camera samples');await goOverview();result.diagnostics.retainedBefore=await retained('Overview before two mount/unmount cycles');
+ for(let i=0;i<2;i++){await goMaps();await openMap(600);await goOverview();}result.diagnostics.retainedAfter=await retained('Overview after two mount/unmount cycles');
+ assert.equal(result.diagnostics.retainedAfter.visible.mapNodes,0);const requestStart=result.requests.length;await evaluate("window.dispatchEvent(new CustomEvent('kairo:universe-changed',{detail:{characterId:42}}))");await delay(300);result.diagnostics.afterUnmountRequests=result.requests.slice(requestStart);assert.equal(result.diagnostics.afterUnmountRequests.filter(r=>r.url.startsWith('/api/universe')).length,0,'Unmounted Maps must not retain refresh ownership');
+ assert.deepEqual(result.errors,[]);assert.deepEqual(result.external,[]);assert.equal(result.requests.filter(r=>r.url==='/api/events').length,1,'Exactly one dashboard EventSource');await verifySource(source);result.sourceVerified=true;result.complete=true;
+}catch(error){result.failure=error.stack;if(ws?.readyState===1)result.failureState=await evaluate("({body:document.body.innerText.slice(-10000),url:location.href})").catch(()=>null);throw error;}
+finally{result.endedAt=new Date().toISOString();await writeFile(output,JSON.stringify(result,null,2)+'\n');ws?.close();if(proc&&proc.exitCode===null&&proc.signalCode===null){const exited=new Promise(done=>proc.once('exit',done));proc.kill('SIGTERM');await Promise.race([exited,delay(1500)]);if(proc.exitCode===null&&proc.signalCode===null){proc.kill('SIGKILL');await Promise.race([exited,delay(500)]);}}await app?.close();await rm(dir,{recursive:true,force:true,maxRetries:5,retryDelay:100});console.log(JSON.stringify({run:result.run,complete:result.complete,seconds:(Date.parse(result.endedAt)-Date.parse(result.startedAt))/1000,samples:result.samples.length,output}));}

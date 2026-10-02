@@ -1,0 +1,200 @@
+name: Internal RC17 candidate comparison
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths: ['analysis/rc17/candidate-source.json']
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: 'Full commit SHA of the clean RC17 candidate'
+        type: string
+        required: true
+      suite:
+        description: 'Complete comparison or one focused lane'
+        type: choice
+        options: [all, maps, routes, backend, memory, mixed, restart, browser, browser-performance]
+        default: all
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-kairo-candidate-comparison
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: checkpoint
+          persist-credentials: false
+      - name: Validate pinned candidate request
+        id: request
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          REQUEST_SUITE: ${{ inputs.suite }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          if os.environ['GITHUB_EVENT_NAME'] == 'push':
+              request = json.loads(Path('analysis/rc17/candidate-source.json').read_text())
+              sha, suite = request['candidateCommit'], request.get('suite', 'all')
+          else:
+              sha, suite = os.environ['CANDIDATE_SHA'], os.environ['REQUEST_SUITE']
+          assert re.fullmatch('[0-9a-f]{40}', sha), 'Candidate must be a full lowercase commit SHA'
+          assert suite in ['all', 'maps', 'routes', 'backend', 'memory', 'mixed', 'restart', 'browser', 'browser-performance']
+          assert sha != '57c8dcc7fbd8fc2b62129498d1819050c78381a1', 'Candidate must differ from RC16'
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f'candidate_sha={sha}\nsuite={suite}\n')
+          print(json.dumps({'candidateCommit':sha, 'suite':suite}))
+          PY
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: BunBajiro/kairo
+          ref: 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+          path: rc16
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: BunBajiro/kairo
+          ref: ${{ steps.request.outputs.candidate_sha }}
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.19.0'
+      - name: Start fresh candidate evidence
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          REQUEST_SUITE: ${{ steps.request.outputs.suite }}
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, platform, shutil
+          from pathlib import Path
+          root = Path('analysis/rc17/raw/github')
+          shutil.rmtree(root, ignore_errors=True)
+          root.mkdir(parents=True)
+          harness = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('analysis/rc17/harness').rglob('*') if p.is_file()}
+          (root / 'run-provenance.json').write_text(json.dumps({
+              'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'runUrl': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+              'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'harnessCommit': os.environ['GITHUB_SHA'],
+              'baselineCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',
+              'candidateCommit': os.environ['CANDIDATE_SHA'],
+              'suite': os.environ['REQUEST_SUITE'], 'platform': platform.platform(),
+              'harnessSha256': harness,
+              'note': 'External harnesses only. Sequential measured lanes. Per-lane completeness and overall Actions conclusion remain authoritative; missing outputs are not passes.'
+          }, indent=2) + '\n')
+          PY
+      - name: Compile and check both source identities
+        id: compile
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+        run: |
+          cd "$GITHUB_WORKSPACE/rc16"
+          npm run install:ci
+          npm run build
+          cd "$GITHUB_WORKSPACE/candidate"
+          npm run install:ci
+          npm run build
+          cd "$GITHUB_WORKSPACE/checkpoint"
+          node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/rc16" analysis/rc17/raw/github/rc16-source.json 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+          node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/candidate-source.json "$CANDIDATE_SHA"
+      - name: Check candidate behaviour and types
+        id: correctness
+        working-directory: candidate
+        run: |
+          npm run check:kairo
+          npm run test:kairo
+      - name: Measure Maps with equivalent fixtures
+        if: ${{ !cancelled() && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'maps') }}
+        working-directory: checkpoint
+        run: |
+          for observation in baseline-diagnostics candidate-diagnostics baseline-1 candidate-1 candidate-2 baseline-2; do
+            case "$observation" in
+              baseline-*) export KAIRO_BENCH_SOURCE_ROOT="$GITHUB_WORKSPACE/rc16" KAIRO_SOURCE_MANIFEST="$PWD/analysis/rc17/raw/github/rc16-source.json"; extra=--baseline ;;
+              candidate-*) export KAIRO_BENCH_SOURCE_ROOT="$GITHUB_WORKSPACE/candidate" KAIRO_SOURCE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"; extra= ;;
+            esac
+            export KAIRO_BENCH_OUTPUT="$PWD/analysis/rc17/raw/github/maps/$observation"
+            case "$observation" in
+              *-diagnostics) node analysis/rc17/harness/maps-scaling.mjs diagnostics $extra ;;
+              *-2) node analysis/rc17/harness/maps-scaling.mjs timings $extra --reverse ;;
+              *) node analysis/rc17/harness/maps-scaling.mjs timings $extra ;;
+            esac
+          done
+      - name: Compare isolated itinerary scaling
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'routes') }}
+        working-directory: checkpoint
+        run: |
+          export KAIRO_BASELINE_MANIFEST="$PWD/analysis/rc17/raw/github/rc16-source.json"
+          export KAIRO_CANDIDATE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"
+          node analysis/rc17/harness/route-run.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/routes
+      - name: Compare corrected backend workloads in balanced order
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'backend') }}
+        working-directory: checkpoint
+        run: |
+          export KAIRO_BASELINE_MANIFEST="$PWD/analysis/rc17/raw/github/rc16-source.json"
+          export KAIRO_CANDIDATE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"
+          node analysis/rc17/harness/backend-run.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/backend
+          python3 analysis/rc17/harness/backend-summary.py analysis/rc17/raw/github/backend
+      - name: Compare bounded residency and not-due Sessions work
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'memory') }}
+        working-directory: checkpoint
+        run: |
+          export KAIRO_BASELINE_MANIFEST="$PWD/analysis/rc17/raw/github/rc16-source.json"
+          export KAIRO_CANDIDATE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"
+          node analysis/rc17/harness/memory-runner.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/memory all
+          python3 analysis/rc17/harness/memory-summarize.py analysis/rc17/raw/github/memory
+      - name: Check combined workloads and large-frame continuity
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'mixed') }}
+        working-directory: checkpoint
+        run: |
+          export KAIRO_PERF_APP_ROOT="$GITHUB_WORKSPACE/candidate"
+          export KAIRO_SOURCE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"
+          node analysis/rc17/harness/mixed-run.mjs analysis/rc17/raw/github/mixed
+          node analysis/rc17/harness/mixed-summary.mjs analysis/rc17/raw/github/mixed/mixed.json
+      - name: Check positive managed-restart ownership
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'restart') }}
+        working-directory: checkpoint
+        run: KAIRO_CANDIDATE_ROOT="$GITHUB_WORKSPACE/candidate" flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/harness/restart-candidate.mjs > analysis/rc17/raw/github/restart-candidate.json
+      - name: Check compiled Mapper preferences and geometry
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'browser') }}
+        working-directory: checkpoint
+        env:
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: analysis/rc17/raw/github/maps-browser
+        run: KAIRO_BENCH_REPO="$GITHUB_WORKSPACE/candidate" flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/harness/maps-correctness.mjs
+      - name: Compare compiled Maps camera work in balanced order
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'browser-performance') }}
+        working-directory: checkpoint
+        env:
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          export KAIRO_BASELINE_MANIFEST="$PWD/analysis/rc17/raw/github/rc16-source.json"
+          export KAIRO_CANDIDATE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"
+          node analysis/rc17/harness/browser-camera-run.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/browser-camera
+          node analysis/rc17/harness/browser-camera-summary.mjs analysis/rc17/raw/github/browser-camera
+      - name: Verify sources and compiled assets after all lanes
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' }}
+        working-directory: checkpoint
+        run: |
+          node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/rc16-source.json
+          node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/candidate-source.json
+      - name: Retain internal evidence only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-comparison-evidence
+          path: checkpoint/analysis/rc17/raw/github/
+          if-no-files-found: error
+          retention-days: 30

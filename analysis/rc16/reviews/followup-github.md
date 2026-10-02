@@ -1,8 +1,8 @@
-# Follow-up GitHub confirmation: partial evidence and confirmed stream failure
+# Follow-up GitHub evidence: stream failure and corrected backend confirmation
 
 The [first dedicated follow-up run](https://github.com/BunBajiro/kairo/actions/runs/36716150075) **failed** during the first quiet mixed-workload window. Maps, memory/Sessions and managed-restart lanes completed beforehand. Browser retention/replay and corrected legacy backend lanes were skipped by the workflow after that failure. This run is not a complete confirmation of the locally completed follow-up.
 
-**Update:** the [second run](https://github.com/BunBajiro/kairo/actions/runs/36718342385) also failed, but its separate trace now proves the production backlog cutoff destroyed the dashboard stream mid-asset frame. Its browser lane passed. The corrected backend comparison encountered a missing v0.7.3 build prerequisite and remains incomplete. Details below preserve both failed runs.
+**Update:** the [second run](https://github.com/BunBajiro/kairo/actions/runs/36718342385) also failed, but its separate trace now proves the production backlog cutoff destroyed the dashboard stream mid-asset frame. Its browser lane passed. The corrected backend comparison encountered a missing v0.7.3 build prerequisite in that attempt. A subsequent [focused backend run](https://github.com/BunBajiro/kairo/actions/runs/37073070547) now succeeds after repairing it. Details below preserve both failed full runs and the separate successful comparison.
 
 ## First-run identity and completeness
 
@@ -64,12 +64,55 @@ The corrected backend lane started but failed after the first v0.7.3 typical pro
 
 The overall second-run conclusion remains **failure**. Browser confirmation and a diagnosed transport defect are useful outcomes, but they do not make mixed continuity or the incomplete corrected comparison pass. Production transport acceptance must retain a bounded stalled-client policy while permitting a healthy reader to finish valid large frames; use explicit fresh-state/reconnect and privacy/ordering checks before declaring the issue fixed.
 
-## Focused workflow repair prepared
+## Focused workflow repair and successful third run
 
 The follow-up workflow now compiles both v0.7.3 and RC16 before the corrected
 backend runner. A manual `corrected-backend` suite, or a change to the explicit
 `analysis/rc16/followup/run-corrected.json` request file, reruns only that missing
 ABBA comparison. Updating other reports or workflows does not repeat the entire
-diagnostic suite. This is a prerequisite repair, not new measurement evidence;
-the two failed runs and their conclusions above remain unchanged until a new
-run and its complete retained artifact are reviewed.
+diagnostic suite. This repairs the prerequisite without changing application source or the frozen
+corrected backend harness. The two failed full runs and their conclusions above
+remain unchanged; the new run below covers only the corrected backend lane.
+
+
+[Run 37073070547](https://github.com/BunBajiro/kairo/actions/runs/37073070547)
+completed successfully at workflow commit
+`827a0475acc1457b1943d130bf92f66f38e93c2e`, job `111056768394`. Its
+[retained evidence](../raw/followup/github-run-37073070547/) includes the decoded
+job log, retrieval metadata and independent validation. Artifact `11256137304`
+is 48,345 bytes; archive SHA-256 is
+`43349f8792506740f4cf8f7a82a9d2c077989f0d94c9b09a4be915dd2f98c992`,
+checked before safe extraction. All 23 workflow-recorded harness hashes match.
+
+The corrected ABBA itself ran from 22:34:24.848 to 22:40:01.828 UTC on 2 October
+2026: 336.980 seconds on Node 24.19.0, Linux x64, two logical CPUs, AMD EPYC 7763.
+All four backend reports complete, with two profiles, eight direct operations,
+three warmups and ten measured samples per operation, plus authenticated HTTP
+and 35-second idle windows. Source verification records 195 v0.7.3 and 405
+protected RC16 blobs; both sources and all eight corrected helper hashes verify
+again at the end. Every RC16 idle observation records 12 successful real Universe
+ticks, zero rejected subtasks and zero external requests. Recomputing the summary
+from the four downloaded reports reproduces the archived summary exactly.
+
+| Corrected stress metric | CI v0.7.3 | CI RC16 | Local comparison, kept separate |
+|---|---:|---:|---|
+| Idle CPU (% one core) | 1.538–1.543 | 2.217–2.257 | 1.364–1.551 → 1.662–1.666 |
+| Idle RSS (MiB) | 107.63–125.97 | 222.00–222.06 | 101.57–101.70 → 171.95–172.55 |
+| Maximum idle loop delay (ms) | 41.98–42.86 | 80.81–83.23 | 39.55–42.30 → 58.92–59.64 |
+| `startKairo` startup (ms) | 26.18–26.72 | 216.96–223.96 | 15.99–16.15 → 154.20–164.52 |
+| State HTTP p50 (ms) | 49.64–51.37 | 48.45–50.38 | 39.68–40.07 → 41.95–44.06 |
+| Session report p50 (ms) | 113.70–116.26 | 112.74–113.26 | 90.28–103.56 → 86.74–95.24 |
+
+The repeated findings are higher RC16 startup, residency and idle stalls; their
+magnitudes depend on the host. CI state HTTP changes −2.16% by ratio of means,
+versus +7.84% locally, so no general HTTP slowdown is established. Session medians
+remain similar. CI's stress Session p95 increases 130.28–132.62 → 147.54–149.47 ms
+(+12.97% by ratio of means); with ten samples, p95 is the observed maximum. Retain
+that bounded tail signal in the candidate comparison without claiming a stable
+population percentile or attributing it to a specific subsystem.
+
+The successful lane supplies the previously missing healthy-background CI
+baseline. It does not test the mixed transport fix, produce an RC17 build, or
+clear either earlier full follow-up failure. The original database probes were
+not rerun. Full methods, typical-profile data and limitations are in the
+[corrected comparison](followup-legacy-corrected.md).
