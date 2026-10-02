@@ -4,9 +4,18 @@ on:
   push:
     branches: ['perf/rc16-checkpoint-v0.8.0']
     paths:
-      - 'analysis/rc16/followup/harness/**'
-      - '.github/workflows/rc16-followup.yml'
+      - 'analysis/rc16/followup/run-corrected.json'
   workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Run every follow-up lane or only the corrected backend comparison'
+        type: choice
+        options: [full, corrected-backend]
+        default: full
+        required: true
+
+env:
+  KAIRO_FOLLOWUP_SUITE: ${{ github.event_name == 'push' && 'corrected-backend' || inputs.suite }}
 
 permissions:
   contents: read
@@ -49,6 +58,7 @@ jobs:
               'runUrl': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
               'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
               'harnessCommit': os.environ['GITHUB_SHA'],
+              'suite': os.environ.get('KAIRO_FOLLOWUP_SUITE') or 'full',
               'applicationCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',
               'baselineCommit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',
               'platform': platform.platform(), 'harnessSha256': harness,
@@ -59,7 +69,7 @@ jobs:
         id: verify
         working-directory: checkpoint
         run: python3 analysis/rc16/harness/verify-source.py | tee analysis/rc16/raw/followup/source-verification.json
-      - name: Install locked dependencies and compile RC16
+      - name: Install locked dependencies and compile both applications
         id: compile
         run: |
           cd "$GITHUB_WORKSPACE/checkpoint"
@@ -67,22 +77,27 @@ jobs:
           npm run build
           cd "$GITHUB_WORKSPACE/kairo-v073"
           npm run install:ci
+          npm run build
       - name: Measure map independence and dense signatures
+        if: ${{ env.KAIRO_FOLLOWUP_SUITE != 'corrected-backend' }}
         working-directory: checkpoint
         run: |
           node analysis/rc16/followup/harness/maps-scaling.mjs diagnostics
           node analysis/rc16/followup/harness/maps-scaling.mjs timings
           node analysis/rc16/followup/harness/maps-scaling.mjs timings --reverse
       - name: Diagnose residency and longer session work
+        if: ${{ env.KAIRO_FOLLOWUP_SUITE != 'corrected-backend' }}
         working-directory: checkpoint
         run: |
           node analysis/rc16/followup/harness/memory-runner.mjs --run all
           python3 analysis/rc16/followup/harness/memory-summarize.py
       - name: Exercise managed activation with in-flight work
+        if: ${{ env.KAIRO_FOLLOWUP_SUITE != 'corrected-backend' }}
         working-directory: checkpoint
         run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc16/followup/harness/restart-integrated.mjs > analysis/rc16/raw/followup/restart-integrated.json
       - name: Measure combined operational workloads
         id: mixed
+        if: ${{ env.KAIRO_FOLLOWUP_SUITE != 'corrected-backend' }}
         working-directory: checkpoint
         run: |
           node analysis/rc16/followup/harness/mixed-run.mjs analysis/rc16/raw/followup/mixed
@@ -92,7 +107,7 @@ jobs:
         working-directory: checkpoint
         run: KAIRO_PERF_APP_ROOT="$PWD" node analysis/rc16/followup/harness/mixed-diagnostic/mixed-run.mjs analysis/rc16/raw/followup/mixed-diagnostic
       - name: Measure longer replay and browser ownership
-        if: ${{ always() && !cancelled() && steps.verify.outcome == 'success' && steps.compile.outcome == 'success' }}
+        if: ${{ always() && !cancelled() && env.KAIRO_FOLLOWUP_SUITE != 'corrected-backend' && steps.verify.outcome == 'success' && steps.compile.outcome == 'success' }}
         working-directory: checkpoint
         env:
           KAIRO_CHROME_PATH: /usr/bin/google-chrome
