@@ -1,7 +1,7 @@
 import {protectionLabel} from '../public/stream/protection.js';
 import {snapshotFresh} from './polling.mjs';
-const numberFormat=new Intl.NumberFormat('en-GB',{maximumFractionDigits:2});
-const format=n=>numberFormat.format(Number(n)||0);
+let numberFormat;
+const format=n=>(numberFormat??=new Intl.NumberFormat('en-GB',{maximumFractionDigits:2})).format(Number(n)||0);
 const percent=(start,end,now=Date.now())=>{const a=Date.parse(start),b=Date.parse(end);return Number.isFinite(a)&&b>a?Math.min(100,Math.max(0,(now-a)/(b-a)*100)):0;};
 export const bindingKinds=['none','goal.progress','session.elapsed','session.report','goals.completed','training.remaining','wallet.balance','pilot.ship','industry.next'];
 export const toastContexts={

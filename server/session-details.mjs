@@ -53,18 +53,17 @@ export function sessionRoute(store, session, start, end, names=store.get('names'
         const prior = legacySessionStart(store, session);
         if (prior) initial = {...prior, at:session.started, clipped:true, inferred:true};
     }
-    const points = [];
     if(initial&&rows[0]?.system_id===initial.system_id&&Date.parse(rows[0].at)===from)initial=null;
     if(initial){
         const system=store.db.prepare('SELECT name,region_id,region_name,security FROM universe_systems WHERE system_id=?').get(initial.system_id);
         if(system)initial={...initial,system_name:system.name,region_id:system.region_id??initial.region_id,region_name:system.region_name??initial.region_name,security:system.security??initial.security};
     }
-    for (const row of [...(initial?[initial]:[]), ...rows]) {
-        points.push({...row, name:row.name||row.system_name||names[row.system_id]||String(row.system_id)});
-    }
+    // SQL rows already carry their route fields; only the returned projection
+    // needs a display name. Do not clone every visit into an intermediate row.
+    const points = initial ? [initial, ...rows] : rows;
     return points.map((v,i) => {
         const entered = Math.max(from,Date.parse(v.at)), exited = Math.min(to,Date.parse(points[i+1]?.at||end));
-        return {id:v.id||'start', systemId:v.system_id, name:v.name, regionId:v.region_id, regionName:v.region_name, security:v.security, entered:iso(entered), exited:iso(exited), seconds:Math.max(0,Math.floor((exited-entered)/1000)), shipTypeId:v.ship_type_id, sovereignty_at_visit:recordedVisitSovereignty(v.sovereignty_at_visit,v.system_id), clipped:!!v.clipped, inferred:!!v.inferred, active:!session.ended && i===points.length-1};
+        return {id:v.id||'start', systemId:v.system_id, name:v.name||v.system_name||names[v.system_id]||String(v.system_id), regionId:v.region_id, regionName:v.region_name, security:v.security, entered:iso(entered), exited:iso(exited), seconds:Math.max(0,Math.floor((exited-entered)/1000)), shipTypeId:v.ship_type_id, sovereignty_at_visit:recordedVisitSovereignty(v.sovereignty_at_visit,v.system_id), clipped:!!v.clipped, inferred:!!v.inferred, active:!session.ended && i===points.length-1};
     });
 }
 

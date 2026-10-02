@@ -329,3 +329,51 @@ test('Pilot pause during enrichment suppresses delivery, and a fresh sample afte
     assert.equal(visits(store)[0].system_id, 32009999); assert.deepEqual(discoveredSystemIds(store, 42), [32009999]);
     assert.equal(store.db.prepare("SELECT COUNT(*) n FROM events WHERE type='location.changed'").get().n, 0, 'A same-system baseline is not a new transition');
 });
+
+
+test('route projection preserves frozen SQL/prepared rows, name precedence and synthetic-start metadata', async t => {
+    const { store } = await storage(t), unknown = 30009999;
+    const start = Object.freeze({ capturedAt: at(0), system: Object.freeze({ id: A, name: 'Recorded start' }), shipTypeId: 609 });
+    const s = session(store, 'projection', 42, start, at(0), at(5000));
+    const system = store.db.prepare('INSERT INTO universe_systems(system_id,name,region_id,region_name,security) VALUES(?,?,?,?,?)');
+    system.run(A, 'Catalogue start', 10000001, 'Start region', 0.5);
+    system.run(B, 'Catalogue destination', 10000002, 'Destination region', 0.7);
+    const recordedOwner = { owner_type: 'alliance', owner_id: 77, owner_name: ' Brave ', observed_at: at(0), recorded_at: at(1000), source: 'esi' };
+    const put = store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id,ship_type_id,sovereignty_at_visit) VALUES(?,?,?,?,?,?,?)');
+    const recorded = Number(put.run(42, B, 'Recorded destination', at(1000), s.id, 588, JSON.stringify(recordedOwner)).lastInsertRowid);
+    const catalogue = Number(put.run(42, B, '', at(1000), null, 588, null).lastInsertRowid);
+    const cached = Number(put.run(42, W, '', at(2000), s.id, null, null).lastInsertRowid);
+    const fallback = Number(put.run(42, unknown, '', at(3000), s.id, null, null).lastInsertRowid);
+    put.run(42, W, 'Before session', at(-1000), s.id, null, null);
+    put.run(43, W, 'Other pilot', at(1500), s.id, null, null);
+    put.run(42, W, 'Other session', at(2500), 'other', null, null);
+    put.run(42, W, 'Exact end', at(5000), s.id, null, null);
+    const freezeRows = rows => Object.freeze(rows.map(Object.freeze));
+    const prepared = freezeRows(store.db.prepare(`SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security
+        FROM visits v LEFT JOIN universe_systems u USING(system_id) ORDER BY at,id`).all());
+    const before = JSON.stringify(prepared), names = Object.freeze({ [A]: 'Cached start', [B]: 'Cached destination', [W]: 'Cached wormhole' });
+    const expected = [
+        { id: 'start', systemId: A, name: 'Recorded start', regionId: 10000001, regionName: 'Start region', security: 0.5,
+            entered: at(0), exited: at(1000), seconds: 1, shipTypeId: 609, sovereignty_at_visit: null, clipped: true, inferred: false, active: false },
+        { id: recorded, systemId: B, name: 'Recorded destination', regionId: 10000002, regionName: 'Destination region', security: 0.7,
+            entered: at(1000), exited: at(1000), seconds: 0, shipTypeId: 588,
+            sovereignty_at_visit: { owner_type: 'alliance', owner_id: 77, owner_name: 'Brave', observed_at: at(0), recorded_at: at(1000), source: 'esi' },
+            clipped: false, inferred: false, active: false },
+        { id: catalogue, systemId: B, name: 'Catalogue destination', regionId: 10000002, regionName: 'Destination region', security: 0.7,
+            entered: at(1000), exited: at(2000), seconds: 1, shipTypeId: 588, sovereignty_at_visit: null, clipped: false, inferred: false, active: false },
+        { id: cached, systemId: W, name: 'Cached wormhole', regionId: null, regionName: null, security: null,
+            entered: at(2000), exited: at(3000), seconds: 1, shipTypeId: null, sovereignty_at_visit: null, clipped: false, inferred: false, active: false },
+        { id: fallback, systemId: unknown, name: String(unknown), regionId: null, regionName: null, security: null,
+            entered: at(3000), exited: at(5000), seconds: 2, shipTypeId: null, sovereignty_at_visit: null, clipped: false, inferred: false, active: false },
+    ];
+    // Freeze the database result too, so the ordinary direct path cannot hide
+    // mutation behind the report's separate prepared-row filtering array.
+    const observedStore = { ...store, db: { prepare(sql) {
+        const statement = store.db.prepare(sql);
+        return /FROM visits v LEFT JOIN universe_systems/.test(sql)
+            ? { all: (...args) => freezeRows(statement.all(...args)) } : statement;
+    } } };
+    assert.deepEqual(sessionRoute(observedStore, s, start, s.ended, names), expected);
+    assert.deepEqual(sessionRoute(store, s, start, s.ended, names, prepared), expected);
+    assert.equal(JSON.stringify(prepared), before);
+});
