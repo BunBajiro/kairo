@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-10-02T23:08:24.137571+00:00",
+  "sourceBaseCommit": "059b95909dffa82f8b10dfd266954323147d7580",
+  "sourceState": "Working tree: only the two listed files differ from sourceBaseCommit; root will commit after this gate.",
+  "files": [
+    {
+      "path": "server/session-details.mjs",
+      "sha256": "d7dcc5accf52ae586395745e64ee3ecfefabcee0f78b04ba7b41f4c6d8cbf66b"
+    },
+    {
+      "path": "tests/kairo/session-travel.test.mjs",
+      "sha256": "26308ee95859e9bd3419d18c371ddc3fc5ec9d921ee4bda7e6c7405ba810db9d"
+    }
+  ],
+  "patch": "/tmp/kairo-session-route.patch",
+  "scope": "Remove intermediate per-visit copies and resolve the same display-name fallback in final route output; all SQL, timestamp, ownership and ordering logic unchanged.",
+  "checks": [
+    {
+      "command": "node --test --test-isolation=none --test-reporter=spec tests/kairo/session-travel.test.mjs tests/kairo/sessions.test.mjs tests/kairo/session-replay.test.mjs tests/kairo/session-replay-sovereignty.test.mjs tests/kairo/visit-sovereignty.test.mjs",
+      "passed": 47,
+      "failed": 0,
+      "exitCode": 0,
+      "log": "focused.log"
+    },
+    {
+      "command": "node --test --test-isolation=none --test-reporter=spec tests/kairo/*.test.mjs",
+      "passed": 771,
+      "failed": 0,
+      "exitCode": 0,
+      "log": "full.log",
+      "environment": "Local loopback HTTP tests allowed by permission escalation."
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "performance": "Not measured here; retained pre-fix paired results and final-candidate comparison remain separate."
+}

@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-02T23:09:51.758903+00:00",
+  "sourceBaseCommit": "059b95909dffa82f8b10dfd266954323147d7580",
+  "sourceState": "Working tree: the three listed files differ from sourceBaseCommit; root will commit after this gate.",
+  "files": [
+    {
+      "path": "server/projections.mjs",
+      "sha256": "6a0562b2dd1741b51cfdb840860b5e4cf6f6c946842f6d6549632d4e78d073dc"
+    },
+    {
+      "path": "server/session-details.mjs",
+      "sha256": "d7dcc5accf52ae586395745e64ee3ecfefabcee0f78b04ba7b41f4c6d8cbf66b"
+    },
+    {
+      "path": "tests/kairo/session-travel.test.mjs",
+      "sha256": "26308ee95859e9bd3419d18c371ddc3fc5ec9d921ee4bda7e6c7405ba810db9d"
+    }
+  ],
+  "scope": "Combined route allocation patch plus lazy initialisation of the shared number formatter.",
+  "command": "node --test --test-isolation=none --test-reporter=spec tests/kairo/*.test.mjs",
+  "passed": 771,
+  "failed": 0,
+  "exitCode": 0,
+  "log": "final-combined.log",
+  "environment": "Local loopback HTTP tests allowed by permission escalation.",
+  "diffCheckExitCode": 0,
+  "performance": "Not measured here; final paired comparisons remain separate."
+}

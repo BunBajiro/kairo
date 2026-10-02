@@ -1,0 +1,133 @@
+{
+  "build": "candidate",
+  "mode": "ordinary",
+  "sourceCommit": "05d0d4b36c154329006d6772769063db874762da",
+  "sourceRoot": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+  "sourceFingerprint": "b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82",
+  "sourceDirty": false,
+  "checkedSourceFiles": 439,
+  "checkedBuildFiles": 24,
+  "endVerified": true,
+  "harness": [
+    {
+      "path": "analysis/rc17/harness/memory-common.mjs",
+      "sha256": "a533451312a4dcda3fdf3b91454a6b46d5f847f8eae4a595322209f121455e87"
+    },
+    {
+      "path": "analysis/rc17/harness/source-manifest.mjs",
+      "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-residency.mjs",
+      "sha256": "35e48cd2cde6ebf8d49e51eee9916fc4227f7f6beeb1815abe9a1ea282ff3fac"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-runner.mjs",
+      "sha256": "4fe7bc84c5f8b32a9b8db12bd6f6350e924f4559137cf6db02b28e49558f9734"
+    }
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9
+  },
+  "recordedAt": "2026-10-02T23:26:50.753Z",
+  "methodology": "Fresh process; no forced GC. Phase markers reflect RSS/heap allocation snapshots and elapsed including imported module work, not end-user cold disk startup. No HTTP server/supervisor started.",
+  "complete": true,
+  "fixture": {
+    "pilots": 4,
+    "noSync": true,
+    "publicActivityRows": 0,
+    "liveSessions": 0,
+    "mapNodes": 0
+  },
+  "networkAttempts": 0,
+  "completed": {
+    "universeState": 0,
+    "jspaceState": 0,
+    "lightDetails": 0,
+    "celestialDetails": 0,
+    "coreRecreationCycles": 0
+  },
+  "markers": [
+    {
+      "name": "harness_baseline",
+      "rss": 32899072,
+      "heapTotal": 8122368,
+      "heapUsed": 5559200,
+      "external": 2411012,
+      "arrayBuffers": 144031,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 0.4492839999999987
+    },
+    {
+      "name": "store_module_imported",
+      "rss": 33161216,
+      "heapTotal": 8122368,
+      "heapUsed": 5718832,
+      "external": 2411111,
+      "arrayBuffers": 144031,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 0.9868509999999979
+    },
+    {
+      "name": "store_open_4_pilots_seeded",
+      "rss": 35520512,
+      "heapTotal": 8122368,
+      "heapUsed": 5778864,
+      "external": 2411111,
+      "arrayBuffers": 144031,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 4.452788999999996
+    },
+    {
+      "name": "core_module_imported",
+      "rss": 57847808,
+      "heapTotal": 21995520,
+      "heapUsed": 16443856,
+      "external": 2578558,
+      "arrayBuffers": 211587,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 44.023177000000004
+    },
+    {
+      "name": "core_created",
+      "rss": 120766464,
+      "heapTotal": 102363136,
+      "heapUsed": 56704528,
+      "external": 4826272,
+      "arrayBuffers": 1086202,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 120.611084
+    },
+    {
+      "name": "core_closed_reference_released",
+      "rss": 120897536,
+      "heapTotal": 102625280,
+      "heapUsed": 56790856,
+      "external": 4826272,
+      "arrayBuffers": 1086202,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 0.8003500000000088
+    },
+    {
+      "name": "store_closed_reference_released",
+      "rss": 120897536,
+      "heapTotal": 102625280,
+      "heapUsed": 56794080,
+      "external": 4826272,
+      "arrayBuffers": 1086202,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sincePreviousMarkerMs": 0.542632999999995
+    }
+  ]
+}

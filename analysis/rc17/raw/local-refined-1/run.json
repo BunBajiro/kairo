@@ -1,0 +1,269 @@
+{
+  "startedAt": "2026-10-02T23:17:06.024657+00:00",
+  "complete": false,
+  "lanes": [
+    "maps",
+    "routes",
+    "memory",
+    "mixed",
+    "restart",
+    "browser",
+    "browser-performance"
+  ],
+  "steps": [
+    {
+      "label": "baseline-manifest",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/source-manifest.mjs",
+        "capture",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "57c8dcc7fbd8fc2b62129498d1819050c78381a1"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.2650825709997662
+    },
+    {
+      "label": "candidate-manifest",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/source-manifest.mjs",
+        "capture",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json",
+        "05d0d4b36c154329006d6772769063db874762da"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.26571364699975675
+    },
+    {
+      "label": "maps-baseline-diagnostics",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-scaling.mjs",
+        "diagnostics",
+        "--baseline"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_SOURCE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "KAIRO_BENCH_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps/baseline-diagnostics"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 2.2209746799999266
+    },
+    {
+      "label": "maps-candidate-diagnostics",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-scaling.mjs",
+        "diagnostics"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_SOURCE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json",
+        "KAIRO_BENCH_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps/candidate-diagnostics"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 1.7193922299993574
+    },
+    {
+      "label": "maps-baseline-1",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-scaling.mjs",
+        "timings",
+        "--baseline"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_SOURCE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "KAIRO_BENCH_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps/baseline-1"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 7.743725149999591
+    },
+    {
+      "label": "maps-candidate-1",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-scaling.mjs",
+        "timings"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_SOURCE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json",
+        "KAIRO_BENCH_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps/candidate-1"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 3.6749630019994584
+    },
+    {
+      "label": "maps-candidate-2",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-scaling.mjs",
+        "timings",
+        "--reverse"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_SOURCE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json",
+        "KAIRO_BENCH_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps/candidate-2"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 3.7785461819994453
+    },
+    {
+      "label": "maps-baseline-2",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-scaling.mjs",
+        "timings",
+        "--baseline",
+        "--reverse"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_SOURCE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "KAIRO_BENCH_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps/baseline-2"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 7.593210596999597
+    },
+    {
+      "label": "routes",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/route-run.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/routes"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BASELINE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "KAIRO_CANDIDATE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 28.848493376999613
+    },
+    {
+      "label": "memory",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/memory-runner.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/memory",
+        "all"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BASELINE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "KAIRO_CANDIDATE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 17.819329461000052
+    },
+    {
+      "label": "memory-summary",
+      "command": [
+        "python3",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/memory-summarize.py",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/memory"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.06486373400002776
+    },
+    {
+      "label": "mixed",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/mixed-run.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/mixed"
+      ],
+      "environmentOverrides": {
+        "KAIRO_PERF_APP_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "KAIRO_SOURCE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 116.5600778830003
+    },
+    {
+      "label": "mixed-summary",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/mixed-summary.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/mixed/mixed.json"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.06448497800010955
+    },
+    {
+      "label": "restart",
+      "command": [
+        "flock",
+        "/tmp/kairo-rc16-benchmark.lock",
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/restart-candidate.mjs"
+      ],
+      "environmentOverrides": {
+        "KAIRO_CANDIDATE_ROOT": "/workspace/scratch/a2f3334402fc/kairo-rc17"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 2.7270408619997397
+    },
+    {
+      "label": "browser",
+      "command": [
+        "flock",
+        "/tmp/kairo-rc16-benchmark.lock",
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/maps-correctness.mjs"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BENCH_REPO": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "KAIRO_BROWSER_OUTPUT": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/maps-browser"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 18.26174365999941
+    },
+    {
+      "label": "browser-performance",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/browser-camera-run.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/browser-camera"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BASELINE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/baseline-source.json",
+        "KAIRO_CANDIDATE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/candidate-source.json"
+      },
+      "complete": true,
+      "exitCode": 1,
+      "elapsedSeconds": 18.49076161299945
+    }
+  ],
+  "finishedAt": "2026-10-02T23:20:56.133457+00:00"
+}

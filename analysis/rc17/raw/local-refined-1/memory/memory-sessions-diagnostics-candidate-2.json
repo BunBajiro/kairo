@@ -1,0 +1,437 @@
+{
+  "build": "candidate",
+  "mode": "diagnostics",
+  "sourceCommit": "05d0d4b36c154329006d6772769063db874762da",
+  "sourceRoot": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+  "sourceFingerprint": "b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82",
+  "sourceDirty": false,
+  "checkedSourceFiles": 439,
+  "checkedBuildFiles": 24,
+  "endVerified": true,
+  "harness": [
+    {
+      "path": "analysis/rc17/harness/memory-common.mjs",
+      "sha256": "a533451312a4dcda3fdf3b91454a6b46d5f847f8eae4a595322209f121455e87"
+    },
+    {
+      "path": "analysis/rc17/harness/source-manifest.mjs",
+      "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-sessions.mjs",
+      "sha256": "8bd8c2b983e7f81ffd1ef715a97cb272aa4abd27dc3bcd63b8d1b1d14e061bc0"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-runner.mjs",
+      "sha256": "32160101760ac2eeafa93055c45e81bc78af2642a3f2f4a47609854f9cb942b8"
+    },
+    {
+      "path": "analysis/rc17/harness/legacy-discovery-fixture.mjs",
+      "sha256": "486671013d230998828929e24e4fd83ee33e765a052dfffb5d22e03efce4545b"
+    }
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9
+  },
+  "recordedAt": "2026-10-02T23:18:19.672Z",
+  "methodology": "SQL diagnostic only: three sequential invocations per operation; query rows reflect returned rows, not pages scanned; no latency conclusions.",
+  "interpretation": "Repeated visits to the same system are distinct timed presence windows and remain in the route. Combat request groups already deduplicate system/year/month. Live sync calls are sequential with a future feed deadline. Candidate diagnostics require zero visit rows while preserving ordinary route/group semantics; due/force/error behaviour is covered by production regression tests. Cross-build semantic equality covers system/time/duration/active and combat groups only, not all report/replay/sovereignty fields or events.",
+  "complete": true,
+  "networkAttempts": 0,
+  "results": [
+    {
+      "fixture": {
+        "visits": 100,
+        "pilots": 1,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 1.6666666666666667,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 100,
+      "groupCount": 100,
+      "routeBytes": 30682,
+      "semantic": {
+        "route": "97248a2fddbef3d9813cb8e6cb91602a5cb541b704f07eb3b9bba0e983285f73",
+        "groups": "41c91eea0b81a1da0766cfb4d1fffa9d1a055264bea9119a1bbd69ba8c558e03"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 300,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 300
+        },
+        {
+          "name": "route_and_combat_groups",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 300,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 300
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "repetitions": 3,
+          "sql": {},
+          "visitRows": 0
+        }
+      ],
+      "referenceWindowQueryPlan": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+        },
+        {
+          "id": 17,
+          "parent": 0,
+          "notused": 45,
+          "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+        },
+        {
+          "id": 48,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 1000,
+        "pilots": 1,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 16.666666666666668,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 1000,
+      "groupCount": 100,
+      "routeBytes": 307793,
+      "semantic": {
+        "route": "f935ea1a2d57f5a683cb4fb22ccd98a926a3b19461a892ca698ad7c4f5bc4b9b",
+        "groups": "7a35ce218773208e6b02d08e294946c8bc8c0aafd340b9f705028fec278d5cb6"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 3000,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 3000
+        },
+        {
+          "name": "route_and_combat_groups",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 3000,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 3000
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "repetitions": 3,
+          "sql": {},
+          "visitRows": 0
+        }
+      ],
+      "referenceWindowQueryPlan": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+        },
+        {
+          "id": 17,
+          "parent": 0,
+          "notused": 45,
+          "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+        },
+        {
+          "id": 48,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 10000,
+        "pilots": 1,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 166.66666666666666,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 10000,
+      "groupCount": 100,
+      "routeBytes": 3087894,
+      "semantic": {
+        "route": "4f3d270ef06ba86b117967ca7812bb0b1974c4b7f879445ff093ebd49fa72888",
+        "groups": "3e392a0828093345e2d314300b4f1222a90a02005465dd6dbde24b558eabf3e2"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 30000,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 30000
+        },
+        {
+          "name": "route_and_combat_groups",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 30000,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 30000
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "repetitions": 3,
+          "sql": {},
+          "visitRows": 0
+        }
+      ],
+      "referenceWindowQueryPlan": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+        },
+        {
+          "id": 17,
+          "parent": 0,
+          "notused": 45,
+          "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+        },
+        {
+          "id": 48,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 100,
+        "pilots": 1,
+        "olderVisits": 10000,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 1.6666666666666667,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 100,
+      "groupCount": 100,
+      "routeBytes": 30682,
+      "semantic": {
+        "route": "97248a2fddbef3d9813cb8e6cb91602a5cb541b704f07eb3b9bba0e983285f73",
+        "groups": "41c91eea0b81a1da0766cfb4d1fffa9d1a055264bea9119a1bbd69ba8c558e03"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 300,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 300
+        },
+        {
+          "name": "route_and_combat_groups",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 300,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 300
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "repetitions": 3,
+          "sql": {},
+          "visitRows": 0
+        }
+      ],
+      "referenceWindowQueryPlan": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+        },
+        {
+          "id": 17,
+          "parent": 0,
+          "notused": 45,
+          "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+        },
+        {
+          "id": 48,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 1000,
+        "pilots": 4,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 16.666666666666668,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 400,
+        "seededMemberships": 400,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 1000,
+      "groupCount": 100,
+      "routeBytes": 307793,
+      "semantic": {
+        "route": "f935ea1a2d57f5a683cb4fb22ccd98a926a3b19461a892ca698ad7c4f5bc4b9b",
+        "groups": "7a35ce218773208e6b02d08e294946c8bc8c0aafd340b9f705028fec278d5cb6"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 3000,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 3000
+        },
+        {
+          "name": "route_and_combat_groups",
+          "repetitions": 3,
+          "sql": {
+            "SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security\n        FROM visits v LEFT JOIN universe_systems u USING(system_id)\n        WHERE character_id=? AND at>=? AND at<?\n        AND (session_id=? OR session_id IS NULL) ORDER BY at,id": {
+              "calls": 3,
+              "rows": 3000,
+              "bodyBytes": 0
+            }
+          },
+          "visitRows": 3000
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "repetitions": 3,
+          "sql": {},
+          "visitRows": 0
+        }
+      ],
+      "referenceWindowQueryPlan": [
+        {
+          "id": 5,
+          "parent": 0,
+          "notused": 49,
+          "detail": "SEARCH v USING INDEX idx_visits_character_at (character_id=? AND at>? AND at<?)"
+        },
+        {
+          "id": 17,
+          "parent": 0,
+          "notused": 45,
+          "detail": "SEARCH u USING INTEGER PRIMARY KEY (rowid=?) LEFT-JOIN"
+        },
+        {
+          "id": 48,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        }
+      ]
+    }
+  ]
+}

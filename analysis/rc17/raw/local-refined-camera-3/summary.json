@@ -1,0 +1,944 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "baseline": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+      "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "fingerprint": "02558f159d1fea0b7c1670856e40e52894dd62ea76c733c929cc6d9c4af43a85",
+      "dirty": false
+    },
+    "candidate": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+      "commit": "05d0d4b36c154329006d6772769063db874762da",
+      "fingerprint": "b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82",
+      "dirty": false
+    }
+  },
+  "fixtureDigest": "1bdcd7885c7b62164663e1b21515c9a174e047f32db858cc8d6cb187c885077f",
+  "rows": [
+    {
+      "nodes": 100,
+      "scenario": "idle",
+      "metric": "taskMs",
+      "baseline": [
+        2.2839999999999527,
+        2.3199999999992116
+      ],
+      "candidate": [
+        1.8160000000000398,
+        3.9370000000005234
+      ],
+      "baselineMean": 2.301999999999582,
+      "candidateMean": 2.8765000000002816,
+      "deltaPercent": 24.956559513501464
+    },
+    {
+      "nodes": 100,
+      "scenario": "idle",
+      "metric": "scriptMs",
+      "baseline": [
+        0.39000000000000146,
+        0.28600000000000847
+      ],
+      "candidate": [
+        0.3160000000000107,
+        0.3429999999999822
+      ],
+      "baselineMean": 0.33800000000000496,
+      "candidateMean": 0.32949999999999646,
+      "deltaPercent": -2.514792899410767
+    },
+    {
+      "nodes": 100,
+      "scenario": "idle",
+      "metric": "recalcMs",
+      "baseline": [
+        0,
+        0
+      ],
+      "candidate": [
+        0,
+        0
+      ],
+      "baselineMean": 0,
+      "candidateMean": 0,
+      "deltaPercent": null
+    },
+    {
+      "nodes": 100,
+      "scenario": "idle",
+      "metric": "layoutMs",
+      "baseline": [
+        0.19500000000000073,
+        0.17400000000000748
+      ],
+      "candidate": [
+        0.20500000000001073,
+        0.8110000000000062
+      ],
+      "baselineMean": 0.1845000000000041,
+      "candidateMean": 0.5080000000000084,
+      "deltaPercent": 175.3387533875323
+    },
+    {
+      "nodes": 100,
+      "scenario": "idle",
+      "metric": "windowMs",
+      "baseline": [
+        1002.173041,
+        1003.6234109999987
+      ],
+      "candidate": [
+        1002.7744079999998,
+        1001.8622379999997
+      ],
+      "baselineMean": 1002.8982259999993,
+      "candidateMean": 1002.3183229999997,
+      "deltaPercent": -0.05782271669902972
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "taskMs",
+      "baseline": [
+        1058.7289999999998,
+        1139.3869999999993
+      ],
+      "candidate": [
+        689.1769999999999,
+        742.3380000000002
+      ],
+      "baselineMean": 1099.0579999999995,
+      "candidateMean": 715.7575,
+      "deltaPercent": -34.87536599524317
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "scriptMs",
+      "baseline": [
+        165.56399999999994,
+        137.8410000000001
+      ],
+      "candidate": [
+        13.471999999999984,
+        10.52400000000009
+      ],
+      "baselineMean": 151.70250000000001,
+      "candidateMean": 11.998000000000037,
+      "deltaPercent": -92.09109935564672
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "recalcMs",
+      "baseline": [
+        599.3100000000001,
+        598.4419999999999
+      ],
+      "candidate": [
+        346.05899999999997,
+        357.12900000000025
+      ],
+      "baselineMean": 598.876,
+      "candidateMean": 351.5940000000001,
+      "deltaPercent": -41.291018508004974
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "layoutMs",
+      "baseline": [
+        6.196,
+        5.985999999999992
+      ],
+      "candidate": [
+        6.0749999999999975,
+        7.314999999999988
+      ],
+      "baselineMean": 6.090999999999996,
+      "candidateMean": 6.694999999999993,
+      "deltaPercent": 9.916269906419274
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "windowMs",
+      "baseline": [
+        1849.5278490000005,
+        1857.690944
+      ],
+      "candidate": [
+        1844.5207749999995,
+        1842.946100000001
+      ],
+      "baselineMean": 1853.6093965000002,
+      "candidateMean": 1843.7334375000003,
+      "deltaPercent": -0.5327961229937617
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "raf.p95",
+      "baseline": [
+        33.40000000000009,
+        33.399999999999636
+      ],
+      "candidate": [
+        33.30000000000018,
+        33.399999999999636
+      ]
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "raf.max",
+      "baseline": [
+        66.60000000000036,
+        50.100000000000364
+      ],
+      "candidate": [
+        66.69999999999982,
+        50
+      ]
+    },
+    {
+      "nodes": 100,
+      "scenario": "zoom",
+      "metric": "raf.over33ms",
+      "baseline": [
+        6,
+        1
+      ],
+      "candidate": [
+        3,
+        1
+      ]
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "taskMs",
+      "baseline": [
+        317.18499999999983,
+        313.1409999999999
+      ],
+      "candidate": [
+        244.29100000000003,
+        251.43499999999986
+      ],
+      "baselineMean": 315.1629999999999,
+      "candidateMean": 247.86299999999994,
+      "deltaPercent": -21.354029502194095
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "scriptMs",
+      "baseline": [
+        110.1700000000001,
+        100.64399999999995
+      ],
+      "candidate": [
+        23.318000000000005,
+        20.092
+      ],
+      "baselineMean": 105.40700000000002,
+      "candidateMean": 21.705000000000002,
+      "deltaPercent": -79.40838843720057
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "recalcMs",
+      "baseline": [
+        20.25600000000005,
+        20.500000000000185
+      ],
+      "candidate": [
+        20.624000000000088,
+        22.675999999999696
+      ],
+      "baselineMean": 20.378000000000117,
+      "candidateMean": 21.649999999999892,
+      "deltaPercent": 6.242025714004162
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "layoutMs",
+      "baseline": [
+        1.899999999999999,
+        1.7320000000000113
+      ],
+      "candidate": [
+        2.451999999999996,
+        2.704000000000012
+      ],
+      "baselineMean": 1.8160000000000052,
+      "candidateMean": 2.578000000000004,
+      "deltaPercent": 41.9603524229073
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "windowMs",
+      "baseline": [
+        1146.3113220000005,
+        1147.5379200000007
+      ],
+      "candidate": [
+        1038.7043080000003,
+        1022.9466680000005
+      ],
+      "baselineMean": 1146.9246210000006,
+      "candidateMean": 1030.8254880000004,
+      "deltaPercent": -10.122647197055867
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "raf.p95",
+      "baseline": [
+        16.800000000000182,
+        16.700000000000728
+      ],
+      "candidate": [
+        16.800000000000182,
+        16.700000000000728
+      ]
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "raf.max",
+      "baseline": [
+        16.800000000000182,
+        16.80000000000109
+      ],
+      "candidate": [
+        16.800000000000182,
+        16.80000000000109
+      ]
+    },
+    {
+      "nodes": 100,
+      "scenario": "pan",
+      "metric": "raf.over33ms",
+      "baseline": [
+        0,
+        0
+      ],
+      "candidate": [
+        0,
+        0
+      ]
+    },
+    {
+      "nodes": 600,
+      "scenario": "idle",
+      "metric": "taskMs",
+      "baseline": [
+        19.6139999999998,
+        5.278000000000116
+      ],
+      "candidate": [
+        18.395999999999635,
+        3.530000000000033
+      ],
+      "baselineMean": 12.445999999999957,
+      "candidateMean": 10.962999999999834,
+      "deltaPercent": -11.915474851358898
+    },
+    {
+      "nodes": 600,
+      "scenario": "idle",
+      "metric": "scriptMs",
+      "baseline": [
+        0.2809999999999757,
+        0.34000000000000696
+      ],
+      "candidate": [
+        0.32399999999999096,
+        0.3610000000000002
+      ],
+      "baselineMean": 0.31049999999999134,
+      "candidateMean": 0.3424999999999956,
+      "deltaPercent": 10.305958132046733
+    },
+    {
+      "nodes": 600,
+      "scenario": "idle",
+      "metric": "recalcMs",
+      "baseline": [
+        0,
+        0
+      ],
+      "candidate": [
+        0,
+        0
+      ],
+      "baselineMean": 0,
+      "candidateMean": 0,
+      "deltaPercent": null
+    },
+    {
+      "nodes": 600,
+      "scenario": "idle",
+      "metric": "layoutMs",
+      "baseline": [
+        0.16700000000000048,
+        0.16599999999999948
+      ],
+      "candidate": [
+        0.18899999999999473,
+        0.20699999999999885
+      ],
+      "baselineMean": 0.16649999999999998,
+      "candidateMean": 0.1979999999999968,
+      "deltaPercent": 18.918918918916994
+    },
+    {
+      "nodes": 600,
+      "scenario": "idle",
+      "metric": "windowMs",
+      "baseline": [
+        1002.8696830000008,
+        1003.9474819999996
+      ],
+      "candidate": [
+        1002.308896999999,
+        1002.3187699999999
+      ],
+      "baselineMean": 1003.4085825000002,
+      "candidateMean": 1002.3138334999994,
+      "deltaPercent": -0.10910301337797579
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "taskMs",
+      "baseline": [
+        2518.592,
+        2226.9530000000004
+      ],
+      "candidate": [
+        1169.5600000000002,
+        1051.288
+      ],
+      "baselineMean": 2372.7725,
+      "candidateMean": 1110.424,
+      "deltaPercent": -53.20141311482664
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "scriptMs",
+      "baseline": [
+        342.45000000000016,
+        313.7499999999999
+      ],
+      "candidate": [
+        16.41900000000002,
+        8.473999999999982
+      ],
+      "baselineMean": 328.1,
+      "candidateMean": 12.4465,
+      "deltaPercent": -96.20649192319415
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "recalcMs",
+      "baseline": [
+        1264.1209999999999,
+        1161.3500000000001
+      ],
+      "candidate": [
+        681.9170000000001,
+        600.6439999999999
+      ],
+      "baselineMean": 1212.7355,
+      "candidateMean": 641.2805000000001,
+      "deltaPercent": -47.12115708660297
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "layoutMs",
+      "baseline": [
+        4.910000000000012,
+        2.9860000000000024
+      ],
+      "candidate": [
+        4.036999999999999,
+        3.4780000000000086
+      ],
+      "baselineMean": 3.948000000000007,
+      "candidateMean": 3.757500000000004,
+      "deltaPercent": -4.825227963525913
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "windowMs",
+      "baseline": [
+        2545.636076999999,
+        2279.2986490000003
+      ],
+      "candidate": [
+        1863.7507420000002,
+        1867.4961979999998
+      ],
+      "baselineMean": 2412.4673629999998,
+      "candidateMean": 1865.62347,
+      "deltaPercent": -22.6674110243704
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "raf.p95",
+      "baseline": [
+        216.60000000000036,
+        183.40000000000055
+      ],
+      "candidate": [
+        150,
+        116.69999999999982
+      ]
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "raf.max",
+      "baseline": [
+        250,
+        216.69999999999982
+      ],
+      "candidate": [
+        166.6999999999989,
+        149.90000000000055
+      ]
+    },
+    {
+      "nodes": 600,
+      "scenario": "zoom",
+      "metric": "raf.over33ms",
+      "baseline": [
+        12,
+        11
+      ],
+      "candidate": [
+        7,
+        7
+      ]
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "taskMs",
+      "baseline": [
+        2288.8069999999984,
+        2217.236
+      ],
+      "candidate": [
+        917.0449999999998,
+        1002.123
+      ],
+      "baselineMean": 2253.021499999999,
+      "candidateMean": 959.584,
+      "deltaPercent": -57.40901717981828
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "scriptMs",
+      "baseline": [
+        671.1199999999999,
+        609.6650000000001
+      ],
+      "candidate": [
+        72.15099999999997,
+        75.712
+      ],
+      "baselineMean": 640.3924999999999,
+      "candidateMean": 73.93149999999999,
+      "deltaPercent": -88.45528328329891
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "recalcMs",
+      "baseline": [
+        109.36000000000013,
+        101.35400000000017
+      ],
+      "candidate": [
+        91.54799999999996,
+        106.59100000000011
+      ],
+      "baselineMean": 105.35700000000014,
+      "candidateMean": 99.06950000000003,
+      "deltaPercent": -5.96780470210817
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "layoutMs",
+      "baseline": [
+        3.485000000000002,
+        2.9659999999999966
+      ],
+      "candidate": [
+        3.0940000000000136,
+        3.4170000000000034
+      ],
+      "baselineMean": 3.2254999999999994,
+      "candidateMean": 3.2555000000000085,
+      "deltaPercent": 0.9300883583943209
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "windowMs",
+      "baseline": [
+        2523.310681000001,
+        2493.923885
+      ],
+      "candidate": [
+        1271.377919999999,
+        1395.0617490000004
+      ],
+      "baselineMean": 2508.6172830000005,
+      "candidateMean": 1333.2198344999997,
+      "deltaPercent": -46.8543949077146
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "raf.p95",
+      "baseline": [
+        116.60000000000036,
+        100.09999999999854
+      ],
+      "candidate": [
+        33.399999999999636,
+        50
+      ]
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "raf.max",
+      "baseline": [
+        149.89999999999964,
+        133.39999999999964
+      ],
+      "candidate": [
+        133.20000000000073,
+        116.59999999999945
+      ]
+    },
+    {
+      "nodes": 600,
+      "scenario": "pan",
+      "metric": "raf.over33ms",
+      "baseline": [
+        26,
+        27
+      ],
+      "candidate": [
+        3,
+        7
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "run": "baseline-1",
+      "styleMutations": {
+        "style": 100,
+        "otherAttributes": 216,
+        "byClass": {
+          "jspace-map-world": 37,
+          "jspace-map-viewport": 63
+        },
+        "sceneNodeChanges": 0
+      },
+      "active600": {
+        "label": "600-node map after camera samples",
+        "heap": {
+          "usedSize": 23192372,
+          "totalSize": 23875584,
+          "embedderHeapUsedSize": 58732096,
+          "backingStorageSize": 1698201
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 23327,
+          "jsEventListeners": 5054
+        },
+        "visible": {
+          "elements": 18964,
+          "mapNodes": 600,
+          "canvases": 0
+        }
+      },
+      "retainedBefore": {
+        "label": "Overview before two mount/unmount cycles",
+        "heap": {
+          "usedSize": 6294132,
+          "totalSize": 6950912,
+          "embedderHeapUsedSize": 4261880,
+          "backingStorageSize": 1674210
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "retainedAfter": {
+        "label": "Overview after two mount/unmount cycles",
+        "heap": {
+          "usedSize": 6945540,
+          "totalSize": 7475200,
+          "embedderHeapUsedSize": 4470560,
+          "backingStorageSize": 1676645
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "afterUnmountRequests": []
+    },
+    {
+      "run": "candidate-1",
+      "styleMutations": {
+        "style": 84,
+        "otherAttributes": 373,
+        "byClass": {
+          "jspace-map-viewport": 48,
+          "jspace-map-world": 36
+        },
+        "sceneNodeChanges": 14
+      },
+      "active600": {
+        "label": "600-node map after camera samples",
+        "heap": {
+          "usedSize": 23316296,
+          "totalSize": 23879680,
+          "embedderHeapUsedSize": 58907952,
+          "backingStorageSize": 1740940
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 23335,
+          "jsEventListeners": 5060
+        },
+        "visible": {
+          "elements": 18972,
+          "mapNodes": 600,
+          "canvases": 0
+        }
+      },
+      "retainedBefore": {
+        "label": "Overview before two mount/unmount cycles",
+        "heap": {
+          "usedSize": 6295756,
+          "totalSize": 6955008,
+          "embedderHeapUsedSize": 3297120,
+          "backingStorageSize": 1687308
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 610
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "retainedAfter": {
+        "label": "Overview after two mount/unmount cycles",
+        "heap": {
+          "usedSize": 7009388,
+          "totalSize": 7479296,
+          "embedderHeapUsedSize": 3522136,
+          "backingStorageSize": 1691170
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "afterUnmountRequests": []
+    },
+    {
+      "run": "candidate-2",
+      "styleMutations": {
+        "style": 84,
+        "otherAttributes": 373,
+        "byClass": {
+          "jspace-map-viewport": 48,
+          "jspace-map-world": 36
+        },
+        "sceneNodeChanges": 14
+      },
+      "active600": {
+        "label": "600-node map after camera samples",
+        "heap": {
+          "usedSize": 23563416,
+          "totalSize": 24403968,
+          "embedderHeapUsedSize": 58944904,
+          "backingStorageSize": 1703376
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 23335,
+          "jsEventListeners": 5060
+        },
+        "visible": {
+          "elements": 18972,
+          "mapNodes": 600,
+          "canvases": 0
+        }
+      },
+      "retainedBefore": {
+        "label": "Overview before two mount/unmount cycles",
+        "heap": {
+          "usedSize": 6605704,
+          "totalSize": 7217152,
+          "embedderHeapUsedSize": 3315392,
+          "backingStorageSize": 1688735
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "retainedAfter": {
+        "label": "Overview after two mount/unmount cycles",
+        "heap": {
+          "usedSize": 7175520,
+          "totalSize": 7741440,
+          "embedderHeapUsedSize": 3532152,
+          "backingStorageSize": 1691170
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "afterUnmountRequests": []
+    },
+    {
+      "run": "baseline-2",
+      "styleMutations": {
+        "style": 96,
+        "otherAttributes": 207,
+        "byClass": {
+          "jspace-map-world": 36,
+          "jspace-map-viewport": 60
+        },
+        "sceneNodeChanges": 0
+      },
+      "active600": {
+        "label": "600-node map after camera samples",
+        "heap": {
+          "usedSize": 23498420,
+          "totalSize": 24137728,
+          "embedderHeapUsedSize": 58752752,
+          "backingStorageSize": 1700260
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 23327,
+          "jsEventListeners": 5054
+        },
+        "visible": {
+          "elements": 18964,
+          "mapNodes": 600,
+          "canvases": 0
+        }
+      },
+      "retainedBefore": {
+        "label": "Overview before two mount/unmount cycles",
+        "heap": {
+          "usedSize": 6357144,
+          "totalSize": 7213056,
+          "embedderHeapUsedSize": 4259960,
+          "backingStorageSize": 1674210
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "retainedAfter": {
+        "label": "Overview after two mount/unmount cycles",
+        "heap": {
+          "usedSize": 7015508,
+          "totalSize": 7475200,
+          "embedderHeapUsedSize": 4473800,
+          "backingStorageSize": 1676645
+        },
+        "dom": {
+          "documents": 1,
+          "nodes": 530,
+          "jsEventListeners": 611
+        },
+        "visible": {
+          "elements": 402,
+          "mapNodes": 0,
+          "canvases": 0
+        }
+      },
+      "afterUnmountRequests": []
+    }
+  ],
+  "limits": [
+    "Two fresh browser repetitions per implementation on one host; ranges are observed values, not confidence intervals.",
+    "Camera windows perform identical user actions after map loading. Extra UI controls remain part of candidate UI.",
+    "Mutation counts and forced-GC snapshots are separate diagnostics, never camera timings.",
+    "Headless software-rendered frame observations do not predict a desktop GPU frame rate."
+  ]
+}

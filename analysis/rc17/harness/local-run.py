@@ -17,7 +17,7 @@ p = argparse.ArgumentParser()
 p.add_argument('baseline', type=Path)
 p.add_argument('candidate', type=Path)
 p.add_argument('output', type=Path)
-p.add_argument('--lanes', nargs='+', choices=['maps', 'routes', 'memory', 'backend', 'mixed', 'restart', 'browser'], default=['maps', 'routes', 'memory', 'backend', 'mixed', 'restart', 'browser'])
+p.add_argument('--lanes', nargs='+', choices=['maps', 'routes', 'memory', 'backend', 'mixed', 'restart', 'browser', 'browser-performance'], default=['maps', 'routes', 'memory', 'backend', 'mixed', 'restart', 'browser', 'browser-performance'])
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[3]
 out = a.output.resolve()
@@ -74,6 +74,9 @@ try:
             run(lane, ['flock', '/tmp/kairo-rc16-benchmark.lock', 'node', helper / 'restart-candidate.mjs'], {'KAIRO_CANDIDATE_ROOT': str(candidate)})
         elif lane == 'browser':
             run(lane, ['flock', '/tmp/kairo-rc16-benchmark.lock', 'node', helper / 'maps-correctness.mjs'], {'KAIRO_BENCH_REPO': str(candidate), 'KAIRO_BROWSER_OUTPUT': str(out / 'maps-browser')})
+        elif lane == 'browser-performance':
+            run(lane, ['node', helper / 'browser-camera-run.mjs', baseline, candidate, out / 'browser-camera'], pair)
+            run(lane + '-summary', ['node', helper / 'browser-camera-summary.mjs', out / 'browser-camera'])
     for label, manifest in manifests.items():
         run(label + '-source-end', ['node', helper / 'source-manifest.mjs', 'verify', manifest])
     record['complete'] = True

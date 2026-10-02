@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "059b95909dffa82f8b10dfd266954323147d7580",
+  "settings": {
+    "order": [
+      "quiet-1",
+      "loaded-1",
+      "loaded-2",
+      "quiet-2"
+    ],
+    "nominalWindowMs": 28000,
+    "protocolOnly": true,
+    "providerLatencyMs": 50,
+    "assetsLatencyMs": 250,
+    "commonStatePollMs": 2000,
+    "commonStreamPollMs": 1000,
+    "loadedNavigationOffsetsMs": [
+      2000,
+      8000,
+      14000,
+      20000
+    ],
+    "loadedBurstOffsetsMs": [
+      4000,
+      10000,
+      16000,
+      24000
+    ],
+    "providerPhases": [
+      {
+        "atMs": 0,
+        "mode": "fresh-highsec"
+      },
+      {
+        "atMs": 2000,
+        "mode": "fresh-hostile"
+      },
+      {
+        "atMs": 8000,
+        "mode": "fresh-highsec"
+      },
+      {
+        "atMs": 14000,
+        "mode": "unavailable-503"
+      },
+      {
+        "atMs": 20000,
+        "mode": "recovered-highsec"
+      }
+    ],
+    "clock": "Request durations use observer monotonic clock; cross-process event/receipt times use the same-host Date.now epoch clock, millisecond resolution.",
+    "scope": "Real server, scheduler, auth-vault/ESI path and SSE protocol clients; no browser, physical OBS, GPU, internet or real player data. Legacy session backfill held fresh; live feed cursor enabled."
+  },
+  "runs": [
+    {
+      "name": "quiet-1",
+      "loaded": false,
+      "cpuPercentOneCore": 6.155035258454648,
+      "loopMaxMs": 106.430463,
+      "loopP95Ms": 10.371071,
+      "observerLoopMaxMs": 47.972351,
+      "requestCount": 56,
+      "commonDashboardMs": {
+        "n": 28,
+        "p50": 39.925620999999865,
+        "p95": 69.03154799999902,
+        "max": 74.05047099999979
+      },
+      "commonStreamMs": {
+        "n": 28,
+        "p50": 2.7192379999996774,
+        "p95": 78.29923399999961,
+        "max": 78.64661800000067
+      },
+      "navigationMs": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "bindings": {
+        "calls": 29,
+        "unchanged": 29
+      },
+      "stream": {
+        "stateEvents": 5,
+        "unchangedContent": 0,
+        "unchangedEncodedBytes": 0,
+        "encodedBytes": 14179
+      },
+      "dashboard": {
+        "encodedBytes": 8087283,
+        "repeatedDataSnapshots": 7,
+        "changedFreshnessSnapshots": 7
+      },
+      "actualLocationCalls": 5,
+      "transitions": [
+        {
+          "phase": "fresh-hostile",
+          "opsec": "hostile",
+          "requestOffsetMs": 2914,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 2970,
+          "commitToProtectionMs": 6,
+          "protectionToWireReceiptMs": 18,
+          "commitToWireReceiptMs": 24
+        },
+        {
+          "phase": "fresh-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 8892,
+          "providerResponseMs": 51,
+          "commitOffsetMs": 8944,
+          "commitToProtectionMs": 4,
+          "protectionToWireReceiptMs": 16,
+          "commitToWireReceiptMs": 20
+        },
+        {
+          "phase": "unavailable",
+          "opsec": "unknown",
+          "requestOffsetMs": 14893,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 14944,
+          "commitToProtectionMs": 3,
+          "protectionToWireReceiptMs": 15,
+          "commitToWireReceiptMs": 18
+        },
+        {
+          "phase": "recovered-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 20893,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 20944,
+          "commitToProtectionMs": 2,
+          "protectionToWireReceiptMs": 16,
+          "commitToWireReceiptMs": 18
+        }
+      ],
+      "cleanup": {
+        "closeMs": 11.856440999999904,
+        "inflight": 0,
+        "forbiddenAttempts": 0
+      }
+    },
+    {
+      "name": "loaded-1",
+      "loaded": true,
+      "cpuPercentOneCore": 9.46394679683321,
+      "loopMaxMs": 131.792895,
+      "loopP95Ms": 10.362879,
+      "observerLoopMaxMs": 48.398335,
+      "requestCount": 92,
+      "commonDashboardMs": {
+        "n": 28,
+        "p50": 54.0758050000004,
+        "p95": 97.26733800000511,
+        "max": 100.75334400000065
+      },
+      "commonStreamMs": {
+        "n": 28,
+        "p50": 13.91901499999949,
+        "p95": 104.24692499999946,
+        "max": 105.93609000000288
+      },
+      "navigationMs": {
+        "n": 4,
+        "p50": 37.93837299999723,
+        "p95": 46.491673000000446,
+        "max": 46.491673000000446
+      },
+      "bindings": {
+        "calls": 29,
+        "unchanged": 29
+      },
+      "stream": {
+        "stateEvents": 5,
+        "unchangedContent": 0,
+        "unchangedEncodedBytes": 0,
+        "encodedBytes": 14179
+      },
+      "dashboard": {
+        "encodedBytes": 8087783,
+        "repeatedDataSnapshots": 7,
+        "changedFreshnessSnapshots": 7
+      },
+      "actualLocationCalls": 5,
+      "transitions": [
+        {
+          "phase": "fresh-hostile",
+          "opsec": "hostile",
+          "requestOffsetMs": 2925,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 2979,
+          "commitToProtectionMs": 12,
+          "protectionToWireReceiptMs": 17,
+          "commitToWireReceiptMs": 29
+        },
+        {
+          "phase": "fresh-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 8905,
+          "providerResponseMs": 51,
+          "commitOffsetMs": 8957,
+          "commitToProtectionMs": 9,
+          "protectionToWireReceiptMs": 15,
+          "commitToWireReceiptMs": 24
+        },
+        {
+          "phase": "unavailable",
+          "opsec": "unknown",
+          "requestOffsetMs": 14905,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 14956,
+          "commitToProtectionMs": 1,
+          "protectionToWireReceiptMs": 15,
+          "commitToWireReceiptMs": 16
+        },
+        {
+          "phase": "recovered-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 20905,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 20956,
+          "commitToProtectionMs": 8,
+          "protectionToWireReceiptMs": 14,
+          "commitToWireReceiptMs": 22
+        }
+      ],
+      "cleanup": {
+        "closeMs": 9.003992999998445,
+        "inflight": 0,
+        "forbiddenAttempts": 0
+      }
+    },
+    {
+      "name": "loaded-2",
+      "loaded": true,
+      "cpuPercentOneCore": 9.185570783633427,
+      "loopMaxMs": 145.752063,
+      "loopP95Ms": 10.379263,
+      "observerLoopMaxMs": 47.185919,
+      "requestCount": 92,
+      "commonDashboardMs": {
+        "n": 28,
+        "p50": 52.54227700000047,
+        "p95": 95.185501999993,
+        "max": 111.11542599999666
+      },
+      "commonStreamMs": {
+        "n": 28,
+        "p50": 19.419913999998244,
+        "p95": 106.30749300000025,
+        "max": 120.61443200000213
+      },
+      "navigationMs": {
+        "n": 4,
+        "p50": 39.51574499999697,
+        "p95": 57.329228999995394,
+        "max": 57.329228999995394
+      },
+      "bindings": {
+        "calls": 29,
+        "unchanged": 29
+      },
+      "stream": {
+        "stateEvents": 5,
+        "unchangedContent": 0,
+        "unchangedEncodedBytes": 0,
+        "encodedBytes": 14179
+      },
+      "dashboard": {
+        "encodedBytes": 8087783,
+        "repeatedDataSnapshots": 7,
+        "changedFreshnessSnapshots": 7
+      },
+      "actualLocationCalls": 5,
+      "transitions": [
+        {
+          "phase": "fresh-hostile",
+          "opsec": "hostile",
+          "requestOffsetMs": 2907,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 2963,
+          "commitToProtectionMs": 19,
+          "protectionToWireReceiptMs": 19,
+          "commitToWireReceiptMs": 38
+        },
+        {
+          "phase": "fresh-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 8884,
+          "providerResponseMs": 51,
+          "commitOffsetMs": 8936,
+          "commitToProtectionMs": 9,
+          "protectionToWireReceiptMs": 14,
+          "commitToWireReceiptMs": 23
+        },
+        {
+          "phase": "unavailable",
+          "opsec": "unknown",
+          "requestOffsetMs": 14884,
+          "providerResponseMs": 52,
+          "commitOffsetMs": 14936,
+          "commitToProtectionMs": 2,
+          "protectionToWireReceiptMs": 14,
+          "commitToWireReceiptMs": 16
+        },
+        {
+          "phase": "recovered-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 20886,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 20937,
+          "commitToProtectionMs": 7,
+          "protectionToWireReceiptMs": 14,
+          "commitToWireReceiptMs": 21
+        }
+      ],
+      "cleanup": {
+        "closeMs": 7.417255000000296,
+        "inflight": 0,
+        "forbiddenAttempts": 0
+      }
+    },
+    {
+      "name": "quiet-2",
+      "loaded": false,
+      "cpuPercentOneCore": 6.253798610131083,
+      "loopMaxMs": 187.957247,
+      "loopP95Ms": 10.379263,
+      "observerLoopMaxMs": 47.841279,
+      "requestCount": 56,
+      "commonDashboardMs": {
+        "n": 28,
+        "p50": 45.90596899999946,
+        "p95": 63.86228899999696,
+        "max": 83.36586199999147
+      },
+      "commonStreamMs": {
+        "n": 28,
+        "p50": 4.3323379999928875,
+        "p95": 72.63054899999406,
+        "max": 98.66380500000378
+      },
+      "navigationMs": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "bindings": {
+        "calls": 29,
+        "unchanged": 29
+      },
+      "stream": {
+        "stateEvents": 5,
+        "unchangedContent": 0,
+        "unchangedEncodedBytes": 0,
+        "encodedBytes": 14179
+      },
+      "dashboard": {
+        "encodedBytes": 8087283,
+        "repeatedDataSnapshots": 7,
+        "changedFreshnessSnapshots": 7
+      },
+      "actualLocationCalls": 5,
+      "transitions": [
+        {
+          "phase": "fresh-hostile",
+          "opsec": "hostile",
+          "requestOffsetMs": 2961,
+          "providerResponseMs": 50,
+          "commitOffsetMs": 3017,
+          "commitToProtectionMs": 6,
+          "protectionToWireReceiptMs": 19,
+          "commitToWireReceiptMs": 25
+        },
+        {
+          "phase": "fresh-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 8918,
+          "providerResponseMs": 52,
+          "commitOffsetMs": 8970,
+          "commitToProtectionMs": 4,
+          "protectionToWireReceiptMs": 16,
+          "commitToWireReceiptMs": 20
+        },
+        {
+          "phase": "unavailable",
+          "opsec": "unknown",
+          "requestOffsetMs": 14921,
+          "providerResponseMs": 51,
+          "commitOffsetMs": 14972,
+          "commitToProtectionMs": 2,
+          "protectionToWireReceiptMs": 15,
+          "commitToWireReceiptMs": 17
+        },
+        {
+          "phase": "recovered-highsec",
+          "opsec": "highsec",
+          "requestOffsetMs": 20905,
+          "providerResponseMs": 51,
+          "commitOffsetMs": 20956,
+          "commitToProtectionMs": 3,
+          "protectionToWireReceiptMs": 13,
+          "commitToWireReceiptMs": 16
+        }
+      ],
+      "cleanup": {
+        "closeMs": 9.191194999999425,
+        "inflight": 0,
+        "forbiddenAttempts": 0
+      }
+    }
+  ],
+  "complete": true
+}

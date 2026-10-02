@@ -1,0 +1,936 @@
+{
+  "schemaVersion": 1,
+  "suite": "isolated-route-scaling",
+  "scope": "Standalone production Universe navigation, full static atlas and identical corrected stress database; no Core scheduler, HTTP, browser or external IO. Diagnostic counts are not latency measurements. Fixed clock makes the complete plan result directly comparable without masked fields.",
+  "source": {
+    "baseline": {
+      "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "fingerprint": "02558f159d1fea0b7c1670856e40e52894dd62ea76c733c929cc6d9c4af43a85",
+      "dirty": false
+    },
+    "candidate": {
+      "commit": "05d0d4b36c154329006d6772769063db874762da",
+      "fingerprint": "b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82",
+      "dirty": false
+    }
+  },
+  "harnessHashes": {
+    "route-run.mjs": "f53e10c1090b04cb44c614741a8373475bef840e10ad17ce5ffd337a0e1a6635",
+    "route-worker.mjs": "34819e65f3043b91410314091ba55b9c242b5c508cc808096987e29a9ce40f3a",
+    "source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "legacy-discovery-fixture.mjs": "486671013d230998828929e24e4fd83ee33e765a052dfffb5d22e03efce4545b",
+    "backend/backend.mjs": "2cdbedad3c30e46bafc6f1a1fe249de6430304547c0a6798690fa33cae714e14",
+    "backend/fixture.mjs": "62ea73e7fc23ab6c69ba7986c2162823146e350e474729f7cc9c478485cc4073",
+    "backend/metrics.mjs": "e112314633c63fcfe127aeb7a2306f5be83d4728c1cf45ffd5379df427303ce2",
+    "backend/process.mjs": "f332b425380eef0e6264dc8470aebefaba494099bc57b19acbb18f5d164b5311",
+    "backend/target.mjs": "a7e061ea9e8e961214f39ec794ff855e947e017bce350368336d891f3b67ad2e",
+    "backend/worker.mjs": "7fd61ef2979a2aa7788ba86b344db0676912f6dd9c0116ade0dec243c710e363"
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "runUrl": null
+  },
+  "settings": {
+    "stops": [
+      1,
+      10,
+      50
+    ],
+    "order": [
+      "baseline-1",
+      "candidate-1",
+      "candidate-2",
+      "baseline-2"
+    ],
+    "warmupsPerCase": 2,
+    "samplesPerCase": 9,
+    "timingIncludes": "Complete navigation.plan computation, final validation, persisted plan save and returned structured clone; excludes fixture setup, itinerary edits, source hashing and output assertions."
+  },
+  "runs": [
+    {
+      "name": "baseline-diagnostics",
+      "variant": "baseline",
+      "schemaVersion": 1,
+      "suite": "isolated-route-scaling",
+      "mode": "diagnostics",
+      "node": "v24.19.0",
+      "clock": "2026-09-30T09:00:00.000Z",
+      "warmups": 0,
+      "samples": 1,
+      "cases": [
+        {
+          "stops": 1,
+          "fixtureDigest": "d8df5e4e6937406b8d588a05a94002cb21cf8afb97b6784ceb42a1b05a2a8724",
+          "semanticDigest": "99944567110bf8ea3a34c6193d3e5d80bb4f92b731bf999b3302acbf1b7b18a9",
+          "latencyMs": [],
+          "diagnostics": {
+            "sql": {
+              "SELECT value FROM settings WHERE key=?": {
+                "calls": 36,
+                "rows": 13,
+                "jsonBytes": 165050
+              },
+              "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+                "calls": 18,
+                "rows": 17,
+                "jsonBytes": 2836
+              },
+              "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+                "calls": 8,
+                "rows": 8,
+                "jsonBytes": 0
+              },
+              "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+                "calls": 1,
+                "rows": 100,
+                "jsonBytes": 0
+              },
+              "SELECT * FROM place_notes WHERE kind='system'": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id": {
+                "calls": 2,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              }
+            },
+            "graphBuilds": 1
+          },
+          "hops": 11
+        },
+        {
+          "stops": 10,
+          "fixtureDigest": "05536d3a499718d41b0572a3e017549ba882c3d556469d5048201044fa4e2c4e",
+          "semanticDigest": "4aa92bd2c5506869bf8947174a0db800eaa00d32e4cf43359477a674fce47102",
+          "latencyMs": [],
+          "diagnostics": {
+            "sql": {
+              "SELECT value FROM settings WHERE key=?": {
+                "calls": 198,
+                "rows": 22,
+                "jsonBytes": 1625368
+              },
+              "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+                "calls": 153,
+                "rows": 143,
+                "jsonBytes": 24445
+              },
+              "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+                "calls": 80,
+                "rows": 80,
+                "jsonBytes": 0
+              },
+              "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+                "calls": 10,
+                "rows": 1000,
+                "jsonBytes": 0
+              },
+              "SELECT * FROM place_notes WHERE kind='system'": {
+                "calls": 10,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+                "calls": 10,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+                "calls": 10,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id": {
+                "calls": 20,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              }
+            },
+            "graphBuilds": 10
+          },
+          "hops": 115
+        },
+        {
+          "stops": 50,
+          "fixtureDigest": "785ee573dc82c9b94aac8dd5e6ff466ab86c2b0c93b1de8cee9ce19600bb0cf6",
+          "semanticDigest": "08603f0ecb1f61302675e4a546893cfbf8926ef63bb3aa977f892a995cb4e110",
+          "latencyMs": [],
+          "diagnostics": {
+            "sql": {
+              "SELECT value FROM settings WHERE key=?": {
+                "calls": 918,
+                "rows": 62,
+                "jsonBytes": 8113038
+              },
+              "SELECT body FROM snapshots WHERE character_id=? AND key=?": {
+                "calls": 753,
+                "rows": 703,
+                "jsonBytes": 120485
+              },
+              "SELECT json_extract(body,'$.status') status,\n        json_extract(body,'$.scope') scope, json_extract(body,'$.ownerId') ownerId,\n        json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,\n        json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?": {
+                "calls": 400,
+                "rows": 400,
+                "jsonBytes": 0
+              },
+              "SELECT system_id,COUNT(*) visits,MIN(at) first_visit,MAX(at) last_visit FROM visits WHERE character_id=? GROUP BY system_id": {
+                "calls": 50,
+                "rows": 5000,
+                "jsonBytes": 0
+              },
+              "SELECT * FROM place_notes WHERE kind='system'": {
+                "calls": 50,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+                "calls": 50,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+                "calls": 50,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id": {
+                "calls": 100,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              }
+            },
+            "graphBuilds": 50
+          },
+          "hops": 565
+        }
+      ],
+      "complete": true,
+      "fixture": {
+        "version": 1,
+        "profile": "stress",
+        "characters": 4,
+        "assets": 20000,
+        "events": 50000,
+        "visits": 2000,
+        "combat": 4000,
+        "sessions": 200,
+        "marketTypes": 5000,
+        "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+        "now": 1790758800000,
+        "discoveryPreparation": {
+          "available": false,
+          "expectedMemberships": 100,
+          "seededMemberships": null,
+          "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+        }
+      },
+      "networkAttempts": 0
+    },
+    {
+      "name": "candidate-diagnostics",
+      "variant": "candidate",
+      "schemaVersion": 1,
+      "suite": "isolated-route-scaling",
+      "mode": "diagnostics",
+      "node": "v24.19.0",
+      "clock": "2026-09-30T09:00:00.000Z",
+      "warmups": 0,
+      "samples": 1,
+      "cases": [
+        {
+          "stops": 1,
+          "fixtureDigest": "d8df5e4e6937406b8d588a05a94002cb21cf8afb97b6784ceb42a1b05a2a8724",
+          "semanticDigest": "99944567110bf8ea3a34c6193d3e5d80bb4f92b731bf999b3302acbf1b7b18a9",
+          "latencyMs": [],
+          "diagnostics": {
+            "sql": {
+              "SELECT value FROM settings WHERE key=?": {
+                "calls": 24,
+                "rows": 3,
+                "jsonBytes": 10187
+              },
+              "SELECT character_id,key,\n    CASE WHEN key IN ('sovereignty','kills','profile','contacts','corporation_contacts','alliance_contacts') THEN body END raw,\n    json_extract(body,'$.status') status,json_extract(body,'$.stale') stale,json_extract(body,'$.updatedAt') updatedAt,json_extract(body,'$.expiresAt') expiresAt,json_extract(body,'$.refreshAt') refreshAt,json_extract(body,'$.retryAt') retryAt,json_extract(body,'$.error') error,json_extract(body,'$.scope') scope,json_extract(body,'$.truncated') truncated,\n    CASE WHEN json_type(body,'$.data')='array' THEN json_array_length(body,'$.data')\n        WHEN json_type(body,'$.data') IS NULL OR json_type(body,'$.data') IN ('null','false') OR json_extract(body,'$.data')=0 OR json_extract(body,'$.data')='' THEN 0 ELSE 1 END dataCount\n    FROM snapshots WHERE (character_id=0 AND key IN (SELECT value FROM json_each(?))) OR (character_id=? AND key IN (SELECT value FROM json_each(?)))": {
+                "calls": 1,
+                "rows": 14,
+                "jsonBytes": 1065
+              },
+              "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM (SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')='' UNION ALL SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')=?) ORDER BY updated_at DESC,id": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT kind,id,body FROM universe_records WHERE character_id=? AND (kind='list' OR kind='link' AND COALESCE(json_extract(body,'$.map_id'),'') IN ('',?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT character_id,key,body FROM snapshots WHERE (character_id=0 AND key IN (SELECT value FROM json_each(?))) OR (character_id=? AND key IN (SELECT value FROM json_each(?)))": {
+                "calls": 1,
+                "rows": 6,
+                "jsonBytes": 1065
+              },
+              "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              }
+            },
+            "graphBuilds": 1
+          },
+          "hops": 11
+        },
+        {
+          "stops": 10,
+          "fixtureDigest": "05536d3a499718d41b0572a3e017549ba882c3d556469d5048201044fa4e2c4e",
+          "semanticDigest": "4aa92bd2c5506869bf8947174a0db800eaa00d32e4cf43359477a674fce47102",
+          "latencyMs": [],
+          "diagnostics": {
+            "sql": {
+              "SELECT value FROM settings WHERE key=?": {
+                "calls": 24,
+                "rows": 3,
+                "jsonBytes": 88690
+              },
+              "SELECT character_id,key,\n    CASE WHEN key IN ('sovereignty','kills','profile','contacts','corporation_contacts','alliance_contacts') THEN body END raw,\n    json_extract(body,'$.status') status,json_extract(body,'$.stale') stale,json_extract(body,'$.updatedAt') updatedAt,json_extract(body,'$.expiresAt') expiresAt,json_extract(body,'$.refreshAt') refreshAt,json_extract(body,'$.retryAt') retryAt,json_extract(body,'$.error') error,json_extract(body,'$.scope') scope,json_extract(body,'$.truncated') truncated,\n    CASE WHEN json_type(body,'$.data')='array' THEN json_array_length(body,'$.data')\n        WHEN json_type(body,'$.data') IS NULL OR json_type(body,'$.data') IN ('null','false') OR json_extract(body,'$.data')=0 OR json_extract(body,'$.data')='' THEN 0 ELSE 1 END dataCount\n    FROM snapshots WHERE (character_id=0 AND key IN (SELECT value FROM json_each(?))) OR (character_id=? AND key IN (SELECT value FROM json_each(?)))": {
+                "calls": 1,
+                "rows": 14,
+                "jsonBytes": 1065
+              },
+              "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM (SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')='' UNION ALL SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')=?) ORDER BY updated_at DESC,id": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT kind,id,body FROM universe_records WHERE character_id=? AND (kind='list' OR kind='link' AND COALESCE(json_extract(body,'$.map_id'),'') IN ('',?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT character_id,key,body FROM snapshots WHERE (character_id=0 AND key IN (SELECT value FROM json_each(?))) OR (character_id=? AND key IN (SELECT value FROM json_each(?)))": {
+                "calls": 1,
+                "rows": 6,
+                "jsonBytes": 1065
+              },
+              "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              }
+            },
+            "graphBuilds": 1
+          },
+          "hops": 115
+        },
+        {
+          "stops": 50,
+          "fixtureDigest": "785ee573dc82c9b94aac8dd5e6ff466ab86c2b0c93b1de8cee9ce19600bb0cf6",
+          "semanticDigest": "08603f0ecb1f61302675e4a546893cfbf8926ef63bb3aa977f892a995cb4e110",
+          "latencyMs": [],
+          "diagnostics": {
+            "sql": {
+              "SELECT value FROM settings WHERE key=?": {
+                "calls": 24,
+                "rows": 3,
+                "jsonBytes": 434960
+              },
+              "SELECT character_id,key,\n    CASE WHEN key IN ('sovereignty','kills','profile','contacts','corporation_contacts','alliance_contacts') THEN body END raw,\n    json_extract(body,'$.status') status,json_extract(body,'$.stale') stale,json_extract(body,'$.updatedAt') updatedAt,json_extract(body,'$.expiresAt') expiresAt,json_extract(body,'$.refreshAt') refreshAt,json_extract(body,'$.retryAt') retryAt,json_extract(body,'$.error') error,json_extract(body,'$.scope') scope,json_extract(body,'$.truncated') truncated,\n    CASE WHEN json_type(body,'$.data')='array' THEN json_array_length(body,'$.data')\n        WHEN json_type(body,'$.data') IS NULL OR json_type(body,'$.data') IN ('null','false') OR json_extract(body,'$.data')=0 OR json_extract(body,'$.data')='' THEN 0 ELSE 1 END dataCount\n    FROM snapshots WHERE (character_id=0 AND key IN (SELECT value FROM json_each(?))) OR (character_id=? AND key IN (SELECT value FROM json_each(?)))": {
+                "calls": 1,
+                "rows": 14,
+                "jsonBytes": 1065
+              },
+              "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT body FROM (SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')='' UNION ALL SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')=?) ORDER BY updated_at DESC,id": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT kind,id,body FROM universe_records WHERE character_id=? AND (kind='list' OR kind='link' AND COALESCE(json_extract(body,'$.map_id'),'') IN ('',?))": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              },
+              "SELECT character_id,key,body FROM snapshots WHERE (character_id=0 AND key IN (SELECT value FROM json_each(?))) OR (character_id=? AND key IN (SELECT value FROM json_each(?)))": {
+                "calls": 1,
+                "rows": 6,
+                "jsonBytes": 1065
+              },
+              "INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value": {
+                "calls": 1,
+                "rows": 0,
+                "jsonBytes": 0
+              }
+            },
+            "graphBuilds": 1
+          },
+          "hops": 565
+        }
+      ],
+      "complete": true,
+      "fixture": {
+        "version": 1,
+        "profile": "stress",
+        "characters": 4,
+        "assets": 20000,
+        "events": 50000,
+        "visits": 2000,
+        "combat": 4000,
+        "sessions": 200,
+        "marketTypes": 5000,
+        "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+        "now": 1790758800000,
+        "discoveryPreparation": {
+          "available": true,
+          "expectedMemberships": 100,
+          "seededMemberships": 100,
+          "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+        }
+      },
+      "networkAttempts": 0
+    },
+    {
+      "name": "baseline-1",
+      "variant": "baseline",
+      "schemaVersion": 1,
+      "suite": "isolated-route-scaling",
+      "mode": "timings",
+      "node": "v24.19.0",
+      "clock": "2026-09-30T09:00:00.000Z",
+      "warmups": 2,
+      "samples": 9,
+      "cases": [
+        {
+          "stops": 1,
+          "fixtureDigest": "d8df5e4e6937406b8d588a05a94002cb21cf8afb97b6784ceb42a1b05a2a8724",
+          "semanticDigest": "99944567110bf8ea3a34c6193d3e5d80bb4f92b731bf999b3302acbf1b7b18a9",
+          "latencyMs": [
+            21.91909300000009,
+            29.299984999999992,
+            33.182320000000004,
+            27.287846999999942,
+            22.940755999999965,
+            23.03261400000008,
+            28.850100999999995,
+            16.443689000000063,
+            15.442336000000068
+          ],
+          "diagnostics": null,
+          "hops": 11
+        },
+        {
+          "stops": 10,
+          "fixtureDigest": "05536d3a499718d41b0572a3e017549ba882c3d556469d5048201044fa4e2c4e",
+          "semanticDigest": "4aa92bd2c5506869bf8947174a0db800eaa00d32e4cf43359477a674fce47102",
+          "latencyMs": [
+            170.08977900000014,
+            163.3690959999999,
+            284.33837399999993,
+            177.8456839999999,
+            157.97888000000012,
+            151.2971160000002,
+            181.23110199999974,
+            199.66948299999967,
+            165.43903699999964
+          ],
+          "diagnostics": null,
+          "hops": 115
+        },
+        {
+          "stops": 50,
+          "fixtureDigest": "785ee573dc82c9b94aac8dd5e6ff466ab86c2b0c93b1de8cee9ce19600bb0cf6",
+          "semanticDigest": "08603f0ecb1f61302675e4a546893cfbf8926ef63bb3aa977f892a995cb4e110",
+          "latencyMs": [
+            776.9862640000001,
+            771.5525530000004,
+            736.9123250000002,
+            731.5666959999999,
+            734.9226680000002,
+            737.2216850000004,
+            733.8669869999994,
+            747.6538930000006,
+            754.5448960000012
+          ],
+          "diagnostics": null,
+          "hops": 565
+        }
+      ],
+      "complete": true,
+      "fixture": {
+        "version": 1,
+        "profile": "stress",
+        "characters": 4,
+        "assets": 20000,
+        "events": 50000,
+        "visits": 2000,
+        "combat": 4000,
+        "sessions": 200,
+        "marketTypes": 5000,
+        "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+        "now": 1790758800000,
+        "discoveryPreparation": {
+          "available": false,
+          "expectedMemberships": 100,
+          "seededMemberships": null,
+          "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+        }
+      },
+      "networkAttempts": 0
+    },
+    {
+      "name": "candidate-1",
+      "variant": "candidate",
+      "schemaVersion": 1,
+      "suite": "isolated-route-scaling",
+      "mode": "timings",
+      "node": "v24.19.0",
+      "clock": "2026-09-30T09:00:00.000Z",
+      "warmups": 2,
+      "samples": 9,
+      "cases": [
+        {
+          "stops": 1,
+          "fixtureDigest": "d8df5e4e6937406b8d588a05a94002cb21cf8afb97b6784ceb42a1b05a2a8724",
+          "semanticDigest": "99944567110bf8ea3a34c6193d3e5d80bb4f92b731bf999b3302acbf1b7b18a9",
+          "latencyMs": [
+            14.858732999999916,
+            11.631230999999957,
+            15.02009499999997,
+            15.563711000000012,
+            15.093464999999924,
+            11.335175999999933,
+            14.627156000000014,
+            17.369839999999954,
+            22.588999999999942
+          ],
+          "diagnostics": null,
+          "hops": 11
+        },
+        {
+          "stops": 10,
+          "fixtureDigest": "05536d3a499718d41b0572a3e017549ba882c3d556469d5048201044fa4e2c4e",
+          "semanticDigest": "4aa92bd2c5506869bf8947174a0db800eaa00d32e4cf43359477a674fce47102",
+          "latencyMs": [
+            24.69038400000011,
+            14.352073000000019,
+            14.525814000000082,
+            14.356899999999996,
+            17.42775800000004,
+            13.531381999999894,
+            13.244040000000041,
+            13.69914300000005,
+            15.54338000000007
+          ],
+          "diagnostics": null,
+          "hops": 115
+        },
+        {
+          "stops": 50,
+          "fixtureDigest": "785ee573dc82c9b94aac8dd5e6ff466ab86c2b0c93b1de8cee9ce19600bb0cf6",
+          "semanticDigest": "08603f0ecb1f61302675e4a546893cfbf8926ef63bb3aa977f892a995cb4e110",
+          "latencyMs": [
+            29.480910999999878,
+            29.521057000000155,
+            34.7854440000001,
+            27.29239799999982,
+            27.702262999999903,
+            33.16481799999997,
+            41.584229999999934,
+            40.53898200000003,
+            36.06094400000006
+          ],
+          "diagnostics": null,
+          "hops": 565
+        }
+      ],
+      "complete": true,
+      "fixture": {
+        "version": 1,
+        "profile": "stress",
+        "characters": 4,
+        "assets": 20000,
+        "events": 50000,
+        "visits": 2000,
+        "combat": 4000,
+        "sessions": 200,
+        "marketTypes": 5000,
+        "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+        "now": 1790758800000,
+        "discoveryPreparation": {
+          "available": true,
+          "expectedMemberships": 100,
+          "seededMemberships": 100,
+          "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+        }
+      },
+      "networkAttempts": 0
+    },
+    {
+      "name": "candidate-2",
+      "variant": "candidate",
+      "schemaVersion": 1,
+      "suite": "isolated-route-scaling",
+      "mode": "timings",
+      "node": "v24.19.0",
+      "clock": "2026-09-30T09:00:00.000Z",
+      "warmups": 2,
+      "samples": 9,
+      "cases": [
+        {
+          "stops": 50,
+          "fixtureDigest": "785ee573dc82c9b94aac8dd5e6ff466ab86c2b0c93b1de8cee9ce19600bb0cf6",
+          "semanticDigest": "08603f0ecb1f61302675e4a546893cfbf8926ef63bb3aa977f892a995cb4e110",
+          "latencyMs": [
+            37.27459400000009,
+            39.590318000000025,
+            33.845189000000005,
+            42.09294299999988,
+            29.026769999999942,
+            28.031817000000046,
+            32.56194399999981,
+            26.658586999999898,
+            33.594381999999996
+          ],
+          "diagnostics": null,
+          "hops": 565
+        },
+        {
+          "stops": 10,
+          "fixtureDigest": "05536d3a499718d41b0572a3e017549ba882c3d556469d5048201044fa4e2c4e",
+          "semanticDigest": "4aa92bd2c5506869bf8947174a0db800eaa00d32e4cf43359477a674fce47102",
+          "latencyMs": [
+            23.27325799999994,
+            13.828587000000198,
+            13.64443099999994,
+            13.978562999999895,
+            24.48038900000006,
+            14.03983500000004,
+            14.471152000000075,
+            23.642471000000114,
+            15.620345999999927
+          ],
+          "diagnostics": null,
+          "hops": 115
+        },
+        {
+          "stops": 1,
+          "fixtureDigest": "d8df5e4e6937406b8d588a05a94002cb21cf8afb97b6784ceb42a1b05a2a8724",
+          "semanticDigest": "99944567110bf8ea3a34c6193d3e5d80bb4f92b731bf999b3302acbf1b7b18a9",
+          "latencyMs": [
+            20.85567100000003,
+            10.888918000000103,
+            10.931100000000015,
+            10.725832000000082,
+            20.435860000000048,
+            11.421917000000121,
+            11.830830000000105,
+            12.226824000000079,
+            20.709451000000172
+          ],
+          "diagnostics": null,
+          "hops": 11
+        }
+      ],
+      "complete": true,
+      "fixture": {
+        "version": 1,
+        "profile": "stress",
+        "characters": 4,
+        "assets": 20000,
+        "events": 50000,
+        "visits": 2000,
+        "combat": 4000,
+        "sessions": 200,
+        "marketTypes": 5000,
+        "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+        "now": 1790758800000,
+        "discoveryPreparation": {
+          "available": true,
+          "expectedMemberships": 100,
+          "seededMemberships": 100,
+          "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+        }
+      },
+      "networkAttempts": 0
+    },
+    {
+      "name": "baseline-2",
+      "variant": "baseline",
+      "schemaVersion": 1,
+      "suite": "isolated-route-scaling",
+      "mode": "timings",
+      "node": "v24.19.0",
+      "clock": "2026-09-30T09:00:00.000Z",
+      "warmups": 2,
+      "samples": 9,
+      "cases": [
+        {
+          "stops": 50,
+          "fixtureDigest": "785ee573dc82c9b94aac8dd5e6ff466ab86c2b0c93b1de8cee9ce19600bb0cf6",
+          "semanticDigest": "08603f0ecb1f61302675e4a546893cfbf8926ef63bb3aa977f892a995cb4e110",
+          "latencyMs": [
+            735.3988909999998,
+            725.4143879999997,
+            745.3885429999996,
+            786.2402110000003,
+            804.0086599999995,
+            744.9991119999995,
+            725.4615469999999,
+            843.1313990000008,
+            795.7945089999994
+          ],
+          "diagnostics": null,
+          "hops": 565
+        },
+        {
+          "stops": 10,
+          "fixtureDigest": "05536d3a499718d41b0572a3e017549ba882c3d556469d5048201044fa4e2c4e",
+          "semanticDigest": "4aa92bd2c5506869bf8947174a0db800eaa00d32e4cf43359477a674fce47102",
+          "latencyMs": [
+            172.28656899999987,
+            147.72447000000102,
+            149.93077500000072,
+            164.30171999999948,
+            157.60101700000087,
+            168.03146600000036,
+            156.6284080000005,
+            155.10947900000065,
+            150.56841499999973
+          ],
+          "diagnostics": null,
+          "hops": 115
+        },
+        {
+          "stops": 1,
+          "fixtureDigest": "d8df5e4e6937406b8d588a05a94002cb21cf8afb97b6784ceb42a1b05a2a8724",
+          "semanticDigest": "99944567110bf8ea3a34c6193d3e5d80bb4f92b731bf999b3302acbf1b7b18a9",
+          "latencyMs": [
+            22.756350999999995,
+            14.0922929999997,
+            13.654194999999163,
+            13.959874000000127,
+            19.94621499999994,
+            14.003349000000526,
+            13.536169000000882,
+            19.835990000001402,
+            14.571069999999963
+          ],
+          "diagnostics": null,
+          "hops": 11
+        }
+      ],
+      "complete": true,
+      "fixture": {
+        "version": 1,
+        "profile": "stress",
+        "characters": 4,
+        "assets": 20000,
+        "events": 50000,
+        "visits": 2000,
+        "combat": 4000,
+        "sessions": 200,
+        "marketTypes": 5000,
+        "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+        "now": 1790758800000,
+        "discoveryPreparation": {
+          "available": false,
+          "expectedMemberships": 100,
+          "seededMemberships": null,
+          "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+        }
+      },
+      "networkAttempts": 0
+    }
+  ],
+  "complete": true,
+  "summary": [
+    {
+      "stops": 1,
+      "baseline": [
+        {
+          "run": "baseline-1",
+          "n": 9,
+          "medianMs": 23.03261400000008,
+          "p95Ms": 33.182320000000004,
+          "minMs": 15.442336000000068,
+          "maxMs": 33.182320000000004
+        },
+        {
+          "run": "baseline-2",
+          "n": 9,
+          "medianMs": 14.0922929999997,
+          "p95Ms": 22.756350999999995,
+          "minMs": 13.536169000000882,
+          "maxMs": 22.756350999999995
+        }
+      ],
+      "candidate": [
+        {
+          "run": "candidate-1",
+          "n": 9,
+          "medianMs": 15.02009499999997,
+          "p95Ms": 22.588999999999942,
+          "minMs": 11.335175999999933,
+          "maxMs": 22.588999999999942
+        },
+        {
+          "run": "candidate-2",
+          "n": 9,
+          "medianMs": 11.830830000000105,
+          "p95Ms": 20.85567100000003,
+          "minMs": 10.725832000000082,
+          "maxMs": 20.85567100000003
+        }
+      ]
+    },
+    {
+      "stops": 10,
+      "baseline": [
+        {
+          "run": "baseline-1",
+          "n": 9,
+          "medianMs": 170.08977900000014,
+          "p95Ms": 284.33837399999993,
+          "minMs": 151.2971160000002,
+          "maxMs": 284.33837399999993
+        },
+        {
+          "run": "baseline-2",
+          "n": 9,
+          "medianMs": 156.6284080000005,
+          "p95Ms": 172.28656899999987,
+          "minMs": 147.72447000000102,
+          "maxMs": 172.28656899999987
+        }
+      ],
+      "candidate": [
+        {
+          "run": "candidate-1",
+          "n": 9,
+          "medianMs": 14.356899999999996,
+          "p95Ms": 24.69038400000011,
+          "minMs": 13.244040000000041,
+          "maxMs": 24.69038400000011
+        },
+        {
+          "run": "candidate-2",
+          "n": 9,
+          "medianMs": 14.471152000000075,
+          "p95Ms": 24.48038900000006,
+          "minMs": 13.64443099999994,
+          "maxMs": 24.48038900000006
+        }
+      ]
+    },
+    {
+      "stops": 50,
+      "baseline": [
+        {
+          "run": "baseline-1",
+          "n": 9,
+          "medianMs": 737.2216850000004,
+          "p95Ms": 776.9862640000001,
+          "minMs": 731.5666959999999,
+          "maxMs": 776.9862640000001
+        },
+        {
+          "run": "baseline-2",
+          "n": 9,
+          "medianMs": 745.3885429999996,
+          "p95Ms": 843.1313990000008,
+          "minMs": 725.4143879999997,
+          "maxMs": 843.1313990000008
+        }
+      ],
+      "candidate": [
+        {
+          "run": "candidate-1",
+          "n": 9,
+          "medianMs": 33.16481799999997,
+          "p95Ms": 41.584229999999934,
+          "minMs": 27.29239799999982,
+          "maxMs": 41.584229999999934
+        },
+        {
+          "run": "candidate-2",
+          "n": 9,
+          "medianMs": 33.594381999999996,
+          "p95Ms": 42.09294299999988,
+          "minMs": 26.658586999999898,
+          "maxMs": 42.09294299999988
+        }
+      ]
+    }
+  ],
+  "sourceAndHarnessEndVerified": true
+}

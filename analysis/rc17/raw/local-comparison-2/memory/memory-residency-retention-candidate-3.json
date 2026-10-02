@@ -1,0 +1,241 @@
+{
+  "build": "candidate",
+  "mode": "retention",
+  "sourceCommit": "059b95909dffa82f8b10dfd266954323147d7580",
+  "sourceRoot": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+  "sourceFingerprint": "7e1aaeefaa28d131d858e8dc86355f7fb56ce6f5c60366ebcd46309349502c93",
+  "sourceDirty": false,
+  "checkedSourceFiles": 439,
+  "checkedBuildFiles": 24,
+  "endVerified": true,
+  "harness": [
+    {
+      "path": "analysis/rc17/harness/memory-common.mjs",
+      "sha256": "a533451312a4dcda3fdf3b91454a6b46d5f847f8eae4a595322209f121455e87"
+    },
+    {
+      "path": "analysis/rc17/harness/source-manifest.mjs",
+      "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-residency.mjs",
+      "sha256": "35e48cd2cde6ebf8d49e51eee9916fc4227f7f6beeb1815abe9a1ea282ff3fac"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-runner.mjs",
+      "sha256": "32160101760ac2eeafa93055c45e81bc78af2642a3f2f4a47609854f9cb942b8"
+    }
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9
+  },
+  "recordedAt": "2026-10-02T22:57:07.516Z",
+  "methodology": "Forced GC after two event-loop yields at each marker. Diagnostic retained heap only; no timing values. RSS is allocator/process residency and not retained JS size. Module singletons intentionally survive Core.close.",
+  "complete": true,
+  "fixture": {
+    "pilots": 4,
+    "noSync": true,
+    "publicActivityRows": 0,
+    "liveSessions": 0,
+    "mapNodes": 0
+  },
+  "networkAttempts": 0,
+  "completed": {
+    "universeState": 124,
+    "jspaceState": 124,
+    "lightDetails": 9490,
+    "celestialDetails": 384,
+    "coreRecreationCycles": 10
+  },
+  "markers": [
+    {
+      "name": "harness_baseline",
+      "rss": 34078720,
+      "heapTotal": 7860224,
+      "heapUsed": 5112632,
+      "external": 2410789,
+      "arrayBuffers": 143787,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "store_module_imported",
+      "rss": 34209792,
+      "heapTotal": 8122368,
+      "heapUsed": 5186696,
+      "external": 2410888,
+      "arrayBuffers": 143787,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "store_open_4_pilots_seeded",
+      "rss": 36438016,
+      "heapTotal": 8122368,
+      "heapUsed": 5223344,
+      "external": 2410888,
+      "arrayBuffers": 143787,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "core_module_imported",
+      "rss": 61063168,
+      "heapTotal": 30666752,
+      "heapUsed": 12592384,
+      "external": 2512799,
+      "arrayBuffers": 145807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "topology_first_load_explicit",
+      "rss": 107077632,
+      "heapTotal": 97787904,
+      "heapUsed": 29726776,
+      "external": 2578335,
+      "arrayBuffers": 211343,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "note": "Diagnostic attribution. Ordinary Core init performs this eagerly itself."
+    },
+    {
+      "name": "core_created",
+      "rss": 123588608,
+      "heapTotal": 111194112,
+      "heapUsed": 42704288,
+      "external": 3952362,
+      "arrayBuffers": 212271,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "first_universe_and_jspace_state_4_pilots",
+      "rss": 124162048,
+      "heapTotal": 111456256,
+      "heapUsed": 42908680,
+      "external": 3954410,
+      "arrayBuffers": 212271,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "80_more_pilot_state_pairs",
+      "rss": 143613952,
+      "heapTotal": 111456256,
+      "heapUsed": 43126984,
+      "external": 3954410,
+      "arrayBuffers": 212271,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "light_details_1000_distinct",
+      "rss": 143876096,
+      "heapTotal": 112242688,
+      "heapUsed": 43689080,
+      "external": 3954410,
+      "arrayBuffers": 212271,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "light_details_entire_atlas",
+      "rss": 147144704,
+      "heapTotal": 115589120,
+      "heapUsed": 47013168,
+      "external": 3954410,
+      "arrayBuffers": 212271,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "distinctSystems": 8490,
+      "sourceBound": "lightCache can grow to finite atlas system count; no LRU eviction"
+    },
+    {
+      "name": "celestial_details_first_48",
+      "rss": 148455424,
+      "heapTotal": 116375552,
+      "heapUsed": 48052304,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "celestial_details_distinct_192_total",
+      "rss": 150421504,
+      "heapTotal": 116637696,
+      "heapUsed": 48104416,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sourceLruLimit": 48
+    },
+    {
+      "name": "celestial_details_distinct_384_total",
+      "rss": 151339008,
+      "heapTotal": 116113408,
+      "heapUsed": 47804944,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0,
+      "sourceLruLimit": 48
+    },
+    {
+      "name": "core_closed_reference_released",
+      "rss": 147189760,
+      "heapTotal": 106115072,
+      "heapUsed": 36766112,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "recreate_use_close_cycle_1",
+      "rss": 147529728,
+      "heapTotal": 106115072,
+      "heapUsed": 36779312,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "recreate_use_close_cycle_5",
+      "rss": 178245632,
+      "heapTotal": 172437504,
+      "heapUsed": 36933176,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "recreate_use_close_cycle_10",
+      "rss": 210116608,
+      "heapTotal": 172961792,
+      "heapUsed": 37225280,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    },
+    {
+      "name": "store_closed_reference_released",
+      "rss": 210116608,
+      "heapTotal": 172961792,
+      "heapUsed": 37220744,
+      "external": 4019946,
+      "arrayBuffers": 277807,
+      "nativeContextCount": 1,
+      "detachedContextCount": 0
+    }
+  ]
+}

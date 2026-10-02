@@ -31,6 +31,10 @@ RecalcStyleDuration, LayoutDuration, counts, and sampled long tasks. An RAF
 interval observer runs only in interaction windows. Final zoom and changed pan
 transforms are asserted so a missed gesture cannot look like an optimisation.
 The candidate's focus setting remains off and all node sizes remain 100%.
+The pan origin is chosen before timing by real hit-testing of uncovered viewport
+background; its viewport-relative coordinates must match across the four runs.
+This avoids an inherited fixed point selecting a connection after zooming a dense
+map. The 24 pointer moves, spacing and displacement remain the original workload.
 
 After **all** timed windows, a separate MutationObserver reports style/attribute
 and child-list mutations during the same zoom/pan actions. This does not count

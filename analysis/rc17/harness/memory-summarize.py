@@ -7,7 +7,15 @@ from collections import defaultdict
 from pathlib import Path
 
 raw = Path(sys.argv[1]).resolve()
-run = json.loads((raw / "memory-all-run.json").read_text())
+completion = raw / "memory-all-completed.json"
+manifest = completion if completion.exists() else raw / "memory-all-run.json"
+manifest_content = manifest.read_bytes()
+run = json.loads(manifest_content)
+if run["schemaVersion"] == 2:
+    assert manifest == completion, "Schema 2 requires its write-once completion record; progress is diagnostic only"
+    assert run["completionRecord"] == completion.name and run["runId"]
+else:
+    assert run["schemaVersion"] == 1 and manifest != completion
 assert run["complete"] and run["endVerified"]
 memory = defaultdict(list)
 sessions = defaultdict(list)
@@ -39,11 +47,13 @@ assert all(len(rows) == 2 for rows in memory.values())
 assert all(len(rows) == 2 for rows in sessions.values())
 assert run["semanticFixtureComparisons"] == 5
 out = {
-    "schema": 1,
+    "schema": 2 if run["schemaVersion"] == 2 else 1,
     "complete": True,
     "sourceCommits": sources,
     "environment": environment,
-    "runManifestSha256": hashlib.sha256((raw / "memory-all-run.json").read_bytes()).hexdigest(),
+    "runManifestFile": manifest.name,
+    "runManifestSha256": hashlib.sha256(manifest_content).hexdigest(),
+    **({"runId": run["runId"]} if run["schemaVersion"] == 2 else {}),
     "method": "Median across two independent ABBA child runs for each marker or per-run operation median. Descriptive small-n summaries; not confidence bounds. Forced-GC retention and ordinary snapshots remain separate.",
     "memory": [dict(mode=k[0], build=k[1], marker=k[2], independentRuns=len(v), observations=v,
         **{field: statistics.median(row[field] for row in v) for field in ["rss", "heapUsed", "heapTotal", "external", "arrayBuffers"]},

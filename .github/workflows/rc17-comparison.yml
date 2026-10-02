@@ -1,4 +1,4 @@
-name: Internal RC17 candidate comparison
+name: Internal instrumented RC17 comparison
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       candidate_sha:
-        description: 'Full commit SHA of the clean RC17 candidate'
+        description: 'Full commit SHA of the internal optimised RC17 runtime'
         type: string
         required: true
       suite:
         description: 'Complete comparison or one focused lane'
         type: choice
-        options: [all, maps, routes, backend, memory, mixed, restart, browser, browser-performance]
+        options: [all, maps, routes, backend, legacy-backend, memory, mixed, restart, browser, browser-performance]
         default: all
         required: true
 
@@ -50,7 +50,7 @@ jobs:
           else:
               sha, suite = os.environ['CANDIDATE_SHA'], os.environ['REQUEST_SUITE']
           assert re.fullmatch('[0-9a-f]{40}', sha), 'Candidate must be a full lowercase commit SHA'
-          assert suite in ['all', 'maps', 'routes', 'backend', 'memory', 'mixed', 'restart', 'browser', 'browser-performance']
+          assert suite in ['all', 'maps', 'routes', 'backend', 'legacy-backend', 'memory', 'mixed', 'restart', 'browser', 'browser-performance']
           assert sha != '57c8dcc7fbd8fc2b62129498d1819050c78381a1', 'Candidate must differ from RC16'
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f'candidate_sha={sha}\nsuite={suite}\n')
@@ -67,6 +67,13 @@ jobs:
           repository: BunBajiro/kairo
           ref: ${{ steps.request.outputs.candidate_sha }}
           path: candidate
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        if: ${{ steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'legacy-backend' }}
+        with:
+          repository: BunBajiro/kairo
+          ref: 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+          path: v073
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
@@ -90,6 +97,7 @@ jobs:
               'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
               'harnessCommit': os.environ['GITHUB_SHA'],
               'baselineCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',
+              'historical073Commit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',
               'candidateCommit': os.environ['CANDIDATE_SHA'],
               'suite': os.environ['REQUEST_SUITE'], 'platform': platform.platform(),
               'harnessSha256': harness,
@@ -100,6 +108,7 @@ jobs:
         id: compile
         env:
           CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          REQUEST_SUITE: ${{ steps.request.outputs.suite }}
         run: |
           cd "$GITHUB_WORKSPACE/rc16"
           npm run install:ci
@@ -110,6 +119,13 @@ jobs:
           cd "$GITHUB_WORKSPACE/checkpoint"
           node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/rc16" analysis/rc17/raw/github/rc16-source.json 57c8dcc7fbd8fc2b62129498d1819050c78381a1
           node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/candidate-source.json "$CANDIDATE_SHA"
+          if [ "$REQUEST_SUITE" = all ] || [ "$REQUEST_SUITE" = legacy-backend ]; then
+            cd "$GITHUB_WORKSPACE/v073"
+            npm run install:ci
+            npm run build
+            cd "$GITHUB_WORKSPACE/checkpoint"
+            node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/v073" analysis/rc17/raw/github/v073-source.json 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+          fi
       - name: Check candidate behaviour and types
         id: correctness
         working-directory: candidate
@@ -117,6 +133,7 @@ jobs:
           npm run check:kairo
           npm run test:kairo
       - name: Measure Maps with equivalent fixtures
+        id: maps
         if: ${{ !cancelled() && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'maps') }}
         working-directory: checkpoint
         run: |
@@ -133,13 +150,22 @@ jobs:
             esac
           done
       - name: Compare isolated itinerary scaling
+        id: routes
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'routes') }}
         working-directory: checkpoint
         run: |
           export KAIRO_BASELINE_MANIFEST="$PWD/analysis/rc17/raw/github/rc16-source.json"
           export KAIRO_CANDIDATE_MANIFEST="$PWD/analysis/rc17/raw/github/candidate-source.json"
           node analysis/rc17/harness/route-run.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/routes
+      - name: Compare historical 0.7.3 and RC16 on this same runner
+        id: legacy
+        if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'legacy-backend') }}
+        working-directory: checkpoint
+        run: |
+          node analysis/rc16/followup/harness/legacy-corrected-run.mjs "$GITHUB_WORKSPACE/v073" "$GITHUB_WORKSPACE/rc16" analysis/rc17/raw/github/legacy-corrected
+          python3 analysis/rc16/harness/legacy-summary.py analysis/rc17/raw/github/legacy-corrected
       - name: Compare corrected backend workloads in balanced order
+        id: backend
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'backend') }}
         working-directory: checkpoint
         run: |
@@ -148,6 +174,7 @@ jobs:
           node analysis/rc17/harness/backend-run.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/backend
           python3 analysis/rc17/harness/backend-summary.py analysis/rc17/raw/github/backend
       - name: Compare bounded residency and not-due Sessions work
+        id: memory
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'memory') }}
         working-directory: checkpoint
         run: |
@@ -156,6 +183,7 @@ jobs:
           node analysis/rc17/harness/memory-runner.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/memory all
           python3 analysis/rc17/harness/memory-summarize.py analysis/rc17/raw/github/memory
       - name: Check combined workloads and large-frame continuity
+        id: mixed
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'mixed') }}
         working-directory: checkpoint
         run: |
@@ -164,10 +192,12 @@ jobs:
           node analysis/rc17/harness/mixed-run.mjs analysis/rc17/raw/github/mixed
           node analysis/rc17/harness/mixed-summary.mjs analysis/rc17/raw/github/mixed/mixed.json
       - name: Check positive managed-restart ownership
+        id: restart
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'restart') }}
         working-directory: checkpoint
         run: KAIRO_CANDIDATE_ROOT="$GITHUB_WORKSPACE/candidate" flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/harness/restart-candidate.mjs > analysis/rc17/raw/github/restart-candidate.json
       - name: Check compiled Mapper preferences and geometry
+        id: browser
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'browser') }}
         working-directory: checkpoint
         env:
@@ -175,6 +205,7 @@ jobs:
           KAIRO_BROWSER_OUTPUT: analysis/rc17/raw/github/maps-browser
         run: KAIRO_BENCH_REPO="$GITHUB_WORKSPACE/candidate" flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/harness/maps-correctness.mjs
       - name: Compare compiled Maps camera work in balanced order
+        id: camera
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' && steps.correctness.outcome == 'success' && (steps.request.outputs.suite == 'all' || steps.request.outputs.suite == 'browser-performance') }}
         working-directory: checkpoint
         env:
@@ -185,16 +216,40 @@ jobs:
           node analysis/rc17/harness/browser-camera-run.mjs "$GITHUB_WORKSPACE/rc16" "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/browser-camera
           node analysis/rc17/harness/browser-camera-summary.mjs analysis/rc17/raw/github/browser-camera
       - name: Verify sources and compiled assets after all lanes
+        id: sources
         if: ${{ always() && !cancelled() && steps.compile.outcome == 'success' }}
         working-directory: checkpoint
         run: |
           node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/rc16-source.json
           node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/candidate-source.json
-      - name: Retain internal evidence only
+          if [ -f analysis/rc17/raw/github/v073-source.json ]; then
+            node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/v073-source.json
+          fi
+      - name: Assemble the internal runtime, harnesses and comparison record
+        id: bundle
+        if: ${{ always() && !cancelled() && steps.sources.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          KAIRO_WORKFLOW_STEPS: ${{ toJSON(steps) }}
+          KAIRO_REQUEST_SUITE: ${{ steps.request.outputs.suite }}
+        run: |
+          python3 analysis/rc17/package-internal.py --checkpoint "$PWD" --candidate-manifest analysis/rc17/raw/github/candidate-source.json --baseline-manifest analysis/rc17/raw/github/rc16-source.json --output "$GITHUB_WORKSPACE/internal-rc17-bundle"
+          python3 "$GITHUB_WORKSPACE/internal-rc17-bundle/internal-rc17/verify-bundle.py"
+      - name: Retain raw comparison evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: internal-rc17-comparison-evidence
           path: checkpoint/analysis/rc17/raw/github/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain the internal instrumented RC17 bundle
+        if: ${{ always() && steps.bundle.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-instrumented-rc17-${{ steps.request.outputs.candidate_sha }}
+          path: |
+            internal-rc17-bundle/*.tar.gz
+            internal-rc17-bundle/*.sha256
           if-no-files-found: error
           retention-days: 30

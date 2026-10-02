@@ -1,0 +1,27 @@
+{"run":"baseline-1","complete":false,"seconds":17.908,"samples":5,"output":"/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-1/browser-camera/baseline-1.json"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Pointer pan must change camera position
+    at sample (file:///workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/browser-camera-worker.mjs:61:25)
+    at async file:///workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/browser-camera-worker.mjs:80:211 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'translate(-290.289px, -252.435px) scale(0.228226)',
+  expected: 'translate(-290.289px, -252.435px) scale(0.228226)',
+  operator: 'notStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: baseline-1 failed: 1
+    at ChildProcess.<anonymous> (file:///workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/browser-camera-run.mjs:28:349)
+    at ChildProcess.emit (node:events:509:28)
+    at ChildProcess._handle.onexit (node:internal/child_process:295:12)
+
+Node.js v24.19.0

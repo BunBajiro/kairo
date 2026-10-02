@@ -1,10 +1,10 @@
 // Fresh child per observation. No measurement shares a process with provenance IO.
 import assert from 'node:assert/strict';
 import {spawn, spawnSync} from 'node:child_process';
-import {mkdir, readFile, writeFile} from 'node:fs/promises';
+import {access, mkdir, readFile, rename, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname, join, resolve} from 'node:path';
-import {createHash} from 'node:crypto';
+import {createHash, randomUUID} from 'node:crypto';
 import {loadSourceManifest, verifySource} from './source-manifest.mjs';
 const self=fileURLToPath(import.meta.url), here=dirname(self);
 if(process.env.KAIRO_MEMORY_LOCKED!=='1') {
@@ -31,12 +31,22 @@ if(lane!=='residency') {
   for(const [index,build] of ['baseline','candidate'].entries())jobs.push({script:'memory-sessions.mjs',build,mode:'diagnostics',index});
 }
 await mkdir(destination,{recursive:true});
+const progressPath=join(destination,'memory-'+lane+'-run.json');
+const completionName='memory-'+lane+'-completed.json', completionPath=join(destination,completionName);
+try { await access(completionPath); throw Error('Refusing to replace completed evidence: '+completionPath); }
+catch(error) { if(error.code!=='ENOENT')throw error; }
 for(const [name,manifest] of Object.entries(sources))await writeFile(join(destination,name+'-source.json'),JSON.stringify(manifest,null,2)+'\n');
 const results=[],sessionSemantics=new Map();
-const report={schemaVersion:1,startedAt:new Date().toISOString(),lane,lock:'/tmp/kairo-rc16-benchmark.lock',lockAcquisition:'Runner acquires one flock around all sequential fresh children; do not wrap in another flock.',order:'ABBA per comparable lane; SQL diagnostics separately',harnessHashes,
+const report={schemaVersion:2,runId:randomUUID(),completionRecord:completionName,startedAt:new Date().toISOString(),lane,lock:'/tmp/kairo-rc16-benchmark.lock',lockAcquisition:'Runner acquires one flock around all sequential fresh children; do not wrap in another flock.',order:'ABBA per comparable lane; SQL diagnostics separately',harnessHashes,
   sources:Object.fromEntries(Object.entries(sources).map(([key,source])=>[key,{sourceCommit:source.sourceCommit,fingerprint:source.fingerprint,dirty:source.dirty,manifest:key+'-source.json'}])),
   semanticFixtureComparisons:0,results,complete:false};
-const save=()=>writeFile(join(destination,'memory-'+lane+'-run.json'),JSON.stringify(report,null,2)+'\n');
+// Progress is replaceable diagnostic state. Only the separate write-once record
+// published after every final guard can certify completion for this run.
+const save=async()=>{
+  const temporary=progressPath+'.'+process.pid+'.tmp';
+  await writeFile(temporary,JSON.stringify(report,null,2)+'\n');
+  await rename(temporary,progressPath);
+};
 await save();
 try {
   for(const job of jobs) {
@@ -66,5 +76,6 @@ try {
   for(const source of Object.values(sources))await verifySource(source);
   for(const [name,expected] of Object.entries(harnessHashes))assert.equal(sha(await readFile(join(here,name))),expected,name+' changed during measurement');
   report.endVerified=true;report.finishedAt=new Date().toISOString();report.complete=true;
+  await writeFile(completionPath,JSON.stringify(report,null,2)+'\n',{flag:'wx'});
 }catch(error){report.error=error.stack;throw error;}
 finally{await save();}

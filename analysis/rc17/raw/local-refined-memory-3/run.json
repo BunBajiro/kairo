@@ -1,0 +1,80 @@
+{
+  "startedAt": "2026-10-02T23:26:49.129711+00:00",
+  "complete": false,
+  "lanes": [
+    "memory"
+  ],
+  "steps": [
+    {
+      "label": "baseline-manifest",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/source-manifest.mjs",
+        "capture",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/baseline-source.json",
+        "57c8dcc7fbd8fc2b62129498d1819050c78381a1"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.21462923900071473
+    },
+    {
+      "label": "candidate-manifest",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/source-manifest.mjs",
+        "capture",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/candidate-source.json",
+        "05d0d4b36c154329006d6772769063db874762da"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.16442094099966198
+    },
+    {
+      "label": "memory",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/memory-runner.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/memory",
+        "all"
+      ],
+      "environmentOverrides": {
+        "KAIRO_BASELINE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/baseline-source.json",
+        "KAIRO_CANDIDATE_MANIFEST": "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/candidate-source.json"
+      },
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 17.88910832900001
+    },
+    {
+      "label": "memory-summary",
+      "command": [
+        "python3",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/memory-summarize.py",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/memory"
+      ],
+      "environmentOverrides": {},
+      "complete": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.03258636300051876
+    },
+    {
+      "label": "baseline-source-end",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis/analysis/rc17/raw/local-refined-memory-3/baseline-source.json"
+      ],
+      "environmentOverrides": {},
+      "complete": false
+    }
+  ]
+}

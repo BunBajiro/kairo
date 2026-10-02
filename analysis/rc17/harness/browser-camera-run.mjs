@@ -32,6 +32,7 @@ try{
  assert.equal(new Set(runs.map(run=>run.fixture.digest)).size,1,'Canonical graph must match across applications and repetitions');
  assert.equal(new Set(runs.map(run=>JSON.stringify(run.environment.browser))).size,1,'All entries must use the same Chrome build');
  for(const nodes of [100,600])assert.equal(new Set(runs.map(run=>JSON.stringify(run.samples.find(sample=>sample.nodes===nodes&&sample.name==='zoom').mapViewport))).size,1,'Selected map viewport dimensions must match across runs');
+ for(const nodes of [100,600])assert.equal(new Set(runs.map(run=>JSON.stringify(run.samples.find(sample=>sample.nodes===nodes&&sample.name==='pan').gestureOrigin))).size,1,'Viewport-relative pan gesture origin must match across runs');
  for(const [file,expected] of Object.entries(harness))assert.equal(hash(await readFile(join(here,file))),expected,'Harness changed: '+file);
  for(const manifest of Object.values(manifests))await verifySource(manifest);
  result.fixtureDigest=runs[0].fixture.digest;result.endVerified=true;result.complete=true;

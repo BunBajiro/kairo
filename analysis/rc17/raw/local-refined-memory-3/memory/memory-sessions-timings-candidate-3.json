@@ -1,0 +1,697 @@
+{
+  "build": "candidate",
+  "mode": "timings",
+  "sourceCommit": "05d0d4b36c154329006d6772769063db874762da",
+  "sourceRoot": "/workspace/scratch/a2f3334402fc/kairo-rc17",
+  "sourceFingerprint": "b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82",
+  "sourceDirty": false,
+  "checkedSourceFiles": 439,
+  "checkedBuildFiles": 24,
+  "endVerified": true,
+  "harness": [
+    {
+      "path": "analysis/rc17/harness/memory-common.mjs",
+      "sha256": "a533451312a4dcda3fdf3b91454a6b46d5f847f8eae4a595322209f121455e87"
+    },
+    {
+      "path": "analysis/rc17/harness/source-manifest.mjs",
+      "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-sessions.mjs",
+      "sha256": "8bd8c2b983e7f81ffd1ef715a97cb272aa4abd27dc3bcd63b8d1b1d14e061bc0"
+    },
+    {
+      "path": "analysis/rc17/harness/memory-runner.mjs",
+      "sha256": "4fe7bc84c5f8b32a9b8db12bd6f6350e924f4559137cf6db02b28e49558f9734"
+    },
+    {
+      "path": "analysis/rc17/harness/legacy-discovery-fixture.mjs",
+      "sha256": "486671013d230998828929e24e4fd83ee33e765a052dfffb5d22e03efce4545b"
+    }
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9
+  },
+  "recordedAt": "2026-10-02T23:27:02.926Z",
+  "methodology": "Fresh process per build pass; each fixture has three warmups then seven measured samples per operation; no forced GC or SQL wrapping; no HTTP/serialization in timings.",
+  "interpretation": "Repeated visits to the same system are distinct timed presence windows and remain in the route. Combat request groups already deduplicate system/year/month. Live sync calls are sequential with a future feed deadline. Candidate diagnostics require zero visit rows while preserving ordinary route/group semantics; due/force/error behaviour is covered by production regression tests. Cross-build semantic equality covers system/time/duration/active and combat groups only, not all report/replay/sovereignty fields or events.",
+  "complete": true,
+  "networkAttempts": 0,
+  "results": [
+    {
+      "fixture": {
+        "visits": 100,
+        "pilots": 1,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 1.6666666666666667,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 100,
+      "groupCount": 100,
+      "routeBytes": 30682,
+      "semantic": {
+        "route": "97248a2fddbef3d9813cb8e6cb91602a5cb541b704f07eb3b9bba0e983285f73",
+        "groups": "41c91eea0b81a1da0766cfb4d1fffa9d1a055264bea9119a1bbd69ba8c558e03"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "medianMs": 0.6060289999999995,
+          "samples": [
+            {
+              "wallMs": 0.6466490000000036,
+              "cpuMs": 0.818
+            },
+            {
+              "wallMs": 0.5476320000000001,
+              "cpuMs": 0.553
+            },
+            {
+              "wallMs": 0.6866600000000034,
+              "cpuMs": 0.848
+            },
+            {
+              "wallMs": 0.6060289999999995,
+              "cpuMs": 1.183
+            },
+            {
+              "wallMs": 0.6028240000000054,
+              "cpuMs": 0.661
+            },
+            {
+              "wallMs": 0.5199289999999976,
+              "cpuMs": 0.578
+            },
+            {
+              "wallMs": 1.0299650000000042,
+              "cpuMs": 1.422
+            }
+          ]
+        },
+        {
+          "name": "route_and_combat_groups",
+          "medianMs": 0.6757040000000032,
+          "samples": [
+            {
+              "wallMs": 0.6235149999999976,
+              "cpuMs": 0.631
+            },
+            {
+              "wallMs": 0.6757040000000032,
+              "cpuMs": 0.679
+            },
+            {
+              "wallMs": 0.7553029999999978,
+              "cpuMs": 1.622
+            },
+            {
+              "wallMs": 0.6668400000000005,
+              "cpuMs": 1.251
+            },
+            {
+              "wallMs": 0.7013120000000015,
+              "cpuMs": 0.705
+            },
+            {
+              "wallMs": 0.8695840000000032,
+              "cpuMs": 0.937
+            },
+            {
+              "wallMs": 0.5608110000000011,
+              "cpuMs": 0.565
+            }
+          ]
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "medianMs": 0.00472700000000259,
+          "samples": [
+            {
+              "wallMs": 0.00472700000000259,
+              "cpuMs": 0.008
+            },
+            {
+              "wallMs": 0.006249999999994316,
+              "cpuMs": 0.008
+            },
+            {
+              "wallMs": 0.00448599999999999,
+              "cpuMs": 0.006
+            },
+            {
+              "wallMs": 0.004165999999997894,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.0040460000000024365,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.004818000000000211,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.006981000000003235,
+              "cpuMs": 0.008
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 1000,
+        "pilots": 1,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 16.666666666666668,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 1000,
+      "groupCount": 100,
+      "routeBytes": 307793,
+      "semantic": {
+        "route": "f935ea1a2d57f5a683cb4fb22ccd98a926a3b19461a892ca698ad7c4f5bc4b9b",
+        "groups": "7a35ce218773208e6b02d08e294946c8bc8c0aafd340b9f705028fec278d5cb6"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "medianMs": 5.2836050000000085,
+          "samples": [
+            {
+              "wallMs": 7.344476,
+              "cpuMs": 8.204
+            },
+            {
+              "wallMs": 5.899489000000003,
+              "cpuMs": 5.906
+            },
+            {
+              "wallMs": 5.2836050000000085,
+              "cpuMs": 5.872
+            },
+            {
+              "wallMs": 4.126688999999999,
+              "cpuMs": 4.13
+            },
+            {
+              "wallMs": 4.995121999999995,
+              "cpuMs": 5.671
+            },
+            {
+              "wallMs": 4.478515999999999,
+              "cpuMs": 8.956
+            },
+            {
+              "wallMs": 5.415942999999999,
+              "cpuMs": 5.951
+            }
+          ]
+        },
+        {
+          "name": "route_and_combat_groups",
+          "medianMs": 5.249853999999999,
+          "samples": [
+            {
+              "wallMs": 5.8685820000000035,
+              "cpuMs": 6.484
+            },
+            {
+              "wallMs": 5.031597000000005,
+              "cpuMs": 5.034
+            },
+            {
+              "wallMs": 5.279198000000008,
+              "cpuMs": 5.282
+            },
+            {
+              "wallMs": 6.011505,
+              "cpuMs": 6.581
+            },
+            {
+              "wallMs": 5.124765999999994,
+              "cpuMs": 5.127
+            },
+            {
+              "wallMs": 5.040939999999978,
+              "cpuMs": 5.045
+            },
+            {
+              "wallMs": 5.249853999999999,
+              "cpuMs": 5.306
+            }
+          ]
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "medianMs": 0.0033960000000092805,
+          "samples": [
+            {
+              "wallMs": 0.00855300000000625,
+              "cpuMs": 0.012
+            },
+            {
+              "wallMs": 0.00420600000001059,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.0034660000000030777,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0031639999999981683,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0031749999999988177,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0030950000000018463,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0033960000000092805,
+              "cpuMs": 0.004
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 10000,
+        "pilots": 1,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 166.66666666666666,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 10000,
+      "groupCount": 100,
+      "routeBytes": 3087894,
+      "semantic": {
+        "route": "4f3d270ef06ba86b117967ca7812bb0b1974c4b7f879445ff093ebd49fa72888",
+        "groups": "3e392a0828093345e2d314300b4f1222a90a02005465dd6dbde24b558eabf3e2"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "medianMs": 47.19732799999997,
+          "samples": [
+            {
+              "wallMs": 41.83601599999997,
+              "cpuMs": 42.548
+            },
+            {
+              "wallMs": 54.516704999999945,
+              "cpuMs": 69.259
+            },
+            {
+              "wallMs": 43.73622599999999,
+              "cpuMs": 43.748
+            },
+            {
+              "wallMs": 47.282996000000026,
+              "cpuMs": 47.228
+            },
+            {
+              "wallMs": 49.54507899999999,
+              "cpuMs": 49.558
+            },
+            {
+              "wallMs": 47.19732799999997,
+              "cpuMs": 50.669
+            },
+            {
+              "wallMs": 42.84828500000003,
+              "cpuMs": 42.862
+            }
+          ]
+        },
+        {
+          "name": "route_and_combat_groups",
+          "medianMs": 50.24457799999993,
+          "samples": [
+            {
+              "wallMs": 50.24457799999993,
+              "cpuMs": 50.268
+            },
+            {
+              "wallMs": 51.677167000000054,
+              "cpuMs": 54.488
+            },
+            {
+              "wallMs": 50.41788799999995,
+              "cpuMs": 50.429
+            },
+            {
+              "wallMs": 50.1157639999999,
+              "cpuMs": 50.126
+            },
+            {
+              "wallMs": 54.063244999999824,
+              "cpuMs": 57.84
+            },
+            {
+              "wallMs": 49.53349100000014,
+              "cpuMs": 49.544
+            },
+            {
+              "wallMs": 49.24723199999994,
+              "cpuMs": 49.258
+            }
+          ]
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "medianMs": 0.003294999999980064,
+          "samples": [
+            {
+              "wallMs": 0.0040559999999914,
+              "cpuMs": 0.006
+            },
+            {
+              "wallMs": 0.004067000000077314,
+              "cpuMs": 0.006
+            },
+            {
+              "wallMs": 0.003294999999980064,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0032849999997779378,
+              "cpuMs": 0.003
+            },
+            {
+              "wallMs": 0.0030039999999189604,
+              "cpuMs": 0.003
+            },
+            {
+              "wallMs": 0.003044999999929132,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.003294999999980064,
+              "cpuMs": 0.004
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 100,
+        "pilots": 1,
+        "olderVisits": 10000,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 1.6666666666666667,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 100,
+        "seededMemberships": 100,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 100,
+      "groupCount": 100,
+      "routeBytes": 30682,
+      "semantic": {
+        "route": "97248a2fddbef3d9813cb8e6cb91602a5cb541b704f07eb3b9bba0e983285f73",
+        "groups": "41c91eea0b81a1da0766cfb4d1fffa9d1a055264bea9119a1bbd69ba8c558e03"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "medianMs": 0.4170360000000528,
+          "samples": [
+            {
+              "wallMs": 0.4170360000000528,
+              "cpuMs": 0.427
+            },
+            {
+              "wallMs": 0.4318679999998949,
+              "cpuMs": 0.434
+            },
+            {
+              "wallMs": 0.41466200000013487,
+              "cpuMs": 0.416
+            },
+            {
+              "wallMs": 0.40167200000018966,
+              "cpuMs": 0.403
+            },
+            {
+              "wallMs": 0.4313169999998081,
+              "cpuMs": 0.434
+            },
+            {
+              "wallMs": 0.4017830000000231,
+              "cpuMs": 0.403
+            },
+            {
+              "wallMs": 0.4787180000000717,
+              "cpuMs": 0.481
+            }
+          ]
+        },
+        {
+          "name": "route_and_combat_groups",
+          "medianMs": 0.502322999999933,
+          "samples": [
+            {
+              "wallMs": 0.49496300000009796,
+              "cpuMs": 0.501
+            },
+            {
+              "wallMs": 0.5123889999999847,
+              "cpuMs": 0.515
+            },
+            {
+              "wallMs": 0.4918880000000172,
+              "cpuMs": 0.493
+            },
+            {
+              "wallMs": 0.5940110000001368,
+              "cpuMs": 0.596
+            },
+            {
+              "wallMs": 0.502322999999933,
+              "cpuMs": 0.504
+            },
+            {
+              "wallMs": 0.5261989999999059,
+              "cpuMs": 0.529
+            },
+            {
+              "wallMs": 0.4935400000001664,
+              "cpuMs": 0.495
+            }
+          ]
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "medianMs": 0.003145000000131404,
+          "samples": [
+            {
+              "wallMs": 0.003456000000142012,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.003656000000091808,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0030850000000555156,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.003064999999878637,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.003073999999969601,
+              "cpuMs": 0.003
+            },
+            {
+              "wallMs": 0.003145000000131404,
+              "cpuMs": 0.026
+            },
+            {
+              "wallMs": 0.004887000000053376,
+              "cpuMs": 0.005
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "visits": 1000,
+        "pilots": 4,
+        "olderVisits": 0,
+        "uniqueSystemsPerPilot": 100,
+        "visitSpacingSeconds": 60,
+        "durationHours": 16.666666666666668,
+        "live": true,
+        "feedCacheNotDue": true,
+        "end": "2026-09-30T09:00:00.000Z"
+      },
+      "discoveryPreparation": {
+        "available": true,
+        "expectedMemberships": 400,
+        "seededMemberships": 400,
+        "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+      },
+      "routeLength": 1000,
+      "groupCount": 100,
+      "routeBytes": 307793,
+      "semantic": {
+        "route": "f935ea1a2d57f5a683cb4fb22ccd98a926a3b19461a892ca698ad7c4f5bc4b9b",
+        "groups": "7a35ce218773208e6b02d08e294946c8bc8c0aafd340b9f705028fec278d5cb6"
+      },
+      "operations": [
+        {
+          "name": "session_route",
+          "medianMs": 3.9617620000001352,
+          "samples": [
+            {
+              "wallMs": 4.478898000000072,
+              "cpuMs": 4.497
+            },
+            {
+              "wallMs": 3.8256179999998494,
+              "cpuMs": 3.829
+            },
+            {
+              "wallMs": 4.003915000000006,
+              "cpuMs": 4.008
+            },
+            {
+              "wallMs": 4.237205000000131,
+              "cpuMs": 4.241
+            },
+            {
+              "wallMs": 3.823474000000033,
+              "cpuMs": 3.828
+            },
+            {
+              "wallMs": 3.788973000000169,
+              "cpuMs": 3.792
+            },
+            {
+              "wallMs": 3.9617620000001352,
+              "cpuMs": 3.965
+            }
+          ]
+        },
+        {
+          "name": "route_and_combat_groups",
+          "medianMs": 4.690204999999878,
+          "samples": [
+            {
+              "wallMs": 4.980379999999968,
+              "cpuMs": 4.99
+            },
+            {
+              "wallMs": 4.768691999999874,
+              "cpuMs": 4.773
+            },
+            {
+              "wallMs": 4.7973349999999755,
+              "cpuMs": 4.801
+            },
+            {
+              "wallMs": 4.588572000000113,
+              "cpuMs": 4.593
+            },
+            {
+              "wallMs": 4.67598299999986,
+              "cpuMs": 4.679
+            },
+            {
+              "wallMs": 4.564585999999963,
+              "cpuMs": 4.568
+            },
+            {
+              "wallMs": 4.690204999999878,
+              "cpuMs": 4.694
+            }
+          ]
+        },
+        {
+          "name": "actual_live_sync_cache_hit",
+          "medianMs": 0.003375000000005457,
+          "samples": [
+            {
+              "wallMs": 0.003424999999879219,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.003375000000005457,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.003654999999980646,
+              "cpuMs": 0.005
+            },
+            {
+              "wallMs": 0.0033149999999295687,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.0032049999999799184,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.003175000000055661,
+              "cpuMs": 0.004
+            },
+            {
+              "wallMs": 0.00345500000003085,
+              "cpuMs": 0.004
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
