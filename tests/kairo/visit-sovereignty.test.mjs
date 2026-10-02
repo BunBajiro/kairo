@@ -47,12 +47,13 @@ test('session starts and recorded visits retain their original holder after late
     store.saveSnapshot(0, 'sovereignty', sample(now));
     store.saveSnapshot(42, 'location', { status: 'ready', updatedAt: iso(now), expiresAt: iso(now + 60000), data: { solar_system_id: A, system: { name: 'Jita' } } });
     const context = captureContext(store, 42), listeners = new Map();
+    store.db.prepare('INSERT INTO sessions(id,character_id,label,started,start_context,end_context) VALUES(?,?,?,?,?,?)')
+        .run('owner-replay', 42, 'Recorded owners', context.capturedAt, JSON.stringify(context), '{}');
     const stop = registerUniverseHistory({ store, bus: { on: (type, fn) => { listeners.set(type, fn); return () => listeners.delete(type); } },
         esi: { names: () => { throw new Error('No additional name or sovereignty request is needed'); } }, publish: () => {} });
     await listeners.get('data.location')({ characterId: 42, payload: { previous: { solar_system_id: A }, current: { solar_system_id: B, system: { name: 'Perimeter' } } } });
     stop();
-    store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context) VALUES(?,?,?,?,?,?,?)')
-        .run('owner-replay', 42, 'Recorded owners', context.capturedAt, iso(now + 60000), JSON.stringify(context), '{}');
+    store.db.prepare('UPDATE sessions SET ended=? WHERE id=?').run(iso(now + 60000), 'owner-replay');
     // An old visit has no captured ownership, even if its system is in today's feed.
     store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42, A, 'Legacy Jita visit', iso(now + 10000));
     store.saveSnapshot(0, 'sovereignty', sample(now, { data: [{ system_id: A, alliance_id: 99 }, { system_id: B, alliance_id: 99 }] }));

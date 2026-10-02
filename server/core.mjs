@@ -1,14 +1,17 @@
 import { createUniverse } from './universe.mjs';
+import { enrichAssetLocations } from './asset-locations.mjs';
 import { registerUniverseHistory } from './universe-history.mjs';
+import { captureSessionObservation } from './session-travel.mjs';
 import { getUniverseSystem } from './universe-static.mjs';
 import { normalizeSovereignty, sovereigntyStructures } from './universe-sovereignty.mjs';
 import { catalog } from './modules/catalog.mjs';
 import { createBus } from './bus.mjs';
 import { createRegistry } from './registry.mjs';
 import { createStream } from './stream.mjs';
+import {sseEvent, writeSSE, heartbeatSSE, closeSSE} from './sse.mjs';
 import { createProtectionTracker } from './opsec.mjs';
 import {rememberSystem} from './places.mjs';
-import {bindingProjection} from './projections.mjs';
+import {bindingProjections} from './projections.mjs';
 import {createOBS} from './obs.mjs';
 import {createCombat} from './combat.mjs';
 import {createSessionCombat} from './session-combat.mjs';
@@ -18,20 +21,17 @@ import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
-    let stopped = false;
+    let stopped = false, closing, quiesceFailures;
     const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
     const protectionKeys = new Set(['location', 'fw', 'sovereignty', 'profile', 'contacts', 'corporation_contacts', 'alliance_contacts']);
     const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
     let polling = pollingValues(store.get('esi:polling', {}));
     const protection = createProtectionTracker();
-    function send(type, data) { for (const c of uiClients) {
-        if (c.destroyed || c.writableLength > 1000000) {
-            c.destroy();
-            uiClients.delete(c);
-        }
-        else
-            c.write('event: ' + type + '\ndata: ' + JSON.stringify(data) + '\n\n');
-    } }
+    function send(type, data) {
+        if (!uiClients.size) return;
+        const frame = sseEvent(type, data);
+        for (const client of uiClients) if (!writeSSE(client, frame)) uiClients.delete(client);
+    }
     function publish(e) { const at = e.at || new Date().toISOString(); const result = store.db.prepare('INSERT OR IGNORE INTO events(character_id,type,module,summary,payload,at,dedupe) VALUES(?,?,?,?,?,?,?)').run(e.characterId || null, e.type, e.module || 'core', e.summary || e.type, JSON.stringify(e.payload || {}), at, e.dedupe || null); if (result.changes) {
         bus.emit({ ...e, at });
         send('changed', { characterId: e.characterId });
@@ -120,30 +120,8 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             return { ...data, corporation, alliance };
         }
         if (key === 'assets') {
-            const entries = new Map(data.map(a => [a.item_id, a]));
-            const rootLocation = a => { let location = a.location_id; const seen = new Set(); while (entries.has(location) && !seen.has(location)) {
-                seen.add(location);
-                location = entries.get(location).location_id;
-            } return location; };
-            const locations = [...new Set(data.map(rootLocation))];
-            const canReadStructures = auth.characters().find(c => c.id === id)?.scopes.includes('esi-universe.read_structures.v1');
-            rememberNames(await esi.names(locations.filter(x => x < 2147483647 && !namesMap[x])));
-            for (const location of locations) {
-                if (namesMap[location])
-                    continue;
-                try {
-                    if (location >= 60000000 && location < 64000000) {
-                        const r = await esi.request('/universe/stations/' + location, { ttl: 86400 });
-                        rememberNames({ [location]: r.data.name });
-                    }
-                    else if (location >= 1000000000000 && canReadStructures) {
-                        const r = await esi.request('/universe/structures/' + location, { characterId: id, ttl: 3600 });
-                        rememberNames({ [location]: r.data.name });
-                    }
-                }
-                catch { }
-            }
-            return data.map(a => ({ ...a, root_location_id: rootLocation(a), location_name: namesMap[rootLocation(a)] || String(rootLocation(a)) }));
+            return enrichAssetLocations(data,{names:namesMap,rememberNames,esi,characterId:id,
+                canReadStructures:auth.characters().find(c=>c.id===id)?.scopes.includes('esi-universe.read_structures.v1')});
         }
         if (key === 'killmails') {
             await combat.ingest(id,data,'esi');
@@ -214,6 +192,10 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         try {
             const options = { characterId: d.scope ? id : 0, ttl: d.ttl, priority: protectionKeys.has(d.key) };
             const r = await (d.paged ? esi.paged : esi.request)(d.route.replaceAll('{id}', id).replaceAll('{owner}', ownerId), options);
+            // Session ownership follows local fresh-response receipt, before
+            // optional location metadata or names can cross a session boundary.
+            const observation = !r.stale && (d.key === 'location' || d.key === 'ship')
+                ? captureSessionObservation(store, { characterId: id, systemId: d.key === 'location' ? r.data?.solar_system_id : undefined }) : undefined;
             const data = await enrich(d.key, r.data, id);
             if (d.key === 'sovereignty') await resolveNames(data.map(s => ({ alliance_id: s.alliance_id, corporation_id: s.corporation_id, faction_id: s.faction_id })), true);
             else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts', 'industry_systems'].includes(d.key))
@@ -250,7 +232,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                     const pilot = catalog.find(m => m.id === 'pilot');
                     syncDataset(character, pilot, pilot.datasets.find(d => d.key === 'ship'))?.catch(() => {});
                 }
-                bus.emit({ type: 'data.' + d.key, characterId: id, payload: { current: data, previous: prior?.data } });
+                bus.emit({ type: 'data.' + d.key, characterId: id, payload: { current: data, previous: prior?.data, ...(observation ? { observation } : {}) } });
             }
         }
         catch (e) {
@@ -339,7 +321,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         return Promise.allSettled(tasks);
     }
-    function updateBindings(){stream.setBindings(Object.fromEntries(stream.config().elements.map(e=>[e.id,bindingProjection(store,auth,e)])));}
+    function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements));}
     function refreshPolitics() {
         if (!store.get('module:universe', true)) return;
         try { universe.refreshPolitics(); } catch (error) { console.warn('Universe relationship refresh deferred:', error.message); }
@@ -349,13 +331,47 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
         } } refreshOPSEC(); }, 3000);
     ticker.unref();
-    const heartbeat = setInterval(() => { for (const c of [...uiClients, ...stream.clients]) {
-        if (c.destroyed || c.writableLength > 1000000)
-            c.destroy();
-        else
-            c.write(': heartbeat\n\n');
-    } updateBindings(); }, 10000);
+    const heartbeat = setInterval(() => {
+        for (const clients of [uiClients, stream.clients]) for (const client of clients)
+            if (!heartbeatSSE(client)) clients.delete(client);
+        updateBindings();
+    }, 10000);
     heartbeat.unref();
+    function quiesce() { quiesceFailures ??= bus.health().failures; clearInterval(ticker); clearInterval(heartbeat); }
+    function close() {
+        if (closing) return closing;
+        stopped = true; quiesce();
+        const priorFailures = quiesceFailures;
+        closing = (async () => {
+            const errors = [];
+            async function finish(work) {
+                try { await work(); } catch (error) { errors.push(error); }
+            }
+            // Dataset enrichment can still call Universe and Combat after ESI
+            // resolves. Keep both dependencies and semantic listeners available.
+            while (syncing.size || datasetSync.size) {
+                const results = await Promise.allSettled([...syncing.values(), ...datasetSync.values()]);
+                errors.push(...results.filter(result => result.status === 'rejected').map(result => result.reason));
+            }
+            await finish(() => universe.close());
+            await finish(() => markets.close());
+            await finish(() => sessionCombat.close());
+            await finish(() => combat.close());
+            await bus.drain();
+            await finish(() => registry.close());
+            // Promise-returning module cleanup may publish final semantic work.
+            await bus.drain();
+            await finish(() => stopUniverseHistory());
+            await finish(() => stream.close());
+            await finish(() => obs.close());
+            await Promise.all([...uiClients].map(closeSSE));
+            uiClients.clear();
+            const events = await bus.close();
+            if (events.failures > priorFailures) errors.push(new Error(`Semantic event drain failed (${events.failures - priorFailures} listener errors).`));
+            if (errors.length) throw new AggregateError(errors, 'Kairo could not finish all accepted work.');
+        })();
+        return closing;
+    }
     refreshOPSEC();updateBindings();
     if (!options.noSync) refreshPolitics();
     return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
@@ -366,6 +382,5 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             for (const m of catalog) if ((m.id === 'universe') === (id === 0)) for (const d of m.datasets) requested.add(id + ':' + d.key);
             esi.clearAccessFailures?.(id);
             syncProtection(); return Promise.allSettled([sync(id), ...(!options.noSync && id ? [combat.syncPublic(id)] : [])]);
-        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health() }), async close() { stopped = true; clearInterval(ticker); clearInterval(heartbeat); registry.close();stopUniverseHistory();stream.close();await universe.close();await markets.close();await sessionCombat.close();await combat.close();await obs.close(); for (const c of uiClients)
-            c.end(); await Promise.allSettled([...syncing.values(), ...datasetSync.values()]); } };
+        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health(), events: bus.health() }), quiesce, close };
 }

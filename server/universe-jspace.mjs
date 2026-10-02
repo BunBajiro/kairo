@@ -2,6 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { getWormholeType } from './universe-wormholes.mjs';
 import { createJSpaceTracking } from './universe-jspace-tracking.mjs';
 import { validateJSpaceScope, hasJSpaceScope, matchesJSpaceScope } from './universe-jspace-scopes.mjs';
+import { mapSystemIndex, searchMapSystems } from '../components/kairo/map-discovery-search-model.mjs';
+import { searchMapNotes } from '../components/kairo/jspace-notes-model.mjs';
 
 const LIMITS = Object.freeze({ maps: 24, nodes: 600, connections: 1000, passages: 1000, observations: 1000, comments: 500, pings: 100, activity: 100, undo: 10, document_bytes: 4_000_000 });
 const STATUSES = ['unknown', 'unscanned', 'scanning', 'scanned', 'occupied', 'hostile', 'friendly', 'empty'];
@@ -50,7 +52,7 @@ function conflict(revision) {
 
 /** Private diagrams reference Universe links; diagram topology never independently authorises a route. */
 export function createUniverseJSpace(store, auth, options) {
-    const { atlas, getLinks, saveLink, deleteLink, validateLink, operations, getScopeContext = () => ({ atlas, politicsConfig: {} }), onChange = () => {} } = options;
+    const { atlas, getLinks, readLinks, saveLink, deleteLink, validateLink, operations, getScopeContext = () => ({ atlas, politicsConfig: {} }), onChange = () => {} } = options;
     const now = options.now || Date.now, iso = () => new Date(now()).toISOString();
     const byId = atlas.bySystemId || new Map(atlas.systems.map(row => [row.system_id, row]));
     const gates = new Set(atlas.gates.flatMap(row => [`${row.from_system_id}:${row.to_system_id}`, `${row.to_system_id}:${row.from_system_id}`]));
@@ -358,9 +360,18 @@ export function createUniverseJSpace(store, auth, options) {
         if (!Number.isSafeInteger(duration) || duration < 15 || duration > 3600) throw new Error('A ping lasts between 15 seconds and one hour.');
         return { id: randomUUID(), system_id: mapNode(map, input.system_id), label: clean(input.label, 120), created_at: iso(), expires_at: new Date(now() + duration * 1000).toISOString() };
     }
+    function projectionContext(id, mapId) {
+        const operational = operations.readContext(id), links = readLinks(id, { mapId, operational });
+        return { operational, canonical: (map, signatures = false) => new Map(links.forMap(map.id, signatures).map(row => [row.id, row])) };
+    }
     function project(id, value, shared = null) {
-        const canonical = new Map(getLinks(id, value.id).map(row => [row.id, row]));
-        const map = reconcileNodes(id, clone(read(id, 'jspace_map', value.id) || value), canonical), operational = map.kind === 'tracking_source' ? null : operations.state(id, value.id), signatures = operational?.signatures || [];
+        if (!shared) {
+            shared = projectionContext(id, value.id);
+            // Expiry can change the saved revision and remove bound observations.
+            value = loaded(id, value.id);
+        }
+        const canonical = shared.canonical(value, value.kind === 'tracking_source');
+        const map = reconcileNodes(id, clone(value), canonical), operational = map.kind === 'tracking_source' ? null : shared.operational.state(value.id), signatures = operational?.signatures || [];
         const signaturesById = new Map(signatures.map(row => [row.id, row])), signaturesBySystem = new Map(signatures.map(row => [`${row.system_id}:${row.signature_id}`, row])), passagesByEdge = new Map();
         for (const row of map.passages) {
             const aggregate = passagesByEdge.get(row.connection_id) || { count: 0, mass: 0, unweighed: 0 };
@@ -389,24 +400,78 @@ export function createUniverseJSpace(store, auth, options) {
         });
         map.observations = map.observations.map(row => ({ ...row, expired: !!row.expires_at && Date.parse(row.expires_at) <= now(), timer_elapsed: !!row.timer_at && Date.parse(row.timer_at) <= now() }));
         map.pings = map.pings.filter(row => Date.parse(row.expires_at) > now());
-        const systems = new Set(map.nodes.map(row => row.system_id));
+        const systems = new Set(map.nodes.map(row => row.system_id)), connectionsBySignature = new Map();
+        for (const edge of map.connections) {
+            // One edge appears once even if both endpoints refer to the same UUID.
+            for (const signatureId of new Set([edge.from_signature_id, edge.to_signature_id])) {
+                if (!signatureId) continue;
+                if (!connectionsBySignature.has(signatureId)) connectionsBySignature.set(signatureId, []);
+                connectionsBySignature.get(signatureId).push(edge.id);
+            }
+        }
         map.signatures = signatures.filter(row => systems.has(row.system_id)).map(row => ({ ...row,
             age_ms: Number.isFinite(Date.parse(row.last_seen_at)) ? Math.max(0, now() - Date.parse(row.last_seen_at)) : null,
             stale: row.missing === true || !Number.isFinite(Date.parse(row.last_seen_at)) || now() - Date.parse(row.last_seen_at) > 24 * 3600000,
-            connection_ids: map.connections.filter(edge => edge.from_signature_id === row.id || edge.to_signature_id === row.id).map(edge => edge.id) }));
+            connection_ids: connectionsBySignature.get(row.id) || [] }));
         map.can_undo = (read(id, 'jspace_undo', map.id)?.entries.length || 0) > 0;
         map.operations = operational;
         map.pilots = tracking.projectPilots(map);
         map.read_only = map.kind === 'tracking_source';
         return map;
     }
+    function libraryContext(id) {
+        ensureSource(id);
+        const shared = projectionContext(id);
+        // Always read documents after canonical expiry reconciliation.
+        return { shared, maps: rows(id, 'jspace_map') };
+    }
+    function sourceDescriptor(id, source, shared) {
+        if (!source) return null;
+        const map = reconcileNodes(id, source, shared.canonical(source));
+        return { id: map.id, name: map.name, kind: 'tracking_source', read_only: true, revision: map.revision,
+            node_count: map.nodes.length, connection_count: map.connections.length, nodes: [], connections: [] };
+    }
     function state(characterId) {
-        const id = pilot(characterId), rawSource = ensureSource(id);
-        const links = rawSource ? new Map(getLinks(id, rawSource.id).map(link => [link.id, link])) : null;
-        const source = rawSource ? reconcileNodes(id, loaded(id, rawSource.id), links) : null;
-        return { character_id: id, generated_at: iso(), maps: rows(id, 'jspace_map').filter(value => value.kind !== 'tracking_source').map(value => project(id, value)),
-            source_map: source ? { id: source.id, name: source.name, kind: 'tracking_source', read_only: true, revision: source.revision,
-                node_count: source.nodes.length, connection_count: source.connections.length, nodes: [], connections: [] } : null, limits: LIMITS };
+        const id = pilot(characterId), { shared, maps } = libraryContext(id);
+        return { character_id: id, generated_at: iso(), maps: maps.filter(value => value.kind !== 'tracking_source').map(value => project(id, value, shared)),
+            source_map: sourceDescriptor(id, maps.find(value => value.id === 'tracking-source-' + id), shared), limits: LIMITS };
+    }
+    function summary(map, canonical) {
+        let nextExpiry = Infinity;
+        for (const edge of map.connections) {
+            const link = canonical.get(edge.link_id), expiry = Date.parse(link?.expires_at);
+            if (link?.kind === 'wormhole' && expiry > now()) nextExpiry = Math.min(nextExpiry, expiry);
+        }
+        return { id: map.id, name: map.name, description: map.description, kind: map.kind || null, revision: map.revision,
+            created_at: map.created_at, updated_at: map.updated_at, read_only: map.kind === 'tracking_source',
+            node_count: map.nodes.length, connection_count: map.connections.length, pilot_count: (map.pilots || []).length,
+            scope: map.scope || null, next_expiry_at: Number.isFinite(nextExpiry) ? new Date(nextExpiry).toISOString() : null };
+    }
+    function summaries(characterId) {
+        const id = pilot(characterId), context = libraryContext(id), maps = [];
+        let source_map = null;
+        for (const value of context.maps) {
+            const canonical = context.shared.canonical(value), map = reconcileNodes(id, value, canonical), descriptor = summary(map, canonical);
+            if (map.kind !== 'tracking_source') maps.push(descriptor);
+            else if (map.id === 'tracking-source-' + id) source_map = descriptor;
+        }
+        return { character_id: id, generated_at: iso(), maps, source_map, limits: LIMITS };
+    }
+    function search(characterId, input = {}) {
+        const id = pilot(characterId), query = clean(input.q, 240), kind = choose(input.kind, ['systems', 'notes'], 'systems');
+        const context = libraryContext(id), maps = context.maps.filter(map => map.kind !== 'tracking_source').map(value => {
+            const canonical = context.shared.canonical(value), map = reconcileNodes(id, value, canonical);
+            // Notes search only needs current connection identity, lifetime and endpoints.
+            // Reuse the shared search contract without fetching operational state/signatures.
+            if (kind === 'notes') map.connections = map.connections.map(edge => {
+                const link = canonical.get(edge.link_id);
+                return edge.kind === 'gate' ? edge : { ...link, ...edge, life_status: link?.life_status || edge.life_status };
+            });
+            return map;
+        });
+        const results = kind === 'systems' ? searchMapSystems(mapSystemIndex(maps, atlas.systems), query) :
+            searchMapNotes(maps, query, { systemName: systemId => byId.get(systemId)?.name || String(systemId), limit: 8, now: now() });
+        return { character_id: id, generated_at: iso(), kind, results };
     }
     function blank(input) {
         const name = clean(input.name, 80); if (!name) throw new Error('Give this chain a name.');
@@ -868,5 +933,5 @@ export function createUniverseJSpace(store, auth, options) {
         });
         tracking.syncMap(id, map); onChange(id); return project(id, map);
     }
-    return { state, map: (characterId, key) => { const id = pilot(characterId); return project(id, loaded(id, key)); }, create, command, remove, duplicate, exportMap, previewImport, importMap, observeLocation, setActivePilot, cleanupSources, forgetConnections, migrateScopes };
+    return { state, summaries, search, map: (characterId, key) => { const id = pilot(characterId), shared = projectionContext(id, key); return project(id, loaded(id, key), shared); }, create, command, remove, duplicate, exportMap, previewImport, importMap, observeLocation, setActivePilot, cleanupSources, forgetConnections, migrateScopes };
 }

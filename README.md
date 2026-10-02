@@ -2,7 +2,7 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.8.0-rc.16 · Universe review build · Windows first · No cloud deployment**
+**Version 0.8.0-rc.17 · Optimisation and refactoring review build · Windows first · No cloud deployment**
 
 See the [changelog](CHANGELOG.md) for release notes.
 
@@ -24,7 +24,7 @@ The test build uses your existing local Kairo data and settings. **Code → Down
 
 Stop Kairo with Ctrl+C, extract this entire release to a new folder, then run **START_KAIRO.bat** there. Your existing data remains in `%LOCALAPPDATA%\Kairo`; startup preserves characters, goals, notes, journey/session history and stream layouts. Use the same Windows account and any existing `KAIRO_DATA_DIR` override. Do not run both versions at once.
 
-Version **0.8.0-rc.16** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and your travel history into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
+Version **0.8.0-rc.17** introduces **Universe**, bringing the full New Eden atlas, local routing, live intel and private map workspaces into one module. **Sessions** has its own navigation entry for operation recording, archives, combat records and reports. The map works before connecting a pilot. Connect a character for standings, personal activity, saved views and private connection networks. See [the Universe guide](docs/UNIVERSE.md). The [SMT feature comparison](docs/SMT-INTEGRATION.md) distinguishes parity, Kairo improvements and browser adaptations, including EVE-Scout Thera/Turnur integration.
 
 Configure named power blocs and their member alliances in **Universe → Universe settings → Power blocs**. Unconfigured alliances can use **Inferred Coalitions**, an explicitly uncertain fallback from combat evidence collected locally. Crisp vector borders, bounded zoom and larger visual controls make the political map easier to read. Universe now lists **Atlas**, **Maps** and **Universe settings** in the sidebar. Replay keeps recorded travel while hiding routine system-entry and OPSEC event cards.
 
@@ -32,11 +32,15 @@ Atlas opens as an immersive map workspace, with a collapsible details dock, dire
 
 **Maps** expands the former J-Space workspace into a general mapping tool, keeping its compact class/name/static cards, responsive dragging, offline effect reference, saved positions and locks, scanner linkage, passage records and observations. Landing search opens a system instance directly in its saved map with details visible. Small connection tabs on all four sides support wormholes, real stargates and Ansiblex bridges with distinct controls. Drawn wormholes start unconfirmed with **16h / Normal / L** defaults. Add a whole known-space constellation or region in CCP schematic layout, position the preview, then confirm to create independent cards with their internal gates and configured bridges. Separate maps retain independent data and can be imported from Wanderer or exported for transfer. See the [Wanderer feature comparison](docs/WANDERER-INTEGRATION.md) for coverage and the remaining collaboration boundaries.
 
-Map notes show the author pilot and portrait, elapsed minutes or EVE time, and a compact delete control. Search, date groups and pagination keep longer notebooks useful; landing search can find notes across your maps. **Universe settings** gathers **Connections & pins**, **Power blocs** and **Sources & alerts**, including SMT-compatible Ansiblex import. Per-map settings remain beside their map. See the [rc14 review guide](docs/UNIVERSE-RC14.md) for focused in-app checks.
+Map notes show the author pilot and portrait, elapsed minutes or EVE time, and a compact delete control. Search, date groups and pagination keep longer notebooks useful; landing search can find notes across your maps. **Universe settings** gathers **Connections & pins**, **Power blocs**, **Sources & alerts** and **Mapper preferences**, including SMT-compatible Ansiblex import. Per-map settings remain beside their map. See the [Universe guide](docs/UNIVERSE.md) for current controls.
 
 Thera and Turnur entrances appear directly on the map. Hover a symbol for its meaning, click or tap for connection details and nearby actions, or use the keyboard-accessible Symbols list. Wormhole-space browsing retains system classes and connections; its internal regions are not presented as destinations or bulk-placement groups.
 
-Existing visits, sessions and notes are retained. The old Journey page is hidden, with recording services and data retained for Kairo’s other features; legacy Journey links open Atlas. Observed travel is never imported as a verified routing network. There is no data reset in this build.
+Existing visits, Sessions and notes are retained. The standalone Journey log, lifetime counters, footprint preset and visit overlay are retired. New movement records belong to active Sessions; Session reports/replay, discovered-system membership, ordinary activity and OBS notifications retain their separate roles. Legacy Journey links open Atlas. Observed travel is never imported as a verified routing network, and no data reset is required.
+
+**Mapper preferences** adds independent K-space/J-space card sizes and optional **Focus-based map detail**, off by default. Maps can collapse saved region, constellation or custom groups while retaining real anchors, entry/exit systems and selected or routed systems. Preferences are local to this browser and pilot; groups are also scoped to their map. Canonical map records and connections stay intact.
+
+The current refactoring pass covers Kairo as a whole: Maps library/detail reads, Session-owned travel, shared route/widget/goal preparation, asset containment, combat writes, ESI lifecycle and event delivery. Implementation boundaries and compatibility details are in [the architecture notes](docs/ARCHITECTURE.md#current-ownership-and-execution).
 
 Version 0.7.3 includes the optimisation/refactoring pass and its database follow-up. No data reset is required when upgrading from 0.7.2 or the earlier 0.7.3 review build. The first start adds a session-query index and trims the derived market-history cache to its saved 30-day analysis window; daily archive rows and player data are retained. A large existing cache can make this first start take longer. Upgrading from the approved 0.7.3-rc.1 retains its completed database migration.
 
@@ -109,7 +113,7 @@ The Client ID and callback must belong to the same EVE application. If you chang
 | Hangar & assets | Searchable inventory, nested asset location resolution, ESI reference valuations, saved fittings and contracts |
 | Industry & planets | Manufacturing/research jobs, planetary colonies and extractor expiry, mining ledger and blueprints |
 | Sessions | Independent operation recording, archived reports, combat records, debriefs and session-bound map replay with smooth camera follow and a scrubbable event timeline |
-| Universe | Atlas with remembered physical/schematic views; independent Maps with staged region/constellation placement, gates/bridges and wormhole chains; dedicated settings; configured/inferred power blocs; gate/capital itineraries; SMT Ansiblex import/export; EVE-Scout connections; private intel and attributed notes; signatures/infrastructure notebook; historical replay |
+| Universe | Atlas with remembered physical/schematic views; independent Maps with staged region/constellation placement, collapsible display groups, optional focus detail, gates/bridges and wormhole chains; dedicated settings; configured/inferred power blocs; gate/capital itineraries; SMT Ansiblex import/export; EVE-Scout connections; private intel and attributed notes; signatures/infrastructure notebook; historical replay |
 | Goals & notes | Manual and ESI-tracked objectives, completion events and private notes |
 | Markets | Shared hub caches, category browser, quick/full scans, alt access, EVE Ref history, Jita comparisons, Import Analyser and saved hauling plans |
 | Stream studio | Canvas editor, drag/keyboard positioning, element properties, layer visibility, duplication, record-specific module bindings, individual widget source URLs and live saved-output preview |
@@ -212,7 +216,7 @@ Personal ESI references are paged across its 90-day window. Public backfill also
 
 Reports are based on observations and event timestamps. Missing scopes, disabled modules, ESI cache delays and time spent with Kairo closed limit coverage. Events that arrive late can enter an earlier report if their occurrence time is inside that session. Existing 0.1 sessions retain historical events and visits, but cannot reconstruct start/end wallet or SP samples that were never captured.
 
-Journey’s observed system ledger remains stored even though its old page is hidden. Use the **My footprint** map preset or **Your visits** indicator to explore this history on the full atlas. ESI can miss brief transits; visits are observations and do not establish usable connections. The earlier Journey connection-pruning data is retained for compatibility but does not affect the new routing graph.
+Start a Session to retain new observed travel for its report and **Show on Map** replay. Outside a Session, Kairo still updates live location, discovered-system membership and ordinary activity, but does not append a lifetime movement log. Earlier travel evidence remains available to existing reports and export. ESI can miss brief transits; recorded movement does not establish usable routing connections.
 
 In a selected Atlas system, open **Field notes** to edit system, constellation or region notes, tags and personal markers. User-created Maps instead keep their notes within each independent map. Notes remain local and never appear in OBS automatically. They do not change OPSEC policy.
 
@@ -293,7 +297,7 @@ Disconnect removes local tokens and per-character ESI snapshots/cache. It preser
 - Rate/error limits are observed; failures preserve prior data as stale and are retried on the scheduler. Protected-character location and required context have a priority refresh path independent of long asset or industry collections, while sharing cache deduplication and the four-request concurrency limit. Transient location failures start with a three-second retry and back off to at most fifteen seconds; explicit ESI cooldowns still take precedence. Other failing resources use longer persistent backoff, and known rate-limit groups cool down independently.
 - Scheduled X-Pages datasets collect up to 250 pages and identify capped results. User-triggered market scans have a separate 2,000-page / two-million-order ceiling per hub and reject incomplete books.
 - Mail/calendar/transaction lists are their recent API windows. Combat verifies up to 100 unseen details per pass, drains cached backlogs and retains verified participation in its durable ledger. Public history is bounded as described above.
-- Journey records are observations made while Kairo is running. ESI cannot supply past travel or every fast transit.
+- Session travel records are observations made while Kairo and a Session are active. ESI cannot supply past travel or every fast transit; retained legacy evidence can still appear in older reports.
 - Asset values are ESI reference averages, excluding unpriced items. Station names are public; player structure names need the optional `esi-universe.read_structures.v1` scope and actual character access. Unresolvable locations remain IDs.
 - Objectives support both manual and automatic tracking. Skill and job completion notifications are based on observed state transitions, so initial historical data does not produce a burst of completion notifications.
 - Modules disabled in the UI stop future collection/subscriptions; already-running work may finish. Existing history remains.

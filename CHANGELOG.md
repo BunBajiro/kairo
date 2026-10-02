@@ -2,6 +2,17 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
+## 0.8.0-rc.17 — Optimisation and refactoring review
+
+- Refactors shared work across Kairo, including existing services beyond the Universe sprint. This remains a review build awaiting in-app approval.
+- Loads the Maps library through compact summaries and the opened map through selected detail. Request-scoped reads share canonical links and operational records; signature bindings use one edge pass, and overlapping browser refreshes are coalesced.
+- Prepares route evidence and graph/spatial indexes once per itinerary, reuses them across legs and validates relevant evidence and connections again before saving the result.
+- Retires the standalone Journey log, lifetime visit counters, footprint preset and visit overlay. Sessions owns new operation travel, preserving reports, combat and replay. Discovery, ordinary activity and OBS notifications remain independent; existing records and exports are retained without a reset.
+- Adds independent K-space/J-space node sizes, collapsible geographic/custom display groups and **Focus-based map detail**, **off by default**, under **Universe settings → Mapper preferences**. Browser-local preferences and saved group membership preserve canonical map geometry and connections.
+- Shares source preparation across Goals and widget bindings, resolves repeated asset containment paths once per batch and avoids rewriting identical combat records. Unchanged widget projections no longer rebroadcast the same state.
+- Drains accepted requests, dataset enrichment, semantic subscribers and worker shutdown before releasing their dependencies. Session ownership is captured before slow metadata lookup, preventing delayed observations from moving into a later Session.
+- Handles large dashboard event frames with ordered, drain-aware writes and bounded waiting work. Blocked OBS clients fail closed when protection engages. SDE activation/recovery, OPSEC rules and shared ESI cache, priority and rate-limit policies remain in place.
+
 ## 0.8.0-rc.16 — Automatic static-data updates
 
 - Checks CCP's SDE metadata at startup and hourly with conditional requests, cache deadlines and retry backoff. One updater serves the application; maps do not poll for SDE updates.

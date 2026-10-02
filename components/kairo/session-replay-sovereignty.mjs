@@ -7,7 +7,7 @@ export function replaySovereigntyIntel(intel) {
         sources: intel.sources?.sovereignty ? {sovereignty: {...intel.sources.sovereignty}} : {},
         ...(intel.politics?.territory_colours ? {politics: {territory_colours: {...intel.politics.territory_colours}}} : {}),
         links: [], link_lists: [], pins: [], views: [], structures: [],
-        journey: {visits: [], connections: [], systems: []},
+        discoveredSystemIds: [],
     };
 }
 

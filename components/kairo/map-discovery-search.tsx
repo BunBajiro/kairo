@@ -5,8 +5,7 @@ import {ArrowUpRight, Layers3, MessageSquare, Plus, Search, X} from 'lucide-reac
 import type {UniverseAtlas, UniverseSystem} from './universe-types';
 import type {JSpaceWorkspaceMap} from './jspace-workspace';
 import {wormholeClassLabel} from './universe-presentation.mjs';
-import {searchMapNotes} from './jspace-notes-model.mjs';
-import {mapSystemIndex, searchMapSystems, mapPlacementGroupIndex, searchPlacementGroups} from './map-discovery-search-model.mjs';
+import {mapPlacementGroupIndex, searchPlacementGroups} from './map-discovery-search-model.mjs';
 import './map-discovery-search.css';
 
 function systemMark(system:UniverseSystem) {
@@ -21,13 +20,17 @@ function navigateResults(event:KeyboardEvent<HTMLInputElement>, open:boolean, co
   } else if (event.key === 'Enter' && open && count) {event.preventDefault(); choose(Math.min(active, count - 1));}
 }
 
-export function MapLibrarySearch({maps, atlas, onOpen, now=Date.now()}:{now?:number;maps:JSpaceWorkspaceMap[];atlas:UniverseAtlas;onOpen:(mapId:string,systemId:number|null,connectionId?:string|null,notes?:boolean)=>void}) {
+export function MapLibrarySearch({request,revision,onOpen}:{request:(path:string)=>Promise<any>;revision?:string;onOpen:(mapId:string,systemId:number|null,connectionId?:string|null,notes?:boolean)=>void}) {
   const [query,setQuery] = useState(''), [open,setOpen] = useState(false), [active,setActive] = useState(0), [kind,setKind] = useState<'systems'|'notes'>('systems');
   const input = useRef<HTMLInputElement>(null), listId = useId();
-  const byId = useMemo(() => new Map(atlas.systems.map(system => [system.system_id,system])), [atlas.systems]);
-  const index = useMemo(() => mapSystemIndex(maps,atlas.systems), [maps,atlas.systems]);
-  const found = useMemo(() => searchMapSystems(index,query), [index,query]);
-  const notes = useMemo(() => query.trim() ? searchMapNotes(maps,query,{systemName:id => byId.get(id)?.name || String(id),limit:8,now}) : [], [maps,query,byId,now]);
+  const [found,setFound]=useState<any[]>([]),[notes,setNotes]=useState<any[]>([]),[loading,setLoading]=useState(false),[error,setError]=useState('');
+  useEffect(()=>{
+    let live=true;setFound([]);setNotes([]);setError('');
+    if(!open||!query.trim()){setLoading(false);return;}
+    setLoading(true);
+    const timer=setTimeout(()=>request('/search?'+new URLSearchParams({q:query,kind})).then(value=>{if(live){if(kind==='systems')setFound(value.results);else setNotes(value.results);}}).catch(reason=>{if(live)setError(reason instanceof Error?reason.message:'Map search is unavailable.');}).finally(()=>{if(live)setLoading(false);}),200);
+    return()=>{live=false;clearTimeout(timer);};
+  },[query,kind,open,revision,request]);
   const count = kind === 'systems' ? found.length : notes.length, selected = Math.min(active,Math.max(0,count-1));
   function choose(index:number) {
     if (kind === 'systems') {const row=found[index]; if (!row) return; onOpen(row.map_id,row.system.system_id);}
@@ -47,7 +50,7 @@ export function MapLibrarySearch({maps, atlas, onOpen, now=Date.now()}:{now?:num
           <MessageSquare size={18}/><span className="map-search-result-copy"><strong>{row.location_label}</strong><span>{row.body}</span><small>{row.map_name} · {row.author_name}{row.archived?' · Retained note':''}</small></span><ArrowUpRight size={16}/>
         </button>)}
       </div>
-      {!count&&<p className="map-search-empty">{query.trim()?`No matching ${kind} in your maps.`:kind==='notes'?'Search notes, pilots or systems.':'Find a system in your maps.'}</p>}
+      {!count&&<p className="map-search-empty" role={error?'alert':undefined}>{error|| (loading?'Searching your maps…':query.trim()?`No matching ${kind} in your maps.`:kind==='notes'?'Search notes, pilots or systems.':'Find a system in your maps.')}</p>}
     </div>}
   </div>;
 }

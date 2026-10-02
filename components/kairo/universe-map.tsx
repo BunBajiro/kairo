@@ -34,7 +34,7 @@ type MapProps = {
   selectedSystemId: number | null; onSelectSystem: (id: number) => void;
   background: UniverseBackground; indicator: UniverseIndicator;
   routeSystemIds?: number[]; showConnections?: boolean; showSpecialLinks?: boolean;
-  visitedSystemIds?: number[]; focusedRegionId?: number | null;
+  focusedRegionId?: number | null;
   space?: 'known' | 'wormhole'; standingFilter?: UniverseStandingFilter;
   replay?: ReplayMapFrame | null; onReplayManualPan?: () => void;
   territoryFocus?: UniverseTerritoryFocus | null; onInspectTerritory?: (key: string) => void; onClearTerritoryFocus?: () => void; onFrameTerritory?: () => void;
@@ -45,7 +45,7 @@ const PALETTE = {
 };
 const INDICATOR_LABELS: Record<UniverseIndicator, string> = {
   none: 'No indicators', ship_kills: 'Ship kills', pod_kills: 'Pod kills', npc_kills: 'NPC kills', jumps: 'Gate jumps',
-  mining: 'Your mining ledger', industry: 'Manufacturing cost index', fw: 'Faction warfare', incursions: 'Incursions', visits: 'Your visits',
+  mining: 'Your mining ledger', industry: 'Manufacturing cost index', fw: 'Faction warfare', incursions: 'Incursions',
   npc_delta: 'NPC activity change', adm: 'Activity defence multiplier',
 };
 const LAYERS: Record<UniverseBackground, string> = {power_blocs: 'Power blocs', sovereignty: 'Sovereignty', standings: 'Pilot standings', security: 'Security status', activity: 'Ship & pod kills', none: 'Unshaded'};
@@ -76,7 +76,6 @@ function indicatorValue(overlay: UniverseOverlay | undefined, indicator: Univers
   switch (indicator) {
     case 'ship_kills': case 'pod_kills': case 'npc_kills': return Number(overlay.kills?.[indicator] || 0);
     case 'jumps': return Number(overlay.jumps || 0);
-    case 'visits': return Number(overlay.visits || 0);
     case 'mining': return Number(overlay.mining?.quantity || 0);
     case 'incursions': return overlay.incursions?.length || 0;
     case 'fw': return overlay.faction_warfare ? Math.max(1, Number(overlay.faction_warfare.victory_points || 0)) : 0;
@@ -89,7 +88,6 @@ function reportedIndicator(overlay: UniverseOverlay | undefined, indicator: Univ
   if (indicator === 'ship_kills' || indicator === 'pod_kills' || indicator === 'npc_kills') return overlay?.kills?.[indicator] ?? intel?.defaults?.kills?.[indicator] ?? null;
   if (indicator === 'jumps') return overlay?.jumps ?? intel?.defaults?.jumps ?? null;
   if (indicator === 'industry') {const index = overlay?.industry?.find(item => item.activity === 'manufacturing'); return index ? Number(index.cost_index) * 100 : null;}
-  if (indicator === 'visits') return overlay?.visits || 0;
   if (indicator === 'mining') return overlay?.mining?.quantity ?? (intel?.sources.mining?.status === 'ready' ? 0 : null);
   if (indicator === 'fw') return overlay?.faction_warfare ? indicatorValue(overlay, indicator) : intel?.sources.fw?.status === 'ready' ? 0 : null;
   if (indicator === 'incursions') return overlay?.incursions?.length || (intel?.sources.incursions?.status === 'ready' ? 0 : null);
@@ -124,7 +122,7 @@ function discoveryPoints(atlas: UniverseAtlas, intel: UniverseIntel | null, sele
   if (systems.get(selectedSystemId || 0)?.space === 'wormhole') discovered.add(selectedSystemId!);
   if (!replay) {
   for (const pin of intel?.pins || []) if (systems.get(Number(pin.system_id))?.space === 'wormhole') discovered.add(Number(pin.system_id));
-  for (const visited of intel?.journey?.systems || []) if (systems.get(Number(visited.system_id))?.space === 'wormhole') discovered.add(Number(visited.system_id));
+  for (const id of intel?.discoveredSystemIds || []) if (systems.get(id)?.space === 'wormhole') discovered.add(id);
   if (intel?.location?.system_id && systems.get(intel.location.system_id)?.space === 'wormhole') discovered.add(intel.location.system_id);
   if (intel?.operations?.location?.system_id && systems.get(intel.operations.location.system_id)?.space === 'wormhole') discovered.add(intel.operations.location.system_id);
   }
@@ -180,7 +178,7 @@ function createTerritories(geometry: Geometry, styles: TerritoryStyle[]) {
   return {geometry, styles, groups: [...groups.values()], labels: territoryComponents(geometry, styles)};
 }
 
-export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, workspaceKey, showConnections = true, showSpecialLinks = true, visitedSystemIds = EMPTY, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory, onRouteToSystem, onOpenNotebook}: MapProps) {
+export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, workspaceKey, showConnections = true, showSpecialLinks = true, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory, onRouteToSystem, onOpenNotebook}: MapProps) {
   const helpId = useId(), wrapper = useRef<HTMLDivElement>(null), canvas = useRef<HTMLCanvasElement>(null);
   const view = useRef<View>({x: 0, y: 0, scale: 1}), dimensions = useRef({width: 900, height: 570, dpr: 1});
   const pendingFrame = useRef<number | null>(null), paintRef = useRef<() => void>(() => {});
@@ -258,7 +256,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     for (const point of points) {const id = point.system.region_id, group = groups.get(id) || {name: point.system.region_name, x: 0, y: 0, count: 0}; group.x += point.x; group.y += point.y; group.count++; groups.set(id, group);}
     return [...groups].map(([id, group]) => ({id, ...group, x: group.x / group.count, y: group.y / group.count}));
   }, [points]);
-  const visits = useMemo(() => new Set(replay?.trailSystemIds || visitedSystemIds), [visitedSystemIds, replay?.trailSystemIds]);
+  const replayTrail = useMemo(() => new Set(replay?.trailSystemIds || EMPTY), [replay?.trailSystemIds]);
   const pins = useMemo(() => new Set<number>((replay ? [] : intel?.pins || []).map(pin => Number(pin.system_id)).filter(Number.isFinite)), [intel?.pins, Boolean(replay)]);
   const cynoPins = useMemo(() => new Set<number>((replay ? [] : intel?.pins || []).filter((pin:any)=>pin.event_kind==='cyno').map((pin:any)=>Number(pin.system_id))),[intel?.pins,Boolean(replay)]);
   const route = useMemo(() => new Set(routeSystemIds), [routeSystemIds]);
@@ -412,12 +410,12 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     }
     if (value.kind === 'indicator') {const current=feedIndicatorValues.get(id) ?? indicatorValue(overlays.get(id),indicator);return indicator!=='none'&&current ? replace({...value,title:INDICATOR_LABELS[indicator],description:`${current.toLocaleString()}${indicator==='npc_delta'?' change between rolling one-hour snapshots, not new kills.':''}`}) : null;}
     if (value.kind === 'faction-warfare') {const fw=overlays.get(id)?.faction_warfare;return indicator==='fw' && fw?.operational_state_source==='derived_gate_adjacency' && fw.operational_state!=='unknown' ? replace({...value,title:FW_STATES[fw.operational_state] || 'Faction warfare state'}) : null;}
-    if (value.id.startsWith('system-context:')) return pins.has(id)||visits.has(id)||selectedSystemId===id ? replace({...value,title:pins.has(id)?'Pinned system':selectedSystemId===id?'Selected system':'Visited system',description:pins.has(id)?'Your saved map pin marks this system.':selectedSystemId===id?'This is the system selected in the inspector.':'This system appears in your recorded journey.'}) : null;
+    if (value.id.startsWith('system-context:')) return pins.has(id)||replayTrail.has(id)||selectedSystemId===id ? replace({...value,title:pins.has(id)?'Pinned system':selectedSystemId===id?'Selected system':'Session trail',description:pins.has(id)?'Your saved map pin marks this system.':selectedSystemId===id?'This is the system selected in the inspector.':'This system appears in the recorded session trail up to this replay instant.'}) : null;
     if (value.kind === 'location') return id===(replay?replay.systemId:currentLocationId) ? replace({...value,title:replay?'Replay location':locationReady?'Your observed location':'Last known location',source:replay?'Session replay':mapLocation?.source==='chat_log'?'Local EVE log':'EVE ESI',updatedAt:mapLocation?.updated_at}) : null;
     if (['system','station'].includes(value.kind)) return hit;
     const marker = mapFeeds.get(id)?.find(marker=>marker.kind===value.kind);
     return marker ? replace({...value,title:marker.name,description:marker.detail,source:marker.source,updatedAt:marker.at,details:marker.stale?[{label:'Freshness',value:'Stale — retained for context'}]:undefined}) : null;
-  }, [portalEndpoints,portalSymbol,byId,operational,mapFeeds,tactical,showSpecialLinks,Boolean(replay),replay?.systemId,intel?.links,routeEdges,cynoPins,verifiedReachability,reach,overlap,feedIndicatorValues,overlays,indicator,pins,visits,selectedSystemId,currentLocationId,locationReady,mapLocation?.source,mapLocation?.updated_at]);
+  }, [portalEndpoints,portalSymbol,byId,operational,mapFeeds,tactical,showSpecialLinks,Boolean(replay),replay?.systemId,intel?.links,routeEdges,cynoPins,verifiedReachability,reach,overlap,feedIndicatorValues,overlays,indicator,pins,replayTrail,selectedSystemId,currentLocationId,locationReady,mapLocation?.source,mapLocation?.updated_at]);
   useEffect(() => {
     const pinned=pinnedSymbolRef.current,hovered=hoveredSymbolRef.current;
     if(pinned){const fresh=resolveSymbol(pinned);pinnedSymbolRef.current=fresh;setPinnedSymbol(fresh);}
@@ -758,12 +756,12 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       if (indicator === 'fw' && overlays.get(point.system.system_id)?.faction_warfare?.operational_state_source === 'derived_gate_adjacency') continue;
       const value = feedIndicatorValues.get(point.system.system_id) ?? indicatorValue(overlays.get(point.system.system_id), indicator); if (!value) continue;
       const p = screen(point), intensity = Math.log1p(Math.abs(value)) / Math.log1p(indicatorMax), radius = 3 + intensity * 12;
-      context.fillStyle = indicator === 'visits' ? '#93e4c726' : indicator === 'jumps' || indicator === 'industry' ? '#85b9f22c' : '#e99e7930';
-      context.strokeStyle = indicator === 'visits' ? '#93e4c755' : indicator === 'jumps' || indicator === 'industry' ? '#85b9f255' : '#e99e7960';
+      context.fillStyle = indicator === 'jumps' || indicator === 'industry' ? '#85b9f22c' : '#e99e7930';
+      context.strokeStyle = indicator === 'jumps' || indicator === 'industry' ? '#85b9f255' : '#e99e7960';
       if (indicator === 'npc_delta') {context.fillStyle = value > 0 ? '#85dcb526' : '#ef9b9b26'; context.strokeStyle = value > 0 ? '#85dcb599' : '#ef9b9b99';}
       if (indicator === 'adm') {context.fillStyle = '#9bbde026'; context.strokeStyle = '#9bbde08a';}
       context.lineWidth = .7; context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill(); context.stroke();
-      register({id:`indicator:${point.system.system_id}`,kind:'indicator',title:INDICATOR_LABELS[indicator],description:`${value.toLocaleString()}${indicator==='npc_delta'?' change between rolling one-hour snapshots, not new kills.':''}`,systemId:point.system.system_id,systemName:point.system.name,source:indicator==='visits'?'Your recorded journey':'Map data snapshot'},p.x,p.y,radius+3,3);
+      register({id:`indicator:${point.system.system_id}`,kind:'indicator',title:INDICATOR_LABELS[indicator],description:`${value.toLocaleString()}${indicator==='npc_delta'?' change between rolling one-hour snapshots, not new kills.':''}`,systemId:point.system.system_id,systemName:point.system.name,source:'Map data snapshot'},p.x,p.y,radius+3,3);
     }
     const occupied: LabelRect[] = [];
     const claimLabel = (bounds: LabelRect) => {
@@ -786,9 +784,9 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       else {context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill();}
       if (point.system.station_count && (camera.scale > 2.8 || projection === 'radar')) register({id:`station:${id}`,kind:'station',title:'NPC station system',description:`The square marks a system with ${point.system.station_count} NPC station${point.system.station_count === 1 ? '' : 's'}. It does not indicate player-structure access.`,systemId:id,systemName:point.system.name,source:'CCP static universe data'},p.x,p.y,7,1);
       if (current) register({id:`location:${id}`,kind:'location',title:replay ? 'Replay location' : locationReady ? 'Your observed location' : 'Last known location',description:replay ? 'The pilot’s recorded location at this replay instant.' : 'The gold reticle marks the current location observation. This is not a safety indicator.',systemId:id,systemName:point.system.name,source:replay ? 'Session replay' : mapLocation?.source === 'chat_log' ? 'Local EVE log' : 'EVE ESI',updatedAt:mapLocation?.updated_at},p.x,p.y,12,5);
-      if (!current && (pins.has(id) || visits.has(id) || active)) register({id:`system-context:${id}`,kind:'system',title:pins.has(id) ? 'Pinned system' : active ? 'Selected system' : 'Visited system',description:pins.has(id) ? 'Your saved map pin marks this system.' : active ? 'This is the system selected in the inspector.' : 'This system appears in your recorded journey.',systemId:id,systemName:point.system.name,source:'Your Universe workspace'},p.x,p.y,8,2);
+      if (!current && (pins.has(id) || replayTrail.has(id) || active)) register({id:`system-context:${id}`,kind:'system',title:pins.has(id) ? 'Pinned system' : active ? 'Selected system' : 'Session trail',description:pins.has(id) ? 'Your saved map pin marks this system.' : active ? 'This is the system selected in the inspector.' : 'This system appears in the recorded session trail up to this replay instant.',systemId:id,systemName:point.system.name,source:'Your Universe workspace'},p.x,p.y,8,2);
       if (cynoPins.has(id)) { register({id:`cyno:${id}`,kind:'cyno',title:'Cyno observation',description:'A user-recorded cynosural observation. The triangle does not establish that a beacon is online, accessible or safe.',systemId:id,systemName:point.system.name,source:'Your map notes'},p.x,p.y-5,11,7); context.strokeStyle='#dfbe7b';context.lineWidth=1.4;context.beginPath();context.moveTo(p.x,p.y-9);context.lineTo(p.x+8,p.y+6);context.lineTo(p.x-8,p.y+6);context.closePath();context.stroke(); }
-      if (active || current || hover || visits.has(id) || pins.has(id)) {
+      if (active || current || hover || replayTrail.has(id) || pins.has(id)) {
         context.strokeStyle = current ? '#f2cb8b' : pins.has(id) ? '#bea3e8' : active || hover ? '#abf1d7' : '#89ceb78c'; context.lineWidth = active || current ? 1.6 : .8; context.beginPath(); context.arc(p.x, p.y, active || current ? 8 : 5.5, 0, Math.PI * 2); context.stroke();
         if (current) {context.beginPath(); context.moveTo(p.x - 12, p.y); context.lineTo(p.x - 9, p.y); context.moveTo(p.x + 9, p.y); context.lineTo(p.x + 12, p.y); context.moveTo(p.x, p.y - 12); context.lineTo(p.x, p.y - 9); context.moveTo(p.x, p.y + 9); context.lineTo(p.x, p.y + 12); context.stroke();}
       }
@@ -886,7 +884,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       positionMapContext(symbolContextElement.current,{x:active.x,y:active.y},{width,height},!!pinnedSymbolRef.current);
     }
   };
-  useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, routeEdges, route, showConnections, showSpecialLinks, focusedRegionId, space, visits, pins, cynoPins, replay, standingFilter, territoryPalette, territoryFocus, overviewOpen, overview, worldUnitsPerLightYear, tactical, operational, feeds, intelPulse, projection, surfaceKey, portalEndpoints, portalNetwork, redraw]);
+  useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, routeEdges, route, showConnections, showSpecialLinks, focusedRegionId, space, replayTrail, pins, cynoPins, replay, standingFilter, territoryPalette, territoryFocus, overviewOpen, overview, worldUnitsPerLightYear, tactical, operational, feeds, intelPulse, projection, surfaceKey, portalEndpoints, portalNetwork, redraw]);
 
   function nearest(clientX: number, clientY: number) {
     const rect = canvas.current?.getBoundingClientRect(); if (!rect) return null;

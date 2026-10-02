@@ -1,6 +1,7 @@
 import {snapshotFresh} from './polling.mjs';
 import {sessionCollection} from './session-policy.mjs';
 import {recordedVisitSovereignty} from './visit-sovereignty.mjs';
+import {readSessionVisits,legacySessionStart,sessionObservationOwnershipSql} from './session-travel.mjs';
 
 export const COMBAT_BUFFER_MS = 10 * 60 * 1000;
 const iso = at => new Date(at).toISOString();
@@ -40,13 +41,16 @@ export function loyaltyReport(start, finish, ended, names={}) {
     return {status, rows, delta:rows.reduce((n,r)=>n+r.delta,0), startSampledAt:a.sampledAt, endSampledAt:b.sampledAt, sameSample:a.sampledAt===b.sampledAt, scope:'esi-characters.read_loyalty.v1'};
 }
 
-export function sessionRoute(store, session, start, end, names=store.get('names',{})) {
+export function sessionRoute(store, session, start, end, names=store.get('names',{}), preparedVisits) {
     const from = Date.parse(session.started), to = Date.parse(end);
-    const rows = store.db.prepare(`SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security FROM visits v
-        LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<? ORDER BY at,id`).all(session.character_id,session.started,end);
+    // Reports already read the inclusive compatibility list. Reuse its bounded
+    // rows while keeping route/replay's exclusive end and ownership guards.
+    const rows = preparedVisits ? preparedVisits.filter(row => row.character_id === session.character_id
+        && (row.session_id === session.id || row.session_id === null) && row.at >= session.started && row.at < end)
+        : readSessionVisits(store, session, end);
     let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, sovereignty_at_visit:start.system.sovereignty_at_visit, clipped:true} : null;
     if (!initial && !start.capturedAt) {
-        const prior = store.db.prepare('SELECT * FROM visits WHERE character_id=? AND at<=? ORDER BY at DESC,id DESC LIMIT 1').get(session.character_id,session.started);
+        const prior = legacySessionStart(store, session);
         if (prior) initial = {...prior, at:session.started, clipped:true, inferred:true};
     }
     const points = [];
@@ -65,7 +69,7 @@ export function sessionRoute(store, session, start, end, names=store.get('names'
 }
 
 export function sessionShips(store, session, start, end, names) {
-    const rows = store.db.prepare(`SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) ORDER BY at,id`).all(session.character_id,session.started,end,session.started,start.eventCursor??0);
+    const rows = store.db.prepare(`SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) AND ${sessionObservationOwnershipSql()} ORDER BY at,id`).all(session.character_id,session.started,end,session.started,start.eventCursor??0,session.id);
     const points = start.shipTypeId ? [{typeId:start.shipTypeId, shipId:start.ship?.id||null, at:session.started}] : [];
     for (const row of rows) {
         const p = JSON.parse(row.payload);
@@ -139,8 +143,8 @@ export function allianceSummary(route, records, allianceId, now=Date.now()) {
     return {allianceId,visits,windows,items,kills,losses,destroyed,lost,missingDestroyed,missingLost,combatVisits:visits.filter(v=>v.combatActive).length};
 }
 
-export function sessionDetails(store, session, start, finish, end) {
-    const names=store.get('names',{}),route=sessionRoute(store,session,start,end,names);
+export function sessionDetails(store, session, start, finish, end, preparedVisits) {
+    const names=store.get('names',{}),route=sessionRoute(store,session,start,end,names,preparedVisits);
     // The alliance current at session start stays attached to the historical
     // flight. Older sessions without this evidence cannot reconstruct it.
     const allianceId=start.alliance?.id||null;

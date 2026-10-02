@@ -1,6 +1,7 @@
 export type UniverseBackground = 'power_blocs' | 'sovereignty' | 'standings' | 'security' | 'activity' | 'none';
-export type UniverseIndicator = 'none' | 'ship_kills' | 'pod_kills' | 'npc_kills' | 'npc_delta' | 'adm' | 'jumps' | 'mining' | 'industry' | 'fw' | 'incursions' | 'visits';
+export type UniverseIndicator = 'none' | 'ship_kills' | 'pod_kills' | 'npc_kills' | 'npc_delta' | 'adm' | 'jumps' | 'mining' | 'industry' | 'fw' | 'incursions';
 export type UniverseStandingFilter = 'all' | 'friendly' | 'hostile' | 'neutral' | 'unknown';
+export type UniverseViewConfig = {background:UniverseBackground;indicator:UniverseIndicator;space:'known'|'wormhole';region:string;standingFilter:UniverseStandingFilter;showConnections:boolean;showSpecialLinks:boolean};
 export type UniverseTerritoryFocus = {
  key:string;label:string;color:string;systemIds:number[];
  /** Zero selects without moving the camera; positive changes request a frame. */
@@ -37,7 +38,7 @@ export type UniverseOverlay = {
  standing?: {value:number|null;label:string;source?:string;status?:string};
  kills?: {ship_kills:number;pod_kills:number;npc_kills:number}|null;
  mining?:{quantity:number;entries:number;last_date:string}|null; jumps?:number|null; faction_warfare?:any|null; incursions?:any[]; industry?:any[]|null;
- visits?:number;last_visit?:string|null;note?:any|null;
+ note?:any|null;
 };
 export type UniverseSource = {status:string;updatedAt?:string;expiresAt?:string;stale?:boolean;error?:string;count?:number;[key:string]:unknown};
 export type UniverseLink = {id:string;kind:string;from_system_id:number;to_system_id:number;enabled?:boolean;expires_at?:string|null;list_id?:string|null;zone?:number;[key:string]:any};
@@ -54,5 +55,5 @@ export type UniversePowerBlocMembership = {
 export type UniverseIntel = {
  character_id:number;location?:{system_id?:number;status?:string;updatedAt?:string;expiresAt?:string;source?:string};systems:UniverseOverlay[];
  sources:Record<string,UniverseSource>;links:UniverseLink[];link_lists:any[];pins:any[];views:UniverseView[];
- journey:{visits:any[];connections:any[];systems:any[]};structures:any[];[key:string]:any;
+ discoveredSystemIds:number[];structures:any[];[key:string]:any;
 };

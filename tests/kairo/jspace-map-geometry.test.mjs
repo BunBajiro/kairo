@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CHAIN_PORTS,chainPortPoint,nearestChainPort,draggedChainPositions,chainConnectionTarget,chainConnectionPreview,CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT, chainBounds, fitChainCamera, chainZoomLimits, zoomChainAt, boundChainCamera, chainEdgeGeometry, traceChainPath, placeChainPopover, visibleChainLabels, placeChainEdgeLabels} from '../../components/kairo/jspace-map-geometry.mjs';
+import {chainNodeSize,CHAIN_PORTS,chainPortPoint,nearestChainPort,draggedChainPositions,chainConnectionTarget,chainConnectionPreview,CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT, chainBounds, fitChainCamera, chainZoomLimits, zoomChainAt, boundChainCamera, chainEdgeGeometry, traceChainPath, placeChainPopover, visibleChainLabels, placeChainEdgeLabels} from '../../components/kairo/jspace-map-geometry.mjs';
 
 test('chain framing includes full cards at negative coordinates and disconnected discoveries', () => {
   const nodes = [{system_id:1,x:-420,y:-200},{system_id:2,x:610,y:470}], viewport = {width:1200,height:760};
@@ -153,4 +153,34 @@ test('permanent map traces retain gates and follow Ansiblex direction without wo
   assert.deepEqual(traceChainPath(nodes,connections,1,3),{nodes:[1,2,3],edges:['gate','bridge']});
   assert.deepEqual(traceChainPath(nodes,connections,3,1),{nodes:[],edges:[]});
   assert.deepEqual(traceChainPath(nodes,connections.map(link=>({...link,enabled:false})),1,3),{nodes:[],edges:[]});
+});
+
+test('independent display sizes frame actual cards and retain scaled ports and hit targets',()=>{
+  const small={system_id:1,x:-100,y:0,displayScale:.5},large={system_id:2,x:400,y:200,displayScale:1.5};
+  assert.deepEqual(chainNodeSize(small),{width:132,height:42});assert.deepEqual(chainNodeSize(large),{width:396,height:126});
+  assert.deepEqual(chainNodeSize({displayScale:NaN}),{width:264,height:84});
+  assert.deepEqual(chainBounds([small,large]),{minX:-100,minY:0,maxX:796,maxY:326});
+  assert.equal(chainConnectionTarget([small,large],{x:50,y:20},2,0),null,'outside the smaller card');
+  assert.equal(chainConnectionTarget([small,large],{x:790,y:320},1,0),large,'inside the larger card');
+  for(const from_port of CHAIN_PORTS)for(const to_port of CHAIN_PORTS){
+    const edge=chainEdgeGeometry(small,large,0,{from_port,to_port});
+    assert.deepEqual(edge.start,chainPortPoint(small,from_port));assert.deepEqual(edge.end,chainPortPoint(large,to_port));
+    assert.equal(chainConnectionPreview(small,from_port,edge.end,large,undefined,to_port),edge.path);
+  }
+  const viewport={width:800,height:500},camera=fitChainCamera([small,large],viewport);
+  for(const node of [small,large]){const size=chainNodeSize(node),handle=14*node.displayScale;
+    assert.ok(camera.x+(node.x-handle)*camera.zoom>=57.99);assert.ok(camera.x+(node.x+size.width+handle)*camera.zoom<=viewport.width-57.99);
+    assert.ok(camera.y+(node.y-handle)*camera.zoom>=57.99);assert.ok(camera.y+(node.y+size.height+handle)*camera.zoom<=viewport.height-57.99);
+  }
+});
+
+test('scaled cards remain caption obstacles and scaled overview labels use their visual centres',()=>{
+  const nodes=[{system_id:1,x:0,y:0,displayScale:.5},{system_id:2,x:260,y:0,displayScale:1.5},{system_id:3,x:800,y:0,displayScale:.75}];
+  const edges=placeChainEdgeLabels([{...chainEdgeGeometry(nodes[0],nodes[2]),id:'crossing'}],nodes);
+  for(const {labelBox:box} of edges)for(const node of nodes){const {width,height}=chainNodeSize(node);
+    assert.ok(!(box.left<node.x+width&&box.right>node.x&&box.top<node.y+height&&box.bottom>node.y),'caption must not overlap the scaled card');
+  }
+  const compact=[{system_id:1,x:0,y:0,displayScale:.5},{system_id:2,x:200,y:0,displayScale:.5}],camera={x:20,y:100,zoom:1},viewport={width:600,height:400};
+  assert.deepEqual([...visibleChainLabels(compact,camera,viewport)],[1,2]);
+  assert.deepEqual([...visibleChainLabels(compact.map(node=>({...node,displayScale:1})),camera,viewport)],[1]);
 });

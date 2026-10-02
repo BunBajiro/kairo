@@ -50,6 +50,38 @@ test('one live feed shares a durable cursor, checks every two minutes, and obser
  assert.deepEqual(accepted,[100,101,102]);assert.equal(calls.filter(url=>url.endsWith('sequence.json')).length,1);
 });
 
+test('a deferred live check does not construct targets or change state, including forced cooldown checks',async t=>{
+ const store=memory();let clock=epoch,builds=0,calls=0,checks=0;
+ const initial={nextSequence:100,lastAdvanceAt:iso(epoch),nextCheckAt:iso(epoch+SESSION_LIVE_INTERVAL)};store.set(key,initial);
+ const feed=createSessionLiveFeed(store,{getTargets:()=>{builds++;return [42];},isTargetActive:()=>true,now:()=>clock,spacingMs:0,
+  accept:async()=>assert.fail('Missing packets must not be accepted'),onCheck:()=>{checks++;},fetcher:async()=>{calls++;return missing();}});t.after(()=>feed.close());
+ await feed.sync();clock++;await feed.sync();
+ assert.equal(builds,0);assert.equal(calls,0);assert.equal(checks,0);assert.strictEqual(store.get(key),initial);
+ await feed.sync({force:true});assert.equal(builds,1);assert.equal(calls,1);assert.equal(checks,1);
+ const cooldown=store.get(key);clock+=5999;await feed.sync({force:true});
+ assert.equal(builds,1);assert.equal(calls,1);assert.strictEqual(store.get(key),cooldown);
+ clock=Date.parse(cooldown.nextCheckAt);await feed.sync();
+ assert.equal(builds,2);assert.equal(calls,2,'the exact ordinary deadline is due');
+});
+
+test('due and forced checks share one pending target build and closed checks never rebuild',async t=>{
+ const store=memory();let builds=0,calls=0,release;
+ store.set(key,{nextSequence:100,lastAdvanceAt:iso(epoch),nextCheckAt:'invalid',notBefore:'invalid'});
+ const feed=createSessionLiveFeed(store,{getTargets:()=>{builds++;return [42];},isTargetActive:()=>true,now:()=>epoch,spacingMs:0,
+  accept:async()=>{},fetcher:()=>{calls++;return new Promise(resolve=>{release=resolve;});}});t.after(()=>feed.close());
+ const first=feed.sync();assert.strictEqual(feed.sync(),first);assert.strictEqual(feed.sync({force:true}),first);
+ assert.equal(builds,1);assert.equal(calls,1);release(missing());await first;
+ await feed.close();await feed.sync({force:true});assert.equal(builds,1);assert.equal(calls,1);
+});
+
+test('a due live check reads current pilot eligibility instead of retaining old targets',async t=>{
+ const {store}=await storage(t);session(store,'live');let needsReauth=true,calls=0;
+ const collector=createSessionCombat(store,{characters:()=>[{id:42,needsReauth}]},{},{},{now:()=>epoch,feedOptions:{spacingMs:0},
+  feedFetcher:async url=>{calls++;return url.endsWith('sequence.json')?response({sequence:100}):missing();}});t.after(()=>collector.close());
+ await collector.syncLive();assert.equal(calls,0);
+ needsReauth=false;await collector.syncLive();assert.equal(calls,2);
+});
+
 test('ending the last live session during a request discards the packet and stops further feed requests',async t=>{
  const store=memory();let live=true,release,started,calls=0,accepted=0;
  const began=new Promise(resolve=>{started=resolve;});store.set(key,{nextSequence:100,lastAdvanceAt:iso(epoch)});

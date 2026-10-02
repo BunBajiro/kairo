@@ -60,7 +60,7 @@ test('freshness rejects expired, future and partial snapshots', () => {
     assert.equal(sourceMetadata(null, AT).status, 'waiting');
 });
 
-test('live map sources include real activity, incursions, indices, structures, visits and honest missing data', async t => {
+test('live map sources include real activity, incursions, indices, structures and honest missing data', async t => {
     const { store, service } = await fixture(t);
     store.set('names', { 777: 'Known alliance' });
     store.saveSnapshot(0, 'sovereignty', sample([{ system_id: A, alliance_id: 777 }]));
@@ -77,7 +77,7 @@ test('live map sources include real activity, incursions, indices, structures, v
     assert.equal(row.sovereignty.alliance_name, 'Known alliance'); assert.equal(row.standing.label, 'good');
     assert.equal(row.kills.ship_kills, 4); assert.equal(row.jumps, null); assert.equal(state.defaults.jumps, null);
     assert.equal(row.incursions[0].state, 'established'); assert.equal(row.industry[0].cost_index, .1);
-    assert.equal(row.structures.length, 1); assert.equal(row.visits, 1); assert.equal(row.note.body, 'Our shared staging note');
+    assert.equal(row.structures.length, 1); assert.equal(Object.hasOwn(row, 'visits'), false); assert.equal(row.note.body, 'Our shared staging note');
     assert.equal(row.mining.quantity, 28); assert.equal(state.sources.jumps.error, 'ESI unavailable');
     store.set('module:universe', false);
     const disabled = service.state(42); assert.equal(disabled.sources.kills.status, 'disabled');
@@ -294,7 +294,7 @@ test('wormholes and routing are isolated to their owning map and global J-Space 
     assert.equal(service.state(42).links.length,0);
     savePlaceNote(store,'system',W,{body:'Legacy global note'});
     store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,W,'J000001',new Date(AT).toISOString());
-    const detail=await service.detail(42,W);assert.equal(detail.name,'J000001');assert.equal(detail.notes.system,null);assert.equal(detail.overlay.visits,0);assert.deepEqual(detail.links,[]);
+    const detail=await service.detail(42,W);assert.equal(detail.name,'J000001');assert.equal(detail.notes.system,null);assert.equal(Object.hasOwn(detail.overlay,'visits'),false);assert.deepEqual(detail.links,[]);
     assert.throws(()=>service.savePin(42,{system_id:W,body:'Global note'}),/private chain map/);
 });
 
@@ -335,4 +335,18 @@ test('generic connection mutations cannot edit tracking sources while expiry hou
     assert.throws(()=>service.saveLink(42,{id:link.id,mass:'critical'}),/read-only/);assert.throws(()=>service.deleteLink(42,link.id),/read-only/);
     assert.throws(()=>service.saveLink(42,{kind:'wormhole',map_id:map.id,from_system_id:B,to_system_id:W}),/read-only/);
     time(AT+3600000);assert.equal(service.pruneExpired(42).deleted,1);assert.equal(store.db.prepare("SELECT body FROM universe_records WHERE kind='link' AND id=?").get(link.id),undefined);
+});
+
+
+test('Universe discovery is pilot membership and hot projections never read lifetime visits',async t=>{
+ const {store,service}=await fixture(t);
+ store.db.prepare('INSERT INTO discovered_systems(character_id,system_id) VALUES(?,?)').run(42,W);
+ const prepare=store.db.prepare;
+ store.db.prepare=function(sql){assert.doesNotMatch(sql,/\bvisits\b/i,'Hot Universe/route projection read retired travel history');return prepare.call(this,sql);};
+ t.after(()=>{store.db.prepare=prepare;});
+ const state=service.state(42);
+ assert.deepEqual(state.discoveredSystemIds,[W]);assert.equal(Object.hasOwn(state,'journey'),false);
+ assert.deepEqual(service.state(43).discoveredSystemIds,[]);
+ assert.deepEqual(service.route(42,{originId:A,destinationId:B}).systemIds,[A,B]);
+ assert.equal((await service.detail(42,A)).name,'Alpha');
 });

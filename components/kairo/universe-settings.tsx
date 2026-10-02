@@ -1,23 +1,24 @@
 "use client";
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {Link2, Radio, RefreshCw, Users} from 'lucide-react';
+import {Link2, Radio, RefreshCw, Users, SlidersHorizontal} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {useKairo} from './context';
 import {api} from './model';
 import {PowerBlocSettings} from './power-bloc-settings';
 import {UniverseOperationsSettings} from './universe-operations-settings';
+import {MapperPreferencesPanel} from './mapper-preferences-controls';
 import {UniverseConnections} from './universe-connections';
 import type {UniverseAtlas, UniverseIntel} from './universe-types';
 import './universe.css';
 import './universe-settings.css';
 
-type SettingsSection = 'connections' | 'power-blocs' | 'sources';
+type SettingsSection = 'connections' | 'power-blocs' | 'sources' | 'mapper';
 function initialSection(): SettingsSection {
   try {
     const requested = sessionStorage.getItem('kairo-universe-settings-tab');
     sessionStorage.removeItem('kairo-universe-settings-tab');
-    if (requested === 'power-blocs' || requested === 'sources') return requested;
+    if (requested === 'power-blocs' || requested === 'sources' || requested === 'mapper') return requested;
   } catch {}
   return 'connections';
 }
@@ -75,6 +76,7 @@ export function UniverseSettings() {
       <TabsList className="page-tabs" aria-label="Universe settings sections">
         <TabsTrigger value="connections"><Link2 size={17}/>Connections & pins</TabsTrigger>
         <TabsTrigger value="power-blocs"><Users size={17}/>Power blocs</TabsTrigger>
+        <TabsTrigger value="mapper"><SlidersHorizontal size={17}/>Mapper preferences</TabsTrigger>
         <TabsTrigger value="sources"><Radio size={17}/>Sources & alerts</TabsTrigger>
       </TabsList>
       {hasConnections && <TabsContent value="connections" forceMount hidden={section !== 'connections'}>
@@ -85,6 +87,7 @@ export function UniverseSettings() {
         </> : !error && <p role="status" className="meta">Loading navigation networks…</p>}
       </TabsContent>}
       {visited.has('power-blocs') && <TabsContent value="power-blocs" forceMount hidden={section !== 'power-blocs'}><PowerBlocSettings/></TabsContent>}
+      {visited.has('mapper') && <TabsContent value="mapper" forceMount hidden={section !== 'mapper'}><MapperPreferencesPanel/></TabsContent>}
       {visited.has('sources') && <TabsContent value="sources" forceMount hidden={section !== 'sources'}><UniverseOperationsSettings/></TabsContent>}
     </Tabs>
   </div>;

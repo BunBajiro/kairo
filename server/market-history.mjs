@@ -4,11 +4,15 @@ import {DAY,saveHistories} from './market-history-store.mjs';
 export {DAY,historyWindow,historySummary,saveHistory} from './market-history-store.mjs';
 export const CORE_HUBS=new Set([60003760,60008494,60011866,60005686]);
 const iso=n=>new Date(n).toISOString(),date=n=>iso(n).slice(0,10),origin='https://data.everef.net/market-history/';
-export function decodeArchive(bytes,date,{signal,timeoutMs=45000}={}){
- return new Promise((resolve,reject)=>{const worker=new Worker(new URL('./market-history-worker.mjs',import.meta.url),{workerData:{bytes,date},execArgv:[],resourceLimits:{maxOldGenerationSizeMb:128}});let done=false;
-  function finish(error,value){if(done)return;done=true;clearTimeout(timer);signal?.removeEventListener('abort',abort);worker.terminate();error?reject(error):resolve(value);}
+export function decodeArchive(bytes,date,{signal,timeoutMs=45000,createWorker=(url,options)=>new Worker(url,options)}={}){
+ return new Promise((resolve,reject)=>{const worker=createWorker(new URL('./market-history-worker.mjs',import.meta.url),{workerData:{bytes,date},execArgv:[],resourceLimits:{maxOldGenerationSizeMb:128}});let outcome;
+  const cleanup=()=>{clearTimeout(timer);signal?.removeEventListener('abort',abort);};
+  function finish(error,value){if(outcome)return;outcome={error,value};cleanup();void worker.terminate();}
   const abort=()=>finish(new Error('History import cancelled.')),timer=setTimeout(()=>finish(new Error('History decoding timed out.')),timeoutMs);
-  worker.once('message',m=>finish(m.error?new Error(m.error):null,m));worker.once('error',e=>finish(e));worker.once('exit',()=>{if(!done)finish(new Error('History decoder stopped before completing.'));});signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
+  worker.once('message',m=>finish(m.error?new Error(m.error):null,m));worker.once('error',e=>finish(e));
+  // A result is not completion: the next archive/close must await native exit.
+  worker.once('exit',()=>{cleanup();if(!outcome)reject(new Error('History decoder stopped before completing.'));else if(outcome.error)reject(outcome.error);else resolve(outcome.value);});
+  signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
  });
 }
 export function createHistoryArchive(store,{fetcher=fetch,now=()=>Date.now(),spacingMs=250,decode=decodeArchive}={}){

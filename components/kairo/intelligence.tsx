@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { MapPin, NotebookPen, Play, Square, ChevronRight, Route, ExternalLink } from 'lucide-react';
+import { NotebookPen, Play, Square, ChevronRight, Route, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -10,47 +10,8 @@ import { useKairo } from './context';
 import { api, stamp } from './model';
 import { Panel, DataTable, DataStatus, NoData, ItemName } from './ui';
 import { SessionReport } from './session-report';
-import { ActivityTimeline } from './activity-timeline';
 import { CombatCoverage } from './combat-coverage';
-import type { UniverseAtlas } from './universe-types';
-import { systemLocationLabel } from './universe-presentation.mjs';
 export { Goals } from './goals';
-
-// Travel observations belong to Universe. Sessions have their own workspace.
-export function JourneyLog({atlas}: {atlas?: UniverseAtlas|null} = {}) {
-    const { character, data } = useKairo();
-    const byId = new Map(atlas?.systems.map(system => [system.system_id, system]) || []);
-    const [journey, setJourney] = useState<any>({ visits: [], systems: [] });
-    const [error, setError] = useState('');
-    useEffect(() => {
-        let alive = true;
-        setJourney({ visits: [], systems: [] });
-        setError('');
-        api('/journey?character=' + character).then(value => { if (alive) setJourney(value); })
-            .catch(e => { if (alive) setError(e.message); });
-        return () => { alive = false; };
-    }, [character, data.location?.data?.solar_system_id]);
-    return <>
-        <Panel title="Recent journey" meta={<span className="tag">OBSERVED SYSTEMS</span>}>
-            <div className="route-strip">{journey.visits.length ? journey.visits.slice(0, 7).reverse().map((visit: any, i: number, all: any[]) =>
-                <div className="route-stop" key={visit.id}><span className={'route-node ' + (i === all.length - 1 ? 'last' : '')}>
-                    <MapPin size={17}/><strong>{visit.name}</strong><small>{new Date(visit.at).toISOString().slice(11, 16)} EVE</small>
-                </span>{i < all.length - 1 && <ChevronRight size={18}/>}</div>) : <p className="muted">Your journey starts with the first authenticated location sample.</p>}</div>
-            <p className="meta">ESI samples can miss fast transits. Travel observations do not establish usable map connections.</p>
-            {error && <p className="inline-error" role="alert">{error}</p>}
-        </Panel>
-        <Tabs defaultValue="timeline" className="mt-5"><TabsList className="page-tabs">
-            <TabsTrigger value="timeline">Activity timeline</TabsTrigger><TabsTrigger value="systems">Systems visited</TabsTrigger>
-        </TabsList>
-            <TabsContent value="timeline"><ActivityTimeline key={character}/></TabsContent>
-            <TabsContent value="systems"><Panel title="Visited systems">
-                <p className="meta mb-4">Use the Visits indicator to explore these records on the Universe map.</p>
-                <DataTable rows={journey.systems} columns={[{ key: 'name', label: 'System' }, { key: 'region_name', label: 'Region / space', render: row => systemLocationLabel(byId.get(row.system_id)) },
-                    { key: 'visits', label: 'Visits' }, { key: 'last', label: 'Last observed', render: row => stamp(row.last) }]}/>
-            </Panel></TabsContent>
-        </Tabs>
-    </>;
-}
 
 export function SessionsPage() {
     const { character, boot, data, names, sessions, refresh } = useKairo();

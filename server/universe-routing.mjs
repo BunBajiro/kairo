@@ -270,8 +270,8 @@ function search(origin, destination, outgoing) {
     return { status: 'ok', systemIds: [origin, ...edges.map(e => e.to_system_id)], edges, hops: edges.length, cost: distances.get(destination) };
 }
 
-export function planRoute(input = {}) {
-    const origin = Number(input.originId), destination = Number(input.destinationId), graph = buildTravelGraph(input);
+function routeThroughGraph(graph, {originId, destinationId} = {}) {
+    const origin = Number(originId), destination = Number(destinationId);
     if (!graph.bySystemId.has(origin) || !graph.bySystemId.has(destination)) return invalid('Select two systems from the universe catalogue.');
     if (systemBlocked(graph.bySystemId.get(destination), graph.preferences) && origin !== destination) return invalid('The destination is excluded by your route preferences.');
     const route = search(origin, destination, id => graph.adjacency.get(id) || []);
@@ -290,6 +290,13 @@ export function planRoute(input = {}) {
     };
 }
 
+/** One request/itinerary owns the prepared graph; no state is reused across requests. */
+export function createRoutePlanner(input = {}) {
+    const graph = buildTravelGraph(input);
+    return endpoints => routeThroughGraph(graph, endpoints);
+}
+export function planRoute(input = {}) { return createRoutePlanner(input)(input); }
+
 const NO_CYNO_REGIONS = new Set([10000004, 10000017, 10000019, 10000070, 10001000, 10001004]);
 function physicalSystem(system) {
     return system && system.jump_eligible !== false && (!system.space || system.space === 'known') && !NO_CYNO_REGIONS.has(Number(system.region_id ?? system.regionId))
@@ -301,14 +308,9 @@ function jumpDestination(system) {
 }
 
 /** Physical jump-drive projection only. No stargate count, projected map coordinate, or Ansiblex edge is used. */
-export function planJumpRoute({ systems = [], originId, destinationId, rangeLy, preferences = {} } = {}) {
-    const lookup = byId(systems), origin = Number(originId), destination = Number(destinationId), range = number(rangeLy), prefs = settings(preferences);
-    if (!lookup.has(origin) || !lookup.has(destination)) return invalid('Select two systems from the universe catalogue.');
-    if (range === null || range <= 0 || range > 20) return invalid('Enter a physical jump range above 0 and no greater than 20 light-years.');
-    if (!physicalSystem(lookup.get(origin))) return invalid('The origin is outside supported jump-drive space or has no physical coordinates.');
-    if (origin !== destination && !jumpDestination(lookup.get(destination))) return invalid('The destination cannot be used as a standard cyno destination (highsec, Pochven, Jove and wormhole space are excluded).');
-    if (origin !== destination && systemBlocked(lookup.get(destination), prefs)) return invalid('The destination is excluded by your route preferences.');
-    const candidates = [...lookup.values()].filter(s => jumpDestination(s) && !systemBlocked(s, prefs));
+export function createJumpPlanner({ systems = [], rangeLy, preferences = {} } = {}) {
+    const lookup = byId(systems), range = number(rangeLy), prefs = settings(preferences), validRange = range !== null && range > 0 && range <= 20;
+    const candidates = validRange ? [...lookup.values()].filter(s => jumpDestination(s) && !systemBlocked(s, prefs)) : [];
     // A range-sized 3-D spatial grid reduces neighbor work without discarding the Y axis.
     const cells = new Map(), position = s => [s.x, s.y, s.z].map(v => Math.floor(Number(v) / LY_METRES / range));
     for (const system of candidates) {
@@ -316,25 +318,51 @@ export function planJumpRoute({ systems = [], originId, destinationId, rangeLy, 
         if (!cells.has(key)) cells.set(key, []);
         cells.get(key).push(system);
     }
-    const route = search(origin, destination, id => {
-        const source = lookup.get(id), center = position(source), out = [];
+    function forEachNearby(source, visit) {
+        const center = position(source);
         for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) for (let z = -1; z <= 1; z++) {
             const near = cells.get([center[0] + x, center[1] + y, center[2] + z].join(':')) || [];
             for (const target of near) {
-                if (idOf(target) === id) continue;
                 const distance = distanceLy(source, target);
                 if (distance > range) continue;
-                const edge = { id: `jump:${id}:${idOf(target)}`, kind: 'jump', from_system_id: id, to_system_id: idOf(target), distance_ly: distance };
-                out.push({ ...edge, cost: edgeCost(target, edge, prefs) });
+                visit(target,distance);
             }
         }
-        return out;
-    });
-    const warnings = ['Physical range plan only: each destination needs a suitable cyno. Fuel, fatigue, cyno jammers, ship eligibility, docking and live access are not verified.', 'Route preferences and recorded activity do not guarantee safe travel.'];
-    const summary = { rangeLy: range, directDistanceLy: distanceLy(lookup.get(origin), lookup.get(destination)), warnings, excluded: [] };
-    if (!route) return { ...summary, status: 'no_route', systemIds: [], edges: [], hops: 0, cost: null, totalDistanceLy: null, explanation: 'No chain of eligible cyno destinations is within the selected physical jump range.' };
-    return { ...route, ...summary, totalDistanceLy: route.edges.reduce((sum, e) => sum + e.distance_ly, 0), explanation: `${prefs.mode === 'safer' ? 'Weighted' : 'Fewest-leg'} jump projection using full physical X, Y and Z coordinates.` };
+    }
+    function plan({originId,destinationId} = {}) {
+        const origin=Number(originId),destination=Number(destinationId);
+        if (!lookup.has(origin) || !lookup.has(destination)) return invalid('Select two systems from the universe catalogue.');
+        if (!validRange) return invalid('Enter a physical jump range above 0 and no greater than 20 light-years.');
+        if (!physicalSystem(lookup.get(origin))) return invalid('The origin is outside supported jump-drive space or has no physical coordinates.');
+        if (origin !== destination && !jumpDestination(lookup.get(destination))) return invalid('The destination cannot be used as a standard cyno destination (highsec, Pochven, Jove and wormhole space are excluded).');
+        if (origin !== destination && systemBlocked(lookup.get(destination), prefs)) return invalid('The destination is excluded by your route preferences.');
+        const route = search(origin, destination, id => {
+            const out=[];
+            forEachNearby(lookup.get(id),(target,distance)=>{
+                if(idOf(target)===id)return;
+                const edge={id:`jump:${id}:${idOf(target)}`,kind:'jump',from_system_id:id,to_system_id:idOf(target),distance_ly:distance};
+                out.push({...edge,cost:edgeCost(target,edge,prefs)});
+            });
+            return out;
+        });
+        const warnings = ['Physical range plan only: each destination needs a suitable cyno. Fuel, fatigue, cyno jammers, ship eligibility, docking and live access are not verified.', 'Route preferences and recorded activity do not guarantee safe travel.'];
+        const summary = { rangeLy: range, directDistanceLy: distanceLy(lookup.get(origin), lookup.get(destination)), warnings, excluded: [] };
+        if (!route) return { ...summary, status: 'no_route', systemIds: [], edges: [], hops: 0, cost: null, totalDistanceLy: null, explanation: 'No chain of eligible cyno destinations is within the selected physical jump range.' };
+        return { ...route, ...summary, totalDistanceLy: route.edges.reduce((sum, e) => sum + e.distance_ly, 0), explanation: `${prefs.mode === 'safer' ? 'Weighted' : 'Fewest-leg'} jump projection using full physical X, Y and Z coordinates.` };
+    }
+    plan.alternateMidpoints=({originId,destinationId}={})=>{
+        const origin=Number(originId),destination=Number(destinationId),a=lookup.get(origin),b=lookup.get(destination);
+        if(!physicalSystem(a)||!jumpDestination(b)||!validRange)return [];
+        const candidates=[];
+        forEachNearby(a,(target,fromDistanceLy)=>{
+            if(idOf(target)===origin||idOf(target)===destination)return;
+            const toDistanceLy=distanceLy(target,b);if(toDistanceLy<=range)candidates.push({systemId:idOf(target),fromDistanceLy,toDistanceLy,totalDistanceLy:fromDistanceLy+toDistanceLy});
+        });
+        return candidates.sort((a,b)=>a.totalDistanceLy-b.totalDistanceLy||a.systemId-b.systemId);
+    };
+    return plan;
 }
+export function planJumpRoute(input = {}) { return createJumpPlanner(input)(input); }
 
 /** Range colouring is based on full physical XYZ and the same eligibility as the jump planner. */
 export function jumpReachability({systems=[],origins=[],preferences={}}={}) {
@@ -353,10 +381,4 @@ export function jumpReachability({systems=[],origins=[],preferences={}}={}) {
     }
     return {status:'ok',origins:results,unionSystemIds:[...counts.keys()].sort((a,b)=>a-b),overlapSystemIds:[...counts].filter(([,n])=>n===origins.length).map(([id])=>id).sort((a,b)=>a-b),limitations};
 }
-export function alternateJumpMidpoints({systems=[],originId,destinationId,rangeLy,preferences={}}={}) {
-    const lookup=byId(systems),a=lookup.get(Number(originId)),b=lookup.get(Number(destinationId)),range=Number(rangeLy),prefs=settings(preferences);
-    if(!physicalSystem(a)||!jumpDestination(b)||!Number.isFinite(range)||range<=0||range>20)return [];
-    return [...lookup.values()].filter(s=>idOf(s)!==Number(originId)&&idOf(s)!==Number(destinationId)&&jumpDestination(s)&&!systemBlocked(s,prefs)).flatMap(s=>{
-        const fromDistanceLy=distanceLy(a,s),toDistanceLy=distanceLy(s,b);return fromDistanceLy<=range&&toDistanceLy<=range?[{systemId:idOf(s),fromDistanceLy,toDistanceLy,totalDistanceLy:fromDistanceLy+toDistanceLy}]:[];
-    }).sort((a,b)=>a.totalDistanceLy-b.totalDistanceLy||a.systemId-b.systemId);
-}
+export function alternateJumpMidpoints(input={}) { return createJumpPlanner(input).alternateMidpoints(input); }

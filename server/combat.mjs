@@ -14,14 +14,20 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
  const active=id=>!closed&&store.get('module:combat',true)&&auth.characters().some(c=>c.id===id&&!c.needsReauth);
  const recent=id=>store.db.prepare('SELECT body FROM combat_records WHERE character_id=? ORDER BY at DESC,killmail_id DESC LIMIT 200').all(id).map(r=>JSON.parse(r.body));
  const coverage=id=>store.snapshot(id,'combat_public')||{status:'waiting',data:null};
- const get=store.db.prepare('SELECT body FROM combat_records WHERE character_id=? AND killmail_id=?');
+ const get=store.db.prepare('SELECT body,source FROM combat_records WHERE character_id=? AND killmail_id=?');
+ const eventExists=store.db.prepare('SELECT 1 FROM events WHERE dedupe=?');
+ const put=store.db.prepare(`INSERT INTO combat_records VALUES(?,?,?,?,?,?) ON CONFLICT(character_id,killmail_id) DO UPDATE
+  SET result=excluded.result,at=excluded.at,body=excluded.body,source=CASE WHEN source='esi' THEN source ELSE excluded.source END
+  WHERE result<>excluded.result OR at<>excluded.at OR body<>excluded.body OR (source<>'esi' AND source<>excluded.source)`);
  function record(id,raw,source){
   const result=participation(raw,id),time=Date.parse(raw?.killmail_time);
   if(!result||!validId(raw.killmail_id)||!validId(raw.solar_system_id)||!validId(raw.victim?.ship_type_id)||!Number.isFinite(time)||time>now()+60000)return false;
   const killmail={...raw,killmail_time:new Date(time).toISOString(),result};delete killmail.zkb;
   const existing=get.get(id,raw.killmail_id),value=killValue(raw)??(existing?killValue(JSON.parse(existing.body)):null);
   if(value!==null)killmail.zkb={totalValue:value};
-  store.db.prepare(`INSERT INTO combat_records VALUES(?,?,?,?,?,?) ON CONFLICT(character_id,killmail_id) DO UPDATE SET result=excluded.result,at=excluded.at,body=excluded.body,source=CASE WHEN source='esi' THEN source ELSE excluded.source END`).run(id,killmail.killmail_id,result,killmail.killmail_time,JSON.stringify(killmail),source);
+  // A retained reference can repair a missing event without changing the
+  // ledger row or requeueing the Universe evidence attached to UPDATE triggers.
+  put.run(id,killmail.killmail_id,result,killmail.killmail_time,JSON.stringify(killmail),source);
   const names=store.get('names',{}),started=store.get('combat.started:'+id,now()),historical=time<started;
   publish?.({type:'killmail.'+result,module:'combat',characterId:id,at:killmail.killmail_time,historical,summary:(result==='loss'?'Lost ':'Participated in kill: ')+(names[killmail.victim.ship_type_id]||'ship'),payload:{killmail_id:killmail.killmail_id,system_id:killmail.solar_system_id,system_name:names[killmail.solar_system_id],ship_type_id:killmail.victim.ship_type_id,hull_name:names[killmail.victim.ship_type_id],attackers:killmail.attackers?.length||0,damage_taken:killmail.victim.damage_taken,participation:result==='kill',source},dedupe:'killmail:'+id+':'+killmail.killmail_id});
   return true;
@@ -37,7 +43,13 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
    if(!active(id))break;
    if(!validId(ref?.killmail_id))continue;
    const existing=get.get(id,ref.killmail_id);
-   if(existing){const raw=JSON.parse(existing.body);if(killValue(ref)!==null)raw.zkb={totalValue:killValue(ref)};if(killValue(ref)!==null||!store.db.prepare('SELECT 1 FROM events WHERE dedupe=?').get('killmail:'+id+':'+ref.killmail_id))record(id,raw,source);continue;}
+   if(existing){
+    const raw=JSON.parse(existing.body),value=killValue(ref),changedValue=value!==null&&value!==killValue(raw);
+    if(changedValue)raw.zkb={totalValue:value};
+    const changedSource=existing.source!=='esi'&&existing.source!==source;
+    if(changedValue||changedSource||!eventExists.get('killmail:'+id+':'+ref.killmail_id))record(id,raw,source);
+    continue;
+   }
    // Both current full ESI-format zKillboard responses and historical hash-only
    // responses are accepted. Details are always verified with the ESI hash.
    const hash=ref.killmail_hash||ref.zkb?.hash;

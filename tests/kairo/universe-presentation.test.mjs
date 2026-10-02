@@ -46,3 +46,12 @@ test('known J-Space counts include usable public endpoints without retaining exp
  assert.deepEqual([...knownWormholeSystemIds(atlas,{...intel,pins:[{system_id:wormhole.system_id}]},null,now+3600000)],[wormhole.system_id]);
  assert.deepEqual([...knownWormholeSystemIds(atlas,{operations:{location:{system_id:wormhole.system_id}}},null,now)],[wormhole.system_id]);
 });
+
+test('explicit discovery membership survives missing connections without reviving a lifetime Journey payload',()=>{
+ const remembered={...wormhole,system_id:31000002,name:'J100002'}, pinned={...wormhole,system_id:31000003,name:'J100003'}, selected={...wormhole,system_id:31000004,name:'J100004'};
+ const localAtlas={...atlas,systems:[...atlas.systems,remembered,pinned,selected]};
+ const intel={discoveredSystemIds:[remembered.system_id,known.system_id,999],pins:[{system_id:pinned.system_id}],journey:{systems:[{system_id:wormhole.system_id}]}};
+ assert.deepEqual([...knownWormholeSystemIds(localAtlas,intel,selected.system_id)].sort(),[remembered.system_id,pinned.system_id,selected.system_id].sort());
+ assert.deepEqual([...knownWormholeSystemIds(localAtlas,{discoveredSystemIds:[]})],[], 'Another pilot does not inherit remembered systems');
+ assert.deepEqual([...knownWormholeSystemIds(localAtlas,{discoveredSystemIds:[remembered.system_id],links:[],feeds:{connections:[]}})],[remembered.system_id]);
+});

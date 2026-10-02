@@ -574,13 +574,37 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         }
     }, onStatus: id => { if (!closed) changed(id); } });
     for (const pilot of auth.characters()) configureLogs(pilot.id, config(pilot.id));
-    function state(characterId, scope = null) {
-        const id = pilotId(characterId), mapId = mapScope(id, scope), cfg = config(id), enabled = store.get('module:universe', true) && cfg.enabled;
-        return { version: 1, character_id: id, map_id: mapId, generated_at: iso(), config: { ...cfg, enabled }, location: location(id),
-            intel: rows(id, scopedKind('intel', mapId)).map(({ identity, ...item }) => ({ ...item, expired: Date.parse(item.expires_at) <= now() })),
-            alerts: rows(id, scopedKind('alert', mapId)), pilots: enabled ? pilots(id) : [], fleet: fleetState(id, cfg),
-            signatures: rows(id, scopedKind('signature', mapId)).map(row => ({ ...row, type_reference: row.wh_type ? getWormholeType(row.wh_type) : null })), deleted_signatures: rows(id, scopedKind('signature_deleted', mapId)).filter(item => Date.parse(item.expires_at) > now()), upgrades: rows(id, scopedKind('upgrade', mapId)), logs: tail.status(id) };
+    // A synchronous reader owns shared pilot state and scope records for one request.
+    // Scope validation stays here; callers never supply trusted map documents.
+    function readContext(characterId) {
+        const id = pilotId(characterId), scopes = new Map();
+        let common;
+        function scoped(scope) {
+            const key = scope == null || scope === '' ? null : scope;
+            if (!scopes.has(key)) scopes.set(mapScope(id, key), { records: new Map() });
+            return { mapId: key, value: scopes.get(key) };
+        }
+        function signatures(scope = null) {
+            const { mapId, value } = scoped(scope);
+            if (!value.records.has('signature')) value.records.set('signature', rows(id, scopedKind('signature', mapId)).map(row => ({ ...row, type_reference: row.wh_type ? getWormholeType(row.wh_type) : null })));
+            return value.records.get('signature');
+        }
+        function state(scope = null) {
+            const { mapId, value } = scoped(scope);
+            if (value.state) return value.state;
+            if (!common) {
+                const cfg = config(id), enabled = store.get('module:universe', true) && cfg.enabled;
+                common = { config: { ...cfg, enabled }, location: location(id), pilots: enabled ? pilots(id) : [], fleet: fleetState(id, cfg), logs: tail.status(id) };
+            }
+            value.state = { version: 1, character_id: id, map_id: mapId, generated_at: iso(), config: common.config, location: common.location,
+                intel: rows(id, scopedKind('intel', mapId)).map(({ identity, ...item }) => ({ ...item, expired: Date.parse(item.expires_at) <= now() })),
+                alerts: rows(id, scopedKind('alert', mapId)), pilots: common.pilots, fleet: common.fleet, signatures: signatures(mapId),
+                deleted_signatures: rows(id, scopedKind('signature_deleted', mapId)).filter(item => Date.parse(item.expires_at) > now()), upgrades: rows(id, scopedKind('upgrade', mapId)), logs: common.logs };
+            return value.state;
+        }
+        return { state, signatures };
     }
+    function state(characterId, scope = null) { return readContext(characterId).state(scope); }
     async function runTick() {
         if (closed || ticking) return;
         if (!store.get('module:universe', true)) {
@@ -614,7 +638,7 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         await tail.close();
         await Promise.allSettled([tickFlight, ...fleetFlights.values()].filter(Boolean));
     }
-    return { state, migrateMapScopes, removeMapScope, copyMapScope, exportMapScope, validateMapScopeImport, importMapScope, location: id => location(pilotId(id)), config, saveConfig, ingestIntel, removeIntel, acknowledge, previewSignatures, importSignatures, saveSignature,
+    return { state, readContext, migrateMapScopes, removeMapScope, copyMapScope, exportMapScope, validateMapScopeImport, importMapScope, location: id => location(pilotId(id)), config, saveConfig, ingestIntel, removeIntel, acknowledge, previewSignatures, importSignatures, saveSignature,
         removeSignature, restoreSignature, saveUpgrade, previewUpgrades, importUpgrades, exportUpgrades, removeUpgrade: (id, key, mapId) => removeRecord(id, 'upgrade', key, mapId),
         defaultLogDirectories: () => tail.defaultDirectories(), refreshFleet, refresh: async (id, mapId = null) => { mapScope(pilotId(id), mapId); await refreshFleet(id); return state(id, mapId); }, tick, close };
 }

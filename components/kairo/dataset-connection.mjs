@@ -2,7 +2,7 @@
 // SSE announces intent before disconnect, then proves the entire data generation
 // after reconnect. An open socket by itself is not proof of a successful update.
 export function createDatasetConnection({ revision: initialRevision = '', onState = () => {}, refresh, onComplete = () => {}, seenRecovery = () => false, rememberRecovery = () => {}, setTimer = setTimeout, clearTimer = clearTimeout, timeoutMs = 90_000 } = {}) {
-    let revision = initialRevision, pending = null, connected = true, disconnected = false;
+    let revision = initialRevision, pending = null, connected = true, disconnected = false, refreshAfterReconnect = false;
     let state = { phase: 'idle', build: null, message: '' }, timer = null, generation = 0, disposed = false, refreshingRevision = null;
     const publish = next => { state = next; if (!disposed) onState(state); };
     const clearDeadline = () => { if (timer !== null) clearTimer(timer); timer = null; };
@@ -20,7 +20,7 @@ export function createDatasetConnection({ revision: initialRevision = '', onStat
         if (target && !recovery && (!matches || (nextRevision === revision && !disconnected))) return;
         const recoveryKey = recovery ? `${recovery.failedBuild || ''}:${recovery.message || ''}` : null;
         const showRecovery = recoveryKey && !seenRecovery(recoveryKey);
-        if (!target && nextRevision === revision && !showRecovery) return;
+        if (!target && nextRevision === revision && !showRecovery && !refreshAfterReconnect) return;
         if (refreshingRevision === nextRevision) return;
         const token = ++generation;
         refreshingRevision = nextRevision;
@@ -30,7 +30,7 @@ export function createDatasetConnection({ revision: initialRevision = '', onStat
             await refresh(nextRevision, isCurrent);
             if (!isCurrent()) return;
             const changed = revision !== nextRevision;
-            revision = nextRevision; pending = null; disconnected = false; refreshingRevision = null; clearDeadline();
+            revision = nextRevision; pending = null; disconnected = false; refreshAfterReconnect = false; refreshingRevision = null; clearDeadline();
             if (showRecovery) {
                 rememberRecovery(recoveryKey);
                 publish({ phase: 'warning', build: recovery.failedBuild || null, message: recovery.message || 'The dataset update could not be activated. Kairo restored the previous dataset.' });
@@ -53,7 +53,7 @@ export function createDatasetConnection({ revision: initialRevision = '', onStat
             publish({ phase: 'restarting', build: pending.build, message: '' }); armDeadline();
         },
         connect() { connected = true; },
-        disconnect() { if (connected) invalidate(); connected = false; if (pending) disconnected = true; },
+        disconnect() { if (connected) invalidate(); connected = false; refreshAfterReconnect = true; if (pending) disconnected = true; },
         revision: receive,
         cancelled({ message } = {}) {
             invalidate(); pending = null; disconnected = false; clearDeadline();

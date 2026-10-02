@@ -44,7 +44,7 @@ export function knownWormholeSystemIds(atlas, intel, selectedSystemId = null, no
  const byId = new Map((atlas?.systems || []).map(system => [system.system_id, system]));
  const ids = new Set([
   ...(intel?.pins || []).map(row => row.system_id),
-  ...(intel?.journey?.systems || []).map(row => row.system_id),
+  ...(intel?.discoveredSystemIds || []),
   ...(intel?.links || []).filter(row => row.kind === 'wormhole').flatMap(row => [row.from_system_id, row.to_system_id]),
   ...usablePublicConnections(intel?.feeds, now).flatMap(row => [row.from_system_id, row.to_system_id]),
   intel?.location?.system_id, intel?.operations?.location?.system_id, selectedSystemId,

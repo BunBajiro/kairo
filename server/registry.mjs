@@ -2,7 +2,29 @@ import { readdir } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 export async function createRegistry(directory, context) {
-    const modules = [], disposers = new Map();
+    const modules = [], disposers = new Map(), pending = new Set(), cleanupErrors = [];
+    let closed = false, closing, failures = 0;
+    function failed(error) { failures++; cleanupErrors.push(error); if (cleanupErrors.length > 20) cleanupErrors.shift(); }
+    function dispose(id) {
+        const stop = disposers.get(id);
+        if (!stop) return;
+        disposers.delete(id);
+        try {
+            const task = Promise.resolve(stop()).catch(failed).finally(() => pending.delete(task));
+            pending.add(task);
+        } catch (error) { failed(error); }
+    }
+    function close() {
+        if (!closing) {
+            closed = true;
+            closing = (async () => {
+                for (const id of disposers.keys()) dispose(id);
+                while (pending.size) await Promise.all([...pending]);
+                if (failures) throw new AggregateError(cleanupErrors, `Module cleanup failed (${failures} errors).`);
+            })();
+        }
+        return closing;
+    }
     for (const file of await readdir(directory)) {
         if (!file.endsWith('.mjs'))
             continue;
@@ -24,16 +46,20 @@ export async function createRegistry(directory, context) {
                 context.db.prepare('INSERT INTO migrations VALUES(?,?)').run(key, new Date().toISOString());
             }
         }
-        const stop = m.register(ctx);
-        disposers.set(m.id, () => { unsub.forEach(f => f()); stop?.(); });
+        try {
+            const stop = m.register(ctx);
+            disposers.set(m.id, () => { unsub.forEach(f => f()); return stop?.(); });
+        } catch (error) { unsub.forEach(f => f()); throw error; }
     } }
-    modules.forEach(activate);
-    return { modules, enabled, toggle(id, value) { const m = modules.find(m => m.id === id); if (!m)
+    try { modules.forEach(activate); }
+    catch (error) {
+        try { await close(); } catch (cleanupError) { throw new AggregateError([error, cleanupError], 'Module activation and cleanup failed.'); }
+        throw error;
+    }
+    return { modules, enabled, toggle(id, value) { if (closed) throw new Error('The module registry is closed.'); const m = modules.find(m => m.id === id); if (!m)
             throw new Error('Module not found.'); context.store.set('module:' + id, value); if (value)
             activate(m);
         else {
-            disposers.get(id)?.();
-            disposers.delete(id);
-        } }, pages: () => modules.filter(enabled).filter(m => m.page).map(m => ({ id: m.id, ...m.page })), close() { for (const stop of disposers.values())
-            stop(); } };
+            dispose(id);
+        } }, pages: () => modules.filter(enabled).filter(m => m.page).map(m => ({ id: m.id, ...m.page })), close };
 }

@@ -4,18 +4,24 @@ export const CHAIN_MAX_ZOOM = 1.8;
 
 const clamp = (value, low, high) => Math.max(low, Math.min(Math.max(low, high), value));
 const finite = value => typeof value === 'number' && Number.isFinite(value);
+const nodeScale = node => finite(node?.displayScale) && node.displayScale > 0 ? clamp(node.displayScale, .25, 2) : 1;
+export function chainNodeSize(node) {
+  const scale = nodeScale(node);
+  return {width: CHAIN_NODE_WIDTH * scale, height: CHAIN_NODE_HEIGHT * scale};
+}
 
 export function chainBounds(nodes) {
   const valid = (nodes || []).filter(node => finite(node.x) && finite(node.y));
   if (!valid.length) return {minX: 0, minY: 0, maxX: CHAIN_NODE_WIDTH, maxY: CHAIN_NODE_HEIGHT};
-  return {minX: Math.min(...valid.map(node => node.x)), minY: Math.min(...valid.map(node => node.y)), maxX: Math.max(...valid.map(node => node.x + CHAIN_NODE_WIDTH)), maxY: Math.max(...valid.map(node => node.y + CHAIN_NODE_HEIGHT))};
+  return {minX: Math.min(...valid.map(node => node.x)), minY: Math.min(...valid.map(node => node.y)), maxX: Math.max(...valid.map(node => node.x + chainNodeSize(node).width)), maxY: Math.max(...valid.map(node => node.y + chainNodeSize(node).height))};
 }
 
 export function fitChainCamera(nodes, viewport, padding = viewport.width < 600 ? 24 : 58, maxZoom = 1) {
   const bounds = chainBounds(nodes), width = Math.max(1, viewport.width), height = Math.max(1, viewport.height);
   // Include the actual side handles, which remain attached to the whole card at every zoom.
   const availableWidth=Math.max(1,width-padding*2),availableHeight=Math.max(1,height-padding*2);
-  const zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX+28),availableHeight/(bounds.maxY-bounds.minY+28)),.002,maxZoom);
+  const handles=28*Math.max(1,...nodes.map(nodeScale));
+  const zoom=clamp(Math.min(availableWidth/(bounds.maxX-bounds.minX+handles),availableHeight/(bounds.maxY-bounds.minY+handles)),.002,maxZoom);
   return {x: width / 2 - (bounds.minX + bounds.maxX) / 2 * zoom, y: height / 2 - (bounds.minY + bounds.maxY) / 2 * zoom, zoom};
 }
 
@@ -37,8 +43,8 @@ export function boundChainCamera(camera, nodes, viewport) {
 export const CHAIN_PORTS = ['left', 'right', 'top', 'bottom'];
 const portNormals = {left:{x:-1,y:0},right:{x:1,y:0},top:{x:0,y:-1},bottom:{x:0,y:1}};
 export function chainPortPoint(node, port) {
-  const normal=portNormals[port]||portNormals.right;
-  return {x:node.x+CHAIN_NODE_WIDTH/2+normal.x*CHAIN_NODE_WIDTH/2,y:node.y+CHAIN_NODE_HEIGHT/2+normal.y*CHAIN_NODE_HEIGHT/2};
+  const normal=portNormals[port]||portNormals.right,{width,height}=chainNodeSize(node);
+  return {x:node.x+width/2+normal.x*width/2,y:node.y+height/2+normal.y*height/2};
 }
 export function nearestChainPort(node, point) {
   return CHAIN_PORTS.reduce((best,port)=>{const a=chainPortPoint(node,port),b=chainPortPoint(node,best);return Math.hypot(a.x-point.x,a.y-point.y)<Math.hypot(b.x-point.x,b.y-point.y)?port:best;},'left');
@@ -52,7 +58,7 @@ function portCurve(start,end,fromPort,toPort,parallelOffset=0) {
 }
 /** Explicit cardinal ports remain attached while cards move; older links choose facing sides. */
 export function chainEdgeGeometry(from, to, parallelOffset = 0, ports = {}) {
-  const dx=to.x-from.x,dy=to.y-from.y,horizontal=Math.abs(dx)/CHAIN_NODE_WIDTH>=Math.abs(dy)/CHAIN_NODE_HEIGHT;
+  const a=chainNodeSize(from),b=chainNodeSize(to),dx=to.x+b.width/2-from.x-a.width/2,dy=to.y+b.height/2-from.y-a.height/2,horizontal=Math.abs(dx)/(a.width+b.width)>=Math.abs(dy)/(a.height+b.height);
   const autoFrom=horizontal?(dx>=0?'right':'left'):(dy>=0?'bottom':'top'),autoTo=({left:'right',right:'left',top:'bottom',bottom:'top'})[autoFrom];
   const fromPort=CHAIN_PORTS.includes(ports.from_port)?ports.from_port:autoFrom,toPort=CHAIN_PORTS.includes(ports.to_port)?ports.to_port:autoTo;
   return portCurve(chainPortPoint(from,fromPort),chainPortPoint(to,toPort),fromPort,toPort,parallelOffset);
@@ -67,7 +73,7 @@ export function placeChainEdgeLabels(edges, nodes) {
     return {add(rect){for(const key of keys(rect))cells.set(key,[...(cells.get(key)||[]),rect]);},hits(rect,padding=0){const seen=new Set();for(const key of keys(rect,padding))for(const other of cells.get(key)||[]){if(seen.has(other))continue;seen.add(other);if(rect.left<other.right+padding&&rect.right>other.left-padding&&rect.top<other.bottom+padding&&rect.bottom>other.top-padding)return true;}return false;}};
   };
   const cards=index(),captions=index(),bounds=chainBounds(nodes);
-  for(const node of nodes)cards.add({left:node.x,right:node.x+CHAIN_NODE_WIDTH,top:node.y,bottom:node.y+CHAIN_NODE_HEIGHT});
+  for(const node of nodes){const {width,height}=chainNodeSize(node);cards.add({left:node.x,right:node.x+width,top:node.y,bottom:node.y+height});}
   const pointAt=(edge,t)=>{const u=1-t,[a,b]=edge.controls;return{x:u*u*u*edge.start.x+3*u*u*t*a.x+3*u*t*t*b.x+t*t*t*edge.end.x,y:u*u*u*edge.start.y+3*u*u*t*a.y+3*u*t*t*b.y+t*t*t*edge.end.y};};
   const pointClear=point=>!cards.hits({left:point.x-.2,right:point.x+.2,top:point.y-.2,bottom:point.y+.2},2);
   const leaderClear=(a,b)=>{const steps=Math.ceil(Math.hypot(a.x-b.x,a.y-b.y)/14);for(let i=1;i<steps;i++){const p={x:a.x+(b.x-a.x)*i/steps,y:a.y+(b.y-a.y)*i/steps};if(!pointClear(p))return false;}return true;};
@@ -124,9 +130,9 @@ export function visibleChainLabels(nodes, camera, viewport, priorityIds = []) {
   const priority = new Map(priorityIds.filter(Boolean).map((id,index)=>[id,index]));
   const ordered = [...nodes].sort((a,b)=>(priority.get(a.system_id)??999)-(priority.get(b.system_id)??999)||a.system_id-b.system_id);
   const cells = new Map(), visible = new Set();
-  const labelScale=Math.max(.65,camera.zoom),halfWidth=(306*labelScale+14)/2,halfHeight=(62*labelScale+12)/2;
   for (const node of ordered) {
-    const x=camera.x+(node.x+CHAIN_NODE_WIDTH/2)*camera.zoom,y=camera.y+(node.y+CHAIN_NODE_HEIGHT/2)*camera.zoom;
+    const {width,height}=chainNodeSize(node),labelScale=Math.max(.65,camera.zoom)*nodeScale(node),halfWidth=(306*labelScale+14)/2,halfHeight=(62*labelScale+12)/2;
+    const x=camera.x+(node.x+width/2)*camera.zoom,y=camera.y+(node.y+height/2)*camera.zoom;
     const box={left:x-halfWidth,right:x+halfWidth,top:y-halfHeight,bottom:y+halfHeight};
     if(box.right<0||box.left>viewport.width||box.bottom<0||box.top>viewport.height)continue;
     const keys=[];for(let col=Math.floor(box.left/180);col<=Math.floor(box.right/180);col++)for(let row=Math.floor(box.top/54);row<=Math.floor(box.bottom/54);row++)keys.push(col+':'+row);
@@ -142,12 +148,12 @@ export function draggedChainPositions(originals, start, end, zoom) {
 }
 /** Public reports cannot become private connection endpoints without explicit adoption. */
 export function chainConnectionTarget(nodes, point, fromId, padding=12) {
-  return nodes.find(node=>node.system_id!==fromId&&!node.public_report&&point.x>=node.x-padding&&point.x<=node.x+CHAIN_NODE_WIDTH+padding&&point.y>=node.y-padding&&point.y<=node.y+CHAIN_NODE_HEIGHT+padding)||null;
+  return nodes.find(node=>{const {width,height}=chainNodeSize(node),pad=padding*nodeScale(node);return node.system_id!==fromId&&!node.public_report&&point.x>=node.x-pad&&point.x<=node.x+width+pad&&point.y>=node.y-pad&&point.y<=node.y+height+pad;})||null;
 }
-export function chainConnectionPreview(from, side, point, target=null, portExtent=CHAIN_NODE_WIDTH/2, targetSide=null) {
+export function chainConnectionPreview(from, side, point, target=null, portExtent=chainNodeSize(from).width/2, targetSide=null) {
   const start=chainPortPoint(from,side),normal=portNormals[side]||portNormals.right;
   // Keep the former extent argument compatible for clients with custom horizontal card envelopes.
-  if(normal.x)start.x=from.x+CHAIN_NODE_WIDTH/2+normal.x*portExtent;
+  if(normal.x)start.x=from.x+chainNodeSize(from).width/2+normal.x*portExtent;
   const toPort=target?(CHAIN_PORTS.includes(targetSide)?targetSide:nearestChainPort(target,start)):({left:'right',right:'left',top:'bottom',bottom:'top'})[side];
   const end=target?chainPortPoint(target,toPort):point;
   return portCurve(start,end,side,toPort).path;

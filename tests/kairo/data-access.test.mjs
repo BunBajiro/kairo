@@ -73,13 +73,13 @@ test('Sessions keep pilot travel and hull history with Universe disabled and sto
         assert.equal(report.visits[0].ship_type_id,588);
         assert.equal(report.stats.shipChanges,1);
         assert.ok(report.events.some(event=>event.type==='location.changed'));
-        assert.deepEqual(nameRequests,[[587]]);
+        assert.deepEqual(nameRequests,[],'An optional hull name must not delay activity past a session boundary.');
 
         core.toggle('pilot',false);
         observe();
         await new Promise(resolve=>setImmediate(resolve));
         assert.equal(store.db.prepare('SELECT COUNT(*) n FROM visits WHERE character_id=42').get().n,1);
         assert.equal(store.db.prepare("SELECT COUNT(*) n FROM events WHERE character_id=42 AND type='ship.changed'").get().n,1);
-        assert.deepEqual(nameRequests,[[587]],'Disabled Pilot must gate subscriptions before name lookup.');
+        assert.deepEqual(nameRequests,[],'Disabled Pilot must gate subscriptions before optional enrichment.');
     }finally{await core.close();}
 });

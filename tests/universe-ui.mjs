@@ -851,6 +851,7 @@ try{
    db.saveSnapshot(id,'contacts',ready([{contact_id:77,contact_type:'alliance',standing:id===42?5:-10}]));
    db.saveSnapshot(id,'corporation_contacts',{status:'missing_scope',data:null});db.saveSnapshot(id,'alliance_contacts',{status:'missing_scope',data:null});
    db.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(id,atlas.systemsByName[id===42?'Jita':'Amarr'],id===42?'Jita':'Amarr',new Date(now).toISOString());
+   db.db.prepare('INSERT OR IGNORE INTO discovered_systems(character_id,system_id) VALUES(?,?)').run(id,atlas.systemsByName[id===42?'Jita':'Amarr']);
   }
   db.set('names',{77:'Synthetic sovereignty alliance',78:'Synthetic independent alliance',79:'Synthetic fallback one',80:'Synthetic fallback two',88:'Synthetic pilot alliance',99:'Synthetic corporation',999:'Synthetic opponent',500001:'Caldari State',500004:'Gallente Federation',500003:'Amarr Empire',500002:'Minmatar Republic'});
   const owners=new Map(atlas.territory.map((system,index)=>[system.system_id,77+Math.min(3,Math.floor(index/atlas.territory.length*4))]));
@@ -867,7 +868,8 @@ try{
   }
   const started=new Date(now-3600000).toISOString(),ended=new Date(now-1800000).toISOString();
   db.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context) VALUES(?,?,?,?,?,?,?)').run('universe-browser-replay',42,'Universe replay fixture',started,ended,JSON.stringify({capturedAt:started,system:{id:atlas.systemsByName.Jita,name:'Jita'}}),JSON.stringify({capturedAt:ended,system:{id:atlas.systemsByName.Jita,name:'Jita'}}));
-  for(const [name,offset] of [['Jita',1],['Perimeter',10],['Jita',20]])db.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,atlas.systemsByName[name],name,new Date(now-3600000+offset*60000).toISOString());
+  // Modern travel is explicitly owned by the recorded session; lifetime rows above remain legacy evidence.
+  for(const [name,offset] of [['Jita',1],['Perimeter',10],['Jita',20]])db.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42,atlas.systemsByName[name],name,new Date(now-3600000+offset*60000).toISOString(),'universe-browser-replay');
   db.db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)').run(42,'ship.changed','journey','Synthetic ship change',JSON.stringify({ship_type_id:587,solar_system_id:atlas.systemsByName.Perimeter}),new Date(now-3600000+12*60000).toISOString());
   for(const [type,module,summary,offset] of [['location.changed','journey','Entered system: Perimeter',10],['system.entered','journey','Entered system: Jita',11],['opsec.policy_changed','opsec','Synthetic OpSec policy change',12],['policy.changed','opsec','Synthetic OpSec module activity',13]])
    db.db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)').run(42,type,module,summary,JSON.stringify({solar_system_id:atlas.systemsByName.Perimeter}),new Date(now-3600000+offset*60000).toISOString());
@@ -896,11 +898,11 @@ try{
  await waitFor("document.querySelector('.universe-pin-item')?.textContent.includes('Alpha moon watch')");
  await choose('Active character','Atlas Beta');await waitFor("!document.querySelector('.universe-system-title')");
  await search('UALX-3');await waitFor("document.querySelector('.universe-standing')?.textContent.includes('terrible standing')");
- const beta=await api('/universe?character=43');assert.equal(beta.pins.length,0);assert.equal(beta.views.length,0);assert.equal(beta.journey.systems[0].name,'Amarr');
+ const beta=await api('/universe?character=43');assert.equal(beta.pins.length,0);assert.equal(beta.views.length,0);assert.equal('journey' in beta,false);assert.deepEqual(beta.discoveredSystemIds,[atlas.systemsByName.Amarr]);
  await button('Layers & views');assert.equal(await evaluate("!!document.querySelector('[aria-label=\"Delete view Alpha private view\"]')"),false);await click('[aria-label="Close layers"]');
  await choose('Active character','Atlas Alpha');await search('UALX-3');await waitFor("document.querySelector('.universe-standing')?.textContent.includes('good standing')");
- const alpha=await api('/universe?character=42');assert.equal(alpha.pins[0].label,'Alpha moon watch');assert.equal(alpha.views[0].name,'Alpha private view');assert.equal(alpha.journey.systems[0].name,'Jita');
- await screenshot('universe-pilot-standings');checks.push('Pilot standings, unavailable ESI, private view/pin and visit isolation');
+ const alpha=await api('/universe?character=42');assert.equal(alpha.pins[0].label,'Alpha moon watch');assert.equal(alpha.views[0].name,'Alpha private view');assert.equal('journey' in alpha,false);assert.ok(alpha.discoveredSystemIds.includes(atlas.systemsByName.Jita));assert.equal(alpha.discoveredSystemIds.includes(atlas.systemsByName.Amarr),false);
+ await screenshot('universe-pilot-standings');checks.push('Pilot standings, unavailable ESI, private view/pin and discovery isolation without lifetime Journey aggregates');
 
  // Configure through Settings, then verify the resolved political map. Manual
  // membership and explicit independence override only those alliances; another
@@ -1108,7 +1110,7 @@ try{
  await mapsExpansionAcceptance({app,api,evaluate,click,clickElement,button,fill,key,choose,waitFor,delay,screenshot,viewport,layout,space,ensureJSpaceMap,call,checks,recentUniverseRequests});
 
  await space('Atlas');assert.equal(await evaluate("!!document.querySelector('.universe-tabs,.route-stop')"),false,'Atlas does not expose the retired Journey or connection-management tabs');
- await call('Page.navigate',{url:app.origin+'/#journey'});await waitFor("location.hash==='#universe-kspace' && !!document.querySelector('.universe-module canvas')");assert.equal(await evaluate("!!document.querySelector('.route-stop')"),false,'Old Journey bookmarks open Atlas without removing travel data');assert.ok((await api('/universe?character=42')).journey.systems.length>0,'Journey data remains available to other Kairo systems');
+ await call('Page.navigate',{url:app.origin+'/#journey'});await waitFor("location.hash==='#universe-kspace' && !!document.querySelector('.universe-module canvas')");assert.equal(await evaluate("!!document.querySelector('.route-stop')"),false,'Old Journey bookmarks open Atlas');assert.equal('journey' in await api('/universe?character=42'),false,'Normal Universe state no longer reconstructs the retired lifetime log');const preservedSession=await api('/sessions/universe-browser-replay/replay?character=42');assert.ok(preservedSession.visits.length>=3&&preservedSession.travel.length>=2,'Session-owned travel and replay remain available after retiring Journey');
  assert.equal(await evaluate("Array.from(document.querySelectorAll('.universe-module button')).some(e=>e.textContent.trim()==='Sessions')"),false,'Sessions has its own page, outside Universe');
  assert.equal(await evaluate("Array.from(document.querySelectorAll('[data-sidebar=menu-button]')).filter(e=>e.textContent.trim()==='Sessions').length"),1);
  await space('Atlas');await preset('Geopolitics');await search('UALX-3');await click('[aria-label="Fit map"]');

@@ -11,6 +11,7 @@ import {JSpaceNodeEditor, JSpaceConnectionEditor, JSpaceObservations, JSpacePass
 import {JSpaceDestinations} from './jspace-destinations';
 import {publicChainScene, connectionHasEnded, drawnConnectionPayload, createLayoutSaveScope, groupSystemObservations} from './jspace-workspace-model.mjs';
 import {createJSpaceClock} from './jspace-clock.mjs';
+import {createScopedRefresh} from './scoped-refresh.mjs';
 import {useKairo} from './context';
 import {MapLibrarySearch, MapAddSearch} from './map-discovery-search';
 import {prepareMapGroup, type MapGroupPlacement} from './map-group-placement.mjs';
@@ -18,7 +19,9 @@ import './jspace-workspace.css';
 
 export type JSpaceWorkspaceMap = JSpaceMapData & {description?: string; revision: number; passages?: any[]; observations?: any[]; comments?: any[]; activity?: any[]; signatures?: any[]; pings?: any[]; can_undo?: boolean; [key: string]: any};
 export type JSpaceCommand = (op: string, payload?: Record<string, unknown>) => Promise<JSpaceWorkspaceMap | null>;
-type WorkspaceState = {character_id: number; generated_at?: string; maps: JSpaceWorkspaceMap[]; source_map?:JSpaceWorkspaceMap|null; limits?: Record<string, number>};
+export type JSpaceMapSummary = {id:string;name:string;description?:string;kind?:string|null;revision:number;created_at?:string;updated_at?:string;read_only?:boolean;node_count:number;connection_count:number;pilot_count:number;scope?:unknown;next_expiry_at?:string|null};
+type WorkspaceState = {character_id: number; generated_at?: string; maps: JSpaceMapSummary[]; source_map?:JSpaceMapSummary|null; limits?: Record<string, number>};
+function mapSummary(map:JSpaceWorkspaceMap):JSpaceMapSummary {const now=Date.now(),connections=map.connections.filter(value=>!connectionHasEnded(value,now)),expiries=connections.map(value=>Date.parse(value.expires_at||'')).filter(value=>Number.isFinite(value)&&value>now);return {id:map.id,name:map.name,description:map.description,kind:map.kind,revision:map.revision,created_at:map.created_at,updated_at:map.updated_at,read_only:map.read_only,node_count:map.nodes.length,connection_count:connections.length,pilot_count:map.pilots?.length||0,scope:map.scope,next_expiry_at:expiries.length?new Date(Math.min(...expiries)).toISOString():null};}
 type Panel = 'create' | 'settings' | 'import' | 'add' | 'node' | 'connection' | 'observations' | 'passages' | 'comments' | 'activity' | 'reference' | 'destinations' | 'scanner' | 'navigate' | 'intel' | 'pilots' | null;
 export type JSpaceSystemTool = 'system' | 'scanner' | 'navigate' | 'intel';
 const SYSTEM_PANELS = ['node','reference','scanner','observations','comments','navigate','intel'];
@@ -40,7 +43,7 @@ export function JSpaceSheet({title, subtitle, children, onClose, modal = false}:
 
 export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem, onOpenNotebook, onOpenIntel, onRouteToSystem, onShowKnownSpace, onChanged, onMapChange, externalPanelOpen, externalPanelTool, renderSystemTool, onDismissExternalPanel, onRefresh, requestedSystemId, routeSystemIds, routeEdges}: JSpaceWorkspaceProps) {
   const {boot}=useKairo();
-  const [state, setState] = useState<WorkspaceState | null>(null), [mapId, setMapId] = useState(''), [selectedSystemId, setSelectedSystemId] = useState<number | null>(null), [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
+  const [state, setState] = useState<WorkspaceState | null>(null), [selectedMap,setSelectedMap]=useState<JSpaceWorkspaceMap|null>(null), [mapId, setMapId] = useState(''), [selectedSystemId, setSelectedSystemId] = useState<number | null>(null), [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const [panel, setPanel] = useState<Panel>(null), [mutationBusy, setBusy] = useState(false), [loading, setLoading] = useState(true), [error, setError] = useState(''), [notice, setNotice] = useState(''), [fitRequest, setFitRequest] = useState(0), [now, setNow] = useState(Date.now());
   const [publicSources, setPublicSources] = useState<Record<string,boolean>>({thera:false,turnur:false});
   const [layoutPendingCount, setPendingLayouts] = useState(0), [connecting, setConnecting] = useState(false);
@@ -59,7 +62,7 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   const byId = useMemo(() => new Map(atlas.systems.map(system => [system.system_id, system])), [atlas]);
   const selectedMapRef=useRef(mapId);selectedMapRef.current=mapId;
   const maps=state?.maps||[];
-  const map = maps.find(value => value.id === mapId) || (mapId && state?.source_map?.id===mapId ? state.source_map : null); mapRef.current = map;
+  const map = state?.character_id===character&&selectedMap?.id===mapId?selectedMap:null; mapRef.current = map;
   const readOnly=map?.read_only===true,canWrite=hasPilot&&!readOnly;
   useEffect(()=>{onMapChange?.(map?.id||'');},[map?.id,onMapChange]);
   const layoutScopeKey = character + ':' + (map?.id || ''), pendingLayouts = layoutScope.current.key === layoutScopeKey ? layoutPendingCount : 0;
@@ -77,19 +80,34 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
     if (!response.ok) throw Object.assign(new Error(data.error || 'The map request failed.'), {status: response.status});
     return data;
   }, [character, csrf]);
-  const reload = useCallback(async (silent = false) => {
-    const epoch = ++requestEpoch.current, pilot = character;
-    if (!silent) setLoading(true);
-    try {const result = await request();const wanted=selectedMapRef.current;if(result.source_map&&wanted===result.source_map.id)result.source_map={...await request('/maps/'+encodeURIComponent(result.source_map.id)),source_loaded:true}; if (mounted.current && epoch === requestEpoch.current && pilot === characterRef.current) {setState(result); setError('');}}
-    catch (failure) {if (mounted.current && epoch === requestEpoch.current) setError(failure instanceof Error ? failure.message : 'The chain workspace is unavailable.');}
-    finally {if (mounted.current && epoch === requestEpoch.current) setLoading(false);}
-  }, [request, character]);
-  useEffect(()=>{if(!readOnly||!map||map.source_loaded)return;let alive=true;const id=map.id;void request('/maps/'+encodeURIComponent(id)).then(value=>{if(alive)setState(current=>current?{...current,source_map:{...value,source_loaded:true}}:current);}).catch(failure=>{if(alive)setError(failure.message);});return()=>{alive=false;};},[readOnly,map?.id,map?.source_loaded,request]);
+  const refreshScope=useRef<ReturnType<typeof createScopedRefresh>|null>(null);
+  const readWorkspace=useCallback(async()=>{
+    const epoch=++requestEpoch.current,pilot=character,wanted=selectedMapRef.current;
+    try {
+      const result:WorkspaceState=await request('/summaries');
+      const exists=result.maps.some(value=>value.id===wanted)||result.source_map?.id===wanted;
+      const detail:JSpaceWorkspaceMap|null=wanted&&exists&&epoch===requestEpoch.current&&pilot===characterRef.current&&wanted===selectedMapRef.current?await request('/maps/'+encodeURIComponent(wanted)):null;
+      return {epoch,pilot,wanted,result,detail,failure:null};
+    } catch(failure) {return {epoch,pilot,wanted,result:null,detail:null,failure};}
+  },[request,character]);
+  useEffect(()=>{
+    const scope=createScopedRefresh({read:readWorkspace,canRead:()=>!busyRef.current&&!layoutScope.current.pending&&!workspace.current?.ownerDocument.hidden,publish:({epoch,pilot,wanted,result,detail,failure})=>{
+      if(!mounted.current||epoch!==requestEpoch.current||pilot!==characterRef.current||wanted!==selectedMapRef.current)return;
+      if(result){setState(result);setSelectedMap(detail);setError('');if(wanted&&!detail){selectedMapRef.current='';setMapId('');}}
+      else setError(failure instanceof Error?failure.message:'The chain workspace is unavailable.');
+      setLoading(false);
+    }});
+    refreshScope.current=scope;
+    return()=>{scope.close();if(refreshScope.current===scope)refreshScope.current=null;};
+  },[readWorkspace]);
+  const reload=useCallback((silent=false)=>{if(!silent)setLoading(true);return refreshScope.current?.request({force:true})||Promise.resolve();},[readWorkspace]);
+  useEffect(()=>{refreshScope.current?.resume();},[mutationBusy,layoutPendingCount]);
   useEffect(()=>{if(readOnly&&panel&&!['reference','connection','create','import','settings'].includes(panel))setPanel(system?'reference':null);},[readOnly,panel,system]);
   useEffect(() => {mounted.current = true; return () => {mounted.current = false; requestEpoch.current++;};}, []);
   useEffect(() => {mutationScope.current={pilot:character};busyRef.current=false;setBusy(false);setConnecting(false);},[character]);
   useEffect(() => {layoutScope.current.cancel();const scope=createLayoutSaveScope(layoutScopeKey);layoutScope.current=scope;setPendingLayouts(0);return()=>scope.cancel();},[layoutScopeKey]);
-  useEffect(() => {let saved: any = {};try {saved = JSON.parse(sessionStorage.getItem('kairo:jspace:workspace:' + character) || '{}');} catch {}handledRequest.current=null;setPublicSources({thera:saved.publicSources?.thera===true,turnur:saved.publicSources?.turnur===true});setState(null);selectedMapRef.current='';setMapId('');setSelectedSystemId(null);setSelectedConnectionId(null);setPanel(null);setCreationSourceId(null);setNotice('');void reload();}, [character, reload]);
+  useEffect(() => {let saved: any = {};try {saved = JSON.parse(sessionStorage.getItem('kairo:jspace:workspace:' + character) || '{}');} catch {}handledRequest.current=null;setPublicSources({thera:saved.publicSources?.thera===true,turnur:saved.publicSources?.turnur===true});setState(null);setSelectedMap(null);selectedMapRef.current='';setMapId('');setSelectedSystemId(null);setSelectedConnectionId(null);setPanel(null);setCreationSourceId(null);setNotice('');void reload();}, [character, reload]);
+  useEffect(()=>{if(mapId&&selectedMapRef.current===mapId)void reload();},[mapId,reload]);
   useEffect(() => {if (state?.character_id !== character) return;try {sessionStorage.setItem('kairo:jspace:workspace:' + character, JSON.stringify({publicSources}));} catch {}}, [state?.character_id, character,publicSources]);
   useEffect(() => {
     const owner=workspace.current?.ownerDocument || document;
@@ -98,23 +116,25 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
     return()=>{clock.close();freshnessClock.current=null;owner.removeEventListener('visibilitychange',visible);};
   },[]);
   useEffect(() => {
-    freshnessClock.current?.refresh([...(map?.connections||[]),...(!map?(state?.maps||[]).flatMap(value=>value.connections):[]),...(map?.pings||[]),...(intel?.feeds?.connections||[]),...Object.values(intel?.feeds?.sources||{})]);
+    freshnessClock.current?.refresh([...(map?.connections||[]),...(!map?(state?.maps||[]).map(value=>({expires_at:value.next_expiry_at})):[]),...(map?.pings||[]),...(intel?.feeds?.connections||[]),...Object.values(intel?.feeds?.sources||{})]);
   },[map?.connections,map?.pings,state?.maps,intel?.feeds]);
   useEffect(() => {
-    const ended = (map?.read_only?[map]:state?.maps || []).flatMap(value => value.connections.filter(connection => connectionHasEnded(connection, now)).map(connection => value.id + ':' + connection.id + ':' + connection.expires_at));
+    const ended = map?map.connections.filter(connection=>connectionHasEnded(connection,now)).map(connection=>map.id+':'+connection.id+':'+connection.expires_at):(state?.maps||[]).filter(value=>value.next_expiry_at&&Date.parse(value.next_expiry_at)<=now).map(value=>value.id+':'+value.next_expiry_at);
     if (!ended.length) {expiryRefresh.current='';return;}
     const key=character+':'+ended.join('|');
     if (busy || expiryRefresh.current===key) return;
     expiryRefresh.current=key;
     // Rendering drops the edge at its deadline; reconcile every saved map and routing data now.
     void reload(true).then(()=>onChanged?.());
-  }, [now, state?.maps, character, busy, reload, onChanged]);
+  }, [now, map?.connections, state?.maps, character, busy, reload, onChanged]);
   useEffect(() => {
-    const changed = (event: Event) => {const pilot = (event as CustomEvent).detail?.characterId; if ((!pilot || pilot === character) && !busyRef.current && !layoutScope.current.pending && !workspace.current?.ownerDocument.hidden) void reload(true);};
-    const refresh = () => {if (!busyRef.current && !layoutScope.current.pending && !workspace.current?.ownerDocument.hidden) void reload(true);};
-    window.addEventListener('kairo:universe-changed', changed);const timer = window.setInterval(refresh, 60000);
-    return () => {window.removeEventListener('kairo:universe-changed', changed);window.clearInterval(timer);};
-  }, [character, reload]);
+    const owner=workspace.current?.ownerDocument||document;
+    const refresh=()=>{void refreshScope.current?.request();};
+    const changed=(event:Event)=>{const pilot=(event as CustomEvent).detail?.characterId;if(!pilot||pilot===character)refresh();};
+    const visible=()=>{if(!owner.hidden)refresh();};
+    window.addEventListener('kairo:universe-changed',changed);owner.addEventListener('visibilitychange',visible);const timer=window.setInterval(refresh,60000);
+    return()=>{window.removeEventListener('kairo:universe-changed',changed);owner.removeEventListener('visibilitychange',visible);window.clearInterval(timer);};
+  },[character]);
   useEffect(() => {if (panel) dismissExternalPanel.current?.();}, [panel]);
   useLayoutEffect(() => {
     if (!selectedSystemId || !SYSTEM_PANELS.includes(panel || '')) return;
@@ -124,13 +144,18 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   useEffect(() => {if (scene && selectedSystemId && !SYSTEM_PANELS.includes(panel||'') && !scene.nodes.some(value => value.system_id === selectedSystemId)) {setSelectedSystemId(null);if(['node','observations','comments'].includes(panel||''))setPanel(null);}if (scene && selectedConnectionId && !scene.connections.some(value => value.id === selectedConnectionId)) {setSelectedConnectionId(null);if(['connection','passages','comments'].includes(panel||''))setPanel(null);}}, [scene, selectedSystemId, selectedConnectionId,panel]);
   useEffect(() => {if (!map || state?.character_id !== character || loading || !requestedSystemId || handledRequest.current === requestedSystemId || !byId.has(requestedSystemId)) return;handledRequest.current = requestedSystemId;setSelectedSystemId(requestedSystemId);setSelectedConnectionId(null);if (scene?.nodes.some(value => value.system_id === requestedSystemId)) setFrameSystemRequest({systemId:requestedSystemId,requestId:Date.now()});else if(!externalPanelOpen) setPanel('reference');}, [requestedSystemId, loading, map?.id, scene?.nodes, byId, externalPanelOpen,state?.character_id,character]);
   useEffect(() => {if (!map || state?.character_id !== character || !externalPanelOpen || !requestedSystemId || !byId.has(requestedSystemId)) return;setSelectedSystemId(requestedSystemId);setSelectedConnectionId(null);setPanel(externalPanelTool==='explore'?'scanner':externalPanelTool==='route'||externalPanelTool==='jump'?'navigate':externalPanelTool==='intel'?'intel':'reference');dismissExternalPanel.current?.();}, [externalPanelOpen,externalPanelTool,requestedSystemId,byId,state?.character_id,character,map?.id]);
-  function acceptMap(next: JSpaceWorkspaceMap, select = false) {mapRef.current = next;setState(current => ({...(current || {character_id: character, maps: []}), maps: current?.maps.some(value => value.id === next.id) ? current.maps.map(value => value.id === next.id ? next : value) : [...(current?.maps || []), next]}));if (select) {setMapId(next.id);setSelectedSystemId(null);setSelectedConnectionId(null);setFitRequest(value => value + 1);}}
+  function acceptMap(next:JSpaceWorkspaceMap,select=false){
+    const summary=mapSummary(next);
+    setState(current=>({...current,character_id:character,maps:current?.maps.some(value=>value.id===next.id)?current.maps.map(value=>value.id===next.id?summary:value):[...(current?.maps||[]),summary]}));
+    if(select){selectedMapRef.current=next.id;setMapId(next.id);setSelectedSystemId(null);setSelectedConnectionId(null);setFitRequest(value=>value+1);}
+    if(selectedMapRef.current===next.id){mapRef.current=next;setSelectedMap(next);}
+  }
   async function perform(action: () => Promise<any>, success?: string) {
     if (busyRef.current) return null;
-    busyRef.current = true;requestEpoch.current++;setBusy(true);setLoading(false);setError('');const pilot = character, scope=mutationScope.current;
-    try {const result = await action();if (!mounted.current || pilot !== characterRef.current || scope!==mutationScope.current) return null;if (success) setNotice(success);return result;}
-    catch (failure: any) {if (mounted.current && pilot === characterRef.current && scope===mutationScope.current) {if (failure?.status === 409) {await reload(true);if(mounted.current && pilot===characterRef.current && scope===mutationScope.current)setError('This map changed in another window. The latest version is loaded. Review your changes and save again.');} else setError(failure?.message || 'The change could not be saved.');}return null;}
-    finally {if(scope===mutationScope.current){busyRef.current = false;if (mounted.current) setBusy(false);}}
+    busyRef.current = true;requestEpoch.current++;setBusy(true);setLoading(false);setError('');const pilot = character, scope=mutationScope.current, target=selectedMapRef.current;
+    try {const result = await action();if (!mounted.current || pilot !== characterRef.current || scope!==mutationScope.current || target!==selectedMapRef.current) return null;if (success) setNotice(success);return result;}
+    catch (failure: any) {if (mounted.current && pilot === characterRef.current && scope===mutationScope.current && target===selectedMapRef.current) {if (failure?.status === 409) {await reload(true);if(mounted.current && pilot===characterRef.current && scope===mutationScope.current)setError('This map changed in another window. The latest version is loaded. Review your changes and save again.');} else setError(failure?.message || 'The change could not be saved.');}return null;}
+    finally {if(scope===mutationScope.current){busyRef.current = false;if (mounted.current) {setBusy(false);refreshScope.current?.resume();}}}
   }
   const command: JSpaceCommand = async (op, payload = {}) => {
     const current = mapRef.current;if (!current || current.read_only) return null;
@@ -174,7 +199,7 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   function selectSystem(id: number | null) {if(id !== null) onDismissExternalPanel?.();setSelectedSystemId(id);if (id !== null) setSelectedConnectionId(null);if (id !== null && panel && !['add', 'activity'].includes(panel)) setPanel(null);}
   function selectConnection(id: string | null) {if(id !== null) onDismissExternalPanel?.();setSelectedConnectionId(id);if (id !== null) setSelectedSystemId(null);if (id !== null && panel && !['add', 'activity'].includes(panel)) setPanel(null);}
   function openCreate(sourceId:string|null=null) {setCreationSourceId(sourceId);setPanel('create');}
-  function chooseMap(id: string) {onDismissExternalPanel?.();setMapId(id);setSelectedSystemId(null);setSelectedConnectionId(null);setPanel(null);setNotice('');setFitRequest(value => value + 1);}
+  function chooseMap(id: string) {onDismissExternalPanel?.();requestEpoch.current++;selectedMapRef.current=id;setSelectedMap(null);setMapId(id);if(!id){setLoading(false);void reload(true);}setSelectedSystemId(null);setSelectedConnectionId(null);setPanel(null);setNotice('');setFitRequest(value => value + 1);}
   async function addSystem(id: number) {
     if (!map) return;
     if (!canWrite) {if(map.nodes.some(node=>node.system_id===id)){setSelectedSystemId(id);setSelectedConnectionId(null);setPanel('reference');setFrameSystemRequest({systemId:id,requestId:Date.now()});}return;}
@@ -187,9 +212,9 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   }
   function openMapResult(id:string,systemId:number|null,connectionId?:string|null,notes=false) {
     const target=maps.find(value=>value.id===id);if(!target)return;
-    onDismissExternalPanel?.();setMapId(id);setSelectedSystemId(systemId);setSelectedConnectionId(connectionId||null);
+    onDismissExternalPanel?.();requestEpoch.current++;selectedMapRef.current=id;setSelectedMap(null);setMapId(id);setSelectedSystemId(systemId);setSelectedConnectionId(connectionId||null);
     setPanel(notes?'comments':connectionId?'connection':'reference');setNotice('');
-    if(systemId&&target.nodes.some(node=>node.system_id===systemId))setFrameSystemRequest({systemId,requestId:Date.now()});
+    if(systemId)setFrameSystemRequest({systemId,requestId:Date.now()});
     else setFitRequest(value=>value+1);
   }
   function openNoteLocation(note:{system_id?:number|null;connection_id?:string|null}) {
@@ -253,14 +278,14 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   const selectedTitle = node && system ? node.alias || system.name : system ? system.name : connection ? `${byId.get(connection.from_system_id)?.name || connection.from_system_id} ↔ ${byId.get(connection.to_system_id)?.name || connection.to_system_id}` : '';
   return <div className="jspace-workspace" ref={workspace} data-map-id={map?.id || undefined} aria-label="J-Space chain workspace">
     <header className="jspace-workspace-toolbar"><div className="jspace-workspace-identity"><span className="jspace-workspace-emblem"><Waypoints size={24}/></span><div><span className="jspace-eyebrow">UNIVERSE</span>{map && !readOnly ? <label className="jspace-map-picker"><select aria-label="Active J-Space map" value={map.id} onChange={event => chooseMap(event.target.value)} disabled={busy}>{maps.map(value => <option value={value.id} key={value.id}>{value.name}</option>)}</select><ChevronDown size={17}/></label> : <h2>{readOnly?'Live source':'Maps'}</h2>}</div></div>
-      {map ? <MapAddSearch atlas={atlas} map={map} readOnly={readOnly} busy={busy||!!placement} focusRequest={searchRequest} onAdd={addSystem} onStageGroup={stageGroup}/> : <MapLibrarySearch now={now} maps={maps} atlas={atlas} onOpen={openMapResult}/>}
+      {map ? <MapAddSearch atlas={atlas} map={map} readOnly={readOnly} busy={busy||!!placement} focusRequest={searchRequest} onAdd={addSystem} onStageGroup={stageGroup}/> : <MapLibrarySearch key={character} request={request} revision={state?.generated_at} onOpen={openMapResult}/>}
       <div className="jspace-toolbar-actions">{map&&<button aria-label="Back to J-Space maps" onClick={()=>chooseMap('')} disabled={busy}><Waypoints size={18}/><span>Maps</span></button>}{map && !readOnly && <><button aria-label="Add system" onClick={focusSearch} disabled={busy}><Plus size={18}/><span>Add system</span></button><button aria-label="Connect systems" onClick={() => {setDraftFrom(selectedSystemId);setSelectedConnectionId(null);setPanel('connection');}} disabled={busy || map.nodes.length < 2}><Link2 size={18}/><span>Connect</span></button><button aria-label="Map pilots" aria-pressed={panel==='pilots'} onClick={()=>setPanel(panel==='pilots'?null:'pilots')}><Users size={18}/><span>Pilots</span><b>{map.pilots?.length||0}</b></button><button className="jspace-icon-button" title="Undo map layout or annotation" aria-label="Undo map edit" disabled={busy || !map.can_undo} onClick={() => void command('undo')}><Undo2 size={18}/></button></>}<button className="jspace-icon-button" aria-label="Create a J-Space map" title="Create a map" onClick={() => openCreate()} disabled={busy || !hasPilot}><Plus size={20}/></button><button className="jspace-icon-button" aria-label="Import a J-Space map" title="Import a map" onClick={() => setPanel('import')} disabled={busy || !hasPilot}><FileUp size={19}/></button><button className="jspace-icon-button" aria-label={map&&!readOnly?'Map settings and export':'Maps settings'} title={map&&!readOnly?'Map settings and export':'Maps settings'} onClick={() => setPanel(panel === 'settings' ? null : 'settings')}><Settings2 size={19}/></button><button className="jspace-icon-button" aria-label="Refresh Universe data" title="Refresh map" disabled={busy || loading} onClick={() => void perform(async () => {if(onRefresh) await onRefresh();await reload(true);})}><RefreshCw size={18} className={loading ? 'jspace-spin' : ''}/></button></div>
     </header>
     {(error || notice || undoNotice) && <div className={'jspace-notice ' + (error ? 'is-error' : '')} role={error ? 'alert' : 'status'}>{error ? <ShieldQuestion size={18}/> : <Check size={18}/>}<span>{error || notice || undoNotice?.message}</span>{!error && undoNotice && <button className="jspace-notice-undo" disabled={busy} onClick={() => void undoRemoval()}><Undo2 size={16}/>Undo removal</button>}<button aria-label="Dismiss map message" onClick={() => {setError('');setNotice('');setUndoNotice(null);}}><X size={16}/></button></div>}
     {readOnly && map && <div className="jspace-source-notice"><span><Radio size={17}/><strong>Live source map — read-only.</strong> Used to populate scoped maps.</span><button disabled={busy} onClick={()=>openCreate(map.id)}><Plus size={17}/>Create new map</button></div>}
     {placement&&<div className="jspace-placement-notice" role="region" aria-label="Group placement"><span><Waypoints size={20}/><span><strong>{placement.name}</strong><small>{placement.nodes.length} new systems{placement.existing?' · '+placement.existing+' already placed':''} · Drag the group into position{placement.source!=='sde'?' · fallback layout':''}</small></span></span><div><button disabled={busy} onClick={()=>setPlacement(null)}><X size={17}/>Cancel placement</button><button className="jspace-primary" disabled={busy} onClick={()=>void confirmPlacement()}><Check size={17}/>Confirm placement</button></div></div>}
     <div className="jspace-workspace-stage" aria-busy={busy || loading}>
-      {map ? <JSpaceMap placement={placement} onCancelPlacement={()=>setPlacement(null)} onMovePlacement={positions=>setPlacement(current=>current?{...current,nodes:current.nodes.map(node=>({...node,...positions.find(position=>position.system_id===node.system_id)}))}:null)} onConnectionCondition={quickCondition} overlays={intel?.systems || []} topActions={readOnly?null:publicControls} atlas={atlas} map={scene || map} selectedSystemId={selectedSystemId} selectedConnectionId={selectedConnectionId} locationSystemId={locationId} pilots={map.pilots || []} onSelectSystem={selectSystem} onSelectConnection={selectConnection} onMoveNodes={moveNodes} onConnectSystems={readOnly?undefined:connectSystems} allowDragWhileSaving={pendingLayouts > 0} onNodeAction={nodeAction} onConnectionAction={(action, id) => {setSelectedConnectionId(id);setSelectedSystemId(null);if(action === 'remove') void removeDiagram(undefined,id);else setPanel('connection');}} onAddSystem={readOnly?undefined:focusSearch} operations={map.operations} busy={busy || pendingLayouts > 0} now={now} fitRequest={fitRequest} characterId={character} frameSystemRequest={frameSystemRequest} routeSystemIds={routeSystemIds} routeEdges={routeEdges} onRemoveNodes={readOnly?undefined:ids => void removeDiagram(ids)}/> : <div className={'jspace-welcome'+(maps.length?' has-maps':'')}><span><Waypoints size={48}/></span><p className="jspace-eyebrow">YOUR EXPLORATION NETWORK</p><h2>{loading ? 'Opening your maps…' : maps.length ? 'Your maps.' : 'Make your first map.'}</h2><p>{maps.length?'Choose a map to continue exploring.':'Add systems, draw connections and keep your discoveries together.'}</p>{!loading&&!!maps.length&&<div className="jspace-map-library" aria-label="Your J-Space maps">{maps.map(value=><button className="jspace-map-library-card" key={value.id} aria-label={'Open map '+value.name} onClick={()=>chooseMap(value.id)}><Waypoints size={24}/><span><strong>{value.name}</strong>{value.description&&<span>{value.description}</span>}<small>{value.nodes.length} systems · {value.connections.length} connections · {value.pilots?.length||0} pilots</small></span><ArrowUpRight size={18}/></button>)}</div>}{!loading && <div className="jspace-welcome-actions"><button className="jspace-primary" disabled={!hasPilot} onClick={() => openCreate()}><Plus size={18}/>{maps.length?'Create new map':'Create your first map'}</button><button disabled={!hasPilot} onClick={() => setPanel('import')}><FileUp size={18}/>Import a map</button></div>}{!hasPilot && !loading && <p className="jspace-guest-note">Select or connect an EVE pilot to create your private chain maps.</p>}</div>}
+      {map ? <JSpaceMap placement={placement} onCancelPlacement={()=>setPlacement(null)} onMovePlacement={positions=>setPlacement(current=>current?{...current,nodes:current.nodes.map(node=>({...node,...positions.find(position=>position.system_id===node.system_id)}))}:null)} onConnectionCondition={quickCondition} overlays={intel?.systems || []} topActions={readOnly?null:publicControls} atlas={atlas} map={scene || map} selectedSystemId={selectedSystemId} selectedConnectionId={selectedConnectionId} locationSystemId={locationId} pilots={map.pilots || []} onSelectSystem={selectSystem} onSelectConnection={selectConnection} onMoveNodes={moveNodes} onConnectSystems={readOnly?undefined:connectSystems} allowDragWhileSaving={pendingLayouts > 0} onNodeAction={nodeAction} onConnectionAction={(action, id) => {setSelectedConnectionId(id);setSelectedSystemId(null);if(action === 'remove') void removeDiagram(undefined,id);else setPanel('connection');}} onAddSystem={readOnly?undefined:focusSearch} operations={map.operations} busy={busy || pendingLayouts > 0} now={now} fitRequest={fitRequest} characterId={character} frameSystemRequest={frameSystemRequest} routeSystemIds={routeSystemIds} routeEdges={routeEdges} onRemoveNodes={readOnly?undefined:ids => void removeDiagram(ids)}/> : <div className={'jspace-welcome'+(maps.length?' has-maps':'')}><span><Waypoints size={48}/></span><p className="jspace-eyebrow">YOUR EXPLORATION NETWORK</p><h2>{loading ? 'Opening your maps…' : maps.length ? 'Your maps.' : 'Make your first map.'}</h2><p>{maps.length?'Choose a map to continue exploring.':'Add systems, draw connections and keep your discoveries together.'}</p>{!loading&&!!maps.length&&<div className="jspace-map-library" aria-label="Your J-Space maps">{maps.map(value=><button className="jspace-map-library-card" key={value.id} aria-label={'Open map '+value.name} onClick={()=>chooseMap(value.id)}><Waypoints size={24}/><span><strong>{value.name}</strong>{value.description&&<span>{value.description}</span>}<small>{value.node_count} systems · {value.connection_count} connections · {value.pilot_count} pilots</small></span><ArrowUpRight size={18}/></button>)}</div>}{!loading && <div className="jspace-welcome-actions"><button className="jspace-primary" disabled={!hasPilot} onClick={() => openCreate()}><Plus size={18}/>{maps.length?'Create new map':'Create your first map'}</button><button disabled={!hasPilot} onClick={() => setPanel('import')}><FileUp size={18}/>Import a map</button></div>}{!hasPilot && !loading && <p className="jspace-guest-note">Select or connect an EVE pilot to create your private chain maps.</p>}</div>}
       {map && !panel && !externalPanelOpen && (node && system || connection) && <section className={'jspace-selection-card '+(connection?'is-connection':'is-system')} aria-label="Selected map context"><header>
         {node && system && <span className="jspace-context-class">{system.space==='wormhole'?wormholeClassLabel(system):'K'}</span>}
         <div><span className="jspace-eyebrow">{readOnly?'LIVE SOURCE':connection ? 'CONNECTION' : selectedPublic ? 'PUBLIC REPORT' : 'MAP CONTEXT'}</span><h3>{selectedTitle}</h3>{node?.alias && <p>{system?.name}</p>}</div><button className="jspace-icon-button" aria-label="Close selected map context" onClick={() => {setSelectedSystemId(null);setSelectedConnectionId(null);}}><X size={18}/></button></header>
@@ -293,7 +318,7 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
         {panel === 'create'  && <MapForm key={creationSourceId||'new'} busy={busy} atlas={atlas} request={request} characters={boot.characters} currentPilotId={character} fromSource={!!creationSourceId} onSubmit={async values => {const result = await perform(() => request('/maps', 'POST', {...values,...(creationSourceId?{source_map_id:creationSourceId}:{})}), 'Map created.');if (result) {acceptMap(result, true);setPanel(null);}}}/>}
         {panel === 'settings' && state?.source_map && !readOnly && <div className="jspace-source-setting"><span><Radio size={20}/><span><strong>Live tracking source</strong><small>Read-only chain used to populate scoped maps.</small></span></span><button disabled={busy} onClick={()=>chooseMap(state.source_map!.id)}><Eye size={17}/>View live source</button></div>}
         {panel === 'settings' && readOnly && <p className="jspace-muted">This service follows the active pilot. Create your own map to add notes, edit connections and track a crew.</p>}
-        {panel === 'settings' && map && !readOnly && <MapForm key={map.id} map={map} busy={busy} atlas={atlas} request={request} onSubmit={async values => {if (await command('map.update', values)) setPanel(null);}} onExport={async (format='kairo') => {const result = await perform(() => request('/maps/' + encodeURIComponent(map.id) + '/export'+(format==='wanderer'?'?format=wanderer':'')));if (!result) return;const url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], {type: 'application/json'}));const a = document.createElement('a');a.href = url;a.download = map.name.replace(/[^a-z0-9_-]+/gi, '-') + (format==='wanderer'?'.wanderer-map.json':'.kairo-map.json');a.click();setTimeout(() => URL.revokeObjectURL(url), 1000);}} onDuplicate={async () => {const copy = await perform(() => request('/maps/' + encodeURIComponent(map.id) + '/duplicate', 'POST', {revision: map.revision}), 'Map duplicated. The copy has independent system and connection records.');if (copy) {acceptMap(copy, true);setPanel(null);}}} onDelete={async () => {const removed = await perform(() => request('/maps/' + encodeURIComponent(map.id), 'DELETE', {revision: map.revision}), 'Map and its private records removed.');if (removed !== null) {setState(current => current ? {...current, maps: current.maps.filter(value => value.id !== map.id)} : current);setMapId('');setPanel(null);}}}/>}
+        {panel === 'settings' && map && !readOnly && <MapForm key={map.id} map={map} busy={busy} atlas={atlas} request={request} onSubmit={async values => {if (await command('map.update', values)) setPanel(null);}} onExport={async (format='kairo') => {const result = await perform(() => request('/maps/' + encodeURIComponent(map.id) + '/export'+(format==='wanderer'?'?format=wanderer':'')));if (!result) return;const url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], {type: 'application/json'}));const a = document.createElement('a');a.href = url;a.download = map.name.replace(/[^a-z0-9_-]+/gi, '-') + (format==='wanderer'?'.wanderer-map.json':'.kairo-map.json');a.click();setTimeout(() => URL.revokeObjectURL(url), 1000);}} onDuplicate={async () => {const copy = await perform(() => request('/maps/' + encodeURIComponent(map.id) + '/duplicate', 'POST', {revision: map.revision}), 'Map duplicated. The copy has independent system and connection records.');if (copy) {acceptMap(copy, true);setPanel(null);}}} onDelete={async () => {const removed = await perform(() => request('/maps/' + encodeURIComponent(map.id), 'DELETE', {revision: map.revision}), 'Map and its private records removed.');if (removed !== null) {setState(current => current ? {...current, maps: current.maps.filter(value => value.id !== map.id)} : current);chooseMap('');}}}/>}
         {panel === 'import' && <MapImport busy={busy} preview={document => perform(() => request('/import/preview', 'POST', {document}))} importMap={async document => {const result = await perform(() => request('/import', 'POST', {document}), 'Imported as a new map. Imported connections require your confirmation before routing.');if (result) {acceptMap(result, true);setPanel(null);void onChanged?.();}}}/>}
         {panel === 'add' && <AddSystem atlas={atlas} map={map || {id:'catalogue',name:'Catalogue',revision:0,nodes:[],connections:[]}} busy={busy} onAdd={addSystem}/>}
 

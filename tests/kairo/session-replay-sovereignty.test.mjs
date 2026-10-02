@@ -9,13 +9,14 @@ test('replay ownership backdrop preserves owner colours without admitting live o
     ], sources: {sovereignty: {status: 'ready', updatedAt: '2026-09-27T04:00:00Z'}, kills: {status: 'ready'}},
     politics: {territory_colours: {a77: {fill: '#aabbcc'}}, groups: [{name: 'Bloc'}]},
     links: [{id: 'live-wormhole'}], pins: [{system_id: 2}], operations: {intel: ['live intel']}, feeds: {thera: ['current report']},
-    journey: {visits: [1], connections: [1], systems: [1]}};
+    discoveredSystemIds: [1]};
     const before = JSON.stringify(live), backdrop = replaySovereigntyIntel(live);
     assert.deepEqual(backdrop.systems, [{system_id: 1, sovereignty: live.systems[0].sovereignty}]);
     assert.deepEqual(backdrop.politics, {territory_colours: live.politics.territory_colours});
     for (const key of ['location','operations','feeds']) assert.equal(backdrop[key], undefined);
     for (const key of ['links','link_lists','pins','views','structures']) assert.deepEqual(backdrop[key], []);
-    assert.deepEqual(backdrop.journey, {visits: [], connections: [], systems: []});
+    assert.deepEqual(backdrop.discoveredSystemIds, []);
+    assert.equal(Object.hasOwn(backdrop, 'journey'), false);
     assert.deepEqual(Object.keys(backdrop.sources), ['sovereignty']);
     assert.equal(replaySovereigntyCaption(backdrop), 'Current sovereignty · cached 2026-09-27 04:00 EVE');
     assert.equal(JSON.stringify(live), before);

@@ -98,6 +98,18 @@ export function openStore(dir) {
         ALTER TABLE visits ADD COLUMN sovereignty_at_visit TEXT;
         INSERT INTO migrations VALUES('visits-sovereignty-v080',datetime('now')); COMMIT;`);
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='session-travel-v080'").get()) {
+        db.exec('BEGIN IMMEDIATE');
+        try {
+            db.exec(`ALTER TABLE visits ADD COLUMN session_id TEXT;
+                CREATE TABLE discovered_systems(character_id INTEGER NOT NULL,system_id INTEGER NOT NULL,
+                    PRIMARY KEY(character_id,system_id));
+                INSERT OR IGNORE INTO discovered_systems(character_id,system_id)
+                    SELECT character_id,system_id FROM visits WHERE character_id>0 AND system_id>0;
+                INSERT INTO migrations VALUES('session-travel-v080',datetime('now'));`);
+            db.exec('COMMIT');
+        } catch (error) { db.exec('ROLLBACK'); db.close(); throw error; }
+    }
     try {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);
     }

@@ -9,7 +9,7 @@ test('late collector bindings cannot write to closed OBS streams during a datase
     const response = new EventEmitter();
     let ended = false, writes = 0;
     response.write = () => {assert.equal(ended, false, 'A drained collector wrote after stream.end()'); writes++;};
-    response.end = () => {ended = true;};
+    response.end = () => {ended = true;response.emit('finish');};
     stream.connect(response);
     const before = writes;
     stream.close();

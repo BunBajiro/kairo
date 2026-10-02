@@ -1,4 +1,5 @@
 import { sessionRoute } from './session-details.mjs';
+import { sessionObservationOwnershipSql } from './session-travel.mjs';
 import { getUniverseStatic, LIGHT_YEAR_METRES } from './universe-static.mjs';
 
 export const SESSION_REPLAY_EVENT_LIMIT = 10000;
@@ -35,9 +36,10 @@ export function sessionReplay(store, id, characterId, { now = Date.now, eventLim
         AND (e.type NOT IN ('session.started','session.ended') OR json_extract(e.payload,'$.session_id')=?)
         AND ((e.type IN ('killmail.kill','killmail.loss') AND e.at<?)
         OR (e.type NOT IN ('killmail.kill','killmail.loss') AND (e.at>? OR e.id>?)
-        AND (e.at<? OR e.id<=? OR json_extract(e.payload,'$.session_id')=?)))`;
+        AND (e.at<? OR e.id<=? OR json_extract(e.payload,'$.session_id')=?)))
+        AND ${sessionObservationOwnershipSql('e.')}`;
     const params = [characterId, startedAt, endedAt, eventCursor, session.id, endedAt, startedAt,
-        start.eventCursor ?? 0, endedAt, session.ended ? (finish.eventCursor ?? Number.MAX_SAFE_INTEGER) : eventCursor, session.id];
+        start.eventCursor ?? 0, endedAt, session.ended ? (finish.eventCursor ?? Number.MAX_SAFE_INTEGER) : eventCursor, session.id, session.id];
     // Visits already describe movement. Routine location/protection changes
     // should neither clutter replay nor consume its meaningful-event budget.
     // This affects only this snapshot; the source history and reports are intact.

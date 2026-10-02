@@ -47,3 +47,20 @@ test('child restores update UI on cancellation and shuts down if parent disappea
     await until(() => exitCode !== undefined);
     assert.equal(closed, true); assert.equal(exitCode, 0);
 });
+
+test('a stuck accepted-work drain reaches the child deadline without a successful handoff', async t => {
+    t.mock.timers.enable({apis: ['setTimeout']});
+    const channel = channelFixture(); let closeStarted = false, exported = false, exitCode;
+    runRuntimeChild({channel, shutdownTimeout: 30, exit: code => { exitCode = code; }, loadRuntime: async () => ({startKairo: async () => ({
+        origin: 'local', streamOrigin: 'stream',
+        close: () => { closeStarted = true; return new Promise(() => {}); },
+        exportSessions: () => { exported = true; return []; },
+    })})});
+    channel.emit('message', {type: 'start'});
+    await until(() => channel.sent.some(message => message.type === 'ready'));
+    channel.emit('message', {type: 'stop', reason: 'update'});
+    await until(() => closeStarted);
+    t.mock.timers.tick(30);
+    assert.equal(exitCode, 1); assert.equal(exported, false);
+    assert.equal(channel.sent.some(message => message.type === 'stopped'), false);
+});

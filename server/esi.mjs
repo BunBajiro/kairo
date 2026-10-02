@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 export const COMPATIBILITY_DATE = '2026-09-04';
 const iso = value => new Date(value).toISOString();
 const validId = id => Number.isSafeInteger(id) && id > 0 && id < 2147483647;
+const transportHeaders = { Accept: 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE,
+    'User-Agent': 'Kairo/0.8 (local EVE companion)' };
 
 export function createESI(store, auth, { fetcher = fetch } = {}) {
     const limits = store.get('esi:limits', {});
@@ -9,6 +11,8 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     const blocks = new Map((limits.blocks || []).filter(([, until]) => until > Date.now()));
     let errorUntil = limits.errorUntil || 0, active = 0;
     const waiters = [], priorityWaiters = [];
+    const accepted = new Set();
+    let closing;
     const counters = { requests: 0, cacheHits: 0, coalesced: 0, notModified: 0, failed: 0 };
     const readCache = store.db.prepare('SELECT * FROM cache WHERE key=?');
     const putCache = store.db.prepare('INSERT INTO cache VALUES(?,?,?,?,?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body,etag=excluded.etag,expires=excluded.expires,updated=excluded.updated,headers=excluded.headers');
@@ -25,6 +29,37 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     }
     function cooldown(until) {
         return Object.assign(new Error('ESI is cooling down after a rate limit. Cached data is retained.'), { status: 429, retryAt: iso(until) });
+    }
+    function checkCooldown(characterId, route) {
+        const until = Math.max(errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
+        if (until > Date.now()) throw cooldown(until);
+    }
+    async function headersFor(characterId) {
+        const headers = { ...transportHeaders };
+        if (characterId) headers.Authorization = 'Bearer ' + await auth.access(characterId);
+        return headers;
+    }
+    function responseLimits(response, route, characterId) {
+        const now = Date.now(), retry = response.headers.get('retry-after');
+        const parsed = retry ? Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - now : NaN;
+        const retryMs = Number.isFinite(parsed) ? Math.max(1000, parsed) : 60000;
+        const group = response.headers.get('x-ratelimit-group');
+        let changed = false;
+        if (group && routeGroups.get(route) !== group) { routeGroups.set(route, group); changed = true; }
+        const errorsLeft = response.headers.get('x-esi-error-limit-remain'), remaining = response.headers.get('x-ratelimit-remaining');
+        if (errorsLeft !== null && Number(errorsLeft) < 10) {
+            errorUntil = now + Math.max(10000, Number(response.headers.get('x-esi-error-limit-reset') || 60) * 1000);
+            changed = true;
+        }
+        if ([420, 429].includes(response.status) || remaining !== null && Number(remaining) < 10) {
+            // Buckets belong to a route group and pilot (or the public IP).
+            // Unknown groups retain the conservative pilot-wide fallback.
+            blocks.set(characterId + ':' + (group || '*'), now + Math.max(10000, retryMs));
+            if (response.status === 420) errorUntil = now + Math.max(60000, retryMs);
+            changed = true;
+        }
+        if (changed) saveLimits();
+        return { now, retry, retryMs };
     }
     function rememberNames(data, expires, updated) {
         if (!Array.isArray(data)) return;
@@ -69,7 +104,6 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         const cachedGroup = cached && JSON.parse(cached.headers)['x-ratelimit-group'];
         if (cachedGroup) routeGroups.set(route, cachedGroup);
         const retryKey = 'esi-retry:' + key, previousFailure = readCache.get(retryKey);
-        const blockedUntil = () => Math.max(errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
         const task = Promise.resolve().then(async () => {
             let release, attempted = false;
             try {
@@ -77,13 +111,12 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     const failure = JSON.parse(previousFailure.body);
                     throw Object.assign(new Error(failure.message), { status: failure.status, retryAt: iso(previousFailure.expires) });
                 }
-                if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
+                checkCooldown(characterId, route);
                 release = await slot(priority);
-                if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
-                const headers = { 'Accept': 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE, 'User-Agent': 'Kairo/0.7.3 (local EVE companion)' };
+                checkCooldown(characterId, route);
+                const headers = await headersFor(characterId);
                 if (cached?.etag) headers['If-None-Match'] = cached.etag;
                 else if (cached && JSON.parse(cached.headers)['last-modified']) headers['If-Modified-Since'] = JSON.parse(cached.headers)['last-modified'];
-                if (characterId) headers.Authorization = 'Bearer ' + await auth.access(characterId);
                 if (body) headers['Content-Type'] = 'application/json';
                 const fetchResponse = () => {
                     attempted = true; counters.requests++;
@@ -94,24 +127,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     headers.Authorization = 'Bearer ' + await auth.access(characterId, true);
                     response = await fetchResponse();
                 }
-                const now = Date.now(), retry = response.headers.get('retry-after');
-                const parsedRetry = retry ? (Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - now) : NaN;
-                const retryMs = Number.isFinite(parsedRetry) ? Math.max(1000, parsedRetry) : 60000;
-                const group = response.headers.get('x-ratelimit-group');
-                if (group) routeGroups.set(route, group);
-                const errRemain = response.headers.get('x-esi-error-limit-remain');
-                if (errRemain !== null && Number(errRemain) < 10) {
-                    errorUntil = now + Math.max(10000, Number(response.headers.get('x-esi-error-limit-reset') || 60) * 1000);
-                    saveLimits();
-                }
-                const rateRemain = response.headers.get('x-ratelimit-remaining');
-                if (response.status === 429 || response.status === 420 || rateRemain !== null && Number(rateRemain) < 10) {
-                    // Buckets belong to a route group and character (or public
-                    // IP). Unknown/legacy limits remain conservative.
-                    blocks.set(characterId + ':' + (group || '*'), now + Math.max(10000, retryMs));
-                    if (response.status === 420) errorUntil = now + Math.max(60000, retryMs);
-                    saveLimits();
-                }
+                const { now, retry, retryMs } = responseLimits(response, route, characterId);
                 if (!response.ok && response.status !== 304) {
                     const error = new Error(response.status === 403 ? 'ESI access denied. Check scopes and character access.' : response.status === 404 ? 'This ESI resource is unavailable for the character.' : response.status === 429 || response.status === 420 ? 'ESI rate limit reached; retry scheduled.' : 'ESI request failed (' + response.status + '). Retrying automatically.');
                     error.status = response.status;
@@ -164,31 +180,19 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         if (url.origin !== 'https://esi.evetech.net') throw new Error('Invalid ESI origin.');
         url.searchParams.sort();
         const pathname = url.pathname.replace(/\/$/, '') || '/', route = method + ':' + pathname.replace(/\/\d+(?=\/|$)/g, '/{id}');
-        const blockedUntil = () => Math.max(errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
         let release, attempted = false, response;
         try {
-            if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
+            checkCooldown(characterId, route);
             release = await slot(priority);
-            if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
-            const headers = { Accept: 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE,
-                'User-Agent': 'Kairo/0.8 (local EVE companion)', Authorization: 'Bearer ' + await auth.access(characterId) };
+            checkCooldown(characterId, route);
+            const headers = await headersFor(characterId);
             if (body !== undefined) headers['Content-Type'] = 'application/json';
             const send = () => { attempted = true; counters.requests++; return fetcher(url.href, { method, headers,
                 body: body === undefined ? undefined : JSON.stringify(body), redirect: 'error', signal: AbortSignal.timeout(15000) }); };
             response = await send();
             // An explicit 401 guarantees rejection; it is the only automatic command retry.
             if (response.status === 401) { headers.Authorization = 'Bearer ' + await auth.access(characterId, true); response = null; response = await send(); }
-            const now = Date.now(), retry = response.headers.get('retry-after');
-            const parsed = retry ? Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - now : NaN;
-            const retryMs = Number.isFinite(parsed) ? Math.max(1000, parsed) : 60000;
-            const group = response.headers.get('x-ratelimit-group'); if (group) routeGroups.set(route, group);
-            const errorsLeft = response.headers.get('x-esi-error-limit-remain'), remaining = response.headers.get('x-ratelimit-remaining');
-            if (errorsLeft !== null && Number(errorsLeft) < 10) errorUntil = now + Math.max(10000, Number(response.headers.get('x-esi-error-limit-reset') || 60) * 1000);
-            if ([420, 429].includes(response.status) || remaining !== null && Number(remaining) < 10) {
-                blocks.set(characterId + ':' + (group || '*'), now + Math.max(10000, retryMs));
-                if (response.status === 420) errorUntil = now + Math.max(60000, retryMs);
-            }
-            saveLimits();
+            const { now, retry, retryMs } = responseLimits(response, route, characterId);
             if (!response.ok) throw Object.assign(new Error(response.status === 403 ? 'ESI command denied. Check pilot scopes and access.' : 'ESI command failed (HTTP ' + response.status + ').'),
                 { status: response.status, ...(retry || [420, 429].includes(response.status) ? { retryAt: iso(now + retryMs) } : {}) });
             const raw = response.status === 204 || response.status === 205 ? '' : await response.text();
@@ -238,5 +242,21 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         // Explicit refresh / renewed SSO may fix access. Keep server cooldowns.
         store.db.prepare("DELETE FROM cache WHERE key LIKE ? AND json_extract(body,'$.status') IN (401,403) AND COALESCE(json_extract(body,'$.serverRetryAfter'),0)=0").run('esi-retry:' + characterId + ':%');
     }
-    return { request, mutate, paged, names, cachedNames, clearAccessFailures, health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters }) };
+    const closedError = () => new Error('ESI is shutting down.');
+    function own(operation, args) {
+        if (closing) return Promise.reject(closedError());
+        const task = operation(...args).finally(() => accepted.delete(task));
+        accepted.add(task);
+        return task;
+    }
+    // Only the public boundary stops admission. An accepted names/paged call
+    // keeps its private request chain alive until all cache writes complete.
+    return {
+        request: (...args) => own(request, args), mutate: (...args) => own(mutate, args),
+        paged: (...args) => own(paged, args), names: (...args) => own(names, args),
+        cachedNames(ids) { if (closing) throw closedError(); return cachedNames(ids); },
+        clearAccessFailures(id) { if (closing) throw closedError(); return clearAccessFailures(id); },
+        close() { return closing ||= Promise.allSettled([...accepted]).then(() => {}); },
+        health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters })
+    };
 }

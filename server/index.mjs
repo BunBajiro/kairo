@@ -11,9 +11,10 @@ import { openVault } from './vault.mjs';
 import { createAuth } from './auth.mjs';
 import { createESI } from './esi.mjs';
 import { createCore } from './core.mjs';
+import {sseEvent, sseConnected, writeSSE, closeSSE} from './sse.mjs';
 import { allScopes, catalog } from './modules/catalog.mjs';
 import {sanitizeConfig} from './stream.mjs';
-import {bindingProjection,toastContexts} from './projections.mjs';
+import {bindingProjections,toastContexts} from './projections.mjs';
 import {changeSession,sessionReport} from './history.mjs';
 import {sessionReplay} from './session-replay.mjs';
 import {getSystem,journeyData,savePlaceNote,setJourneyConnection} from './places.mjs';
@@ -37,11 +38,8 @@ export async function startKairo(options = {}) {
     const requests = new Set();
     const datasetRecovery = options.datasetRecovery || null;
     function announce(type, value) {
-        const event = `event: ${type}\ndata: ${JSON.stringify(value)}\n\n`;
-        for (const client of core.uiClients) {
-            if (client.destroyed || client.writableLength > 1000000) client.destroy();
-            else client.write(event);
-        }
+        const event = sseEvent(type, value);
+        for (const client of core.uiClients) if (!writeSSE(client, event)) core.uiClients.delete(client);
     }
     function cancelDatasetRestart(message) {
         applyingDataset = false; clearTimeout(restartTimer); restartTimer = null;
@@ -104,7 +102,7 @@ export async function startKairo(options = {}) {
                 return json(res, 403, { error: 'This change requires your Kairo session.' });
         }
         if (path === '/bootstrap' && read)
-            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.16', datasetRevision, datasetRecovery, vault: vault.kind, localOnly: true, pages: core.registry.pages() });
+            return json(res, 200, { csrf: s.csrf, configured: !!store.get('clientId', ''), clientId: store.get('clientId', ''), characters: auth.characters(), modules: core.moduleList(), settings: { opsec: store.get('opsec', { manual: false, allowHighsec: false, blueAlliances: [], hostileAlliances: [] }), theme: store.get('theme', 'mint') }, stream: core.stream.config(), streamOrigin, version: '0.8.0-rc.17', datasetRevision, datasetRecovery, vault: vault.kind, localOnly: true, pages: core.registry.pages() });
         if (path === '/datasets' && read) return json(res, 200, datasetStatus());
         if (path === '/datasets/check' && req.method === 'POST') {
             void datasets.check({install: false}).catch(() => {});
@@ -121,11 +119,11 @@ export async function startKairo(options = {}) {
         if (path === '/events' && read) {
             if (applyingDataset) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Applying a dataset update.'});}
             res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store', 'Connection': 'keep-alive' });
-            res.write(': connected\n\n');
-            res.write(`event: dataset-revision\ndata: ${JSON.stringify({revision: datasetRevision, recovery: datasetRecovery})}\n\n`);
-            res.write(`event: datasets\ndata: ${JSON.stringify(datasetStatus())}\n\n`);
             core.uiClients.add(res);
             res.on('close', () => core.uiClients.delete(res));
+            writeSSE(res, sseConnected);
+            writeSSE(res, sseEvent('dataset-revision', {revision: datasetRevision, recovery: datasetRecovery}));
+            writeSSE(res, sseEvent('datasets', datasetStatus()));
             return;
         }
         if (path === '/sync' && req.method === 'POST') {
@@ -197,9 +195,9 @@ export async function startKairo(options = {}) {
         }
         if (path === '/stream' && read)
             return json(res, 200, core.stream.config());
-        if(path==='/stream'&&req.method==='PUT'){const c=sanitizeConfig(await body(req));return json(res,200,core.stream.save(c,Object.fromEntries(c.elements.map(e=>[e.id,bindingProjection(store,auth,e)]))));}
+        if(path==='/stream'&&req.method==='PUT'){const c=sanitizeConfig(await body(req));return json(res,200,core.stream.save(c,bindingProjections(store,auth,c.elements)));}
         if(path==='/stream/sources'&&read)return json(res,200,{goals:store.db.prepare('SELECT id,character_id,title,progress,target,done FROM goals ORDER BY done,title').all(),contexts:toastContexts});
-        if(path==='/stream/preview'&&req.method==='POST'){const c=sanitizeConfig(await body(req));return json(res,200,Object.fromEntries(c.elements.map(e=>[e.id,bindingProjection(store,auth,e)])));}
+        if(path==='/stream/preview'&&req.method==='POST'){const c=sanitizeConfig(await body(req));return json(res,200,bindingProjections(store,auth,c.elements));}
         if(path==='/obs'&&read)return json(res,200,{config:core.obs.config(),status:core.obs.status()});
         if(path==='/obs'&&req.method==='PUT')return json(res,200,{status:await core.obs.save(await body(req)),config:core.obs.config()});
         if(path==='/obs/targets'&&read)return json(res,200,await core.obs.inventory());
@@ -242,13 +240,12 @@ export async function startKairo(options = {}) {
             if(req.method==='DELETE'){store.db.prepare('DELETE FROM place_notes WHERE kind=? AND entity_id=?').run(kind,id);return json(res,200,{ok:true});}}
         if(path==='/goals/sources'&&read)return json(res,200,goalSourceOptions(store,auth,checkedChar(url)));
         if(path==='/goals/type'&&req.method==='POST'){
-            const t=await lookupGoalType(store,esi,await body(req));Object.assign(core.names(),{[t.id]:t.name});return json(res,200,t);
+            const t=await lookupGoalType(store,esi,await body(req),core.rememberNames);return json(res,200,t);
         }
         if (path === '/goals' && read)
             return json(res, 200, listGoals(store,auth,checkedChar(url)));
         if (path === '/goals' && req.method === 'POST') {
-            const b=await body(req),characterId=checkedChar(url),verifiedType=b.typeId?await lookupGoalType(store,esi,{typeId:b.typeId}):undefined;
-            if(verifiedType)Object.assign(core.names(),{[verifiedType.id]:verifiedType.name});
+            const b=await body(req),characterId=checkedChar(url),verifiedType=b.typeId?await lookupGoalType(store,esi,{typeId:b.typeId},core.rememberNames):undefined;
             const result=core.goals.create(characterId,b,verifiedType);core.updateBindings();
             return json(res,201,result);
         }
@@ -312,6 +309,8 @@ export async function startKairo(options = {}) {
         }
         if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));
         if (path === '/universe/jspace' && read) return json(res, 200, core.universe.jspace.state(checkedChar(url)));
+        if (path === '/universe/jspace/summaries' && read) return json(res, 200, core.universe.jspace.summaries(checkedChar(url)));
+        if (path === '/universe/jspace/search' && read) return json(res, 200, core.universe.jspace.search(checkedChar(url), {kind:url.searchParams.get('kind') || undefined,q:url.searchParams.get('q')}));
         if (path === '/universe/jspace/tracking/active' && req.method === 'PUT') return json(res, 200, core.universe.jspace.setActivePilot((await body(req)).character_id));
         if (path === '/universe/jspace/scope-options' && read) return json(res, 200, core.universe.scopeOptions(checkedChar(url)));
         if (path === '/universe/jspace/owners/search' && read) return json(res, 200, await core.universe.searchOwners(checkedChar(url), {kind:url.searchParams.get('kind'),q:url.searchParams.get('q')}));
@@ -415,7 +414,7 @@ export async function startKairo(options = {}) {
         }
         if (path === '/export' && read) {
             res.setHeader('Content-Disposition', 'attachment; filename="kairo-history.json"');
-            return json(res, 200, { exportedAt: new Date().toISOString(), version:8,universe:core.universe.exportUserData(),allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),hiddenJourneyLinks:store.db.prepare('SELECT * FROM journey_hidden_links').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
+            return json(res, 200, { exportedAt: new Date().toISOString(), version:9,discoveredSystems:store.db.prepare('SELECT character_id,system_id FROM discovered_systems ORDER BY character_id,system_id').all(),universe:core.universe.exportUserData(),allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),hiddenJourneyLinks:store.db.prepare('SELECT * FROM journey_hidden_links').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
         }
         if (path.startsWith('/modules/') && read) {
             const m = core.registry.modules.find(m => m.id === path.split('/')[2]);
@@ -543,15 +542,17 @@ export async function startKairo(options = {}) {
         exportSessions: () => [...sessions].filter(([, value]) => value.expires > Date.now()),
         close() {
             if (closing) return closing;
-            stopping = true; clearTimeout(restartTimer);
+            stopping = true; clearTimeout(restartTimer); core.quiesce();
             closing = (async () => {
                 await datasets.close();
-                for (const client of core.uiClients) client.end();
+                const uiClosing = Promise.all([...core.uiClients].map(closeSSE));
                 core.uiClients.clear();
                 // Drain the handlers themselves, including writes whose client
                 // disconnected early, before collectors and SQLite are closed.
                 await Promise.allSettled([...requests]);
                 await core.close();
+                await uiClosing;
+                await esi.close();
                 dashboard.closeAllConnections(); broadcast.closeAllConnections();
                 await Promise.all([new Promise(r => dashboard.close(r)), new Promise(r => broadcast.close(r))]);
                 store.close();

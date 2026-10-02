@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {getUniverseStatic} from './universe-static.mjs';
-import {JUMP_SHIP_PRESETS,jumpRangeForShip,jumpReachability,alternateJumpMidpoints,estimateJumpFuel,wormholeShipRestriction} from './universe-routing.mjs';
+import {JUMP_SHIP_PRESETS,jumpRangeForShip,jumpReachability,createJumpPlanner,estimateJumpFuel,wormholeShipRestriction} from './universe-routing.mjs';
 import {parseAnsiblexImport} from './universe-ansiblex.mjs';
 
 export const WAYPOINT_SCOPE='esi-ui.write_waypoint.v1';
@@ -13,7 +13,7 @@ const PREFERENCES=['mode','useAnsiblex','useWormholes','maxAnsiblexZone','ansibl
 const BOOLS=new Set(['useAnsiblex','useWormholes','avoidHostile','highSecOnly','avoidLowsec','avoidNullsec','useThera','useTurnur','useZarzakh','allowUnknownWormholeSize']);
 
 /** Local itinerary state. Planning and observing never execute EVE commands. */
-export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic(),now=Date.now,planRoute,planJump,getOperations=null,getFeeds=()=>null,getRouteSystems=()=>atlas.systems,getMap=null,isConnectionCurrent=null,publish=()=>{},onChange=()=>{}}={}) {
+export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic(),now=Date.now,planRoute,planJump,preparePlan=null,getOperations=null,getFeeds=()=>null,getRouteSystems=()=>atlas.systems,getMap=null,isConnectionCurrent=null,publish=()=>{},onChange=()=>{}}={}) {
     const systems=atlas.systems,lookup=new Map(systems.map(s=>[s.system_id,s])),names=new Map(systems.map(s=>[s.name.toLowerCase(),s])),queues=new Map(),searches=new Map();
     let closed=false;
     const assertOpen=()=>{if(closed)throw new Error('Universe navigation is stopping.');};
@@ -102,6 +102,7 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         return saveItinerary(id,{map_id:mapId,stops:ids.map(s=>value.itinerary.stops.find(row=>row.id===s))});}
     function clearItinerary(characterId,mapId=null){const id=pilot(characterId),value=read(id,mapScope(id,mapId)),next=empty(mapId);next.itinerary.revision=value.itinerary.revision+1;next.itinerary.updatedAt=iso(now());return save(id,next);}
     function publicConnections(prefs){
+        if(!prefs.useThera&&!prefs.useTurnur)return {links:[],omitted:[]};
         const feeds=getFeeds()||{},links=[],omitted=[];
         for(const row of feeds.connections||[]){
             if(!['thera','turnur'].includes(row.source)||!prefs[row.source==='thera'?'useThera':'useTurnur'])continue;
@@ -130,25 +131,31 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         }
         if(!from||!pending.length){value.plan=failure(!from?'Choose an origin.':'Add an uncompleted destination.');save(id,value);return clone(value.plan);}
         const publicData=publicConnections(itinerary.preferences),prefs={...itinerary.preferences,useWormholes:itinerary.preferences.useWormholes===true||publicData.links.length>0};
+        const planningInput={map_id:mapId,kind:itinerary.kind,rangeLy:itinerary.rangeLy,preferences:prefs,extraConnections:publicData.links};
+        const prepared=typeof preparePlan==='function'?await preparePlan(id,planningInput):null;
+        const callback=prepared?.plan?(_id,leg)=>prepared.plan(leg):itinerary.kind==='jump'?planJump:planRoute;
+        if(typeof callback!=='function')throw new Error('Route planner is unavailable.');
+        let alternatePlanner;
+        const alternatives=endpoints=>prepared?.alternateMidpoints?prepared.alternateMidpoints(endpoints):(alternatePlanner||=createJumpPlanner({systems:prepared?.systems||getRouteSystems(id),rangeLy:itinerary.rangeLy,preferences:prefs})).alternateMidpoints(endpoints);
         const segments=[],systemIds=[from],edges=[],warnings=new Set(),excluded=[...publicData.omitted];let originId=from,cost=0;
         for(const [index,stop] of pending.entries()){
             assertOpen();
-            const callback=itinerary.kind==='jump'?planJump:planRoute;if(typeof callback!=='function')throw new Error('Route planner is unavailable.');
-            const result=await callback(id,{map_id:mapId,originId,destinationId:stop.systemId,rangeLy:itinerary.rangeLy,preferences:prefs,extraConnections:publicData.links});
+            const result=await callback(id,{...planningInput,originId,destinationId:stop.systemId});
             assertOpen();
             const segment={index,stopId:stop.id,fromSystemId:originId,toSystemId:stop.systemId,...result};segments.push(segment);
             for(const warning of result.warnings||[])warnings.add(warning);excluded.push(...result.excluded||[]);
             if(result.status!=='ok'){
                 const failed={...failure('No complete itinerary: '+(lookup.get(originId)?.name||originId)+' → '+stop.label+'. '+(result.explanation||'')),status:result.status,segments,failedSegment:index,warnings:[...warnings],excluded,revision,generatedAt:iso(now())};
-                if(read(id,mapId).itinerary.revision!==revision)throw Object.assign(new Error('Itinerary changed during calculation.'),{status:409});validatePlanConnections(id,mapId,failed);value.plan=failed;save(id,value);return clone(failed);
+                if(read(id,mapId).itinerary.revision!==revision)throw Object.assign(new Error('Itinerary changed during calculation.'),{status:409});prepared?.validate?.(failed);validatePlanConnections(id,mapId,failed);value.plan=failed;save(id,value);return clone(failed);
             }
             systemIds.push(...result.systemIds.slice(1));edges.push(...result.edges);cost+=result.cost||0;originId=stop.systemId;
         }
         const result={status:'ok',systemIds,edges,hops:edges.length,cost,segments,warnings:[...warnings],excluded,revision,generatedAt:iso(now()),
             totalDistanceLy:itinerary.kind==='jump'?edges.reduce((sum,e)=>sum+(e.distance_ly||0),0):null,explanation:'Ordered itinerary through '+pending.length+' remaining stops.',
-            alternateMidpoints:itinerary.kind==='jump'?segments.flatMap(segment=>segment.systemIds.slice(1,-1).map((mid,i)=>({segmentIndex:segment.index,stopId:segment.stopId,routeIndex:i+1,midpointSystemId:mid,fromSystemId:segment.systemIds[i],toSystemId:segment.systemIds[i+2],candidates:alternateJumpMidpoints({systems:getRouteSystems(id),originId:segment.systemIds[i],destinationId:segment.systemIds[i+2],rangeLy:itinerary.rangeLy,preferences:prefs}).filter(s=>s.systemId!==mid)}))):[]};
+            alternateMidpoints:itinerary.kind==='jump'?segments.flatMap(segment=>segment.systemIds.slice(1,-1).map((mid,i)=>({segmentIndex:segment.index,stopId:segment.stopId,routeIndex:i+1,midpointSystemId:mid,fromSystemId:segment.systemIds[i],toSystemId:segment.systemIds[i+2],candidates:alternatives({originId:segment.systemIds[i],destinationId:segment.systemIds[i+2]}).filter(s=>s.systemId!==mid)}))):[]};
         if(input.fuel&&itinerary.kind==='jump')result.fuel=estimateJumpFuel(edges,input.fuel);
         if(read(id,mapId).itinerary.revision!==revision)throw Object.assign(new Error('Itinerary changed during calculation.'),{status:409});
+        prepared?.validate?.(result);
         validatePlanConnections(id,mapId,result);
         value.plan=result;save(id,value);return clone(result);
     }

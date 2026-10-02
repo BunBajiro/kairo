@@ -9,6 +9,7 @@ const iso=at=>new Date(at).toISOString(),validId=id=>Number.isSafeInteger(id)&&i
 export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,onCheck=()=>{},fetcher=fetch,now=Date.now,spacingMs=200,maxItems=300,budgetMs=45000}={}){
  let pending=null,closed=false,lastRequest=0;
  const controller=new AbortController();
+ const deferred=(state,force)=>Date.parse(state.notBefore||'')>now()||(!force&&Date.parse(state.nextCheckAt||'')>now());
  async function read(path,active){
   const pause=spacingMs-(now()-lastRequest);
   if(pause>0)await delay(pause,undefined,{signal:controller.signal});
@@ -32,7 +33,7 @@ export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,on
  }
  async function run(targets,force){
   let state=store.get(key,{});
-  if(Date.parse(state.notBefore||'')>now()||(!force&&Date.parse(state.nextCheckAt||'')>now()))return;
+  if(deferred(state,force))return;
   const started=now(),deadline=Date.now()+budgetMs;
   const active=()=>!closed&&targets.some(isTargetActive);
   const save=patch=>{state={...state,...patch};store.set(key,state);};
@@ -66,6 +67,8 @@ export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,on
  function sync({force=false}={}){
   if(closed)return Promise.resolve();
   if(pending)return pending;
+  // Routes can span a long session. Build current targets only when work is due.
+  if(deferred(store.get(key,{}),force))return Promise.resolve();
   const targets=getTargets();if(!targets.length)return Promise.resolve();
   pending=run(targets,force).finally(()=>{pending=null;});return pending;
  }

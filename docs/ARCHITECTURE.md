@@ -17,7 +17,7 @@ flowchart TD
   OPSEC --> OBS["Local OBS WebSocket actions"]
 ```
 
-The local hot path never invokes AI. SQLite is the source of truth for local history/configuration. Browser storage holds only a character preference and the stream renderer's already-sanitized layout for reconnect recovery.
+The local hot path never invokes AI. SQLite is the source of truth for local history/configuration. Browser storage holds display/workspace preferences, including pilot-specific Mapper choices and map-specific display groups, plus the stream renderer's already-sanitized layout for reconnect recovery. Tokens and authoritative map records stay in the backend.
 
 ## Source map
 
@@ -40,11 +40,15 @@ The local hot path never invokes AI. SQLite is the source of truth for local his
 | `server/goals.mjs` | Automatic goal sources, freshness checks, type resolution and durable progress accounting |
 | `server/registry.mjs` | Dynamic local module registration and lifecycle |
 | `server/modules/catalog.mjs` | Built-in ESI datasets, scopes and collection intervals |
-| `server/modules/journey.mjs` | Location/ship observations into history |
+| `server/universe-history.mjs` | Fresh location/ship observations into independent activity, discovery and Session services |
+| `server/discovery.mjs` | Per-pilot discovered-system membership without a lifetime movement log |
+| `server/session-travel.mjs` | Session-owned movement capture and bounded reads with legacy compatibility |
 | `server/modules/milestones.mjs` | Skill/job state transitions into milestone events |
-| `server/projections.mjs` | Record-specific widget projections and typed toast context |
+| `server/projections.mjs` | Record-specific widget projections, shared per-update inputs and typed toast context |
 | `server/history.mjs` | Named sessions, sample capture, event boundaries and report aggregation |
-| `server/places.mjs` | Universe coordinates, journey ledger and private entity annotations |
+| `server/places.mjs` | Universe coordinates, cold legacy Journey adapters and private entity annotations |
+| `server/universe-jspace.mjs` | Private Maps commands, compact library summaries and selected-map projection |
+| `server/sse.mjs` | Shared ordered event writes, backpressure and bounded slow-client shutdown |
 | `server/obs.mjs` | OBS v5 authentication, local connection, inventory and state action execution |
 | `server/opsec.mjs` | Space classification, source precedence and bounded continuity |
 | `public/stream/protection.js` | Shared state keys, labels and legacy OBS rule normalization |
@@ -54,7 +58,7 @@ The local hot path never invokes AI. SQLite is the source of truth for local his
 
 ## Event contract
 
-Data updates publish `{type: 'data.<dataset>', characterId, payload: {current, previous}}`. Only fresh successful data emits these events. Modules publish semantic events through `ctx.publish()`; core persists them once when a deduplication key is supplied and fans them out to subscribers.
+Data updates publish `{type: 'data.<dataset>', characterId, payload: {current, previous}}`; fresh location/ship events also carry an internal receipt-time observation for Session ownership. Only fresh successful data emits these events. Modules publish semantic events through `ctx.publish()`; core persists them once when a deduplication key is supplied and fans them out to subscribers.
 
 A module observes data through the shared service rather than adding its own ESI client. Semantic events are deliberately separate from stream notifications. Saved toast templates may interpolate only event-specific allowlisted display fields in `server/projections.mjs`. Raw payloads and credentials never enter stream output. Location tokens are evaluated against the current OPSEC state, including delayed and active toasts. Literal existing templates remain valid.
 
@@ -94,7 +98,7 @@ export default {
 
 The registry versions module migrations, provides namespaced key/value helpers, tracks subscriptions and calls cleanup on disable/shutdown. Enabled module pages appear automatically under Extensions and are served through the private API. Module files are trusted local code: do not install code you do not trust.
 
-The example should add its own tables and page without editing Journey or other unrelated modules. New built-in data collectors can be added to the dataset catalog using the shared request service. New bespoke visual widgets or new types of public stream projection require a deliberate UI/output extension; this release does not execute arbitrary module HTML in OBS.
+The example should add its own tables and page without editing Session travel or other unrelated modules. New built-in data collectors can be added to the dataset catalog using the shared request service. New bespoke visual widgets or new types of public stream projection require a deliberate UI/output extension; this release does not execute arbitrary module HTML in OBS.
 
 ## API groups
 
@@ -106,8 +110,9 @@ All dashboard API routes require a local session established by opening `/`. Sta
 - `/api/timeline`, `/api/journey`, `/api/journey/enrich`, `/api/session`, `/api/sessions`, `/api/sessions/<id>`, `/api/export`
 - `/api/markets`, `/api/markets/hubs`, `/api/markets/defaults`, `/api/markets/discover`, `/api/markets/scan`, `/api/markets/cancel`, `/api/markets/quick`, `/api/markets/browse`, `/api/markets/item`, `/api/markets/report`, `/api/markets/type`
 - `/api/goals`, `/api/goals/sources`, `/api/goals/type`, `/api/notes`, item routes for update/delete
-- `/api/journey/connections/<to-visit-id>?character=<id>` for reversible map visibility
+- `/api/journey/connections/<to-visit-id>?character=<id>` for legacy-only visibility compatibility
 - `/api/universe/search`, `/api/universe/route`, `/api/places`, `/api/places/<kind>/<id>`
+- `/api/universe/jspace`, `/api/universe/jspace/summaries`, `/api/universe/jspace/search`, `/api/universe/jspace/maps/<id>`
 - `/api/stream`, `/api/stream/sources`, `/api/stream/preview`, `/api/stream/test`, `/api/opsec`
 - `/api/obs`, `/api/obs/targets`, `/api/obs/filters`, `/api/obs/reconnect`, `/api/obs/apply`
 - `/api/modules/<module-id>` for dynamically registered private module pages
@@ -119,6 +124,24 @@ The stream origin implements only `GET /state`, `GET /events`, the renderer rout
 The UI is a dense instrument workspace with rectangular surfaces, restrained accents and consistent studio/toast styling. ESI loading never blocks navigating to another module. Explicit waiting, missing-scope, disabled, error and stale states prevent absent data being confused with live zero values. Dashboard chart points come from real wallet journal entries.
 
 The frontend is statically exported and served by Node, avoiding a dependency install for the end user's runtime. Core, storage, OAuth and SSE use Node built-ins. Frontend source building retains the established lockfile/toolchain and optional scaffold files, but its Worker artifacts are not used by the local launcher.
+
+## Current ownership and execution
+
+The optimisation/refactoring checkpoint covers Kairo's existing services as well as the Universe sprint. These are in-process boundaries over the existing SQLite store, shared ESI service and event bus; modules do not introduce independent collectors for data already owned by another service.
+
+**Travel, discovery and activity.** `discovered_systems` stores unique `(character_id, system_id)` membership and is seeded once from retained visits. Universe reads this membership directly; its ordinary state/detail/planning paths do not aggregate the lifetime visit ledger. Sessions own new movement rows through `visits.session_id`. Core captures the local fresh-response receipt time, active Session, ship and available sovereignty before asynchronous display enrichment, so a delayed name lookup cannot attach an observation to a later Session. No active Session means no new movement row. Session reports and replay use bounded indexed reads and retain old rows with no explicit Session owner. General `location.changed`/`ship.changed` activity, `/api/timeline` and approved OBS notifications remain independent.
+
+The standalone Journey page, lifetime counters, footprint preset and visit overlay are retired. `places.mjs` keeps `/api/journey`, enrichment and hidden-link operations as cold compatibility APIs over legacy rows only; new Session-owned rows cannot enter that connection-pruning contract. Old evidence and exports remain available. Saved Universe views normalize only the retired top-level `indicator: 'visits'` to `none`, preserving other configuration keys.
+
+**Maps.** A request-scoped read context reconciles canonical expiry once, shares operational inputs, scopes selected-map link bodies in SQLite and batches full-library reads. Reverse signature bindings are built in one edge pass. Compact summaries and search avoid projecting every map's operational payload; the selected detail API supplies the opened map. The compatible full-state endpoint remains available. The frontend coalesces overlapping invalidations into one active refresh and one retained refresh, with pilot/map ownership checks before applying results. These contexts end with the request rather than caching mutable records across requests.
+
+Mapper display projection leaves canonical nodes, coordinates, edges, route access and expiry untouched. It uses bounded saved membership lists, keeps real boundary/anchor/protected systems, and omits collapsed interior nodes from the DOM. Camera frames update imperative surfaces; optional focus detail changes only after movement settles, using inner/outer bounds to avoid edge flicker. Node bounds, connection ports, hit testing and framing all use the displayed scale.
+
+**Shared preparation.** Route planning prepares relevant pilot evidence and a gate graph or jump index once per request/itinerary, reusing it across legs and alternate-midpoint queries. Before accepting a plan, it checks relevant evidence, itinerary revision and used connection state again. Widget bindings share one update-local set of snapshots, settings, names, goal and Session queries while retaining record ownership and freshness rules; identical binding output does not rebroadcast unchanged state. Goals share source preparation within a refresh, preserve per-goal cutoffs and durable accounting, and publish completion only after successful SQL release. Asset enrichment resolves shared containment paths once per batch; repeated identical combat evidence does not rewrite its ledger.
+
+**Lifecycle and transport.** Shutdown first stops new admission and scheduled work, then awaits accepted HTTP handlers (including clients that already disconnected), dataset enrichment, collectors and semantic subscribers before closing their dependencies. The bus tracks promise-returning listeners and drains work they enqueue to a fixed point; module cleanup is awaited. Failures remain visible and prevent a successful managed handoff. Market decoding owns the worker until its exit, including cancellation. ESI retains the shared four-slot limiter, caching, deduplication, priority, pagination and cooldown rules. Closing ESI rejects new callers while draining already accepted request chains; read retry policy does not replay commands after an uncertain failure.
+
+Dashboard and OBS event streams use `sse.mjs`: each encoded frame is shared across the audience, written in bounded chunks and resumed on `drain` without interleaving event bytes. A single large snapshot can finish; bytes/frames queued behind it and stalled writes remain bounded. Heartbeats do not build up behind data. If an OBS transition engages protection while older traffic is blocked, that client is disconnected so its renderer fails closed. Stream close removes subscriptions/timers and awaits pending output within the stall deadline.
 
 ## Version 0.2 storage and execution
 
@@ -146,7 +169,7 @@ Combat uses ESI’s paginated character references plus the read-only public zKi
 
 The durable `(character_id,killmail_id)` ledger and matching semantic-event dedupe keys unify both feeds, without a rolling-snapshot limit on historical sessions. Collection verifies at most 100 unseen details per pass and resumes a backlog from cached references. Public pagination stops at 90 days or the documented 100-page limit; incomplete coverage remains explicit. Initial history emits no stream toasts. Occurrence timestamps assign late kills to archived sessions; kill windows are half-open at the end so an exact boundary does not double-credit adjacent sessions.
 
-Journey connections are derived from consecutive visits for the same character, including equal-timestamp ID ordering. Hidden rows identify the exact from/to visit pair. Hiding never deletes visits or reconnects the surrounding points. Edits validate both ownership and adjacency on the server; the map exposes line selection and a keyboard-accessible per-system link list.
+In the legacy Journey implementation, connections were derived from consecutive visits for the same character, including equal-timestamp ID ordering. Hidden rows identify the exact from/to visit pair. Hiding never deletes visits or reconnects the surrounding points. Edits validate both ownership and adjacency on the server; the old map exposed line selection and a keyboard-accessible per-system link list. These APIs now apply only to retained legacy rows.
 
 Automatic goals are selected independently from manual goals through `goal_tracking`. Relevant successful snapshot updates, public combat arrivals and goal creation refresh progress. Unrelated telemetry does not repeatedly evaluate every goal. Skills may use fresh completed queue entries; wallet/assets read current values. Income and industry use stable record IDs; mining uses per-date/system/type high-water observations after an initial baseline. Per-record credits survive rolling-window expiry and restarts. Partial public coverage can still advance a goal from verified kills. Completion is latched once, sends the existing semantic completion event, and updates existing Studio projections. Refresh-only progress changes do not flood the timeline. Neither private source metadata nor accounting ledgers enter OBS output.
 
@@ -162,7 +185,7 @@ Books commit before slow history enrichment. A Jita comparison failure cannot ro
 
 History summaries retain their own UTC 30-day window, volume-weighted prices, zero-volume missing days and reporting coverage. Reports use indexed SQL joins/aggregates rather than materializing every historical series in React. Browsing returns at most 60 items, reports 40, and detail books 40 orders per request. Searches/sorts are parameterized or allowlisted. The report’s supply ratio uses regional demand; it never invents station-level sales or treats absent Jita prices as zero.
 
-Studio’s `goal` kind is a dedicated goal-binding template. The all-character picker saves the selected record’s exact owner; the projection continues to reject wrong-owner IDs. Shared widget styles now match toast typography, gradient and slim accent rail. Background alpha is applied once, blank/minimal fillers retain their adjustable flat surface, and OPSEC remains opaque without entrance transitions. Journey uses a bounded grid shortlist and searchable region directory; every containing layout permits children to shrink.
+Studio’s `goal` kind is a dedicated goal-binding template. The all-character picker saves the selected record’s exact owner; the projection continues to reject wrong-owner IDs. Shared widget styles now match toast typography, gradient and slim accent rail. Background alpha is applied once, blank/minimal fillers retain their adjustable flat surface, and OPSEC remains opaque without entrance transitions. The former Journey view used a bounded grid shortlist and searchable region directory; every containing layout permits children to shrink.
 
 ## Version 0.5.1 category browser
 

@@ -40,6 +40,20 @@ test('ordinary reconnect refreshes a changed revision once even when the restart
     assert.deepEqual(refreshed, [tuple(2)]); assert.deepEqual(completed, [tuple(2)]);
 });
 
+test('ordinary reconnect restores missed data once even when the dataset revision is unchanged', async () => {
+    const work = deferred(); let requests = 0, applied = 0;
+    const { connection: c, completed } = fixture({ refresh: async (_, isCurrent) => { requests++; await work.promise; if (isCurrent()) applied++; } });
+    c.connect(); await c.revision({ revision: tuple(1) });
+    assert.equal(requests, 0, 'Initial connection uses the existing bootstrap/state load');
+    c.disconnect(); c.connect();
+    const first = c.revision({ revision: tuple(1) });
+    await c.revision({ revision: tuple(1) });
+    assert.equal(requests, 1, 'Repeated revision messages share an in-flight recovery');
+    work.resolve(); await first; await c.revision({ revision: tuple(1) });
+    assert.equal(requests, 1); assert.equal(applied, 1); assert.equal(c.state.phase, 'idle');
+    assert.deepEqual(completed, [], 'An ordinary reconnect does not announce a dataset update');
+});
+
 test('a cancelled restart invalidates in-flight refresh and never presents success', async () => {
     const work = deferred(); let applied = false;
     const { connection: c, completed } = fixture({ refresh: async (_, isCurrent) => { await work.promise; if (isCurrent()) applied = true; } });
