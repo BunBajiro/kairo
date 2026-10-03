@@ -50,13 +50,15 @@ its numbers never inherit the earlier fingerprint.
 | Earlier RC16 versus candidate mixed workload | Same recorded settings/runtime/CPU descriptors, but 30 September versus 2 October | Directional comparison with the date/host-state limitation retained |
 | New three-version GitHub checkpoint | 0.7.3/RC16/RC16/0.7.3, then RC16/RC17/RC17/RC16, in one sequential job | Pending: two adjacent balanced families with repeated RC16 anchors; not one interleaved three-way experiment |
 
-The new GitHub job builds all three versions, records source/build identities,
-retains the unchanged corrected historical harness, then runs the candidate
-comparison. A common host and runtime tighten the three-version comparison, but
-the two families still have their own order and samples. RC16 appears in both as
-an anchor for drift/context; results are not pooled or multiplied into chained
-speedup claims. Features absent from 0.7.3, such as the new Maps workspace, have
-no invented 0.7.3 zero-cost measurement.
+The new GitHub job compares exactly **three versions: 0.7.3, RC16 and internal
+RC17**. There is one RC16 source version, at the SHA above. It is measured once
+alongside 0.7.3 and again alongside RC17 so changes in runner conditions are
+visible. The later table therefore keeps “RC16 (0.7.3 comparison)” and “RC16
+(RC17 comparison)” as separate measurements of that same code, not extra builds.
+All three versions are built and verified on the same host/runtime. Each pair
+retains its own balanced order and samples; results are not pooled or multiplied
+into chained speedup claims. Features absent from 0.7.3, such as the new Maps
+workspace, have no invented 0.7.3 zero-cost measurement.
 
 ## Measurement controls and corrections
 

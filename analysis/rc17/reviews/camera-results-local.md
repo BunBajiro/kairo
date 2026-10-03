@@ -105,7 +105,7 @@ GPU frame-rate estimates. The two repetitions retain their exact samples in
 | 600 | Pan | 100.1–116.6 | 33.4–50.0 |
 
 The candidate substantially improves dense-map pan intervals. Its two 600-node
-pan runs had 3 and 7 intervals over 33 ms, compared with 26 and 27 for RC16.
+pan runs had 3 and 7 intervals over 33.4 ms, compared with 26 and 27 for RC16.
 However, the candidate's maximum pan intervals were still 116.6 and 133.2 ms;
 zoom maxima were 149.9 and 166.7 ms. This case remains visibly stall-prone under
 the measured software renderer. At 100 nodes, lower main-thread work did not

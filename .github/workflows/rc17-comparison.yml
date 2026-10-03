@@ -16,6 +16,10 @@ on:
         options: [all, maps, routes, backend, legacy-backend, memory, mixed, restart, browser, browser-performance]
         default: all
         required: true
+      accepted_full_run:
+        description: 'Optional retained full-run ID for the guarded browser cleanup rerun'
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -40,6 +44,7 @@ jobs:
         env:
           CANDIDATE_SHA: ${{ inputs.candidate_sha }}
           REQUEST_SUITE: ${{ inputs.suite }}
+          ACCEPTED_FULL_RUN: ${{ inputs.accepted_full_run }}
         run: |
           python3 - <<'PY'
           import json, os, re
@@ -47,13 +52,16 @@ jobs:
           if os.environ['GITHUB_EVENT_NAME'] == 'push':
               request = json.loads(Path('analysis/rc17/candidate-source.json').read_text())
               sha, suite = request['candidateCommit'], request.get('suite', 'all')
+              prior = str(request.get('acceptedFullRun', ''))
           else:
               sha, suite = os.environ['CANDIDATE_SHA'], os.environ['REQUEST_SUITE']
+              prior = os.environ.get('ACCEPTED_FULL_RUN', '')
           assert re.fullmatch('[0-9a-f]{40}', sha), 'Candidate must be a full lowercase commit SHA'
           assert suite in ['all', 'maps', 'routes', 'backend', 'legacy-backend', 'memory', 'mixed', 'restart', 'browser', 'browser-performance']
           assert sha != '57c8dcc7fbd8fc2b62129498d1819050c78381a1', 'Candidate must differ from RC16'
+          assert not prior or (prior.isdigit() and suite == 'browser'), 'Retained full-run acceptance is only for a focused browser rerun'
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
-              out.write(f'candidate_sha={sha}\nsuite={suite}\n')
+              out.write(f'candidate_sha={sha}\nsuite={suite}\naccepted_full_run={prior}\n')
           print(json.dumps({'candidateCommit':sha, 'suite':suite}))
           PY
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -83,6 +91,7 @@ jobs:
         env:
           CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
           REQUEST_SUITE: ${{ steps.request.outputs.suite }}
+          ACCEPTED_FULL_RUN: ${{ steps.request.outputs.accepted_full_run }}
         run: |
           python3 - <<'PY'
           import datetime, hashlib, json, os, platform, shutil
@@ -100,6 +109,7 @@ jobs:
               'historical073Commit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',
               'candidateCommit': os.environ['CANDIDATE_SHA'],
               'suite': os.environ['REQUEST_SUITE'], 'platform': platform.platform(),
+              'acceptedFullRun': int(os.environ['ACCEPTED_FULL_RUN']) if os.environ.get('ACCEPTED_FULL_RUN') else None,
               'harnessSha256': harness,
               'note': 'External harnesses only. Sequential measured lanes. Per-lane completeness and overall Actions conclusion remain authoritative; missing outputs are not passes.'
           }, indent=2) + '\n')
@@ -225,6 +235,14 @@ jobs:
           if [ -f analysis/rc17/raw/github/v073-source.json ]; then
             node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/v073-source.json
           fi
+      - name: Verify combined acceptance after a focused browser correction
+        id: combined
+        if: ${{ always() && !cancelled() && steps.request.outputs.accepted_full_run != '' && steps.sources.outcome == 'success' && steps.correctness.outcome == 'success' && steps.browser.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          KAIRO_WORKFLOW_STEPS: ${{ toJSON(steps) }}
+          ACCEPTED_FULL_RUN: ${{ steps.request.outputs.accepted_full_run }}
+        run: python3 analysis/rc17/accept-focused.py "analysis/rc17/raw/github-run-$ACCEPTED_FULL_RUN" analysis/rc17/raw/github --prior-run "$ACCEPTED_FULL_RUN"
       - name: Assemble the internal runtime, harnesses and comparison record
         id: bundle
         if: ${{ always() && !cancelled() && steps.sources.outcome == 'success' }}

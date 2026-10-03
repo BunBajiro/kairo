@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-10-02T23:57:36.420Z",
+  "repository": "BunBajiro/kairo",
+  "runId": 37078241973,
+  "jobId": 111072814378,
+  "runUrl": "https://github.com/BunBajiro/kairo/actions/runs/37078241973",
+  "harnessCommit": "82394c58d0a7d8987877835b693f31f09c3c0d7f",
+  "candidateCommit": "05d0d4b36c154329006d6772769063db874762da",
+  "runConclusion": "failure",
+  "artifacts": [
+    {
+      "id": 11257938559,
+      "name": "internal-rc17-comparison-evidence",
+      "bytes": 2767519,
+      "sha256": "8ff4be58d46fa5ddb1af7e322ec9ff98041afcfc83626703c6d561cd0df681e9",
+      "digestVerified": true
+    },
+    {
+      "id": 11257683807,
+      "name": "internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da",
+      "bytes": 31260357,
+      "sha256": "6249d8671682e19f886a760c1be33661a8558d5499bedf78edd7609bb8e94cee",
+      "digestVerified": true
+    }
+  ],
+  "innerBundle": {
+    "file": "internal-rc17-05d0d4b36c15.tar.gz",
+    "bytes": 31304178,
+    "sha256": "bf398719a9f423530344588977cddc4731b919c123c10d9cf971e348e2ece998",
+    "filesVerified": 1201,
+    "rawEvidenceMatches": true,
+    "harnessFilesVerified": 34,
+    "candidateSourceFilesVerified": 439,
+    "candidateBuildFilesVerified": 20,
+    "allComparisonLanesPassed": false
+  },
+  "failure": {
+    "step": "Check compiled Mapper preferences and geometry",
+    "errorCode": "ENOTEMPTY",
+    "phase": "Chrome-profile cleanup",
+    "observedChecks": 17,
+    "browserErrors": 0,
+    "externalRequests": 0,
+    "interpretation": "Feature assertions recorded, but lane exit failed during cleanup. The run remains failed; a focused independently successful cleanup/feature rerun is required."
+  },
+  "note": "ZIP and tar paths are local retrieval details and not publisher signatures. No temporary download URL is retained. Individual lane acceptance remains separate from the failed overall workflow."
+}

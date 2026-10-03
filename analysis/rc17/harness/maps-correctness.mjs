@@ -13,10 +13,19 @@ const {startKairo}=await import(pathToFileURL(join(repo,'server/index.mjs')));
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/chromium'].find(existsSync);
 assert.ok(chrome,'Chrome is required');
 const dir=await mkdtemp(join(tmpdir(),'kairo-map-correctness-')),output=resolve(process.env.KAIRO_BROWSER_OUTPUT||'analysis/rc17/raw/maps-correctness');await mkdir(output,{recursive:true});
-let app,proc,ws,sequence=0;const pending=new Map(),errors=[],external=[],checks=[],requests=[];
+let app,proc,browserClosed,ws,failure,sequence=0;const pending=new Map(),errors=[],external=[],checks=[],requests=[];
 const source=await captureSource(repo);await writeFile(join(output,'source-manifest.json'),JSON.stringify(source,null,2));
-const result={startedAt:new Date().toISOString(),repo,sourceCommit:source.sourceCommit,sourceFingerprint:source.fingerprint,sourceDirty:source.dirty,checks,errors,external,requests};
+const result={startedAt:new Date().toISOString(),repo,sourceCommit:source.sourceCommit,sourceFingerprint:source.fingerprint,sourceDirty:source.dirty,featureChecksComplete:false,complete:false,checks,errors,external,requests};
 const denyExternal=async url=>{external.push(String(url));throw new Error('No external traffic allowed');};
+async function stopBrowser(){
+ if(!proc)return {started:false,closed:true};
+ const stopped=()=>Promise.race([browserClosed,delay(2000,null,{ref:false})]);
+ if(proc.pid&&proc.exitCode===null&&proc.signalCode===null)proc.kill('SIGTERM');
+ let exit=await stopped();if(exit)return {...exit,closed:true};
+ if(proc.pid&&proc.exitCode===null&&proc.signalCode===null)proc.kill('SIGKILL');
+ exit=await stopped();assert.ok(exit,'Chrome did not close; temporary profile retained');
+ return {...exit,closed:true};
+}
 function call(method,params={},sessionId){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params,...(sessionId?{sessionId}:{})}));});}
 async function evaluate(expression){let r;try{r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});}catch(error){throw new Error(error.message+'; expression: '+expression.slice(0,500));}if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+': '+r.exceptionDetails.exception?.description);return r.result.value;}
 async function waitFor(expression){for(let i=0;i<300;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Condition not met: '+expression);}
@@ -69,6 +78,7 @@ try{
  for(let i=0;i<7;i++)command({op:'connection.save',connection:{from_system_id:ids[i],to_system_id:ids[i+1],kind:'wormhole',confirmed:true,accessible:true,duration_hours:24}});
  const canonical=structuredClone(map),other=maps.create(43,{name:'Other pilot map'});
  proc=spawn(chrome,['--headless','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--no-first-run','--remote-debugging-port=0','--user-data-dir='+join(dir,'chrome'),'about:blank'],{stdio:['ignore','ignore','pipe']});
+ browserClosed=new Promise(resolve=>proc.once('close',(code,signal)=>resolve({started:true,code,signal})));
  const browserURL=await new Promise((resolve,reject)=>{let log='';const timer=setTimeout(()=>reject(new Error('Chrome did not start: '+log.slice(-500))),20000);proc.stderr.on('data',b=>{log+=b;const m=log.match(/DevTools listening on (ws:\/\/[^\s]+)/);if(m){clearTimeout(timer);resolve(m[1]);}});proc.on('error',reject);});
  const target=await(await fetch('http://'+new URL(browserURL).host+'/json/new?about:blank',{method:'PUT'})).json();ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
  ws.addEventListener('message',event=>{const message=JSON.parse(event.data);if(message.id){const p=pending.get(message.id);pending.delete(message.id);message.error?p?.reject(new Error(JSON.stringify(message.error))):p?.resolve(message.result);}else if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails.exception?.description||message.params.exceptionDetails.text);else if(message.method==='Network.requestWillBeSent'&&(message.params.request.url.includes('/api/universe/jspace')||message.params.request.url.includes('/api/state?')))requests.push(message.params.request.url);});
@@ -137,6 +147,17 @@ try{
  // Controlled extension payloads exercise the Dashboard response ownership guard
  // without adding a test module or test-only endpoint to the application.
  await evaluate(`(()=>{const native=window.fetch;let release;const gate=new Promise(resolve=>release=resolve);window.__releaseExtension=release;window.__extension42=false;window.__restoreExtension=()=>window.fetch=native;window.fetch=async function(input,init){const url=String(input);if(url.includes('/modules/checkpoint?')){const pilot=new URL(url,location.origin).searchParams.get('character');if(pilot==='42'){window.__extension42=true;await gate;}return new Response(JSON.stringify({title:'Extension pilot '+pilot,columns:[{key:'value',label:'Value'}],rows:[{id:1,value:'Payload pilot '+pilot}]}),{status:200,headers:{'Content-Type':'application/json'}});}return native.call(this,input,init);};location.hash='module:checkpoint';})()`);await waitFor("document.body.innerText.includes('Payload pilot 43')");await pilot(42);await waitFor('window.__extension42');assert.equal(await evaluate("document.body.innerText.includes('Payload pilot 43')"),false,'Prior pilot extension rows are hidden immediately');await pilot(43);await waitFor("document.body.innerText.includes('Payload pilot 43')");await evaluate('window.__releaseExtension()');await delay(150);assert.equal(await evaluate("document.body.innerText.includes('Payload pilot 42')"),false);await evaluate('window.__restoreExtension()');checks.push('Extension page hides old-pilot rows while loading and ignores a delayed superseded response');
- assert.deepEqual(errors,[]);assert.deepEqual(external,[]);await verifySource(source);result.sourceVerified=true;result.complete=true;
-}catch(error){result.failure=error.stack;try{await screen('failure');result.pageText=await evaluate('document.body.innerText');}catch{}throw error;}
-finally{result.endedAt=new Date().toISOString();await writeFile(join(output,'result.json'),JSON.stringify(result,null,2));if(ws?.readyState===1)ws.close();proc?.kill('SIGKILL');await app?.close();await rm(dir,{recursive:true,force:true});console.log(JSON.stringify({complete:result.complete,checks,failure:result.failure,output},null,2));}
+ assert.deepEqual(errors,[]);assert.deepEqual(external,[]);await verifySource(source);result.sourceVerified=true;result.featureChecksComplete=true;
+}catch(error){failure=error;result.failure=error.stack;try{await screen('failure');result.pageText=await evaluate('document.body.innerText');}catch{}}
+finally{
+ if(ws?.readyState===1)ws.close();
+ try{
+  // Chrome owns the profile until its process and stdio have closed. Retain the
+  // directory on a bounded shutdown failure rather than racing its writes.
+  try{result.browserExit=await stopBrowser();}finally{await app?.close();}
+  await rm(dir,{recursive:true,force:true,maxRetries:5,retryDelay:100});
+  result.cleanupVerified=true;result.complete=result.featureChecksComplete;
+ }catch(error){result.cleanupFailure=error.stack;failure??=error;}
+ finally{result.endedAt=new Date().toISOString();await writeFile(join(output,'result.json'),JSON.stringify(result,null,2));console.log(JSON.stringify({complete:result.complete,featureChecksComplete:result.featureChecksComplete,cleanupVerified:result.cleanupVerified,browserExit:result.browserExit,checks,failure:result.failure,cleanupFailure:result.cleanupFailure,output},null,2));}
+}
+if(failure)throw failure;

@@ -115,6 +115,16 @@ def main():
         'reproduction': 'Use the included workflow at harnessCommit with candidateCommit. The source archive has no Git database; exact source-manifest benchmark reproduction requires clean Git checkouts at the pinned commits.',
     }
     (metadata / 'bundle.json').write_text(json.dumps(info, indent=2) + '\n')
+    combined_path = args.candidate_manifest.parent / 'combined-acceptance.json'
+    if combined_path.exists():
+        combined = json.loads(combined_path.read_text())
+        assert combined['checkpointAcceptancePassed'] is True
+        assert combined['candidateCommit'] == candidate['sourceCommit']
+        assert str(combined['focusedBrowserRun']['id']) == os.environ.get('GITHUB_RUN_ID')
+        assert steps.get('combined', {}).get('outcome') == 'success'
+        info['combinedCheckpointAcceptance'] = combined
+        (metadata / 'bundle.json').write_text(json.dumps(info, indent=2) + '\n')
+        copy_file(combined_path, metadata / 'combined-acceptance.json')
     legacy_manifest = args.candidate_manifest.parent / 'v073-source.json'
     if legacy_manifest.exists():
         copy_file(legacy_manifest, metadata / 'v073-source.json')
@@ -151,6 +161,11 @@ it. This bundle is not an end-user release or an approval to merge.
   benchmark source verification deliberately requires real Git provenance.
 - `metadata/` retains source/build manifests and each observed workflow step
   outcome. A partial or failed run is useful evidence, not a passing checkpoint.
+  If `combined-acceptance.json` is present, it separately records acceptance of
+  unchanged measurements from the failed full run and the successful corrected
+  browser gate. It verifies identical source and compiled assets, all retained
+  artifact bytes and unchanged measurement harnesses. The original full-run
+  failure and focused run's `allComparisonLanesPassed: false` remain intact.
 
 Run `python3 verify-bundle.py` before use to check every bundled file. The
 SHA-256 inventory authenticates byte consistency, not a publisher signature.

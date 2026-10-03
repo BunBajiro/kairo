@@ -35,7 +35,7 @@ constitute a successful benchmark run.
 | Maps diagnostics, then RC16/candidate/candidate/RC16 timings | Same populated maps, dense signatures, selected-map semantics, revisions and access flags. Timing runs remain uninstrumented. Candidate-only summaries are separately labelled; RC16 absence is explicit. Diagnostic SQL body counts must not be treated as latency measurements. |
 | Isolated route ABBA | Same 1/10/50-stop itineraries, corrected stress fixture and fixed clock. Complete route-result semantic digests must match; logical preparation counts are collected in separate diagnostic children. |
 | Corrected backend ABBA | Same typical/stress workload, real scheduler, valid cached storms object, idle residency/CPU, startup, authenticated state HTTP, Sessions and market. Both frontends must be built. Each application receives the same fixture and retains real Universe tick assertions. |
-| Historical corrected backend ABBA in the same job | Unchanged 0.7.3/RC16/RC16/0.7.3 corrected harness, followed by RC16/candidate/candidate/RC16. All three builds share the job's runtime/host. RC16 is a repeated anchor; these remain two distinct balanced families rather than a single interleaved three-way experiment. |
+| Historical corrected backend ABBA in the same job | Unchanged 0.7.3/RC16/RC16/0.7.3 corrected harness, followed by RC16/candidate/candidate/RC16. There are exactly three source versions. The same RC16 commit is measured alongside 0.7.3 and again alongside RC17 to show changes in runner conditions. All share the job's runtime/host; the two balanced comparisons keep their own samples. |
 | Bounded memory/Sessions ABBA | Same fresh-process minimal four-pilot fixture, ordinary startup/RSS and separately forced-GC attribution; topology, first use, finite caches and ten recreate/use/close cycles. Same five long-session fixtures retain route/combat-group hashes. Candidate not-due diagnostics require zero visit rows, while RC16 retains the original repeated-route count. |
 | Candidate mixed quiet/load/load/quiet | Same two pilots, 20,000 assets each, eight maps, ten widgets, four 50-stop plans and map bursts. Preserve 56/92 request counts, dashboard and OBS continuity, fresh/stale OPSEC ordering, recovery and zero external IO. Existing RC16 CI runs fail the continuity gate; they are retained as failed partial baselines, so this lane does not claim a balanced CI before/after latency comparison. |
 | Positive managed restart | Real deferred semantic work and accepted HTTP complete before storage closes; cookie/CSRF/reconnect and persisted evidence remain valid. The previous known-gap reproduction stays separate. |
@@ -119,3 +119,21 @@ The historical v0.7.3-versus-RC16 corrected rerun stays in
 It now builds both frontends before authenticated HTTP checks. The new three-version
 job reuses that unchanged corrected adapter for a fresh same-job anchor. The two prior
 failed follow-up runs remain intact and are not reclassified as successes.
+
+## Focused browser correction and combined acceptance
+
+The full three-version run `37078241973` passed its measurement lanes but failed
+while deleting Chrome's profile after all 17 compiled Mapper feature assertions.
+The original run stays failed. A focused `browser` request can name
+`acceptedFullRun: 37078241973` (manual input `accepted_full_run`) after its full
+raw artifact, retrieval metadata and immutable 78-file inventory are committed.
+
+`accept-focused.py` requires the exact same candidate and RC16 source **and
+compiled asset** manifests in both CI runs, every retained artifact byte, success
+of all original measurement steps, and a successful new browser process with all
+17 unchanged feature assertions plus verified Chrome exit/profile cleanup. The
+only permitted measured-harness change is `maps-correctness.mjs`; its old/new
+hashes are recorded. A distinct `combined-acceptance.json` then covers the valid
+measurements and corrected browser gate together. Neither run is relabelled as
+a successful full run, and the focused bundle's per-run
+`allComparisonLanesPassed` remains false. Release approval remains separate.
