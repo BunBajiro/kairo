@@ -77,7 +77,7 @@ def main():
             copied.add(item['path'])
     copy_tree(checkpoint / 'analysis/rc16', bundle / 'checkpoint/analysis/rc16')
     copy_tree(checkpoint / 'analysis/rc17', bundle / 'checkpoint/analysis/rc17')
-    for name in ['rc16-followup.yml', 'rc17-comparison.yml']:
+    for name in ['rc16-followup.yml', *sorted(p.name for p in (checkpoint/'.github/workflows').glob('rc17-*.yml'))]:
         copy_file(checkpoint / '.github/workflows' / name, bundle / 'checkpoint/.github/workflows' / name)
     metadata = bundle / 'metadata'
     metadata.mkdir(parents=True)
@@ -195,8 +195,10 @@ print(f'Verified {len(manifest)} internal checkpoint files')
     with tarfile.open(archive, 'w:gz') as tar:
         tar.add(bundle, arcname='internal-rc17')
     (output / (archive.name + '.sha256')).write_text(digest(archive) + '  ' + archive.name + '\n')
+    from artifact_parts import split_archive
+    parts = split_archive(archive, output / 'parts')
     print(json.dumps({'archive': str(archive), 'sha256': digest(archive), 'files': len(inventory),
-                      'allComparisonLanesPassed': all_lanes, 'releaseReady': False}))
+                      'parts':len(parts), 'allComparisonLanesPassed': all_lanes, 'releaseReady': False}))
 
 
 if __name__ == '__main__':
