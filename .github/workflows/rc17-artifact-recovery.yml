@@ -1,0 +1,92 @@
+name: Internal RC17 artifact recovery
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths: ['analysis/rc17/artifact-recovery.json']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  recover:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          artifact-ids: 11258581244
+          run-id: 37080679048
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: recovery-input
+          merge-multiple: true
+      - name: Verify original oversized archive and extract its entrypoints
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, tarfile
+          from pathlib import Path
+          root = Path('recovery-input')
+          archive = root / 'internal-rc17-05d0d4b36c15.tar.gz'
+          expected = '43f7c00c9a6b01307679fbc6bb12d725e45336d3bafd23e0b2bc9937d18f8c18'
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected
+          assert Path(str(archive)+'.sha256').read_text().split()[0] == expected
+          out = Path('recovered-entrypoints'); out.mkdir()
+          with tarfile.open(archive) as tar:
+              for name in ['runtime/dist/client/index.html','runtime/dist/client/index.rsc','metadata/candidate-source.json','metadata/rc16-source.json','metadata/bundle.json']:
+                  member = tar.getmember('internal-rc17/'+name)
+                  assert member.isfile()
+                  (out / Path(name).name).write_bytes(tar.extractfile(member).read())
+          (out/'recovery.json').write_text(json.dumps({'sourceRun':37080679048,'artifactId':11258581244,'archiveSha256':expected,'note':'Candidate compiled entrypoints extracted from the original archive without rebuilding. RC16 entrypoint bytes were not in this candidate-runtime bundle; its original manifest is retained.'},indent=2)+'\n')
+          PY
+      - name: Split the unchanged archive into bounded downloads
+        id: split
+        run: python3 analysis/rc17/artifact_parts.py recovery-input/internal-rc17-05d0d4b36c15.tar.gz recovery-parts
+      - name: Retain recovered entrypoints and part manifest
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-recovered-entrypoints-and-manifest
+          path: |
+            recovered-entrypoints/
+            recovery-parts/parts.json
+            recovery-parts/reassemble-bundle.py
+            recovery-parts/README.md
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain recovered bundle part 1
+        if: ${{ steps.split.outcome == 'success' && fromJSON(steps.split.outputs.parts) >= 1 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-recovered-part-01
+          path: recovery-parts/internal-rc17.part-01
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain recovered bundle part 2
+        if: ${{ steps.split.outcome == 'success' && fromJSON(steps.split.outputs.parts) >= 2 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-recovered-part-02
+          path: recovery-parts/internal-rc17.part-02
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain recovered bundle part 3
+        if: ${{ steps.split.outcome == 'success' && fromJSON(steps.split.outputs.parts) >= 3 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-recovered-part-03
+          path: recovery-parts/internal-rc17.part-03
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain recovered bundle part 4
+        if: ${{ steps.split.outcome == 'success' && fromJSON(steps.split.outputs.parts) >= 4 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-recovered-part-04
+          path: recovery-parts/internal-rc17.part-04
+          if-no-files-found: error
+          retention-days: 30
