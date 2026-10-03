@@ -1,4 +1,24 @@
-# Validation — 27 September 2026
+# Validation — 3 October 2026
+
+## Clean RC17 user-review preparation
+
+The clean candidate starts from the idle-refined runtime `fa6e852b76089b51cd552fa202de85ad6948b0ec`. Its 781 runtime tests and application type check passed locally and on GitHub. The ordinary [test-build run 37083133634](https://github.com/BunBajiro/kairo/actions/runs/37083133634) also succeeded, including compilation, Sessions/Universe/dataset browser checks and tests of the extracted runtime without source dependencies. These results identify the verified source candidate; they do not certify a later package automatically.
+
+Clean preparation updates packaging and review documentation without changing that runtime implementation. Its own exact-commit test-build run and downloadable artifact are linked in the draft PR. The handoff requires that run to succeed, including the extracted-package tests and browser checks. The downloadable application excludes checkpoint harnesses, synthetic performance fixtures, investigation workflows and raw evidence. Main remains unmerged and final 8.0 awaits explicit approval after in-app review.
+
+The [RC17 review guide](RC17-REVIEW.md) covers launch, retained data and useful manual checks. Session migration coverage verifies that retained visits, Sessions, annotations, activity and settings survive repeated startup; legacy visits retain their identities and discovery membership is seeded once. Focus-based map detail remains off by default.
+
+### Evidence limits and follow-up
+
+The [comparison whitepaper](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/REPORT.md) keeps each measurement attached to its tested source/build. Earlier Maps, route and browser timings retain their original candidate identity. Packaging checks add no new performance measurements.
+
+Two measured costs remain unresolved: local typical startup was 170.57–178.85 ms against RC16's 143.52–154.22 ms, and GitHub stress direct-state p95 was 34.27–43.59 ms against 30.40–31.70 ms. The latter uses ten samples, so p95 is the observed maximum. These observations are scoped comparisons, with no established cause or promise of uniform improvement.
+
+Staged construction rollback also remains an engineering follow-up: failures while creating early startup dependencies or the module registry are outside the completed post-start shutdown coverage. The clean package does not claim injected startup-failure coverage or a resolution of this earlier finding.
+
+## Earlier validation records
+
+The sections below retain the scope and counts of their historical candidates.
 
 ## Universe 0.8.0-rc.14
 

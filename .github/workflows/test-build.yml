@@ -91,6 +91,10 @@ jobs:
         working-directory: ${{ runner.temp }}/kairo-package-check/Kairo
         run: npm run test:kairo
 
+      - name: Record the tested build checksum
+        working-directory: ${{ runner.temp }}
+        run: sha256sum Kairo-test-build.zip > Kairo-test-build.sha256
+
       - name: Upload the tested build
         id: upload
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -100,15 +104,27 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Upload the tested build checksum
+        id: checksum
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          path: ${{ runner.temp }}/Kairo-test-build.sha256
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Show the download instructions
         env:
           KAIRO_ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          KAIRO_CHECKSUM_URL: ${{ steps.checksum.outputs.artifact-url }}
         run: |
           python3 - <<'PY'
           import os
           from pathlib import Path
           text = (
               f"[Download Kairo-test-build.zip]({os.environ['KAIRO_ARTIFACT_URL']})\n\n"
+              f"[Download SHA-256 checksum]({os.environ['KAIRO_CHECKSUM_URL']})\n\n"
+              f"Source commit: `{os.environ['GITHUB_SHA']}`\n\n"
               "Sign into GitHub, download the ZIP and extract it into a new folder. "
               "Stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. "
               "Node.js 24 or newer is required; no npm install or local build is needed.\n\n"

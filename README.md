@@ -2,9 +2,9 @@
 
 A local EVE Online workspace with a separate, transparent OBS output service.
 
-**Version 0.8.0-rc.17 · Optimisation and refactoring review build · Windows first · No cloud deployment**
+**Version 0.8.0-rc.17 · Clean RC17 user review · Windows first · No cloud deployment**
 
-See the [changelog](CHANGELOG.md) for release notes.
+See the [RC17 review guide](docs/RC17-REVIEW.md) for setup, changes to try and known limitations, and the [changelog](CHANGELOG.md) for release notes. This candidate awaits in-app review before the final 8.0 release is approved.
 
 **SDE updates:** Kairo checks CCP's latest build at startup and hourly, installs newer data in the background, then briefly reconnects the local core. **Settings → Datasets** lists installed versions, release/update dates and manual check/install actions. The workspace shows an update notice during activation and retains the open page and unsaved forms. Old downloads and retired versions are removed automatically. See [dataset updates and recovery](docs/DATASETS.md).
 

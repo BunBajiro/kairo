@@ -12,6 +12,8 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 - Shares source preparation across Goals and widget bindings, resolves repeated asset containment paths once per batch and avoids rewriting identical combat records. Unchanged widget projections no longer rebroadcast the same state.
 - Drains accepted requests, dataset enrichment, semantic subscribers and worker shutdown before releasing their dependencies. Session ownership is captured before slow metadata lookup, preventing delayed observations from moving into a later Session.
 - Handles large dashboard event frames with ordered, drain-aware writes and bounded waiting work. Blocked OBS clients fail closed when protection engages. SDE activation/recovery, OPSEC rules and shared ESI cache, priority and rate-limit policies remain in place.
+- Removes redundant idle protection projections and unused scheduled-feed view construction while preserving scope checks, freshness deadlines, immediate protection updates and feed expiry.
+- Prepares the clean RC17 user-review package with compiled assets, existing-data compatibility and a [review guide](docs/RC17-REVIEW.md). Benchmark harnesses, synthetic performance fixtures, investigation workflows and raw evidence remain outside the downloadable application. The version stays `0.8.0-rc.17` pending in-app review; final 8.0 release approval is still required.
 
 ## 0.8.0-rc.16 — Automatic static-data updates
 
