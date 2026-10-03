@@ -129,6 +129,9 @@ jobs:
           cd "$GITHUB_WORKSPACE/checkpoint"
           node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/rc16" analysis/rc17/raw/github/rc16-source.json 57c8dcc7fbd8fc2b62129498d1819050c78381a1
           node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/candidate-source.json "$CANDIDATE_SHA"
+          mkdir -p analysis/rc17/raw/github/compiled-entrypoints/candidate analysis/rc17/raw/github/compiled-entrypoints/rc16
+          cp "$GITHUB_WORKSPACE/candidate/dist/client/index.html" "$GITHUB_WORKSPACE/candidate/dist/client/index.rsc" analysis/rc17/raw/github/compiled-entrypoints/candidate/
+          cp "$GITHUB_WORKSPACE/rc16/dist/client/index.html" "$GITHUB_WORKSPACE/rc16/dist/client/index.rsc" analysis/rc17/raw/github/compiled-entrypoints/rc16/
           if [ "$REQUEST_SUITE" = all ] || [ "$REQUEST_SUITE" = legacy-backend ]; then
             cd "$GITHUB_WORKSPACE/v073"
             npm run install:ci
@@ -261,13 +264,47 @@ jobs:
           path: checkpoint/analysis/rc17/raw/github/
           if-no-files-found: error
           retention-days: 30
-      - name: Retain the internal instrumented RC17 bundle
+      - name: Retain the internal instrumented RC17 bundle manifest
         if: ${{ always() && steps.bundle.outcome == 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: internal-instrumented-rc17-${{ steps.request.outputs.candidate_sha }}
           path: |
-            internal-rc17-bundle/*.tar.gz
+            internal-rc17-bundle/parts/parts.json
+            internal-rc17-bundle/parts/reassemble-bundle.py
+            internal-rc17-bundle/parts/README.md
             internal-rc17-bundle/*.sha256
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain internal bundle part 1
+        if: ${{ always() && steps.bundle.outcome == 'success' && fromJSON(steps.bundle.outputs.parts) >= 1 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-instrumented-rc17-${{ steps.request.outputs.candidate_sha }}-part-01
+          path: internal-rc17-bundle/parts/internal-rc17.part-01
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain internal bundle part 2
+        if: ${{ always() && steps.bundle.outcome == 'success' && fromJSON(steps.bundle.outputs.parts) >= 2 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-instrumented-rc17-${{ steps.request.outputs.candidate_sha }}-part-02
+          path: internal-rc17-bundle/parts/internal-rc17.part-02
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain internal bundle part 3
+        if: ${{ always() && steps.bundle.outcome == 'success' && fromJSON(steps.bundle.outputs.parts) >= 3 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-instrumented-rc17-${{ steps.request.outputs.candidate_sha }}-part-03
+          path: internal-rc17-bundle/parts/internal-rc17.part-03
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain internal bundle part 4
+        if: ${{ always() && steps.bundle.outcome == 'success' && fromJSON(steps.bundle.outputs.parts) >= 4 }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-instrumented-rc17-${{ steps.request.outputs.candidate_sha }}-part-04
+          path: internal-rc17-bundle/parts/internal-rc17.part-04
           if-no-files-found: error
           retention-days: 30

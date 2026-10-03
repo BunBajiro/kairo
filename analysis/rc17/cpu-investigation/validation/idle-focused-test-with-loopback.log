@@ -1,0 +1,509 @@
+TAP version 13
+# Subtest: cached protection batches retain current output without one projection per cached dataset
+ok 1 - cached protection batches retain current output without one projection per cached dataset
+  ---
+  duration_ms: 202.290121
+  type: 'test'
+  ...
+# Subtest: protection batches revoke unavailable scope and disabled modules despite future schedules
+ok 2 - protection batches revoke unavailable scope and disabled modules despite future schedules
+  ---
+  duration_ms: 86.192935
+  type: 'test'
+  ...
+# Subtest: awaiting a cached protection batch still expires jump continuity during retry backoff
+ok 3 - awaiting a cached protection batch still expires jump continuity during retry backoff
+  ---
+  duration_ms: 59.385097
+  type: 'test'
+  ...
+# Subtest: a changed location updates protection before a slow peer dataset completes
+ok 4 - a changed location updates protection before a slow peer dataset completes
+  ---
+  duration_ms: 86.566896
+  type: 'test'
+  ...
+# Subtest: scheduling metadata stays current across writes, deletion and rollback without exposing payloads
+ok 5 - scheduling metadata stays current across writes, deletion and rollback without exposing payloads
+  ---
+  duration_ms: 15.796507
+  type: 'test'
+  ...
+# Subtest: protection projects only its evidence and still responds immediately to disabled modules
+ok 6 - protection projects only its evidence and still responds immediately to disabled modules
+  ---
+  duration_ms: 173.169716
+  type: 'test'
+  ...
+# Subtest: cached routine datasets do not repeatedly load protection pilot identity
+ok 7 - cached routine datasets do not repeatedly load protection pilot identity
+  ---
+  duration_ms: 51.411751
+  type: 'test'
+  ...
+# Subtest: Sessions keep pilot travel and hull history with Universe disabled and stop when Pilot is disabled
+ok 8 - Sessions keep pilot travel and hull history with Universe disabled and stop when Pilot is disabled
+  ---
+  duration_ms: 50.680444
+  type: 'test'
+  ...
+# Subtest: cache expiry does not flip protection during revalidation; old or invalid observations still fail closed
+ok 9 - cache expiry does not flip protection during revalidation; old or invalid observations still fail closed
+  ---
+  duration_ms: 1.732588
+  type: 'test'
+  ...
+# Subtest: brief jump gaps retain covered protection without transition events, then classify the destination
+ok 10 - brief jump gaps retain covered protection without transition events, then classify the destination
+  ---
+  duration_ms: 26.709471
+  type: 'test'
+  ...
+# Subtest: jump continuity cannot extend its deadline, carry revealed High-Sec, or mask access and policy changes
+ok 11 - jump continuity cannot extend its deadline, carry revealed High-Sec, or mask access and policy changes
+  ---
+  duration_ms: 1.954555
+  type: 'test'
+  ...
+# Subtest: core reads refreshable protection evidence separately from stale UI snapshots and does not spam history
+ok 12 - core reads refreshable protection evidence separately from stale UI snapshots and does not spam history
+  ---
+  duration_ms: 172.343297
+  type: 'test'
+  ...
+# Subtest: location refresh proceeds during a slow collector and shares in-flight work with the main sync
+ok 13 - location refresh proceeds during a slow collector and shares in-flight work with the main sync
+  ---
+  duration_ms: 38.862794
+  type: 'test'
+  ...
+# Subtest: ESI prioritizes protection requests within its concurrency cap and preserves access-denied status
+ok 14 - ESI prioritizes protection requests within its concurrency cap and preserves access-denied status
+  ---
+  duration_ms: 16.228845
+  type: 'test'
+  ...
+# Subtest: ESI resumes protection requests after cooldown instead of retaining a rejected in-flight promise
+ok 15 - ESI resumes protection requests after cooldown instead of retaining a rejected in-flight promise
+  ---
+  duration_ms: 6.44241
+  type: 'test'
+  ...
+# Subtest: activity API returns five newest entries, pages equal timestamps without gaps, and searches all history
+ok 16 - activity API returns five newest entries, pages equal timestamps without gaps, and searches all history
+  ---
+  duration_ms: 157.761597
+  type: 'test'
+  ...
+# Subtest: quiet scheduled feed upkeep records NPC windows without reading or building display data
+ok 17 - quiet scheduled feed upkeep records NPC windows without reading or building display data
+  ---
+  duration_ms: 3.929772
+  type: 'test'
+  ...
+# Subtest: explicit feed refresh still validates sources and returns the full current view
+ok 18 - explicit feed refresh still validates sources and returns the full current view
+  ---
+  duration_ms: 2.049734
+  type: 'test'
+  ...
+# Subtest: scheduled upkeep prunes connection deadlines crossed during collection, including a module disable
+ok 19 - scheduled upkeep prunes connection deadlines crossed during collection, including a module disable
+  ---
+  duration_ms: 36.210538
+  type: 'test'
+  ...
+# Subtest: disabled and noSync scheduled ticks expire connections without collecting or projecting feeds
+ok 20 - disabled and noSync scheduled ticks expire connections without collecting or projecting feeds
+  ---
+  duration_ms: 0.977546
+  type: 'test'
+  ...
+# Subtest: closing a scheduled feed collection drains its request without post-close storage work
+ok 21 - closing a scheduled feed collection drains its request without post-close storage work
+  ---
+  duration_ms: 0.950876
+  type: 'test'
+  ...
+# Subtest: wormhole reports retain limitations, discard incomplete or expired, and validate the actual hub
+ok 22 - wormhole reports retain limitations, discard incomplete or expired, and validate the actual hub
+  ---
+  duration_ms: 0.339028
+  type: 'test'
+  ...
+# Subtest: public connection expiry physically removes cached reports at their deadline, including while disabled
+ok 23 - public connection expiry physically removes cached reports at their deadline, including while disabled
+  ---
+  duration_ms: 1.356644
+  type: 'test'
+  ...
+# Subtest: 304 and failed in-flight refreshes cannot restore a report that expired while waiting
+ok 24 - 304 and failed in-flight refreshes cannot restore a report that expired while waiting
+  ---
+  duration_ms: 2.490445
+  type: 'test'
+  ...
+# Subtest: combat display window is explicit, bounded and preserves retained observations when shortened
+ok 25 - combat display window is explicit, bounded and preserves retained observations when shortened
+  ---
+  duration_ms: 0.56688
+  type: 'test'
+  ...
+# Subtest: storm areas follow real gates and preserve report age rather than confirmation claims
+ok 26 - storm areas follow real gates and preserve report age rather than confirmation claims
+  ---
+  duration_ms: 0.731337
+  type: 'test'
+  ...
+# Subtest: feed fetches are cached, attributed, conditional, bounded and preserve stale data after a failure
+ok 27 - feed fetches are cached, attributed, conditional, bounded and preserve stale data after a failure
+  ---
+  duration_ms: 4.758445
+  type: 'test'
+  ...
+# Subtest: wrong schemas and oversized payloads cannot erase last good reports
+ok 28 - wrong schemas and oversized payloads cannot erase last good reports
+  ---
+  duration_ms: 1.338427
+  type: 'test'
+  ...
+# Subtest: wormhole type limits are nominal and never become remaining mass or confirmed lifetime
+ok 29 - wormhole type limits are nominal and never become remaining mass or confirmed lifetime
+  ---
+  duration_ms: 1.769123
+  type: 'test'
+  ...
+# Subtest: manual storm import is atomic and keeps source provenance and explicit expiry
+ok 30 - manual storm import is atomic and keeps source provenance and explicit expiry
+  ---
+  duration_ms: 1.265488
+  type: 'test'
+  ...
+# Subtest: shutdown aborts and waits for pending requests before returning without later writes
+ok 31 - shutdown aborts and waits for pending requests before returning without later writes
+  ---
+  duration_ms: 0.576975
+  type: 'test'
+  ...
+# Subtest: public combat is opt-in, independent, deduplicated by kill ID, and respects end-of-feed cooldown
+ok 32 - public combat is opt-in, independent, deduplicated by kill ID, and respects end-of-feed cooldown
+  ---
+  duration_ms: 224.539645
+  type: 'test'
+  ...
+# Subtest: combat resumes successfully persisted steps after a later response fails
+ok 33 - combat resumes successfully persisted steps after a later response fails
+  ---
+  duration_ms: 117.541087
+  type: 'test'
+  ...
+# Subtest: malformed combat entries are not silently skipped by advancing the cursor
+ok 34 - malformed combat entries are not silently skipped by advancing the cursor
+  ---
+  duration_ms: 0.911166
+  type: 'test'
+  ...
+# Subtest: combat resumes at current pointer after a gap beyond source retention and labels missing coverage
+ok 35 - combat resumes at current pointer after a gap beyond source retention and labels missing coverage
+  ---
+  duration_ms: 0.621151
+  type: 'test'
+  ...
+# Subtest: campaign and development state use existing public snapshots with honest unknowns and no requests
+ok 36 - campaign and development state use existing public snapshots with honest unknowns and no requests
+  ---
+  duration_ms: 0.348362
+  type: 'test'
+  ...
+# Subtest: NPC rolling-window changes keep negative values, sparse zeros, identities and wormhole exclusion
+ok 37 - NPC rolling-window changes keep negative values, sparse zeros, identities and wormhole exclusion
+  ---
+  duration_ms: 0.236314
+  type: 'test'
+  ...
+# Subtest: same cached NPC window never creates a comparison; stale or disabled feed state remains explicit
+ok 38 - same cached NPC window never creates a comparison; stale or disabled feed state remains explicit
+  ---
+  duration_ms: 0.654592
+  type: 'test'
+  ...
+# Subtest: invalid provider timestamps never advertise ready reports
+ok 39 - invalid provider timestamps never advertise ready reports
+  ---
+  duration_ms: 0.237777
+  type: 'test'
+  ...
+# Subtest: public chain retains cached cards through refresh and reconciles only the resulting snapshot
+ok 40 - public chain retains cached cards through refresh and reconciles only the resulting snapshot
+  ---
+  duration_ms: 6.06277
+  type: 'test'
+  ...
+# Subtest: observed lifetime bands persist without granting access, renewing expiry or losing their age on mass edits
+ok 41 - observed lifetime bands persist without granting access, renewing expiry or losing their age on mass edits
+  ---
+  duration_ms: 35.671329
+  type: 'test'
+  ...
+# Subtest: private chain maps survive reopening, isolate pilots and require revision-matched writes
+ok 42 - private chain maps survive reopening, isolate pilots and require revision-matched writes
+  ---
+  duration_ms: 15.92936
+  type: 'test'
+  ...
+# Subtest: positions, locks, aliases, roles, annotations and undo are atomic and bounded
+ok 43 - positions, locks, aliases, roles, annotations and undo are atomic and bounded
+  ---
+  duration_ms: 14.01147
+  type: 'test'
+  ...
+# Subtest: global visits and pins cannot seed private maps or create map-owned connections
+ok 44 - global visits and pins cannot seed private maps or create map-owned connections
+  ---
+  duration_ms: 24.797473
+  type: 'test'
+  ...
+# Subtest: connections use canonical links, demand explicit confirmation and reflect expiry/removal
+ok 45 - connections use canonical links, demand explicit confirmation and reflect expiry/removal
+  ---
+  duration_ms: 15.294624
+  type: 'test'
+  ...
+# Subtest: passage ledger records direction and observed mass without claiming remaining mass
+ok 46 - passage ledger records direction and observed mass without claiming remaining mass
+  ---
+  duration_ms: 13.453183
+  type: 'test'
+  ...
+# Subtest: canonical scanner signatures link both endpoints and deletions do not invent replacement observations
+ok 47 - canonical scanner signatures link both endpoints and deletions do not invent replacement observations
+  ---
+  duration_ms: 18.706651
+  type: 'test'
+  ...
+# Subtest: structures, timers and local pings preserve observation times and expire honestly
+ok 48 - structures, timers and local pings preserve observation times and expire honestly
+  ---
+  duration_ms: 13.289437
+  type: 'test'
+  ...
+# Subtest: Wanderer v1 import previews without writes and never revives portable connection evidence
+ok 49 - Wanderer v1 import previews without writes and never revives portable connection evidence
+  ---
+  duration_ms: 14.303203
+  type: 'test'
+  ...
+# Subtest: invalid imports and invalid cross-service commands roll back every affected record
+ok 50 - invalid imports and invalid cross-service commands roll back every affected record
+  ---
+  duration_ms: 18.980501
+  type: 'test'
+  ...
+# Subtest: native exports preserve map content across pilots while demoting imported links
+ok 51 - native exports preserve map content across pilots while demoting imported links
+  ---
+  duration_ms: 18.45336
+  type: 'test'
+  ...
+# Subtest: duplicating a chain preserves observed ages and makes connection evidence independent
+ok 52 - duplicating a chain preserves observed ages and makes connection evidence independent
+  ---
+  duration_ms: 19.701452
+  type: 'test'
+  ...
+# Subtest: passage corrections preserve identity and occurrence while multi-delete obeys locked graph constraints
+ok 53 - passage corrections preserve identity and occurrence while multi-delete obeys locked graph constraints
+  ---
+  duration_ms: 20.042043
+  type: 'test'
+  ...
+# Subtest: opt-in sampled passage tracking is deduplicated, reviewable and never changes connection trust
+ok 54 - opt-in sampled passage tracking is deduplicated, reviewable and never changes connection trust
+  ---
+  duration_ms: 23.045807
+  type: 'test'
+  ...
+# Subtest: the shared selected-location stream expands only subscribed private maps and map-local pause stops tracking
+ok 55 - the shared selected-location stream expands only subscribed private maps and map-local pause stops tracking
+  ---
+  duration_ms: 19.889404
+  type: 'test'
+  ...
+# Subtest: scheduled ESI refreshes connect J-Space travel and both K-Space endpoints in source, global and scoped maps
+ok 56 - scheduled ESI refreshes connect J-Space travel and both K-Space endpoints in source, global and scoped maps
+  ---
+  duration_ms: 25.707228
+  type: 'test'
+  ...
+# Subtest: scoped maps adopt a source chain when a later exit matches without renewing its lifetime or copying user data
+ok 57 - scoped maps adopt a source chain when a later exit matches without renewing its lifetime or copying user data
+  ---
+  duration_ms: 19.784126
+  type: 'test'
+  ...
+# Subtest: changing the selected pilot resets only source baselines and keeps explicitly tracked interactive pilots active
+ok 58 - changing the selected pilot resets only source baselines and keeps explicitly tracked interactive pilots active
+  ---
+  duration_ms: 16.360812
+  type: 'test'
+  ...
+# Subtest: shared maintenance expires source connections immediately and prunes source cards without an open view or connected account
+ok 59 - shared maintenance expires source connections immediately and prunes source cards without an open view or connected account
+  ---
+  duration_ms: 12.085182
+  type: 'test'
+  ...
+# Subtest: Wanderer-compatible export preserves portable fields while excluding unroutable observations
+ok 60 - Wanderer-compatible export preserves portable fields while excluding unroutable observations
+  ---
+  duration_ms: 41.46089
+  type: 'test'
+  ...
+# Subtest: destination search uses only the selected pilot chain and ignores caller-owned graph evidence
+ok 61 - destination search uses only the selected pilot chain and ignores caller-owned graph evidence
+  ---
+  duration_ms: 22.815271
+  type: 'test'
+  ...
+# Subtest: deleted signature bindings permit condition edits without rebinding and ship-size unknown can be recorded
+ok 62 - deleted signature bindings permit condition edits without rebinding and ship-size unknown can be recorded
+  ---
+  duration_ms: 14.675766
+  type: 'test'
+  ...
+# Subtest: drawn connections preserve explicit unknown lifetime until an observed expiry is deliberately supplied
+ok 63 - drawn connections preserve explicit unknown lifetime until an observed expiry is deliberately supplied
+  ---
+  duration_ms: 18.060963
+  type: 'test'
+  ...
+# Subtest: disconnected cards prune after the last expiry while metadata, signatures and reports survive rediscovery
+ok 64 - disconnected cards prune after the last expiry while metadata, signatures and reports survive rediscovery
+  ---
+  duration_ms: 25.462591
+  type: 'test'
+  ...
+# Subtest: deletion grace survives refreshes, reconnecting cancels it, and standalone cards are retained
+ok 65 - deletion grace survives refreshes, reconnecting cancels it, and standalone cards are retained
+  ---
+  duration_ms: 12.252342
+  type: 'test'
+  ...
+# Subtest: unlock and manual re-add each grant disconnected cards a fresh thirty minutes
+ok 66 - unlock and manual re-add each grant disconnected cards a fresh thirty minutes
+  ---
+  duration_ms: 11.661517
+  type: 'test'
+  ...
+# Subtest: effective J-Space owners are private annotations, validated and preserved through manual removal
+ok 67 - effective J-Space owners are private annotations, validated and preserved through manual removal
+  ---
+  duration_ms: 11.944931
+  type: 'test'
+  ...
+# Subtest: Universe operations HTTP: authenticated state, private observations and public-output isolation
+    # Subtest: all operational surfaces require a local session and mutations require CSRF
+    ok 1 - all operational surfaces require a local session and mutations require CSRF
+      ---
+      duration_ms: 42.232657
+      type: 'test'
+      ...
+    # Subtest: manual intel reaches only the selected pilot and keeps its observed time
+    ok 2 - manual intel reaches only the selected pilot and keeps its observed time
+      ---
+      duration_ms: 52.161316
+      type: 'test'
+      ...
+    # Subtest: scanner and infrastructure records have the same pilot boundary
+    ok 3 - scanner and infrastructure records have the same pilot boundary
+      ---
+      duration_ms: 34.577388
+      type: 'test'
+      ...
+    # Subtest: map-scoped HTTP scanner and intel never cross independent map instances
+    ok 4 - map-scoped HTTP scanner and intel never cross independent map instances
+      ---
+      duration_ms: 75.543837
+      type: 'test'
+      ...
+    # Subtest: scanner diagnostics and infrastructure SMT previews are read-only, atomic and private
+    ok 5 - scanner diagnostics and infrastructure SMT previews are read-only, atomic and private
+      ---
+      duration_ms: 76.684913
+      type: 'test'
+      ...
+    # Subtest: invalid identity, timestamps and settings cannot change saved observations
+    ok 6 - invalid identity, timestamps and settings cannot change saved observations
+      ---
+      duration_ms: 21.278567
+      type: 'test'
+      ...
+    # Subtest: expiry is explicit and disabled collection cannot fetch fleet data
+    ok 7 - expiry is explicit and disabled collection cannot fetch fleet data
+      ---
+      duration_ms: 12.92432
+      type: 'test'
+      ...
+    # Subtest: SMT preview is read-only and exact import/export preserves unknown structures
+    ok 8 - SMT preview is read-only and exact import/export preserves unknown structures
+      ---
+      duration_ms: 80.460134
+      type: 'test'
+      ...
+    # Subtest: map wormhole expiry is preserved on ordinary edits and forgotten at the lifetime boundary
+    ok 9 - map wormhole expiry is preserved on ordinary edits and forgotten at the lifetime boundary
+      ---
+      duration_ms: 31.342368
+      type: 'test'
+      ...
+    # Subtest: ordered itineraries reject stale edits and never send without explicit permission
+    ok 10 - ordered itineraries reject stale edits and never send without explicit permission
+      ---
+      duration_ms: 64.230112
+      type: 'test'
+      ...
+    # Subtest: manual storms and campaigns retain source provenance and expiry without provider requests
+    ok 11 - manual storms and campaigns retain source provenance and expiry without provider requests
+      ---
+      duration_ms: 34.439642
+      type: 'test'
+      ...
+    # Subtest: composed navigation preserves public hub geometry, ship limits, mass and expiry
+    ok 12 - composed navigation preserves public hub geometry, ship limits, mass and expiry
+      ---
+      duration_ms: 150.908817
+      type: 'test'
+      ...
+    # Subtest: public output has no operational APIs or private observation content
+    ok 13 - public output has no operational APIs or private observation content
+      ---
+      duration_ms: 18.077216
+      type: 'test'
+      ...
+    # Subtest: owners can remove manual records without changing another pilot
+    ok 14 - owners can remove manual records without changing another pilot
+      ---
+      duration_ms: 9.668442
+      type: 'test'
+      ...
+    1..14
+ok 68 - Universe operations HTTP: authenticated state, private observations and public-output isolation
+  ---
+  duration_ms: 1210.891064
+  type: 'test'
+  ...
+# Subtest: Universe public-source HTTP refresh retains stale evidence and obeys backoff and collection controls
+ok 69 - Universe public-source HTTP refresh retains stale evidence and obeys backoff and collection controls
+  ---
+  duration_ms: 303.831467
+  type: 'test'
+  ...
+1..69
+# tests 83
+# suites 0
+# pass 83
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1678.687285

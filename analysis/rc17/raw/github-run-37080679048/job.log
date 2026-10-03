@@ -1,0 +1,1791 @@
+﻿2026-10-03T00:07:15.5966418Z Current runner version: '2.337.0'
+2026-10-03T00:07:15.5997493Z ##[group]Runner Image Provisioner
+2026-10-03T00:07:15.5998740Z Hosted Compute Agent
+2026-10-03T00:07:15.5999737Z Version: 20260901.588
+2026-10-03T00:07:15.6000647Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-03T00:07:15.6001684Z Build Date: 2026-09-01T19:56:44Z
+2026-10-03T00:07:15.6003148Z Worker ID: {ed833392-f1df-4caf-b356-0c79c8898c0c}
+2026-10-03T00:07:15.6004251Z Azure Region: westus3
+2026-10-03T00:07:15.6005132Z ##[endgroup]
+2026-10-03T00:07:15.6007562Z ##[group]Operating System
+2026-10-03T00:07:15.6008339Z Ubuntu
+2026-10-03T00:07:15.6009043Z 24.04.5
+2026-10-03T00:07:15.6009652Z LTS
+2026-10-03T00:07:15.6010312Z ##[endgroup]
+2026-10-03T00:07:15.6010993Z ##[group]Runner Image
+2026-10-03T00:07:15.6011723Z Image: ubuntu-24.04
+2026-10-03T00:07:15.6012644Z Version: 20260927.320.1
+2026-10-03T00:07:15.6014398Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-03T00:07:15.6016532Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-03T00:07:15.6017803Z ##[endgroup]
+2026-10-03T00:07:15.6019146Z ##[group]GITHUB_TOKEN Permissions
+2026-10-03T00:07:15.6021458Z Contents: read
+2026-10-03T00:07:15.6022247Z Metadata: read
+2026-10-03T00:07:15.6023300Z ##[endgroup]
+2026-10-03T00:07:15.6025946Z Secret source: Actions
+2026-10-03T00:07:15.6027070Z Cache mode: write
+2026-10-03T00:07:15.6027988Z Prepare workflow directory
+2026-10-03T00:07:15.6561557Z Prepare all required actions
+2026-10-03T00:07:15.6626586Z Getting action download info
+2026-10-03T00:07:16.0579267Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-03T00:07:16.2304015Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-10-03T00:07:16.4472241Z Download action repository 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-10-03T00:07:16.7635819Z Complete job name: measure
+2026-10-03T00:07:16.8475295Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-03T00:07:16.8476736Z with:
+2026-10-03T00:07:16.8477466Z   path: checkpoint
+2026-10-03T00:07:16.8478252Z   persist-credentials: false
+2026-10-03T00:07:16.8479129Z   repository: BunBajiro/kairo
+2026-10-03T00:07:16.8485645Z   token: ***
+2026-10-03T00:07:16.8486371Z   ssh-strict: true
+2026-10-03T00:07:16.8487102Z   ssh-user: git
+2026-10-03T00:07:16.8487805Z   clean: true
+2026-10-03T00:07:16.8488558Z   sparse-checkout-cone-mode: true
+2026-10-03T00:07:16.8489433Z   fetch-depth: 1
+2026-10-03T00:07:16.8490168Z   fetch-tags: false
+2026-10-03T00:07:16.8490881Z   show-progress: true
+2026-10-03T00:07:16.8491652Z   lfs: false
+2026-10-03T00:07:16.8492685Z   submodules: false
+2026-10-03T00:07:16.8493561Z   set-safe-directory: true
+2026-10-03T00:07:16.8494402Z   allow-unsafe-pr-checkout: false
+2026-10-03T00:07:16.8495494Z ##[endgroup]
+2026-10-03T00:07:16.9548899Z Syncing repository: BunBajiro/kairo
+2026-10-03T00:07:16.9554291Z ##[group]Getting Git version info
+2026-10-03T00:07:16.9556695Z Working directory is '/home/runner/work/kairo/kairo/checkpoint'
+2026-10-03T00:07:16.9560554Z [command]/usr/bin/git version
+2026-10-03T00:07:16.9618695Z git version 2.55.0
+2026-10-03T00:07:16.9625291Z ##[endgroup]
+2026-10-03T00:07:16.9634415Z Temporarily overriding HOME='/home/runner/work/_temp/4f79e1e4-2bb4-42b2-93f1-d3765bee75a7' before making global git config changes
+2026-10-03T00:07:16.9646767Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T00:07:16.9650223Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/checkpoint
+2026-10-03T00:07:16.9741718Z ##[group]Determining repository object format
+2026-10-03T00:07:16.9744297Z ##[endgroup]
+2026-10-03T00:07:16.9746646Z ##[group]Initializing the repository
+2026-10-03T00:07:16.9749520Z [command]/usr/bin/git init /home/runner/work/kairo/kairo/checkpoint
+2026-10-03T00:07:16.9813731Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-03T00:07:16.9826001Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-03T00:07:16.9829133Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-03T00:07:16.9831926Z hint: call:
+2026-10-03T00:07:16.9833998Z hint:
+2026-10-03T00:07:16.9839246Z hint: 	git config --global init.defaultBranch <name>
+2026-10-03T00:07:16.9850741Z hint:
+2026-10-03T00:07:16.9853603Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-03T00:07:16.9856292Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-03T00:07:16.9859749Z hint:
+2026-10-03T00:07:16.9861121Z hint: 	git branch -m <name>
+2026-10-03T00:07:16.9863226Z hint:
+2026-10-03T00:07:16.9866163Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-03T00:07:16.9872241Z Initialized empty Git repository in /home/runner/work/kairo/kairo/checkpoint/.git/
+2026-10-03T00:07:16.9905786Z [command]/usr/bin/git remote add origin https://github.com/BunBajiro/kairo
+2026-10-03T00:07:16.9910941Z ##[endgroup]
+2026-10-03T00:07:16.9919174Z ##[group]Disabling automatic garbage collection
+2026-10-03T00:07:16.9921158Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-03T00:07:16.9952234Z ##[endgroup]
+2026-10-03T00:07:16.9954843Z ##[group]Setting up auth
+2026-10-03T00:07:16.9956462Z Removing SSH command configuration
+2026-10-03T00:07:16.9958707Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:07:17.0024888Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:07:17.0467550Z Removing HTTP extra header
+2026-10-03T00:07:17.0470664Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:07:17.0557060Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:07:17.0736350Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:07:17.0739030Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:07:17.0758903Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:07:17.0940603Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-03T00:07:17.0973055Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path /home/runner/work/_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:17.1001239Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:17.1035511Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/checkpoint/.git.path /github/runner_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:17.1066385Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path /github/runner_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:17.1093345Z ##[endgroup]
+2026-10-03T00:07:17.1095767Z ##[group]Fetching the repository
+2026-10-03T00:07:17.1100047Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a478d437fe94e8179aab6c0404e404126421a006:refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+2026-10-03T00:07:19.7370204Z From https://github.com/BunBajiro/kairo
+2026-10-03T00:07:19.7371841Z  * [new ref]         a478d437fe94e8179aab6c0404e404126421a006 -> origin/perf/rc16-checkpoint-v0.8.0
+2026-10-03T00:07:19.7379047Z [command]/usr/bin/git branch --list --remote origin/perf/rc16-checkpoint-v0.8.0
+2026-10-03T00:07:19.7414968Z   origin/perf/rc16-checkpoint-v0.8.0
+2026-10-03T00:07:19.7476570Z [command]/usr/bin/git rev-parse refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+2026-10-03T00:07:19.7490823Z a478d437fe94e8179aab6c0404e404126421a006
+2026-10-03T00:07:19.7494033Z ##[endgroup]
+2026-10-03T00:07:19.7494924Z ##[group]Determining the checkout info
+2026-10-03T00:07:19.7496036Z ##[endgroup]
+2026-10-03T00:07:19.7496696Z [command]/usr/bin/git sparse-checkout disable
+2026-10-03T00:07:19.7546758Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-03T00:07:19.7593587Z ##[group]Checking out the ref
+2026-10-03T00:07:19.7603586Z [command]/usr/bin/git checkout --progress --force -B perf/rc16-checkpoint-v0.8.0 refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+2026-10-03T00:07:19.9721677Z Switched to a new branch 'perf/rc16-checkpoint-v0.8.0'
+2026-10-03T00:07:19.9734307Z branch 'perf/rc16-checkpoint-v0.8.0' set up to track 'origin/perf/rc16-checkpoint-v0.8.0'.
+2026-10-03T00:07:19.9738181Z ##[endgroup]
+2026-10-03T00:07:19.9774565Z [command]/usr/bin/git log -1 --format=%H
+2026-10-03T00:07:19.9796921Z a478d437fe94e8179aab6c0404e404126421a006
+2026-10-03T00:07:19.9804826Z ##[group]Removing auth
+2026-10-03T00:07:19.9805682Z Removing SSH command configuration
+2026-10-03T00:07:19.9807722Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:07:19.9840910Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:07:20.0005521Z Removing HTTP extra header
+2026-10-03T00:07:20.0008141Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:07:20.0032012Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:07:20.0189585Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:07:20.0191842Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:07:20.0213376Z includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path
+2026-10-03T00:07:20.0214452Z includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path
+2026-10-03T00:07:20.0215530Z includeif.gitdir:/github/workspace/checkpoint/.git.path
+2026-10-03T00:07:20.0216546Z includeif.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path
+2026-10-03T00:07:20.0220602Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path
+2026-10-03T00:07:20.0238872Z /home/runner/work/_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:20.0248663Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-8652ffc0\-937c\-43dd\-a6c9\-d4f171dcb6e6\.config
+2026-10-03T00:07:20.0311277Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path
+2026-10-03T00:07:20.0330005Z /home/runner/work/_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:20.0336704Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/checkpoint/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-8652ffc0\-937c\-43dd\-a6c9\-d4f171dcb6e6\.config
+2026-10-03T00:07:20.0371156Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/checkpoint/.git.path
+2026-10-03T00:07:20.0390097Z /github/runner_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:20.0479663Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/checkpoint/.git.path \/github\/runner_temp\/git\-credentials\-8652ffc0\-937c\-43dd\-a6c9\-d4f171dcb6e6\.config
+2026-10-03T00:07:20.0511016Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path
+2026-10-03T00:07:20.0528603Z /github/runner_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config
+2026-10-03T00:07:20.0534968Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/checkpoint/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-8652ffc0\-937c\-43dd\-a6c9\-d4f171dcb6e6\.config
+2026-10-03T00:07:20.0561307Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:07:20.0723790Z Removing credentials config '/home/runner/work/_temp/git-credentials-8652ffc0-937c-43dd-a6c9-d4f171dcb6e6.config'
+2026-10-03T00:07:20.0733486Z ##[endgroup]
+2026-10-03T00:07:20.0912698Z ##[group]Run python3 - <<'PY'
+2026-10-03T00:07:20.0913173Z [36;1mpython3 - <<'PY'[0m
+2026-10-03T00:07:20.0913539Z [36;1mimport json, os, re[0m
+2026-10-03T00:07:20.0913829Z [36;1mfrom pathlib import Path[0m
+2026-10-03T00:07:20.0914166Z [36;1mif os.environ['GITHUB_EVENT_NAME'] == 'push':[0m
+2026-10-03T00:07:20.0914686Z [36;1m    request = json.loads(Path('analysis/rc17/candidate-source.json').read_text())[0m
+2026-10-03T00:07:20.0915198Z [36;1m    sha, suite = request['candidateCommit'], request.get('suite', 'all')[0m
+2026-10-03T00:07:20.0915658Z [36;1m    prior = str(request.get('acceptedFullRun', ''))[0m
+2026-10-03T00:07:20.0915990Z [36;1melse:[0m
+2026-10-03T00:07:20.0916316Z [36;1m    sha, suite = os.environ['CANDIDATE_SHA'], os.environ['REQUEST_SUITE'][0m
+2026-10-03T00:07:20.0916788Z [36;1m    prior = os.environ.get('ACCEPTED_FULL_RUN', '')[0m
+2026-10-03T00:07:20.0917335Z [36;1massert re.fullmatch('[0-9a-f]{40}', sha), 'Candidate must be a full lowercase commit SHA'[0m
+2026-10-03T00:07:20.0918019Z [36;1massert suite in ['all', 'maps', 'routes', 'backend', 'legacy-backend', 'memory', 'mixed', 'restart', 'browser', 'browser-performance'][0m
+2026-10-03T00:07:20.0918704Z [36;1massert sha != '57c8dcc7fbd8fc2b62129498d1819050c78381a1', 'Candidate must differ from RC16'[0m
+2026-10-03T00:07:20.0919358Z [36;1massert not prior or (prior.isdigit() and suite == 'browser'), 'Retained full-run acceptance is only for a focused browser rerun'[0m
+2026-10-03T00:07:20.0919902Z [36;1mwith open(os.environ['GITHUB_OUTPUT'], 'a') as out:[0m
+2026-10-03T00:07:20.0920331Z [36;1m    out.write(f'candidate_sha={sha}\nsuite={suite}\naccepted_full_run={prior}\n')[0m
+2026-10-03T00:07:20.0920846Z [36;1mprint(json.dumps({'candidateCommit':sha, 'suite':suite}))[0m
+2026-10-03T00:07:20.0921198Z [36;1mPY[0m
+2026-10-03T00:07:20.1079449Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:07:20.1079880Z env:
+2026-10-03T00:07:20.1080153Z   CANDIDATE_SHA: 
+2026-10-03T00:07:20.1080432Z   REQUEST_SUITE: 
+2026-10-03T00:07:20.1080724Z   ACCEPTED_FULL_RUN: 
+2026-10-03T00:07:20.1080994Z ##[endgroup]
+2026-10-03T00:07:20.1360875Z {"candidateCommit": "05d0d4b36c154329006d6772769063db874762da", "suite": "browser"}
+2026-10-03T00:07:20.1504536Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-03T00:07:20.1504924Z with:
+2026-10-03T00:07:20.1505166Z   repository: BunBajiro/kairo
+2026-10-03T00:07:20.1505470Z   ref: 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+2026-10-03T00:07:20.1505767Z   path: rc16
+2026-10-03T00:07:20.1506018Z   persist-credentials: false
+2026-10-03T00:07:20.1508313Z   token: ***
+2026-10-03T00:07:20.1508591Z   ssh-strict: true
+2026-10-03T00:07:20.1508841Z   ssh-user: git
+2026-10-03T00:07:20.1509060Z   clean: true
+2026-10-03T00:07:20.1509318Z   sparse-checkout-cone-mode: true
+2026-10-03T00:07:20.1509729Z   fetch-depth: 1
+2026-10-03T00:07:20.1509976Z   fetch-tags: false
+2026-10-03T00:07:20.1510260Z   show-progress: true
+2026-10-03T00:07:20.1510526Z   lfs: false
+2026-10-03T00:07:20.1510736Z   submodules: false
+2026-10-03T00:07:20.1511006Z   set-safe-directory: true
+2026-10-03T00:07:20.1511279Z   allow-unsafe-pr-checkout: false
+2026-10-03T00:07:20.1511549Z ##[endgroup]
+2026-10-03T00:07:20.2277397Z Syncing repository: BunBajiro/kairo
+2026-10-03T00:07:20.2320634Z ##[group]Getting Git version info
+2026-10-03T00:07:20.2321722Z Working directory is '/home/runner/work/kairo/kairo/rc16'
+2026-10-03T00:07:20.2323579Z [command]/usr/bin/git version
+2026-10-03T00:07:20.2390205Z git version 2.55.0
+2026-10-03T00:07:20.2450928Z ##[endgroup]
+2026-10-03T00:07:20.2454737Z Temporarily overriding HOME='/home/runner/work/_temp/d24535c0-982a-4270-8c1b-2e219aeef1fe' before making global git config changes
+2026-10-03T00:07:20.2455951Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T00:07:20.2457233Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/rc16
+2026-10-03T00:07:20.2459345Z ##[group]Determining repository object format
+2026-10-03T00:07:20.2460386Z ##[endgroup]
+2026-10-03T00:07:20.2461138Z ##[group]Initializing the repository
+2026-10-03T00:07:20.2462131Z [command]/usr/bin/git init /home/runner/work/kairo/kairo/rc16
+2026-10-03T00:07:20.2500111Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-03T00:07:20.2501253Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-03T00:07:20.2508914Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-03T00:07:20.2509748Z hint: call:
+2026-10-03T00:07:20.2510482Z hint:
+2026-10-03T00:07:20.2511071Z hint: 	git config --global init.defaultBranch <name>
+2026-10-03T00:07:20.2511970Z hint:
+2026-10-03T00:07:20.2512809Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-03T00:07:20.2513983Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-03T00:07:20.2514701Z hint:
+2026-10-03T00:07:20.2515553Z hint: 	git branch -m <name>
+2026-10-03T00:07:20.2516131Z hint:
+2026-10-03T00:07:20.2517061Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-03T00:07:20.2523459Z Initialized empty Git repository in /home/runner/work/kairo/kairo/rc16/.git/
+2026-10-03T00:07:20.2545147Z [command]/usr/bin/git remote add origin https://github.com/BunBajiro/kairo
+2026-10-03T00:07:20.2552412Z ##[endgroup]
+2026-10-03T00:07:20.2563857Z ##[group]Disabling automatic garbage collection
+2026-10-03T00:07:20.2566087Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-03T00:07:20.2596946Z ##[endgroup]
+2026-10-03T00:07:20.2597780Z ##[group]Setting up auth
+2026-10-03T00:07:20.2598663Z Removing SSH command configuration
+2026-10-03T00:07:20.2610999Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:07:20.2667609Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:07:20.2994346Z Removing HTTP extra header
+2026-10-03T00:07:20.2995300Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:07:20.3184494Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:07:20.3224779Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:07:20.3226597Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:07:20.3557152Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:07:20.3575956Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-03T00:07:20.3579456Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/rc16/.git.path /home/runner/work/_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:20.3619475Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/rc16/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:20.3643342Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/rc16/.git.path /github/runner_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:20.3670684Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/rc16/.git/worktrees/*.path /github/runner_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:20.3694818Z ##[endgroup]
+2026-10-03T00:07:20.3695818Z ##[group]Fetching the repository
+2026-10-03T00:07:20.3699895Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+2026-10-03T00:07:22.2181578Z From https://github.com/BunBajiro/kairo
+2026-10-03T00:07:22.2191310Z  * branch            57c8dcc7fbd8fc2b62129498d1819050c78381a1 -> FETCH_HEAD
+2026-10-03T00:07:22.2195703Z [command]/usr/bin/git rev-parse --verify --quiet 57c8dcc7fbd8fc2b62129498d1819050c78381a1^{object}
+2026-10-03T00:07:22.2216582Z 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+2026-10-03T00:07:22.2220984Z ##[endgroup]
+2026-10-03T00:07:22.2221770Z ##[group]Determining the checkout info
+2026-10-03T00:07:22.2222805Z ##[endgroup]
+2026-10-03T00:07:22.2226111Z [command]/usr/bin/git sparse-checkout disable
+2026-10-03T00:07:22.2261014Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-03T00:07:22.2288742Z ##[group]Checking out the ref
+2026-10-03T00:07:22.2291976Z [command]/usr/bin/git checkout --progress --force 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+2026-10-03T00:07:22.3782964Z Note: switching to '57c8dcc7fbd8fc2b62129498d1819050c78381a1'.
+2026-10-03T00:07:22.3792986Z 
+2026-10-03T00:07:22.3793909Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-03T00:07:22.3795057Z changes and commit them, and you can discard any commits you make in this
+2026-10-03T00:07:22.3795889Z state without impacting any branches by switching back to a branch.
+2026-10-03T00:07:22.3796625Z 
+2026-10-03T00:07:22.3797033Z If you want to create a new branch to retain commits you create, you may
+2026-10-03T00:07:22.3797880Z do so (now or later) by using -c with the switch command. Example:
+2026-10-03T00:07:22.3798494Z 
+2026-10-03T00:07:22.3798868Z   git switch -c <new-branch-name>
+2026-10-03T00:07:22.3799506Z 
+2026-10-03T00:07:22.3799931Z Or undo this operation with:
+2026-10-03T00:07:22.3800295Z 
+2026-10-03T00:07:22.3800550Z   git switch -
+2026-10-03T00:07:22.3800805Z 
+2026-10-03T00:07:22.3801258Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-03T00:07:22.3801688Z 
+2026-10-03T00:07:22.3802154Z HEAD is now at 57c8dcc Add automatic SDE updates, safe activation and dataset settings for rc16
+2026-10-03T00:07:22.3804181Z ##[endgroup]
+2026-10-03T00:07:22.3874910Z [command]/usr/bin/git log -1 --format=%H
+2026-10-03T00:07:22.3883354Z 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+2026-10-03T00:07:22.3885367Z ##[group]Removing auth
+2026-10-03T00:07:22.3885943Z Removing SSH command configuration
+2026-10-03T00:07:22.3903173Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:07:22.3920190Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:07:22.4098958Z Removing HTTP extra header
+2026-10-03T00:07:22.4101667Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:07:22.4126890Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:07:22.4285867Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:07:22.4299789Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:07:22.4323280Z includeif.gitdir:/home/runner/work/kairo/kairo/rc16/.git.path
+2026-10-03T00:07:22.4324300Z includeif.gitdir:/home/runner/work/kairo/kairo/rc16/.git/worktrees/*.path
+2026-10-03T00:07:22.4325076Z includeif.gitdir:/github/workspace/rc16/.git.path
+2026-10-03T00:07:22.4325851Z includeif.gitdir:/github/workspace/rc16/.git/worktrees/*.path
+2026-10-03T00:07:22.4327787Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/rc16/.git.path
+2026-10-03T00:07:22.4349569Z /home/runner/work/_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:22.4387607Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/rc16/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-23676f68\-0f72\-4ea3\-8811\-cd3d490466c8\.config
+2026-10-03T00:07:22.4405963Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/rc16/.git/worktrees/*.path
+2026-10-03T00:07:22.4418654Z /home/runner/work/_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:22.4433197Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/rc16/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-23676f68\-0f72\-4ea3\-8811\-cd3d490466c8\.config
+2026-10-03T00:07:22.4460979Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/rc16/.git.path
+2026-10-03T00:07:22.4489994Z /github/runner_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:22.4504298Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/rc16/.git.path \/github\/runner_temp\/git\-credentials\-23676f68\-0f72\-4ea3\-8811\-cd3d490466c8\.config
+2026-10-03T00:07:22.4535085Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/rc16/.git/worktrees/*.path
+2026-10-03T00:07:22.4553397Z /github/runner_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config
+2026-10-03T00:07:22.4558511Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/rc16/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-23676f68\-0f72\-4ea3\-8811\-cd3d490466c8\.config
+2026-10-03T00:07:22.4584230Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:07:22.4735796Z Removing credentials config '/home/runner/work/_temp/git-credentials-23676f68-0f72-4ea3-8811-cd3d490466c8.config'
+2026-10-03T00:07:22.4744926Z ##[endgroup]
+2026-10-03T00:07:22.4880278Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-03T00:07:22.4880651Z with:
+2026-10-03T00:07:22.4880898Z   repository: BunBajiro/kairo
+2026-10-03T00:07:22.4881175Z   ref: 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:22.4881515Z   path: candidate
+2026-10-03T00:07:22.4881769Z   persist-credentials: false
+2026-10-03T00:07:22.4884091Z   token: ***
+2026-10-03T00:07:22.4884336Z   ssh-strict: true
+2026-10-03T00:07:22.4884572Z   ssh-user: git
+2026-10-03T00:07:22.4884846Z   clean: true
+2026-10-03T00:07:22.4885095Z   sparse-checkout-cone-mode: true
+2026-10-03T00:07:22.4885380Z   fetch-depth: 1
+2026-10-03T00:07:22.4885663Z   fetch-tags: false
+2026-10-03T00:07:22.4885896Z   show-progress: true
+2026-10-03T00:07:22.4886183Z   lfs: false
+2026-10-03T00:07:22.4886416Z   submodules: false
+2026-10-03T00:07:22.4886666Z   set-safe-directory: true
+2026-10-03T00:07:22.4887063Z   allow-unsafe-pr-checkout: false
+2026-10-03T00:07:22.4887343Z ##[endgroup]
+2026-10-03T00:07:22.5766358Z Syncing repository: BunBajiro/kairo
+2026-10-03T00:07:22.5767259Z ##[group]Getting Git version info
+2026-10-03T00:07:22.5767857Z Working directory is '/home/runner/work/kairo/kairo/candidate'
+2026-10-03T00:07:22.5768820Z [command]/usr/bin/git version
+2026-10-03T00:07:22.5769294Z git version 2.55.0
+2026-10-03T00:07:22.5770808Z ##[endgroup]
+2026-10-03T00:07:22.5772672Z Temporarily overriding HOME='/home/runner/work/_temp/69c4dfaa-b0cd-40da-ad9b-513df07be139' before making global git config changes
+2026-10-03T00:07:22.5773762Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T00:07:22.5774676Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/candidate
+2026-10-03T00:07:22.5812176Z ##[group]Determining repository object format
+2026-10-03T00:07:22.5813423Z ##[endgroup]
+2026-10-03T00:07:22.5814444Z ##[group]Initializing the repository
+2026-10-03T00:07:22.5815096Z [command]/usr/bin/git init /home/runner/work/kairo/kairo/candidate
+2026-10-03T00:07:22.5908881Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-03T00:07:22.5913406Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-03T00:07:22.5917465Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-03T00:07:22.5938404Z hint: call:
+2026-10-03T00:07:22.5938917Z hint:
+2026-10-03T00:07:22.5939643Z hint: 	git config --global init.defaultBranch <name>
+2026-10-03T00:07:22.5940364Z hint:
+2026-10-03T00:07:22.5941153Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-03T00:07:22.5942076Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-03T00:07:22.5943219Z hint:
+2026-10-03T00:07:22.5943694Z hint: 	git branch -m <name>
+2026-10-03T00:07:22.5944350Z hint:
+2026-10-03T00:07:22.5944944Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-03T00:07:22.5946098Z Initialized empty Git repository in /home/runner/work/kairo/kairo/candidate/.git/
+2026-10-03T00:07:22.5947988Z [command]/usr/bin/git remote add origin https://github.com/BunBajiro/kairo
+2026-10-03T00:07:22.5954766Z ##[endgroup]
+2026-10-03T00:07:22.5955878Z ##[group]Disabling automatic garbage collection
+2026-10-03T00:07:22.5956570Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-03T00:07:22.6040359Z ##[endgroup]
+2026-10-03T00:07:22.6041120Z ##[group]Setting up auth
+2026-10-03T00:07:22.6041862Z Removing SSH command configuration
+2026-10-03T00:07:22.6042930Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:07:22.6045848Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:07:22.6361132Z Removing HTTP extra header
+2026-10-03T00:07:22.6363001Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:07:22.6366254Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:07:22.6694279Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:07:22.6695507Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:07:22.6961367Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:07:22.6964869Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-03T00:07:22.6968078Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/candidate/.git.path /home/runner/work/_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:22.7112601Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/candidate/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:22.7196622Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/candidate/.git.path /github/runner_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:22.7200683Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/candidate/.git/worktrees/*.path /github/runner_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:22.7205057Z ##[endgroup]
+2026-10-03T00:07:22.7206196Z ##[group]Fetching the repository
+2026-10-03T00:07:22.7207800Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:24.4356438Z From https://github.com/BunBajiro/kairo
+2026-10-03T00:07:24.4358119Z  * branch            05d0d4b36c154329006d6772769063db874762da -> FETCH_HEAD
+2026-10-03T00:07:24.4366677Z [command]/usr/bin/git rev-parse --verify --quiet 05d0d4b36c154329006d6772769063db874762da^{object}
+2026-10-03T00:07:24.4390492Z 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:24.4393375Z ##[endgroup]
+2026-10-03T00:07:24.4394160Z ##[group]Determining the checkout info
+2026-10-03T00:07:24.4394899Z ##[endgroup]
+2026-10-03T00:07:24.4398678Z [command]/usr/bin/git sparse-checkout disable
+2026-10-03T00:07:24.4437006Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-03T00:07:24.4464845Z ##[group]Checking out the ref
+2026-10-03T00:07:24.4467948Z [command]/usr/bin/git checkout --progress --force 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:24.5903901Z Note: switching to '05d0d4b36c154329006d6772769063db874762da'.
+2026-10-03T00:07:24.5904483Z 
+2026-10-03T00:07:24.5904855Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-03T00:07:24.5905537Z changes and commit them, and you can discard any commits you make in this
+2026-10-03T00:07:24.5906569Z state without impacting any branches by switching back to a branch.
+2026-10-03T00:07:24.5907032Z 
+2026-10-03T00:07:24.5907467Z If you want to create a new branch to retain commits you create, you may
+2026-10-03T00:07:24.5908299Z do so (now or later) by using -c with the switch command. Example:
+2026-10-03T00:07:24.5908809Z 
+2026-10-03T00:07:24.5909075Z   git switch -c <new-branch-name>
+2026-10-03T00:07:24.5909451Z 
+2026-10-03T00:07:24.5909771Z Or undo this operation with:
+2026-10-03T00:07:24.5910109Z 
+2026-10-03T00:07:24.5910350Z   git switch -
+2026-10-03T00:07:24.5910642Z 
+2026-10-03T00:07:24.5911096Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-03T00:07:24.5911648Z 
+2026-10-03T00:07:24.5912205Z HEAD is now at 05d0d4b Refine internal benchmark candidate Session allocations and lazy formatting
+2026-10-03T00:07:24.5914544Z ##[endgroup]
+2026-10-03T00:07:24.5945978Z [command]/usr/bin/git log -1 --format=%H
+2026-10-03T00:07:24.5970110Z 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:24.5979047Z ##[group]Removing auth
+2026-10-03T00:07:24.5979620Z Removing SSH command configuration
+2026-10-03T00:07:24.5989511Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:07:24.6009997Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:07:24.6181331Z Removing HTTP extra header
+2026-10-03T00:07:24.6189240Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:07:24.6215330Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:07:24.6378561Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:07:24.6379394Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:07:24.6403357Z includeif.gitdir:/home/runner/work/kairo/kairo/candidate/.git.path
+2026-10-03T00:07:24.6404427Z includeif.gitdir:/home/runner/work/kairo/kairo/candidate/.git/worktrees/*.path
+2026-10-03T00:07:24.6405479Z includeif.gitdir:/github/workspace/candidate/.git.path
+2026-10-03T00:07:24.6411692Z includeif.gitdir:/github/workspace/candidate/.git/worktrees/*.path
+2026-10-03T00:07:24.6413439Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/candidate/.git.path
+2026-10-03T00:07:24.6425611Z /home/runner/work/_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:24.6434780Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/candidate/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-16d1fa70\-b20c\-45a1\-b146\-33f9d1b29426\.config
+2026-10-03T00:07:24.6462069Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/candidate/.git/worktrees/*.path
+2026-10-03T00:07:24.6479179Z /home/runner/work/_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:24.6501454Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/candidate/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-16d1fa70\-b20c\-45a1\-b146\-33f9d1b29426\.config
+2026-10-03T00:07:24.6530832Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/candidate/.git.path
+2026-10-03T00:07:24.6557483Z /github/runner_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:24.6563946Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/candidate/.git.path \/github\/runner_temp\/git\-credentials\-16d1fa70\-b20c\-45a1\-b146\-33f9d1b29426\.config
+2026-10-03T00:07:24.6605238Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/candidate/.git/worktrees/*.path
+2026-10-03T00:07:24.6621963Z /github/runner_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config
+2026-10-03T00:07:24.6634411Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/candidate/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-16d1fa70\-b20c\-45a1\-b146\-33f9d1b29426\.config
+2026-10-03T00:07:24.6656474Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:07:24.6809783Z Removing credentials config '/home/runner/work/_temp/git-credentials-16d1fa70-b20c-45a1-b146-33f9d1b29426.config'
+2026-10-03T00:07:24.6818972Z ##[endgroup]
+2026-10-03T00:07:24.6961522Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+2026-10-03T00:07:24.6961897Z with:
+2026-10-03T00:07:24.6962192Z   node-version: 24.19.0
+2026-10-03T00:07:24.6962660Z   check-latest: false
+2026-10-03T00:07:24.6964887Z   token: ***
+2026-10-03T00:07:24.6965144Z   package-manager-cache: true
+2026-10-03T00:07:24.6965432Z ##[endgroup]
+2026-10-03T00:07:24.8050744Z Attempting to download 24.19.0...
+2026-10-03T00:07:25.8306979Z Acquiring 24.19.0 - x64 from https://github.com/actions/node-versions/releases/download/24.19.0-30872449280/node-24.19.0-linux-x64.tar.gz
+2026-10-03T00:07:26.3845533Z Extracting ...
+2026-10-03T00:07:26.3947761Z [command]/usr/bin/tar xz --strip 1 --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/0774c224-0dcb-4a5b-9781-4e41c6b074b4 -f /home/runner/work/_temp/3d14fc85-ba58-4ab7-ba3a-5d4b2486435b
+2026-10-03T00:07:27.6133428Z Adding to the cache ...
+2026-10-03T00:07:31.2636682Z ##[group]Environment details
+2026-10-03T00:07:31.4904368Z node: v24.19.0
+2026-10-03T00:07:31.4904884Z npm: 11.17.0
+2026-10-03T00:07:31.4905452Z yarn: 1.22.22
+2026-10-03T00:07:31.4906150Z ##[endgroup]
+2026-10-03T00:07:31.5035388Z ##[group]Run python3 - <<'PY'
+2026-10-03T00:07:31.5035815Z [36;1mpython3 - <<'PY'[0m
+2026-10-03T00:07:31.5036203Z [36;1mimport datetime, hashlib, json, os, platform, shutil[0m
+2026-10-03T00:07:31.5036613Z [36;1mfrom pathlib import Path[0m
+2026-10-03T00:07:31.5037002Z [36;1mroot = Path('analysis/rc17/raw/github')[0m
+2026-10-03T00:07:31.5037421Z [36;1mshutil.rmtree(root, ignore_errors=True)[0m
+2026-10-03T00:07:31.5037787Z [36;1mroot.mkdir(parents=True)[0m
+2026-10-03T00:07:31.5038382Z [36;1mharness = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('analysis/rc17/harness').rglob('*') if p.is_file()}[0m
+2026-10-03T00:07:31.5039060Z [36;1m(root / 'run-provenance.json').write_text(json.dumps({[0m
+2026-10-03T00:07:31.5039579Z [36;1m    'startedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),[0m
+2026-10-03T00:07:31.5040355Z [36;1m    'runUrl': f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",[0m
+2026-10-03T00:07:31.5040970Z [36;1m    'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],[0m
+2026-10-03T00:07:31.5041387Z [36;1m    'harnessCommit': os.environ['GITHUB_SHA'],[0m
+2026-10-03T00:07:31.5041903Z [36;1m    'baselineCommit': '57c8dcc7fbd8fc2b62129498d1819050c78381a1',[0m
+2026-10-03T00:07:31.5043305Z [36;1m    'historical073Commit': '239794774320fcdebaa1d76ce8a77c5c25cfc48c',[0m
+2026-10-03T00:07:31.5043805Z [36;1m    'candidateCommit': os.environ['CANDIDATE_SHA'],[0m
+2026-10-03T00:07:31.5044297Z [36;1m    'suite': os.environ['REQUEST_SUITE'], 'platform': platform.platform(),[0m
+2026-10-03T00:07:31.5044929Z [36;1m    'acceptedFullRun': int(os.environ['ACCEPTED_FULL_RUN']) if os.environ.get('ACCEPTED_FULL_RUN') else None,[0m
+2026-10-03T00:07:31.5045479Z [36;1m    'harnessSha256': harness,[0m
+2026-10-03T00:07:31.5046272Z [36;1m    'note': 'External harnesses only. Sequential measured lanes. Per-lane completeness and overall Actions conclusion remain authoritative; missing outputs are not passes.'[0m
+2026-10-03T00:07:31.5047000Z [36;1m}, indent=2) + '\n')[0m
+2026-10-03T00:07:31.5047316Z [36;1mPY[0m
+2026-10-03T00:07:31.5086250Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:07:31.5086587Z env:
+2026-10-03T00:07:31.5086889Z   CANDIDATE_SHA: 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:31.5087262Z   REQUEST_SUITE: browser
+2026-10-03T00:07:31.5087579Z   ACCEPTED_FULL_RUN: 37078241973
+2026-10-03T00:07:31.5087854Z ##[endgroup]
+2026-10-03T00:07:31.5497942Z ##[group]Run cd "$GITHUB_WORKSPACE/rc16"
+2026-10-03T00:07:31.5498328Z [36;1mcd "$GITHUB_WORKSPACE/rc16"[0m
+2026-10-03T00:07:31.5498614Z [36;1mnpm run install:ci[0m
+2026-10-03T00:07:31.5498858Z [36;1mnpm run build[0m
+2026-10-03T00:07:31.5499157Z [36;1mcd "$GITHUB_WORKSPACE/candidate"[0m
+2026-10-03T00:07:31.5499437Z [36;1mnpm run install:ci[0m
+2026-10-03T00:07:31.5499685Z [36;1mnpm run build[0m
+2026-10-03T00:07:31.5499973Z [36;1mcd "$GITHUB_WORKSPACE/checkpoint"[0m
+2026-10-03T00:07:31.5500617Z [36;1mnode analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/rc16" analysis/rc17/raw/github/rc16-source.json 57c8dcc7fbd8fc2b62129498d1819050c78381a1[0m
+2026-10-03T00:07:31.5501532Z [36;1mnode analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/github/candidate-source.json "$CANDIDATE_SHA"[0m
+2026-10-03T00:07:31.5502177Z [36;1mif [ "$REQUEST_SUITE" = all ] || [ "$REQUEST_SUITE" = legacy-backend ]; then[0m
+2026-10-03T00:07:31.5502854Z [36;1m  cd "$GITHUB_WORKSPACE/v073"[0m
+2026-10-03T00:07:31.5503147Z [36;1m  npm run install:ci[0m
+2026-10-03T00:07:31.5503427Z [36;1m  npm run build[0m
+2026-10-03T00:07:31.5503706Z [36;1m  cd "$GITHUB_WORKSPACE/checkpoint"[0m
+2026-10-03T00:07:31.5504336Z [36;1m  node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/v073" analysis/rc17/raw/github/v073-source.json 239794774320fcdebaa1d76ce8a77c5c25cfc48c[0m
+2026-10-03T00:07:31.5505044Z [36;1mfi[0m
+2026-10-03T00:07:31.5535060Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:07:31.5535335Z env:
+2026-10-03T00:07:31.5535601Z   CANDIDATE_SHA: 05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:07:31.5535949Z   REQUEST_SUITE: browser
+2026-10-03T00:07:31.5536217Z ##[endgroup]
+2026-10-03T00:07:31.6394343Z 
+2026-10-03T00:07:31.6425443Z > kairo-capsuleer-operations@0.8.0-rc.16 install:ci
+2026-10-03T00:07:31.6432536Z > bash scripts/install-ci.sh
+2026-10-03T00:07:31.6438128Z 
+2026-10-03T00:07:31.6525889Z /usr/bin/flock
+2026-10-03T00:07:31.6526562Z /usr/bin/timeout
+2026-10-03T00:07:31.6527114Z /usr/bin/curl
+2026-10-03T00:07:31.6528058Z /usr/bin/sha256sum
+2026-10-03T00:07:31.6528603Z [sites] validating writable install environment
+2026-10-03T00:07:31.7517359Z [sites] environment passed: HOME=/home/runner/work/kairo/kairo/rc16/.sites-runtime/home, cache=/home/runner/work/kairo/kairo/rc16/.sites-runtime/npm-cache
+2026-10-03T00:07:32.0556608Z [sites] downloading the complete locked vinext tarball
+2026-10-03T00:07:32.1966564Z [sites] verifying locked vinext tarball integrity
+2026-10-03T00:07:32.2467586Z [sites] network and integrity preflight passed
+2026-10-03T00:07:32.2471304Z [sites] running exactly one bounded npm ci
+2026-10-03T00:07:50.3715546Z npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+2026-10-03T00:07:50.4056384Z npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+2026-10-03T00:07:56.4400849Z 
+2026-10-03T00:07:56.4403536Z added 673 packages in 24s
+2026-10-03T00:07:56.4423924Z npm warn allow-scripts 7 packages have install scripts not yet covered by allowScripts:
+2026-10-03T00:07:56.4442440Z npm warn allow-scripts   esbuild@0.18.20 (postinstall: node install.js)
+2026-10-03T00:07:56.4453400Z npm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)
+2026-10-03T00:07:56.4454380Z npm warn allow-scripts   esbuild@0.28.0 (postinstall: node install.js)
+2026-10-03T00:07:56.4455485Z npm warn allow-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-10-03T00:07:56.4460019Z npm warn allow-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-10-03T00:07:56.4461106Z npm warn allow-scripts   workerd@1.20260515.1 (postinstall: node install.js)
+2026-10-03T00:07:56.4462102Z npm warn allow-scripts   esbuild@0.27.3 (postinstall: node install.js)
+2026-10-03T00:07:56.4463020Z npm warn allow-scripts
+2026-10-03T00:07:56.4464343Z npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+2026-10-03T00:07:56.4963271Z [sites] npm ci passed and vinext is available
+2026-10-03T00:07:56.5802932Z 
+2026-10-03T00:07:56.5803673Z > kairo-capsuleer-operations@0.8.0-rc.16 build
+2026-10-03T00:07:56.5804567Z > bash scripts/build-verified.sh
+2026-10-03T00:07:56.5804970Z 
+2026-10-03T00:07:56.5920069Z /usr/bin/timeout
+2026-10-03T00:07:56.5920773Z Running bounded vinext build...
+2026-10-03T00:07:56.8555002Z 
+2026-10-03T00:07:56.8556157Z   vinext build  (Vite 8.0.13)
+2026-10-03T00:07:56.8556736Z 
+2026-10-03T00:07:58.1504720Z [34m[1/5] analyze client references...[39m
+2026-10-03T00:07:58.1861822Z [2K
+2026-10-03T00:07:58.7951070Z transforming...✓ 132 modules transformed.
+2026-10-03T00:07:58.8145699Z rendering chunks...
+2026-10-03T00:07:58.8199522Z [32m✓ built in 668ms[39m
+2026-10-03T00:07:58.8262937Z [34m[2/5] analyze server references...[39m
+2026-10-03T00:07:58.8434183Z [2K
+2026-10-03T00:08:00.1039411Z transforming...✓ 868 modules transformed.
+2026-10-03T00:08:00.1216460Z rendering chunks...
+2026-10-03T00:08:00.1258150Z [32m✓ built in 1.30s[39m
+2026-10-03T00:08:00.1288172Z [34m[3/5] build rsc environment...[39m
+2026-10-03T00:08:00.1416772Z [2K
+2026-10-03T00:08:00.4560543Z transforming...✓ 138 modules transformed.
+2026-10-03T00:08:00.5508544Z rendering chunks...
+2026-10-03T00:08:00.5863842Z computing gzip size...
+2026-10-03T00:08:00.6005329Z [32m✓ built in 471ms[39m
+2026-10-03T00:08:00.7363772Z [34m[4/5] build client environment...[39m
+2026-10-03T00:08:00.7556696Z [2K
+2026-10-03T00:08:02.5324533Z transforming...✓ 2646 modules transformed.
+2026-10-03T00:08:02.7239104Z rendering chunks...
+2026-10-03T00:08:02.9623638Z computing gzip size...
+2026-10-03T00:08:02.9852892Z [33m[plugin builtin:vite-reporter] 
+2026-10-03T00:08:02.9856695Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-03T00:08:02.9857585Z - Using dynamic import() to code-split the application
+2026-10-03T00:08:02.9858909Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-10-03T00:08:02.9860252Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-03T00:08:02.9867018Z [32m✓ built in 2.25s[39m
+2026-10-03T00:08:02.9944892Z [34m[5/5] build ssr environment...[39m
+2026-10-03T00:08:03.0076067Z [2K
+2026-10-03T00:08:04.2904787Z transforming...✓ 879 modules transformed.
+2026-10-03T00:08:04.4843633Z rendering chunks...
+2026-10-03T00:08:04.6363544Z computing gzip size...
+2026-10-03T00:08:04.6746295Z [32m✓ built in 1.68s[39m
+2026-10-03T00:08:04.6792142Z [0m  Pre-rendering all routes (output: 'export')...
+2026-10-03T00:08:04.7093890Z [vinext] Production server for prerendering running at http://127.0.0.1:43845
+2026-10-03T00:08:04.8501338Z   Prerendered 2 routes (0 skipped).
+2026-10-03T00:08:04.8517692Z [0m
+2026-10-03T00:08:04.8518368Z   Route (app)
+2026-10-03T00:08:04.8518936Z   ─ ○ /
+2026-10-03T00:08:04.8519157Z 
+2026-10-03T00:08:04.8519475Z   ○ Static
+2026-10-03T00:08:04.8519796Z 
+2026-10-03T00:08:04.8520514Z   ○ Routes marked static were confirmed by speculative prerender (attempted render
+2026-10-03T00:08:04.8521736Z     succeeded without dynamic API usage).
+2026-10-03T00:08:04.8522132Z 
+2026-10-03T00:08:04.8522731Z   Build complete. Run `vinext start` to start the production server.
+2026-10-03T00:08:04.8523180Z 
+2026-10-03T00:08:04.9942914Z 
+2026-10-03T00:08:04.9954324Z > kairo-capsuleer-operations@0.8.0-rc.17 install:ci
+2026-10-03T00:08:04.9955234Z > bash scripts/install-ci.sh
+2026-10-03T00:08:04.9955636Z 
+2026-10-03T00:08:05.0068244Z /usr/bin/flock
+2026-10-03T00:08:05.0075440Z /usr/bin/timeout
+2026-10-03T00:08:05.0083227Z /usr/bin/curl
+2026-10-03T00:08:05.0083799Z /usr/bin/sha256sum
+2026-10-03T00:08:05.0084349Z [sites] validating writable install environment
+2026-10-03T00:08:05.1006270Z [sites] environment passed: HOME=/home/runner/work/kairo/kairo/candidate/.sites-runtime/home, cache=/home/runner/work/kairo/kairo/candidate/.sites-runtime/npm-cache
+2026-10-03T00:08:05.3666525Z [sites] downloading the complete locked vinext tarball
+2026-10-03T00:08:05.5062913Z [sites] verifying locked vinext tarball integrity
+2026-10-03T00:08:05.5380534Z [sites] network and integrity preflight passed
+2026-10-03T00:08:05.5381437Z [sites] running exactly one bounded npm ci
+2026-10-03T00:08:23.7285729Z npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+2026-10-03T00:08:23.7628273Z npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+2026-10-03T00:08:29.4153055Z 
+2026-10-03T00:08:29.4159094Z npm warn allow-scripts 7 packages have install scripts not yet covered by allowScripts:
+2026-10-03T00:08:29.4160243Z npm warn allow-scripts   esbuild@0.18.20 (postinstall: node install.js)
+2026-10-03T00:08:29.4161193Z npm warn allow-scripts   esbuild@0.25.12 (postinstall: node install.js)
+2026-10-03T00:08:29.4162457Z npm warn allow-scripts   esbuild@0.28.0 (postinstall: node install.js)
+2026-10-03T00:08:29.4163097Z added 673 packages in 24s
+2026-10-03T00:08:29.4163994Z npm warn allow-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-10-03T00:08:29.4165238Z npm warn allow-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-10-03T00:08:29.4166260Z npm warn allow-scripts   workerd@1.20260515.1 (postinstall: node install.js)
+2026-10-03T00:08:29.4167085Z npm warn allow-scripts   esbuild@0.27.3 (postinstall: node install.js)
+2026-10-03T00:08:29.4168021Z npm warn allow-scripts
+2026-10-03T00:08:29.4169132Z npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+2026-10-03T00:08:29.4745353Z [sites] npm ci passed and vinext is available
+2026-10-03T00:08:29.5592924Z 
+2026-10-03T00:08:29.5594202Z > kairo-capsuleer-operations@0.8.0-rc.17 build
+2026-10-03T00:08:29.5595078Z > bash scripts/build-verified.sh
+2026-10-03T00:08:29.5595527Z 
+2026-10-03T00:08:29.5714660Z /usr/bin/timeout
+2026-10-03T00:08:29.5715524Z Running bounded vinext build...
+2026-10-03T00:08:29.8283000Z 
+2026-10-03T00:08:29.8284295Z   vinext build  (Vite 8.0.13)
+2026-10-03T00:08:29.8302895Z 
+2026-10-03T00:08:31.1611077Z [34m[1/5] analyze client references...[39m
+2026-10-03T00:08:31.1983024Z [2K
+2026-10-03T00:08:31.8088796Z transforming...✓ 132 modules transformed.
+2026-10-03T00:08:31.8293746Z rendering chunks...
+2026-10-03T00:08:31.8347977Z [32m✓ built in 672ms[39m
+2026-10-03T00:08:31.8412187Z [34m[2/5] analyze server references...[39m
+2026-10-03T00:08:31.8590411Z [2K
+2026-10-03T00:08:33.1022969Z transforming...✓ 875 modules transformed.
+2026-10-03T00:08:33.1204619Z rendering chunks...
+2026-10-03T00:08:33.1247998Z [32m✓ built in 1.28s[39m
+2026-10-03T00:08:33.1283443Z [34m[3/5] build rsc environment...[39m
+2026-10-03T00:08:33.1411890Z [2K
+2026-10-03T00:08:33.4807321Z transforming...✓ 138 modules transformed.
+2026-10-03T00:08:33.5764491Z rendering chunks...
+2026-10-03T00:08:33.6163657Z computing gzip size...
+2026-10-03T00:08:33.6280675Z [32m✓ built in 499ms[39m
+2026-10-03T00:08:33.6338498Z [34m[4/5] build client environment...[39m
+2026-10-03T00:08:33.6463298Z [2K
+2026-10-03T00:08:35.4207130Z transforming...✓ 2652 modules transformed.
+2026-10-03T00:08:35.6793616Z rendering chunks...
+2026-10-03T00:08:35.9151572Z computing gzip size...
+2026-10-03T00:08:35.9438788Z [33m[plugin builtin:vite-reporter] 
+2026-10-03T00:08:35.9440975Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-03T00:08:35.9443765Z - Using dynamic import() to code-split the application
+2026-10-03T00:08:35.9445097Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-10-03T00:08:35.9446549Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-03T00:08:35.9456326Z [32m✓ built in 2.31s[39m
+2026-10-03T00:08:36.1061679Z [34m[5/5] build ssr environment...[39m
+2026-10-03T00:08:36.1206607Z [2K
+2026-10-03T00:08:37.3967199Z transforming...✓ 886 modules transformed.
+2026-10-03T00:08:37.5803226Z rendering chunks...
+2026-10-03T00:08:37.7449175Z computing gzip size...
+2026-10-03T00:08:37.7859562Z [32m✓ built in 1.68s[39m
+2026-10-03T00:08:37.7898742Z [0m  Pre-rendering all routes (output: 'export')...
+2026-10-03T00:08:37.8183722Z [vinext] Production server for prerendering running at http://127.0.0.1:34791
+2026-10-03T00:08:37.9599787Z   Prerendered 2 routes (0 skipped).
+2026-10-03T00:08:37.9625945Z [0m
+2026-10-03T00:08:37.9626807Z   Route (app)
+2026-10-03T00:08:37.9627584Z   ─ ○ /
+2026-10-03T00:08:37.9627911Z 
+2026-10-03T00:08:37.9628286Z   ○ Static
+2026-10-03T00:08:37.9628674Z 
+2026-10-03T00:08:37.9629353Z   ○ Routes marked static were confirmed by speculative prerender (attempted render
+2026-10-03T00:08:37.9630292Z     succeeded without dynamic API usage).
+2026-10-03T00:08:37.9630758Z 
+2026-10-03T00:08:37.9631284Z   Build complete. Run `vinext start` to start the production server.
+2026-10-03T00:08:37.9631964Z 
+2026-10-03T00:08:38.2235900Z {"output":"/home/runner/work/kairo/kairo/checkpoint/analysis/rc17/raw/github/rc16-source.json","sourceCommit":"57c8dcc7fbd8fc2b62129498d1819050c78381a1","dirty":false,"files":407,"builtFiles":20,"fingerprint":"51f63fefd0015448f3474fead7500c592348363666b2580078519801cd319d7d"}
+2026-10-03T00:08:38.4294765Z {"output":"/home/runner/work/kairo/kairo/checkpoint/analysis/rc17/raw/github/candidate-source.json","sourceCommit":"05d0d4b36c154329006d6772769063db874762da","dirty":false,"files":439,"builtFiles":20,"fingerprint":"fbd25664336951a7f74fddfe32f1ae6d7505eab5adae92caa5a70e06d8739a54"}
+2026-10-03T00:08:38.4357799Z ##[group]Run npm run check:kairo
+2026-10-03T00:08:38.4358174Z [36;1mnpm run check:kairo[0m
+2026-10-03T00:08:38.4358453Z [36;1mnpm run test:kairo[0m
+2026-10-03T00:08:38.4394237Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:08:38.4394561Z ##[endgroup]
+2026-10-03T00:08:38.5247087Z 
+2026-10-03T00:08:38.5248145Z > kairo-capsuleer-operations@0.8.0-rc.17 check:kairo
+2026-10-03T00:08:38.5249004Z > tsc -p tsconfig.kairo.json --noEmit
+2026-10-03T00:08:38.5249420Z 
+2026-10-03T00:08:48.7139432Z 
+2026-10-03T00:08:48.7140615Z > kairo-capsuleer-operations@0.8.0-rc.17 test:kairo
+2026-10-03T00:08:48.7141562Z > node --test tests/kairo/*.test.mjs
+2026-10-03T00:08:48.7141984Z 
+2026-10-03T00:08:48.8286559Z ✔ containment preserves shared parents, missing roots, duplicate IDs and first repeated cycle IDs (1.467973ms)
+2026-10-03T00:08:48.8297652Z ✔ a long shared containment chain is read in linear work without recursion (25.951325ms)
+2026-10-03T00:08:48.8299299Z ✔ enrichment retains public name fallback and structure permission/pilot scope (1.141873ms)
+2026-10-03T00:08:48.9705160Z ✔ identical valued references are write-free and missing events repair without requeueing politics (93.430846ms)
+2026-10-03T00:08:48.9968068Z ✔ corrected valuations update once while ESI provenance and semantic identity stay intact (26.208497ms)
+2026-10-03T00:08:49.1187733Z ✔ PKCE uses an unpredictable verifier and an S256 challenge (1.211805ms)
+2026-10-03T00:08:49.1200347Z ✔ EVE claims reject wrong audience, issuer, expiry and identity (0.39811ms)
+2026-10-03T00:08:49.1504478Z ✔ vault persistence is authenticated and never writes a plaintext token (34.618187ms)
+2026-10-03T00:08:49.2933425Z ✔ SSO state is session-bound and single-use; validated tokens refresh and rotate (142.43554ms)
+2026-10-03T00:08:49.3234317Z ✔ ESI deduplicates concurrent requests and respects Cache-Control (30.164159ms)
+2026-10-03T00:08:49.3448063Z ✔ ESI 304 extends freshness, and a failed update retains stale data (21.286374ms)
+2026-10-03T00:08:49.3671325Z ✔ ESI collects every X-Pages page and isolates character cache entries (22.518886ms)
+2026-10-03T00:08:49.3900181Z ✔ ESI rate limiting stops repeated requests for the cooldown (20.166069ms)
+2026-10-03T00:08:49.3902109Z ✔ OPSEC fails closed on missing, stale or unclassified data and manual always wins (0.868156ms)
+2026-10-03T00:08:49.3903674Z ✔ OPSEC classifies FW before sovereignty; blue and hostile both remain covered (0.56242ms)
+2026-10-03T00:08:49.3904747Z ✔ stream defaults are empty; normalization only admits explicit output fields (0.680085ms)
+2026-10-03T00:08:49.4118020Z ✔ stream toasts use only approved copy, obey enabled flags and cooldowns (22.00761ms)
+2026-10-03T00:08:49.4348766Z ✔ module registry accepts independent migrations, events, a page and disable lifecycle (22.478517ms)
+2026-10-03T00:08:49.4353770Z ✔ local host checks and constant-time CSRF comparison reject unexpected inputs (0.193744ms)
+2026-10-03T00:08:49.7534308Z ✔ HTTP isolation: private data needs a session; stream cannot reach admin; writes need CSRF (317.578827ms)
+2026-10-03T00:08:49.8789558Z ✔ full local pipeline: OAuth callback leads to scoped ESI, private discovery, and sanitized stream state (126.449103ms)
+2026-10-03T00:08:50.0074195Z ✔ scheduling metadata stays current across writes, deletion and rollback without exposing payloads (23.515816ms)
+2026-10-03T00:08:50.1823769Z ✔ protection projects only its evidence and still responds immediately to disabled modules (175.184105ms)
+2026-10-03T00:08:50.2536821Z ✔ Sessions keep pilot travel and hull history with Universe disabled and stop when Pilot is disabled (70.635474ms)
+2026-10-03T00:08:50.3103567Z ✔ a planned restart waits for the complete target generation, not merely an open connection (1.674787ms)
+2026-10-03T00:08:50.3119483Z ✔ a same-build restart must actually disconnect before it can complete (0.906548ms)
+2026-10-03T00:08:50.3143885Z ✔ ordinary reconnect refreshes a changed revision once even when the restart announcement was missed (0.164517ms)
+2026-10-03T00:08:50.3154492Z ✔ ordinary reconnect restores missed data once even when the dataset revision is unchanged (0.259394ms)
+2026-10-03T00:08:50.3156281Z ✔ a cancelled restart invalidates in-flight refresh and never presents success (0.267919ms)
+2026-10-03T00:08:50.3157706Z ✔ a newer restart supersedes stale asynchronous refresh without discarding its notice (0.265431ms)
+2026-10-03T00:08:50.3158990Z ✔ disconnect during refresh invalidates it and the next connection retries the same revision (0.260063ms)
+2026-10-03T00:08:50.3160506Z ✔ rollback is an amber notice shown once per session, never an update success (0.234774ms)
+2026-10-03T00:08:50.3162043Z ✔ a delayed restart stops the spinner and can be retried without accepting stale data (0.306414ms)
+2026-10-03T00:08:50.3163844Z ✔ disposing an unmounted workspace prevents stale updates and clears its deadline (0.390207ms)
+2026-10-03T00:08:50.3165391Z ✔ a workspace refresh failure after an unannounced update remains actionable and retryable (0.316413ms)
+2026-10-03T00:08:50.6714279Z ▶ Dataset HTTP workflow preserves the local session through safe staged updates
+2026-10-03T00:08:50.6715765Z   ✔ inventory is authenticated, manual writes require CSRF, and noSync makes no external request (34.336522ms)
+2026-10-03T00:08:50.7497015Z   ✔ concurrent manual checks return immediately and share one cache-aware request (82.466235ms)
+2026-10-03T00:08:50.7966756Z   ✔ failed metadata checks retain installed datasets and can recover (46.30182ms)
+2026-10-03T00:08:51.3604778Z   ✔ installation is single-flight, reports phases over SSE, and stages a coherent generation (562.257947ms)
+2026-10-03T00:08:51.3623846Z   ✔ manual staging removes downloaded archives and temporary build debris (3.355887ms)
+2026-10-03T00:08:51.4284560Z   ✔ cancelled activation clears the restart gate and new SSE clients receive the current revision (38.839861ms)
+2026-10-03T00:08:51.4654386Z   ✔ graceful replacement preserves the cookie, CSRF token and persisted workspace settings (61.930178ms)
+2026-10-03T00:08:51.4674627Z ✔ Dataset HTTP workflow preserves the local session through safe staged updates (1043.674979ms)
+2026-10-03T00:08:51.5462158Z ✔ inventory distinguishes installed official builds from pinned supplemental datasets (22.513355ms)
+2026-10-03T00:08:51.5991938Z ✔ a metadata-only check neither downloads nor installs; explicit install reuses cache (53.742619ms)
+2026-10-03T00:08:51.6155542Z ✔ concurrent manual and automatic requests share one metadata request and one install (16.584089ms)
+2026-10-03T00:08:51.6269038Z ✔ startup and recurring checks use one hourly deadline timer, no interval loop (11.293015ms)
+2026-10-03T00:08:51.6391243Z ✔ automatic=false disables scheduled requests but leaves manual checks available (11.94012ms)
+2026-10-03T00:08:51.6591250Z ✔ cache validators persist across runs and 304 reuses the advertised build (19.811596ms)
+2026-10-03T00:08:51.6703568Z ✔ five-minute minimum cache applies to manual checks and never downloads equal or older builds (10.560026ms)
+2026-10-03T00:08:51.6819676Z ✔ Retry-After and exponential backoff prevent retry storms even without cached metadata (11.756468ms)
+2026-10-03T00:08:51.6982039Z ✔ a corrupt generated dataset leaves the active data and has no archive or staging debris (16.814663ms)
+2026-10-03T00:08:51.7207512Z ✔ partial downloads and oversized archive responses never reach the builder (22.459186ms)
+2026-10-03T00:08:51.7319713Z ✔ close waits for cancelled building to stop before removing temporary files (10.883185ms)
+2026-10-03T00:08:51.7543689Z ✔ activation selects verified pending generation, commits atomically, and retires old files (22.443192ms)
+2026-10-03T00:08:51.7703396Z ✔ invalid pending checksums fall back to active and clean the rejected generation (16.158319ms)
+2026-10-03T00:08:51.8016275Z ✔ rollback retains previous data and suppresses failed automatic updates until manual retry (30.594001ms)
+2026-10-03T00:08:51.8277796Z ✔ datasets older than the newer bundled baseline cannot override a new Kairo release (26.284809ms)
+2026-10-03T00:08:51.8417865Z ✔ activation refusal clears ready state and permits manual retry without deadlock (14.495357ms)
+2026-10-03T00:08:51.8560806Z ✔ one official build can catch older bundled components up without downgrading Universe (14.236485ms)
+2026-10-03T00:08:51.8699800Z ✔ failed conversion is suppressed for automatic checks and may be retried manually (13.331787ms)
+2026-10-03T00:08:51.8851262Z ✔ successful pointer publication is not rolled back when post-commit bookkeeping fails (15.769392ms)
+2026-10-03T00:08:51.9741620Z ✔ commands accept 204 and repeated identical calls are neither cached nor coalesced (44.845103ms)
+2026-10-03T00:08:51.9943978Z ✔ command rate limits stop subsequent requests and never return previous success (19.798186ms)
+2026-10-03T00:08:52.0127621Z ✔ explicit 401 refreshes once, transport failure is uncertain and is not replayed (18.559377ms)
+2026-10-03T00:08:52.0315427Z ✔ mutation rejects read methods and invalid paths before transmitting (18.830853ms)
+2026-10-03T00:08:52.6786830Z ✔ routine polling reduces ship and slow dataset calls while location, OPSEC and one-minute queue checks continue (533.265045ms)
+2026-10-03T00:08:52.9673376Z ✔ warm restart, module toggles and cache reads do not reset observation times or repeat routine work (289.211236ms)
+2026-10-03T00:08:53.0799257Z ✔ one-minute queue checks detect edits and cancellation regardless of the predicted finish time (112.570973ms)
+2026-10-03T00:08:53.2979309Z ✔ known completions bring trained-skill refresh forward without stopping regular queue polling or goal updates (217.111532ms)
+2026-10-03T00:08:53.5060033Z ✔ docking refreshes the ship promptly and broadcasts the new hull without accelerating ordinary location ticks (208.540721ms)
+2026-10-03T00:08:53.5273541Z ✔ public names coalesce overlapping batches, persist per ID, and never borrow private character access (21.498519ms)
+2026-10-03T00:08:53.5470413Z ✔ equivalent query order shares a cache; 304 uses validators and retains its cache policy (19.622086ms)
+2026-10-03T00:08:53.5676681Z ✔ resource retry backoff survives restart, retains stale observations and recovers without repeated failures (20.175833ms)
+2026-10-03T00:08:53.5904456Z ✔ market rate buckets survive restart without blocking unrelated protection or another character (22.939274ms)
+2026-10-03T00:08:53.6102785Z ✔ transient location failures retry quickly while unavailable static resources back off (19.877745ms)
+2026-10-03T00:08:53.6484899Z ✔ market scans reuse names learned elsewhere and fresh books across alts without background ESI calls (38.076991ms)
+2026-10-03T00:08:54.0336825Z ✔ custom polling persists, changes real request cadence and keeps protection evidence current (384.928134ms)
+2026-10-03T00:08:54.1325082Z ✔ polling updates validate every batch atomically and cannot make failed snapshots or disabled modules ready (97.735671ms)
+2026-10-03T00:08:54.3674742Z ✔ polling preferences require a local session and CSRF, survive restart and are absent from OBS (235.27454ms)
+2026-10-03T00:08:54.4850967Z ✔ reads and commands share headers and persist changed route policy only once (48.760044ms)
+2026-10-03T00:08:54.5069263Z ▶ read and command rate policies agree on Retry-After, global floors, and pilot isolation
+2026-10-03T00:08:54.5070499Z   ✔ read 420 90 (22.160332ms)
+2026-10-03T00:08:54.5272717Z   ✔ read 420 Wed, 30 Sep 2026 00:01:30 GMT (20.435362ms)
+2026-10-03T00:08:54.5482160Z   ✔ read 429 90 (20.721633ms)
+2026-10-03T00:08:54.5692926Z   ✔ read 429 Wed, 30 Sep 2026 00:01:30 GMT (20.951358ms)
+2026-10-03T00:08:54.5897531Z   ✔ command 420 90 (20.141698ms)
+2026-10-03T00:08:54.6094491Z   ✔ command 420 Wed, 30 Sep 2026 00:01:30 GMT (19.481176ms)
+2026-10-03T00:08:54.6283865Z   ✔ command 429 90 (18.845495ms)
+2026-10-03T00:08:54.6481645Z   ✔ command 429 Wed, 30 Sep 2026 00:01:30 GMT (19.02956ms)
+2026-10-03T00:08:54.6483085Z ✔ read and command rate policies agree on Retry-After, global floors, and pilot isolation (163.55322ms)
+2026-10-03T00:08:54.6690212Z ✔ a rate bucket learned from one path blocks the same group across read and command after restart (20.80246ms)
+2026-10-03T00:08:54.6941691Z ▶ low error budget blocks every pilot for reads and commands without retrying a send
+2026-10-03T00:08:54.6942847Z   ✔ read (25.095158ms)
+2026-10-03T00:08:54.7136466Z   ✔ command (19.215227ms)
+2026-10-03T00:08:54.7141662Z ✔ low error budget blocks every pilot for reads and commands without retrying a send (44.760405ms)
+2026-10-03T00:08:54.7343237Z ▶ both read and command paths refresh once on explicit 401 and stop after the second rejection
+2026-10-03T00:08:54.7344392Z   ✔ read (20.502521ms)
+2026-10-03T00:08:54.7528080Z   ✔ command (18.15331ms)
+2026-10-03T00:08:54.7529341Z ✔ both read and command paths refresh once on explicit 401 and stop after the second rejection (39.07715ms)
+2026-10-03T00:08:54.7713693Z ✔ close drains a failed accepted command without replaying an uncertain success-body failure (18.512218ms)
+2026-10-03T00:08:54.7920889Z ✔ close drains accepted paged and name reads through their cache writes and rejects new admission (20.759493ms)
+2026-10-03T00:08:54.8141650Z ✔ one shared four-slot queue prioritizes accepted commands and close drains queued work (22.23108ms)
+2026-10-03T00:08:54.9557782Z ✔ v0.1 database migrates once without losing existing sessions, goals or stream copy (26.278332ms)
+2026-10-03T00:08:54.9886795Z ✔ selected goal projects approved fields live, and never switches to another character or deleted goal (32.860854ms)
+2026-10-03T00:08:55.0085208Z ✔ ESI bindings reject stale, disabled and disconnected character data (20.278617ms)
+2026-10-03T00:08:55.0896767Z ✔ context toasts whitelist tokens, obey character filters and redact at delivery and later state changes (80.869069ms)
+2026-10-03T00:08:55.1282010Z ✔ named sessions capture wallet and SP samples, diverse events, late combat, character and time boundaries (37.834187ms)
+2026-10-03T00:08:55.2061408Z ✔ session reports paginate events but keep totals across the entire session (78.540956ms)
+2026-10-03T00:08:55.2275814Z ✔ place notes keep system, constellation and region identities separate and enrich the visual travel ledger (21.420013ms)
+2026-10-03T00:08:55.2965041Z ✔ OBS authenticates over a real local websocket, hides/mutes before shows and scenes, and keeps its password out of config (66.543571ms)
+2026-10-03T00:08:55.3678902Z ✔ OBS abandons obsolete reveals during a state change and never runs a scene switch after a failed hide (73.181861ms)
+2026-10-03T00:08:55.4955762Z ✔ OBS refuses stale source identities or a different collection, and an OBS kick does not auto-reconnect (127.851907ms)
+2026-10-03T00:08:55.6127712Z ✔ OBS reconnects to the latest protection state and rejects a wrong password (117.234512ms)
+2026-10-03T00:08:55.8787325Z ✔ HTTP feature APIs preserve data after restart and remain inaccessible to browser sources (266.049732ms)
+2026-10-03T00:08:55.9685851Z ✔ many item goals share one source read and one quantity pass; lists join tracking and read names once (38.402749ms)
+2026-10-03T00:08:55.9946974Z ✔ source options reuse type-choice samples for availability and observe changes on the next call (26.067216ms)
+2026-10-03T00:08:56.0237282Z ✔ unchanged credit ledgers and tracking status perform no writes, while unavailable sources retain progress (28.492994ms)
+2026-10-03T00:08:56.0468120Z ✔ accounting failures roll back ledger, progress, baseline and status before any completion is published (23.593476ms)
+2026-10-03T00:08:56.0704774Z ✔ savepoints preserve caller-owned rollback and reentrant creation without duplicate completion (23.29457ms)
+2026-10-03T00:08:56.0962465Z ✔ prepared journal and combat inputs retain distinct creation cutoffs, pilot isolation and source filters (24.985539ms)
+2026-10-03T00:08:56.1166433Z ✔ type lookup hands successful names to the supplied application owner exactly once (20.339012ms)
+2026-10-03T00:08:56.1910224Z ✔ history writes bound the working set while preserving calendar results, row order and source fields (32.98985ms)
+2026-10-03T00:08:56.2112414Z ✔ failed history/source batches roll back together and compose with an outer transaction (20.288869ms)
+2026-10-03T00:08:56.2433263Z ✔ upgrading compacts the saved window once without resetting player data or the daily archive (32.000882ms)
+2026-10-03T00:08:56.2714576Z ✔ a failed cache upgrade leaves the old data and migration state intact and can be retried (27.74017ms)
+2026-10-03T00:08:56.3703592Z ✔ archive projection resumes between bounded batches and retains older daily rows (97.948403ms)
+2026-10-03T00:08:56.4992025Z ✔ calendar history windows deduplicate days, exclude today and never inflate missing-day volume (6.729925ms)
+2026-10-03T00:08:56.4993383Z ✔ trading fees use active character skills, unmodified standings, structure rates and seller-only taxes (0.399297ms)
+2026-10-03T00:08:56.5000943Z ✔ depth-weighted purchases, valid EVE ticks and minimum/relisting fees produce exact net returns (0.453959ms)
+2026-10-03T00:08:56.5004850Z ✔ cargo packing counts indivisible hulls and shares unused space between plan lines (0.343281ms)
+2026-10-03T00:08:56.5017655Z ✔ activity thresholds use the assumed local share and prefer shorter active windows by type (0.79717ms)
+2026-10-03T00:08:56.5018987Z ✔ recommendations respect real depth, budget, margin, cargo and price-correction objectives (1.802086ms)
+2026-10-03T00:08:56.5020126Z ✔ ranking rewards fewer trips for an otherwise identical import (0.767934ms)
+2026-10-03T00:08:56.5021441Z ✔ real market ancestry groups drones, rigs and subsystems with equipment, using packaged hull volume (3.392867ms)
+2026-10-03T00:08:56.6031117Z ✔ analysis stays offline, returns at most ten per category and excludes all connected alts’ local sales (107.806054ms)
+2026-10-03T00:08:56.6334223Z ✔ own Jita orders and expired depth are excluded; missing trading scopes never become zero fees (29.839853ms)
+2026-10-03T00:08:56.6561168Z ✔ fee refresh resolves NPC faction from CCP static data and only requests required trader datasets (23.128061ms)
+2026-10-03T00:08:56.6910132Z ✔ saved plans recompute values server-side, combine hauling costs and survive restart without changing other data (34.638268ms)
+2026-10-03T00:08:56.7156035Z ✔ settings reject invalid capacities, impossible fee inputs and unknown fields atomically (24.747388ms)
+2026-10-03T00:08:56.7412455Z ✔ buying character defaults to the seller for old settings and remains independent per destination (25.591644ms)
+2026-10-03T00:08:56.7705258Z ✔ a separate buyer needs only orders and cannot change seller fees, capital or immediate purchase costs (29.158733ms)
+2026-10-03T00:08:56.7997032Z ✔ missing, unauthorized or disconnected buyers block analysis while older usable orders remain explicit (29.057323ms)
+2026-10-03T00:08:56.8307254Z ✔ saved plans retain both traders after settings change and restart, and legacy plans remain readable (30.94918ms)
+2026-10-03T00:08:56.8587211Z ✔ trader refresh covers the buyer once without requesting buyer skills or standings (25.858668ms)
+2026-10-03T00:08:56.9786535Z ✔ EVE Ref decoder validates CRC/truncation and retains only the four core market regions (121.963381ms)
+2026-10-03T00:08:57.5091496Z ✔ EVE Ref bulk history imports changed days once, shares all four regions and resumes from disk (528.278646ms)
+2026-10-03T00:08:57.7106699Z ✔ archive cancellation and rate limits preserve old data and enforce cooldown (203.797326ms)
+2026-10-03T00:08:57.8276212Z ✔ only the four built-in hubs use EVE Ref; custom hubs retain the ESI history path (116.933789ms)
+2026-10-03T00:08:57.8551887Z ✔ Jita comparisons use the lowest sell prices and update reminders wait a full day (26.904483ms)
+2026-10-03T00:08:57.8973725Z ✔ upgrade invalidates legacy market responses once and queues fresh scans while preserving player data (42.595565ms)
+2026-10-03T00:08:57.9204418Z ✔ upgrade refresh explains missing structure access without exposing or silently dropping the pending hub (23.059975ms)
+2026-10-03T00:08:58.2177399Z ✔ import endpoints and saved plans require private sessions and CSRF and never appear on the OBS service (277.907236ms)
+2026-10-03T00:08:58.2528505Z ✔ import cache ignores unrelated writes but follows books, profiles, plans and access changes (53.614714ms)
+2026-10-03T00:08:58.2817823Z ✔ import revisions cannot reuse rolled-back data and observe other database connections (29.697371ms)
+2026-10-03T00:08:58.3067911Z ✔ import cache expires at freshness and order deadlines before its thirty-second ceiling (24.889986ms)
+2026-10-03T00:08:58.5905182Z ✔ import single-flight retries when a book changes during a yielded calculation (282.411865ms)
+2026-10-03T00:08:58.6401227Z ✔ camera keeps world, viewport, controls and overview in the same coordinate system (1.306465ms)
+2026-10-03T00:08:58.6402824Z ✔ camera paints only its supplied surface and tolerates a collapsed overview (0.233225ms)
+2026-10-03T00:08:58.6804122Z ✔ continuous scene refreshes publish current time without postponing the independent age cadence (0.944503ms)
+2026-10-03T00:08:58.6823719Z ✔ report expiry retains its absolute deadline across frequent updates and visibility resumes immediately (0.450955ms)
+2026-10-03T00:08:58.7276850Z ✔ observed lifetime is a qualitative band independent of exact expiry and mass (2.252183ms)
+2026-10-03T00:08:58.7284809Z ✔ lifetime observation establishes a conservative bound without renewing an earlier expiry (0.320844ms)
+2026-10-03T00:08:58.7286056Z ✔ ordinary edits and clearing a band preserve prior lifetime evidence (0.242048ms)
+2026-10-03T00:08:58.7287462Z ✔ complete legacy editor records do not turn echoed band fields into fresh observations (0.195283ms)
+2026-10-03T00:08:58.7288638Z ✔ mapper presets preserve fractional hours and H freight / XL capital semantics (0.322287ms)
+2026-10-03T00:08:58.8403442Z ✔ creation requires a nonempty connected roster and tracks precisely the chosen pilots by default (47.247145ms)
+2026-10-03T00:08:58.8805515Z ✔ explicit source creation honors the selected pilots and scope while preserving live connection ages (39.62691ms)
+2026-10-03T00:08:58.9330516Z ✔ chain framing includes full cards at negative coordinates and disconnected discoveries (1.858549ms)
+2026-10-03T00:08:58.9332221Z ✔ zoom preserves the pointer world position and cannot zoom into unlimited empty space (0.178875ms)
+2026-10-03T00:08:58.9333648Z ✔ connection curves terminate on card sides and distinguish parallel observations (0.344482ms)
+2026-10-03T00:08:58.9335108Z ✔ traces use explicit recorded connections and stop at expired, collapsed or removed nodes (0.883773ms)
+2026-10-03T00:08:58.9336523Z ✔ panning retains recoverable map content and contextual overlays remain bounded (0.220821ms)
+2026-10-03T00:08:58.9337871Z ✔ overview labels retain the selected system and avoid neighbouring text collisions (0.32131ms)
+2026-10-03T00:08:58.9339248Z ✔ public and private connection captions avoid intervening cards and narrow endpoint gaps (1.156697ms)
+2026-10-03T00:08:58.9340588Z ✔ drag previews preserve group offsets using initial zoom and latest pending positions (0.317981ms)
+2026-10-03T00:08:58.9341882Z ✔ connection handles snap to private targets and reject self, empty space and public reports (0.623323ms)
+2026-10-03T00:08:58.9343373Z ✔ mobile Fit frames whole cards and their attached handles without a second label envelope (0.386528ms)
+2026-10-03T00:08:58.9370069Z ✔ four cardinal tabs preserve exact selected endpoints in a single continuous curve (1.46235ms)
+2026-10-03T00:08:58.9371000Z ✔ a large staged region can be framed with its full node and tab envelope (0.15982ms)
+2026-10-03T00:08:58.9371888Z ✔ permanent map traces retain gates and follow Ansiblex direction without wormhole conditions (0.318974ms)
+2026-10-03T00:08:58.9373104Z ✔ independent display sizes frame actual cards and retain scaled ports and hit targets (0.667344ms)
+2026-10-03T00:08:58.9374116Z ✔ scaled cards remain caption obstacles and scaled overview labels use their visual centres (0.413048ms)
+2026-10-03T00:08:58.9994899Z ✔ note time switches from elapsed minutes to explicit EVE time at one hour, independent of browser timezone (1.25418ms)
+2026-10-03T00:08:59.0013694Z ✔ missing or invalid note authors never become the active pilot or a portrait of an invalid entity (0.621797ms)
+2026-10-03T00:08:59.0015074Z ✔ map note search combines text, author and system names without exposing source maps or departed connection notes (7.852757ms)
+2026-10-03T00:08:59.1165413Z ✔ native map export/import and duplication preserve isolated operational records without config or live telemetry (55.497283ms)
+2026-10-03T00:08:59.1508058Z ✔ native map operational validation is atomic and older exports without the records remain compatible (34.566797ms)
+2026-10-03T00:08:59.2928765Z ✔ deleting a connection forgets its evidence and undo copies immediately, preserving systems and an independent duplicated map (78.67262ms)
+2026-10-03T00:08:59.3411029Z ✔ expiry removes J-J, J-K and K-J connections at their exact deadline while system locks and grace remain separate (48.230797ms)
+2026-10-03T00:08:59.3962580Z ✔ legacy archived connections are forgotten on restart and import without losing system records or reviving their signatures (55.290201ms)
+2026-10-03T00:08:59.4330520Z ✔ scanner observations with the same system and code belong to their selected map and cannot be deleted by another map (35.65735ms)
+2026-10-03T00:08:59.4884561Z ✔ empty scope is global and populated scope normalises IDs without mutating input (1.744329ms)
+2026-10-03T00:08:59.4886306Z ✔ scope validation rejects unknown systems, J-Space organisational areas and unconfigured or inferred blocs (1.566493ms)
+2026-10-03T00:08:59.4889748Z ✔ all scope groups combine by OR and geography remains independent of sovereignty freshness (0.308251ms)
+2026-10-03T00:08:59.4906769Z ✔ ownership matches only verified current sovereignty, never faction ownership or J-Space assigned dominion (0.341264ms)
+2026-10-03T00:08:59.4913883Z ✔ configured bloc membership updates dynamically and never falls back to inferred coalitions (0.234993ms)
+2026-10-03T00:08:59.4916359Z ✔ scope options expose K-Space areas, named cached owners and only configured power blocs (7.454097ms)
+2026-10-03T00:08:59.5621288Z ✔ adding a map pilot enables tracking and seeds only the current fresh J-Space location (25.438385ms)
+2026-10-03T00:08:59.5846120Z ✔ normal nonoverlapping ESI cache windows populate entry, internal and exit connections without renewing a known hole (22.125963ms)
+2026-10-03T00:08:59.6057209Z ✔ pause and resume establish a new baseline and removing even a disconnected pilot unsubscribes the map (21.592564ms)
+2026-10-03T00:08:59.6300708Z ✔ one dispatcher fans out to subscribed maps with independent data and per-pilot baselines (24.207745ms)
+2026-10-03T00:08:59.6517424Z ✔ stale, future, out-of-order, missed and docked samples cannot invent connections (21.525006ms)
+2026-10-03T00:08:59.6733846Z ✔ K-Space legs, known gates and recent pod losses never create wormholes (21.839432ms)
+2026-10-03T00:08:59.6973953Z ✔ selected authorised chat-log samples can track without ESI scope and source changes cannot bridge travel (24.201324ms)
+2026-10-03T00:08:59.7219162Z ✔ optional passages are recorded only against one already trusted connection and stay map-local (24.078413ms)
+2026-10-03T00:08:59.7505554Z ✔ a later matching exit backfills the whole live source chain while retaining independent IDs and original expiry (28.42496ms)
+2026-10-03T00:08:59.7796670Z ✔ scope population skips expired source edges and unrelated components and never removes existing annotations on scope edits (29.113038ms)
+2026-10-03T00:08:59.8154622Z ✔ the lightweight source follows only the active pilot while explicit interactive rosters keep tracking their pilots (35.551611ms)
+2026-10-03T00:08:59.8394956Z ✔ explicit global-map creation can copy live source topology without source notes or passage data (23.97146ms)
+2026-10-03T00:08:59.8684684Z ✔ a source update visits only that pilot's subscribed scoped maps and reads its graph once (29.254361ms)
+2026-10-03T00:08:59.8947999Z ✔ stationary samples do not resurrect a source system after pruning but new movement rediscovers it (26.184559ms)
+2026-10-03T00:08:59.9277514Z ✔ old source topology cannot revive deleted connections or removed cards, but a new observed traversal can rediscover them (32.920768ms)
+2026-10-03T00:08:59.9540819Z ✔ an earlier expiry in an interactive map is not renewed by its still-live source copy (26.379691ms)
+2026-10-03T00:08:59.9753093Z ✔ a source connection that vanishes during copying leaves no new orphan cards or false copy count (20.970728ms)
+2026-10-03T00:09:00.0112160Z ✔ a component blocked by map capacity remains eligible when space becomes available (35.06716ms)
+2026-10-03T00:09:00.0601933Z ✔ drawn connections use mapper defaults without granting route access; later condition edits preserve expiry (1.506332ms)
+2026-10-03T00:09:00.0615186Z ✔ consecutive drag saves wait for the accepted revision without dropping the later position (0.43978ms)
+2026-10-03T00:09:00.0633836Z ✔ switching pilot or map cancels old queued drags while a failed old response cannot cancel the new workspace (0.515932ms)
+2026-10-03T00:09:00.0653481Z ✔ a rejected revision cancels later gestures in that layout scope until a new gesture is made (0.239234ms)
+2026-10-03T00:09:00.0665399Z ✔ editing connection conditions preserves exact expiry and never sends a renewing duration (0.174312ms)
+2026-10-03T00:09:00.0667361Z ✔ explicit UTC expiry wins without a competing default duration and fresh unknown connections stay unconfirmed (0.130099ms)
+2026-10-03T00:09:00.0668695Z ✔ three-line structure timers preserve UTC and do not invent type, ownership or power (0.674483ms)
+2026-10-03T00:09:00.0669921Z ✔ Dscan preview recognizes numeric structure types without inventing powered state or translating private names (0.405232ms)
+2026-10-03T00:09:00.0671052Z ✔ unrecognized scans and oversized clipboard content cannot produce a misleading empty import (0.61782ms)
+2026-10-03T00:09:00.0672066Z ✔ public chain reports are explicit, ephemeral and cannot become trusted route edges (1.340371ms)
+2026-10-03T00:09:00.0683766Z ✔ private connection lifetime ends at the exact boundary while unknown lifetimes and system cards remain (1.256747ms)
+2026-10-03T00:09:00.0685146Z ✔ structures remain structures with optional schedules and never inflate standalone timer counts (0.31426ms)
+2026-10-03T00:09:00.1878215Z ✔ bus keeps immediate delivery and drains awaited nested events to a fixed point (5.681973ms)
+2026-10-03T00:09:00.1893304Z ✔ listener failures are visible, bounded and do not discard other listeners (1.358655ms)
+2026-10-03T00:09:00.3516961Z ✔ Core keeps milestone subscribers until deferred names and nested writes finish (164.158693ms)
+2026-10-03T00:09:00.4254526Z ✔ Core finishes accepted killmail enrichment before closing its Combat dependency (73.58825ms)
+2026-10-03T00:09:00.5154456Z ✔ a new listener failure during Core drain is reported after owned work settles (84.556972ms)
+2026-10-03T00:09:00.5497668Z ✔ Registry owns asynchronous cleanup, unsubscribes once and reports cleanup failure (38.826294ms)
+2026-10-03T00:09:00.6997392Z ✔ HTTP quiescence retains an accepted connected write and closes storage last (149.122034ms)
+2026-10-03T00:09:00.8024395Z ✔ HTTP quiescence retains an accepted disconnected write and closes storage last (102.510082ms)
+2026-10-03T00:09:00.8600008Z ✔ landing searches only visible user map instances, retaining independent aliases and map context (7.038475ms)
+2026-10-03T00:09:00.8607574Z ✔ placement catalog exposes known-space groups and exact membership without organizational wormhole regions (0.399832ms)
+2026-10-03T00:09:00.9175952Z ✔ default display and disabled focus preserve every canonical card, coordinate and connection (1.57448ms)
+2026-10-03T00:09:00.9192825Z ✔ display preferences are bounded, duplicate-safe and do not mutate saved input (8.397073ms)
+2026-10-03T00:09:00.9194052Z ✔ collapse hides interior members but retains entry, exit, parent, active route and selected cards (1.188565ms)
+2026-10-03T00:09:00.9195186Z ✔ custom ownership overrides geographic groups and same-kind overlap follows saved order (0.61004ms)
+2026-10-03T00:09:00.9196021Z ✔ cross-group endpoints stay real and stale memberships or absent endpoints add no fake cards or edges (0.344927ms)
+2026-10-03T00:09:00.9197700Z ✔ known and wormhole scales are independent; focused and protected context retains full detail (0.399529ms)
+2026-10-03T00:09:00.9213585Z ✔ large supported maps remain bounded and source objects can be frozen (3.360142ms)
+2026-10-03T00:09:00.9636322Z ✔ group preview preserves official angles, stages absent nodes and deduplicates internal gates without mutating map (2.30807ms)
+2026-10-03T00:09:00.9642143Z ✔ permanent editor payloads never send WH conditions or alter a shared bridge access decision (0.293487ms)
+2026-10-03T00:09:01.0088009Z ✔ mapper preferences are opt-in, finite, bounded and pilot scoped (1.256059ms)
+2026-10-03T00:09:01.0094835Z ✔ settled focus retains near-edge members without admitting outer context (0.284007ms)
+2026-10-03T00:09:01.1188200Z ✔ region placement is one revision-checked atomic operation deriving only real intragroup gates and configured bridges (45.931417ms)
+2026-10-03T00:09:01.1473917Z ✔ constellation placement includes exactly its members and cannot authorise a fake gate (28.629322ms)
+2026-10-03T00:09:01.1990117Z ✔ manual Ansiblex is private permanent evidence with explicit access and cannot leak to other maps or Atlas routes (51.835689ms)
+2026-10-03T00:09:01.2323840Z ✔ configured bridge references retain global access, survive local deletion and disappear when source config is removed (33.057397ms)
+2026-10-03T00:09:01.2614746Z ✔ notes derive author from connected pilot, preserve provenance on import, and never invent a pilot for legacy notes (28.393634ms)
+2026-10-03T00:09:01.2981779Z ✔ reimporting configured bridges preserves unchanged map references and prunes only removed pairs (37.420521ms)
+2026-10-03T00:09:01.3290500Z ✔ deleting a map removes every private permanent link but retains shared configured bridges (30.42681ms)
+2026-10-03T00:09:01.4049682Z ✔ market taxonomy includes descendants once, isolates sibling categories and keeps unknown items visible (1.556139ms)
+2026-10-03T00:09:01.4499582Z ✔ existing cached books browse real EVE categories offline, combined with search and supply filters (46.988075ms)
+2026-10-03T00:09:01.4967170Z ✔ a decoded archive is delivered only after worker exit and ignores later aborts (3.551679ms)
+2026-10-03T00:09:01.4988840Z ▶ decoder errors and cancellation reject only after exit, including an already aborted signal
+2026-10-03T00:09:01.4989824Z   ✔ message (1.552672ms)
+2026-10-03T00:09:01.5011820Z   ✔ error (1.912312ms)
+2026-10-03T00:09:01.5024631Z   ✔ abort (0.871713ms)
+2026-10-03T00:09:01.5034794Z   ✔ already-aborted (0.909331ms)
+2026-10-03T00:09:01.5035960Z ✔ decoder errors and cancellation reject only after exit, including an already aborted signal (6.470259ms)
+2026-10-03T00:09:01.5053806Z ✔ decoder timeout requests termination once and awaits exit (1.344664ms)
+2026-10-03T00:09:01.5055019Z ✔ an unexpected exit rejects without requesting termination again (0.563899ms)
+2026-10-03T00:09:01.6755688Z ✔ quick scans paginate, isolate station orders, aggregate buy/sell and share alt scans with Jita comparisons (59.344533ms)
+2026-10-03T00:09:01.7076502Z ✔ failed or stale page updates never overwrite a complete previous book (33.130681ms)
+2026-10-03T00:09:01.7404017Z ✔ quick refresh clears sold-out items without deleting full-scan coverage (32.645296ms)
+2026-10-03T00:09:02.1076552Z ✔ full books exceed the old 250-page helper limit and browse in bounded pages (366.635121ms)
+2026-10-03T00:09:02.1352795Z ✔ pagination changes, unreasonable counts and malformed orders leave no partial success (27.791524ms)
+2026-10-03T00:09:02.1694940Z ✔ one scan at a time, cancellation and restart retain durable completed books (34.199761ms)
+2026-10-03T00:09:02.1994291Z ✔ history failure keeps the newly completed book and reports explicit missing coverage (29.259148ms)
+2026-10-03T00:09:02.1995815Z ✔ history statistics use completed UTC calendar days, volume weights and honest coverage (0.411852ms)
+2026-10-03T00:09:02.2268713Z ✔ structure scans require an authorized alt, read all pages even for quick mode and retain shared cache after disconnect (27.42813ms)
+2026-10-03T00:09:02.2547925Z ✔ hub resolution uses ESI identity, validates structure scope, and removing a hub keeps its cache (27.954339ms)
+2026-10-03T00:09:02.2864009Z ✔ dedicated goal templates retain explicit owner selection and project any selected local or alt goal (31.384844ms)
+2026-10-03T00:09:02.5905269Z ✔ market HTTP endpoints require a dashboard session and CSRF and are absent from OBS (304.055592ms)
+2026-10-03T00:09:02.6302815Z ✔ continuing history reuses complete books and fresh histories without repeated network calls (39.799ms)
+2026-10-03T00:09:02.7873631Z ✔ participation includes assisted and zero-damage EWAR kills, not fleet affiliation alone (1.421188ms)
+2026-10-03T00:09:02.9317782Z ✔ combat ingestion drains an unseen backlog beyond 50, deduplicates sources and retains history (148.801894ms)
+2026-10-03T00:09:02.9579361Z ✔ public participation reads are cached, send no EVE credentials and preserve records on rate limits (25.803985ms)
+2026-10-03T00:09:02.9834183Z ✔ late assisted kills repair archived reports without historic toasts or duplicate counts (24.908899ms)
+2026-10-03T00:09:03.0039601Z ✔ hiding a filament connection is reversible, character-scoped and never bridges neighbouring visits (21.412326ms)
+2026-10-03T00:09:03.0415395Z ✔ wallet goals follow fresh data, pause on stale snapshots and complete once without regressing (37.438172ms)
+2026-10-03T00:09:03.0618626Z ✔ skills include fresh completed queue entries and type lookup validates real skill categories (20.358602ms)
+2026-10-03T00:09:03.0870507Z ✔ asset goals sum owned quantities and reject stale, truncated, disabled and unauthorized sources (25.030956ms)
+2026-10-03T00:09:03.1083335Z ✔ mining baselines survive restarts and rolling ledgers without double-counting daily totals (20.808814ms)
+2026-10-03T00:09:03.1327624Z ✔ income and manufacturing goals retain credited records as source windows roll forward (24.254943ms)
+2026-10-03T00:09:03.1566474Z ✔ combat goals count only verified participation since creation and preserve manual legacy goals (24.300447ms)
+2026-10-03T00:09:03.3219366Z ✔ normal core collection pages ESI killmails and updates automatic goals and linked stream widgets (164.981535ms)
+2026-10-03T00:09:03.5595142Z ✔ HTTP goal and connection edits enforce CSRF and character identity and stay off OBS routes (235.873526ms)
+2026-10-03T00:09:03.6950442Z ✔ cache expiry does not flip protection during revalidation; old or invalid observations still fail closed (1.488994ms)
+2026-10-03T00:09:03.7255322Z ✔ brief jump gaps retain covered protection without transition events, then classify the destination (31.244542ms)
+2026-10-03T00:09:03.7257174Z ✔ jump continuity cannot extend its deadline, carry revealed High-Sec, or mask access and policy changes (0.730829ms)
+2026-10-03T00:09:03.8807907Z ✔ core reads refreshable protection evidence separately from stale UI snapshots and does not spam history (155.491757ms)
+2026-10-03T00:09:04.0084582Z ✔ location refresh proceeds during a slow collector and shares in-flight work with the main sync (127.575702ms)
+2026-10-03T00:09:04.0342497Z ✔ ESI prioritizes protection requests within its concurrency cap and preserves access-denied status (25.614699ms)
+2026-10-03T00:09:04.0550688Z ✔ ESI resumes protection requests after cooldown instead of retaining a rejected in-flight promise (20.063835ms)
+2026-10-03T00:09:04.2005980Z ✔ activity API returns five newest entries, pages equal timestamps without gaps, and searches all history (142.80895ms)
+2026-10-03T00:09:04.2888165Z ✔ child activates updater only after parent commit and exports sessions after drain (5.489678ms)
+2026-10-03T00:09:04.2891259Z ✔ child restores update UI on cancellation and shuts down if parent disappears (1.030205ms)
+2026-10-03T00:09:04.2944015Z ✔ a stuck accepted-work drain reaches the child deadline without a successful handoff (1.337521ms)
+2026-10-03T00:09:04.3405496Z ✔ runtime lease excludes a second owner and is reusable after close (2.691081ms)
+2026-10-03T00:09:04.3417300Z ✔ different data directories have independent runtime leases (0.751866ms)
+2026-10-03T00:09:04.3653810Z ✔ SQLite releases the runtime lease when a process is killed (30.264307ms)
+2026-10-03T00:09:04.4221160Z ✔ second supervisor is rejected before inspecting or cleaning datasets (3.765672ms)
+2026-10-03T00:09:04.4264001Z ✔ update drains old core before new generation, preserves sessions privately and opens one browser (6.275728ms)
+2026-10-03T00:09:04.4267872Z ✔ failed pending startup rolls back once and reports the failed build (1.993299ms)
+2026-10-03T00:09:04.4268458Z ✔ failed preparation cancels the update notice while current core keeps running (1.820917ms)
+2026-10-03T00:09:04.4463197Z ✔ startup timeout terminates bad generation before rollback and releases lease on close (12.382865ms)
+2026-10-03T00:09:04.4512105Z ✔ unexpected active core exit fails clearly without a restart loop (1.279387ms)
+2026-10-03T00:09:04.4515956Z ✔ IPC failure after commit preserves the newly published generation (1.159496ms)
+2026-10-03T00:09:05.1573858Z ✔ real core replacement keeps the browser cookie, CSRF token and saved settings (715.947239ms)
+2026-10-03T00:09:05.2012000Z ✔ a burst keeps one active read and one follow-up instead of losing invalidation (3.858381ms)
+2026-10-03T00:09:05.2023029Z ✔ busy owners retain changes, resume once and may explicitly refresh for conflict recovery (1.236623ms)
+2026-10-03T00:09:05.2043636Z ✔ leaving a pilot/map scope prevents old publication and releases waiters (0.973419ms)
+2026-10-03T00:09:05.2055277Z ✔ a failed read still drains a newer invalidation and does not overlap reads (0.486231ms)
+2026-10-03T00:09:05.2066089Z ✔ a change during forced conflict recovery waits for the mutation without deadlocking it (0.944466ms)
+2026-10-03T00:09:05.6434562Z ✔ SDE builder converts every system across multiple spool buckets without losing bodies (392.160161ms)
+2026-10-03T00:09:05.6644775Z ✔ SDE archive rejects CRC corruption before publishing a generation (20.017147ms)
+2026-10-03T00:09:05.7063899Z ✔ SDE conversion rejects missing references, missing members and mismatched builds (42.659797ms)
+2026-10-03T00:09:05.7119002Z ✔ SDE archive refuses traversal names and truncated archives (2.834214ms)
+2026-10-03T00:09:05.7724111Z ✔ SDE conversion cancellation removes spool and partial output without publishing (61.504467ms)
+2026-10-03T00:09:05.8403786Z ✔ SDE conversion fails closed if a spool loses bytes between writing and reading (68.758922ms)
+2026-10-03T00:09:05.9629500Z ✔ SDE worker reports progress and validated manifest, and serializes failures (122.465356ms)
+2026-10-03T00:09:06.0474113Z ✔ collection stays live regardless of age and becomes static exactly 24 hours after ending (1.510394ms)
+2026-10-03T00:09:06.0484611Z ✔ one live feed shares a durable cursor, checks every two minutes, and observes the 404 minimum wait (22.518634ms)
+2026-10-03T00:09:06.0486070Z ✔ a deferred live check does not construct targets or change state, including forced cooldown checks (0.825959ms)
+2026-10-03T00:09:06.0486899Z ✔ due and forced checks share one pending target build and closed checks never rebuild (0.855339ms)
+2026-10-03T00:09:06.0738294Z ✔ a due live check reads current pilot eligibility instead of retaining old targets (27.286243ms)
+2026-10-03T00:09:06.0753554Z ✔ ending the last live session during a request discards the packet and stops further feed requests (0.676681ms)
+2026-10-03T00:09:06.0755726Z ✔ failed verification and HTTP cooldowns retain the cursor, including across forced checks (1.538739ms)
+2026-10-03T00:09:06.0921979Z ✔ a session ending during request spacing cannot start another feed request (11.862334ms)
+2026-10-03T00:09:06.0928158Z ✔ an expired live cursor restarts from the current pointer instead of looping on expired packets (0.940352ms)
+2026-10-03T00:09:06.0930465Z ✔ feed work is bounded and rejects malformed or oversized packets without advancing (5.338889ms)
+2026-10-03T00:09:06.0931998Z ✔ closing a live collector aborts its in-flight request without recording an error or advancing (0.458227ms)
+2026-10-03T00:09:06.1242783Z ✔ live packets verify only relevant records, preserve full personal/alliance totals and stop on end (31.905443ms)
+2026-10-03T00:09:06.1463621Z ✔ the feed continues for another live pilot but ignores ended sessions and paused combat (21.923316ms)
+2026-10-03T00:09:06.1709455Z ✔ ending triggers pending history checks while retaining the source cache and the 24-hour cutoff (24.743725ms)
+2026-10-03T00:09:06.2033683Z ✔ every recent ended session is eligible for delayed history checks, not just the newest eight (32.113212ms)
+2026-10-03T00:09:06.2213277Z ✔ history reaching the archive deadline in flight does not verify or retain further records (17.565916ms)
+2026-10-03T00:09:06.2670683Z ✔ replay ownership backdrop preserves owner colours without admitting live operational context (1.546585ms)
+2026-10-03T00:09:06.2683941Z ✔ replay labels missing or stale sovereignty without inventing historical ownership (0.24552ms)
+2026-10-03T00:09:06.2685267Z ✔ the replay location owner label uses only the captured visit, with an explicit legacy gap (0.190389ms)
+2026-10-03T00:09:06.4645528Z ✔ replay retains repeated systems and same-system observations without inventing intermediate travel (130.937671ms)
+2026-10-03T00:09:06.4878777Z ✔ a stationary session replays one start position with no fabricated movement or long-dwell gap (23.147869ms)
+2026-10-03T00:09:06.5147804Z ✔ event membership exactly matches report start/end cursor semantics, including delayed kills (27.259268ms)
+2026-10-03T00:09:06.5365156Z ✔ explicit and owned combat locations outrank context, while unknown locations stay unplaced (21.361244ms)
+2026-10-03T00:09:06.5570251Z ✔ missing history is preserved as a gap; legacy prior observations are explicitly inferred (20.710889ms)
+2026-10-03T00:09:06.8018990Z ✔ replay includes more than one report page and clearly bounds huge event histories without truncating visits (244.072579ms)
+2026-10-03T00:09:06.8258576Z ✔ replay suppresses routine location and protection events while preserving movement and source reports (24.111137ms)
+2026-10-03T00:09:06.8576107Z ✔ routine events cannot crowd meaningful activity out of the cap or inflate incomplete coverage (31.923436ms)
+2026-10-03T00:09:06.8774518Z ✔ live replay snapshots its end once, performs no writes and enforces pilot ownership (19.61589ms)
+2026-10-03T00:09:06.9609538Z ✔ recorded J-Space movement replays after restart and live connection removal without restoring map entities (81.786757ms)
+2026-10-03T00:09:06.9610566Z ✔ replay schematic includes each J-Space entrance and exit then returns to physical K-Space, including rewinds (0.454749ms)
+2026-10-03T00:09:06.9611427Z ✔ repeated entrance or exit observations cannot switch replay projection during a stationary visit (0.200383ms)
+2026-10-03T00:09:07.0571324Z ✔ session highlight counts unique personal/alliance killmails and favours combat over time at home (1.597293ms)
+2026-10-03T00:09:07.0582985Z ✔ quiet session highlight totals return visits and labels time instead of implying combat (0.212335ms)
+2026-10-03T00:09:07.0642129Z ✔ equal combat counts use observed time, then a stable system tie-break (0.289155ms)
+2026-10-03T00:09:07.0643479Z ✔ missing location observations do not invent activity or discard a located killmail (0.224699ms)
+2026-10-03T00:09:07.2057555Z ✔ upgrade and repeated reopen preserve legacy evidence, IDs, annotations and membership without backfill duplication (47.18863ms)
+2026-10-03T00:09:07.2265421Z ✔ fresh observations discover outside sessions, retain activity, and obey Pilot independently of Universe (20.609123ms)
+2026-10-03T00:09:07.2468585Z ✔ fresh starts avoid duplicate baselines, loops persist, and active recording resumes from durable evidence after restart (20.513897ms)
+2026-10-03T00:09:07.3859107Z ✔ stale or missing captured starts acquire the first same-system fresh sample and retain the preceding coverage gap (133.18619ms)
+2026-10-03T00:09:07.4085111Z ✔ pending or failed names cannot move observation ownership, timestamp, ship, sovereignty or activity across session changes (28.159878ms)
+2026-10-03T00:09:07.4302688Z ✔ session read boundaries, equal-time order and legacy-only inferred starts never admit another owned session or pilot (21.779967ms)
+2026-10-03T00:09:07.4488870Z ✔ a same-millisecond end/start assigns accepted samples to the active session without inventing an activity transition (18.733197ms)
+2026-10-03T00:09:07.6196278Z ✔ cold Journey projection and hide/unhide use only legacy adjacency with interleaved session rows and equal timestamps (169.07195ms)
+2026-10-03T00:09:07.6416084Z ✔ inactive and unchanged observations do not scan sovereignty to fabricate movement (22.129361ms)
+2026-10-03T00:09:07.7455258Z ✔ real Core captures location receipt before deferred metadata/names and never transfers it to a later session (101.878622ms)
+2026-10-03T00:09:08.8588573Z ✔ real Core retains delayed hull activity in the receipt session including replay end-cursor handling (1116.231413ms)
+2026-10-03T00:09:08.9374592Z ✔ real Core stale transport samples never become new session travel or discovery (78.668531ms)
+2026-10-03T00:09:08.9944513Z ✔ Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (56.772579ms)
+2026-10-03T00:09:09.0168195Z ✔ route projection preserves frozen SQL/prepared rows, name precedence and synthetic-start metadata (22.634183ms)
+2026-10-03T00:09:09.1054362Z ✔ route retains every visit, including quiet transits and repeated systems, clipped to the session (26.911204ms)
+2026-10-03T00:09:09.1055802Z ✔ only in-visit alliance combat qualifies a buffer; same-system windows merge without recursive expansion (0.778396ms)
+2026-10-03T00:09:09.1056624Z ✔ entry is inclusive, departure is exclusive, and alliance losses never add destroyed or unpriced-kill value (0.390893ms)
+2026-10-03T00:09:09.1057944Z ✔ friendly attackers on alliance victims produce losses only, with each value counted on one side (0.539925ms)
+2026-10-03T00:09:09.1275016Z ✔ saved v0.7.1 killmails recalculate exclusively on reopen and retain personal participation in alliance totals (23.160806ms)
+2026-10-03T00:09:09.1487794Z ✔ ships preserve changes between two ships of the same hull and exclude other pilots and end boundary (20.828673ms)
+2026-10-03T00:09:09.1495372Z ✔ LP uses per-corporation net balance changes, including spent/removed balances and valid empty snapshots (0.552889ms)
+2026-10-03T00:09:09.1732917Z ✔ LP reconciliation retains original samples, persists the first later sample, and never keeps drifting (24.277099ms)
+2026-10-03T00:09:09.1987104Z ✔ adjacent sessions flag overlapping LP sample ranges rather than crediting the same change twice (25.325927ms)
+2026-10-03T00:09:09.2206617Z ✔ capture honours paused modules; old sessions retain events and visits without invented alliance or LP data (21.915055ms)
+2026-10-03T00:09:09.2655746Z ✔ alliance collection uses supported system/month queries, preserves quiet visits and survives cache/restart (44.972742ms)
+2026-10-03T00:09:09.2872634Z ✔ public valuations enrich existing personal ESI records without duplicate events or losing values on later ingestion (20.972478ms)
+2026-10-03T00:09:09.2874196Z ✔ month query planning crosses UTC year boundaries and deduplicates repeated visits (0.416173ms)
+2026-10-03T00:09:09.4038356Z ✔ alliance page collection resumes a verification budget, handles late records and preserves totals on rate limits (116.620713ms)
+2026-10-03T00:09:09.5201350Z ✔ Good and Excellent are Blue; Bad and Terrible are Hostile in every contact source (2.000734ms)
+2026-10-03T00:09:09.5216004Z ✔ standing precedence includes explicit Neutral and rejects stale, denied and wrong-membership lists (0.366265ms)
+2026-10-03T00:09:09.5217085Z ✔ space categories distinguish security, Pochven, Abyssal and Anoikis before general null-sec (0.310662ms)
+2026-10-03T00:09:09.5218281Z ✔ new covered categories retain brief jump continuity; released High-Sec never carries through missing location (0.481926ms)
+2026-10-03T00:09:09.5458040Z ✔ OBS upgrade retains Unknown actions for new categories and handles old Safe policy without an automatic reveal (28.275275ms)
+2026-10-03T00:09:09.7316216Z ✔ organization collectors request scoped membership routes and discard contacts after membership changes (185.489365ms)
+2026-10-03T00:09:09.8031323Z ✔ Abyssal observations remain classifiable when ESI cannot provide public system details (71.470247ms)
+2026-10-03T00:09:10.0184415Z ✔ system lookup resolves Sigma Grindset and Sportmodel via ESI names without a connected pilot (214.918088ms)
+2026-10-03T00:09:10.0515964Z ✔ styled stream keeps the empty default, opaque covers and approved notification metadata (32.585706ms)
+2026-10-03T00:09:10.2525473Z ✔ real SSE delivers three large Unicode frames in order and drains accepted work before close (122.013757ms)
+2026-10-03T00:09:10.2654359Z ✔ a single frame larger than the waiting budget is accepted without copying it into the socket queue (13.950916ms)
+2026-10-03T00:09:10.4256532Z ✔ a stalled real reader is disconnected on drain timeout and releases its writer (159.799449ms)
+2026-10-03T00:09:10.4975188Z ✔ a real blocked reader cannot accumulate unbounded waiting bytes (72.231423ms)
+2026-10-03T00:09:10.5664224Z ✔ a real blocked reader cannot accumulate unbounded waiting frames (68.343023ms)
+2026-10-03T00:09:10.7139173Z ✔ graceful close also has a deadline when its reader never resumes (145.136586ms)
+2026-10-03T00:09:10.7534453Z ✔ intermittent drain progress cannot extend the graceful close deadline (42.172228ms)
+2026-10-03T00:09:10.7591607Z ✔ OBS reconnect sends current protected state after an earlier transport disconnect (5.743183ms)
+2026-10-03T00:09:10.8283922Z ✔ OBS protection closes a backlogged visible stream instead of queueing its mask behind old traffic (69.784909ms)
+2026-10-03T00:09:10.9291099Z ✔ one binding update shares sources without sharing pilot scope or retaining freshness (37.537986ms)
+2026-10-03T00:09:10.9506318Z ✔ goal widgets share a read per source and pilot while retaining independent display variants (20.704081ms)
+2026-10-03T00:09:10.9753868Z ✔ training and industry share sorted source choices per update and re-evaluate time, expiry and new samples (22.692251ms)
+2026-10-03T00:09:10.9763962Z ✔ unchanged bindings preserve version, while protection/config and reconnect publish current state (2.092348ms)
+2026-10-03T00:09:11.0284399Z ✔ late collector bindings cannot write to closed OBS streams during a dataset restart (1.562323ms)
+2026-10-03T00:09:11.1877240Z ✔ the user supplied SMT list imports all 22 endpoint lines as 11 reciprocal bridges (110.219697ms)
+2026-10-03T00:09:11.1910152Z ✔ SMT text and chat preserve directional endpoint structure IDs and never synthesize a reverse (0.615022ms)
+2026-10-03T00:09:11.1911349Z ✔ unknown systems, malformed lines, and conflicting endpoint IDs are visible errors (0.390602ms)
+2026-10-03T00:09:11.1912564Z ✔ CSV labels, quoted fields, prior structure columns, JSON and tabs remain compatible (0.548138ms)
+2026-10-03T00:09:11.1913659Z ✔ the rc4 from_system/to_system CSV header remains directly importable (3.62387ms)
+2026-10-03T00:09:11.1914702Z ✔ JSON retains independent endpoint owners, capitals, access and enabled directions (0.29832ms)
+2026-10-03T00:09:11.3654413Z ✔ nearest destinations use one confirmed chain and return navigable routes ranked by production graph costs (5.18105ms)
+2026-10-03T00:09:11.3693443Z ✔ unconfirmed, closed, inactive, expired, and unsupported-size links never create destination routes (5.089035ms)
+2026-10-03T00:09:11.3694589Z ✔ critical and end-of-life route inclusions are explicit and do not bypass actual expiry (3.393884ms)
+2026-10-03T00:09:11.3695660Z ✔ critical lifetime and critical mass require their own independent opt-ins (2.147236ms)
+2026-10-03T00:09:11.3696730Z ✔ a user-confirmed private observation retains public attribution without requiring public shortcut opt-in (0.888254ms)
+2026-10-03T00:09:11.3697994Z ✔ public shortcuts require source freshness, actual hub, completed report, explicit opt-in and vessel eligibility (3.909303ms)
+2026-10-03T00:09:11.3699093Z ✔ Thera entrance search can reach a current entrance without silently enabling transit through it (0.68779ms)
+2026-10-03T00:09:11.3715948Z ✔ reference station search preserves real station data and destination-security filtering (0.247528ms)
+2026-10-03T00:09:11.3717794Z ✔ security boundary agrees with production routing and wormhole/unknown security is never a high/low exit (1.124874ms)
+2026-10-03T00:09:11.3718794Z ✔ weighted preference, system exclusions and one-way links are respected (0.735238ms)
+2026-10-03T00:09:11.3719732Z ✔ bounded search, validation and origin-is-destination semantics remain predictable (4.081564ms)
+2026-10-03T00:09:11.3739739Z ✔ bundled destinations have pinned provenance, only real atlas systems and the principal Jita station (95.29237ms)
+2026-10-03T00:09:11.4145035Z ✔ FW states follow real opposing occupancy, with command neighbors and all remaining rear systems (1.224429ms)
+2026-10-03T00:09:11.4149731Z ✔ allied occupancy, unknown factions and stale snapshots do not fabricate an enemy front (0.234896ms)
+2026-10-03T00:09:11.5039636Z ✔ wormhole reports retain limitations, discard incomplete or expired, and validate the actual hub (1.600547ms)
+2026-10-03T00:09:11.5054453Z ✔ public connection expiry physically removes cached reports at their deadline, including while disabled (26.896696ms)
+2026-10-03T00:09:11.5060494Z ✔ 304 and failed in-flight refreshes cannot restore a report that expired while waiting (2.407573ms)
+2026-10-03T00:09:11.5061442Z ✔ combat display window is explicit, bounded and preserves retained observations when shortened (0.856905ms)
+2026-10-03T00:09:11.5062476Z ✔ storm areas follow real gates and preserve report age rather than confirmation claims (0.888761ms)
+2026-10-03T00:09:11.5063693Z ✔ feed fetches are cached, attributed, conditional, bounded and preserve stale data after a failure (2.581984ms)
+2026-10-03T00:09:11.5064347Z ✔ wrong schemas and oversized payloads cannot erase last good reports (1.039043ms)
+2026-10-03T00:09:11.5064963Z ✔ wormhole type limits are nominal and never become remaining mass or confirmed lifetime (1.643647ms)
+2026-10-03T00:09:11.5065580Z ✔ manual storm import is atomic and keeps source provenance and explicit expiry (0.965545ms)
+2026-10-03T00:09:11.5066254Z ✔ shutdown aborts and waits for pending requests before returning without later writes (0.752528ms)
+2026-10-03T00:09:11.7251849Z ✔ public combat is opt-in, independent, deduplicated by kill ID, and respects end-of-feed cooldown (223.872386ms)
+2026-10-03T00:09:11.8446240Z ✔ combat resumes successfully persisted steps after a later response fails (112.632635ms)
+2026-10-03T00:09:11.8451746Z ✔ malformed combat entries are not silently skipped by advancing the cursor (1.167861ms)
+2026-10-03T00:09:11.8453487Z ✔ combat resumes at current pointer after a gap beyond source retention and labels missing coverage (0.929311ms)
+2026-10-03T00:09:11.8454405Z ✔ campaign and development state use existing public snapshots with honest unknowns and no requests (0.596655ms)
+2026-10-03T00:09:11.8455159Z ✔ NPC rolling-window changes keep negative values, sparse zeros, identities and wormhole exclusion (0.252202ms)
+2026-10-03T00:09:11.8455883Z ✔ same cached NPC window never creates a comparison; stale or disabled feed state remains explicit (0.570438ms)
+2026-10-03T00:09:11.8456536Z ✔ invalid provider timestamps never advertise ready reports (0.207068ms)
+2026-10-03T00:09:11.8457152Z ✔ public chain retains cached cards through refresh and reconciles only the resulting snapshot (3.120566ms)
+2026-10-03T00:09:12.5476223Z ▶ Universe HTTP contract: local planning, private records, CSRF and stream isolation
+2026-10-03T00:09:12.5477154Z   ✔ guest pilot receives the full local graph and valid route without network access (381.86491ms)
+2026-10-03T00:09:12.6264292Z   ✔ static graph cache supports gzip and authenticated conditional requests (78.750413ms)
+2026-10-03T00:09:12.6442534Z   ✔ view and link writes require CSRF before reaching the service (17.142689ms)
+2026-10-03T00:09:12.8353587Z   ✔ selected pilots keep views and manual route connections separate (192.065151ms)
+2026-10-03T00:09:12.8806627Z   ✔ invalid pilot and system identifiers fail through the public API (43.41502ms)
+2026-10-03T00:09:12.9374242Z   ✔ connection-list import is atomic, updates in place and deletion removes its links (57.557563ms)
+2026-10-03T00:09:13.0388046Z   ✔ jump-plan API returns physical range legs and source metadata (100.521742ms)
+2026-10-03T00:09:13.0582044Z   ✔ stream output exposes neither Universe APIs nor private labels (16.396115ms)
+2026-10-03T00:09:13.0609082Z ✔ Universe HTTP contract: local planning, private records, CSRF and stream isolation (1102.837456ms)
+2026-10-03T00:09:13.5783981Z ✔ J-Space HTTP commands preserve session, pilot, revision, import and OBS boundaries (388.795439ms)
+2026-10-03T00:09:13.8437873Z ✔ selected reads remain scoped and full reads share canonical links and signature records (191.334176ms)
+2026-10-03T00:09:13.8439457Z ℹ {"selectedLinkBodiesBeforeOtherMaps":2,"selectedLinkBodiesAfterOtherMaps":2,"fullEightMapsLinkBodies":16,"fullEightMapsSignatureBodies":24,"fullQueries":70,"summaryQueries":6}
+2026-10-03T00:09:13.9101213Z ✔ summary and search reads reconcile expiry and pruning without stale revisions or a cross-request cache (67.061483ms)
+2026-10-03T00:09:13.9794897Z ✔ library search retains shared result semantics and keeps sources and other pilots private (68.347661ms)
+2026-10-03T00:09:14.0999148Z ✔ observed lifetime bands persist without granting access, renewing expiry or losing their age on mass edits (54.367955ms)
+2026-10-03T00:09:14.1320959Z ✔ private chain maps survive reopening, isolate pilots and require revision-matched writes (31.756441ms)
+2026-10-03T00:09:14.1659137Z ✔ positions, locks, aliases, roles, annotations and undo are atomic and bounded (34.548128ms)
+2026-10-03T00:09:14.1989419Z ✔ global visits and pins cannot seed private maps or create map-owned connections (32.876016ms)
+2026-10-03T00:09:14.2334367Z ✔ connections use canonical links, demand explicit confirmation and reflect expiry/removal (34.379789ms)
+2026-10-03T00:09:14.2678738Z ✔ passage ledger records direction and observed mass without claiming remaining mass (34.274487ms)
+2026-10-03T00:09:14.3046223Z ✔ canonical scanner signatures link both endpoints and deletions do not invent replacement observations (36.621701ms)
+2026-10-03T00:09:14.3377884Z ✔ structures, timers and local pings preserve observation times and expire honestly (32.457247ms)
+2026-10-03T00:09:14.3670592Z ✔ Wanderer v1 import previews without writes and never revives portable connection evidence (29.634026ms)
+2026-10-03T00:09:14.3978171Z ✔ invalid imports and invalid cross-service commands roll back every affected record (30.9221ms)
+2026-10-03T00:09:14.4318398Z ✔ native exports preserve map content across pilots while demoting imported links (33.862292ms)
+2026-10-03T00:09:14.4678212Z ✔ duplicating a chain preserves observed ages and makes connection evidence independent (35.924976ms)
+2026-10-03T00:09:14.5049746Z ✔ passage corrections preserve identity and occurrence while multi-delete obeys locked graph constraints (36.998346ms)
+2026-10-03T00:09:14.5469545Z ✔ opt-in sampled passage tracking is deduplicated, reviewable and never changes connection trust (41.834396ms)
+2026-10-03T00:09:14.5830900Z ✔ the shared selected-location stream expands only subscribed private maps and map-local pause stops tracking (36.091099ms)
+2026-10-03T00:09:14.6327276Z ✔ scheduled ESI refreshes connect J-Space travel and both K-Space endpoints in source, global and scoped maps (49.406511ms)
+2026-10-03T00:09:14.6713492Z ✔ scoped maps adopt a source chain when a later exit matches without renewing its lifetime or copying user data (38.163284ms)
+2026-10-03T00:09:14.7118682Z ✔ changing the selected pilot resets only source baselines and keeps explicitly tracked interactive pilots active (40.876752ms)
+2026-10-03T00:09:14.7453556Z ✔ shared maintenance expires source connections immediately and prunes source cards without an open view or connected account (33.507444ms)
+2026-10-03T00:09:14.8059103Z ✔ Wanderer-compatible export preserves portable fields while excluding unroutable observations (60.476161ms)
+2026-10-03T00:09:14.8388683Z ✔ destination search uses only the selected pilot chain and ignores caller-owned graph evidence (32.796216ms)
+2026-10-03T00:09:14.8741568Z ✔ deleted signature bindings permit condition edits without rebinding and ship-size unknown can be recorded (34.957273ms)
+2026-10-03T00:09:14.9081842Z ✔ drawn connections preserve explicit unknown lifetime until an observed expiry is deliberately supplied (34.047287ms)
+2026-10-03T00:09:14.9487246Z ✔ disconnected cards prune after the last expiry while metadata, signatures and reports survive rediscovery (40.788798ms)
+2026-10-03T00:09:14.9845316Z ✔ deletion grace survives refreshes, reconnecting cancels it, and standalone cards are retained (35.687938ms)
+2026-10-03T00:09:15.0257464Z ✔ unlock and manual re-add each grant disconnected cards a fresh thirty minutes (41.266337ms)
+2026-10-03T00:09:15.0605101Z ✔ effective J-Space owners are private annotations, validated and preserved through manual removal (31.47039ms)
+2026-10-03T00:09:15.1656680Z ✔ logs-only waiting and disabled positions never fall back to the ESI map position or advance stops (43.493631ms)
+2026-10-03T00:09:15.2054001Z ✔ new bound Local observations advance navigation from the selected log source without overwriting ESI (39.611906ms)
+2026-10-03T00:09:15.2404555Z ✔ prefer-ESI advances from fresh ESI, then fresh logs only after ESI becomes stale (33.216501ms)
+2026-10-03T00:09:15.2883955Z ✔ UTF-16 and UTF-8 EVE headers preserve listener and channel identity (1.415871ms)
+2026-10-03T00:09:15.3029591Z ✔ logs are opt-in, start at EOF and only ingest the bound pilot and selected channels (18.421493ms)
+2026-10-03T00:09:15.3080704Z ✔ UTF-16 partial code units and partial lines are emitted once after completion (5.253379ms)
+2026-10-03T00:09:15.3125748Z ✔ rotated files and re-enabled readers establish a fresh baseline without replaying history (4.438502ms)
+2026-10-03T00:09:15.3164439Z ✔ parent EVE log directory supports game logs separately, never arbitrary or linked files (3.751926ms)
+2026-10-03T00:09:15.3191947Z ✔ guest and missing folders do not collect; shutdown blocks later changes (2.783321ms)
+2026-10-03T00:09:15.3257324Z ✔ large appended logs are consumed in bounded chunks and simultaneous ticks coalesce (3.268961ms)
+2026-10-03T00:09:15.3728262Z ✔ bounds include glyph overhangs, descenders and halo, rather than just an anchor or advance width (1.150503ms)
+2026-10-03T00:09:15.3729584Z ✔ all four edges fade smoothly before clipping, with full opacity in the readable interior (1.669005ms)
+2026-10-03T00:09:15.3730714Z ✔ long names fade based on their far edge while their system anchor is still well inside the map (0.173534ms)
+2026-10-03T00:09:15.3731781Z ✔ fade is independent of camera zoom and device pixel ratio for the same screen footprint (0.210083ms)
+2026-10-03T00:09:15.4372782Z ✔ known-space extents exclude J-space, abyssal and other-space outliers, preserving zero coordinates (1.840211ms)
+2026-10-03T00:09:15.4391235Z ✔ overview has modest padding and repeated wheel zoom-out cannot shrink known space (0.62846ms)
+2026-10-03T00:09:15.4392763Z ✔ active region and independent J-space bounds get their own minimum fit (0.192735ms)
+2026-10-03T00:09:15.4394623Z ✔ overview resize preserves 1× and zoomed resize preserves the world centre and relative zoom (0.171176ms)
+2026-10-03T00:09:15.4395846Z ✔ panning at the overview is locked; zoomed panning retains visible space at every edge (0.203733ms)
+2026-10-03T00:09:15.4396889Z ✔ a singleton and an empty discovery graph produce finite cameras (0.162709ms)
+2026-10-03T00:09:15.4398055Z ✔ vector cell boundary is the exact bisector and survives arbitrary zoom without raster quantisation (0.731745ms)
+2026-10-03T00:09:15.4399431Z ✔ spatial clipping agrees with an independent nearest-point oracle throughout dense and sparse space (17.207853ms)
+2026-10-03T00:09:15.4415588Z ✔ standing filters dim the same full partition and never transfer enemy territory (1.852087ms)
+2026-10-03T00:09:15.4419026Z ✔ disconnected holdings get separate interior anchors and an enclave remains its own component (0.480029ms)
+2026-10-03T00:09:15.4420506Z ✔ relevant revisions ignore object replacement and unrelated refreshes but detect politics changes (0.300535ms)
+2026-10-03T00:09:15.4421955Z ✔ duplicate projected points resolve deterministically without corrupting neighbours (0.154708ms)
+2026-10-03T00:09:15.4873674Z ✔ pixel, line and page wheel events produce equivalent zoom for equivalent physical delta (0.779972ms)
+2026-10-03T00:09:15.4882667Z ✔ changing cursor during a queued zoom preserves the currently pointed world coordinate (0.972362ms)
+2026-10-03T00:09:15.4888028Z ✔ wheel accumulation respects overview minimum and bounded maximum (0.685277ms)
+2026-10-03T00:09:15.4889120Z ✔ pinch combines translation and scaling around its original world midpoint (0.221925ms)
+2026-10-03T00:09:15.4895449Z ✔ pinching inward cannot expose a smaller-than-overview galaxy (0.154795ms)
+2026-10-03T00:09:15.4899289Z ✔ release coast is directional, capped in distance and finite in time (0.158245ms)
+2026-10-03T00:09:15.4909074Z ✔ old, stationary, invalid and outward-at-edge release samples do not drift (0.174901ms)
+2026-10-03T00:09:15.4910423Z ✔ overview reports actual camera footprint and stays inside its inset at all edges (0.282632ms)
+2026-10-03T00:09:15.4911547Z ✔ projected scale gives readable 1/2/5 distances with exact geometric pixel widths (0.350536ms)
+2026-10-03T00:09:15.5396533Z ✔ route watch is an undirected gate-only shortest-path model, independent of supplied ordering (2.393734ms)
+2026-10-03T00:09:15.5413433Z ✔ radar includes cross-region gate neighbours and regional schematic retains disconnected systems (1.156054ms)
+2026-10-03T00:09:15.5424002Z ✔ radar reports a bounded truncation rather than silently pretending the whole neighbourhood is visible (2.002928ms)
+2026-10-03T00:09:15.5425425Z ✔ report phases have absolute ages and expiration is exact, including future/unknown timestamps (0.412202ms)
+2026-10-03T00:09:15.5426917Z ✔ clear supersedes only its channel and system; expired intel is absent and fleet/pilot duplicates are removed (0.564597ms)
+2026-10-03T00:09:15.5428289Z ✔ feed footprints cross region boundaries; stale wormholes are never rendered as usable connections (0.33096ms)
+2026-10-03T00:09:15.5429634Z ✔ projected hull removes internal points and duplicates without claiming reachability for its interior (0.186247ms)
+2026-10-03T00:09:15.5430856Z ✔ disabled operations retain notes without resurfacing old live intel or presence (0.119296ms)
+2026-10-03T00:09:15.5434231Z ✔ a response for different origin/range cannot turn stale range dots into verified destinations (0.328188ms)
+2026-10-03T00:09:15.5436064Z ✔ a pilot appears at only the freshest independently observed position across fleet and pilot sources (0.50867ms)
+2026-10-03T00:09:15.5437371Z ✔ hub discovery accepts only completed unexpired public reports from a fresh source (0.286226ms)
+2026-10-03T00:09:15.5936587Z ✔ networks use actual hubs and retain K-space entrances without assigning a Thera position (5.632538ms)
+2026-10-03T00:09:15.5951570Z ✔ both hub orientations preserve each endpoint signature and the original report (0.282392ms)
+2026-10-03T00:09:15.5973844Z ✔ stale source and row reports remain inspectable but cannot advertise current public routing (0.654974ms)
+2026-10-03T00:09:15.5976980Z ✔ incomplete and unreported connections remain distinct from fresh candidates (0.344925ms)
+2026-10-03T00:09:15.5978792Z ✔ expired, malformed, unknown and false-hub connections are hidden without fake coordinates (0.352267ms)
+2026-10-03T00:09:15.5980176Z ✔ duplicate IDs resolve versions deterministically without conflating reciprocal report metadata (0.629599ms)
+2026-10-03T00:09:15.5981441Z ✔ time refresh changes state and expiry without moving or mutating report identities (0.252219ms)
+2026-10-03T00:09:15.6399923Z ✔ reopening a route dock cannot restore a saved route over a new destination or origin (0.853782ms)
+2026-10-03T00:09:15.6403311Z ✔ saved plan must match current revision, ordered remaining stops and navigation kind (0.153885ms)
+2026-10-03T00:09:15.6423861Z ✔ completed stops and explicit following preserve a valid remaining itinerary without accepting new draft text (0.228079ms)
+2026-10-03T00:09:15.7152690Z ✔ ordered planning persists per pilot, joins segments and reports an unreachable leg without claiming a partial route (28.536328ms)
+2026-10-03T00:09:15.7341033Z ✔ map navigation drafts, plans and removal stay separate from other maps and K-Space (18.750514ms)
+2026-10-03T00:09:15.7554011Z ✔ automatic map itinerary progress respects roster tracking and never records wormhole positions globally (21.432539ms)
+2026-10-03T00:09:15.7765252Z ✔ forgetting a connection clears every cached route copy without deleting map itinerary or unrelated plans (20.684715ms)
+2026-10-03T00:09:15.7938120Z ✔ a pending calculation cannot save a copy after its connection has vanished (17.399831ms)
+2026-10-03T00:09:15.8121137Z ✔ a delayed gate-only plan cannot recreate scoped settings after its map is deleted (18.429942ms)
+2026-10-03T00:09:15.8336937Z ✔ progress consumes only the next occurrence, retains future revisits, and ignores stale observations (21.574349ms)
+2026-10-03T00:09:15.8538830Z ✔ following location requires a fresh canonical source and never falls back to persisted progress (20.179593ms)
+2026-10-03T00:09:15.8735294Z ✔ a navigation integration without operations can follow a recent explicit observation only (19.462385ms)
+2026-10-03T00:09:15.8935532Z ✔ stop reorder is a complete permutation, remove and clear remain local (19.733637ms)
+2026-10-03T00:09:15.9148847Z ✔ waypoint sends require scope and explicit append/replace, serialize without coalescing and report partial failure (21.566216ms)
+2026-10-03T00:09:15.9343847Z ✔ reverse Ansiblex export targets the departure structure at that endpoint (19.193569ms)
+2026-10-03T00:09:15.9550048Z ✔ editing during a waypoint command stops remaining commands and preserves the edited itinerary (20.801434ms)
+2026-10-03T00:09:15.9742965Z ✔ shutdown finishes the in-flight command but stops further and queued commands (18.989485ms)
+2026-10-03T00:09:15.9931096Z ✔ bridge discovery uses scoped current ESI candidates and does not infer access or accept false origins (18.819062ms)
+2026-10-03T00:09:16.0125620Z ✔ location observations notify the local state stream without creating navigation activity events (19.096627ms)
+2026-10-03T00:09:16.0355106Z ✔ public wormhole routing respects explicit source, freshness, expiry and reported ship limit (22.981531ms)
+2026-10-03T00:09:16.0580373Z ✔ alternate midpoints retain segment identity on revisits and never replace an explicit itinerary stop (22.406807ms)
+2026-10-03T00:09:16.0820646Z ✔ promoting a report into a private wormhole preserves its recorded ship-size restriction (24.447002ms)
+2026-10-03T00:09:16.1103758Z ✔ XL public wormholes need actual mass and fresh nominal limits; nominal capacity is never remaining mass (25.236479ms)
+2026-10-03T00:09:16.1105004Z ✔ jump presets apply exact JDC levels; reachability/overlap and alternatives retain Y axis and restrictions (0.857694ms)
+2026-10-03T00:09:16.1105733Z ✔ fuel estimate uses explicit rate and multiplier, rounds each leg and exposes assumptions (0.330519ms)
+2026-10-03T00:09:16.7913154Z ▶ Universe operations HTTP: authenticated state, private observations and public-output isolation
+2026-10-03T00:09:16.7914056Z   ✔ all operational surfaces require a local session and mutations require CSRF (43.037735ms)
+2026-10-03T00:09:16.8504494Z   ✔ manual intel reaches only the selected pilot and keeps its observed time (59.117754ms)
+2026-10-03T00:09:16.8886399Z   ✔ scanner and infrastructure records have the same pilot boundary (35.600902ms)
+2026-10-03T00:09:16.9765893Z   ✔ map-scoped HTTP scanner and intel never cross independent map instances (88.22925ms)
+2026-10-03T00:09:17.0560306Z   ✔ scanner diagnostics and infrastructure SMT previews are read-only, atomic and private (81.363722ms)
+2026-10-03T00:09:17.0800070Z   ✔ invalid identity, timestamps and settings cannot change saved observations (23.743932ms)
+2026-10-03T00:09:17.0960555Z   ✔ expiry is explicit and disabled collection cannot fetch fleet data (16.198894ms)
+2026-10-03T00:09:17.1748959Z   ✔ SMT preview is read-only and exact import/export preserves unknown structures (78.176018ms)
+2026-10-03T00:09:17.2109127Z   ✔ map wormhole expiry is preserved on ordinary edits and forgotten at the lifetime boundary (35.590693ms)
+2026-10-03T00:09:17.2913600Z   ✔ ordered itineraries reject stale edits and never send without explicit permission (80.54199ms)
+2026-10-03T00:09:17.3291238Z   ✔ manual storms and campaigns retain source provenance and expiry without provider requests (35.769414ms)
+2026-10-03T00:09:17.5103661Z   ✔ composed navigation preserves public hub geometry, ship limits, mass and expiry (183.089752ms)
+2026-10-03T00:09:17.5281900Z   ✔ public output has no operational APIs or private observation content (17.853149ms)
+2026-10-03T00:09:17.5456209Z   ✔ owners can remove manual records without changing another pilot (12.334388ms)
+2026-10-03T00:09:17.5495202Z ✔ Universe operations HTTP: authenticated state, private observations and public-output isolation (1326.453167ms)
+2026-10-03T00:09:17.9014321Z ✔ Universe public-source HTTP refresh retains stale evidence and obeys backoff and collection controls (352.339214ms)
+2026-10-03T00:09:17.9770311Z ✔ intel resolves exact and unique abbreviations, preserves ambiguous names and UTC source time (3.70739ms)
+2026-10-03T00:09:17.9782021Z ✔ game log parser handles malformed input once and keeps combat separate from intel (0.504268ms)
+2026-10-03T00:09:17.9783062Z ✔ gate distances terminate on cycles, honor depth and keep disconnected space unknown (0.343317ms)
+2026-10-03T00:09:18.0018231Z ✔ operations reads never fetch; guest manual records stay isolated and logs require a connected pilot (31.92044ms)
+2026-10-03T00:09:18.0262240Z ✔ alerts use only fresh own location, preserve observation expiry, deduplicate and acknowledge privately (24.732885ms)
+2026-10-03T00:09:18.0502792Z ✔ clear/question/ignored reports do not alert, watches and keywords work without location, and quiet mode wins (23.818659ms)
+2026-10-03T00:09:18.0703586Z ✔ manual callers cannot spoof a game-log source and explicit selected systems are validated (20.06706ms)
+2026-10-03T00:09:18.0947103Z ✔ scanner import accepts localization, preserves known labels, and only valid complete scans mark missing (24.159719ms)
+2026-10-03T00:09:18.1166228Z ✔ signature preview provides a pure real diff and malformed complete scans never mark missing (21.631661ms)
+2026-10-03T00:09:18.1374304Z ✔ manual signatures and upgrades preserve per-pilot identity and unique slots (20.938318ms)
+2026-10-03T00:09:18.1600581Z ✔ fleet polls are explicit, bounded, cache-aware and scope-gated (22.354198ms)
+2026-10-03T00:09:18.1840284Z ✔ fleet replacement failure never exposes previous fleet members; revoked access clears last-good roster (24.142264ms)
+2026-10-03T00:09:18.2061394Z ✔ fleet commander role loss removes roster and shutdown waits for in-flight work without publishing (21.843261ms)
+2026-10-03T00:09:18.2303404Z ✔ log tail binds listener, baselines old lines, captures fresh intel and stops on disable (24.171355ms)
+2026-10-03T00:09:18.9446212Z ✔ retention is bounded and disabling operations prevents ingests (714.269781ms)
+2026-10-03T00:09:18.9695608Z ✔ opt-in local positions retain their own source, expire, never replace ESI storage, and stay pilot-bound (24.772197ms)
+2026-10-03T00:09:18.9920488Z ✔ decloak categories have independent opt-outs under the master switch (22.629171ms)
+2026-10-03T00:09:19.0099280Z ✔ global module disable stops live state and does not commit an in-flight fleet response (17.597819ms)
+2026-10-03T00:09:19.0303118Z ✔ infrastructure import previews without writes, merges privately and exports notes losslessly as JSON (20.421145ms)
+2026-10-03T00:09:19.0488377Z ✔ infrastructure import rolls back all rows on a storage failure and emits no change before commit (18.596942ms)
+2026-10-03T00:09:19.0871628Z ✔ scanner normalizes every Wanderer language and includes anomalies only on explicit request (38.371803ms)
+2026-10-03T00:09:19.1220295Z ✔ signature deletion restore is pilot and revision scoped, preserves observations, and expires (34.823027ms)
+2026-10-03T00:09:19.2574371Z ✔ signature restore never overwrites a newer matching scan and trash is capped at 100 (135.253414ms)
+2026-10-03T00:09:19.2772892Z ✔ signature metadata survives scanner refresh and bookmark configuration validates tokens (19.756789ms)
+2026-10-03T00:09:19.2965685Z ✔ signature delete transaction rolls back the tombstone if removing the live observation fails (19.16537ms)
+2026-10-03T00:09:19.3209191Z ✔ bookmark metadata and per-pilot conventions preserve zero indices, manual branches and type provenance (24.309327ms)
+2026-10-03T00:09:19.3449116Z ✔ scanner observations and undo belong to one map instance, including uncharted systems (23.953533ms)
+2026-10-03T00:09:19.3686331Z ✔ legacy J-Space observations migrate once into existing maps and never seed new maps (23.721271ms)
+2026-10-03T00:09:19.3922231Z ✔ map intel, alerts and infrastructure notes stay private to that map; global wormhole writes are rejected (23.626366ms)
+2026-10-03T00:09:19.4158906Z ✔ explicit map duplication copies observations independently without duplicating scanner import records (23.625256ms)
+2026-10-03T00:09:19.4375824Z ✔ followed discovery maps cannot be mutated through operations APIs (20.833973ms)
+2026-10-03T00:09:19.4639291Z ✔ native map operational records round-trip independently without live telemetry or retroactive alerts (26.883065ms)
+2026-10-03T00:09:19.4882021Z ✔ native operational validation and storage failures cannot leave partial imported map records (24.627663ms)
+2026-10-03T00:09:19.5534774Z ✔ partial owner search uses scoped ESI and returns only IDs with verified matching entity categories (21.680102ms)
+2026-10-03T00:09:19.5718678Z ✔ missing search scope and reauth pilots can resolve full names publicly without knowing an ID (18.54637ms)
+2026-10-03T00:09:19.5916189Z ✔ fresh typed cached names support immediate exact lookup and safe partial fallback without guessing entity types (19.721212ms)
+2026-10-03T00:09:19.6147228Z ✔ search coalesces matching concurrent requests and bounds name hydration to twenty identities (22.862378ms)
+2026-10-03T00:09:19.6338428Z ✔ invalid input, stale lookup and wrong-category numeric IDs cannot produce selectable identities (17.844162ms)
+2026-10-03T00:09:19.6891902Z ✔ group union preserves exact holdings, membership and observed-region denominators (7.1647ms)
+2026-10-03T00:09:19.6919403Z ✔ frontiers deduplicate bidirectional gates and internal bloc crossings; adjacency is never a relationship (0.904841ms)
+2026-10-03T00:09:19.6921741Z ✔ sovereignty view separates the alliances inside a configured group and reveals their real gate frontier (0.50017ms)
+2026-10-03T00:09:19.6923482Z ✔ missing activity members make the whole aggregate unknown; explicit null never inherits zero defaults (1.708896ms)
+2026-10-03T00:09:19.6924889Z ✔ unavailable activity sources ignore leftover values; stale sources preserve cached totals with a stale flag (1.179089ms)
+2026-10-03T00:09:19.6926411Z ✔ unavailable ownership never converts cached or static rows into current territory, while stale ownership is explicit (0.608413ms)
+2026-10-03T00:09:19.6928266Z ✔ territory, neighbour and server palette colours agree and empire hues stay fixed (0.405928ms)
+2026-10-03T00:09:19.6929540Z ✔ view filters, selected regions, standings and camera state never change the full atlas or mutate inputs (0.853837ms)
+2026-10-03T00:09:19.6932765Z ✔ mismatched membership cannot move an owner into a different alliance group and each owner key stays separate (0.658401ms)
+2026-10-03T00:09:20.0395676Z ▶ Power bloc HTTP settings preserve precedence, authenticate mutations and resolve actual alliances
+2026-10-03T00:09:20.0420733Z   ✔ settings require a local authenticated session and CSRF (18.033785ms)
+2026-10-03T00:09:20.1003903Z   ✔ manual membership and independence resolve consistently in map and detail (64.214708ms)
+2026-10-03T00:09:20.1094163Z   ✔ stale edits and duplicate assignments cannot overwrite a saved configuration (9.167847ms)
+2026-10-03T00:09:20.1490819Z   ✔ alliance search is local and exact lookups validate the entity category (40.067577ms)
+2026-10-03T00:09:20.1714226Z   ✔ configured groups survive fallback refresh and stay off the stream server (15.265386ms)
+2026-10-03T00:09:20.1754585Z ✔ Power bloc HTTP settings preserve precedence, authenticate mutations and resolve actual alliances (372.107014ms)
+2026-10-03T00:09:20.2493692Z ✔ config enforces explicit moves, independence, stable IDs and optimistic revisions (2.30863ms)
+2026-10-03T00:09:20.2504095Z ✔ compact ingestion deduplicates alliance attackers, rejects malformed/future/huge events and never reads system totals (0.341287ms)
+2026-10-03T00:09:20.2505779Z ✔ one fleet, common enemies, adjacency and low activity alone do not create coalitions (4.701572ms)
+2026-10-03T00:09:20.2506860Z ✔ sustained partnerships share one stable snapshot and deduplicate kills and encounters (7.756504ms)
+2026-10-03T00:09:20.2507729Z ✔ hostility blocks grouping, including three hostile parties (0.430641ms)
+2026-10-03T00:09:20.2508463Z ✔ an ambiguous bridge cannot merge unsupported partners; configured alliances cannot bridge fallback (0.390843ms)
+2026-10-03T00:09:20.2509387Z ✔ territory corroborates supported pairs without changing their admission (0.317762ms)
+2026-10-03T00:09:20.2510578Z ✔ expired cooperation dissolves and stable group identity survives a supported member addition (0.740233ms)
+2026-10-03T00:09:20.2834101Z ✔ service resolves configured/independent first, still infers unassigned pairs, and never changes settings (36.576851ms)
+2026-10-03T00:09:20.3081001Z ✔ same kill across personal and alliance caches counts once, and reads never ingest queued records (25.578008ms)
+2026-10-03T00:09:20.5957531Z ✔ queue drains in bounded batches and reports incomplete coverage until caught up (287.303968ms)
+2026-10-03T00:09:20.6211118Z ✔ collection outage is distinct from no evidence, and old unrefreshed membership cannot live forever (25.359968ms)
+2026-10-03T00:09:20.6433249Z ✔ inference-off retains manual blocs and leaves unknown alliances separate (21.923349ms)
+2026-10-03T00:09:20.6647445Z ✔ configured colours reject duplicates and empire reservations before persisting settings (21.617645ms)
+2026-10-03T00:09:20.6894256Z ✔ a memoized full-roster palette keeps map memberships, empire fills and groups consistent (23.077141ms)
+2026-10-03T00:09:20.7442972Z ✔ wormhole location labels expose class and J-Space without organizational region or constellation names (0.646968ms)
+2026-10-03T00:09:20.7456404Z ✔ K-Space search retains regions and politics while all-space system results hide J-Space partitions (12.084578ms)
+2026-10-03T00:09:20.7479406Z ✔ J-Space search finds either endpoint across spaces without region or political destinations (0.398023ms)
+2026-10-03T00:09:20.7484219Z ✔ known J-Space counts include usable public endpoints without retaining expired public-only discoveries (0.67528ms)
+2026-10-03T00:09:20.7485513Z ✔ explicit discovery membership survives missing connections without reviving a lifetime Journey payload (0.335152ms)
+2026-10-03T00:09:20.8167324Z ✔ prepared gate and jump planners preserve per-leg results while reusing one graph or grid (4.731372ms)
+2026-10-03T00:09:20.8699550Z ✔ a fifty-stop production itinerary reads one computational snapshot projection and builds one graph (55.921809ms)
+2026-10-03T00:09:20.9048821Z ✔ route badges preserve all source metadata without unrelated body decoding (35.226068ms)
+2026-10-03T00:09:20.9396887Z ▶ production itinerary acceptance rejects routing evidence changes but permits unrelated writes
+2026-10-03T00:09:20.9397599Z   ✔ kill data (34.289764ms)
+2026-10-03T00:09:20.9737356Z   ✔ standings (34.410208ms)
+2026-10-03T00:09:21.0075783Z   ✔ pilot reauthorisation (33.717855ms)
+2026-10-03T00:09:21.0409126Z   ✔ pilot scopes (32.91357ms)
+2026-10-03T00:09:21.0764560Z   ✔ module policy (35.00661ms)
+2026-10-03T00:09:21.1103573Z   ✔ source expiry (33.835519ms)
+2026-10-03T00:09:21.1465014Z   ✔ unrelated pilot, display data and settings (35.494989ms)
+2026-10-03T00:09:21.1466008Z ✔ production itinerary acceptance rejects routing evidence changes but permits unrelated writes (241.393261ms)
+2026-10-03T00:09:21.1877800Z ▶ used private connection access, size, expiry and list evidence is revalidated before save
+2026-10-03T00:09:21.1879458Z   ✔ access (41.560066ms)
+2026-10-03T00:09:21.2218258Z   ✔ confirmation (33.800136ms)
+2026-10-03T00:09:21.2586204Z   ✔ size (36.889484ms)
+2026-10-03T00:09:21.2936630Z   ✔ mass (34.753221ms)
+2026-10-03T00:09:21.3304287Z   ✔ used list becomes disabled (35.975046ms)
+2026-10-03T00:09:21.3637142Z   ✔ used connection expires while source snapshots remain fresh (33.583134ms)
+2026-10-03T00:09:21.3988010Z   ✔ map removal cannot recreate a saved route (32.885554ms)
+2026-10-03T00:09:21.4381439Z   ✔ another map connection changes (40.501483ms)
+2026-10-03T00:09:21.4382707Z ✔ used private connection access, size, expiry and list evidence is revalidated before save (291.245719ms)
+2026-10-03T00:09:21.4787118Z ▶ used public reports and nominal limits retain freshness and mutation guards
+2026-10-03T00:09:21.4789365Z   ✔ unchanged (41.236ms)
+2026-10-03T00:09:21.5135157Z   ✔ report changed (33.323973ms)
+2026-10-03T00:09:21.5482967Z   ✔ type changed (35.809326ms)
+2026-10-03T00:09:21.5821048Z   ✔ feed expired (33.665183ms)
+2026-10-03T00:09:21.6169339Z   ✔ camel timestamps (34.995193ms)
+2026-10-03T00:09:21.6170359Z ✔ used public reports and nominal limits retain freshness and mutation guards (179.91247ms)
+2026-10-03T00:09:21.7764554Z ✔ Zarzakh routing is explicitly opt-in for the actual four-gate catalogue hub (100.679725ms)
+2026-10-03T00:09:21.7793861Z ✔ shortest routing chooses exact mixed edges and does not use journey or visual coordinates (0.72393ms)
+2026-10-03T00:09:21.7799233Z ✔ wormhole expiry and access are enforced at request time, including missing expiry (0.446594ms)
+2026-10-03T00:09:21.7800520Z ✔ gate reciprocity, disconnected nodes and directed manual connections remain distinct (0.360956ms)
+2026-10-03T00:09:21.7801734Z ✔ safer routing uses the selected pilot standings and recorded activity independently of overlays (0.624781ms)
+2026-10-03T00:09:21.7812193Z ✔ safer routing favours highsec without labelling zero data as safe (0.206224ms)
+2026-10-03T00:09:21.7813856Z ✔ prefer-low routing chooses the lowsec branch without overriding hard security exclusions (0.252087ms)
+2026-10-03T00:09:21.7815899Z ✔ live Ansiblex rules require current sovereign membership and retain allowed industrial exceptions (0.477223ms)
+2026-10-03T00:09:21.7820179Z ✔ safer routing prefers a friendly nullsec detour over neutral nullsec (0.395136ms)
+2026-10-03T00:09:21.7821421Z ✔ announced Ansiblex zones use physical destination distance from the owner capital per direction (0.4868ms)
+2026-10-03T00:09:21.7822803Z ✔ zone boundaries are continuous and missing capital cannot bypass zone restrictions (0.37369ms)
+2026-10-03T00:09:21.7824062Z ✔ announced access model does not confuse positive standings with owning-alliance membership (0.298869ms)
+2026-10-03T00:09:21.7825189Z ✔ a differently owned reverse gate cannot inherit the forward owner capital (0.292258ms)
+2026-10-03T00:09:21.7826558Z ✔ graph returns the selected exact connection when a parallel gate also exists (0.235054ms)
+2026-10-03T00:09:21.7827630Z ✔ jump projection includes physical Y even when two systems coincide on the 2D map (0.620286ms)
+2026-10-03T00:09:21.7828838Z ✔ jump boundary uses the exact EVE light-year rather than the larger scientific light-year (0.226165ms)
+2026-10-03T00:09:21.7830013Z ✔ jump projection finds intermediate cyno systems and preserves each leg distance (0.329731ms)
+2026-10-03T00:09:21.7831317Z ✔ jump destinations exclude highsec and special space while allowing a highsec origin (0.70212ms)
+2026-10-03T00:09:21.8838700Z ✔ legacy saved views restore without rewriting storage or discarding unrelated preferences (38.904289ms)
+2026-10-03T00:09:21.9125821Z ✔ saved-view writes normalize only the retired top-level indicator and preserve generic config validation (28.114236ms)
+2026-10-03T00:09:22.1111279Z ✔ every bundled known-space system has a unique CCP schematic position (10.317682ms)
+2026-10-03T00:09:22.1121551Z ✔ Tenerifis preserves the in-game geometry instead of collapsing single-system hop bands (1.59923ms)
+2026-10-03T00:09:22.1143696Z ✔ schematic works galaxy-wide, region-wide and constellation-wide without a pilot or gate-hop cutoff (37.815192ms)
+2026-10-03T00:09:22.1163323Z ✔ region card placement uses one uniform scale, with readable spacing and no overlapping rectangles (3.773056ms)
+2026-10-03T00:09:22.1164327Z ✔ incomplete references fall back explicitly without mixing coordinate spaces or dropping systems (3.55437ms)
+2026-10-03T00:09:22.1183265Z ✔ empty, singleton and zero coordinates remain finite; source records are not mutated (0.33645ms)
+2026-10-03T00:09:22.1882537Z ✔ standings preserve own alliance, personal precedence, explicit neutral and unavailable evidence (1.534788ms)
+2026-10-03T00:09:22.1916579Z ✔ freshness rejects expired, future and partial snapshots (0.205883ms)
+2026-10-03T00:09:22.2364846Z ✔ live map sources include real activity, incursions, indices, structures and honest missing data (53.064519ms)
+2026-10-03T00:09:22.2736313Z ✔ private saved views and pins survive service recreation and cannot be edited by another pilot (37.433436ms)
+2026-10-03T00:09:22.3173947Z ✔ Ansiblex list import is atomic, explicitly accessible, directional and isolated (43.44028ms)
+2026-10-03T00:09:22.3627173Z ✔ wormholes default to sixteen hours, expire exactly, and prune keeps durable pins and notes (45.210775ms)
+2026-10-03T00:09:22.4023209Z ✔ all mapper durations persist precisely and unrelated edits never renew a connection (39.608016ms)
+2026-10-03T00:09:22.4371754Z ✔ wormhole expiry deadline deletes persisted records without a read, while disabled and without sync (34.981802ms)
+2026-10-03T00:09:22.4817033Z ✔ manual deletion removes exact bound signatures and route copies but preserves replacement observations and itinerary (44.25436ms)
+2026-10-03T00:09:22.5190253Z ✔ terminal saves and startup migration do not retain or resurrect dead wormholes (37.049985ms)
+2026-10-03T00:09:22.5519525Z ✔ observed travel never creates global J-Space discoveries or routes visit history (32.99834ms)
+2026-10-03T00:09:22.5856170Z ✔ structure verification coalesces requests and caches successes and failures separately for each pilot (33.737969ms)
+2026-10-03T00:09:22.6236015Z ✔ calendar moon mapping takes the selected pilot event title and time, while manual EVE time is UTC (38.043825ms)
+2026-10-03T00:09:22.6585339Z ✔ route and physical jump use server pilot standings and reject client evidence overrides (34.835898ms)
+2026-10-03T00:09:22.6917825Z ✔ reported wormhole promotion preserves expiry, provenance and endpoint restrictions (33.141536ms)
+2026-10-03T00:09:22.7266084Z ✔ wormholes and routing are isolated to their owning map and global J-Space details stay static (34.659119ms)
+2026-10-03T00:09:22.7634780Z ✔ scope migration keeps mapped signature copies and forgets original global bindings at both endpoints (36.872037ms)
+2026-10-03T00:09:22.8044412Z ✔ scope options use fresh complete sovereignty and the configured name cache (41.046635ms)
+2026-10-03T00:09:22.8369106Z ✔ generic connection mutations cannot edit tracking sources while expiry housekeeping still removes them (32.081363ms)
+2026-10-03T00:09:22.8689881Z ✔ Universe discovery is pilot membership and hot projections never read lifetime visits (32.505036ms)
+2026-10-03T00:09:22.9180389Z ✔ bookmark names interpolate reference and observed context without creating endpoints or live claims (1.392945ms)
+2026-10-03T00:09:22.9182721Z ✔ bookmark formats reject unknown or malformed tokens and produce bounded plain text (1.240254ms)
+2026-10-03T00:09:22.9191970Z ✔ all Wanderer token names support bounded labels, explicit chain names and deliberate return holes (0.624959ms)
+2026-10-03T00:09:22.9224436Z ✔ class suffixes reflect same-system observations and custom mapping rejects unsafe keys or unbounded labels (6.720116ms)
+2026-10-03T00:09:23.0124556Z ✔ metadata and link edits preserve scan age/missing; explicit rescan or present observation refreshes them (43.819233ms)
+2026-10-03T00:09:23.0573428Z ✔ current ESI claims preserve ownership, development, capital and authoritative hub windows (1.029203ms)
+2026-10-03T00:09:23.0593787Z ✔ legacy snapshots remain readable, empty replacement clears claims and malformed data is rejected (0.681805ms)
+2026-10-03T00:09:25.2070119Z ✔ official snapshot provenance, payload sizes and detail checksum agree (128.728082ms)
+2026-10-03T00:09:25.2080441Z ✔ known physical coordinates project on XZ and never substitute the SDE schematic positions (5.183957ms)
+2026-10-03T00:09:25.2083989Z ✔ bundled gate graph has unique reciprocal links and no invented Jspace links (18.299317ms)
+2026-10-03T00:09:25.2085212Z ✔ shared topology and detailed records cannot be mutated by a caller (1.14987ms)
+2026-10-03T00:09:25.2091101Z ✔ every independently compressed detail record matches its system, counts and static references (1546.185842ms)
+2026-10-03T00:09:25.2092448Z ✔ truncated detail archives and mismatched offsets fail instead of returning another system (404.957021ms)
+2026-10-03T00:09:25.6339816Z ✔ the four empire territories retain canonical distinct colours and readable outlines (1.548895ms)
+2026-10-03T00:09:25.6365714Z ✔ 1,200 owner identities plus blocs never reuse fill or outline and ignore input ordering (362.66404ms)
+2026-10-03T00:09:25.6368590Z ✔ configured preference wins deterministic legacy conflicts without changing input definitions (0.353734ms)
+2026-10-03T00:09:25.6387624Z ✔ small generated palettes separate nearby shades instead of recycling a short hue list (0.507471ms)
+2026-10-03T00:09:25.6403760Z ✔ custom black fills have readable outlines, with collision-safe individual shades (0.509689ms)
+2026-10-03T00:09:25.6413340Z ✔ one ownership/group roster uses live sovereignty and preserves source priority (0.354493ms)
+2026-10-03T00:09:25.6420280Z ✔ settings reject exact duplicate/reserved colours and suggest genuinely unused replacements (0.388108ms)
+2026-10-03T00:09:25.6421410Z ✔ repeated systems share one owner colour and inconsistent faction aliases fail visibly (0.42311ms)
+2026-10-03T00:09:25.8450819Z ✔ the unmodified SMT example imports every system, including numeric system names, and round-trips (27.300698ms)
+2026-10-03T00:09:25.8462498Z ✔ headers, comments, whitespace, unlevelled slots and case-insensitive status are accepted (2.960938ms)
+2026-10-03T00:09:25.8469803Z ✔ unknown headers, duplicate slots, malformed states and ranges return line diagnostics and invalidate the whole batch (8.016907ms)
+2026-10-03T00:09:25.8471595Z ✔ JSON preserves notes and observed state, while SMT warns about notes it cannot represent (12.561257ms)
+2026-10-03T00:09:25.8478892Z ✔ oversized batches and duplicate JSON slots cannot become importable partial results (15.099019ms)
+2026-10-03T00:09:25.8950680Z ✔ legacy footprint workspaces retain selected context and supported choices as a custom view (1.373915ms)
+2026-10-03T00:09:25.8958479Z ✔ named saved views use the same retired-indicator migration without losing their identity (0.179951ms)
+2026-10-03T00:09:25.8961524Z ✔ space, malformed state and supported indicators retain established restoration boundaries (0.292281ms)
+2026-10-03T00:09:25.9986134Z ✔ active CCP weather overrides pinned weather without changing Wanderer statics (16.24847ms)
+2026-10-03T00:09:25.9987628Z ✔ wormhole reference covers the complete SDE J-space and records exact source provenance (4.949765ms)
+2026-10-03T00:09:26.0040905Z ✔ J225111 has C4 identity and P060 C1 / C247 C3 statics without invented endpoints (0.888937ms)
+2026-10-03T00:09:26.0043595Z ✔ CCP effect identity and power correct upstream errors and retain class-specific modifiers (0.569592ms)
+2026-10-03T00:09:26.0044819Z ✔ all C13 systems and Thera are shattered and special identities use authoritative SDE names (0.597376ms)
+2026-10-03T00:09:26.0046006Z ✔ unknown hole values stay unknown while enrichment is immutable and never changes graph topology (0.546633ms)
+2026-10-03T00:09:26.0855129Z ✔ visit sovereignty uses only existing fresh complete ESI evidence with captured owner identity and age (27.568878ms)
+2026-10-03T00:09:26.2048214Z ✔ session starts and recorded visits retain their original holder after later sovereignty changes and restart (118.948118ms)
+2026-10-03T00:09:26.2270684Z ✔ nullable visit sovereignty migration preserves older travel records and is idempotent (22.051449ms)
+2026-10-03T00:09:26.2274723Z ✔ malformed or legacy historical ownership is never reconstructed from present-day sources (0.519699ms)
+2026-10-03T00:09:26.2798579Z ✔ Universe has Atlas, Maps and its settings while Sessions remains independent (1.193999ms)
+2026-10-03T00:09:26.2818059Z ✔ legacy Universe and Journey links open Atlas without exposing the retired page (0.231262ms)
+2026-10-03T00:09:26.2833148Z ✔ workspace routing preserves extension destinations and bounds unknown links (0.148152ms)
+2026-10-03T00:09:26.2833928Z ✔ saved retired tabs never restore hidden pages in either map workspace (0.828795ms)
+2026-10-03T00:09:26.2834849Z ✔ early history bootstrap claims only workspace traversal and supports auth cleanup (2.562245ms)
+2026-10-03T00:09:26.2893813Z ℹ tests 771
+2026-10-03T00:09:26.2894293Z ℹ suites 0
+2026-10-03T00:09:26.2894787Z ℹ pass 771
+2026-10-03T00:09:26.2895254Z ℹ fail 0
+2026-10-03T00:09:26.2895658Z ℹ cancelled 0
+2026-10-03T00:09:26.2896036Z ℹ skipped 0
+2026-10-03T00:09:26.2896382Z ℹ todo 0
+2026-10-03T00:09:26.2896797Z ℹ duration_ms 37547.006426
+2026-10-03T00:09:26.3083317Z ##[group]Run KAIRO_BENCH_REPO="$GITHUB_WORKSPACE/candidate" flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/harness/maps-correctness.mjs
+2026-10-03T00:09:26.3084075Z [36;1mKAIRO_BENCH_REPO="$GITHUB_WORKSPACE/candidate" flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/harness/maps-correctness.mjs[0m
+2026-10-03T00:09:26.3119333Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:09:26.3119557Z env:
+2026-10-03T00:09:26.3119748Z   KAIRO_CHROME_PATH: /usr/bin/google-chrome
+2026-10-03T00:09:26.3120041Z   KAIRO_BROWSER_OUTPUT: analysis/rc17/raw/github/maps-browser
+2026-10-03T00:09:26.3120308Z ##[endgroup]
+2026-10-03T00:09:53.9783538Z {
+2026-10-03T00:09:53.9784247Z   "complete": true,
+2026-10-03T00:09:53.9784776Z   "featureChecksComplete": true,
+2026-10-03T00:09:53.9785274Z   "cleanupVerified": true,
+2026-10-03T00:09:53.9785644Z   "browserExit": {
+2026-10-03T00:09:53.9785964Z     "started": true,
+2026-10-03T00:09:53.9786320Z     "code": 0,
+2026-10-03T00:09:53.9786700Z     "signal": null,
+2026-10-03T00:09:53.9787047Z     "closed": true
+2026-10-03T00:09:53.9787365Z   },
+2026-10-03T00:09:53.9787638Z   "checks": [
+2026-10-03T00:09:53.9788097Z     "One initial dashboard state read; default-off full detail and 100% node sizes",
+2026-10-03T00:09:53.9788987Z     "An ordinary SSE reconnect refreshes missed state without a dataset-update toast or workspace reset",
+2026-10-03T00:09:53.9789764Z     "Independent sizes and scaled edge ports",
+2026-10-03T00:09:53.9790492Z     "A fresh camera initially fits all cards with both saved node sizes at 150%",
+2026-10-03T00:09:53.9791356Z     "Animated zoom hands camera control to a pan; fit remains correct afterwards",
+2026-10-03T00:09:53.9792665Z     "Custom collapse removes interior DOM and preserves real boundary nodes and canonical topology",
+2026-10-03T00:09:53.9793819Z     "A ready alternate pilot remains visible inside a collapsed group and can be followed; pausing tracking removes that protection",
+2026-10-03T00:09:53.9794829Z     "Collapsed memberships and scales survive remount",
+2026-10-03T00:09:53.9795680Z     "Search reveals and frames a hidden member using final display dimensions",
+2026-10-03T00:09:53.9796542Z     "Focus detail preserves selected system and scaled dragging",
+2026-10-03T00:09:53.9797418Z     "Ten invalidations coalesce to one active summary/detail pair plus one retained pair",
+2026-10-03T00:09:53.9798309Z     "Pilot switch clears scene and isolates display preferences and groups",
+2026-10-03T00:09:53.9799420Z     "Empty-map sheets remain above the toolbar and open Display popover; pointer close and Display Escape/focus return work",
+2026-10-03T00:09:53.9800417Z     "Delayed detail from the previous map cannot restore its scene after a map switch",
+2026-10-03T00:09:53.9801268Z     "Delayed previous-pilot detail cannot replace the current pilot scene",
+2026-10-03T00:09:53.9803125Z     "An accepted layout save remains on its original pilot/map; its delayed response does not disturb a switched workspace",
+2026-10-03T00:09:53.9804206Z     "Extension page hides old-pilot rows while loading and ignores a delayed superseded response"
+2026-10-03T00:09:53.9804871Z   ],
+2026-10-03T00:09:53.9805485Z   "output": "/home/runner/work/kairo/kairo/checkpoint/analysis/rc17/raw/github/maps-browser"
+2026-10-03T00:09:53.9806172Z }
+2026-10-03T00:09:53.9958478Z ##[group]Run node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/rc16-source.json
+2026-10-03T00:09:53.9959438Z [36;1mnode analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/rc16-source.json[0m
+2026-10-03T00:09:53.9960322Z [36;1mnode analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/candidate-source.json[0m
+2026-10-03T00:09:53.9960956Z [36;1mif [ -f analysis/rc17/raw/github/v073-source.json ]; then[0m
+2026-10-03T00:09:53.9961638Z [36;1m  node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/github/v073-source.json[0m
+2026-10-03T00:09:53.9962863Z [36;1mfi[0m
+2026-10-03T00:09:54.0013260Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:09:54.0013621Z ##[endgroup]
+2026-10-03T00:09:54.1306434Z {"verified":true,"sourceCommit":"57c8dcc7fbd8fc2b62129498d1819050c78381a1","fingerprint":"51f63fefd0015448f3474fead7500c592348363666b2580078519801cd319d7d"}
+2026-10-03T00:09:54.2586604Z {"verified":true,"sourceCommit":"05d0d4b36c154329006d6772769063db874762da","fingerprint":"fbd25664336951a7f74fddfe32f1ae6d7505eab5adae92caa5a70e06d8739a54"}
+2026-10-03T00:09:54.2676951Z ##[group]Run python3 analysis/rc17/accept-focused.py "analysis/rc17/raw/github-run-$ACCEPTED_FULL_RUN" analysis/rc17/raw/github --prior-run "$ACCEPTED_FULL_RUN"
+2026-10-03T00:09:54.2677796Z [36;1mpython3 analysis/rc17/accept-focused.py "analysis/rc17/raw/github-run-$ACCEPTED_FULL_RUN" analysis/rc17/raw/github --prior-run "$ACCEPTED_FULL_RUN"[0m
+2026-10-03T00:09:54.2713082Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:09:54.2713337Z env:
+2026-10-03T00:09:54.2716126Z   KAIRO_WORKFLOW_STEPS: {
+  "request": {
+    "outputs": {
+      "candidate_sha": "05d0d4b36c154329006d6772769063db874762da",
+      "suite": "browser",
+      "accepted_full_run": "37078241973"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "compile": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "correctness": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "maps": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "routes": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "legacy": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "backend": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "memory": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "mixed": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "restart": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "browser": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "camera": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "sources": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  }
+}
+2026-10-03T00:09:54.2719277Z   ACCEPTED_FULL_RUN: 37078241973
+2026-10-03T00:09:54.2719502Z ##[endgroup]
+2026-10-03T00:09:54.3883681Z Traceback (most recent call last):
+2026-10-03T00:09:54.3885174Z   File "/home/runner/work/kairo/kairo/checkpoint/analysis/rc17/accept-focused.py", line 114, in <module>
+2026-10-03T00:09:54.3886376Z     main()
+2026-10-03T00:09:54.3887297Z   File "/home/runner/work/kairo/kairo/checkpoint/analysis/rc17/accept-focused.py", line 71, in main
+2026-10-03T00:09:54.3888457Z     assert a[field] == b[field], f'{name}: {field} differs between CI runs'
+2026-10-03T00:09:54.3889016Z            ^^^^^^^^^^^^^^^^^^^^
+2026-10-03T00:09:54.3889614Z AssertionError: candidate-source.json: builtFiles differs between CI runs
+2026-10-03T00:09:54.4023821Z ##[error]Process completed with exit code 1.
+2026-10-03T00:09:54.4073319Z ##[group]Run python3 analysis/rc17/package-internal.py --checkpoint "$PWD" --candidate-manifest analysis/rc17/raw/github/candidate-source.json --baseline-manifest analysis/rc17/raw/github/rc16-source.json --output "$GITHUB_WORKSPACE/internal-rc17-bundle"
+2026-10-03T00:09:54.4074694Z [36;1mpython3 analysis/rc17/package-internal.py --checkpoint "$PWD" --candidate-manifest analysis/rc17/raw/github/candidate-source.json --baseline-manifest analysis/rc17/raw/github/rc16-source.json --output "$GITHUB_WORKSPACE/internal-rc17-bundle"[0m
+2026-10-03T00:09:54.4075583Z [36;1mpython3 "$GITHUB_WORKSPACE/internal-rc17-bundle/internal-rc17/verify-bundle.py"[0m
+2026-10-03T00:09:54.4112636Z shell: /usr/bin/bash -e {0}
+2026-10-03T00:09:54.4112915Z env:
+2026-10-03T00:09:54.4116058Z   KAIRO_WORKFLOW_STEPS: {
+  "request": {
+    "outputs": {
+      "candidate_sha": "05d0d4b36c154329006d6772769063db874762da",
+      "suite": "browser",
+      "accepted_full_run": "37078241973"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "compile": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "correctness": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "maps": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "routes": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "legacy": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "backend": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "memory": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "mixed": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "restart": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "browser": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "camera": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "sources": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "combined": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "failure"
+  }
+}
+2026-10-03T00:09:54.4119456Z   KAIRO_REQUEST_SUITE: browser
+2026-10-03T00:09:54.4119692Z ##[endgroup]
+2026-10-03T00:09:57.0077348Z {"archive": "/home/runner/work/kairo/kairo/internal-rc17-bundle/internal-rc17-05d0d4b36c15.tar.gz", "sha256": "43f7c00c9a6b01307679fbc6bb12d725e45336d3bafd23e0b2bc9937d18f8c18", "files": 1223, "allComparisonLanesPassed": false, "releaseReady": false}
+2026-10-03T00:09:57.2275987Z Verified 1223 internal checkpoint files
+2026-10-03T00:09:57.2377673Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-03T00:09:57.2378150Z with:
+2026-10-03T00:09:57.2378411Z   name: internal-rc17-comparison-evidence
+2026-10-03T00:09:57.2378801Z   path: checkpoint/analysis/rc17/raw/github/
+2026-10-03T00:09:57.2379157Z   if-no-files-found: error
+2026-10-03T00:09:57.2379460Z   retention-days: 30
+2026-10-03T00:09:57.2379739Z   compression-level: 6
+2026-10-03T00:09:57.2380013Z   overwrite: false
+2026-10-03T00:09:57.2380277Z   include-hidden-files: false
+2026-10-03T00:09:57.2380569Z   archive: true
+2026-10-03T00:09:57.2380816Z ##[endgroup]
+2026-10-03T00:09:57.3776204Z With the provided path, there will be 8 files uploaded
+2026-10-03T00:09:57.3817094Z Artifact name is valid!
+2026-10-03T00:09:57.3831235Z Root directory input is valid!
+2026-10-03T00:09:57.7354938Z Uploading artifact: internal-rc17-comparison-evidence.zip
+2026-10-03T00:09:57.7403598Z Beginning upload of artifact content to blob storage
+2026-10-03T00:09:58.4075084Z Uploaded bytes 2319476
+2026-10-03T00:09:58.4622959Z Finished uploading artifact content to blob storage!
+2026-10-03T00:09:58.4623896Z SHA256 digest of uploaded artifact is 21e4ab8e718845d4ad66cd7b36cd66e3c12547f0e8e5191945a8805af78a0209
+2026-10-03T00:09:58.4626130Z Finalizing artifact upload
+2026-10-03T00:09:58.8625630Z Artifact internal-rc17-comparison-evidence successfully finalized. Artifact ID 11258591203
+2026-10-03T00:09:58.8626958Z Artifact internal-rc17-comparison-evidence has been successfully uploaded! Final size is 2319476 bytes. Artifact ID is 11258591203
+2026-10-03T00:09:58.8628272Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/37080679048/artifacts/11258591203
+2026-10-03T00:09:58.8754921Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-03T00:09:58.8755264Z with:
+2026-10-03T00:09:58.8755550Z   name: internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da
+2026-10-03T00:09:58.8755960Z   path: internal-rc17-bundle/*.tar.gz
+internal-rc17-bundle/*.sha256
+
+2026-10-03T00:09:58.8756285Z   if-no-files-found: error
+2026-10-03T00:09:58.8756486Z   retention-days: 30
+2026-10-03T00:09:58.8756676Z   compression-level: 6
+2026-10-03T00:09:58.8756860Z   overwrite: false
+2026-10-03T00:09:58.8757051Z   include-hidden-files: false
+2026-10-03T00:09:58.8757254Z   archive: true
+2026-10-03T00:09:58.8757426Z ##[endgroup]
+2026-10-03T00:09:59.0080641Z With the provided path, there will be 2 files uploaded
+2026-10-03T00:09:59.0112494Z Artifact name is valid!
+2026-10-03T00:09:59.0128345Z Root directory input is valid!
+2026-10-03T00:09:59.3448147Z Uploading artifact: internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da.zip
+2026-10-03T00:09:59.3493754Z Beginning upload of artifact content to blob storage
+2026-10-03T00:10:00.3299674Z Uploaded bytes 8388608
+2026-10-03T00:10:00.5029539Z Uploaded bytes 16777216
+2026-10-03T00:10:00.8301345Z Uploaded bytes 25165824
+2026-10-03T00:10:01.0297261Z Uploaded bytes 33554432
+2026-10-03T00:10:01.0863647Z Uploaded bytes 33696242
+2026-10-03T00:10:01.1395666Z Finished uploading artifact content to blob storage!
+2026-10-03T00:10:01.1399846Z SHA256 digest of uploaded artifact is 84379fbf90037171fc86aa273485fd94e9fa85072234f9732696749e0bba6ccb
+2026-10-03T00:10:01.1401602Z Finalizing artifact upload
+2026-10-03T00:10:01.5520124Z Artifact internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da successfully finalized. Artifact ID 11258581244
+2026-10-03T00:10:01.5521819Z Artifact internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da has been successfully uploaded! Final size is 33696242 bytes. Artifact ID is 11258581244
+2026-10-03T00:10:01.5524897Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/37080679048/artifacts/11258581244
+2026-10-03T00:10:01.5676772Z Post job cleanup.
+2026-10-03T00:10:01.6432038Z [command]/usr/bin/git version
+2026-10-03T00:10:01.6483172Z git version 2.55.0
+2026-10-03T00:10:01.6560929Z Temporarily overriding HOME='/home/runner/work/_temp/181ea266-b2c0-4b63-a231-e6070883bd0e' before making global git config changes
+2026-10-03T00:10:01.6570549Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T00:10:01.6584282Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/candidate
+2026-10-03T00:10:01.6653533Z Removing SSH command configuration
+2026-10-03T00:10:01.6657530Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:10:01.6689663Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:10:01.6940672Z Removing HTTP extra header
+2026-10-03T00:10:01.6941687Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:10:01.7009164Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:10:01.7243340Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:10:01.7255033Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:10:01.7300774Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:10:01.7851827Z Post job cleanup.
+2026-10-03T00:10:01.8773394Z [command]/usr/bin/git version
+2026-10-03T00:10:01.8833255Z git version 2.55.0
+2026-10-03T00:10:01.8903806Z Temporarily overriding HOME='/home/runner/work/_temp/8b0272df-4155-4a0e-8cd6-aecaa66f3620' before making global git config changes
+2026-10-03T00:10:01.8921288Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T00:10:01.8922877Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/rc16
+2026-10-03T00:10:01.8970527Z Removing SSH command configuration
+2026-10-03T00:10:01.8971318Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:10:01.8995407Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:10:01.9233342Z Removing HTTP extra header
+2026-10-03T00:10:01.9245001Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:10:01.9304363Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:10:01.9615356Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:10:01.9643240Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:10:01.9693432Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:10:02.0135690Z Post job cleanup.
+2026-10-03T00:10:02.0956882Z [command]/usr/bin/git version
+2026-10-03T00:10:02.1011133Z git version 2.55.0
+2026-10-03T00:10:02.1079034Z Temporarily overriding HOME='/home/runner/work/_temp/30796924-36b6-4f64-b723-ac62d767b4b1' before making global git config changes
+2026-10-03T00:10:02.1080572Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T00:10:02.1081572Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo/checkpoint
+2026-10-03T00:10:02.1143087Z Removing SSH command configuration
+2026-10-03T00:10:02.1152012Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T00:10:02.1164689Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T00:10:02.1506107Z Removing HTTP extra header
+2026-10-03T00:10:02.1507275Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T00:10:02.1564272Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T00:10:02.1938605Z Removing includeIf entries pointing to credentials config files
+2026-10-03T00:10:02.1989208Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T00:10:02.2056141Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T00:10:02.2624426Z Cleaning up orphan processes
+

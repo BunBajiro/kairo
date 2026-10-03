@@ -1,0 +1,4044 @@
+{
+  "type": "derived-summary-not-raw-evidence",
+  "validation": "Independent source/build, adapter/helper hash, fixture, sample distribution, CPU arithmetic and runtime contract checks passed",
+  "sources": [
+    {
+      "role": "baseline",
+      "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+      "dirty": false,
+      "fingerprint": "02558f159d1fea0b7c1670856e40e52894dd62ea76c733c929cc6d9c4af43a85",
+      "verifiedFiles": 407,
+      "verifiedBuildFiles": 20,
+      "independentlyVerified": true
+    },
+    {
+      "role": "candidate",
+      "commit": "fa6e852b76089b51cd552fa202de85ad6948b0ec",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-idle",
+      "dirty": false,
+      "fingerprint": "0c39f9e6baf146cb09685b5449b9323ab5988280f587be71f5bc1b017c8cd2b5",
+      "verifiedFiles": 440,
+      "verifiedBuildFiles": 24,
+      "independentlyVerified": true
+    }
+  ],
+  "frontendAssetsMatchOriginal05": true,
+  "rawHashes": {
+    "analysis/rc17/cpu-investigation/raw/refinement-counts-1/provenance.json": "2799c9ba2be621c8159455e4e8b29c1bd2bc3a3ec4a6a169fce52e9a1618fceb",
+    "analysis/rc17/cpu-investigation/raw/refinement-backend-1/provenance.json": "12811b2ebd5e64275e9bfce5f0f2952034cf7e6dd9972f2bdf42c2391baaae12",
+    "analysis/rc17/cpu-investigation/raw/refinement-backend-1/baseline-1/backend.json": "04ce36ffbe0eade5e81ad373ac654bd7d613fd1af10fd4f30176d96d301ab5be",
+    "analysis/rc17/cpu-investigation/raw/refinement-backend-1/candidate-1/backend.json": "48d98983662752b10b55a0d3aebe89ce1dbbf9fef5a4f471df7f4b0750bb1e14",
+    "analysis/rc17/cpu-investigation/raw/refinement-backend-1/candidate-2/backend.json": "f36ea383ef5728e58608973f3dd71f74e8e0610ad585f1d44736b17b0ee2e701",
+    "analysis/rc17/cpu-investigation/raw/refinement-backend-1/baseline-2/backend.json": "ce73b8f0875a617bc828c9c80a3d295fc9f53c40e71e448f63b2bc1f4e4847d1",
+    "analysis/rc17/cpu-investigation/raw/refinement-counts-1/baseline-1/idle.json": "ba3495e1a744c6fbed20dfbfdfd0d6dc9c1be8b7575f7658c148204eff7e9ee5",
+    "analysis/rc17/cpu-investigation/raw/refinement-counts-1/candidate-1/idle.json": "506a128ed3fa57dbb602b2063173043674da2a0aefcc541097dd849903cdac0c"
+  },
+  "countRows": [
+    {
+      "name": "baseline-1",
+      "snapshotMetadata": 1330,
+      "snapshots": 2700,
+      "roster": 2020,
+      "OPSEC": 360,
+      "bindings": 53,
+      "JSONParses": 11050,
+      "JSONInputCharacters": 8739390,
+      "SQLTotal": 13197,
+      "SQLGet": 11086,
+      "SQLAll": 2111,
+      "SQLRun": 0,
+      "diagnosticCpuMs": 440.525
+    },
+    {
+      "name": "candidate-1",
+      "snapshotMetadata": 1330,
+      "snapshots": 640,
+      "roster": 660,
+      "OPSEC": 70,
+      "bindings": 53,
+      "JSONParses": 3490,
+      "JSONInputCharacters": 2857080,
+      "SQLTotal": 5964,
+      "SQLGet": 5213,
+      "SQLAll": 751,
+      "SQLRun": 0,
+      "diagnosticCpuMs": 348.481
+    }
+  ],
+  "backend": {
+    "typical": {
+      "runs": [
+        {
+          "run": "baseline-1",
+          "profile": "typical",
+          "workload": {
+            "version": 1,
+            "profile": "typical",
+            "characters": 1,
+            "assets": 2000,
+            "events": 10000,
+            "visits": 300,
+            "combat": 600,
+            "sessions": 50,
+            "marketTypes": 1000,
+            "fingerprint": "0c2523716cf3b3f063e681452e345d656c7ee24b045f965d3856c235b77e2854",
+            "now": 1790988293752,
+            "discoveryPreparation": {
+              "available": false,
+              "expectedMemberships": 100,
+              "seededMemberships": null,
+              "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+            }
+          },
+          "startupMs": 143.51903000000001,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.06947499999660067,
+                  0.07920899999589892,
+                  0.10988499999803025,
+                  0.09686499999952503,
+                  0.07461199999670498,
+                  0.06887300000380492,
+                  0.08515800000168383,
+                  0.06974500000069384,
+                  0.06487700000434415,
+                  0.06526799999846844
+                ],
+                "p50": 0.06974500000069384,
+                "p95": 0.10988499999803025,
+                "min": 0.06487700000434415,
+                "max": 0.10988499999803025
+              },
+              "cpuMs": {
+                "samples": [
+                  0.077,
+                  0.078,
+                  0.108,
+                  0.11,
+                  0.075,
+                  0.07,
+                  0.156,
+                  0.07,
+                  0.065,
+                  0.065
+                ],
+                "p50": 0.075,
+                "p95": 0.156,
+                "min": 0.065,
+                "max": 0.156
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 166920192,
+                "heapTotal": 125218816,
+                "heapUsed": 57997712,
+                "external": 4089480,
+                "arrayBuffers": 212269
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  4.225096999995003,
+                  3.8339300000006915,
+                  3.838066999996954,
+                  4.281151000002865,
+                  4.380360000002838,
+                  4.404606000003696,
+                  4.061421999998856,
+                  3.8567439999969793,
+                  4.494881999999052,
+                  4.0550120000043535
+                ],
+                "p50": 4.061421999998856,
+                "p95": 4.494881999999052,
+                "min": 3.8339300000006915,
+                "max": 4.494881999999052
+              },
+              "cpuMs": {
+                "samples": [
+                  4.226,
+                  3.83,
+                  3.833,
+                  4.277,
+                  4.374,
+                  4.399,
+                  4.059,
+                  3.852,
+                  4.49,
+                  4.051
+                ],
+                "p50": 4.059,
+                "p95": 4.49,
+                "min": 3.83,
+                "max": 4.49
+              },
+              "responseBytes": 551042,
+              "memory": {
+                "rss": 178454528,
+                "heapTotal": 136765440,
+                "heapUsed": 78200840,
+                "external": 4089568,
+                "arrayBuffers": 212357
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.9333990000013728,
+                  1.9094439999971655,
+                  2.3067689999952563,
+                  2.1010909999968135,
+                  1.9822629999980563,
+                  2.5983669999986887,
+                  2.0416219999970053,
+                  2.0469599999996717,
+                  1.7847770000007586,
+                  2.2948919999980717
+                ],
+                "p50": 2.0416219999970053,
+                "p95": 2.5983669999986887,
+                "min": 1.7847770000007586,
+                "max": 2.5983669999986887
+              },
+              "cpuMs": {
+                "samples": [
+                  1.939,
+                  1.904,
+                  2.449,
+                  2.099,
+                  1.979,
+                  2.654,
+                  2.157,
+                  2.044,
+                  1.783,
+                  2.292
+                ],
+                "p50": 2.044,
+                "p95": 2.654,
+                "min": 1.783,
+                "max": 2.654
+              },
+              "responseBytes": 167660,
+              "memory": {
+                "rss": 180289536,
+                "heapTotal": 138444800,
+                "heapUsed": 86681000,
+                "external": 4089658,
+                "arrayBuffers": 212447
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  17.456591000001936,
+                  15.292185000005702,
+                  18.14483399999881,
+                  14.79853600000206,
+                  15.415219000002253,
+                  15.846266000000469,
+                  14.458806000002369,
+                  15.496581999999762,
+                  15.249651000005542,
+                  14.728589999998803
+                ],
+                "p50": 15.292185000005702,
+                "p95": 18.14483399999881,
+                "min": 14.458806000002369,
+                "max": 18.14483399999881
+              },
+              "cpuMs": {
+                "samples": [
+                  18.707,
+                  16.477,
+                  21.094,
+                  14.931,
+                  15.408,
+                  15.826,
+                  14.452,
+                  16.597,
+                  16.625,
+                  15.182
+                ],
+                "p50": 15.826,
+                "p95": 21.094,
+                "min": 14.452,
+                "max": 21.094
+              },
+              "responseBytes": 481204,
+              "memory": {
+                "rss": 170106880,
+                "heapTotal": 121458688,
+                "heapUsed": 56071104,
+                "external": 4089451,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  2.3260389999995823,
+                  2.233860000000277,
+                  2.1712059999990743,
+                  1.9984479999984615,
+                  2.046730000001844,
+                  1.995122000000265,
+                  1.9808610000036424,
+                  2.329563999999664,
+                  2.0389280000017607,
+                  2.0514560000010533
+                ],
+                "p50": 2.046730000001844,
+                "p95": 2.329563999999664,
+                "min": 1.9808610000036424,
+                "max": 2.329563999999664
+              },
+              "cpuMs": {
+                "samples": [
+                  2.326,
+                  2.231,
+                  2.168,
+                  2.115,
+                  2.044,
+                  1.986,
+                  1.978,
+                  2.326,
+                  2.038,
+                  2.049
+                ],
+                "p50": 2.049,
+                "p95": 2.326,
+                "min": 1.978,
+                "max": 2.326
+              },
+              "responseBytes": 60297,
+              "memory": {
+                "rss": 170106880,
+                "heapTotal": 121458688,
+                "heapUsed": 60976088,
+                "external": 4089457,
+                "arrayBuffers": 212246
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  6.209241999997175,
+                  6.4614609999989625,
+                  6.376062999996066,
+                  6.646167999999307,
+                  6.52499700000044,
+                  7.0598489999974845,
+                  8.20202099999733,
+                  6.297695000001113,
+                  6.567560000003141,
+                  7.37387999999919
+                ],
+                "p50": 6.52499700000044,
+                "p95": 8.20202099999733,
+                "min": 6.209241999997175,
+                "max": 8.20202099999733
+              },
+              "cpuMs": {
+                "samples": [
+                  6.211,
+                  6.631,
+                  6.372,
+                  6.643,
+                  6.519,
+                  7.054,
+                  8.196,
+                  6.502,
+                  6.563,
+                  7.369
+                ],
+                "p50": 6.563,
+                "p95": 8.196,
+                "min": 6.211,
+                "max": 8.196
+              },
+              "responseBytes": 40287,
+              "memory": {
+                "rss": 170106880,
+                "heapTotal": 121458688,
+                "heapUsed": 64340016,
+                "external": 4089553,
+                "arrayBuffers": 212342
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.83487199999945,
+                  0.6489829999991343,
+                  0.6454779999985476,
+                  0.7341010000018287,
+                  0.5666300000011688,
+                  0.5983070000002044,
+                  0.5921180000004824,
+                  0.5341110000008484,
+                  0.5555129999993369,
+                  0.6357229999994161
+                ],
+                "p50": 0.5983070000002044,
+                "p95": 0.83487199999945,
+                "min": 0.5341110000008484,
+                "max": 0.83487199999945
+              },
+              "cpuMs": {
+                "samples": [
+                  0.84,
+                  0.647,
+                  0.643,
+                  0.732,
+                  0.566,
+                  0.596,
+                  0.59,
+                  0.533,
+                  0.554,
+                  0.633
+                ],
+                "p50": 0.596,
+                "p95": 0.84,
+                "min": 0.533,
+                "max": 0.84
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 186126336,
+                "heapTotal": 132255744,
+                "heapUsed": 76883752,
+                "external": 4089361,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.5819429999974091,
+                  0.6124280000003637,
+                  0.7230650000055903,
+                  0.5868999999947846,
+                  0.581822000000102,
+                  0.6773059999977704,
+                  0.6011220000000321,
+                  0.6677510000008624,
+                  0.6431349999984377,
+                  0.582313000006252
+                ],
+                "p50": 0.6011220000000321,
+                "p95": 0.7230650000055903,
+                "min": 0.581822000000102,
+                "max": 0.7230650000055903
+              },
+              "cpuMs": {
+                "samples": [
+                  0.583,
+                  0.611,
+                  0.72,
+                  0.585,
+                  0.579,
+                  0.675,
+                  0.6,
+                  0.665,
+                  0.737,
+                  0.581
+                ],
+                "p50": 0.6,
+                "p95": 0.737,
+                "min": 0.579,
+                "max": 0.737
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 187961344,
+                "heapTotal": 134017024,
+                "heapUsed": 79125520,
+                "external": 4089464,
+                "arrayBuffers": 212253
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35036.103860999996,
+            "cpuMs": 295.09,
+            "cpuPercentOneCore": 0.8422454767536974,
+            "eventLoopUtilization": 0.004956124285438308,
+            "eventLoopDelayP95Ms": 10.174463,
+            "eventLoopDelayMaxMs": 21.364735,
+            "rssBeforeBytes": 150126592,
+            "rssAfterBytes": 166789120,
+            "peakRssBytes": 166789120,
+            "heapBeforeBytes": 64629856,
+            "heapAfterBytes": 57734296,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                10.581780000000435,
+                10.249292000000423,
+                8.07242799999949,
+                10.074549999997544,
+                11.316763000002538,
+                10.180828999997175,
+                10.14176099999895,
+                9.123853999997664,
+                9.111625999998068,
+                8.41198599999916
+              ],
+              "p50": 10.074549999997544,
+              "p95": 11.316763000002538,
+              "min": 8.07242799999949,
+              "max": 11.316763000002538
+            },
+            "server": {
+              "elapsedMs": 135.94840600000316,
+              "cpuMs": 76.098,
+              "cpuPercentOneCore": 55.9756471142429,
+              "eventLoopUtilization": 0.5416794664585278,
+              "eventLoopDelayP95Ms": 11.395071,
+              "eventLoopDelayMaxMs": 12.984319,
+              "rssBeforeBytes": 188354560,
+              "rssAfterBytes": 202248192,
+              "peakRssBytes": 202248192,
+              "heapBeforeBytes": 79337080,
+              "heapAfterBytes": 102158672,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 12,
+                "successes": 12,
+                "rejections": []
+              }
+            }
+          }
+        },
+        {
+          "run": "candidate-1",
+          "profile": "typical",
+          "workload": {
+            "version": 1,
+            "profile": "typical",
+            "characters": 1,
+            "assets": 2000,
+            "events": 10000,
+            "visits": 300,
+            "combat": 600,
+            "sessions": 50,
+            "marketTypes": 1000,
+            "fingerprint": "0c2523716cf3b3f063e681452e345d656c7ee24b045f965d3856c235b77e2854",
+            "now": 1790988375878,
+            "discoveryPreparation": {
+              "available": true,
+              "expectedMemberships": 100,
+              "seededMemberships": 100,
+              "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+            }
+          },
+          "startupMs": 170.56873699999997,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.07458200000110082,
+                  0.08895300000585848,
+                  0.085348000000522,
+                  0.17452100000082282,
+                  0.10684000000037486,
+                  0.08803199999965727,
+                  0.12058100000285776,
+                  0.08222300000488758,
+                  0.0850879999998142,
+                  0.135482999998203
+                ],
+                "p50": 0.08803199999965727,
+                "p95": 0.17452100000082282,
+                "min": 0.07458200000110082,
+                "max": 0.17452100000082282
+              },
+              "cpuMs": {
+                "samples": [
+                  0.077,
+                  0.088,
+                  0.085,
+                  0.165,
+                  0.106,
+                  0.09,
+                  0.228,
+                  0.082,
+                  0.099,
+                  0.208
+                ],
+                "p50": 0.09,
+                "p95": 0.228,
+                "min": 0.077,
+                "max": 0.228
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 158085120,
+                "heapTotal": 115871744,
+                "heapUsed": 71785080,
+                "external": 11985175,
+                "arrayBuffers": 3041895
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  4.406710000002931,
+                  4.150286000003689,
+                  6.057237000000896,
+                  6.351618000000599,
+                  6.045028000000457,
+                  4.51127699999779,
+                  4.7367860000013025,
+                  3.934712000002037,
+                  4.188513000000967,
+                  3.9021429999993416
+                ],
+                "p50": 4.406710000002931,
+                "p95": 6.351618000000599,
+                "min": 3.9021429999993416,
+                "max": 6.351618000000599
+              },
+              "cpuMs": {
+                "samples": [
+                  4.405,
+                  4.147,
+                  6.061,
+                  30.378,
+                  26.991,
+                  11.658,
+                  4.732,
+                  3.931,
+                  4.169,
+                  3.898
+                ],
+                "p50": 4.405,
+                "p95": 30.378,
+                "min": 3.898,
+                "max": 30.378
+              },
+              "responseBytes": 551042,
+              "memory": {
+                "rss": 170831872,
+                "heapTotal": 194256896,
+                "heapUsed": 57195568,
+                "external": 4815472,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.834711999996216,
+                  1.8066899999976158,
+                  1.797827000002144,
+                  1.8854580000042915,
+                  1.823244999999588,
+                  1.8415429999949993,
+                  1.8430040000021108,
+                  1.9311670000024606,
+                  1.8319979999942007,
+                  1.8204009999972186
+                ],
+                "p50": 1.8319979999942007,
+                "p95": 1.9311670000024606,
+                "min": 1.797827000002144,
+                "max": 1.9311670000024606
+              },
+              "cpuMs": {
+                "samples": [
+                  1.842,
+                  1.8,
+                  1.914,
+                  1.882,
+                  1.821,
+                  1.959,
+                  1.945,
+                  1.928,
+                  1.829,
+                  1.818
+                ],
+                "p50": 1.842,
+                "p95": 1.959,
+                "min": 1.8,
+                "max": 1.959
+              },
+              "responseBytes": 173060,
+              "memory": {
+                "rss": 172666880,
+                "heapTotal": 196018176,
+                "heapUsed": 65779776,
+                "external": 4185194,
+                "arrayBuffers": 277776
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  14.657526999995753,
+                  14.931427999996231,
+                  15.732718999999634,
+                  16.281842999997025,
+                  15.357115999999223,
+                  15.532679000003554,
+                  16.006481000003987,
+                  15.612309000003734,
+                  15.75074599999789,
+                  15.926860999999917
+                ],
+                "p50": 15.612309000003734,
+                "p95": 16.281842999997025,
+                "min": 14.657526999995753,
+                "max": 16.281842999997025
+              },
+              "cpuMs": {
+                "samples": [
+                  14.937,
+                  15.89,
+                  17.6,
+                  17.311,
+                  15.35,
+                  15.725,
+                  16.001,
+                  16.385,
+                  17.403,
+                  16.392
+                ],
+                "p50": 16.001,
+                "p95": 17.6,
+                "min": 14.937,
+                "max": 17.6
+              },
+              "responseBytes": 486604,
+              "memory": {
+                "rss": 203599872,
+                "heapTotal": 201416704,
+                "heapUsed": 115905048,
+                "external": 4185284,
+                "arrayBuffers": 277866
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  2.1897639999951934,
+                  2.342583999998169,
+                  2.05283000000054,
+                  2.0531389999960084,
+                  1.9512570000006235,
+                  2.0804100000023027,
+                  2.026559999998426,
+                  1.9926790000026813,
+                  1.8838460000042687,
+                  2.0865599999960978
+                ],
+                "p50": 2.05283000000054,
+                "p95": 2.342583999998169,
+                "min": 1.8838460000042687,
+                "max": 2.342583999998169
+              },
+              "cpuMs": {
+                "samples": [
+                  2.19,
+                  2.339,
+                  2.053,
+                  2.154,
+                  1.948,
+                  2.171,
+                  2.024,
+                  1.99,
+                  1.883,
+                  2.084
+                ],
+                "p50": 2.053,
+                "p95": 2.339,
+                "min": 1.883,
+                "max": 2.339
+              },
+              "responseBytes": 60297,
+              "memory": {
+                "rss": 193667072,
+                "heapTotal": 189702144,
+                "heapUsed": 55041008,
+                "external": 4185380,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  6.519699999997101,
+                  6.265118000002985,
+                  6.178829000004043,
+                  6.72938399999839,
+                  7.286250000004657,
+                  7.247080000001006,
+                  6.7204210000054445,
+                  9.060050000000047,
+                  6.475764000002528,
+                  6.843355000004522
+                ],
+                "p50": 6.7204210000054445,
+                "p95": 9.060050000000047,
+                "min": 6.178829000004043,
+                "max": 9.060050000000047
+              },
+              "cpuMs": {
+                "samples": [
+                  6.523,
+                  6.409,
+                  6.175,
+                  6.726,
+                  7.283,
+                  7.243,
+                  6.712,
+                  9.251,
+                  6.472,
+                  6.839
+                ],
+                "p50": 6.712,
+                "p95": 9.251,
+                "min": 6.175,
+                "max": 9.251
+              },
+              "responseBytes": 40287,
+              "memory": {
+                "rss": 193667072,
+                "heapTotal": 189702144,
+                "heapUsed": 58404680,
+                "external": 4185200,
+                "arrayBuffers": 277782
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.7895239999998012,
+                  0.5684330000003683,
+                  0.6859190000031958,
+                  0.5443969999978435,
+                  0.5547020000012708,
+                  0.5531899999987218,
+                  0.5564239999948768,
+                  0.541402000002563,
+                  0.5190079999956652,
+                  0.562764000002062
+                ],
+                "p50": 0.5547020000012708,
+                "p95": 0.7895239999998012,
+                "min": 0.5190079999956652,
+                "max": 0.7895239999998012
+              },
+              "cpuMs": {
+                "samples": [
+                  0.795,
+                  0.566,
+                  0.684,
+                  0.544,
+                  0.554,
+                  0.552,
+                  0.554,
+                  0.54,
+                  0.518,
+                  0.561
+                ],
+                "p50": 0.554,
+                "p95": 0.795,
+                "min": 0.518,
+                "max": 0.795
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 244391936,
+                "heapTotal": 198017024,
+                "heapUsed": 77249560,
+                "external": 4185104,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.5594189999974333,
+                  0.5918380000002799,
+                  0.5529790000000503,
+                  0.5781369999967865,
+                  0.5997700000007171,
+                  0.571207000000868,
+                  0.5822429999971064,
+                  0.5554330000013579,
+                  0.5929800000012619,
+                  0.5844270000015968
+                ],
+                "p50": 0.5781369999967865,
+                "p95": 0.5997700000007171,
+                "min": 0.5529790000000503,
+                "max": 0.5997700000007171
+              },
+              "cpuMs": {
+                "samples": [
+                  0.56,
+                  0.59,
+                  0.552,
+                  0.576,
+                  0.598,
+                  0.57,
+                  0.58,
+                  0.555,
+                  0.69,
+                  0.582
+                ],
+                "p50": 0.576,
+                "p95": 0.69,
+                "min": 0.552,
+                "max": 0.69
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 246226944,
+                "heapTotal": 199778304,
+                "heapUsed": 79488184,
+                "external": 4185207,
+                "arrayBuffers": 277789
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35036.141995,
+            "cpuMs": 225.18,
+            "cpuPercentOneCore": 0.6427077502772292,
+            "eventLoopUtilization": 0.004033600181259255,
+            "eventLoopDelayP95Ms": 10.207231,
+            "eventLoopDelayMaxMs": 27.754495,
+            "rssBeforeBytes": 150745088,
+            "rssAfterBytes": 157691904,
+            "peakRssBytes": 157691904,
+            "heapBeforeBytes": 64471240,
+            "heapAfterBytes": 71515104,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                10.16454500000691,
+                9.931194999997388,
+                8.947339999998803,
+                7.704525000001013,
+                9.123312999996415,
+                9.951115000003483,
+                9.63780499999848,
+                8.210504999995464,
+                8.207669999996142,
+                8.314339999997173
+              ],
+              "p50": 8.947339999998803,
+              "p95": 10.16454500000691,
+              "min": 7.704525000001013,
+              "max": 10.16454500000691
+            },
+            "server": {
+              "elapsedMs": 127.44196999999986,
+              "cpuMs": 72.501,
+              "cpuPercentOneCore": 56.889421907084525,
+              "eventLoopUtilization": 0.5386259748969043,
+              "eventLoopDelayP95Ms": 14.565375,
+              "eventLoopDelayMaxMs": 14.565375,
+              "rssBeforeBytes": 246489088,
+              "rssAfterBytes": 260120576,
+              "peakRssBytes": 260120576,
+              "heapBeforeBytes": 79696896,
+              "heapAfterBytes": 102516848,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 12,
+                "successes": 12,
+                "rejections": []
+              }
+            }
+          }
+        },
+        {
+          "run": "candidate-2",
+          "profile": "typical",
+          "workload": {
+            "version": 1,
+            "profile": "typical",
+            "characters": 1,
+            "assets": 2000,
+            "events": 10000,
+            "visits": 300,
+            "combat": 600,
+            "sessions": 50,
+            "marketTypes": 1000,
+            "fingerprint": "0c2523716cf3b3f063e681452e345d656c7ee24b045f965d3856c235b77e2854",
+            "now": 1790988457996,
+            "discoveryPreparation": {
+              "available": true,
+              "expectedMemberships": 100,
+              "seededMemberships": 100,
+              "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+            }
+          },
+          "startupMs": 178.84887999999998,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.07446200000413228,
+                  0.08767100000113714,
+                  0.07934799999929965,
+                  0.08055099999910453,
+                  0.07871799999702489,
+                  0.11624399999709567,
+                  0.12985399999888614,
+                  0.08432599999650847,
+                  0.19012500000098953,
+                  0.1044770000007702
+                ],
+                "p50": 0.08432599999650847,
+                "p95": 0.19012500000098953,
+                "min": 0.07446200000413228,
+                "max": 0.19012500000098953
+              },
+              "cpuMs": {
+                "samples": [
+                  0.08,
+                  0.085,
+                  0.079,
+                  0.077,
+                  0.078,
+                  0.116,
+                  0.141,
+                  0.084,
+                  0.601,
+                  0.163
+                ],
+                "p50": 0.084,
+                "p95": 0.601,
+                "min": 0.077,
+                "max": 0.601
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 158851072,
+                "heapTotal": 115871744,
+                "heapUsed": 71880328,
+                "external": 11985175,
+                "arrayBuffers": 3041895
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  4.534398999996483,
+                  4.666516000004776,
+                  4.4437830000024405,
+                  5.23844100000133,
+                  4.328991000002134,
+                  4.978562000003876,
+                  4.602810000003956,
+                  4.135411999995995,
+                  3.9028440000038245,
+                  4.038125999999465
+                ],
+                "p50": 4.4437830000024405,
+                "p95": 5.23844100000133,
+                "min": 3.9028440000038245,
+                "max": 5.23844100000133
+              },
+              "cpuMs": {
+                "samples": [
+                  4.532,
+                  4.661,
+                  4.446,
+                  19.571,
+                  23.746,
+                  24.749,
+                  4.771,
+                  12.087,
+                  3.899,
+                  4.034
+                ],
+                "p50": 4.661,
+                "p95": 24.749,
+                "min": 3.899,
+                "max": 24.749
+              },
+              "responseBytes": 551042,
+              "memory": {
+                "rss": 171458560,
+                "heapTotal": 197402624,
+                "heapUsed": 57156160,
+                "external": 4815472,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.804016000001866,
+                  1.818438000002061,
+                  1.880630999999994,
+                  1.8190899999972316,
+                  2.015512999998464,
+                  1.8420029999979306,
+                  1.9958039999983157,
+                  2.2187570000023698,
+                  1.837666999999783,
+                  1.9630140000008396
+                ],
+                "p50": 1.8420029999979306,
+                "p95": 2.2187570000023698,
+                "min": 1.804016000001866,
+                "max": 2.2187570000023698
+              },
+              "cpuMs": {
+                "samples": [
+                  1.819,
+                  1.814,
+                  2.024,
+                  1.817,
+                  2.013,
+                  1.911,
+                  2.109,
+                  2.215,
+                  1.835,
+                  1.96
+                ],
+                "p50": 1.911,
+                "p95": 2.215,
+                "min": 1.814,
+                "max": 2.215
+              },
+              "responseBytes": 173060,
+              "memory": {
+                "rss": 173162496,
+                "heapTotal": 199163904,
+                "heapUsed": 65741088,
+                "external": 4185194,
+                "arrayBuffers": 277776
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  15.548913999999058,
+                  14.799684000005072,
+                  15.587159999995492,
+                  16.295859999998356,
+                  15.986829000001308,
+                  15.710485000003246,
+                  15.990504000001238,
+                  15.322935999996844,
+                  16.130573000002187,
+                  16.739663999993354
+                ],
+                "p50": 15.710485000003246,
+                "p95": 16.739663999993354,
+                "min": 14.799684000005072,
+                "max": 16.739663999993354
+              },
+              "cpuMs": {
+                "samples": [
+                  15.901,
+                  15.183,
+                  19.038,
+                  17.378,
+                  15.909,
+                  16.002,
+                  15.987,
+                  16.03,
+                  17.627,
+                  17.307
+                ],
+                "p50": 16.002,
+                "p95": 19.038,
+                "min": 15.183,
+                "max": 19.038
+              },
+              "responseBytes": 486604,
+              "memory": {
+                "rss": 202653696,
+                "heapTotal": 204562432,
+                "heapUsed": 115855712,
+                "external": 4185284,
+                "arrayBuffers": 277866
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  2.03258900000219,
+                  2.066329000001133,
+                  2.396967999993649,
+                  2.6198759999970207,
+                  2.0842160000029253,
+                  2.079017999996722,
+                  1.9933699999965029,
+                  1.8889340000023367,
+                  2.023255000000063,
+                  1.9757030000037048
+                ],
+                "p50": 2.03258900000219,
+                "p95": 2.6198759999970207,
+                "min": 1.8889340000023367,
+                "max": 2.6198759999970207
+              },
+              "cpuMs": {
+                "samples": [
+                  2.032,
+                  2.063,
+                  2.378,
+                  2.768,
+                  2.085,
+                  2.076,
+                  1.992,
+                  1.887,
+                  2.025,
+                  1.974
+                ],
+                "p50": 2.032,
+                "p95": 2.768,
+                "min": 1.887,
+                "max": 2.768
+              },
+              "responseBytes": 60297,
+              "memory": {
+                "rss": 195411968,
+                "heapTotal": 194879488,
+                "heapUsed": 57534376,
+                "external": 4185380,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  6.783340000001772,
+                  6.401408999998239,
+                  6.2086510000008275,
+                  6.419265999997151,
+                  6.3066170000020065,
+                  6.143393999998807,
+                  6.253307999999379,
+                  6.494628000000375,
+                  6.082221999997273,
+                  6.2494819999992615
+                ],
+                "p50": 6.253307999999379,
+                "p95": 6.783340000001772,
+                "min": 6.082221999997273,
+                "max": 6.783340000001772
+              },
+              "cpuMs": {
+                "samples": [
+                  6.784,
+                  6.583,
+                  6.205,
+                  6.413,
+                  6.304,
+                  6.14,
+                  6.249,
+                  6.767,
+                  6.079,
+                  6.246
+                ],
+                "p50": 6.249,
+                "p95": 6.784,
+                "min": 6.079,
+                "max": 6.784
+              },
+              "responseBytes": 40287,
+              "memory": {
+                "rss": 195411968,
+                "heapTotal": 194879488,
+                "heapUsed": 60898400,
+                "external": 4185200,
+                "arrayBuffers": 277782
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.7421699999977136,
+                  0.5701830000034533,
+                  0.5755100000023958,
+                  0.5244540000057896,
+                  0.5539580000040587,
+                  0.5468480000054114,
+                  0.5770730000003823,
+                  0.5488100000002305,
+                  0.5214600000035716,
+                  1.0586420000036014
+                ],
+                "p50": 0.5539580000040587,
+                "p95": 1.0586420000036014,
+                "min": 0.5214600000035716,
+                "max": 1.0586420000036014
+              },
+              "cpuMs": {
+                "samples": [
+                  0.748,
+                  0.569,
+                  0.573,
+                  0.523,
+                  0.552,
+                  0.545,
+                  0.578,
+                  0.547,
+                  0.521,
+                  1.055
+                ],
+                "p50": 0.552,
+                "p95": 1.055,
+                "min": 0.521,
+                "max": 1.055
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 248233984,
+                "heapTotal": 201359360,
+                "heapUsed": 80511952,
+                "external": 4185104,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.5853950000018813,
+                  0.5912240000034217,
+                  0.5596569999979693,
+                  0.595910999996704,
+                  0.5509840000013355,
+                  0.5863170000011451,
+                  0.5797270000039134,
+                  0.5425209999957588,
+                  0.6002770000050077,
+                  0.5516149999966729
+                ],
+                "p50": 0.5797270000039134,
+                "p95": 0.6002770000050077,
+                "min": 0.5425209999957588,
+                "max": 0.6002770000050077
+              },
+              "cpuMs": {
+                "samples": [
+                  0.585,
+                  0.589,
+                  0.559,
+                  0.595,
+                  0.55,
+                  0.584,
+                  0.578,
+                  0.542,
+                  0.797,
+                  0.551
+                ],
+                "p50": 0.578,
+                "p95": 0.797,
+                "min": 0.542,
+                "max": 0.797
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 250068992,
+                "heapTotal": 203120640,
+                "heapUsed": 82750328,
+                "external": 4185207,
+                "arrayBuffers": 277789
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35036.25859,
+            "cpuMs": 176.871,
+            "cpuPercentOneCore": 0.5048227382660153,
+            "eventLoopUtilization": 0.002923327833527195,
+            "eventLoopDelayP95Ms": 10.158079,
+            "eventLoopDelayMaxMs": 13.606911,
+            "rssBeforeBytes": 150986752,
+            "rssAfterBytes": 158457856,
+            "peakRssBytes": 158457856,
+            "heapBeforeBytes": 64588256,
+            "heapAfterBytes": 71610696,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                9.662735000005341,
+                9.936063000001013,
+                11.358017999998992,
+                9.394072999995842,
+                9.71716600000218,
+                9.217598999995971,
+                13.046447999993688,
+                11.399085999997624,
+                8.931230999995023,
+                9.068631000001915
+              ],
+              "p50": 9.662735000005341,
+              "p95": 13.046447999993688,
+              "min": 8.931230999995023,
+              "max": 13.046447999993688
+            },
+            "server": {
+              "elapsedMs": 137.15880499999912,
+              "cpuMs": 78.364,
+              "cpuPercentOneCore": 57.13377278257892,
+              "eventLoopUtilization": 0.5334316029709802,
+              "eventLoopDelayP95Ms": 11.313151,
+              "eventLoopDelayMaxMs": 11.812863,
+              "rssBeforeBytes": 250331136,
+              "rssAfterBytes": 264224768,
+              "peakRssBytes": 264224768,
+              "heapBeforeBytes": 82959200,
+              "heapAfterBytes": 105766920,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 12,
+                "successes": 12,
+                "rejections": []
+              }
+            }
+          }
+        },
+        {
+          "run": "baseline-2",
+          "profile": "typical",
+          "workload": {
+            "version": 1,
+            "profile": "typical",
+            "characters": 1,
+            "assets": 2000,
+            "events": 10000,
+            "visits": 300,
+            "combat": 600,
+            "sessions": 50,
+            "marketTypes": 1000,
+            "fingerprint": "0c2523716cf3b3f063e681452e345d656c7ee24b045f965d3856c235b77e2854",
+            "now": 1790988540350,
+            "discoveryPreparation": {
+              "available": false,
+              "expectedMemberships": 100,
+              "seededMemberships": null,
+              "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+            }
+          },
+          "startupMs": 154.216161,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.06757099999958882,
+                  0.39381000000139466,
+                  0.09144699999887962,
+                  0.0858689999950002,
+                  0.07956900000135647,
+                  0.07961899999645539,
+                  0.0784979999953066,
+                  0.06747100000211503,
+                  0.06335500000568572,
+                  0.09351999999489635
+                ],
+                "p50": 0.07956900000135647,
+                "p95": 0.39381000000139466,
+                "min": 0.06335500000568572,
+                "max": 0.39381000000139466
+              },
+              "cpuMs": {
+                "samples": [
+                  0.072,
+                  0.395,
+                  0.092,
+                  0.084,
+                  0.185,
+                  0.08,
+                  0.249,
+                  0.067,
+                  0.063,
+                  0.093
+                ],
+                "p50": 0.084,
+                "p95": 0.395,
+                "min": 0.063,
+                "max": 0.395
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 166395904,
+                "heapTotal": 123908096,
+                "heapUsed": 57842312,
+                "external": 4089480,
+                "arrayBuffers": 212269
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  4.082098999999289,
+                  4.173567000005278,
+                  4.257402000002912,
+                  4.055900000006659,
+                  3.8572620000049938,
+                  4.033667000003334,
+                  4.223420000002079,
+                  3.9285799999997835,
+                  3.859305999998469,
+                  3.822229999997944
+                ],
+                "p50": 4.033667000003334,
+                "p95": 4.257402000002912,
+                "min": 3.822229999997944,
+                "max": 4.257402000002912
+              },
+              "cpuMs": {
+                "samples": [
+                  4.123,
+                  4.168,
+                  4.253,
+                  4.037,
+                  3.853,
+                  4.029,
+                  4.218,
+                  3.923,
+                  3.855,
+                  3.819
+                ],
+                "p50": 4.029,
+                "p95": 4.253,
+                "min": 3.819,
+                "max": 4.253
+              },
+              "responseBytes": 551042,
+              "memory": {
+                "rss": 177930240,
+                "heapTotal": 135454720,
+                "heapUsed": 78075400,
+                "external": 4089568,
+                "arrayBuffers": 212357
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.836738999998488,
+                  1.8083469999983208,
+                  1.8113309999971534,
+                  1.7435390000027837,
+                  2.0565780000033556,
+                  1.9391929999983404,
+                  1.8202840000012657,
+                  1.7923730000038631,
+                  1.8447110000051907,
+                  1.7343160000018543
+                ],
+                "p50": 1.8113309999971534,
+                "p95": 2.0565780000033556,
+                "min": 1.7343160000018543,
+                "max": 2.0565780000033556
+              },
+              "cpuMs": {
+                "samples": [
+                  1.844,
+                  1.803,
+                  1.958,
+                  1.742,
+                  2.052,
+                  2.066,
+                  2.109,
+                  1.79,
+                  1.84,
+                  1.732
+                ],
+                "p50": 1.84,
+                "p95": 2.109,
+                "min": 1.732,
+                "max": 2.109
+              },
+              "responseBytes": 167660,
+              "memory": {
+                "rss": 179765248,
+                "heapTotal": 137134080,
+                "heapUsed": 86557800,
+                "external": 4089658,
+                "arrayBuffers": 212447
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  21.897162000001117,
+                  15.38140900000144,
+                  15.984902999996848,
+                  15.92009500000131,
+                  14.344436999999743,
+                  14.315804999998363,
+                  15.358024000001024,
+                  15.894596999998612,
+                  15.59875500000635,
+                  14.810134999999718
+                ],
+                "p50": 15.38140900000144,
+                "p95": 21.897162000001117,
+                "min": 14.315804999998363,
+                "max": 21.897162000001117
+              },
+              "cpuMs": {
+                "samples": [
+                  24.056,
+                  16.631,
+                  18.449,
+                  17.211,
+                  14.339,
+                  14.45,
+                  15.346,
+                  16.798,
+                  17.171,
+                  15.449
+                ],
+                "p50": 16.631,
+                "p95": 24.056,
+                "min": 14.339,
+                "max": 24.056
+              },
+              "responseBytes": 481204,
+              "memory": {
+                "rss": 169553920,
+                "heapTotal": 119623680,
+                "heapUsed": 56175576,
+                "external": 4089451,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  2.025792000000365,
+                  1.9709300000031362,
+                  2.1814549999980954,
+                  2.114885000002687,
+                  3.720258000001195,
+                  4.963858000002801,
+                  3.2409699999989243,
+                  2.0843999999997322,
+                  2.2010840000002645,
+                  3.4163120000011986
+                ],
+                "p50": 2.1814549999980954,
+                "p95": 4.963858000002801,
+                "min": 1.9709300000031362,
+                "max": 4.963858000002801
+              },
+              "cpuMs": {
+                "samples": [
+                  2.045,
+                  1.968,
+                  2.178,
+                  2.112,
+                  3.99,
+                  5.111,
+                  3.227,
+                  2.082,
+                  2.198,
+                  3.561
+                ],
+                "p50": 2.178,
+                "p95": 5.111,
+                "min": 1.968,
+                "max": 5.111
+              },
+              "responseBytes": 60297,
+              "memory": {
+                "rss": 169553920,
+                "heapTotal": 119623680,
+                "heapUsed": 61124040,
+                "external": 4089457,
+                "arrayBuffers": 212246
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  6.680819000001065,
+                  6.7661170000064885,
+                  7.06571399999666,
+                  7.07246500000474,
+                  7.0217890000058105,
+                  6.9490699999951175,
+                  6.610763999997289,
+                  6.94264000000112,
+                  7.536599999999453,
+                  6.6513449999984005
+                ],
+                "p50": 6.94264000000112,
+                "p95": 7.536599999999453,
+                "min": 6.610763999997289,
+                "max": 7.536599999999453
+              },
+              "cpuMs": {
+                "samples": [
+                  6.683,
+                  7.023,
+                  7.049,
+                  7.063,
+                  7.011,
+                  6.939,
+                  6.603,
+                  7.242,
+                  7.528,
+                  6.646
+                ],
+                "p50": 7.011,
+                "p95": 7.528,
+                "min": 6.603,
+                "max": 7.528
+              },
+              "responseBytes": 40287,
+              "memory": {
+                "rss": 169553920,
+                "heapTotal": 119623680,
+                "heapUsed": 64472544,
+                "external": 4089553,
+                "arrayBuffers": 212342
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.0081990000035148,
+                  0.6725059999953373,
+                  0.5532579999999143,
+                  0.6232229999950505,
+                  0.6271489999999176,
+                  0.5871179999958258,
+                  0.6023809999969671,
+                  0.5443250000025728,
+                  0.8275680000006105,
+                  0.7079190000004019
+                ],
+                "p50": 0.6232229999950505,
+                "p95": 1.0081990000035148,
+                "min": 0.5443250000025728,
+                "max": 1.0081990000035148
+              },
+              "cpuMs": {
+                "samples": [
+                  1.012,
+                  0.67,
+                  0.552,
+                  0.621,
+                  0.625,
+                  0.586,
+                  0.6,
+                  0.544,
+                  0.824,
+                  0.704
+                ],
+                "p50": 0.621,
+                "p95": 1.012,
+                "min": 0.544,
+                "max": 1.012
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 189718528,
+                "heapTotal": 132255744,
+                "heapUsed": 76954960,
+                "external": 4089361,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.5997480000005453,
+                  0.6549100000047474,
+                  1.8429479999977048,
+                  0.8318750000034925,
+                  0.5938590000005206,
+                  0.63387800000055,
+                  0.6478300000017043,
+                  0.5850250000003143,
+                  0.686838000001444,
+                  0.648791000006895
+                ],
+                "p50": 0.6478300000017043,
+                "p95": 1.8429479999977048,
+                "min": 0.5850250000003143,
+                "max": 1.8429479999977048
+              },
+              "cpuMs": {
+                "samples": [
+                  0.601,
+                  0.652,
+                  1.838,
+                  0.829,
+                  0.593,
+                  0.631,
+                  0.646,
+                  0.584,
+                  0.846,
+                  0.646
+                ],
+                "p50": 0.646,
+                "p95": 1.838,
+                "min": 0.584,
+                "max": 1.838
+              },
+              "responseBytes": 175316,
+              "memory": {
+                "rss": 191422464,
+                "heapTotal": 134017024,
+                "heapUsed": 79197528,
+                "external": 4089464,
+                "arrayBuffers": 212253
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35036.35336,
+            "cpuMs": 332.253,
+            "cpuPercentOneCore": 0.9483093077241416,
+            "eventLoopUtilization": 0.0048193475178383936,
+            "eventLoopDelayP95Ms": 10.174463,
+            "eventLoopDelayMaxMs": 16.334847,
+            "rssBeforeBytes": 150253568,
+            "rssAfterBytes": 166395904,
+            "peakRssBytes": 166395904,
+            "heapBeforeBytes": 64608168,
+            "heapAfterBytes": 57576032,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                12.097284000003128,
+                12.20103999999992,
+                9.52370399999927,
+                9.999575000001641,
+                10.684480000003532,
+                10.387190000001283,
+                8.999457999998413,
+                9.184395999996923,
+                9.086007999998401,
+                9.312267000001157
+              ],
+              "p50": 9.52370399999927,
+              "p95": 12.20103999999992,
+              "min": 8.999457999998413,
+              "max": 12.20103999999992
+            },
+            "server": {
+              "elapsedMs": 145.33223899999575,
+              "cpuMs": 74.781,
+              "cpuPercentOneCore": 51.45520396200749,
+              "eventLoopUtilization": 0.4914553254977816,
+              "eventLoopDelayP95Ms": 14.557183,
+              "eventLoopDelayMaxMs": 15.073279,
+              "rssBeforeBytes": 191815680,
+              "rssAfterBytes": 205971456,
+              "peakRssBytes": 205971456,
+              "heapBeforeBytes": 79409096,
+              "heapAfterBytes": 102219776,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 12,
+                "successes": 12,
+                "rejections": []
+              }
+            }
+          }
+        }
+      ],
+      "meanCpuPercentOneCore": {
+        "baseline": 0.8952773922389194,
+        "candidate": 0.5737652442716222
+      },
+      "candidateMinusBaselinePercentagePoints": -0.3215121479672972,
+      "candidateRelativePercent": -35.912014617419985
+    },
+    "stress": {
+      "runs": [
+        {
+          "run": "baseline-1",
+          "profile": "stress",
+          "workload": {
+            "version": 1,
+            "profile": "stress",
+            "characters": 4,
+            "assets": 20000,
+            "events": 50000,
+            "visits": 2000,
+            "combat": 4000,
+            "sessions": 200,
+            "marketTypes": 5000,
+            "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+            "now": 1790988330889,
+            "discoveryPreparation": {
+              "available": false,
+              "expectedMemberships": 100,
+              "seededMemberships": null,
+              "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+            }
+          },
+          "startupMs": 153.790436,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.07710599999700207,
+                  0.0813620000044466,
+                  0.07872800000041025,
+                  0.09426199999870732,
+                  0.08604899999772897,
+                  0.14660000000003492,
+                  0.14654000000155065,
+                  0.21638499999971827,
+                  0.2521280000000843,
+                  0.0829539999976987
+                ],
+                "p50": 0.08604899999772897,
+                "p95": 0.2521280000000843,
+                "min": 0.07710599999700207,
+                "max": 0.2521280000000843
+              },
+              "cpuMs": {
+                "samples": [
+                  0.083,
+                  0.081,
+                  0.079,
+                  0.112,
+                  0.203,
+                  0.145,
+                  0.234,
+                  0.215,
+                  0.25,
+                  0.083
+                ],
+                "p50": 0.112,
+                "p95": 0.25,
+                "min": 0.079,
+                "max": 0.25
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 218112000,
+                "heapTotal": 194772992,
+                "heapUsed": 62650432,
+                "external": 4089480,
+                "arrayBuffers": 212269
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  21.725773999998637,
+                  21.008608000003733,
+                  21.52237900000182,
+                  20.464202000002842,
+                  29.929466000001412,
+                  21.972763000005216,
+                  22.31504799999675,
+                  25.330570000005537,
+                  21.362078000005567,
+                  27.794816000001447
+                ],
+                "p50": 21.725773999998637,
+                "p95": 29.929466000001412,
+                "min": 20.464202000002842,
+                "max": 29.929466000001412
+              },
+              "cpuMs": {
+                "samples": [
+                  21.678,
+                  20.762,
+                  21.508,
+                  20.453,
+                  29.908,
+                  21.955,
+                  22.298,
+                  27.212,
+                  21.349,
+                  27.775
+                ],
+                "p50": 21.678,
+                "p95": 29.908,
+                "min": 20.453,
+                "max": 29.908
+              },
+              "responseBytes": 3472850,
+              "memory": {
+                "rss": 247828480,
+                "heapTotal": 212688896,
+                "heapUsed": 76314608,
+                "external": 4089568,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  3.482321999996202,
+                  3.496032999995805,
+                  3.505887999999686,
+                  3.7162029999963124,
+                  3.62968300000648,
+                  3.558136999999988,
+                  3.595131999994919,
+                  3.666598999996495,
+                  3.463053999999829,
+                  3.4773050000003423
+                ],
+                "p50": 3.505887999999686,
+                "p95": 3.7162029999963124,
+                "min": 3.463053999999829,
+                "max": 3.7162029999963124
+              },
+              "cpuMs": {
+                "samples": [
+                  3.491,
+                  3.489,
+                  3.71,
+                  3.711,
+                  3.626,
+                  3.63,
+                  3.592,
+                  3.818,
+                  3.459,
+                  3.475
+                ],
+                "p50": 3.592,
+                "p95": 3.818,
+                "min": 3.459,
+                "max": 3.818
+              },
+              "responseBytes": 258325,
+              "memory": {
+                "rss": 250580992,
+                "heapTotal": 215834624,
+                "heapUsed": 88393656,
+                "external": 4089451,
+                "arrayBuffers": 212240
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  84.13110600000073,
+                  88.1458580000035,
+                  101.934871999998,
+                  90.26930300000095,
+                  97.91931599999953,
+                  94.274513999997,
+                  82.25020600000425,
+                  87.55857700000342,
+                  83.23036599999614,
+                  85.09612400000333
+                ],
+                "p50": 87.55857700000342,
+                "p95": 101.934871999998,
+                "min": 82.25020600000425,
+                "max": 101.934871999998
+              },
+              "cpuMs": {
+                "samples": [
+                  90.806,
+                  91.681,
+                  169.821,
+                  93.898,
+                  105.102,
+                  94.203,
+                  82.234,
+                  99.642,
+                  90.545,
+                  85.078
+                ],
+                "p50": 91.681,
+                "p95": 169.821,
+                "min": 82.234,
+                "max": 169.821
+              },
+              "responseBytes": 2843825,
+              "memory": {
+                "rss": 281214976,
+                "heapTotal": 211632128,
+                "heapUsed": 126796208,
+                "external": 4089361,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  6.293188999996346,
+                  6.2972740000041085,
+                  6.360488999998779,
+                  7.0394280000036815,
+                  6.865396000001056,
+                  6.641320000002452,
+                  6.452025999999023,
+                  6.675661000001128,
+                  6.973910000000615,
+                  6.781220000004396
+                ],
+                "p50": 6.641320000002452,
+                "p95": 7.0394280000036815,
+                "min": 6.293188999996346,
+                "max": 7.0394280000036815
+              },
+              "cpuMs": {
+                "samples": [
+                  6.298,
+                  6.293,
+                  6.358,
+                  7.036,
+                  7.13,
+                  6.637,
+                  6.45,
+                  6.672,
+                  6.969,
+                  7.249
+                ],
+                "p50": 6.637,
+                "p95": 7.249,
+                "min": 6.293,
+                "max": 7.249
+              },
+              "responseBytes": 60397,
+              "memory": {
+                "rss": 271646720,
+                "heapTotal": 201826304,
+                "heapUsed": 68172288,
+                "external": 4089457,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  33.260473000002094,
+                  33.03123900000355,
+                  33.60421900000074,
+                  32.87238999999681,
+                  33.00478999999905,
+                  32.858109000000695,
+                  34.3647490000003,
+                  33.50387799999589,
+                  34.31339200000366,
+                  33.37949099999969
+                ],
+                "p50": 33.260473000002094,
+                "p95": 34.3647490000003,
+                "min": 32.858109000000695,
+                "max": 34.3647490000003
+              },
+              "cpuMs": {
+                "samples": [
+                  33.237,
+                  33.137,
+                  33.59,
+                  32.86,
+                  32.993,
+                  32.844,
+                  34.351,
+                  33.765,
+                  34.301,
+                  33.366
+                ],
+                "p50": 33.237,
+                "p95": 34.351,
+                "min": 32.844,
+                "max": 34.351
+              },
+              "responseBytes": 40288,
+              "memory": {
+                "rss": 271646720,
+                "heapTotal": 201826304,
+                "heapUsed": 71362408,
+                "external": 4089457,
+                "arrayBuffers": 212246
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.0263189999968745,
+                  0.8443760000009206,
+                  0.7112170000036713,
+                  0.6665390000052867,
+                  0.6403599999975995,
+                  0.6504550000026939,
+                  0.6484619999973802,
+                  0.6840360000060173,
+                  0.7870509999993374,
+                  0.6931399999957648
+                ],
+                "p50": 0.6840360000060173,
+                "p95": 1.0263189999968745,
+                "min": 0.6403599999975995,
+                "max": 1.0263189999968745
+              },
+              "cpuMs": {
+                "samples": [
+                  1.03,
+                  0.842,
+                  0.709,
+                  0.664,
+                  0.64,
+                  0.65,
+                  0.646,
+                  0.682,
+                  0.784,
+                  0.691
+                ],
+                "p50": 0.682,
+                "p95": 1.03,
+                "min": 0.64,
+                "max": 1.03
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 333008896,
+                "heapTotal": 246689792,
+                "heapUsed": 126714752,
+                "external": 4089361,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.7046770000015385,
+                  0.7167349999945145,
+                  0.674881999999343,
+                  0.6870810000036727,
+                  0.6812109999955283,
+                  0.6528790000011213,
+                  0.6699840000001132,
+                  0.714802000002237,
+                  0.7361940000046161,
+                  0.6701049999974202
+                ],
+                "p50": 0.6812109999955283,
+                "p95": 0.7361940000046161,
+                "min": 0.6528790000011213,
+                "max": 0.7361940000046161
+              },
+              "cpuMs": {
+                "samples": [
+                  0.704,
+                  0.715,
+                  0.673,
+                  0.686,
+                  0.679,
+                  0.651,
+                  0.669,
+                  0.713,
+                  0.875,
+                  0.669
+                ],
+                "p50": 0.679,
+                "p95": 0.875,
+                "min": 0.651,
+                "max": 0.875
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 335106048,
+                "heapTotal": 248737792,
+                "heapUsed": 129438040,
+                "external": 4089464,
+                "arrayBuffers": 212253
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35006.227442,
+            "cpuMs": 550.403,
+            "cpuPercentOneCore": 1.572300245468993,
+            "eventLoopUtilization": 0.013215523452365686,
+            "eventLoopDelayP95Ms": 10.166271,
+            "eventLoopDelayMaxMs": 59.998207,
+            "rssBeforeBytes": 179306496,
+            "rssAfterBytes": 217980928,
+            "peakRssBytes": 219807744,
+            "heapBeforeBytes": 44335848,
+            "heapAfterBytes": 62259944,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                43.529953999997815,
+                40.06861299999582,
+                43.04769099999976,
+                38.87991899999906,
+                38.050075999999535,
+                39.96506699999736,
+                45.01959799999895,
+                43.703484999990906,
+                54.365114000000176,
+                40.620590000005905
+              ],
+              "p50": 40.620590000005905,
+              "p95": 54.365114000000176,
+              "min": 38.050075999999535,
+              "max": 54.365114000000176
+            },
+            "server": {
+              "elapsedMs": 552.5915929999974,
+              "cpuMs": 376.898,
+              "cpuPercentOneCore": 68.2055255227167,
+              "eventLoopUtilization": 0.6669483135983446,
+              "eventLoopDelayP95Ms": 36.438015,
+              "eventLoopDelayMaxMs": 56.688639,
+              "rssBeforeBytes": 335237120,
+              "rssAfterBytes": 363864064,
+              "peakRssBytes": 377184256,
+              "heapBeforeBytes": 129648840,
+              "heapAfterBytes": 158112488,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 13,
+                "successes": 13,
+                "rejections": []
+              }
+            }
+          }
+        },
+        {
+          "run": "candidate-1",
+          "profile": "stress",
+          "workload": {
+            "version": 1,
+            "profile": "stress",
+            "characters": 4,
+            "assets": 20000,
+            "events": 50000,
+            "visits": 2000,
+            "combat": 4000,
+            "sessions": 200,
+            "marketTypes": 5000,
+            "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+            "now": 1790988413039,
+            "discoveryPreparation": {
+              "available": true,
+              "expectedMemberships": 100,
+              "seededMemberships": 100,
+              "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+            }
+          },
+          "startupMs": 144.57356400000003,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.07694600000104401,
+                  0.0880920000054175,
+                  0.08230299999559065,
+                  0.08367600000201492,
+                  0.11756600000080653,
+                  0.1205809999955818,
+                  0.09116699999867706,
+                  0.07946999999694526,
+                  0.07198799999605399,
+                  0.0875709999963874
+                ],
+                "p50": 0.08367600000201492,
+                "p95": 0.1205809999955818,
+                "min": 0.07198799999605399,
+                "max": 0.1205809999955818
+              },
+              "cpuMs": {
+                "samples": [
+                  0.081,
+                  0.088,
+                  0.081,
+                  0.081,
+                  0.115,
+                  0.12,
+                  0.091,
+                  0.079,
+                  0.071,
+                  0.139
+                ],
+                "p50": 0.081,
+                "p95": 0.139,
+                "min": 0.071,
+                "max": 0.139
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 189300736,
+                "heapTotal": 123019264,
+                "heapUsed": 65885192,
+                "external": 4185223,
+                "arrayBuffers": 277805
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  21.386585000000196,
+                  22.029930999997305,
+                  22.13895500000217,
+                  21.806366000004346,
+                  22.03775300000416,
+                  21.75775199999771,
+                  22.45900399999664,
+                  22.021037999998953,
+                  22.540996999996423,
+                  22.373586000001524
+                ],
+                "p50": 22.029930999997305,
+                "p95": 22.540996999996423,
+                "min": 21.386585000000196,
+                "max": 22.540996999996423
+              },
+              "cpuMs": {
+                "samples": [
+                  21.368,
+                  22.011,
+                  22.126,
+                  21.791,
+                  22.021,
+                  21.74,
+                  22.441,
+                  21.991,
+                  22.522,
+                  22.355
+                ],
+                "p50": 22.011,
+                "p95": 22.522,
+                "min": 21.368,
+                "max": 22.522
+              },
+              "responseBytes": 3472850,
+              "memory": {
+                "rss": 249679872,
+                "heapTotal": 248266752,
+                "heapUsed": 128962224,
+                "external": 4185311,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  3.6152430000001914,
+                  3.7382760000036797,
+                  3.6702039999945555,
+                  3.694841999997152,
+                  3.590835999995761,
+                  3.6333400000003166,
+                  3.955292999999074,
+                  3.693920000005164,
+                  3.963373999999021,
+                  3.766499000004842
+                ],
+                "p50": 3.693920000005164,
+                "p95": 3.963373999999021,
+                "min": 3.590835999995761,
+                "max": 3.963373999999021
+              },
+              "cpuMs": {
+                "samples": [
+                  3.627,
+                  3.729,
+                  3.881,
+                  3.692,
+                  3.588,
+                  3.708,
+                  3.952,
+                  3.836,
+                  3.959,
+                  3.763
+                ],
+                "p50": 3.729,
+                "p95": 3.959,
+                "min": 3.588,
+                "max": 3.959
+              },
+              "responseBytes": 267325,
+              "memory": {
+                "rss": 254267392,
+                "heapTotal": 250970112,
+                "heapUsed": 141212464,
+                "external": 4185194,
+                "arrayBuffers": 277776
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  93.38648199999443,
+                  94.65848999999434,
+                  97.71064800000022,
+                  90.42487000000256,
+                  87.51123100000405,
+                  88.29044399999839,
+                  90.53383400000166,
+                  88.58628300000419,
+                  87.35203200000251,
+                  85.97276299999794
+                ],
+                "p50": 88.58628300000419,
+                "p95": 97.71064800000022,
+                "min": 85.97276299999794,
+                "max": 97.71064800000022
+              },
+              "cpuMs": {
+                "samples": [
+                  96.961,
+                  106.118,
+                  170.042,
+                  95.126,
+                  93.597,
+                  89.591,
+                  94.427,
+                  90.204,
+                  93.706,
+                  85.95
+                ],
+                "p50": 93.706,
+                "p95": 170.042,
+                "min": 85.95,
+                "max": 170.042
+              },
+              "responseBytes": 2879825,
+              "memory": {
+                "rss": 277041152,
+                "heapTotal": 212779008,
+                "heapUsed": 119056104,
+                "external": 4185104,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  6.5353719999984605,
+                  6.53498099999706,
+                  6.219167000002926,
+                  6.246498000000429,
+                  6.254260000001523,
+                  6.49024400000053,
+                  6.457754999995814,
+                  6.51635399999941,
+                  6.457545999997819,
+                  6.422653000001446
+                ],
+                "p50": 6.457545999997819,
+                "p95": 6.5353719999984605,
+                "min": 6.219167000002926,
+                "max": 6.5353719999984605
+              },
+              "cpuMs": {
+                "samples": [
+                  6.538,
+                  6.532,
+                  6.215,
+                  6.388,
+                  6.251,
+                  6.487,
+                  6.455,
+                  6.513,
+                  6.454,
+                  6.725
+                ],
+                "p50": 6.455,
+                "p95": 6.725,
+                "min": 6.215,
+                "max": 6.725
+              },
+              "responseBytes": 60397,
+              "memory": {
+                "rss": 277041152,
+                "heapTotal": 212779008,
+                "heapUsed": 124006928,
+                "external": 4185200,
+                "arrayBuffers": 277782
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  33.130709999997634,
+                  33.336959000000206,
+                  34.748295999997936,
+                  33.44815599999856,
+                  33.56390000000101,
+                  35.60792500000389,
+                  35.0652609999961,
+                  34.82504099999642,
+                  34.11725999999908,
+                  33.20111499999621
+                ],
+                "p50": 33.56390000000101,
+                "p95": 35.60792500000389,
+                "min": 33.130709999997634,
+                "max": 35.60792500000389
+              },
+              "cpuMs": {
+                "samples": [
+                  33.127,
+                  33.323,
+                  34.733,
+                  33.433,
+                  33.549,
+                  35.593,
+                  35.047,
+                  35.011,
+                  34.105,
+                  33.186
+                ],
+                "p50": 33.549,
+                "p95": 35.593,
+                "min": 33.127,
+                "max": 35.593
+              },
+              "responseBytes": 40288,
+              "memory": {
+                "rss": 277172224,
+                "heapTotal": 212779008,
+                "heapUsed": 127370416,
+                "external": 4185296,
+                "arrayBuffers": 277878
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.9907060000041383,
+                  0.6401000000041677,
+                  0.6371060000019497,
+                  0.6218529999969178,
+                  0.6812419999987469,
+                  0.7532099999953061,
+                  0.6992690000042785,
+                  0.6453980000005686,
+                  0.6103350000048522,
+                  0.6097650000010617
+                ],
+                "p50": 0.6401000000041677,
+                "p95": 0.9907060000041383,
+                "min": 0.6097650000010617,
+                "max": 0.9907060000041383
+              },
+              "cpuMs": {
+                "samples": [
+                  0.996,
+                  0.639,
+                  0.636,
+                  0.621,
+                  0.679,
+                  0.75,
+                  0.697,
+                  0.644,
+                  0.609,
+                  0.608
+                ],
+                "p50": 0.639,
+                "p95": 0.996,
+                "min": 0.608,
+                "max": 0.996
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 340901888,
+                "heapTotal": 266874880,
+                "heapUsed": 167680704,
+                "external": 4185104,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.6916869999986375,
+                  0.6454479999956675,
+                  0.6685030000007828,
+                  0.6734199999991688,
+                  0.6383970000024419,
+                  0.6833150000020396,
+                  0.6839259999978822,
+                  0.63080600000103,
+                  0.6878120000037597,
+                  0.6727590000009513
+                ],
+                "p50": 0.6727590000009513,
+                "p95": 0.6916869999986375,
+                "min": 0.63080600000103,
+                "max": 0.6916869999986375
+              },
+              "cpuMs": {
+                "samples": [
+                  0.691,
+                  0.645,
+                  0.666,
+                  0.671,
+                  0.637,
+                  0.681,
+                  0.682,
+                  0.63,
+                  0.784,
+                  0.671
+                ],
+                "p50": 0.671,
+                "p95": 0.784,
+                "min": 0.63,
+                "max": 0.784
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 342999040,
+                "heapTotal": 268922880,
+                "heapUsed": 170400688,
+                "external": 4185207,
+                "arrayBuffers": 277789
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35005.736909,
+            "cpuMs": 550.402,
+            "cpuPercentOneCore": 1.5723194213303113,
+            "eventLoopUtilization": 0.011375476456436327,
+            "eventLoopDelayP95Ms": 10.166271,
+            "eventLoopDelayMaxMs": 55.181311,
+            "rssBeforeBytes": 170668032,
+            "rssAfterBytes": 189169664,
+            "peakRssBytes": 194805760,
+            "heapBeforeBytes": 72547944,
+            "heapAfterBytes": 65483624,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                41.367113000000245,
+                41.2523310000106,
+                41.322755999994115,
+                40.97102799999993,
+                42.33655800000997,
+                35.993633999998565,
+                36.09634799999185,
+                54.55946899999981,
+                35.28775500001211,
+                35.90697399999772
+              ],
+              "p50": 40.97102799999993,
+              "p95": 54.55946899999981,
+              "min": 35.28775500001211,
+              "max": 54.55946899999981
+            },
+            "server": {
+              "elapsedMs": 532.6363150000034,
+              "cpuMs": 357.778,
+              "cpuPercentOneCore": 67.1711616208515,
+              "eventLoopUtilization": 0.6552187248295376,
+              "eventLoopDelayP95Ms": 32.849919,
+              "eventLoopDelayMaxMs": 55.279615,
+              "rssBeforeBytes": 343130112,
+              "rssAfterBytes": 388190208,
+              "peakRssBytes": 388190208,
+              "heapBeforeBytes": 170609704,
+              "heapAfterBytes": 198987216,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 13,
+                "successes": 13,
+                "rejections": []
+              }
+            }
+          }
+        },
+        {
+          "run": "candidate-2",
+          "profile": "stress",
+          "workload": {
+            "version": 1,
+            "profile": "stress",
+            "characters": 4,
+            "assets": 20000,
+            "events": 50000,
+            "visits": 2000,
+            "combat": 4000,
+            "sessions": 200,
+            "marketTypes": 5000,
+            "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+            "now": 1790988495189,
+            "discoveryPreparation": {
+              "available": true,
+              "expectedMemberships": 100,
+              "seededMemberships": 100,
+              "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+            }
+          },
+          "startupMs": 159.98062100000004,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.07669499999610707,
+                  0.12082099999679485,
+                  0.09209700000064913,
+                  0.08457600000110688,
+                  0.0833649999985937,
+                  0.097725999999966,
+                  0.08803199999965727,
+                  0.07495200000266777,
+                  0.0716069999980391,
+                  0.09118700000544777
+                ],
+                "p50": 0.08457600000110688,
+                "p95": 0.12082099999679485,
+                "min": 0.0716069999980391,
+                "max": 0.12082099999679485
+              },
+              "cpuMs": {
+                "samples": [
+                  0.081,
+                  0.118,
+                  0.092,
+                  0.081,
+                  0.083,
+                  0.175,
+                  0.088,
+                  0.074,
+                  0.071,
+                  0.145
+                ],
+                "p50": 0.083,
+                "p95": 0.175,
+                "min": 0.071,
+                "max": 0.175
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 184709120,
+                "heapTotal": 122494976,
+                "heapUsed": 65938080,
+                "external": 4185223,
+                "arrayBuffers": 277805
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  20.819287999998778,
+                  21.115850000001956,
+                  21.50036700000055,
+                  21.53351599999587,
+                  22.905117999995127,
+                  21.45146399999794,
+                  21.059948000001896,
+                  22.826640999999654,
+                  21.05968700000085,
+                  21.245815999995102
+                ],
+                "p50": 21.245815999995102,
+                "p95": 22.905117999995127,
+                "min": 20.819287999998778,
+                "max": 22.905117999995127
+              },
+              "cpuMs": {
+                "samples": [
+                  20.816,
+                  21.088,
+                  21.489,
+                  21.34,
+                  22.887,
+                  21.431,
+                  21.039,
+                  22.808,
+                  21.041,
+                  21.223
+                ],
+                "p50": 21.223,
+                "p95": 22.887,
+                "min": 20.816,
+                "max": 22.887
+              },
+              "responseBytes": 3472850,
+              "memory": {
+                "rss": 244854784,
+                "heapTotal": 247742464,
+                "heapUsed": 128961608,
+                "external": 4185311,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  3.6139970000003814,
+                  3.737831999998889,
+                  3.7618880000009085,
+                  3.587226000003284,
+                  3.531384000001708,
+                  4.655505000002449,
+                  3.6216179999973974,
+                  3.6666059999988647,
+                  3.8566999999966356,
+                  3.806335000001127
+                ],
+                "p50": 3.6666059999988647,
+                "p95": 4.655505000002449,
+                "min": 3.531384000001708,
+                "max": 4.655505000002449
+              },
+              "cpuMs": {
+                "samples": [
+                  3.622,
+                  3.725,
+                  3.988,
+                  3.585,
+                  3.527,
+                  4.749,
+                  3.618,
+                  3.885,
+                  3.853,
+                  3.801
+                ],
+                "p50": 3.725,
+                "p95": 4.749,
+                "min": 3.527,
+                "max": 4.749
+              },
+              "responseBytes": 267325,
+              "memory": {
+                "rss": 249180160,
+                "heapTotal": 250445824,
+                "heapUsed": 141211848,
+                "external": 4185194,
+                "arrayBuffers": 277776
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  97.83165600000211,
+                  90.61332599999878,
+                  107.59378999999899,
+                  97.85095399999409,
+                  99.30455899999652,
+                  98.46858800000336,
+                  100.32985200000257,
+                  92.67612199999712,
+                  92.43227699999989,
+                  92.93223499999294
+                ],
+                "p50": 97.83165600000211,
+                "p95": 107.59378999999899,
+                "min": 90.61332599999878,
+                "max": 107.59378999999899
+              },
+              "cpuMs": {
+                "samples": [
+                  101.189,
+                  100.008,
+                  187.391,
+                  103.284,
+                  103.569,
+                  109.243,
+                  100.31,
+                  94.345,
+                  100.078,
+                  92.916
+                ],
+                "p50": 100.31,
+                "p95": 187.391,
+                "min": 92.916,
+                "max": 187.391
+              },
+              "responseBytes": 2879825,
+              "memory": {
+                "rss": 275558400,
+                "heapTotal": 213303296,
+                "heapUsed": 119248088,
+                "external": 4185104,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  7.0364580000023125,
+                  6.781796000002942,
+                  7.940730000002077,
+                  6.924379999996745,
+                  8.317724000000453,
+                  6.529890000005253,
+                  7.510987000001478,
+                  7.184017999999924,
+                  6.453595000006317,
+                  7.900729999993928
+                ],
+                "p50": 7.0364580000023125,
+                "p95": 8.317724000000453,
+                "min": 6.453595000006317,
+                "max": 8.317724000000453
+              },
+              "cpuMs": {
+                "samples": [
+                  7.038,
+                  6.778,
+                  7.935,
+                  6.919,
+                  8.313,
+                  6.524,
+                  7.042,
+                  7.181,
+                  6.449,
+                  7.895
+                ],
+                "p50": 7.038,
+                "p95": 8.313,
+                "min": 6.449,
+                "max": 8.313
+              },
+              "responseBytes": 60397,
+              "memory": {
+                "rss": 275689472,
+                "heapTotal": 213303296,
+                "heapUsed": 124199040,
+                "external": 4185200,
+                "arrayBuffers": 277782
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  38.02221499999723,
+                  40.08578199999465,
+                  42.997879000002285,
+                  33.271528000004764,
+                  39.159035999997286,
+                  33.0477219999957,
+                  33.59815600000002,
+                  34.09782399999676,
+                  33.53259799999796,
+                  34.46370100000058
+                ],
+                "p50": 34.09782399999676,
+                "p95": 42.997879000002285,
+                "min": 33.0477219999957,
+                "max": 42.997879000002285
+              },
+              "cpuMs": {
+                "samples": [
+                  38.021,
+                  40.069,
+                  42.982,
+                  33.258,
+                  39.142,
+                  33.032,
+                  33.584,
+                  34.32,
+                  33.517,
+                  34.448
+                ],
+                "p50": 34.32,
+                "p95": 42.982,
+                "min": 33.032,
+                "max": 42.982
+              },
+              "responseBytes": 40288,
+              "memory": {
+                "rss": 275689472,
+                "heapTotal": 213303296,
+                "heapUsed": 127562560,
+                "external": 4185296,
+                "arrayBuffers": 277878
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.9449030000032508,
+                  0.6562709999998333,
+                  0.6727959999989253,
+                  0.6314649999985704,
+                  0.8412689999968279,
+                  0.682450999993307,
+                  0.6628319999945234,
+                  0.6221809999988182,
+                  0.8618990000031772,
+                  0.6763320000027306
+                ],
+                "p50": 0.6727959999989253,
+                "p95": 0.9449030000032508,
+                "min": 0.6221809999988182,
+                "max": 0.9449030000032508
+              },
+              "cpuMs": {
+                "samples": [
+                  0.949,
+                  0.654,
+                  0.671,
+                  0.626,
+                  0.84,
+                  0.681,
+                  0.66,
+                  0.62,
+                  0.859,
+                  0.674
+                ],
+                "p50": 0.671,
+                "p95": 0.949,
+                "min": 0.62,
+                "max": 0.949
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 344711168,
+                "heapTotal": 267923456,
+                "heapUsed": 168577344,
+                "external": 4185104,
+                "arrayBuffers": 277686
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.7020799999954761,
+                  0.6464470000064466,
+                  0.6319359999979497,
+                  0.6452849999986938,
+                  0.6410390000019106,
+                  0.6309330000003683,
+                  0.6763320000027306,
+                  0.7254959999991115,
+                  0.6824009999982081,
+                  0.7551300000050105
+                ],
+                "p50": 0.6464470000064466,
+                "p95": 0.7551300000050105,
+                "min": 0.6309330000003683,
+                "max": 0.7551300000050105
+              },
+              "cpuMs": {
+                "samples": [
+                  0.702,
+                  0.645,
+                  0.631,
+                  0.643,
+                  0.639,
+                  0.63,
+                  0.674,
+                  0.723,
+                  0.81,
+                  0.753
+                ],
+                "p50": 0.645,
+                "p95": 0.81,
+                "min": 0.63,
+                "max": 0.81
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 346677248,
+                "heapTotal": 269971456,
+                "heapUsed": 171300816,
+                "external": 4185207,
+                "arrayBuffers": 277789
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35005.956257,
+            "cpuMs": 609.194,
+            "cpuPercentOneCore": 1.7402581307236307,
+            "eventLoopUtilization": 0.012453029245434075,
+            "eventLoopDelayP95Ms": 10.199039,
+            "eventLoopDelayMaxMs": 47.808511,
+            "rssBeforeBytes": 166375424,
+            "rssAfterBytes": 184578048,
+            "peakRssBytes": 184578048,
+            "heapBeforeBytes": 70866672,
+            "heapAfterBytes": 65537264,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                45.692218999989564,
+                38.36608900000283,
+                40.72824299999047,
+                37.50869699999748,
+                49.47845399999642,
+                40.998483000003034,
+                37.908628999997745,
+                40.96213299999363,
+                40.224910000004456,
+                40.63411199999973
+              ],
+              "p50": 40.63411199999973,
+              "p95": 49.47845399999642,
+              "min": 37.50869699999748,
+              "max": 49.47845399999642
+            },
+            "server": {
+              "elapsedMs": 543.0900469999979,
+              "cpuMs": 363.72,
+              "cpuPercentOneCore": 66.97231923309423,
+              "eventLoopUtilization": 0.6530298526778484,
+              "eventLoopDelayP95Ms": 32.030719,
+              "eventLoopDelayMaxMs": 45.744127,
+              "rssBeforeBytes": 347070464,
+              "rssAfterBytes": 395706368,
+              "peakRssBytes": 395706368,
+              "heapBeforeBytes": 171509432,
+              "heapAfterBytes": 205475816,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 13,
+                "successes": 13,
+                "rejections": []
+              }
+            }
+          }
+        },
+        {
+          "run": "baseline-2",
+          "profile": "stress",
+          "workload": {
+            "version": 1,
+            "profile": "stress",
+            "characters": 4,
+            "assets": 20000,
+            "events": 50000,
+            "visits": 2000,
+            "combat": 4000,
+            "sessions": 200,
+            "marketTypes": 5000,
+            "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+            "now": 1790988577542,
+            "discoveryPreparation": {
+              "available": false,
+              "expectedMemberships": 100,
+              "seededMemberships": null,
+              "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+            }
+          },
+          "startupMs": 146.26858900000002,
+          "feedStateValidation": {
+            "applicable": true,
+            "passed": true,
+            "storms": 0,
+            "points": 2384,
+            "sourceStatus": "ready"
+          },
+          "operations": [
+            {
+              "name": "opsec",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.08936399999947753,
+                  0.08508699999947567,
+                  0.0787579999960144,
+                  0.09825699999782955,
+                  0.08976399999664864,
+                  0.07818699999916134,
+                  0.146508999998332,
+                  0.14622899999812944,
+                  0.0806109999975888,
+                  0.07344000000011874
+                ],
+                "p50": 0.08508699999947567,
+                "p95": 0.146508999998332,
+                "min": 0.07344000000011874,
+                "max": 0.146508999998332
+              },
+              "cpuMs": {
+                "samples": [
+                  0.093,
+                  0.085,
+                  0.078,
+                  0.116,
+                  0.199,
+                  0.078,
+                  0.146,
+                  0.145,
+                  0.08,
+                  0.072
+                ],
+                "p50": 0.085,
+                "p95": 0.199,
+                "min": 0.072,
+                "max": 0.199
+              },
+              "responseBytes": 662,
+              "memory": {
+                "rss": 210128896,
+                "heapTotal": 189939712,
+                "heapUsed": 46820720,
+                "external": 4089480,
+                "arrayBuffers": 212269
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "state",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  22.365608000000066,
+                  21.283147000001918,
+                  21.31152999999904,
+                  21.316686999998637,
+                  21.76953499999945,
+                  22.319838999996136,
+                  21.626240999998117,
+                  21.465550000000803,
+                  26.09670400000323,
+                  37.927998999999545
+                ],
+                "p50": 21.626240999998117,
+                "p95": 37.927998999999545,
+                "min": 21.283147000001918,
+                "max": 37.927998999999545
+              },
+              "cpuMs": {
+                "samples": [
+                  22.385,
+                  21.268,
+                  21.296,
+                  21.307,
+                  21.752,
+                  22.305,
+                  21.586,
+                  21.45,
+                  27.935,
+                  37.905
+                ],
+                "p50": 21.586,
+                "p95": 37.905,
+                "min": 21.268,
+                "max": 37.905
+              },
+              "responseBytes": 3472850,
+              "memory": {
+                "rss": 229810176,
+                "heapTotal": 207228928,
+                "heapUsed": 72263328,
+                "external": 4089568,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "journey",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  3.68370600000344,
+                  3.7048869999998715,
+                  3.743214000001899,
+                  3.609314000001177,
+                  3.4911280000014813,
+                  3.499680000000808,
+                  3.5177980000007665,
+                  3.4659500000052503,
+                  3.48152200000186,
+                  3.4528299999947194
+                ],
+                "p50": 3.499680000000808,
+                "p95": 3.743214000001899,
+                "min": 3.4528299999947194,
+                "max": 3.743214000001899
+              },
+              "cpuMs": {
+                "samples": [
+                  3.697,
+                  3.689,
+                  4.057,
+                  3.604,
+                  3.488,
+                  3.634,
+                  3.515,
+                  3.656,
+                  3.478,
+                  3.451
+                ],
+                "p50": 3.604,
+                "p95": 4.057,
+                "min": 3.451,
+                "max": 4.057
+              },
+              "responseBytes": 258325,
+              "memory": {
+                "rss": 232431616,
+                "heapTotal": 209850368,
+                "heapUsed": 84343480,
+                "external": 4089451,
+                "arrayBuffers": 212240
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "session",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  86.90574199999537,
+                  93.62511199999426,
+                  98.98916399999871,
+                  106.17210899999918,
+                  83.3204440000045,
+                  81.99363699999958,
+                  82.38171800000418,
+                  86.15975400000025,
+                  84.2723479999986,
+                  83.47314300000289
+                ],
+                "p50": 84.2723479999986,
+                "p95": 106.17210899999918,
+                "min": 81.99363699999958,
+                "max": 106.17210899999918
+              },
+              "cpuMs": {
+                "samples": [
+                  93.201,
+                  98.089,
+                  177.496,
+                  109.85,
+                  90.571,
+                  82.156,
+                  82.367,
+                  97.323,
+                  91.587,
+                  83.457
+                ],
+                "p50": 91.587,
+                "p95": 177.496,
+                "min": 82.156,
+                "max": 177.496
+              },
+              "responseBytes": 2843825,
+              "memory": {
+                "rss": 277925888,
+                "heapTotal": 211107840,
+                "heapUsed": 126790600,
+                "external": 4089361,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_browse",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  13.047905999999784,
+                  13.077912000000651,
+                  11.003525000000081,
+                  6.411820999994234,
+                  6.620783000005758,
+                  6.372710999996343,
+                  6.320873999997275,
+                  6.1759170000004815,
+                  6.154415000004519,
+                  6.580632999997761
+                ],
+                "p50": 6.411820999994234,
+                "p95": 13.077912000000651,
+                "min": 6.154415000004519,
+                "max": 13.077912000000651
+              },
+              "cpuMs": {
+                "samples": [
+                  13.042,
+                  13.065,
+                  10.991,
+                  6.391,
+                  6.683,
+                  6.369,
+                  6.318,
+                  6.173,
+                  6.152,
+                  6.577
+                ],
+                "p50": 6.391,
+                "p95": 13.065,
+                "min": 6.152,
+                "max": 13.065
+              },
+              "responseBytes": 60397,
+              "memory": {
+                "rss": 268120064,
+                "heapTotal": 201302016,
+                "heapUsed": 67993504,
+                "external": 4089457,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "market_report",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  31.33654899999965,
+                  32.64263399999618,
+                  33.66423500000383,
+                  32.07850099999632,
+                  31.597679999998945,
+                  32.86256399999547,
+                  45.56196900000214,
+                  33.145598999995855,
+                  33.11176699999487,
+                  32.23721800000203
+                ],
+                "p50": 32.64263399999618,
+                "p95": 45.56196900000214,
+                "min": 31.33654899999965,
+                "max": 45.56196900000214
+              },
+              "cpuMs": {
+                "samples": [
+                  31.337,
+                  32.953,
+                  33.635,
+                  32.066,
+                  31.586,
+                  32.802,
+                  45.547,
+                  33.335,
+                  33.098,
+                  32.222
+                ],
+                "p50": 32.802,
+                "p95": 45.547,
+                "min": 31.337,
+                "max": 45.547
+              },
+              "responseBytes": 40288,
+              "memory": {
+                "rss": 268120064,
+                "heapTotal": 201564160,
+                "heapUsed": 71356768,
+                "external": 4089457,
+                "arrayBuffers": 212246
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_warm",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  1.072705999999016,
+                  0.8695420000003651,
+                  0.676844000001438,
+                  0.6513150000027963,
+                  0.715942000002542,
+                  0.8504529999991064,
+                  0.6841639999984181,
+                  0.6355019999973592,
+                  0.6430929999987711,
+                  0.6949299999978393
+                ],
+                "p50": 0.6841639999984181,
+                "p95": 1.072705999999016,
+                "min": 0.6355019999973592,
+                "max": 1.072705999999016
+              },
+              "cpuMs": {
+                "samples": [
+                  1.079,
+                  0.867,
+                  0.676,
+                  0.65,
+                  0.713,
+                  0.848,
+                  0.683,
+                  0.634,
+                  0.641,
+                  0.693
+                ],
+                "p50": 0.683,
+                "p95": 1.079,
+                "min": 0.634,
+                "max": 1.079
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 334508032,
+                "heapTotal": 247214080,
+                "heapUsed": 136766504,
+                "external": 4089361,
+                "arrayBuffers": 212150
+              },
+              "networkAttempts": 0
+            },
+            {
+              "name": "imports_after_write",
+              "iterations": 10,
+              "warmups": 3,
+              "latencyMs": {
+                "samples": [
+                  0.655071000001044,
+                  0.6956319999953848,
+                  0.6855160000050091,
+                  0.7276899999997113,
+                  0.6946099999986473,
+                  0.8210590000016964,
+                  0.7185459999964223,
+                  0.6973549999966053,
+                  0.6977550000010524,
+                  0.7084700000050361
+                ],
+                "p50": 0.6973549999966053,
+                "p95": 0.8210590000016964,
+                "min": 0.655071000001044,
+                "max": 0.8210590000016964
+              },
+              "cpuMs": {
+                "samples": [
+                  0.655,
+                  0.694,
+                  0.684,
+                  0.724,
+                  0.693,
+                  0.819,
+                  0.716,
+                  0.696,
+                  0.789,
+                  0.711
+                ],
+                "p50": 0.696,
+                "p95": 0.819,
+                "min": 0.655,
+                "max": 0.819
+              },
+              "responseBytes": 201044,
+              "memory": {
+                "rss": 336474112,
+                "heapTotal": 249262080,
+                "heapUsed": 139493104,
+                "external": 4089464,
+                "arrayBuffers": 212253
+              },
+              "networkAttempts": 0
+            }
+          ],
+          "idle": {
+            "elapsedMs": 35005.940839999996,
+            "cpuMs": 642.653,
+            "cpuPercentOneCore": 1.8358398162681695,
+            "eventLoopUtilization": 0.01398092230913181,
+            "eventLoopDelayP95Ms": 10.199039,
+            "eventLoopDelayMaxMs": 58.621951,
+            "rssBeforeBytes": 169951232,
+            "rssAfterBytes": 210128896,
+            "peakRssBytes": 215494656,
+            "heapBeforeBytes": 72733424,
+            "heapAfterBytes": 46430312,
+            "networkAttempts": 0,
+            "tickAudit": {
+              "applicable": true,
+              "calls": 12,
+              "successes": 12,
+              "rejections": []
+            }
+          },
+          "http": {
+            "name": "state_http",
+            "latencyMs": {
+              "samples": [
+                44.320764999996754,
+                44.42622300000221,
+                41.107468999995035,
+                39.73881400001119,
+                42.19908900000155,
+                38.728952999998,
+                41.99681100000453,
+                55.580738999997266,
+                42.39102599999751,
+                38.37866400000348
+              ],
+              "p50": 41.99681100000453,
+              "p95": 55.580738999997266,
+              "min": 38.37866400000348,
+              "max": 55.580738999997266
+            },
+            "server": {
+              "elapsedMs": 558.8597300000038,
+              "cpuMs": 375.817,
+              "cpuPercentOneCore": 67.24710689030994,
+              "eventLoopUtilization": 0.657466746409047,
+              "eventLoopDelayP95Ms": 35.946495,
+              "eventLoopDelayMaxMs": 51.675135,
+              "rssBeforeBytes": 336867328,
+              "rssAfterBytes": 365666304,
+              "peakRssBytes": 378830848,
+              "heapBeforeBytes": 139703904,
+              "heapAfterBytes": 158646352,
+              "networkAttempts": 0,
+              "tickAudit": {
+                "applicable": true,
+                "calls": 13,
+                "successes": 13,
+                "rejections": []
+              }
+            }
+          }
+        }
+      ],
+      "meanCpuPercentOneCore": {
+        "baseline": 1.7040700308685812,
+        "candidate": 1.656288776026971
+      },
+      "candidateMinusBaselinePercentagePoints": -0.04778125484161011,
+      "candidateRelativePercent": -2.803949014774676
+    }
+  },
+  "caution": "Two independent processes per source/profile. Instrumented counts are not benchmark timings. Refinement vs RC16 does not establish the cause of the original05 CI increase."
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "mode": "observe",
+  "diagnosticOnly": false,
+  "profiled": false,
+  "warmupMs": 30000,
+  "windowTargetMs": 30000,
+  "windowCount": 3,
+  "measurementNote": "No Inspector, SQL, snapshot or binding instrumentation. Only the same low-frequency Universe tick completion audit used by the corrected baseline; window deltas replace cumulative counts.",
+  "fixture": "Frozen analysis/rc17/harness/backend/fixture.mjs stress workload",
+  "scheduler": "Real application timers; no manual sync/tick invocation",
+  "network": "All fetch calls blocked; require zero attempts",
+  "datasetAutomaticStart": "deferred",
+  "clients": "No dashboard/OBS clients or requests",
+  "startedAt": "2026-10-03T00:26:57.006Z",
+  "windows": [
+    {
+      "index": 1,
+      "startedAt": "2026-10-03T00:27:27.754Z",
+      "endedAt": "2026-10-03T00:27:57.754Z",
+      "elapsedMs": 29999.300299000002,
+      "gapAfterPreviousWindowMs": null,
+      "cpuUserMs": 295.984,
+      "cpuSystemMs": 77.218,
+      "cpuMs": 373.202,
+      "cpuPercentOneCore": 1.2440356817670188,
+      "eventLoopUtilization": 0.010538705694934588,
+      "eventLoopDelaySamples": 2949,
+      "eventLoopDelayP95Ms": 10.149887,
+      "eventLoopDelayMaxMs": 36.208639,
+      "rssBeforeBytes": 215617536,
+      "rssAfterBytes": 240390144,
+      "peakRssBytes": 240390144,
+      "heapBeforeBytes": 51828848,
+      "heapAfterBytes": 103839112,
+      "counts": {
+        "universe.tick.started": 10,
+        "universe.tick.pending": 0,
+        "universe.tick.completed": 10,
+        "universe.operations.fulfilled": 10,
+        "universe.feeds.fulfilled": 10,
+        "universe.tick.successful": 10
+      },
+      "synchronousDurationMs": {},
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "pendingSemantic": {
+        "pending": 0,
+        "failures": 0,
+        "recentErrors": []
+      },
+      "networkAttempts": 0,
+      "politicsQueueAfter": 0
+    },
+    {
+      "index": 2,
+      "startedAt": "2026-10-03T00:27:57.754Z",
+      "endedAt": "2026-10-03T00:28:27.755Z",
+      "elapsedMs": 30001.011521999993,
+      "gapAfterPreviousWindowMs": 0.65655500000139,
+      "cpuUserMs": 292.124,
+      "cpuSystemMs": 111.765,
+      "cpuMs": 403.889,
+      "cpuPercentOneCore": 1.3462512745739417,
+      "eventLoopUtilization": 0.011086113621841542,
+      "eventLoopDelaySamples": 2946,
+      "eventLoopDelayP95Ms": 10.182655,
+      "eventLoopDelayMaxMs": 41.484287,
+      "rssBeforeBytes": 240390144,
+      "rssAfterBytes": 252264448,
+      "peakRssBytes": 252710912,
+      "heapBeforeBytes": 103876200,
+      "heapAfterBytes": 84647800,
+      "counts": {
+        "universe.tick.started": 10,
+        "universe.tick.pending": 0,
+        "universe.tick.completed": 10,
+        "universe.operations.fulfilled": 10,
+        "universe.feeds.fulfilled": 10,
+        "universe.tick.successful": 10
+      },
+      "synchronousDurationMs": {},
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "pendingSemantic": {
+        "pending": 0,
+        "failures": 0,
+        "recentErrors": []
+      },
+      "networkAttempts": 0,
+      "politicsQueueAfter": 0
+    },
+    {
+      "index": 3,
+      "startedAt": "2026-10-03T00:28:27.755Z",
+      "endedAt": "2026-10-03T00:28:57.759Z",
+      "elapsedMs": 30003.844381000003,
+      "gapAfterPreviousWindowMs": 0.36688000000140164,
+      "cpuUserMs": 422.434,
+      "cpuSystemMs": 65.516,
+      "cpuMs": 487.95,
+      "cpuPercentOneCore": 1.6262915971827776,
+      "eventLoopUtilization": 0.012320624525064447,
+      "eventLoopDelaySamples": 2944,
+      "eventLoopDelayP95Ms": 10.174463,
+      "eventLoopDelayMaxMs": 38.371327,
+      "rssBeforeBytes": 252264448,
+      "rssAfterBytes": 124915712,
+      "peakRssBytes": 256458752,
+      "heapBeforeBytes": 84654656,
+      "heapAfterBytes": 46106368,
+      "counts": {
+        "universe.tick.started": 10,
+        "universe.tick.pending": 0,
+        "universe.tick.completed": 10,
+        "universe.operations.fulfilled": 10,
+        "universe.feeds.fulfilled": 10,
+        "universe.tick.successful": 10
+      },
+      "synchronousDurationMs": {},
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "pendingSemantic": {
+        "pending": 0,
+        "failures": 0,
+        "recentErrors": []
+      },
+      "networkAttempts": 0,
+      "politicsQueueAfter": 0
+    }
+  ],
+  "complete": true,
+  "spec": {
+    "version": 1,
+    "profile": "stress",
+    "characters": 4,
+    "assets": 20000,
+    "events": 50000,
+    "visits": 2000,
+    "combat": 4000,
+    "sessions": 200,
+    "marketTypes": 5000,
+    "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+    "now": 1790987217007,
+    "discoveryPreparation": {
+      "available": true,
+      "expectedMemberships": 100,
+      "seededMemberships": 100,
+      "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+    }
+  },
+  "startupMs": 151.49128999999994,
+  "feedStateValidation": {
+    "storms": 0,
+    "points": 2384,
+    "status": "ready"
+  },
+  "politicsQueueAtStartup": 3000,
+  "warmup": {
+    "elapsedMs": 30002.763162000003,
+    "cpuUserMs": 442.071,
+    "cpuSystemMs": 25.905,
+    "cpuMs": 467.976,
+    "tickAndTaskDeltas": {
+      "universe.tick.started": 10,
+      "universe.tick.pending": 0,
+      "universe.tick.completed": 10,
+      "universe.operations.fulfilled": 10,
+      "universe.feeds.fulfilled": 10,
+      "universe.tick.successful": 10
+    },
+    "networkAttempts": 0
+  },
+  "politicsQueueAfterWarmup": 0,
+  "tickRejections": [],
+  "finalClients": {
+    "dashboard": 0,
+    "obs": 0
+  },
+  "cleanupComplete": true,
+  "finishedAt": "2026-10-03T00:28:57.766Z"
+}

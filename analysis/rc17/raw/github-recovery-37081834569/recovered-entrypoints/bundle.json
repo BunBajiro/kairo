@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "kind": "internal-instrumented-rc17-checkpoint",
+  "releaseReady": false,
+  "userFacingReleaseAfterReview": "8.0",
+  "createdAt": "2026-10-03T00:09:54.794224+00:00",
+  "candidateCommit": "05d0d4b36c154329006d6772769063db874762da",
+  "candidateFingerprint": "fbd25664336951a7f74fddfe32f1ae6d7505eab5adae92caa5a70e06d8739a54",
+  "rc16Commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "historical073Commit": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "harnessCommit": "a478d437fe94e8179aab6c0404e404126421a006",
+  "runId": "37080679048",
+  "runAttempt": "1",
+  "requestedSuite": "browser",
+  "allComparisonLanesPassed": false,
+  "workflowStepOutcomes": {
+    "request": "success",
+    "compile": "success",
+    "correctness": "success",
+    "maps": "skipped",
+    "routes": "skipped",
+    "legacy": "skipped",
+    "backend": "skipped",
+    "memory": "skipped",
+    "mixed": "skipped",
+    "restart": "skipped",
+    "browser": "success",
+    "camera": "skipped",
+    "sources": "success",
+    "combined": "failure"
+  },
+  "scope": "Pinned compiled runtime plus external harnesses, reports and evidence. Instrumentation is present in the bundle and runs externally; timed production operations are not rewritten with diagnostic observers.",
+  "reportStatus": "Reports reflect their stated source commits and evidence dates. This bundle can contain a draft whitepaper; the workflow does not rewrite narrative findings or convert pending review to approval.",
+  "whitepaper": {
+    "commitAtPackaging": "a478d437fe94e8179aab6c0404e404126421a006",
+    "sha256AtPackaging": "3a9a78a20cd28fbd98556a8390e2e5fde4ea4b8bb4a4bacd4aee97707bb3b1f6",
+    "canonicalUrl": "https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/REPORT.md",
+    "note": "This checked-out report predates review of fresh workflow evidence. The canonical whitepaper is updated separately after artifact retrieval."
+  },
+  "reproduction": "Use the included workflow at harnessCommit with candidateCommit. The source archive has no Git database; exact source-manifest benchmark reproduction requires clean Git checkouts at the pinned commits."
+}

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "kind": "exact-original-runtime-browser-gate",
+  "checkpointAcceptancePassed": true,
+  "releaseReady": false,
+  "performanceReviewStatus": "Open: idle CPU regression attribution; this record covers mechanical correctness/measurement gates only.",
+  "createdAt": "2026-10-03T00:34:00.179829+00:00",
+  "candidateCommit": "05d0d4b36c154329006d6772769063db874762da",
+  "candidateFingerprint": "9df9de9ed3e9740df9955c59aa8b09c0b03693cbb41875cc716b6b499021ea84",
+  "measurementRun": {
+    "id": 37078241973,
+    "originalConclusion": "failure",
+    "harnessCommit": "82394c58d0a7d8987877835b693f31f09c3c0d7f",
+    "failedStep": "Check compiled Mapper preferences and geometry",
+    "acceptedMeasurementSteps": [
+      "Compile and check both source identities",
+      "Check candidate behaviour and types",
+      "Measure Maps with equivalent fixtures",
+      "Compare isolated itinerary scaling",
+      "Compare historical 0.7.3 and RC16 on this same runner",
+      "Compare corrected backend workloads in balanced order",
+      "Compare bounded residency and not-due Sessions work",
+      "Check combined workloads and large-frame continuity",
+      "Check positive managed-restart ownership",
+      "Compare compiled Maps camera work in balanced order",
+      "Verify sources and compiled assets after all lanes"
+    ]
+  },
+  "focusedBrowserRun": {
+    "id": 37082520646,
+    "suite": "browser-original-artifact",
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/37082520646",
+    "harnessCommit": "eed75ae03a12ca5b0090f24b89f1dbc622399231",
+    "requiredStepOutcomes": {
+      "prepare": "success",
+      "browser": "success",
+      "sources": "success"
+    },
+    "resultSha256": "51a5fc1520a9b5719c4b0464abcf7a81465d1395b1c63a003223fe3955184f2a"
+  },
+  "exactRuntimeRestoration": {
+    "schemaVersion": 1,
+    "sourceRunId": 37078241973,
+    "sourceArtifactId": 11257683807,
+    "archiveSha256": "bf398719a9f423530344588977cddc4731b919c123c10d9cf971e348e2ece998",
+    "candidateCommit": "05d0d4b36c154329006d6772769063db874762da",
+    "candidateFingerprint": "9df9de9ed3e9740df9955c59aa8b09c0b03693cbb41875cc716b6b499021ea84",
+    "inventoryFilesVerified": 1201,
+    "sourceFilesVerified": 439,
+    "compiledFilesRestored": 20,
+    "scope": "Candidate-only browser replay. All clean-checkout source bytes match the original runtime; only its exact compiled client is restored. No compilation or RC16 execution occurs."
+  },
+  "allowedHarnessChange": {
+    "path": "analysis/rc17/harness/maps-correctness.mjs",
+    "beforeSha256": "38ac8ea7a7d3b838013661f6df7d3cfe59d213212e208dfb4f6edb8193c31387",
+    "afterSha256": "c01bd476e4d06a3957e93285274232982d533892c49aeb7b3b2007955cf63c72"
+  },
+  "retainedEvidenceSha256": {
+    "artifact-files.json": "e1f3d565a6a676db3c28852cb131f16b874102403dd778121982b86118fbca7a",
+    "github-run.json": "46d9b580567f2b0c51bfeadbcfcf12bae32ff3b2cad44794fba9003a44a139de",
+    "github-jobs.json": "ca9acfa2926f7242ad657b3dd9c859ef50a3cd264e192658d317bff12c90c5f1",
+    "run-provenance.json": "dd1a2b36f6d39654693bc2956b1b347c35185acdb102ba308db853f32f808c28"
+  },
+  "excludedRebuildAttempt": {
+    "runId": 37080679048,
+    "conclusion": "failure",
+    "reason": "Strict built-file identity failed after rebuilding generated HTML/RSC entrypoints; its passing feature/cleanup observations are not substituted for this exact-runtime replay."
+  },
+  "scope": "Candidate-only browser replay on the exact original source and compiled bytes. RC16 is not rebuilt or remeasured; its accepted measurement evidence remains in the original run. Both earlier workflow failures stay unchanged."
+}

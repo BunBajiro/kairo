@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "mode": "profile",
+  "diagnosticOnly": true,
+  "profiled": true,
+  "warmupMs": 30000,
+  "windowTargetMs": 30000,
+  "windowCount": 1,
+  "measurementNote": "Attribution only: instrumentation overhead is included; do not mix these CPU/latency values with observation-mode evidence.",
+  "fixture": "Frozen analysis/rc17/harness/backend/fixture.mjs stress workload",
+  "scheduler": "Real application timers; no manual sync/tick invocation",
+  "network": "All fetch calls blocked; require zero attempts",
+  "datasetAutomaticStart": "deferred",
+  "clients": "No dashboard/OBS clients or requests",
+  "startedAt": "2026-10-03T00:17:03.577Z",
+  "windows": [
+    {
+      "index": 1,
+      "startedAt": "2026-10-03T00:17:34.482Z",
+      "endedAt": "2026-10-03T00:18:04.482Z",
+      "elapsedMs": 29999.915059,
+      "gapAfterPreviousWindowMs": null,
+      "cpuUserMs": 753.295,
+      "cpuSystemMs": 512.999,
+      "cpuMs": 1266.294,
+      "cpuPercentOneCore": 4.220991951175911,
+      "eventLoopUtilization": 0.6418113615191692,
+      "eventLoopDelaySamples": 2948,
+      "eventLoopDelayP95Ms": 10.862591,
+      "eventLoopDelayMaxMs": 41.156607,
+      "rssBeforeBytes": 211189760,
+      "rssAfterBytes": 226533376,
+      "peakRssBytes": 226533376,
+      "heapBeforeBytes": 103927816,
+      "heapAfterBytes": 89703696,
+      "counts": {
+        "universe.tick.started": 10,
+        "universe.tick.pending": 0,
+        "universe.tick.completed": 10,
+        "universe.operations.fulfilled": 10,
+        "universe.feeds.fulfilled": 10,
+        "universe.tick.successful": 10
+      },
+      "synchronousDurationMs": {},
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "pendingSemantic": null,
+      "networkAttempts": 0,
+      "politicsQueueAfter": 0
+    }
+  ],
+  "complete": true,
+  "spec": {
+    "version": 1,
+    "profile": "stress",
+    "characters": 4,
+    "assets": 20000,
+    "events": 50000,
+    "visits": 2000,
+    "combat": 4000,
+    "sessions": 200,
+    "marketTypes": 5000,
+    "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+    "now": 1790986623578,
+    "discoveryPreparation": {
+      "available": false,
+      "expectedMemberships": 100,
+      "seededMemberships": null,
+      "method": "Baseline has no separate discovery table; membership is available through legacy visits"
+    }
+  },
+  "startupMs": 163.94114000000002,
+  "feedStateValidation": {
+    "storms": 0,
+    "points": 2384,
+    "status": "ready"
+  },
+  "politicsQueueAtStartup": 3000,
+  "warmup": {
+    "tickAndTaskDeltas": {
+      "universe.tick.started": 10,
+      "universe.tick.pending": 0,
+      "universe.tick.completed": 10,
+      "universe.operations.fulfilled": 10,
+      "universe.feeds.fulfilled": 10,
+      "universe.tick.successful": 10
+    },
+    "networkAttempts": 0
+  },
+  "politicsQueueAfterWarmup": 0,
+  "profile": {
+    "path": "idle.cpuprofile",
+    "samplingIntervalUs": 1000,
+    "nodes": 110,
+    "samples": 27594,
+    "durationUs": 30078633
+  },
+  "tickRejections": [],
+  "finalClients": {
+    "dashboard": 0,
+    "obs": 0
+  },
+  "cleanupComplete": true,
+  "finishedAt": "2026-10-03T00:18:04.500Z"
+}

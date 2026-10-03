@@ -137,3 +137,31 @@ hashes are recorded. A distinct `combined-acceptance.json` then covers the valid
 measurements and corrected browser gate together. Neither run is relabelled as
 a successful full run, and the focused bundle's per-run
 `allComparisonLanesPassed` remains false. Release approval remains separate.
+
+The first rebuilt focused attempt (`37080679048`) passed its browser assertions
+but failed that strict join because a generated deployment identifier changed
+the compiled HTML/RSC entrypoints. The accepted recovery instead uses
+`rc17-original-browser.yml` and `prepare-original-runtime.py` to restore and
+verify the original archived runtime without rebuilding. Run `37082520646`
+passes all 17 assertions, cleanup and `accept-original-browser.py`'s combined
+gate. The original measurement run and failed rebuilt attempt retain their
+original conclusions. See `reviews/browser-original-replay.md`.
+
+## Idle CPU follow-up
+
+`cpu-investigation/` is a separate diagnostic adapter; it does not edit the
+accepted backend or browser harnesses. Its README defines profiling, counting
+and settled observation modes and their provenance checks. Never compare the
+instrumented modes' CPU readings as performance results. The original
+`05d0d4b` settled ABBA observation is retained separately from its original
+startup-inclusive CI benchmark.
+
+The later internal candidate `fa6e852b76089b51cd552fa202de85ad6948b0ec` removes
+unnecessary protected-pilot identity reads, cached per-dataset OPSEC projections
+and discarded scheduled feed views. All scheduling/freshness thresholds stay
+unchanged. Its scoped `backend` request runs the original typical/stress ABBA
+adapter, including the one-second warm-up and 35-second windows, alongside
+fresh full regression/type checks and compilation. The separate counts lane
+checks work removal. Other feature timing evidence remains pinned to its
+actually measured source; a focused follow-up does not relabel it as a new
+whole-matrix run or imply release acceptance.

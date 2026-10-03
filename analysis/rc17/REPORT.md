@@ -1,6 +1,6 @@
 # Kairo 8.0 optimisation and refactoring whitepaper
 
-**Internal instrumented RC17 checkpoint · 2 October 2026 · comparison in progress**
+**Internal instrumented RC17 checkpoint · updated 3 October 2026 · evidence ready for review**
 
 The first optimised candidate removes confirmed repeated work in Maps, itinerary
 preparation, ineligible Session feed checks and unchanged OBS broadcasts. It also
@@ -12,9 +12,21 @@ The first measurements do **not** show a general reduction in memory or idle CPU
 They exposed a slower extreme Session route read, increased Core import time,
 and small recurring latency costs. A separate refined candidate removes the
 extreme route-read regression and most of the extra import cost, while a small
-import overhead remains. Fresh Maps/routes/memory results are recorded below;
-the independent three-version GitHub run is underway. The initial measurements
-retain their original commit labels.
+import overhead remains. The independent three-version GitHub measurement lanes
+have now completed and corroborate the focused improvements. They also showed
+**higher matched idle CPU** in the first refined candidate (`05d0d4b`). The
+follow-up candidate (`fa6e852`) removes demonstrated redundant idle work:
+fresh GitHub comparisons show typical/stress CPU reductions of **32.6%/17.2%**
+against RC16. Locally, typical CPU falls 35.9%, while the stress readings overlap
+and are effectively flat. These scoped observations do not prove the cause of
+the earlier increase or imply a universal CPU budget.
+The full workflow failed only in browser-harness cleanup after its feature
+checks. Exact-runtime replay `37082520646` now passes those checks and the
+strict combined evidence gate; the original failed run remains unchanged.
+The idle investigation and affected backend retest are complete for this
+checkpoint. Slower local typical startup and a repeated CI stress-state tail
+increase remain explicit preparation priorities. Initial measurements retain
+their original commit labels.
 
 RC17 is the **internal optimised candidate with benchmarking harnesses**, not the
 user-facing release name. The current deliverable is that instrumented runtime,
@@ -31,7 +43,8 @@ a successful benchmark or by producing the internal bundle.
 | Post-optimisation 0.7.3 | `239794774320fcdebaa1d76ce8a77c5c25cfc48c` | Historical common-workload reference; corrected local and GitHub ABBA complete |
 | Canonical 8.0 RC16 | `57c8dcc7fbd8fc2b62129498d1819050c78381a1` | Shared reference for both comparison families |
 | Initial internal RC17 | `059b95909dffa82f8b10dfd266954323147d7580` | Initial Maps, backend, memory, mixed, restart and compiled-browser evidence retained |
-| Refined internal RC17 | `05d0d4b36c154329006d6772769063db874762da` | Fresh local lanes under review; independent GitHub comparison requested separately |
+| Refined internal RC17 | `05d0d4b36c154329006d6772769063db874762da` | Three-version comparison and exact-runtime browser gate reviewed; original idle increase retained and qualified |
+| Idle-refined internal RC17 | `fa6e852b76089b51cd552fa202de85ad6948b0ec` | Two backend files changed; 781 tests/type checks pass locally and on GitHub; affected backend comparisons and evidence review complete |
 
 The initial RC16 source/build fingerprint is
 `02558f159d1fea0b7c1670856e40e52894dd62ea76c733c929cc6d9c4af43a85`;
@@ -42,13 +55,20 @@ file sets and bytes verified after measurement. The refined source/build fingerp
 is `b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82`;
 its numbers never inherit the earlier fingerprint.
 
+The final idle refinement `fa6e852` has local source/build fingerprint
+`0c39f9e6baf146cb09685b5449b9323ab5988280f587be71f5bc1b017c8cd2b5`
+and independently built CI fingerprint
+`39b0f3e5bb815d4455dada3db3f891b90393159c2674d1ac572aebb199cc34a6`.
+The source is identical; separately compiled frontend entrypoints can carry
+different build identifiers, so the manifests are not interchangeable.
+
 | Evidence family | Method and environment | How it may be used |
 |---|---|---|
 | Corrected 0.7.3 → RC16 local | Fresh 0.7.3/RC16/RC16/0.7.3; Node 24.19.0, EPYC 9V74 | Establish historical common-backend changes within that run |
 | Corrected 0.7.3 → RC16 GitHub | Same balanced order; [run 37073070547](https://github.com/BunBajiro/kairo/actions/runs/37073070547), EPYC 7763, two logical CPUs | Independent historical confirmation; never pool with local timings |
 | RC16 → initial RC17 local | Fresh RC16/candidate/candidate/RC16 for Maps, backend and memory; EPYC 9V74, nine visible logical CPUs | Direct paired evidence for the initial candidate's measured lanes |
 | Earlier RC16 versus candidate mixed workload | Same recorded settings/runtime/CPU descriptors, but 30 September versus 2 October | Directional comparison with the date/host-state limitation retained |
-| New three-version GitHub checkpoint | 0.7.3/RC16/RC16/0.7.3, then RC16/RC17/RC17/RC16, in one sequential job | Pending: two adjacent balanced families with repeated RC16 anchors; not one interleaved three-way experiment |
+| New three-version GitHub checkpoint | 0.7.3/RC16/RC16/0.7.3, then RC16/RC17/RC17/RC16, in one sequential job | Both measurement blocks complete; same RC16 version measured alongside each neighbour; original overall workflow remains failed in browser cleanup |
 
 The new GitHub job compares exactly **three versions: 0.7.3, RC16 and internal
 RC17**. There is one RC16 source version, at the SHA above. It is measured once
@@ -245,7 +265,7 @@ evidence without an isolated measured speedup; those distinctions remain.
 | Area | New or clarified boundary | Required contract / evidence |
 |---|---|---|
 | Journey, Sessions, discovery, activity | Session travel, durable membership and activity publication have separate owners | Preserved old evidence; explicit ownership and observation-time tests |
-| Itineraries | One relevant-pilot context and graph/index per plan, reused across legs/alternatives | Complete fixed-clock route equality and fresh 1/10/50-stop local ABBA pass; independent CI pending |
+| Itineraries | One relevant-pilot context and graph/index per plan, reused across legs/alternatives | Complete fixed-clock route equality and fresh 1/10/50-stop local and CI ABBA pass |
 | Maps | Request-local preparation, summary/detail reads and one refresh owner | Access/revision/expiry equality, SQL body counts and browser controls |
 | Goals and combat | Shared request inputs; changed-content writes; service transaction boundary | Per-record accounting, missing-event repair and reentrant completion tests |
 | Assets | Iterative linear containment with cached paths | Duplicate/orphan/cycle fallback behaviour retained |
@@ -275,8 +295,9 @@ scope or claiming a finished general redesign.
 The historical two-CPU GitHub failure was a valid large SSE asset frame rejected
 by the old backlog cutoff. The shared transport now supports ordered chunks and
 drain, bounded queued work and stall limits. Local mixed continuity alone is not
-enough to clear the diagnosed CI condition: the fresh candidate GitHub mixed
-lane and transport regressions remain required. See
+enough to clear the diagnosed CI condition. The fresh candidate GitHub mixed
+lane now passes with full large-frame/privacy controls alongside the transport
+regressions. See
 [transport review](reviews/stream-transport.md).
 
 SQLite, selective import caching, bounded history, the existing celestial LRU,
@@ -289,7 +310,7 @@ changes still receive compatibility checks here.
 ## Refined candidate completion record
 
 This section records reviewed local findings for `05d0d4b36c154329006d6772769063db874762da`
-while independent CI remains pending. Initial059 observations
+alongside the completed independent CI measurements below. Initial059 observations
 above will not be overwritten. The refined
 source includes the Session allocation change, lazy formatter construction and
 the recorded associated source refinement; read its exact diff and test record
@@ -358,19 +379,215 @@ CDP task-duration and RAF comparisons.
 |---|---|
 | Exact clean refined source/build fingerprint | Verified locally: `b927c985297161a30987b4b9a329cf53610d7ffd309e405389ccbe6429129e82` |
 | Types, complete regression suite and compiled build | [Refined test-build run 37076793860](https://github.com/BunBajiro/kairo/actions/runs/37076793860) succeeds; internal implementation verification, not user-release approval |
-| Fresh Maps and isolated routes | Reviewed local results above; independent CI pending |
-| Fresh bounded memory and Session route/not-due controls | Third run accepted; invalid earlier progress-manifest attempts excluded |
-| Mixed continuity, OPSEC, restart and compiled Mapper correctness | Local lane commands succeed; detailed review/independent CI pending |
-| Fresh browser-camera ABBA | Accepted local third attempt; source/asset/graph/viewport/gesture/RAF guards pass; independent CI pending |
-| Same-job 0.7.3→RC16 and RC16→refined-RC17 backend comparisons | [Run 37078241973](https://github.com/BunBajiro/kairo/actions/runs/37078241973) underway at harness commit `82394c58d0a7d8987877835b693f31f09c3c0d7f`; no result yet |
-| Source/harness verification after every lane | Must pass before accepting that lane |
-| Downloaded internal bundle archive/hash and evidence review | Pending workflow completion/retrieval |
+| Fresh Maps and isolated routes | Local and independent GitHub lanes reviewed and valid |
+| Fresh bounded memory and Session route/not-due controls | Accepted local third run and CI immutable-completion record; invalid local attempts remain excluded |
+| Mixed continuity, OPSEC and managed restart | Local and GitHub lanes pass; large frames/protection ordering/accepted-work persistence independently reviewed |
+| Compiled Mapper correctness | All 17 assertions plus Chrome cleanup pass in exact-runtime replay [37082520646](https://github.com/BunBajiro/kairo/actions/runs/37082520646); intervening rebuilt run `37080679048` passed assertions but correctly failed compiled-identity acceptance |
+| Fresh browser-camera ABBA | Accepted local and CI ABBA; dense rendering cost remains |
+| Same-job 0.7.3→RC16 and RC16→refined-RC17 backend comparisons | Both complete in [run 37078241973](https://github.com/BunBajiro/kairo/actions/runs/37078241973), harness `82394c58d0a7d8987877835b693f31f09c3c0d7f`; overall run remains failed |
+| Source/harness verification after every lane | Exact-runtime combined gate verifies all 439 original source files, 20 compiled files, 78 original evidence files and unchanged measurement harnesses |
+| Downloaded internal bundle archive/hash and evidence review | Original bundle verified; exact-runtime replay bundle independently verifies all 1,236 files and combined acceptance, while retaining both original run conclusions |
+| Idle CPU follow-up | `fa6e852` removes independently counted redundant work and passes fresh local/CI backend comparisons; original `05d0d4b` CI increase remains causally unexplained, not accepted as feature cost |
 
-Remaining interpretation questions include the residual import cost, whether
-typical idle/tail costs reproduce in
-CI, whether the local camera savings repeat on its browser/host, and
-whether the earlier constrained-runner SSE failure is absent with full privacy
-and completeness controls. Those are acceptance questions, not assumed fixes.
+The independent run answers the camera and large-frame questions. The scoped
+idle follow-up below addresses repeated background work with fresh comparisons.
+Residual startup/import cost, response tails and dense-scene rendering remain
+visible. Passing correctness/measurement gates is distinct from accepting the
+optimisation trade-offs.
+
+## Independent three-version GitHub comparison
+
+[Run 37078241973](https://github.com/BunBajiro/kairo/actions/runs/37078241973)
+measures all three pinned versions on Node 24.19.0, Linux/Azure, AMD EPYC 9V45
+with two visible logical CPUs. All backend measurement and end-verification
+gates pass. Exactly one unchanged RC16 version is measured alongside 0.7.3 and
+then again alongside internal RC17. Its two observations stay in separate
+columns; they are not two RC16 versions.
+
+The table shows the stress profile's two observed per-run values as ranges.
+CPU is percent of one core, RSS is ordinary process residency, initialisation
+excludes module import/supervisor, and ten-sample p95 is the maximum sample.
+The [complete backend review](reviews/backend-results-github.md) includes typical
+profiles, raw controls, adverse metrics and the two independently recomputed
+summaries.
+
+| Metric | 0.7.3 | RC16 (0.7.3 comparison) | RC16 (RC17 comparison) | Internal RC17 |
+|---|---:|---:|---:|---:|
+| Initialisation, ms | 18.52–18.87 | 141.89–146.44 | 130.12–141.23 | 144.14–145.07 |
+| Idle CPU, % one core | 0.889–1.121 | 1.537–1.564 | 1.206–1.209 | 1.431–1.454 |
+| Idle RSS, MiB | 125.40–126.30 | 202.41–203.70 | 201.95–223.84 | 203.82–221.97 |
+| Maximum idle loop delay, ms | 29.79–31.49 | 44.96–50.43 | 45.71–49.64 | 45.45–49.81 |
+| State HTTP p50, ms | 32.21–35.96 | 28.48–31.37 | 28.38–29.77 | 32.00–32.27 |
+| State HTTP p95, ms | 37.92–50.75 | 35.29–36.42 | 38.19–42.08 | 35.16–37.49 |
+| Session report p50, ms | 63.26–64.59 | 65.68–66.57 | 58.25–61.83 | 65.10–66.66 |
+| Session report p95, ms | 72.46–76.16 | 78.43–93.84 | 86.26–89.62 | 95.26–121.22 |
+
+The same RC16 code consumes less idle CPU in the second comparison, showing why
+the observations must not be collapsed into one number or chained ratios. Yet
+within the RC16→RC17 comparison, CPU rises in **both** repetitions: +0.225/+0.245
+percentage points under stress (+19.47% by means), and +0.088/+0.248 points in
+the typical profile (+27.43%). The fixed 35-second windows and twelve successful
+real Universe ticks are preserved. These are real measured increases; their
+cause is not established from aggregate counters. The later investigation and
+`fa6e852` retest below preserve these original values and their source identity;
+they do not classify this earlier increase as unavoidable feature cost.
+
+Common-backend medians and tails are mixed. Stress state HTTP p50 rises about
+10.5% by means and Session report p50 about 9.7%; only one pair in each exceeds
+10%. Stress Session p95 rises about 23.1%, with one candidate maximum of
+121.22 ms. These remain adverse observations even though they do not meet the
+checkpoint's two-pair latency signal rule. Ordinary RSS is effectively unchanged
+against RC16, rather than improved.
+
+The targeted improvements independently reproduce:
+
+- [Maps](reviews/maps-results-github.md): full 24-map service medians are
+  231.46/238.34 → 29.79/26.63 ms; selected detail is 9.22/9.23 → 5.03/5.05 ms.
+  The same SQL body reductions and payload contracts verify. Full response
+  serialization and a small zero-signature case are slightly slower.
+- [Routes](reviews/routes-results-github.md): 50-stop medians are
+  770.84/760.66 → 25.86/31.13 ms, with full unmasked result equality and one
+  preparation pass. One-stop tail variability remains; this is not a UI or
+  jump-route claim.
+- [Memory/Sessions](reviews/memory-results-github.md): the 10,000-visit direct
+  route is 39.01–40.96 → 33.90–35.30 ms, and not-due work again reads zero visit
+  rows. Collected Core heap remains about 0.186 MiB higher. CI cold-import pairs
+  disagree, so they neither establish startup improvement nor erase the local
+  import residual.
+- [Camera](reviews/camera-results-github.md): renderer task work at 600 nodes
+  falls 63.0% for zoom and 58.0% for pan, with identical source/graph/gesture
+  controls. Candidate RAF p95 remains 100–116.6 ms on zoom and 50–116.7 ms on
+  pan under this software renderer. Style/render stalls and neutral heap remain.
+- [Mixed stream/restart](reviews/stream-restart-results-github.md): all 296 HTTP
+  requests, eight large asset frames and fresh/stale protection gates pass;
+  both positive restart scenarios preserve accepted work before storage closes.
+  Loaded dashboard p95 is 102.01–104.04 ms and navigation p50 is 31.98–32.33 ms.
+  Earlier RC16 CI mixed runs failed continuity, so no complete paired CI mixed
+  speedup is claimed.
+
+The original raw artifact is 2,767,519 bytes, SHA-256
+`8ff4be58d46fa5ddb1af7e322ec9ff98041afcfc83626703c6d561cd0df681e9`.
+The internal bundle ZIP is 31,260,357 bytes, SHA-256
+`6249d8671682e19f886a760c1be33661a8558d5499bedf78edd7609bb8e94cee`;
+its inner tar and all 1,201 files verify. The candidate CI source/build
+fingerprint is `9df9de9ed3e9740df9955c59aa8b09c0b03693cbb41875cc716b6b499021ea84`
+(439 source files and 20 built files). CI uses its own compiled file set;
+the local fingerprint above is not substituted for it.
+
+The original bundle correctly marks the full run incomplete. The rebuilt
+focused run `37080679048` passed the 17 assertions and cleanup, but its generated
+deployment identifier changed two compiled entrypoints. The identity guard
+correctly rejected that join. Exact-runtime replay `37082520646` instead restored
+the original archived client without rebuilding and passed the **separate
+combined gate record**, matching both CI source/compiled manifests, all 78
+original artifact files, every unchanged measurement harness and the same 17
+assertions plus successful Chrome cleanup. Only the external browser-cleanup
+harness changed. The original run remains failed; this mechanical evidence
+acceptance does not settle the separate idle-CPU optimisation question.
+
+The [browser recovery review](reviews/browser-original-replay.md) records the
+complete checks. Its internal tar is 33,768,369 bytes, SHA-256
+`1553f02224514f55a77e0de3c171d8fc9a1af4457f8147fa72ecb706cd995e88`;
+all 1,236 inventory files verify. Its `allComparisonLanesPassed:false` describes
+the focused workflow; the distinct combined gate is true and `releaseReady`
+remains false. This bundle still identifies candidate `05d0d4b`, not the later
+idle refinement.
+
+## Idle CPU investigation and focused refinement
+
+The original CI increase was treated as a regression signal requiring an
+explanation, not as an assumed feature cost. Separate profiling, counting and
+settled-observation adapters preserve the original benchmark files. They use
+the same corrected stress fixture and real scheduler with no clients or external
+requests; their instrumentation and measurement boundaries are kept distinct.
+
+The settled local ABBA lane used 30 seconds of warm-up followed by three
+consecutive 30-second windows per process. It averaged **1.404929% of one core
+for RC16 and 1.415722% for `05d0d4b`**, a difference of 0.010793 percentage
+points. Both candidate process totals fell between the two RC16 totals, with
+all 12 windows completing ten successful Universe ticks and both subtasks.
+Startup Politics queues were empty before observation. This does not reproduce
+the earlier 19.47% CI stress increase, but the different phase and environment
+mean it neither erases that observation nor proves its cause.
+
+The [diagnostic review](reviews/idle-cpu-diagnostics.md) and
+[independent settled review](reviews/idle-cpu-settled-observation.md) record the
+limits. They found shared repeated work, rather than a demonstrated new
+candidate-only hotspot: 360 OPSEC projections, 2,700 full snapshot reads and
+2,020 character-list reads during one counted 30-second window on both sources.
+Scheduled feed upkeep also built a complete view its caller discarded.
+
+The follow-up candidate `fa6e852` addresses those specific ownership boundaries:
+
+- Unrelated dataset keys return from the protection-policy predicate before
+  loading protected-pilot identity.
+- Unchanged, not-due datasets skip their individual OPSEC projection. Scope,
+  membership and deadline checks still precede the scheduling guard. Changes
+  and failures still update protection immediately; the regular ticker,
+  completed sync and awaited protection batch retain deadline reevaluation.
+- Feed collection upkeep is separated from explicit view responses. Scheduled
+  work keeps NPC observation and expiry before and after collection, including
+  shutdown guards, without assembling an unused display payload.
+
+Only `server/core.mjs`, `server/universe-feeds.mjs` and three test files change
+from `05d0d4b`; no polling interval, freshness limit or UI behavior changes.
+All 781 local runtime tests and the type check pass, including new coverage for
+scope loss, expiry during retry backoff, immediate location updates during a
+blocked peer request, NPC observations and feed expiry/shutdown. The first
+local HTTP-test attempt was blocked by the execution sandbox's localhost-listen
+restriction; the same tests passed with loopback access. This was an environment
+failure, not an application assertion failure.
+
+The unchanged original backend adapter has measured this revision locally and
+in [GitHub run 37083252892](https://github.com/BunBajiro/kairo/actions/runs/37083252892),
+with its original one-second warm-up and 35-second windows in RC16/candidate/
+candidate/RC16 order. Fresh CI builds and all 781 runtime tests/type checks pass.
+All eight idle profiles in each environment report twelve cumulative successful
+Universe ticks, valid feed state and zero rejection/network attempts. This audit
+is cumulative from startup; exact settled-window deltas belong only to the
+separate counting adapter.
+
+| Environment / fixture | RC16 CPU, % one core | `fa6e852` CPU, % one core | Change in paired-run means |
+|---|---:|---:|---:|
+| Local typical | 0.8422 / 0.9483 | 0.6427 / 0.5048 | −35.9% |
+| Local stress | 1.5723 / 1.8358 | 1.5723 / 1.7403 | −2.8%; overlapping, essentially flat |
+| GitHub typical | 0.9463 / 0.9583 | 0.5314 / 0.7524 | −32.6% |
+| GitHub stress | 2.1638 / 2.1681 | 1.8401 / 1.7458 | −17.2% |
+
+Each row is its own paired comparison; environments and candidate revisions are
+not pooled. Two repetitions are observations, not confidence intervals. The
+counted 30-second workload independently falls from 360 to 70 OPSEC projections,
+2,700 to 640 full snapshot reads, 2,020 to 660 roster reads and 13,197 to 5,964
+SQL executions, while retaining all 1,330 scheduling-metadata checks and ten
+successful ticks. Instrumented CPU values are not used for the table above.
+
+These results support lower typical idle cost and lower stress cost in this CI
+run, with a much weaker stress result locally. They do not retroactively identify
+the cause of the old `05d0d4b` difference. The [local review](reviews/idle-refinement-local.md)
+and [GitHub review](reviews/idle-refinement-github.md) retain source/harness
+verification, raw arithmetic, all direct/HTTP metrics and adverse findings.
+Unaffected Maps, route and browser measurements retain their measured
+`05d0d4b` identity rather than being relabelled as new timings.
+
+Two adverse findings need attention during clean 8.0 preparation. Local typical
+startup is 170.57–178.85 ms versus RC16's 143.52–154.22 ms. On GitHub, stress
+direct-state p95 is 34.27–43.59 ms versus 30.40–31.70 ms, a repeated signal
+(+25.36% by means). Ten-sample p95 is the observed maximum, not a production
+tail guarantee, but that limit is not grounds to hide the signal. The direct
+state projection code is unchanged by this narrow idle refinement; the measured
+effect is not attributed to it without a separate causal experiment. Other
+startup, Session-report, memory and latency observations remain in the reviews.
+This checkpoint recommends the demonstrated work removal while retaining those
+costs as unresolved; it does not declare every performance metric improved.
+
+The latest focused internal bundle identifies `fa6e852` and verifies all 1,239
+inventory files. Its tar is 31,512,288 bytes, SHA-256
+`27903bcb347f66f9593046b656027ff924014d9c603e6c72d2341129aef1d3ee`.
+It records the successful `backend` suite and `releaseReady:false`; it correctly
+does not claim every comparison lane ran on this revision or attach the older
+`05d0d4b` browser-combination record. Its report revision predates retrieval of
+these fresh results; the canonical whitepaper and committed raw evidence form
+the reviewed supplement.
 
 ## Internal handoff and reproduction
 

@@ -1,0 +1,8 @@
+{
+  "scope": "Initial local focused regression invocation only",
+  "command": "node --test tests/kairo/data-access.test.mjs tests/kairo/core-idle-protection.test.mjs tests/kairo/protection-activity.test.mjs tests/kairo/universe-feeds.test.mjs tests/kairo/universe-operations-http.test.mjs tests/kairo/universe-jspace.test.mjs",
+  "observedError": "listen EPERM: operation not permitted 127.0.0.1:18410",
+  "diagnosis": "Execution sandbox denied ephemeral loopback HTTP listening; direct rerun of protection-activity exposed the error.",
+  "followup": "Same focused tests with loopback permitted passed 83 tests; full runtime and type check passed 781 tests. See retained logs.",
+  "applicationAssertionFailure": false
+}

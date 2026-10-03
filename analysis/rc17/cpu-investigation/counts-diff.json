@@ -1,0 +1,17 @@
+{
+  "differentCounters": {
+    "sql.get.SELECT value FROM settings WHERE key=?": {
+      "baseline": 7046,
+      "candidate": 7033
+    },
+    "store.get.session:live-feed": {
+      "baseline": 0,
+      "candidate": 40
+    },
+    "store.get.stream": {
+      "baseline": 106,
+      "candidate": 53
+    }
+  },
+  "note": "Diagnostic counters from identical 10-tick windows; SQL parameters are synthetic fixture only; CPU contains instrumentation."
+}
