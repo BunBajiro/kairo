@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {openStore} from '../../server/store.mjs';
 import {createCore} from '../../server/core.mjs';
-import {allScopes} from '../../server/modules/catalog.mjs';
+import {allScopes,catalog} from '../../server/modules/catalog.mjs';
 import {changeSession,sessionReport} from '../../server/history.mjs';
 
 async function fixture(t){
@@ -45,6 +45,27 @@ test('protection projects only its evidence and still responds immediately to di
         assert.equal(core.stream.getOPSEC().state,'unknown');assert.equal(core.stream.getOPSEC().hidden,true);
         store.snapshot=read;
     }finally{await core.close();}
+});
+
+test('cached routine datasets do not repeatedly load protection pilot identity',async t=>{
+    const {store,dir}=await fixture(t),now=Date.now();
+    const modules=new Set(['training','wallet','hangar','industry','combat','comms']);
+    const sample={status:'ready',data:[],updatedAt:new Date(now).toISOString(),expiresAt:new Date(now+600000).toISOString(),refreshAt:new Date(now+600000).toISOString()};
+    let expectedChecks=0,identityReads=0,metadataReads=0;
+    for(const module of catalog){
+        store.set('module:'+module.id,modules.has(module.id));
+        if(modules.has(module.id))for(const dataset of module.datasets){store.saveSnapshot(42,dataset.key,sample);expectedChecks++;}
+    }
+    const auth={characters:()=>{identityReads++;return [{id:42,scopes:allScopes}];}};
+    const core=await createCore(store,auth,{health:()=>({}),request:()=>{throw new Error('Fresh routine data must not make a request');}},dir,{noSync:true});
+    const metadata=store.snapshotMetadata;
+    try{
+        store.snapshotMetadata=(...args)=>{metadataReads++;return metadata(...args);};
+        identityReads=0;
+        await core.sync(42);
+        assert.equal(metadataReads,expectedChecks,'Every routine dataset still checks its current scheduling metadata.');
+        assert.equal(identityReads,2,'Only sync admission and its final protection refresh require current pilot identity.');
+    }finally{store.snapshotMetadata=metadata;await core.close();}
 });
 
 test('Sessions keep pilot travel and hull history with Universe disabled and stop when Pilot is disabled',async t=>{

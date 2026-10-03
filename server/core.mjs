@@ -19,6 +19,7 @@ import {reconcileSessionLoyalty} from './session-details.mjs';
 import {createMarkets} from './markets.mjs';
 import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
+const DATASET_NOT_DUE = Symbol('dataset-not-due');
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
     let stopped = false, closing, quiesceFailures;
@@ -146,9 +147,12 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         if (stopped) return;
         const key = (character?.id || 0) + ':' + d.key;
         if (datasetSync.has(key)) return datasetSync.get(key);
-        const task = runDataset(character, m, d).finally(() => {
+        let notDue = false;
+        const task = runDataset(character, m, d).then(result => {
+            notDue = result === DATASET_NOT_DUE;
+        }).finally(() => {
             datasetSync.delete(key);
-            if (!stopped && protectionKeys.has(d.key)) refreshOPSEC();
+            if (!stopped && !notDue && protectionKeys.has(d.key)) refreshOPSEC();
         });
         datasetSync.set(key, task);
         return task;
@@ -186,7 +190,10 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         let scheduled = nextRun.get(key) ?? (metadata?.status === 'ready' ? Date.parse(metadata.refreshAt) : Date.parse(metadata?.retryAt));
         if (protectionEvidence(d.key, id) && metadata?.status === 'ready') scheduled = Math.min(scheduled, Date.parse(metadata.expiresAt));
         if (!forced && scheduled > Date.now())
-            return;
+            // No evidence changed. The independent ticker and completed sync
+            // still evaluate elapsed protection deadlines; other exits and
+            // failures keep their immediate refresh.
+            return DATASET_NOT_DUE;
         const prior = store.snapshot(id, d.key);
         nextRun.set(key, Date.now() + 60000);
         try {
@@ -251,8 +258,9 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         return Math.max(Date.now() + (dataset.key === 'location' ? 3000 : 60000), Date.parse(retryAt) || 0);
     }
     function protectionEvidence(key, id) {
+        if (key === 'location' || !protectionKeys.has(key)) return false;
         const protectedId = protectedCharacter().id;
-        return key !== 'location' && protectionKeys.has(key) && !!protectedId && (id === 0 || id === protectedId);
+        return !!protectedId && (id === 0 || id === protectedId);
     }
     function pollingPolicy(dataset, id) {
         return { ...dataset, pollInterval: protectionEvidence(dataset.key, id) ? 0 : polling[dataset.key] ?? dataset.pollInterval };
@@ -319,7 +327,10 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             if (m.id !== 'universe' && (!character || character.needsReauth)) continue;
             tasks.push(syncDataset(m.id === 'universe' ? undefined : character, m, m.datasets.find(d => d.key === key)));
         }
-        return Promise.allSettled(tasks);
+        return Promise.allSettled(tasks).then(results => {
+            if (!stopped) refreshOPSEC();
+            return results;
+        });
     }
     function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements));}
     function refreshPolitics() {

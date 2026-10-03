@@ -216,15 +216,26 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         for (const [source, rows] of Object.entries({ thera: connections.filter(r => r.source === 'thera'), turnur: connections.filter(r => r.source === 'turnur'), storms, combat, campaigns: campaignRows, development, npc_deltas: deltas, points: pointRows })) sources[source].count = rows.length;
         return { generated_at: ISO(time), config: config(), sources, connections, storms, campaigns: campaignRows, development, combat, npc_deltas: deltas, points: pointRows };
     }
+    async function upkeep(source) {
+        observeNpc();
+        await Promise.all((source ? Object.hasOwn(FEED_URLS, source) ? [source] : [] : Object.keys(FEED_URLS)).map(name => refreshSource(name)));
+    }
     async function refresh(input = {}) {
         const source = typeof input === 'string' ? input : input.source;
         if (source && !Object.hasOwn(PROVIDERS, source)) throw new Error('Choose a known public source.');
         if (!enabled()) return state();
-        observeNpc();
-        await Promise.all((source ? Object.hasOwn(FEED_URLS, source) ? [source] : [] : Object.keys(FEED_URLS)).map(name => refreshSource(name)));
+        await upkeep(source);
         return state();
     }
-    async function tick() { pruneExpired(); if (noSync || !enabled()) return; return refresh(); }
+    async function tick() {
+        if (closed) return;
+        pruneExpired();
+        if (noSync || !enabled()) return;
+        await upkeep();
+        // Collection can span a connection deadline; maintenance needs that prune,
+        // but only explicit readers need the full feed projection.
+        if (!closed) pruneExpired();
+    }
     function close() { closed = true; if (expiryTimer !== null) clearExpiryTimer(expiryTimer); expiryTimer = null; for (const controller of controllers) controller.abort(); controllers.clear(); return Promise.allSettled([...flights.values()]); }
     scheduleExpiry();
     return { state, refresh, tick, close, config, saveConfig, saveStorms, import: importData, importData, observeNpc, pruneExpired };

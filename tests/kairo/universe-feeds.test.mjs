@@ -28,6 +28,118 @@ function fixture(t, fetcher = async () => { throw new Error('Unexpected network 
     t.after(() => service.close());
     return { service, store, calls, snapshots, time: v => { time = v; } };
 }
+function cacheFreshFeeds(store) {
+    for (const source of Object.keys(FEED_URLS)) store.set('universe:feeds:' + source, {
+        status: 'ready', updated_at: iso(0), expires_at: iso(3600000),
+        data: source === 'storms' ? { storms: [], points: [] } : [],
+    });
+}
+function trackReads(store) {
+    const reads = { get: [], snapshot: [] }, get = store.get, snapshot = store.snapshot;
+    store.get = (...args) => { reads.get.push(args[0]); return get(...args); };
+    store.snapshot = (...args) => { reads.snapshot.push(args); return snapshot(...args); };
+    return reads;
+}
+test('quiet scheduled feed upkeep records NPC windows without reading or building display data', async t => {
+    let notifications = 0;
+    const { service, store, calls, snapshots, time } = fixture(t, undefined, { onChange: () => notifications++ });
+    cacheFreshFeeds(store);
+    snapshots.set('0:kills', sample([{ system_id: A, npc_kills: 20 }], { sourceModifiedAt: iso(-10000) }));
+    const reads = trackReads(store);
+    assert.equal(await service.tick(), undefined);
+    const first = store.get('universe:feeds:npc-windows');
+    assert.equal(first.previous, null); assert.equal(first.current.at, iso(-10000));
+    assert.equal(await service.tick(), undefined);
+    assert.deepEqual(store.get('universe:feeds:npc-windows'), first);
+    time(AT + 2000);
+    snapshots.set('0:kills', sample([{ system_id: A, npc_kills: 5 }], { sourceModifiedAt: iso(1000) }));
+    await service.tick();
+    const next = store.get('universe:feeds:npc-windows');
+    assert.deepEqual(next.previous, first.current); assert.equal(next.current.at, iso(1000));
+    assert.deepEqual(reads.snapshot, [[0, 'kills'], [0, 'kills'], [0, 'kills']]);
+    assert.ok(!reads.get.includes('universe:feeds:manual-storms'));
+    assert.equal(calls.length, 0); assert.equal(notifications, 0);
+});
+test('explicit feed refresh still validates sources and returns the full current view', async t => {
+    const { service, store, snapshots } = fixture(t, undefined, { noSync: true });
+    cacheFreshFeeds(store);
+    snapshots.set('0:sovereignty_campaigns', sample([{ campaign_id: 7, solar_system_id: A,
+        constellation_id: 2, structure_id: 300, event_type: 'ihub_defense', start_time: iso(-10000) }]));
+    snapshots.set('0:sovereignty', sample([{ system_id: A, claim: { alliance: { alliance_id: 88,
+        development: { activity_defense_multiplier: 3.2 }, sovereignty_hub: { id: 300 } } } }]));
+    snapshots.set('0:kills', sample([{ system_id: A, npc_kills: 20 }], { sourceModifiedAt: iso(-10000) }));
+    const reads = trackReads(store);
+    await assert.rejects(service.refresh('arbitrary-url'), /known public source/);
+    assert.deepEqual(reads.snapshot, []);
+    const value = await service.refresh({ source: 'campaigns' });
+    assert.deepEqual(value, service.state());
+    assert.equal(value.campaigns[0].id, 7); assert.equal(value.development[0].adm, 3.2);
+    assert.equal(value.sources.npc_deltas.status, 'waiting');
+    assert.equal(store.get('universe:feeds:npc-windows').current.at, iso(-10000));
+});
+test('scheduled upkeep prunes connection deadlines crossed during collection, including a module disable', async t => {
+    for (const disableWhileWaiting of [false, true]) {
+        let release, started, notifications = 0;
+        const waiting = new Promise(resolve => { started = resolve; }), forgotten = [];
+        const { service, store, calls, time } = fixture(t, async url => {
+            assert.equal(url, FEED_URLS.storms); started();
+            return new Promise(resolve => { release = resolve; });
+        }, { onChange: () => notifications++, onForgetConnections: rows => forgotten.push(...rows),
+            setExpiryTimer: () => 1, clearExpiryTimer: () => {} });
+        cacheFreshFeeds(store);
+        store.set('universe:feeds:thera', { ...store.get('universe:feeds:thera'),
+            data: normalizeConnections([wh({ expires_at: iso(1000) })], 'thera', atlas, AT) });
+        store.set('universe:feeds:storms', { ...store.get('universe:feeds:storms'), expires_at: iso(-1) });
+        const reads = trackReads(store), pending = service.tick();
+        await waiting;
+        time(AT + 2000);
+        if (disableWhileWaiting) store.set('module:universe', false);
+        release(response([]));
+        assert.equal(await pending, undefined);
+        assert.deepEqual(store.get('universe:feeds:thera').data, []);
+        assert.deepEqual(forgotten.map(row => row.id), ['thera:4']);
+        assert.deepEqual(reads.snapshot, [[0, 'kills']]);
+        assert.equal(calls.length, 1); assert.equal(notifications, 1);
+    }
+});
+test('disabled and noSync scheduled ticks expire connections without collecting or projecting feeds', async t => {
+    for (const noSync of [false, true]) {
+        let notifications = 0; const forgotten = [];
+        const { service, store, calls, snapshots } = fixture(t, undefined, { noSync,
+            onChange: () => notifications++, onForgetConnections: rows => forgotten.push(...rows),
+            setExpiryTimer: () => 1, clearExpiryTimer: () => {} });
+        if (!noSync) store.set('module:universe', false);
+        store.set('universe:feeds:thera', { data: [{ id: 'thera:4', expires_at: iso(-1) }] });
+        snapshots.set('0:kills', sample([{ system_id: A, npc_kills: 20 }]));
+        const reads = trackReads(store);
+        assert.equal(await service.tick(), undefined);
+        assert.deepEqual(store.get('universe:feeds:thera').data, []);
+        assert.deepEqual(forgotten.map(row => row.id), ['thera:4']);
+        assert.equal(store.get('universe:feeds:npc-windows', null), null);
+        assert.deepEqual(reads.snapshot, []);
+        assert.ok(!reads.get.includes('universe:feeds:manual-storms'));
+        assert.equal(calls.length, 0); assert.equal(notifications, 0);
+    }
+});
+test('closing a scheduled feed collection drains its request without post-close storage work', async t => {
+    let started, closing = false, notifications = 0;
+    const waiting = new Promise(resolve => { started = resolve; });
+    const { service, store } = fixture(t, async (_url, { signal }) => {
+        started();
+        return new Promise((_resolve, reject) => signal.addEventListener('abort', () =>
+            reject(Object.assign(new Error('aborted'), { name: 'AbortError' })), { once: true }));
+    }, { onChange: () => notifications++ });
+    cacheFreshFeeds(store);
+    store.set('universe:feeds:storms', { ...store.get('universe:feeds:storms'), expires_at: iso(-1) });
+    for (const method of ['get', 'set', 'snapshot']) {
+        const original = store[method];
+        store[method] = (...args) => { assert.equal(closing, false, 'storage work after feed close: ' + method); return original(...args); };
+    }
+    const pending = service.tick(); await waiting;
+    const closed = service.close(); closing = true;
+    await closed; assert.equal(await pending, undefined);
+    assert.equal(await service.tick(), undefined); assert.equal(notifications, 0);
+});
 test('wormhole reports retain limitations, discard incomplete or expired, and validate the actual hub', () => {
     const rows = normalizeConnections([wh(), wh({ id: '5', completed: false }), wh({ id: '6', expires_at: iso(-1) })], 'thera', atlas, AT);
     assert.equal(rows.length, 1); assert.equal(rows[0].max_ship_size, 'large'); assert.equal(rows[0].completed, true);
