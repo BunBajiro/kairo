@@ -179,6 +179,41 @@ test('fleet polls are explicit, bounded, cache-aware and scope-gated', async t =
     assert.equal(service.state(42).fleet.status, 'missing_scope'); assert.deepEqual(service.state(42).fleet.members, []);
 });
 
+test('a projection read before fleet IO cannot retain authorization across its await', async t => {
+    let release, started;
+    const began = new Promise(resolve => { started = resolve; });
+    const response = new Promise(resolve => { release = resolve; });
+    const f = await fixture(t, { esi: { request: async () => { started(); return response; } } });
+    f.service.saveConfig(42, { ...f.service.config(42), fleet_enabled: true });
+    f.service.state(42);
+    const pending = f.service.refresh(42);
+    await began;
+    f.characters[0].scopes = [];
+    release(sample({ fleet_id: 123456789012, role: 'squad_member' }));
+    const value = await pending;
+    assert.equal(value.fleet.status, 'missing_scope');
+    assert.deepEqual(value.fleet.members, []);
+    assert.equal(f.store.snapshot(42, 'universe_fleet'), null, 'Revocation while IO waits prevents publication');
+    assert.equal(value.location.status, 'missing_scope');
+});
+
+test('disconnect during fleet IO is checked afresh before the next projection', async t => {
+    let release, started;
+    const began = new Promise(resolve => { started = resolve; });
+    const response = new Promise(resolve => { release = resolve; });
+    const f = await fixture(t, { esi: { request: async () => { started(); return response; } } });
+    f.service.saveConfig(42, { ...f.service.config(42), fleet_enabled: true });
+    f.service.state(42);
+    const pending = f.service.refresh(42);
+    await began;
+    f.characters.splice(f.characters.findIndex(pilot => pilot.id === 42), 1);
+    release(sample({ fleet_id: 123456789012, role: 'squad_member' }));
+    await assert.rejects(pending, /connected pilot/);
+    assert.equal(f.store.snapshot(42, 'universe_fleet'), null);
+    assert.throws(() => f.service.state(42), /connected pilot/);
+    assert.equal(f.service.state(43).character_id, 43, 'Other connected pilots remain independently readable');
+});
+
 test('fleet replacement failure never exposes previous fleet members; revoked access clears last-good roster', async t => {
     let mode = 'first';
     const { service, setTime } = await fixture(t, { esi: { request: async path => {

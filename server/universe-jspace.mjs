@@ -215,6 +215,14 @@ export function createUniverseJSpace(store, auth, options) {
     // Only systems have an archive. A departed connection has no notes, passages,
     // activity entries or undo snapshot that can bring it back.
     function forgetMapConnections(map, removed, canonical = null) {
+        // Common reads only need topology/reference checks. Avoid serializing all
+        // notes and passages twice when reconciliation cannot change the map.
+        if (!removed.length && !own(map, 'archived_connections') && map.connections.every(edge =>
+            !own(edge, 'locked') && (!canonical || edge.kind === 'gate' || canonical.has(edge.link_id)))) {
+            const present = new Set(map.connections.map(edge => edge.id));
+            if (map.passages.every(row => present.has(row.connection_id)) && map.comments.every(row => !row.connection_id || present.has(row.connection_id)) &&
+                Array.isArray(map.activity) && !map.activity.some(row => /^(connection|passage)\./.test(row.op))) return false;
+        }
         const before = JSON.stringify(map), ended = new Map(removed.map(link => [link.id, link.ended_at || link.expires_at || iso()]));
         const dead = map.connections.filter(edge => ended.has(edge.link_id) || canonical && edge.kind !== 'gate' && !canonical.has(edge.link_id));
         markDetached(map, dead, ended);
@@ -415,7 +423,7 @@ export function createUniverseJSpace(store, auth, options) {
             connection_ids: connectionsBySignature.get(row.id) || [] }));
         map.can_undo = (read(id, 'jspace_undo', map.id)?.entries.length || 0) > 0;
         map.operations = operational;
-        map.pilots = tracking.projectPilots(map);
+        map.pilots = tracking.projectPilots(map, shared.operational);
         map.read_only = map.kind === 'tracking_source';
         return map;
     }

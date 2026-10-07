@@ -55,10 +55,10 @@ export function createJSpaceTracking(store, auth, options) {
         indexed = true;
         for (const row of getMaps.all()) syncMap(row.character_id, JSON.parse(row.body));
     }
-    function allowed(id, source) {
-        const pilot = character(id);
+    function allowed(id, source, projection) {
+        const pilot = projection ? projection.character(id) : character(id);
         if (!pilot || pilot.needsReauth || !store.get('module:universe', true)) return false;
-        const cfg = operations.config?.(id);
+        const cfg = projection ? projection.config(id) : operations.config?.(id);
         if (cfg?.enabled === false) return false;
         if (source === 'esi') return cfg?.location_source !== 'logs' && store.get('module:pilot', true) && (pilot.scopes || []).includes(LOCATION_SCOPE);
         return source === 'chat_log' && cfg?.logs_enabled === true && cfg?.location_source !== 'esi';
@@ -111,10 +111,10 @@ export function createJSpaceTracking(store, auth, options) {
         // The caller synchronises subscriptions only after its enclosing transaction succeeds.
         return row;
     }
-    function projectPilots(map) {
+    function projectPilots(map, projection) {
         return (map.pilots || []).map(row => {
-            const pilot = character(row.character_id), last = row.last_location;
-            const visible = row.tracking && last && allowed(row.character_id, last.source) && Date.parse(last.expires_at) > now();
+            const pilot = projection ? projection.character(row.character_id) : character(row.character_id), last = row.last_location;
+            const visible = row.tracking && last && allowed(row.character_id, last.source, projection) && Date.parse(last.expires_at) > now();
             return { character_id: row.character_id, name: pilot?.name || String(row.character_id), tracking: row.tracking !== false,
                 status: !row.tracking ? 'paused' : !pilot ? 'disconnected' : pilot.needsReauth ? 'reauth_required' : visible ? 'ready' : 'waiting',
                 system_id: visible ? last.system_id : null, system_name: visible ? byId.get(last.system_id)?.name || null : null,

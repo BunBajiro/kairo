@@ -37,10 +37,10 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     const rows = (id, kind) => getRows.all(id, kind).map(parse);
     const row = (id, kind, key) => parse(getRow.get(id, kind, String(key)));
     const iso = () => new Date(now()).toISOString();
-    const character = id => auth.characters().find(pilot => pilot.id === id);
-    function pilotId(value) {
+    const character = (id, roster) => roster ? roster.byId.get(id) : auth.characters().find(pilot => pilot.id === id);
+    function pilotId(value, roster) {
         const id = Number(value ?? 0);
-        if (!Number.isSafeInteger(id) || id < 0 || id && !character(id)) throw new Error('Choose a connected pilot.');
+        if (!Number.isSafeInteger(id) || id < 0 || id && !character(id, roster)) throw new Error('Choose a connected pilot.');
         return id;
     }
     function systemId(value) {
@@ -211,8 +211,8 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         trimRows.run(id, kind, id, kind, limit); return record;
     }
     function changed(id) { onChange(id); }
-    function config(characterId) {
-        const id = pilotId(characterId);
+    function config(characterId, roster) {
+        const id = pilotId(characterId, roster);
         return { ...clone(DEFAULTS), ...store.get('universe:operations:config:' + id, {}) };
     }
     function validateConfig(id, input) {
@@ -262,8 +262,8 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     function fresh(sample) {
         return sample?.status === 'ready' && sample.stale !== true && finiteDate(sample.updatedAt) && Date.parse(sample.updatedAt) <= now() + 1000 && Date.parse(sample.expiresAt) > now();
     }
-    function location(id) {
-        const pilot = character(id), cfg = config(id);
+    function location(id, roster) {
+        const pilot = character(id, roster), cfg = config(id, roster);
         const empty = (status, source = 'esi') => ({ system_id: null, system_name: null, status, source, updated_at: null, expires_at: null });
         if (!pilot) return empty('disconnected');
         if (!cfg.enabled || !store.get('module:universe', true)) return empty('disabled');
@@ -290,19 +290,19 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         store.saveSnapshot(id, 'universe_log_location', { status: 'ready', data: { system_id: system.system_id }, updatedAt: new Date(observed).toISOString(), expiresAt: new Date(observed + 300000).toISOString() });
         options.onLocation?.(id); changed(id); return true;
     }
-    function pilots(id) {
+    function pilots(id, roster) {
         if (!id) return [];
-        return auth.characters().slice(0, 100).map(pilot => {
-            const position = location(pilot.id), online = store.snapshot(pilot.id, 'online'), ship = store.snapshot(pilot.id, 'ship');
-            const allowed = store.get('module:pilot', true) && !pilot.needsReauth && config(pilot.id).enabled;
+        return (roster?.rows || auth.characters()).slice(0, 100).map(pilot => {
+            const position = location(pilot.id, roster), online = store.snapshot(pilot.id, 'online'), ship = store.snapshot(pilot.id, 'ship');
+            const allowed = store.get('module:pilot', true) && !pilot.needsReauth && config(pilot.id, roster).enabled;
             return { character_id: pilot.id, name: pilot.name, ...position,
                 ship_type_id: allowed && arr(pilot.scopes).includes('esi-location.read_ship_type.v1') && fresh(ship) ? ship.data?.ship_type_id || null : null,
                 online: allowed && arr(pilot.scopes).includes('esi-location.read_online.v1') && fresh(online) && typeof online.data?.online === 'boolean' ? online.data.online : null };
         });
     }
     function emptyFleet(status, error = null) { return { status, scope: FLEET_SCOPE, fleet_id: null, role: null, members: [], updated_at: null, expires_at: null, error }; }
-    function fleetState(id, cfg) {
-        const pilot = character(id);
+    function fleetState(id, cfg, roster) {
+        const pilot = character(id, roster);
         if (!cfg.enabled || !cfg.fleet_enabled || !store.get('module:universe', true)) return emptyFleet('disabled');
         if (!pilot) return emptyFleet('disconnected');
         if (pilot.needsReauth) return emptyFleet('reauth_required');
@@ -578,7 +578,18 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     // Scope validation stays here; callers never supply trusted map documents.
     function readContext(characterId) {
         const id = pilotId(characterId), scopes = new Map();
-        let common;
+        let common, roster;
+        // One synchronous projection owns its roster. Capture lazily so link
+        // expiry/reconciliation can finish before projection reads begin. Never
+        // pass this owner across an await or retain it for the next request.
+        function readRoster() {
+            if (!roster) {
+                const rows = auth.characters(), byId = new Map();
+                for (const pilot of rows) if (!byId.has(pilot.id)) byId.set(pilot.id, pilot);
+                roster = { rows, byId };
+            }
+            return roster;
+        }
         function scoped(scope) {
             const key = scope == null || scope === '' ? null : scope;
             if (!scopes.has(key)) scopes.set(mapScope(id, key), { records: new Map() });
@@ -593,8 +604,8 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
             const { mapId, value } = scoped(scope);
             if (value.state) return value.state;
             if (!common) {
-                const cfg = config(id), enabled = store.get('module:universe', true) && cfg.enabled;
-                common = { config: { ...cfg, enabled }, location: location(id), pilots: enabled ? pilots(id) : [], fleet: fleetState(id, cfg), logs: tail.status(id) };
+                const roster = readRoster(), cfg = config(id, roster), enabled = store.get('module:universe', true) && cfg.enabled;
+                common = { config: { ...cfg, enabled }, location: location(id, roster), pilots: enabled ? pilots(id, roster) : [], fleet: fleetState(id, cfg, roster), logs: tail.status(id) };
             }
             value.state = { version: 1, character_id: id, map_id: mapId, generated_at: iso(), config: common.config, location: common.location,
                 intel: rows(id, scopedKind('intel', mapId)).map(({ identity, ...item }) => ({ ...item, expired: Date.parse(item.expires_at) <= now() })),
@@ -602,7 +613,7 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
                 deleted_signatures: rows(id, scopedKind('signature_deleted', mapId)).filter(item => Date.parse(item.expires_at) > now()), upgrades: rows(id, scopedKind('upgrade', mapId)), logs: common.logs };
             return value.state;
         }
-        return { state, signatures };
+        return { state, signatures, character: id => character(id, readRoster()), config: id => config(id, readRoster()) };
     }
     function state(characterId, scope = null) { return readContext(characterId).state(scope); }
     async function runTick() {
