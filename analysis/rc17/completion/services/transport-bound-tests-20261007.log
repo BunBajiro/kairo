@@ -1,0 +1,43 @@
+✔ Core rolls back Universe expiry when the awaited Registry import fails (20.415213ms)
+✔ failed Registry activation drains accepted asynchronous events and closes the bus (9.846859ms)
+✔ Registry activation keeps its original error when an earlier module cleanup also fails (9.285184ms)
+✔ a later constructor failure closes Registry and the already-created OBS interval (10.34627ms)
+✔ initial projection rollback awaits module cleanup and preserves the primary error if cleanup fails (14.754298ms)
+✔ Core startup rollback waits for an OBS client that was still connecting to close (8.47118ms)
+✔ a stalled OBS peer reports bounded cleanup failure without masking the startup fault (29.685424ms)
+✔ OBS close owns synchronous callback failures and shares the same rejected cleanup promise (5.783158ms)
+✔ Universe does not arm cached feed expiry before later schema initialization succeeds (6.451673ms)
+✔ Universe releases an armed feed timer if its final local expiry lookup fails (7.668834ms)
+✔ OBS reads its startup configuration before allocating its interval (4.96035ms)
+✔ bus keeps immediate delivery and drains awaited nested events to a fixed point (1.232083ms)
+✔ listener failures are visible, bounded and do not discard other listeners (0.894956ms)
+✔ Core keeps milestone subscribers until deferred names and nested writes finish (122.76053ms)
+✔ Core finishes accepted killmail enrichment before closing its Combat dependency (47.203851ms)
+✔ a new listener failure during Core drain is reported after owned work settles (24.205383ms)
+✔ Registry owns asynchronous cleanup, unsubscribes once and reports cleanup failure (5.581124ms)
+✔ HTTP quiescence retains an accepted connected write and closes storage last (90.359973ms)
+✔ HTTP quiescence retains an accepted disconnected write and closes storage last (61.927113ms)
+✔ overlapping requests share decoded bytes and receive independent Responses with original headers (3.924652ms)
+✔ one consumer timeout does not cancel another consumer; final cancellation aborts upstream (1.545645ms)
+✔ streaming 2 MiB and 4 MiB limits remain independent, including Content-Length policy (6.636676ms)
+✔ oversized and interrupted response bodies cancel their reader and never become cached packets (1.685324ms)
+✔ provider failure statuses and transport errors are shared only while in flight and retry freshly (4.163191ms)
+✔ cache entry, byte and age limits are bounded; a fresh sequence pointer invalidates reused packets (2.172006ms)
+✔ fetcher identities, unrelated providers and request credentials never share responses (1.149719ms)
+✔ one provider budget paces different URLs; queued cancellation makes no network request (1.621179ms)
+✔ same-key cancellation and retry cannot bypass the accepted task bound behind a blocked request (1.242528ms)
+✔ actual Session and Universe consumers share raw successes but preserve independent acknowledgement and disable policy (117.417741ms)
+▶ disabling either actual consumer leaves the other pending consumer and cursor independent
+  ✔ Universe (1.865165ms)
+  ✔ Session (112.386709ms)
+✔ disabling either actual consumer leaves the other pending consumer and cursor independent (114.991577ms)
+✔ transport close is idempotent, drains active work and rejects queued/new admission (0.72461ms)
+✔ real Core wiring shares optional public transport and retains verified Session ingestion (412.917472ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1216.444703

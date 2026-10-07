@@ -1,0 +1,1895 @@
+{
+  "kind": "all-HTTP-owner synthetic inventory; ESI plus public Combat; not a real-user database prediction",
+  "runtime": "/workspace/scratch/a2f3334402fc/kairo-rc17-completion",
+  "node": "v24.19.0",
+  "assumptions": {
+    "days": [
+      30,
+      180,
+      365
+    ],
+    "daily": {
+      "httpRepresentations": 90,
+      "publicCombatPages": 20,
+      "expiredRetries": 10,
+      "completedJobs": 4,
+      "marketArchiveRows": 400,
+      "sessions": 2,
+      "visits": 20,
+      "events": 20,
+      "personalCombat": 20,
+      "allianceCombat": 20
+    },
+    "retainedActiveLastGood": 7,
+    "notes": 50,
+    "maintenance": "hourly bounded 200-candidate pages; cache access daily; no VACUUM"
+  },
+  "results": [
+    {
+      "days": 30,
+      "managed": false,
+      "domains": {
+        "cache": {
+          "rows": 3607,
+          "logicalBytes": 6549725,
+          "pagesBytes": 7155712,
+          "tables": {
+            "cache": {
+              "rows": 3607,
+              "logicalBytes": 6549725,
+              "pagesBytes": 7147520
+            },
+            "cache_usage": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "jobs": {
+          "rows": 120,
+          "logicalBytes": 23680,
+          "pagesBytes": 45056,
+          "tables": {
+            "market_jobs": {
+              "rows": 120,
+              "logicalBytes": 23680,
+              "pagesBytes": 45056
+            }
+          }
+        },
+        "marketArchives": {
+          "rows": 12030,
+          "logicalBytes": 723720,
+          "pagesBytes": 1323008,
+          "tables": {
+            "market_history_days": {
+              "rows": 12000,
+              "logicalBytes": 722520,
+              "pagesBytes": 1314816
+            },
+            "market_history_archives": {
+              "rows": 30,
+              "logicalBytes": 1200,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "marketWorking": {
+          "rows": 800,
+          "logicalBytes": 1981300,
+          "pagesBytes": 2093056,
+          "tables": {
+            "market_history": {
+              "rows": 400,
+              "logicalBytes": 1970532,
+              "pagesBytes": 2060288
+            },
+            "market_history_meta": {
+              "rows": 400,
+              "logicalBytes": 10768,
+              "pagesBytes": 32768
+            }
+          }
+        },
+        "sessionEvidence": {
+          "rows": 1260,
+          "logicalBytes": 211608,
+          "pagesBytes": 368640,
+          "tables": {
+            "sessions": {
+              "rows": 60,
+              "logicalBytes": 4640,
+              "pagesBytes": 20480
+            },
+            "visits": {
+              "rows": 600,
+              "logicalBytes": 39892,
+              "pagesBytes": 81920
+            },
+            "events": {
+              "rows": 600,
+              "logicalBytes": 167076,
+              "pagesBytes": 266240
+            }
+          }
+        },
+        "combatEvidence": {
+          "rows": 1200,
+          "logicalBytes": 283368,
+          "pagesBytes": 405504,
+          "tables": {
+            "combat_records": {
+              "rows": 600,
+              "logicalBytes": 143184,
+              "pagesBytes": 204800
+            },
+            "alliance_combat_records": {
+              "rows": 600,
+              "logicalBytes": 140184,
+              "pagesBytes": 200704
+            }
+          }
+        },
+        "userData": {
+          "rows": 50,
+          "logicalBytes": 2880,
+          "pagesBytes": 28672,
+          "tables": {
+            "notes": {
+              "rows": 50,
+              "logicalBytes": 2880,
+              "pagesBytes": 8192
+            },
+            "goals": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            },
+            "market_import_plans": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            }
+          }
+        },
+        "marketBooks": {
+          "rows": 0,
+          "logicalBytes": 0,
+          "pagesBytes": 24576,
+          "tables": {
+            "market_hubs": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 4096
+            },
+            "market_orders": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            },
+            "market_items": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        }
+      },
+      "fileBytes": 11567104,
+      "walBytes": 4948152,
+      "freePages": 0,
+      "pageSize": 4096,
+      "beforeCheckpoint": {
+        "domains": {
+          "cache": {
+            "rows": 3607,
+            "logicalBytes": 6549725,
+            "pagesBytes": 7155712,
+            "tables": {
+              "cache": {
+                "rows": 3607,
+                "logicalBytes": 6549725,
+                "pagesBytes": 7147520
+              },
+              "cache_usage": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "jobs": {
+            "rows": 120,
+            "logicalBytes": 23680,
+            "pagesBytes": 45056,
+            "tables": {
+              "market_jobs": {
+                "rows": 120,
+                "logicalBytes": 23680,
+                "pagesBytes": 45056
+              }
+            }
+          },
+          "marketArchives": {
+            "rows": 12030,
+            "logicalBytes": 723720,
+            "pagesBytes": 1323008,
+            "tables": {
+              "market_history_days": {
+                "rows": 12000,
+                "logicalBytes": 722520,
+                "pagesBytes": 1314816
+              },
+              "market_history_archives": {
+                "rows": 30,
+                "logicalBytes": 1200,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "marketWorking": {
+            "rows": 800,
+            "logicalBytes": 1981300,
+            "pagesBytes": 2093056,
+            "tables": {
+              "market_history": {
+                "rows": 400,
+                "logicalBytes": 1970532,
+                "pagesBytes": 2060288
+              },
+              "market_history_meta": {
+                "rows": 400,
+                "logicalBytes": 10768,
+                "pagesBytes": 32768
+              }
+            }
+          },
+          "sessionEvidence": {
+            "rows": 1260,
+            "logicalBytes": 211608,
+            "pagesBytes": 368640,
+            "tables": {
+              "sessions": {
+                "rows": 60,
+                "logicalBytes": 4640,
+                "pagesBytes": 20480
+              },
+              "visits": {
+                "rows": 600,
+                "logicalBytes": 39892,
+                "pagesBytes": 81920
+              },
+              "events": {
+                "rows": 600,
+                "logicalBytes": 167076,
+                "pagesBytes": 266240
+              }
+            }
+          },
+          "combatEvidence": {
+            "rows": 1200,
+            "logicalBytes": 283368,
+            "pagesBytes": 405504,
+            "tables": {
+              "combat_records": {
+                "rows": 600,
+                "logicalBytes": 143184,
+                "pagesBytes": 204800
+              },
+              "alliance_combat_records": {
+                "rows": 600,
+                "logicalBytes": 140184,
+                "pagesBytes": 200704
+              }
+            }
+          },
+          "userData": {
+            "rows": 50,
+            "logicalBytes": 2880,
+            "pagesBytes": 28672,
+            "tables": {
+              "notes": {
+                "rows": 50,
+                "logicalBytes": 2880,
+                "pagesBytes": 8192
+              },
+              "goals": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              },
+              "market_import_plans": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              }
+            }
+          },
+          "marketBooks": {
+            "rows": 0,
+            "logicalBytes": 0,
+            "pagesBytes": 24576,
+            "tables": {
+              "market_hubs": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 4096
+              },
+              "market_orders": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              },
+              "market_items": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          }
+        },
+        "fileBytes": 10522624,
+        "walBytes": 4948152,
+        "freePages": 0,
+        "pageSize": 4096
+      },
+      "durableDigest": "1e9a4d96bfc3e11b9e954bf6fb49d89567da2e46eb3dec8e65585325880ffb3a"
+    },
+    {
+      "days": 30,
+      "managed": true,
+      "domains": {
+        "cache": {
+          "rows": 3614,
+          "logicalBytes": 6549988,
+          "pagesBytes": 7155712,
+          "tables": {
+            "cache": {
+              "rows": 3607,
+              "logicalBytes": 6549725,
+              "pagesBytes": 7147520
+            },
+            "cache_usage": {
+              "rows": 7,
+              "logicalBytes": 263,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "jobs": {
+          "rows": 100,
+          "logicalBytes": 19760,
+          "pagesBytes": 45056,
+          "tables": {
+            "market_jobs": {
+              "rows": 100,
+              "logicalBytes": 19760,
+              "pagesBytes": 45056
+            }
+          }
+        },
+        "marketArchives": {
+          "rows": 12030,
+          "logicalBytes": 723720,
+          "pagesBytes": 1323008,
+          "tables": {
+            "market_history_days": {
+              "rows": 12000,
+              "logicalBytes": 722520,
+              "pagesBytes": 1314816
+            },
+            "market_history_archives": {
+              "rows": 30,
+              "logicalBytes": 1200,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "marketWorking": {
+          "rows": 800,
+          "logicalBytes": 1981300,
+          "pagesBytes": 2093056,
+          "tables": {
+            "market_history": {
+              "rows": 400,
+              "logicalBytes": 1970532,
+              "pagesBytes": 2060288
+            },
+            "market_history_meta": {
+              "rows": 400,
+              "logicalBytes": 10768,
+              "pagesBytes": 32768
+            }
+          }
+        },
+        "sessionEvidence": {
+          "rows": 1260,
+          "logicalBytes": 211608,
+          "pagesBytes": 368640,
+          "tables": {
+            "sessions": {
+              "rows": 60,
+              "logicalBytes": 4640,
+              "pagesBytes": 20480
+            },
+            "visits": {
+              "rows": 600,
+              "logicalBytes": 39892,
+              "pagesBytes": 81920
+            },
+            "events": {
+              "rows": 600,
+              "logicalBytes": 167076,
+              "pagesBytes": 266240
+            }
+          }
+        },
+        "combatEvidence": {
+          "rows": 1200,
+          "logicalBytes": 283368,
+          "pagesBytes": 405504,
+          "tables": {
+            "combat_records": {
+              "rows": 600,
+              "logicalBytes": 143184,
+              "pagesBytes": 204800
+            },
+            "alliance_combat_records": {
+              "rows": 600,
+              "logicalBytes": 140184,
+              "pagesBytes": 200704
+            }
+          }
+        },
+        "userData": {
+          "rows": 50,
+          "logicalBytes": 2880,
+          "pagesBytes": 28672,
+          "tables": {
+            "notes": {
+              "rows": 50,
+              "logicalBytes": 2880,
+              "pagesBytes": 8192
+            },
+            "goals": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            },
+            "market_import_plans": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            }
+          }
+        },
+        "marketBooks": {
+          "rows": 0,
+          "logicalBytes": 0,
+          "pagesBytes": 24576,
+          "tables": {
+            "market_hubs": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 4096
+            },
+            "market_orders": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            },
+            "market_items": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        }
+      },
+      "fileBytes": 11567104,
+      "walBytes": 4795712,
+      "freePages": 0,
+      "pageSize": 4096,
+      "beforeCheckpoint": {
+        "domains": {
+          "cache": {
+            "rows": 3614,
+            "logicalBytes": 6549988,
+            "pagesBytes": 7155712,
+            "tables": {
+              "cache": {
+                "rows": 3607,
+                "logicalBytes": 6549725,
+                "pagesBytes": 7147520
+              },
+              "cache_usage": {
+                "rows": 7,
+                "logicalBytes": 263,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "jobs": {
+            "rows": 100,
+            "logicalBytes": 19760,
+            "pagesBytes": 45056,
+            "tables": {
+              "market_jobs": {
+                "rows": 100,
+                "logicalBytes": 19760,
+                "pagesBytes": 45056
+              }
+            }
+          },
+          "marketArchives": {
+            "rows": 12030,
+            "logicalBytes": 723720,
+            "pagesBytes": 1323008,
+            "tables": {
+              "market_history_days": {
+                "rows": 12000,
+                "logicalBytes": 722520,
+                "pagesBytes": 1314816
+              },
+              "market_history_archives": {
+                "rows": 30,
+                "logicalBytes": 1200,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "marketWorking": {
+            "rows": 800,
+            "logicalBytes": 1981300,
+            "pagesBytes": 2093056,
+            "tables": {
+              "market_history": {
+                "rows": 400,
+                "logicalBytes": 1970532,
+                "pagesBytes": 2060288
+              },
+              "market_history_meta": {
+                "rows": 400,
+                "logicalBytes": 10768,
+                "pagesBytes": 32768
+              }
+            }
+          },
+          "sessionEvidence": {
+            "rows": 1260,
+            "logicalBytes": 211608,
+            "pagesBytes": 368640,
+            "tables": {
+              "sessions": {
+                "rows": 60,
+                "logicalBytes": 4640,
+                "pagesBytes": 20480
+              },
+              "visits": {
+                "rows": 600,
+                "logicalBytes": 39892,
+                "pagesBytes": 81920
+              },
+              "events": {
+                "rows": 600,
+                "logicalBytes": 167076,
+                "pagesBytes": 266240
+              }
+            }
+          },
+          "combatEvidence": {
+            "rows": 1200,
+            "logicalBytes": 283368,
+            "pagesBytes": 405504,
+            "tables": {
+              "combat_records": {
+                "rows": 600,
+                "logicalBytes": 143184,
+                "pagesBytes": 204800
+              },
+              "alliance_combat_records": {
+                "rows": 600,
+                "logicalBytes": 140184,
+                "pagesBytes": 200704
+              }
+            }
+          },
+          "userData": {
+            "rows": 50,
+            "logicalBytes": 2880,
+            "pagesBytes": 28672,
+            "tables": {
+              "notes": {
+                "rows": 50,
+                "logicalBytes": 2880,
+                "pagesBytes": 8192
+              },
+              "goals": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              },
+              "market_import_plans": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              }
+            }
+          },
+          "marketBooks": {
+            "rows": 0,
+            "logicalBytes": 0,
+            "pagesBytes": 24576,
+            "tables": {
+              "market_hubs": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 4096
+              },
+              "market_orders": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              },
+              "market_items": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          }
+        },
+        "fileBytes": 9490432,
+        "walBytes": 4795712,
+        "freePages": 0,
+        "pageSize": 4096
+      },
+      "durableDigest": "1e9a4d96bfc3e11b9e954bf6fb49d89567da2e46eb3dec8e65585325880ffb3a"
+    },
+    {
+      "days": 180,
+      "managed": false,
+      "domains": {
+        "cache": {
+          "rows": 21607,
+          "logicalBytes": 39256025,
+          "pagesBytes": 42741760,
+          "tables": {
+            "cache": {
+              "rows": 21607,
+              "logicalBytes": 39256025,
+              "pagesBytes": 42733568
+            },
+            "cache_usage": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "jobs": {
+          "rows": 720,
+          "logicalBytes": 143120,
+          "pagesBytes": 192512,
+          "tables": {
+            "market_jobs": {
+              "rows": 720,
+              "logicalBytes": 143120,
+              "pagesBytes": 192512
+            }
+          }
+        },
+        "marketArchives": {
+          "rows": 72180,
+          "logicalBytes": 4342320,
+          "pagesBytes": 7991296,
+          "tables": {
+            "market_history_days": {
+              "rows": 72000,
+              "logicalBytes": 4335120,
+              "pagesBytes": 7970816
+            },
+            "market_history_archives": {
+              "rows": 180,
+              "logicalBytes": 7200,
+              "pagesBytes": 20480
+            }
+          }
+        },
+        "marketWorking": {
+          "rows": 800,
+          "logicalBytes": 1981300,
+          "pagesBytes": 2093056,
+          "tables": {
+            "market_history": {
+              "rows": 400,
+              "logicalBytes": 1970532,
+              "pagesBytes": 2060288
+            },
+            "market_history_meta": {
+              "rows": 400,
+              "logicalBytes": 10768,
+              "pagesBytes": 32768
+            }
+          }
+        },
+        "sessionEvidence": {
+          "rows": 7560,
+          "logicalBytes": 1285332,
+          "pagesBytes": 2207744,
+          "tables": {
+            "sessions": {
+              "rows": 360,
+              "logicalBytes": 28360,
+              "pagesBytes": 69632
+            },
+            "visits": {
+              "rows": 3600,
+              "logicalBytes": 245093,
+              "pagesBytes": 507904
+            },
+            "events": {
+              "rows": 3600,
+              "logicalBytes": 1011879,
+              "pagesBytes": 1630208
+            }
+          }
+        },
+        "combatEvidence": {
+          "rows": 7200,
+          "logicalBytes": 1712772,
+          "pagesBytes": 2359296,
+          "tables": {
+            "combat_records": {
+              "rows": 3600,
+              "logicalBytes": 865386,
+              "pagesBytes": 1216512
+            },
+            "alliance_combat_records": {
+              "rows": 3600,
+              "logicalBytes": 847386,
+              "pagesBytes": 1142784
+            }
+          }
+        },
+        "userData": {
+          "rows": 50,
+          "logicalBytes": 2880,
+          "pagesBytes": 28672,
+          "tables": {
+            "notes": {
+              "rows": 50,
+              "logicalBytes": 2880,
+              "pagesBytes": 8192
+            },
+            "goals": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            },
+            "market_import_plans": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            }
+          }
+        },
+        "marketBooks": {
+          "rows": 0,
+          "logicalBytes": 0,
+          "pagesBytes": 24576,
+          "tables": {
+            "market_hubs": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 4096
+            },
+            "market_orders": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            },
+            "market_items": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        }
+      },
+      "fileBytes": 57761792,
+      "walBytes": 6184152,
+      "freePages": 0,
+      "pageSize": 4096,
+      "beforeCheckpoint": {
+        "domains": {
+          "cache": {
+            "rows": 21607,
+            "logicalBytes": 39256025,
+            "pagesBytes": 42741760,
+            "tables": {
+              "cache": {
+                "rows": 21607,
+                "logicalBytes": 39256025,
+                "pagesBytes": 42733568
+              },
+              "cache_usage": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "jobs": {
+            "rows": 720,
+            "logicalBytes": 143120,
+            "pagesBytes": 192512,
+            "tables": {
+              "market_jobs": {
+                "rows": 720,
+                "logicalBytes": 143120,
+                "pagesBytes": 192512
+              }
+            }
+          },
+          "marketArchives": {
+            "rows": 72180,
+            "logicalBytes": 4342320,
+            "pagesBytes": 7991296,
+            "tables": {
+              "market_history_days": {
+                "rows": 72000,
+                "logicalBytes": 4335120,
+                "pagesBytes": 7970816
+              },
+              "market_history_archives": {
+                "rows": 180,
+                "logicalBytes": 7200,
+                "pagesBytes": 20480
+              }
+            }
+          },
+          "marketWorking": {
+            "rows": 800,
+            "logicalBytes": 1981300,
+            "pagesBytes": 2093056,
+            "tables": {
+              "market_history": {
+                "rows": 400,
+                "logicalBytes": 1970532,
+                "pagesBytes": 2060288
+              },
+              "market_history_meta": {
+                "rows": 400,
+                "logicalBytes": 10768,
+                "pagesBytes": 32768
+              }
+            }
+          },
+          "sessionEvidence": {
+            "rows": 7560,
+            "logicalBytes": 1285332,
+            "pagesBytes": 2207744,
+            "tables": {
+              "sessions": {
+                "rows": 360,
+                "logicalBytes": 28360,
+                "pagesBytes": 69632
+              },
+              "visits": {
+                "rows": 3600,
+                "logicalBytes": 245093,
+                "pagesBytes": 507904
+              },
+              "events": {
+                "rows": 3600,
+                "logicalBytes": 1011879,
+                "pagesBytes": 1630208
+              }
+            }
+          },
+          "combatEvidence": {
+            "rows": 7200,
+            "logicalBytes": 1712772,
+            "pagesBytes": 2359296,
+            "tables": {
+              "combat_records": {
+                "rows": 3600,
+                "logicalBytes": 865386,
+                "pagesBytes": 1216512
+              },
+              "alliance_combat_records": {
+                "rows": 3600,
+                "logicalBytes": 847386,
+                "pagesBytes": 1142784
+              }
+            }
+          },
+          "userData": {
+            "rows": 50,
+            "logicalBytes": 2880,
+            "pagesBytes": 28672,
+            "tables": {
+              "notes": {
+                "rows": 50,
+                "logicalBytes": 2880,
+                "pagesBytes": 8192
+              },
+              "goals": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              },
+              "market_import_plans": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              }
+            }
+          },
+          "marketBooks": {
+            "rows": 0,
+            "logicalBytes": 0,
+            "pagesBytes": 24576,
+            "tables": {
+              "market_hubs": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 4096
+              },
+              "market_orders": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              },
+              "market_items": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          }
+        },
+        "fileBytes": 57761792,
+        "walBytes": 6184152,
+        "freePages": 0,
+        "pageSize": 4096
+      },
+      "durableDigest": "9eb7451261e8b623a5e7bf61f8c8eeaa2347f6e783839f103bef8fc1931c7721"
+    },
+    {
+      "days": 180,
+      "managed": true,
+      "domains": {
+        "cache": {
+          "rows": 10814,
+          "logicalBytes": 19644688,
+          "pagesBytes": 21426176,
+          "tables": {
+            "cache": {
+              "rows": 10807,
+              "logicalBytes": 19644425,
+              "pagesBytes": 21417984
+            },
+            "cache_usage": {
+              "rows": 7,
+              "logicalBytes": 263,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "jobs": {
+          "rows": 100,
+          "logicalBytes": 20000,
+          "pagesBytes": 40960,
+          "tables": {
+            "market_jobs": {
+              "rows": 100,
+              "logicalBytes": 20000,
+              "pagesBytes": 40960
+            }
+          }
+        },
+        "marketArchives": {
+          "rows": 72180,
+          "logicalBytes": 4342320,
+          "pagesBytes": 7991296,
+          "tables": {
+            "market_history_days": {
+              "rows": 72000,
+              "logicalBytes": 4335120,
+              "pagesBytes": 7970816
+            },
+            "market_history_archives": {
+              "rows": 180,
+              "logicalBytes": 7200,
+              "pagesBytes": 20480
+            }
+          }
+        },
+        "marketWorking": {
+          "rows": 800,
+          "logicalBytes": 1981300,
+          "pagesBytes": 2093056,
+          "tables": {
+            "market_history": {
+              "rows": 400,
+              "logicalBytes": 1970532,
+              "pagesBytes": 2060288
+            },
+            "market_history_meta": {
+              "rows": 400,
+              "logicalBytes": 10768,
+              "pagesBytes": 32768
+            }
+          }
+        },
+        "sessionEvidence": {
+          "rows": 7560,
+          "logicalBytes": 1285332,
+          "pagesBytes": 2207744,
+          "tables": {
+            "sessions": {
+              "rows": 360,
+              "logicalBytes": 28360,
+              "pagesBytes": 69632
+            },
+            "visits": {
+              "rows": 3600,
+              "logicalBytes": 245093,
+              "pagesBytes": 507904
+            },
+            "events": {
+              "rows": 3600,
+              "logicalBytes": 1011879,
+              "pagesBytes": 1630208
+            }
+          }
+        },
+        "combatEvidence": {
+          "rows": 7200,
+          "logicalBytes": 1712772,
+          "pagesBytes": 2359296,
+          "tables": {
+            "combat_records": {
+              "rows": 3600,
+              "logicalBytes": 865386,
+              "pagesBytes": 1216512
+            },
+            "alliance_combat_records": {
+              "rows": 3600,
+              "logicalBytes": 847386,
+              "pagesBytes": 1142784
+            }
+          }
+        },
+        "userData": {
+          "rows": 50,
+          "logicalBytes": 2880,
+          "pagesBytes": 28672,
+          "tables": {
+            "notes": {
+              "rows": 50,
+              "logicalBytes": 2880,
+              "pagesBytes": 8192
+            },
+            "goals": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            },
+            "market_import_plans": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            }
+          }
+        },
+        "marketBooks": {
+          "rows": 0,
+          "logicalBytes": 0,
+          "pagesBytes": 24576,
+          "tables": {
+            "market_hubs": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 4096
+            },
+            "market_orders": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            },
+            "market_items": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        }
+      },
+      "fileBytes": 36294656,
+      "walBytes": 5833952,
+      "freePages": 0,
+      "pageSize": 4096,
+      "beforeCheckpoint": {
+        "domains": {
+          "cache": {
+            "rows": 10814,
+            "logicalBytes": 19644688,
+            "pagesBytes": 21426176,
+            "tables": {
+              "cache": {
+                "rows": 10807,
+                "logicalBytes": 19644425,
+                "pagesBytes": 21417984
+              },
+              "cache_usage": {
+                "rows": 7,
+                "logicalBytes": 263,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "jobs": {
+            "rows": 100,
+            "logicalBytes": 20000,
+            "pagesBytes": 40960,
+            "tables": {
+              "market_jobs": {
+                "rows": 100,
+                "logicalBytes": 20000,
+                "pagesBytes": 40960
+              }
+            }
+          },
+          "marketArchives": {
+            "rows": 72180,
+            "logicalBytes": 4342320,
+            "pagesBytes": 7991296,
+            "tables": {
+              "market_history_days": {
+                "rows": 72000,
+                "logicalBytes": 4335120,
+                "pagesBytes": 7970816
+              },
+              "market_history_archives": {
+                "rows": 180,
+                "logicalBytes": 7200,
+                "pagesBytes": 20480
+              }
+            }
+          },
+          "marketWorking": {
+            "rows": 800,
+            "logicalBytes": 1981300,
+            "pagesBytes": 2093056,
+            "tables": {
+              "market_history": {
+                "rows": 400,
+                "logicalBytes": 1970532,
+                "pagesBytes": 2060288
+              },
+              "market_history_meta": {
+                "rows": 400,
+                "logicalBytes": 10768,
+                "pagesBytes": 32768
+              }
+            }
+          },
+          "sessionEvidence": {
+            "rows": 7560,
+            "logicalBytes": 1285332,
+            "pagesBytes": 2207744,
+            "tables": {
+              "sessions": {
+                "rows": 360,
+                "logicalBytes": 28360,
+                "pagesBytes": 69632
+              },
+              "visits": {
+                "rows": 3600,
+                "logicalBytes": 245093,
+                "pagesBytes": 507904
+              },
+              "events": {
+                "rows": 3600,
+                "logicalBytes": 1011879,
+                "pagesBytes": 1630208
+              }
+            }
+          },
+          "combatEvidence": {
+            "rows": 7200,
+            "logicalBytes": 1712772,
+            "pagesBytes": 2359296,
+            "tables": {
+              "combat_records": {
+                "rows": 3600,
+                "logicalBytes": 865386,
+                "pagesBytes": 1216512
+              },
+              "alliance_combat_records": {
+                "rows": 3600,
+                "logicalBytes": 847386,
+                "pagesBytes": 1142784
+              }
+            }
+          },
+          "userData": {
+            "rows": 50,
+            "logicalBytes": 2880,
+            "pagesBytes": 28672,
+            "tables": {
+              "notes": {
+                "rows": 50,
+                "logicalBytes": 2880,
+                "pagesBytes": 8192
+              },
+              "goals": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              },
+              "market_import_plans": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              }
+            }
+          },
+          "marketBooks": {
+            "rows": 0,
+            "logicalBytes": 0,
+            "pagesBytes": 24576,
+            "tables": {
+              "market_hubs": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 4096
+              },
+              "market_orders": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              },
+              "market_items": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          }
+        },
+        "fileBytes": 34451456,
+        "walBytes": 5833952,
+        "freePages": 0,
+        "pageSize": 4096
+      },
+      "durableDigest": "9eb7451261e8b623a5e7bf61f8c8eeaa2347f6e783839f103bef8fc1931c7721"
+    },
+    {
+      "days": 365,
+      "managed": false,
+      "domains": {
+        "cache": {
+          "rows": 43807,
+          "logicalBytes": 79611925,
+          "pagesBytes": 86740992,
+          "tables": {
+            "cache": {
+              "rows": 43807,
+              "logicalBytes": 79611925,
+              "pagesBytes": 86732800
+            },
+            "cache_usage": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "jobs": {
+          "rows": 1460,
+          "logicalBytes": 291120,
+          "pagesBytes": 372736,
+          "tables": {
+            "market_jobs": {
+              "rows": 1460,
+              "logicalBytes": 291120,
+              "pagesBytes": 372736
+            }
+          }
+        },
+        "marketArchives": {
+          "rows": 146365,
+          "logicalBytes": 8805260,
+          "pagesBytes": 16228352,
+          "tables": {
+            "market_history_days": {
+              "rows": 146000,
+              "logicalBytes": 8790660,
+              "pagesBytes": 16191488
+            },
+            "market_history_archives": {
+              "rows": 365,
+              "logicalBytes": 14600,
+              "pagesBytes": 36864
+            }
+          }
+        },
+        "marketWorking": {
+          "rows": 800,
+          "logicalBytes": 1981300,
+          "pagesBytes": 2093056,
+          "tables": {
+            "market_history": {
+              "rows": 400,
+              "logicalBytes": 1970532,
+              "pagesBytes": 2060288
+            },
+            "market_history_meta": {
+              "rows": 400,
+              "logicalBytes": 10768,
+              "pagesBytes": 32768
+            }
+          }
+        },
+        "sessionEvidence": {
+          "rows": 15330,
+          "logicalBytes": 2613632,
+          "pagesBytes": 4513792,
+          "tables": {
+            "sessions": {
+              "rows": 730,
+              "logicalBytes": 57960,
+              "pagesBytes": 135168
+            },
+            "visits": {
+              "rows": 7300,
+              "logicalBytes": 500393,
+              "pagesBytes": 1040384
+            },
+            "events": {
+              "rows": 7300,
+              "logicalBytes": 2055279,
+              "pagesBytes": 3338240
+            }
+          }
+        },
+        "combatEvidence": {
+          "rows": 14600,
+          "logicalBytes": 3477672,
+          "pagesBytes": 4771840,
+          "tables": {
+            "combat_records": {
+              "rows": 7300,
+              "logicalBytes": 1757086,
+              "pagesBytes": 2469888
+            },
+            "alliance_combat_records": {
+              "rows": 7300,
+              "logicalBytes": 1720586,
+              "pagesBytes": 2301952
+            }
+          }
+        },
+        "userData": {
+          "rows": 50,
+          "logicalBytes": 2880,
+          "pagesBytes": 28672,
+          "tables": {
+            "notes": {
+              "rows": 50,
+              "logicalBytes": 2880,
+              "pagesBytes": 8192
+            },
+            "goals": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            },
+            "market_import_plans": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            }
+          }
+        },
+        "marketBooks": {
+          "rows": 0,
+          "logicalBytes": 0,
+          "pagesBytes": 24576,
+          "tables": {
+            "market_hubs": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 4096
+            },
+            "market_orders": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            },
+            "market_items": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        }
+      },
+      "fileBytes": 114896896,
+      "walBytes": 6184152,
+      "freePages": 0,
+      "pageSize": 4096,
+      "beforeCheckpoint": {
+        "domains": {
+          "cache": {
+            "rows": 43807,
+            "logicalBytes": 79611925,
+            "pagesBytes": 86740992,
+            "tables": {
+              "cache": {
+                "rows": 43807,
+                "logicalBytes": 79611925,
+                "pagesBytes": 86732800
+              },
+              "cache_usage": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "jobs": {
+            "rows": 1460,
+            "logicalBytes": 291120,
+            "pagesBytes": 372736,
+            "tables": {
+              "market_jobs": {
+                "rows": 1460,
+                "logicalBytes": 291120,
+                "pagesBytes": 372736
+              }
+            }
+          },
+          "marketArchives": {
+            "rows": 146365,
+            "logicalBytes": 8805260,
+            "pagesBytes": 16228352,
+            "tables": {
+              "market_history_days": {
+                "rows": 146000,
+                "logicalBytes": 8790660,
+                "pagesBytes": 16191488
+              },
+              "market_history_archives": {
+                "rows": 365,
+                "logicalBytes": 14600,
+                "pagesBytes": 36864
+              }
+            }
+          },
+          "marketWorking": {
+            "rows": 800,
+            "logicalBytes": 1981300,
+            "pagesBytes": 2093056,
+            "tables": {
+              "market_history": {
+                "rows": 400,
+                "logicalBytes": 1970532,
+                "pagesBytes": 2060288
+              },
+              "market_history_meta": {
+                "rows": 400,
+                "logicalBytes": 10768,
+                "pagesBytes": 32768
+              }
+            }
+          },
+          "sessionEvidence": {
+            "rows": 15330,
+            "logicalBytes": 2613632,
+            "pagesBytes": 4513792,
+            "tables": {
+              "sessions": {
+                "rows": 730,
+                "logicalBytes": 57960,
+                "pagesBytes": 135168
+              },
+              "visits": {
+                "rows": 7300,
+                "logicalBytes": 500393,
+                "pagesBytes": 1040384
+              },
+              "events": {
+                "rows": 7300,
+                "logicalBytes": 2055279,
+                "pagesBytes": 3338240
+              }
+            }
+          },
+          "combatEvidence": {
+            "rows": 14600,
+            "logicalBytes": 3477672,
+            "pagesBytes": 4771840,
+            "tables": {
+              "combat_records": {
+                "rows": 7300,
+                "logicalBytes": 1757086,
+                "pagesBytes": 2469888
+              },
+              "alliance_combat_records": {
+                "rows": 7300,
+                "logicalBytes": 1720586,
+                "pagesBytes": 2301952
+              }
+            }
+          },
+          "userData": {
+            "rows": 50,
+            "logicalBytes": 2880,
+            "pagesBytes": 28672,
+            "tables": {
+              "notes": {
+                "rows": 50,
+                "logicalBytes": 2880,
+                "pagesBytes": 8192
+              },
+              "goals": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              },
+              "market_import_plans": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              }
+            }
+          },
+          "marketBooks": {
+            "rows": 0,
+            "logicalBytes": 0,
+            "pagesBytes": 24576,
+            "tables": {
+              "market_hubs": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 4096
+              },
+              "market_orders": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              },
+              "market_items": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          }
+        },
+        "fileBytes": 112820224,
+        "walBytes": 6184152,
+        "freePages": 0,
+        "pageSize": 4096
+      },
+      "durableDigest": "e756bb8569a51f912af240bc07ffef1983cf76780b3f75ac5072810dabbbfdb9"
+    },
+    {
+      "days": 365,
+      "managed": true,
+      "domains": {
+        "cache": {
+          "rows": 10814,
+          "logicalBytes": 19646788,
+          "pagesBytes": 21446656,
+          "tables": {
+            "cache": {
+              "rows": 10807,
+              "logicalBytes": 19646525,
+              "pagesBytes": 21438464
+            },
+            "cache_usage": {
+              "rows": 7,
+              "logicalBytes": 263,
+              "pagesBytes": 8192
+            }
+          }
+        },
+        "jobs": {
+          "rows": 100,
+          "logicalBytes": 20000,
+          "pagesBytes": 40960,
+          "tables": {
+            "market_jobs": {
+              "rows": 100,
+              "logicalBytes": 20000,
+              "pagesBytes": 40960
+            }
+          }
+        },
+        "marketArchives": {
+          "rows": 146365,
+          "logicalBytes": 8805260,
+          "pagesBytes": 16228352,
+          "tables": {
+            "market_history_days": {
+              "rows": 146000,
+              "logicalBytes": 8790660,
+              "pagesBytes": 16191488
+            },
+            "market_history_archives": {
+              "rows": 365,
+              "logicalBytes": 14600,
+              "pagesBytes": 36864
+            }
+          }
+        },
+        "marketWorking": {
+          "rows": 800,
+          "logicalBytes": 1981300,
+          "pagesBytes": 2093056,
+          "tables": {
+            "market_history": {
+              "rows": 400,
+              "logicalBytes": 1970532,
+              "pagesBytes": 2060288
+            },
+            "market_history_meta": {
+              "rows": 400,
+              "logicalBytes": 10768,
+              "pagesBytes": 32768
+            }
+          }
+        },
+        "sessionEvidence": {
+          "rows": 15330,
+          "logicalBytes": 2613632,
+          "pagesBytes": 4513792,
+          "tables": {
+            "sessions": {
+              "rows": 730,
+              "logicalBytes": 57960,
+              "pagesBytes": 135168
+            },
+            "visits": {
+              "rows": 7300,
+              "logicalBytes": 500393,
+              "pagesBytes": 1040384
+            },
+            "events": {
+              "rows": 7300,
+              "logicalBytes": 2055279,
+              "pagesBytes": 3338240
+            }
+          }
+        },
+        "combatEvidence": {
+          "rows": 14600,
+          "logicalBytes": 3477672,
+          "pagesBytes": 4771840,
+          "tables": {
+            "combat_records": {
+              "rows": 7300,
+              "logicalBytes": 1757086,
+              "pagesBytes": 2469888
+            },
+            "alliance_combat_records": {
+              "rows": 7300,
+              "logicalBytes": 1720586,
+              "pagesBytes": 2301952
+            }
+          }
+        },
+        "userData": {
+          "rows": 50,
+          "logicalBytes": 2880,
+          "pagesBytes": 28672,
+          "tables": {
+            "notes": {
+              "rows": 50,
+              "logicalBytes": 2880,
+              "pagesBytes": 8192
+            },
+            "goals": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            },
+            "market_import_plans": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            }
+          }
+        },
+        "marketBooks": {
+          "rows": 0,
+          "logicalBytes": 0,
+          "pagesBytes": 24576,
+          "tables": {
+            "market_hubs": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 4096
+            },
+            "market_orders": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 12288
+            },
+            "market_items": {
+              "rows": 0,
+              "logicalBytes": 0,
+              "pagesBytes": 8192
+            }
+          }
+        }
+      },
+      "fileBytes": 49270784,
+      "walBytes": 6163552,
+      "freePages": 0,
+      "pageSize": 4096,
+      "beforeCheckpoint": {
+        "domains": {
+          "cache": {
+            "rows": 10814,
+            "logicalBytes": 19646788,
+            "pagesBytes": 21446656,
+            "tables": {
+              "cache": {
+                "rows": 10807,
+                "logicalBytes": 19646525,
+                "pagesBytes": 21438464
+              },
+              "cache_usage": {
+                "rows": 7,
+                "logicalBytes": 263,
+                "pagesBytes": 8192
+              }
+            }
+          },
+          "jobs": {
+            "rows": 100,
+            "logicalBytes": 20000,
+            "pagesBytes": 40960,
+            "tables": {
+              "market_jobs": {
+                "rows": 100,
+                "logicalBytes": 20000,
+                "pagesBytes": 40960
+              }
+            }
+          },
+          "marketArchives": {
+            "rows": 146365,
+            "logicalBytes": 8805260,
+            "pagesBytes": 16228352,
+            "tables": {
+              "market_history_days": {
+                "rows": 146000,
+                "logicalBytes": 8790660,
+                "pagesBytes": 16191488
+              },
+              "market_history_archives": {
+                "rows": 365,
+                "logicalBytes": 14600,
+                "pagesBytes": 36864
+              }
+            }
+          },
+          "marketWorking": {
+            "rows": 800,
+            "logicalBytes": 1981300,
+            "pagesBytes": 2093056,
+            "tables": {
+              "market_history": {
+                "rows": 400,
+                "logicalBytes": 1970532,
+                "pagesBytes": 2060288
+              },
+              "market_history_meta": {
+                "rows": 400,
+                "logicalBytes": 10768,
+                "pagesBytes": 32768
+              }
+            }
+          },
+          "sessionEvidence": {
+            "rows": 15330,
+            "logicalBytes": 2613632,
+            "pagesBytes": 4513792,
+            "tables": {
+              "sessions": {
+                "rows": 730,
+                "logicalBytes": 57960,
+                "pagesBytes": 135168
+              },
+              "visits": {
+                "rows": 7300,
+                "logicalBytes": 500393,
+                "pagesBytes": 1040384
+              },
+              "events": {
+                "rows": 7300,
+                "logicalBytes": 2055279,
+                "pagesBytes": 3338240
+              }
+            }
+          },
+          "combatEvidence": {
+            "rows": 14600,
+            "logicalBytes": 3477672,
+            "pagesBytes": 4771840,
+            "tables": {
+              "combat_records": {
+                "rows": 7300,
+                "logicalBytes": 1757086,
+                "pagesBytes": 2469888
+              },
+              "alliance_combat_records": {
+                "rows": 7300,
+                "logicalBytes": 1720586,
+                "pagesBytes": 2301952
+              }
+            }
+          },
+          "userData": {
+            "rows": 50,
+            "logicalBytes": 2880,
+            "pagesBytes": 28672,
+            "tables": {
+              "notes": {
+                "rows": 50,
+                "logicalBytes": 2880,
+                "pagesBytes": 8192
+              },
+              "goals": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              },
+              "market_import_plans": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              }
+            }
+          },
+          "marketBooks": {
+            "rows": 0,
+            "logicalBytes": 0,
+            "pagesBytes": 24576,
+            "tables": {
+              "market_hubs": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 4096
+              },
+              "market_orders": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 12288
+              },
+              "market_items": {
+                "rows": 0,
+                "logicalBytes": 0,
+                "pagesBytes": 8192
+              }
+            }
+          }
+        },
+        "fileBytes": 48226304,
+        "walBytes": 6163552,
+        "freePages": 0,
+        "pageSize": 4096
+      },
+      "durableDigest": "e756bb8569a51f912af240bc07ffef1983cf76780b3f75ac5072810dabbbfdb9"
+    }
+  ]
+}

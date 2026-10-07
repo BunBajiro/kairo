@@ -1,0 +1,89 @@
+{
+  "schema": 2,
+  "diagnosticOnly": true,
+  "timingClaims": false,
+  "generatedAt": "2026-10-07T10:00:48.001Z",
+  "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-completion",
+  "harnessHash": "fb5623cd99d200cc8a47b58bda4ea0a08caa8959608a11e73bff0c8dc3f7abb8",
+  "sourceHashes": {
+    "auth.mjs": "c38e2fdb6164fbf2dbf793fd745e54e75b5e012ef3f0d3322afef57fc7cccecf",
+    "imports.mjs": "2cf32e8187a1573477705ad49cbe75daa8e3858749d7010b46134f00e372f5dc",
+    "markets.mjs": "e0a8099eb80112c8eae19aed4f3cbd3683acd3980d02fd7c45945a80a106fcbb",
+    "esi.mjs": "fe40c7e2ebf25715a874d049d78c6718f8c616c39455c0a6dbf56f438b421872",
+    "session-live.mjs": "c9f4f46920b3cc779edf5bfbd9fc531856e863a5119cd81106c9d1cd465598fd",
+    "universe-feeds.mjs": "57b8228bfdd09e11988a33160027cadccf75e2f0e22179382d79def7924c3ab9",
+    "core.mjs": "aaf6d2fbebddfd1243fdb61b28ff1850a7d329aad19daed084e57040dc774151",
+    "public-feed-transport.mjs": "f3d8e857abe02c4d6bfb243cd07660a106b7e2784417757db6bdfcc6ad7b06ac",
+    "store.mjs": "ce9de710f98bc8dc311498748a5207cfebf717ea55cb2263fec9b4b02fed925d",
+    "cache-retention.mjs": "de5a4ad5b6abb2840da6d5b8fb2c15c95f8b6e82cc84bc5f52a46a04d48b8541",
+    "market-categories.mjs": "8c736f2e427edff4c82a64bb7f666abf693e8f01630e7029930a4aef5467a0a3"
+  },
+  "node": "v24.19.0",
+  "roster": {
+    "pilots": 4,
+    "state": {
+      "rosterQueries": 1,
+      "scopeRowsParsed": 4
+    },
+    "coldAnalysis": {
+      "rosterQueries": 2,
+      "scopeRowsParsed": 8
+    },
+    "repeatedWarmAnalysis100": {
+      "rosterQueries": 100,
+      "scopeRowsParsed": 400
+    }
+  },
+  "marketPacing": {
+    "spacingMs": 250,
+    "items": 3,
+    "cold": {
+      "transportRequests": 6,
+      "requestedCourtesyWaitsMs": [
+        250,
+        250,
+        250,
+        250,
+        250
+      ],
+      "totalRequestedCourtesyWaitMs": 1250,
+      "cacheHits": 0,
+      "paths": [
+        "https://esi.evetech.net/markets/10000002/orders?order_type=all&page=1&type_id=1403",
+        "https://esi.evetech.net/markets/10000002/orders?order_type=all&page=1&type_id=519",
+        "https://esi.evetech.net/markets/10000002/orders?order_type=all&page=1&type_id=587",
+        "https://esi.evetech.net/markets/10000002/history?type_id=1403",
+        "https://esi.evetech.net/markets/10000002/history?type_id=519",
+        "https://esi.evetech.net/markets/10000002/history?type_id=587"
+      ]
+    },
+    "warm": {
+      "transportRequests": 0,
+      "requestedCourtesyWaitsMs": [],
+      "totalRequestedCourtesyWaitMs": 0,
+      "cacheHits": 3,
+      "paths": []
+    }
+  },
+  "publicFeed": {
+    "shared": true,
+    "enabledConsumers": [
+      "Session",
+      "Universe"
+    ],
+    "perUrlRequests": {
+      "https://r2z2.zkillboard.com/ephemeral/sequence.json": 1,
+      "https://r2z2.zkillboard.com/ephemeral/100.json": 1,
+      "https://r2z2.zkillboard.com/ephemeral/101.json": 2
+    },
+    "totalRequests": 4,
+    "sessionCursor": 101,
+    "universeCursor": 101,
+    "verifiedSessionAccepted": [
+      100
+    ],
+    "universeCount": 1,
+    "packetBytes": 253,
+    "note": "Session acceptance records a callback here; separate real Core tests exercise ESI verification. No provider latency or cadence benefit claimed; courtesy clocks are controlled."
+  }
+}

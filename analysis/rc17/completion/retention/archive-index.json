@@ -1,0 +1,172 @@
+{
+  "kind": "synthetic local isolated ABBA index trade-off, not whole-app benchmark",
+  "node": "v24.19.0",
+  "fixture": {
+    "days": 365,
+    "regions": 4,
+    "typesPerRegion": 250,
+    "readWindowDays": 30
+  },
+  "trials": [
+    {
+      "indexed": false,
+      "order": 0,
+      "rows": 365000,
+      "importMs": 1476.3556899999999,
+      "readMs": [
+        19.956531999999925,
+        9.686236000000008,
+        8.995296000000053,
+        13.919857000000093,
+        9.361146999999846,
+        52.50696500000004,
+        9.726867999999968,
+        10.182264000000032,
+        9.191561000000092,
+        8.708081999999877,
+        11.18540599999983,
+        9.112732999999935
+      ],
+      "readMedianMs": 9.726867999999968,
+      "readP95Ms": 52.50696500000004,
+      "correctedDayMs": 12.0476349999999,
+      "correctionWalBytes": 4239512,
+      "fileBytes": 40226816,
+      "plan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 149,
+          "detail": "SEARCH market_history_days USING INDEX idx_market_history_date (date>? AND date<?)"
+        },
+        {
+          "id": 31,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "digest": "6ad1cbf216c1c4f6d85416cbb0acbb9d0e152cd728d5d86875200a433cd9c802"
+    },
+    {
+      "indexed": true,
+      "order": 1,
+      "rows": 365000,
+      "importMs": 2042.593191,
+      "readMs": [
+        10.674573999999666,
+        7.402001000000382,
+        8.005949999999757,
+        7.562031999999817,
+        8.449939000000086,
+        8.308696000000054,
+        8.308014999999614,
+        8.85692199999994,
+        9.424250999999458,
+        9.05212599999959,
+        10.538445000000138,
+        9.782075999999506
+      ],
+      "readMedianMs": 8.85692199999994,
+      "readP95Ms": 10.674573999999666,
+      "correctedDayMs": 15.201468999999634,
+      "correctionWalBytes": 4330152,
+      "fileBytes": 49901568,
+      "plan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 129,
+          "detail": "SEARCH market_history_days USING INDEX idx_market_history_region_date (region_id=? AND date>? AND date<?)"
+        },
+        {
+          "id": 31,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "digest": "6ad1cbf216c1c4f6d85416cbb0acbb9d0e152cd728d5d86875200a433cd9c802"
+    },
+    {
+      "indexed": true,
+      "order": 2,
+      "rows": 365000,
+      "importMs": 1880.2497510000003,
+      "readMs": [
+        8.580817000000025,
+        7.984606999999414,
+        7.815001999999367,
+        7.656863999999587,
+        8.060412000000724,
+        8.217548999999963,
+        8.066781999999876,
+        8.519403000000239,
+        8.379632999999558,
+        9.901160999999775,
+        7.102028000000246,
+        7.690055000000029
+      ],
+      "readMedianMs": 8.066781999999876,
+      "readP95Ms": 9.901160999999775,
+      "correctedDayMs": 12.71849899999961,
+      "correctionWalBytes": 4330152,
+      "fileBytes": 49901568,
+      "plan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 129,
+          "detail": "SEARCH market_history_days USING INDEX idx_market_history_region_date (region_id=? AND date>? AND date<?)"
+        },
+        {
+          "id": 31,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "digest": "6ad1cbf216c1c4f6d85416cbb0acbb9d0e152cd728d5d86875200a433cd9c802"
+    },
+    {
+      "indexed": false,
+      "order": 3,
+      "rows": 365000,
+      "importMs": 1437.5495389999996,
+      "readMs": [
+        10.276139999999941,
+        9.650928000000931,
+        11.076865999999427,
+        19.118420000000697,
+        9.206587999999101,
+        12.25665300000037,
+        11.85700100000031,
+        10.599045999999362,
+        13.524813000001814,
+        12.02223000000049,
+        12.026506000000154,
+        10.524313999998412
+      ],
+      "readMedianMs": 11.85700100000031,
+      "readP95Ms": 19.118420000000697,
+      "correctedDayMs": 13.205834000000323,
+      "correctionWalBytes": 4239512,
+      "fileBytes": 40226816,
+      "plan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 149,
+          "detail": "SEARCH market_history_days USING INDEX idx_market_history_date (date>? AND date<?)"
+        },
+        {
+          "id": 31,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "digest": "6ad1cbf216c1c4f6d85416cbb0acbb9d0e152cd728d5d86875200a433cd9c802"
+    }
+  ]
+}

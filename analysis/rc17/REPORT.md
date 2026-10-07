@@ -1,5 +1,7 @@
 # Kairo 8.0 optimisation and refactoring whitepaper
 
+> **Completion audit, 7 October 2026: optimisation/refactoring is incomplete; PR #10 remains withdrawn.** The historical checkpoint below does not certify the current completion source. The [full finding trace](completion/TRACEABILITY.md) maps the report and all linked recommendations to current code, evidence, changes and closure gates, including frontend and updater items omitted from the earlier short open list. Historical observations and failed runs retain their original identities.
+
 **Internal instrumented RC17 checkpoint · updated 3 October 2026 · evidence ready for review**
 
 The first optimised candidate removes confirmed repeated work in Maps, itinerary
