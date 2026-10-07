@@ -8,6 +8,7 @@ import { gzipSync } from 'node:zlib';
 import { createDatasetService, prepareDatasetRuntime, commitDatasetRuntime, rollbackDatasetRuntime } from '../../server/datasets.mjs';
 
 const BASE = 3503375, NEXT = BASE + 1;
+const rejectionMarker = (dataDir, directory) => join(dataDir, 'datasets', `activation-rejected-${basename(directory)}.json`);
 const tick = () => new Promise(resolve => setImmediate(resolve));
 function metadata(build = NEXT, headers = {}) {
   return new Response(JSON.stringify({ _key: 'sde', buildNumber: build, releaseDate: '2026-09-29T11:02:00Z' }) + '\n', { headers: { etag: '"sde-v1"', 'cache-control': 'max-age=300', ...headers } });
@@ -323,4 +324,167 @@ test('locked redundant pending pointer cannot prevent restart on valid active da
   assert.equal(selected.directory, active.directory); assert.equal(selected.pending, false);
   const warning = JSON.parse(await readFile(join(dataDir, 'datasets', 'cleanup.json')));
   assert.equal(warning.failures[0].path, 'pending.json');
+});
+
+test('rollback rejects a locked failed generation across repeated starts while preserving valid active data', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const active = await managed(dataDir, NEXT), candidate = await managed(dataDir, NEXT + 1, 'pending');
+  const maintenance = { remove: async (path, options) => {
+    if (path === candidate.directory || path.endsWith('pending.json')) throw Object.assign(new Error('Locked failed generation'), { code: 'EPERM' });
+    return rm(path, options);
+  } };
+  assert.equal((await rollbackDatasetRuntime(dataDir, candidate, maintenance)).directory, active.directory);
+  const marker = rejectionMarker(dataDir, candidate.directory);
+  assert.equal(JSON.parse(await readFile(marker)).build, NEXT + 1);
+  const state = JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json')));
+  assert.equal(state.failedBuild, NEXT + 1); assert.doesNotMatch(state.activationError, /was restored/);
+  for (let launch = 0; launch < 2; launch++) {
+    const selected = await prepareDatasetRuntime(dataDir, maintenance);
+    assert.equal(selected.directory, active.directory); assert.equal(selected.pending, false);
+  }
+  const warning = JSON.parse(await readFile(join(dataDir, 'datasets', 'cleanup.json')));
+  assert.deepEqual(warning.failures.map(row => row.path).sort(), [basename(candidate.directory), 'pending.json'].sort());
+  assert.ok(warning.failures.every(row => row.code === 'EPERM'));
+  const next = createDatasetService({ dataDir, automatic: false }); t.after(() => next.close()); await next.ready;
+  assert.match(next.status().error, /failed activation/); assert.equal(next.status().cleanupWarning.count, 2);
+  // Once unlocked, the external record is retired only after the directory is gone.
+  assert.equal((await prepareDatasetRuntime(dataDir)).directory, active.directory);
+  assert.ok(!(await readdir(join(dataDir, 'datasets'))).includes(basename(candidate.directory)));
+  assert.ok(!(await readdir(join(dataDir, 'datasets'))).includes('pending.json'));
+  assert.ok(!(await readdir(join(dataDir, 'datasets'))).includes(basename(marker)));
+});
+
+test('a fresh UUID can retry the same build without clearing an older locked generation rejection', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  await managed(dataDir, NEXT);
+  const failed = await managed(dataDir, NEXT + 1, 'pending');
+  const maintenance = { remove: async (path, options) => {
+    if (path === failed.directory) throw Object.assign(new Error('Locked failed generation'), { code: 'EPERM' });
+    return rm(path, options);
+  } };
+  await rollbackDatasetRuntime(dataDir, failed, maintenance);
+  const fresh = await managed(dataDir, NEXT + 1, 'pending');
+  assert.notEqual(fresh.directory, failed.directory);
+  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, fresh.directory);
+  await commitDatasetRuntime(dataDir, fresh, maintenance);
+  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, fresh.directory);
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json'))).failedBuild, null);
+  await assert.rejects(commitDatasetRuntime(dataDir, failed), { code: 'SDE_GENERATION_REJECTED' });
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(fresh.directory));
+});
+
+test('unrelated pointer errors and malformed marker contents cannot clear a rejected generation', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const active = await managed(dataDir, NEXT), failed = await managed(dataDir, NEXT + 1, 'pending');
+  const maintenance = { remove: async (path, options) => {
+    if (path === failed.directory || path.endsWith('pending.json')) throw Object.assign(new Error('Locked failed data'), { code: 'EPERM' });
+    return rm(path, options);
+  } };
+  await rollbackDatasetRuntime(dataDir, failed, maintenance);
+  const pointer = join(dataDir, 'datasets', 'pending.json');
+  await writeFile(pointer, JSON.stringify({ schema: 1, directory: 42, build: NEXT + 2 }));
+  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
+  assert.match(JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json'))).activationError, /Invalid SDE pointer/);
+  await writeFile(pointer, JSON.stringify({ schema: 1, directory: basename(failed.directory), build: NEXT + 1 }));
+  await writeFile(rejectionMarker(dataDir, failed.directory), '{truncated');
+  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
+  await rm(rejectionMarker(dataDir, failed.directory));
+  await mkdir(rejectionMarker(dataDir, failed.directory));
+  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
+});
+
+test('failed rejection recording is explicit and does not delete pointers or claim restored data', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const active = await managed(dataDir, NEXT), failed = await managed(dataDir, NEXT + 1, 'pending');
+  // Renaming a file over a directory fails without platform-specific chmod assumptions.
+  await mkdir(rejectionMarker(dataDir, failed.directory));
+  let removals = 0;
+  await assert.rejects(rollbackDatasetRuntime(dataDir, failed, { remove: async () => { removals++; } }));
+  assert.equal(removals, 0);
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(active.directory));
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'pending.json'))).directory, basename(failed.directory));
+  const state = JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json')).catch(() => '{}'));
+  assert.doesNotMatch(state.activationError || '', /was restored/);
+});
+
+test('an unreadable pending generation does not block independently verified active data', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const active = await managed(dataDir, NEXT), failed = await managed(dataDir, NEXT + 1, 'pending');
+  // ENOTDIR exercises a generation-read failure even when tests run as an elevated user.
+  await rm(failed.directory, { recursive: true }); await writeFile(failed.directory, 'not a directory');
+  assert.equal((await prepareDatasetRuntime(dataDir)).directory, active.directory);
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(active.directory));
+  assert.match(JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json'))).activationError, /ENOTDIR|not a directory/i);
+});
+
+test('activation refusal publishes cleanup warnings immediately without claiming the old runtime restarted', async t => {
+  let failedDirectory, locked = true;
+  const { service, dataDir } = await setup(t, { onReady: selected => { failedDirectory = selected.directory; }, remove: async (path, options) => {
+    if (locked && (path === failedDirectory || path.endsWith('pending.json'))) throw Object.assign(new Error('Locked refused update'), { code: 'EPERM' });
+    return rm(path, options);
+  } });
+  await managed(dataDir, NEXT);
+  await service.install(); await tick();
+  assert.equal(service.status().phase, 'ready');
+  await service.activationFailed('Restart refused');
+  assert.equal(service.status().phase, 'error'); assert.equal(service.status().restartRequired, false);
+  assert.match(service.status().error, /Restart refused/); assert.doesNotMatch(service.status().error, /was restored/);
+  assert.equal(service.status().cleanupWarning.count, 2);
+  locked = false;
+  await service.check();
+  assert.equal(service.status().cleanupWarning, null);
+  const entries = await readdir(join(dataDir, 'datasets'));
+  assert.ok(!entries.includes(basename(failedDirectory))); assert.ok(!entries.includes('pending.json'));
+  assert.ok(!entries.includes(basename(rejectionMarker(dataDir, failedDirectory))));
+  assert.equal((await prepareDatasetRuntime(dataDir)).manifest.build, NEXT);
+});
+
+test('activation refusal exposes rollback metadata failure instead of overwriting it with the initial error', async t => {
+  const { service, dataDir } = await setup(t);
+  await service.install(); await tick();
+  const statePath = join(dataDir, 'datasets', 'state.json');
+  await rm(statePath, { force: true }); await mkdir(statePath);
+  await assert.rejects(service.activationFailed('Restart refused ' + 'x'.repeat(400)), { code: 'EISDIR' });
+  assert.equal(service.status().phase, 'error'); assert.equal(service.status().restartRequired, false);
+  assert.match(service.status().error, /^Dataset recovery failed:/); assert.match(service.status().error, /EISDIR|directory/i);
+  assert.doesNotMatch(service.status().error, /was restored/);
+  const pointer = JSON.parse(await readFile(join(dataDir, 'datasets', 'pending.json')));
+  assert.equal(JSON.parse(await readFile(rejectionMarker(dataDir, pointer.directory))).build, NEXT);
+});
+
+test('partial recursive cleanup cannot erase rejection while the failed payload remains valid', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const active = await managed(dataDir, NEXT), failed = await managed(dataDir, NEXT + 1, 'pending');
+  await writeFile(join(failed.directory, 'non-payload-file'), 'partial cleanup can remove this');
+  const maintenance = { remove: async (path, options) => {
+    if (path === failed.directory) {
+      // This would erase an in-directory marker before failing on locked payloads.
+      await rm(join(path, 'activation-rejected.json'), { force: true });
+      await rm(join(path, 'non-payload-file'), { force: true });
+      throw Object.assign(new Error('Payload is locked after partial removal'), { code: 'EPERM' });
+    }
+    if (path.endsWith('pending.json')) throw Object.assign(new Error('Pointer locked'), { code: 'EPERM' });
+    return rm(path, options);
+  } };
+  assert.equal((await rollbackDatasetRuntime(dataDir, failed, maintenance)).directory, active.directory);
+  assert.equal(JSON.parse(await readFile(rejectionMarker(dataDir, failed.directory))).build, NEXT + 1);
+  for (let launch = 0; launch < 2; launch++) assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
+  await assert.rejects(commitDatasetRuntime(dataDir, failed), { code: 'SDE_GENERATION_REJECTED' });
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(active.directory));
+});
+
+test('activation refusal retains the live cleanup warning when warning persistence also fails', async t => {
+  let failedDirectory;
+  const { service, dataDir } = await setup(t, { onReady: selected => { failedDirectory = selected.directory; }, remove: async (path, options) => {
+    if (path === failedDirectory || path.endsWith('pending.json')) throw Object.assign(new Error('Locked refused update'), { code: 'EPERM' });
+    return rm(path, options);
+  } });
+  await service.install(); await tick();
+  await mkdir(join(dataDir, 'datasets', 'cleanup.json'));
+  await service.activationFailed('Restart refused');
+  const warning = service.status().cleanupWarning;
+  assert.equal(warning.count, 2);
+  assert.deepEqual(warning.failures.map(row => row.path).sort(), [basename(failedDirectory), 'pending.json'].sort());
+  assert.equal(warning.persistence.path, 'cleanup.json');
+  assert.equal(service.status().phase, 'error'); assert.match(service.status().error, /Restart refused/);
 });

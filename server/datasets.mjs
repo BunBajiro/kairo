@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from 'node:fs';
-import { mkdir, readFile, writeFile, rename, readdir, rm, stat } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, rename, readdir, rm, stat, lstat } from 'node:fs/promises';
 import { join, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
@@ -14,9 +14,11 @@ const HOUR = 3_600_000, CACHE_MIN = 300_000, MAX_ARCHIVE = 512 * 1024 * 1024;
 const BUILD_DIRECTORY = /^build-\d+-[a-f0-9-]{36}$/;
 const DATA_FILE = /^(?:universe\.json\.gz|universe-provenance\.json|universe-details-\d{3}\.bin|market-categories\.json|npc-market-owners\.json)$/;
 const REQUIRED_FILES = ['universe.json.gz', 'universe-provenance.json', 'market-categories.json', 'npc-market-owners.json'];
+const REJECTED_GENERATION = /^activation-rejected-(build-\d+-[a-f0-9-]{36})\.json$/;
 const iso = value => value == null ? null : new Date(value).toISOString();
 const errorText = error => String(error?.message || error || 'Dataset update failed').slice(0, 400);
 const rootFor = dataDir => join(resolve(dataDir), 'datasets');
+const rejectionPath = (root, directory) => join(root, `activation-rejected-${basename(directory)}.json`);
 const archiveUrl = build => `https://developers.eveonline.com/static-data/tranquility/eve-online-static-data-${build}-jsonl.zip`;
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
 async function optionalJson(file) { try { return await readJson(file); } catch (error) { if (error.code === 'ENOENT' || error instanceof SyntaxError) return null; throw error; } }
@@ -62,9 +64,20 @@ async function pointerSelection(root, name, minimumBuild, hashes = false) {
   if (!pointer) return null;
   if (!BUILD_DIRECTORY.test(pointer.directory || '')) throw new Error('Invalid SDE pointer');
   const directory = join(root, pointer.directory);
+  await requireUnrejected(root, directory);
   const manifest = await validateDirectory(directory, { minimumBuild, hashes });
   if (manifest.build !== pointer.build) throw new Error('SDE pointer build mismatch');
   return { directory, manifest, pending: name === 'pending' };
+}
+async function requireUnrejected(root, directory) {
+  // Presence is the rejection record. Never interpret unreadable/truncated marker
+  // contents as permission to retry this UUID. Payload files stay immutable.
+  try { await lstat(rejectionPath(root, directory)); }
+  catch (cause) {
+    if (cause.code === 'ENOENT') return;
+    throw Object.assign(new Error(`Could not check dataset activation rejection: ${errorText(cause)}`, { cause }), { code: 'SDE_REJECTION_UNREADABLE' });
+  }
+  throw Object.assign(new Error('This dataset generation previously failed activation. A manual retry must prepare a fresh generation.'), { code: 'SDE_GENERATION_REJECTED' });
 }
 async function markFailed(root, build, error) {
   const state = await optionalJson(join(root, 'state.json')) || {};
@@ -80,10 +93,12 @@ async function cleanup(root, keep = [], { remove = rm, paths, extraPaths = [], n
   const previous = await optionalJson(join(root, 'cleanup.json')).catch(() => null);
   const failures = new Map((Array.isArray(previous?.failures) ? previous.failures : []).map(value => [value.path, value]));
   const failed = (path, cause) => failures.set(path, { path, code: cause?.code || 'CLEANUP_FAILED', message: errorText(cause) });
-  let candidates = paths;
+  let candidates = paths, rejectionMarkers = [];
   if (!candidates) {
     try {
-      candidates = (await readdir(root, { withFileTypes: true })).map(entry => entry.name).filter(name =>
+      const entries = (await readdir(root, { withFileTypes: true })).map(entry => entry.name);
+      rejectionMarkers = entries.filter(name => REJECTED_GENERATION.test(name));
+      candidates = entries.filter(name =>
         (BUILD_DIRECTORY.test(name) && !safe.has(name)) || /^staging-[a-f0-9-]{36}$/.test(name) || /^download-[a-f0-9-]{36}\.zip$/.test(name) || /\.json\.[a-f0-9-]{36}\.tmp$/.test(name));
       // A full scan supersedes warnings for already removed or newly protected paths.
       failures.clear();
@@ -93,6 +108,17 @@ async function cleanup(root, keep = [], { remove = rm, paths, extraPaths = [], n
     if (safe.has(name)) continue;
     try { await remove(join(root, name), { recursive: true, force: true }); failures.delete(name); }
     catch (cause) { failed(name, cause); }
+  }
+  // Recursive removal may delete some payload files before failing. Keep the
+  // external rejection record until the entire failed directory is gone.
+  for (const name of rejectionMarkers) {
+    const directory = name.match(REJECTED_GENERATION)[1];
+    try { await lstat(join(root, directory)); }
+    catch (cause) {
+      if (cause.code !== 'ENOENT') { failed(name, cause); continue; }
+      try { await remove(join(root, name), { recursive: true, force: true }); failures.delete(name); }
+      catch (error) { failed(name, error); }
+    }
   }
   const warning = failures.size ? { message: 'Some old dataset files could not be removed. Check free disk space and file permissions; Kairo retries cleanup at the next update check or restart.',
     failedAt: iso(now()), count: failures.size, failures: [...failures.values()].slice(0, 32) } : null;
@@ -115,7 +141,10 @@ export async function prepareDatasetRuntime(dataDir, maintenance = {}) {
   let active = null, pending = null;
   const pointerCleanup = [];
   try { active = await pointerSelection(root, 'active', minimumBuild); }
-  catch { pointerCleanup.push('active.json'); }
+  catch (error) {
+    if (error.code === 'SDE_REJECTION_UNREADABLE') throw error;
+    pointerCleanup.push('active.json');
+  }
   try { pending = await pointerSelection(root, 'pending', Math.max(minimumBuild, active?.manifest.build || 0), true); }
   catch (error) {
     const pointer = await optionalJson(join(root, 'pending.json'));
@@ -134,6 +163,7 @@ export async function commitDatasetRuntime(dataDir, selected, maintenance = {}) 
   if (!selected) return;
   const root = rootFor(dataDir), directory = resolve(selected.directory);
   if (directory !== join(root, basename(directory)) || !BUILD_DIRECTORY.test(basename(directory))) throw new Error('Invalid SDE activation directory');
+  await requireUnrejected(root, directory);
   const manifest = await validateDirectory(directory, { minimumBuild: await baselineBuild() });
   await atomicJson(join(root, 'active.json'), { schema: 1, directory: basename(directory), build: manifest.build });
   // The pointer is committed. Housekeeping must not turn a successful activation into a rollback.
@@ -144,14 +174,22 @@ export async function commitDatasetRuntime(dataDir, selected, maintenance = {}) 
   return { cleanupWarning: await cleanup(root, [directory], { ...maintenance, extraPaths: ['pending.json'] }) };
 }
 
-export async function rollbackDatasetRuntime(dataDir, selected) {
+export async function rollbackDatasetRuntime(dataDir, selected, maintenance = {}) {
   const root = rootFor(dataDir), minimumBuild = await baselineBuild();
-  await markFailed(root, selected?.manifest?.build, 'The updated core could not start. The previous dataset was restored.');
-  await rm(join(root, 'pending.json'), { force: true });
+  const directory = typeof selected?.directory === 'string' ? resolve(selected.directory) : '';
+  if (directory !== join(root, basename(directory)) || !BUILD_DIRECTORY.test(basename(directory))) throw new Error('Invalid SDE rollback directory');
+  // Record rejection before touching pointers. If removal is locked, subsequent
+  // preparation still cannot activate this UUID. A new manual attempt has a new
+  // directory. The marker lives outside recursive payload cleanup and is retired
+  // only after that directory is confirmed absent.
+  await atomicJson(rejectionPath(root, directory), { schema: 1, build: selected.manifest?.build || null, error: 'The updated core could not start.' });
+  await markFailed(root, selected.manifest?.build, 'The updated core could not start. The failed generation will not be activated again.');
+  const pointerCleanup = ['pending.json'];
   let active = null;
-  try { active = await pointerSelection(root, 'active', minimumBuild); } catch { await rm(join(root, 'active.json'), { force: true }); }
-  if (active?.directory === selected?.directory) { await rm(join(root, 'active.json'), { force: true }); active = null; }
-  await cleanup(root, active ? [active.directory] : []);
+  try { active = await pointerSelection(root, 'active', minimumBuild); }
+  catch (error) { if (error.code === 'SDE_REJECTION_UNREADABLE') throw error; pointerCleanup.push('active.json'); }
+  const cleanupWarning = await cleanup(root, active ? [active.directory] : [], { ...maintenance, extraPaths: pointerCleanup });
+  maintenance.onCleanupWarning?.(cleanupWarning);
   return active;
 }
 
@@ -366,10 +404,19 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
           maintenanceAt = now();
           cleanupWarning = await readCleanupWarning(root, now) || cleanupWarning;
           if (cleanupWarning) {
-            const pointers = await Promise.all(['active', 'pending'].map(name => optionalJson(join(root, `${name}.json`))));
-            const keep = [activeDirectory, ...pointers.filter(value => BUILD_DIRECTORY.test(value?.directory || '')).map(value => value.directory)].filter(Boolean);
+            const names = ['active', 'pending'];
+            const pointers = await Promise.all(names.map(name => optionalJson(join(root, `${name}.json`))));
+            const keep = [activeDirectory].filter(Boolean), rejectedPointers = [];
+            for (const [index, pointer] of pointers.entries()) {
+              if (!BUILD_DIRECTORY.test(pointer?.directory || '')) continue;
+              try { await requireUnrejected(root, pointer.directory); keep.push(pointer.directory); }
+              catch (cause) {
+                if (cause.code !== 'SDE_GENERATION_REJECTED') throw cause;
+                rejectedPointers.push(`${names[index]}.json`);
+              }
+            }
             const samePointer = pointers[0]?.directory && pointers[0].directory === pointers[1]?.directory;
-            cleanupWarning = await cleanup(root, keep, { remove, now, extraPaths: samePointer ? ['pending.json'] : [] });
+            cleanupWarning = await cleanup(root, keep, { remove, now, extraPaths: [...rejectedPointers, ...(samePointer ? ['pending.json'] : [])] });
           }
         }
         available = cache.latest?.build >= currentBuild && cache.latest.build > oldestBuild ? { ...cache.latest } : null;
@@ -397,12 +444,17 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
     if (closed) return Promise.resolve();
     activationFlight = (async () => {
       const failedBuild = readySelection?.manifest?.build;
+      let failureMessage = errorText(message), rollbackWarning;
       if (failedBuild) cache.failedBuild = failedBuild;
       try {
-        if (readySelection) await rollbackDatasetRuntime(dataDir, readySelection);
+        if (readySelection) await rollbackDatasetRuntime(dataDir, readySelection, { remove, now, onCleanupWarning: value => { rollbackWarning = value; } });
         cache = await optionalJson(join(root, 'state.json')) || cache;
+      } catch (cause) {
+        failureMessage = `Dataset recovery failed: ${errorText(cause)}. Original activation failure: ${failureMessage}`;
+        throw cause;
       } finally {
-        readySelection = null; phase = 'error'; progress = null; error = errorText(message);
+        cleanupWarning = rollbackWarning === undefined ? await readCleanupWarning(root, now) : rollbackWarning;
+        readySelection = null; phase = 'error'; progress = null; error = errorText(failureMessage);
         schedule(); emit();
       }
     })().finally(() => { activationFlight = null; });
