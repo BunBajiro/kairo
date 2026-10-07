@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T13:39:48.773Z",
+  "completedAt": "2026-10-07T13:39:54.031Z",
+  "applicationHead": "9331b19c309a910f037825e3098a46c260bb2c41",
+  "sourceFingerprint": "6e359a8b285302ae0295c406afb5885e7e62681eeb36b5a393ca29212493f07b",
+  "sourceDirty": true,
+  "sourceVerified": true,
+  "node": "v24.19.0",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "tests/kairo/datasets.test.mjs",
+    "tests/kairo/datasets-http.test.mjs",
+    "tests/kairo/dataset-connection.test.mjs",
+    "tests/kairo/sde-build.test.mjs",
+    "tests/kairo/sde-worker-limits.test.mjs",
+    "tests/kairo/runtime-supervisor.test.mjs",
+    "tests/kairo/runtime-child.test.mjs",
+    "tests/kairo/runtime-lock.test.mjs",
+    "tests/kairo/lifecycle.test.mjs"
+  ],
+  "exitCode": 0,
+  "signal": null,
+  "logSha256": "2113f485bc50d923641eb9504fe083bd75b83eeeb02749d34db3cb4f4b509276",
+  "complete": true,
+  "scope": "Sequential focused dataset/SDE/runtime/lifecycle correctness; no build or performance measurement."
+}

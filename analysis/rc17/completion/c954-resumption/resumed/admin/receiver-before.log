@@ -1,0 +1,48 @@
+✖ default administrative timers keep the Window receiver when scheduling, rearming and closing (3.169253ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.133574
+
+✖ failing tests:
+
+test at tests/kairo/administrative-refresh.test.mjs:9:1
+✖ default administrative timers keep the Window receiver when scheduling, rearming and closing (3.169253ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+        'set',
+  +     false,
+  -     true,
+        2000
+      ],
+      [
+        'set',
+  +     false,
+  -     true,
+        2000
+      ],
+      [
+        'clear',
+  +     false,
+  -     true,
+        2
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation/tests/kairo/administrative-refresh.test.mjs:18:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'set', false, 2000 ], [ 'set', false, 2000 ], [ 'clear', false, 2 ] ],
+    expected: [ [ 'set', true, 2000 ], [ 'set', true, 2000 ], [ 'clear', true, 2 ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,24 @@
+✔ default administrative timers keep the Window receiver when scheduling, rearming and closing (3.149775ms)
+✔ Markets uses one completed-read timer: 5 idle reads per visible 120s, none while hidden, immediate resume (0.881909ms)
+✔ Markets running jobs refresh at 2s then return to idle on complete, cancelled or failed (2.025651ms)
+✔ slow administrative reads never overlap and retain only one newer forced invalidation (0.510529ms)
+✔ failed administrative read retains old view and recovers; disposal rejects late publication (0.541846ms)
+✔ OBS stream status wins over a delayed recovery read and dirty configuration survives recovery (0.453894ms)
+✔ OBS saving preserves edits made during PUT and a newer stream status; clean save permits future config recovery (0.466753ms)
+✔ OBS full reads are initial/reconnect only; idle/focus use status and hidden reconnect waits without losing dirty config (0.519613ms)
+✔ OBS failed initial config read retries config rather than getting stuck on status-only reads (0.358721ms)
+✔ Goals eight source updates read eight progress resources and no additional notes or hidden metadata (0.63713ms)
+✔ Goals note/source events are pilot scoped, hidden invalidations resume, and old pilot reads cannot publish (0.516979ms)
+✔ a burst keeps one active read and one follow-up instead of losing invalidation (4.593029ms)
+✔ busy owners retain changes, resume once and may explicitly refresh for conflict recovery (1.246167ms)
+✔ leaving a pilot/map scope prevents old publication and releases waiters (1.747433ms)
+✔ a failed read still drains a newer invalidation and does not overlap reads (0.386823ms)
+✔ a change during forced conflict recovery waits for the mutation without deadlocking it (1.179257ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.796409

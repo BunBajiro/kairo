@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T13:43:04.086Z",
+  "applicationHead": "9331b19c309a910f037825e3098a46c260bb2c41",
+  "node": "v24.19.0",
+  "sourceFingerprintBefore": "6e359a8b285302ae0295c406afb5885e7e62681eeb36b5a393ca29212493f07b",
+  "sourceDirty": true,
+  "steps": [
+    {
+      "name": "tests",
+      "command": "npm run test:kairo",
+      "startedAt": "2026-10-07T13:43:04.314Z",
+      "completedAt": "2026-10-07T13:43:13.105Z",
+      "exitCode": 0,
+      "signal": null,
+      "logSha256": "17c17dbd94d8067d0b78c756233e3f35a767b9f6beaec8e7d614a3dddef399a5"
+    },
+    {
+      "name": "types",
+      "command": "npm run check:kairo",
+      "startedAt": "2026-10-07T13:43:13.317Z",
+      "completedAt": "2026-10-07T13:43:23.119Z",
+      "exitCode": 0,
+      "signal": null,
+      "logSha256": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "startedAt": "2026-10-07T13:43:23.341Z",
+      "completedAt": "2026-10-07T13:43:31.116Z",
+      "exitCode": 0,
+      "signal": null,
+      "logSha256": "c97f275c4a1f9d0d9d5bd1ade64f8d0d3f8e2f5d437b099cb1463aa3236bffec"
+    }
+  ],
+  "complete": false,
+  "previousBuildBackup": "/workspace/scratch/a2f3334402fc/recovery-c954-builds/933-before-u2b-1791380603241/dist",
+  "failure": "Error: EEXIST: file already exists, open '/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/integrated-correctness-1/build-receipt.json'\n    at async open (node:internal/fs/promises:697:25)\n    at async writeFile (node:internal/fs/promises:1317:14)\n    at async file:///workspace/scratch/a2f3334402fc/[eval1]:38:2",
+  "completedAt": "2026-10-07T13:43:31.356Z"
+}
