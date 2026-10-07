@@ -1,3 +1,5 @@
+import {mapEnrichment} from './enrichment.mjs';
+
 // Resolve containment once per sample. A cycle retains the first repeated ID,
 // matching the collector's previous bounded walk instead of inventing a station.
 export function prepareAssetLocations(assets) {
@@ -25,8 +27,8 @@ export function prepareAssetLocations(assets) {
 export async function enrichAssetLocations(assets,{names,rememberNames,esi,characterId,canReadStructures}) {
     const {rows,locations}=prepareAssetLocations(assets);
     rememberNames(await esi.names(locations.filter(id=>id<2147483647&&!names[id])));
-    for(const location of locations) {
-        if(names[location])continue;
+    await mapEnrichment(locations, async location => {
+        if(names[location])return;
         try {
             if(location>=60000000&&location<64000000) {
                 const result=await esi.request('/universe/stations/'+location,{ttl:86400});
@@ -36,6 +38,6 @@ export async function enrichAssetLocations(assets,{names,rememberNames,esi,chara
                 rememberNames({[location]:result.data.name});
             }
         } catch { /* Keep unresolved locations visible when EVE denies access. */ }
-    }
+    });
     return rows.map(asset=>({...asset,location_name:names[asset.root_location_id]||String(asset.root_location_id)}));
 }

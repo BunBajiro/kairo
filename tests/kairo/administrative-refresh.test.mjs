@@ -108,3 +108,13 @@ test('Goals note/source events are pilot scoped, hidden invalidations resume, an
     dialog = true;owner.resume();await flush();assert.equal(calls.length, 5);
     pending.resolve('OLD PILOT');await flush();assert.deepEqual(published, ['/goals?character=2']);owner.close();
 });
+
+
+test('default administrative timers retain the global receiver required by Window timers', async t => {
+    const receivers = [];
+    t.mock.method(globalThis, 'setTimeout', function () {receivers.push(['set', this === globalThis]); return 17;});
+    t.mock.method(globalThis, 'clearTimeout', function (id) {receivers.push(['clear', this === globalThis, id]);});
+    const owner = createAdministrativeRefresh({read: async () => 'current', publish() {}});
+    await owner.request();await flush();owner.close();
+    assert.deepEqual(receivers, [['set', true], ['clear', true, 17]]);
+});

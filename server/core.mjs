@@ -1,5 +1,6 @@
 import { createUniverse } from './universe.mjs';
 import { enrichAssetLocations } from './asset-locations.mjs';
+import { enrichPlanets } from './enrichment.mjs';
 import { registerUniverseHistory } from './universe-history.mjs';
 import { captureSessionObservation } from './session-travel.mjs';
 import { getUniverseSystem } from './universe-static.mjs';
@@ -145,17 +146,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             return combat.recent(id);
         }
         if (key === 'planets') {
-            const planets = [];
-            for (const p of data) {
-                try {
-                    const detail = await esi.request('/characters/' + id + '/planets/' + p.planet_id, { characterId: id, ttl: 600 });
-                    planets.push({ ...p, details: detail.data });
-                }
-                catch {
-                    planets.push(p);
-                }
-            }
-            return planets;
+            return enrichPlanets(data, esi, id);
         }
         return data;
     }
