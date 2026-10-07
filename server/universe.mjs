@@ -82,7 +82,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     const politicsService = createUniversePolitics(store, auth, { now, atlas });
     const ownerSearch = createUniverseOwnerSearch(store, auth, esi, {now});
     const byId = atlas.bySystemId || new Map(atlas.systems.map(system => [system.system_id, system]));
-    const byName = new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
+    const byName = atlas.bySystemName || new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
     const neighbors = atlas.neighbors || new Map();
     if (!atlas.neighbors) for (const edge of atlas.gates) {
         if (!neighbors.has(edge.from_system_id)) neighbors.set(edge.from_system_id, new Set());

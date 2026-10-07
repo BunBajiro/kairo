@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, writeFile, readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile, readFile, readdir, open } from 'node:fs/promises';
 import { readdirSync, statSync, truncateSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -157,4 +157,68 @@ test('SDE worker reports progress and validated manifest, and serializes failure
   assert.equal(messages.at(-1).type, 'result'); assert.equal(messages.at(-1).manifest.build, BUILD);
   const failed = await run({ ...args, outputDir: join(args.outputDir, 'failed'), expectedBuild: 1 });
   assert.equal(failed.at(-1).type, 'error'); assert.match(failed.at(-1).error.message, /does not match/);
+});
+
+test('SDE builder bounds total spool, per-bucket bytes and output before publication', async t => {
+  for (const [limits, code] of [[{ spoolBytes: 1024 }, 'SDE_SPOOL_LIMIT'], [{ bucketBytes: 1024 }, 'SDE_BUCKET_LIMIT'], [{ bufferedSpoolBytes: 10 }, 'SDE_BUFFER_LIMIT'], [{ outputBytes: 10 }, 'SDE_OUTPUT_LIMIT']]) {
+    const args = await setup(t);
+    await assert.rejects(buildSde({ ...args, limits }), { code });
+    assert.deepEqual(await readdir(args.outputDir), []);
+  }
+});
+
+test('SDE builder refuses insufficient free space before creating a spool', async t => {
+  const args = await setup(t);
+  await assert.rejects(buildSde({ ...args, readAvailable: async () => 0 }), { code: 'SDE_DISK_SPACE' });
+  assert.deepEqual(await readdir(args.outputDir), []);
+});
+
+test('SDE builder checks free space again before writing and preserves disk-full cause', async t => {
+  for (const kind of ['reserve', 'ENOSPC']) {
+    const args = await setup(t); let checks = 0;
+    const original = Object.assign(new Error('No space left on device'), { code: 'ENOSPC' });
+    await assert.rejects(buildSde({ ...args,
+      readAvailable: async () => ++checks === 1 || kind === 'ENOSPC' ? 2 ** 40 : 0,
+      openFile: kind === 'ENOSPC' ? async () => { throw original; } : open,
+    }), kind === 'ENOSPC' ? error => error === original : { code: 'SDE_DISK_SPACE' });
+    assert.deepEqual(await readdir(args.outputDir), []);
+  }
+});
+
+test('slow writes finish and close their handle before cancellation removes the spool', async t => {
+  const args = await setup(t), controller = new AbortController();
+  let entered, release, closed = false, removed = false;
+  const started = new Promise(resolve => { entered = resolve; }), gate = new Promise(resolve => { release = resolve; });
+  const building = buildSde({ ...args, signal: controller.signal,
+    openFile: async (...options) => {
+      const handle = await open(...options);
+      return { write: async (...values) => { entered(); await gate; return handle.write(...values); },
+        datasync: () => handle.datasync(), stat: () => handle.stat(), close: async () => { await handle.close(); closed = true; } };
+    },
+    remove: async (...options) => { assert.equal(closed, true); removed = true; return rm(...options); },
+  });
+  building.catch(() => {});
+  await started; controller.abort(); await Promise.resolve();
+  assert.equal(removed, false); release();
+  await assert.rejects(building, { name: 'AbortError' });
+  assert.equal(closed, true); assert.equal(removed, true); assert.deepEqual(await readdir(args.outputDir), []);
+});
+
+test('external-memory budget is separate from V8 old generation and cleanup retains primary error', async t => {
+  const args = await setup(t);
+  const cleanupError = Object.assign(new Error('Locked spool'), { code: 'EPERM' });
+  await assert.rejects(buildSde({ ...args, memoryUsage: () => ({ external: 2 ** 30 }), remove: async () => { throw cleanupError; } }), error => {
+    assert.equal(error.code, 'SDE_EXTERNAL_MEMORY'); assert.deepEqual(error.cleanupErrors, [cleanupError]); return true;
+  });
+});
+
+test('write and handle-close dual failures preserve the original disk-full error', async t => {
+  for (const phase of ['spool', 'output']) {
+    const args = await setup(t), writeError = Object.assign(new Error('Disk full'), { code: 'ENOSPC' }), closeError = new Error('Close failed');
+    await assert.rejects(buildSde({ ...args, openFile: async (path, ...options) => {
+      if ((phase === 'spool') === path.includes('.spool-')) return { write: async () => { throw writeError; }, writeFile: async () => { throw writeError; }, close: async () => { throw closeError; } };
+      return open(path, ...options);
+    } }), error => { assert.equal(error, writeError); assert.deepEqual(error.cleanupErrors, [closeError]); return true; });
+    assert.deepEqual(await readdir(args.outputDir), []);
+  }
 });

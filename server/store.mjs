@@ -1,6 +1,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { compactHistoryCache } from './market-history-store.mjs';
 export function openStore(dir) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
@@ -83,6 +84,11 @@ export function openStore(dir) {
         CREATE INDEX idx_alliance_combat_system_at ON alliance_combat_records(alliance_id,system_id,at);
         INSERT INTO migrations VALUES('sessions-v071',datetime('now')); COMMIT;`);
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='session-combat-eligibility-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+            CREATE INDEX idx_sessions_character_ended ON sessions(character_id,ended);
+            INSERT INTO migrations VALUES('session-combat-eligibility-v080',datetime('now')); COMMIT;`);
+    }
     if (!db.prepare("SELECT id FROM migrations WHERE id='database-v073'").get()) {
         db.exec('BEGIN IMMEDIATE');
         db.exec('CREATE INDEX IF NOT EXISTS idx_events_character_type_at ON events(character_id,type,at)');
@@ -129,13 +135,18 @@ export function openStore(dir) {
         json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,
         json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?`);
     const saveSnapshot = db.prepare('INSERT INTO snapshots VALUES(?,?,?) ON CONFLICT(character_id,key) DO UPDATE SET body=excluded.body');
+    // A UI-only revision avoids comparing/stringifying large decoded payloads.
+    // Every production snapshot write uses saveSnapshot. Missing rows are given
+    // a distinct marker by Core, so an auth reset cannot reuse the deleted body.
+    const snapshotEpoch = randomUUID(), snapshotVersions = new Map();
     return {
         db,
         get(key, fallback) { const row = setting.get(key); return row ? JSON.parse(row.value) : fallback; },
         set: (key, value) => saveSetting.run(key, JSON.stringify(value)),
         snapshot(id, key) { const row = snapshot.get(id, key); return row ? JSON.parse(row.body) : null; },
         snapshotMetadata: (id, key) => metadata.get(id, key) || null,
-        saveSnapshot: (id, key, value) => saveSnapshot.run(id, key, JSON.stringify(value)),
+        snapshotRevision: (id, key) => `${snapshotEpoch}:${id}:${key}:${snapshotVersions.get(id + ':' + key) || 0}`,
+        saveSnapshot(id, key, value) { const result = saveSnapshot.run(id, key, JSON.stringify(value)); const entry = id + ':' + key; snapshotVersions.set(entry, (snapshotVersions.get(entry) || 0) + 1); return result; },
         close: () => db.close(),
     };
     } catch (error) {

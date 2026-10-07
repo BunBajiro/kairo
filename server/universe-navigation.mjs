@@ -14,7 +14,7 @@ const BOOLS=new Set(['useAnsiblex','useWormholes','avoidHostile','highSecOnly','
 
 /** Local itinerary state. Planning and observing never execute EVE commands. */
 export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic(),now=Date.now,planRoute,planJump,preparePlan=null,getOperations=null,getFeeds=()=>null,getRouteSystems=()=>atlas.systems,getMap=null,isConnectionCurrent=null,publish=()=>{},onChange=()=>{}}={}) {
-    const systems=atlas.systems,lookup=new Map(systems.map(s=>[s.system_id,s])),names=new Map(systems.map(s=>[s.name.toLowerCase(),s])),queues=new Map(),searches=new Map();
+    const systems=atlas.systems,lookup=atlas.bySystemName&&atlas.bySystemId||new Map(systems.map(s=>[s.system_id,s])),names=atlas.bySystemName||new Map(systems.map(s=>[s.name.toLowerCase(),s])),queues=new Map(),searches=new Map();
     let closed=false;
     const assertOpen=()=>{if(closed)throw new Error('Universe navigation is stopping.');};
     const key=(id,mapId=null)=>'universe:navigation:'+id+(mapId?':'+mapId:'');

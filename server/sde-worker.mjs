@@ -6,5 +6,5 @@ try {
   const manifest = await buildSde({ ...workerData, onProgress: progress => parentPort.postMessage({ type: 'progress', ...progress }) });
   parentPort.postMessage({ type: 'result', manifest });
 } catch (error) {
-  parentPort.postMessage({ type: 'error', error: { message: error?.message || 'SDE conversion failed' } });
+  parentPort.postMessage({ type: 'error', error: { message: error?.message || 'SDE conversion failed', code: error?.code } });
 }

@@ -5,6 +5,14 @@ import {createSessionLiveFeed} from './session-live.mjs';
 const HOUR=3600000, DAY=24*HOUR;
 const iso=at=>new Date(at).toISOString();
 
+// Keep the two eligible ranges separate so archived Sessions are not scanned
+// on every scheduler tick. Rowid preserves insertion order for equal starts.
+export const SESSION_COMBAT_RECENT_SQL=`SELECT id FROM (
+    SELECT id,started,1 AS is_open,rowid AS sequence FROM sessions WHERE character_id=? AND ended IS NULL
+    UNION ALL
+    SELECT id,started,0 AS is_open,rowid AS sequence FROM sessions WHERE character_id=? AND ended>?
+) ORDER BY is_open DESC,started DESC,sequence`;
+
 // The current zKill API supports entity + system + calendar month + page.
 // Its retired startTime/endTime filters are deliberately not used. Precise
 // session/visit windows are applied locally to verified, retained killmails.
@@ -145,7 +153,7 @@ export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=
     }
     function syncRecent(id){
         if(!active(id))return;
-        const rows=store.db.prepare('SELECT id FROM sessions WHERE character_id=? AND (ended IS NULL OR ended>?) ORDER BY ended IS NULL DESC,started DESC').all(id,iso(now()-DAY));
+        const rows=store.db.prepare(SESSION_COMBAT_RECENT_SQL).all(id,id,iso(now()-DAY));
         return Promise.allSettled([...rows.map(s=>sync(s.id,id)),live.sync()]);
     }
     function sessionChanged(sessionId,id){return Promise.allSettled([sync(sessionId,id),live.sync()]);}

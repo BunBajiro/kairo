@@ -20,6 +20,7 @@ import {reconcileSessionLoyalty} from './session-details.mjs';
 import {createMarkets} from './markets.mjs';
 import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
+import {createUIResourceVersions, eventResources} from './ui-resources.mjs';
 const DATASET_NOT_DUE = Symbol('dataset-not-due');
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
@@ -30,14 +31,20 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
     let polling = pollingValues(store.get('esi:polling', {}));
     const protection = createProtectionTracker();
+    const uiVersions = createUIResourceVersions(), combatVersions = new Map();
     function send(type, data) {
         if (!uiClients.size) return;
         const frame = sseEvent(type, data);
         for (const client of uiClients) if (!writeSSE(client, frame)) uiClients.delete(client);
     }
+    function changed(detail = {}) {
+        const resources = detail.resources;
+        const resourceRevisions = uiVersions.changed(detail.characterId, resources);
+        send('changed', {...detail, resourceRevisions});
+    }
     function publish(e) { const at = e.at || new Date().toISOString(); const result = store.db.prepare('INSERT OR IGNORE INTO events(character_id,type,module,summary,payload,at,dedupe) VALUES(?,?,?,?,?,?,?)').run(e.characterId || null, e.type, e.module || 'core', e.summary || e.type, JSON.stringify(e.payload || {}), at, e.dedupe || null); if (result.changes) {
         bus.emit({ ...e, at });
-        send('changed', { characterId: e.characterId });
+        changed({characterId: e.characterId, type: e.type, module: e.module || 'core', resources: eventResources(e)});
     } }
     try {
         publicFeedTransport = createPublicFeedTransport();
@@ -56,12 +63,14 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             await Promise.allSettled(tasks);
         }});
         combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
+            combatVersions.set(id, (combatVersions.get(id) || 0) + 1);
             goals.refresh(id,'killmails');updateBindings();
             send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
         }});
-        sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>send('changed',{characterId:id})});
+        sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>changed({characterId:id,resources:['sessionReport']})});
     } catch (error) { return rollback(error); }
-    function combatSnapshot(id){const s=store.snapshot(id,'killmails')||{status:'waiting',data:null},records=combat.recent(id);return {...s,data:records.length?records:s.data,participation:combat.coverage(id)};}
+    function uiSnapshot(id,key) {const sample=store.snapshot(id,key),revision=store.snapshotRevision?.(id,key);return sample?{...sample,dataRevision:revision}:{status:'waiting',data:null,dataRevision:revision===undefined?undefined:revision+':missing'};}
+    function combatSnapshot(id){const s=uiSnapshot(id,'killmails'),records=combat.recent(id);return {...s,dataRevision:s.dataRevision===undefined?undefined:s.dataRevision+':combat:'+(combatVersions.get(id)||0),data:records.length?records:s.data,participation:combat.coverage(id)};}
     function enabled(m) { return store.get('module:' + m.id, true); }
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));
     function rememberNames(names) {
@@ -259,7 +268,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             }
             nextRun.set(key, Date.parse(retryAt));
         }
-        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):store.snapshot(id, d.key), names: namesMap });
+        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):uiSnapshot(id, d.key), names: namesMap });
     }
     function retryDeadline(dataset, retryAt) {
         return Math.max(Date.now() + (dataset.key === 'location' ? 3000 : 60000), Date.parse(retryAt) || 0);
@@ -293,7 +302,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 nextRun.set(id + ':' + d.key, due);
             }
         }
-        refreshOPSEC(); updateBindings(); send('changed', {});
+        refreshOPSEC(); updateBindings(); changed();
         return pollingSettings();
     }
     async function sync(id) { if (stopped || syncing.has(id))
@@ -306,7 +315,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     function snapshots(id, expire = true) { const data = {}; for (const m of catalog)
         for (const d of m.datasets) {
             const char = m.id === 'universe' ? 0 : id;
-            data[d.key] = enabled(m) ? store.snapshot(char, d.key) || { status: 'waiting', data: null } : { status: 'disabled', data: null };
+            data[d.key] = enabled(m) ? uiSnapshot(char, d.key) : { status: 'disabled', data: null, dataRevision:'disabled' };
             if(d.key==='killmails'&&enabled(m))data[d.key]=combatSnapshot(id);
             if (expire && data[d.key].status === 'ready' && !snapshotFresh(data[d.key]))
                 data[d.key] = { ...data[d.key], status: 'stale' };
@@ -407,11 +416,11 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         refreshOPSEC();updateBindings();
         if (!options.noSync) refreshPolitics();
     } catch (error) { return rollback(error); }
-    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
+    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
         }
         else
-            registry.toggle(id, value); if (id === 'universe') universe.tick().catch(() => {}); refreshOPSEC(); updateBindings(); send('changed', {}); }, requestSync(id) {
+            registry.toggle(id, value); if (id === 'universe') universe.tick().catch(() => {}); refreshOPSEC(); updateBindings(); changed(); }, requestSync(id) {
             for (const m of catalog) if ((m.id === 'universe') === (id === 0)) for (const d of m.datasets) requested.add(id + ':' + d.key);
             esi.clearAccessFailures?.(id);
             syncProtection(); return Promise.allSettled([sync(id), ...(!options.noSync && id ? [combat.syncPublic(id)] : [])]);

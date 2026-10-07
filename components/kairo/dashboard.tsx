@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ShoppingCart, LayoutDashboard, Link2, ShieldCheck, RefreshCw, Orbit, BrainCircuit, Wallet, Boxes, Factory, Route, Globe, Waypoints, Target, Monitor, Blocks, ChevronRight, Search, Command as CommandIcon, Settings2, ExternalLink, PanelLeftClose, PanelLeftOpen, AlertTriangle, X } from 'lucide-react';
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, useSidebar } from '@/components/ui/sidebar';
 import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { routes, api, type Bootstrap, type ModuleState } from './model';
 import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
 import { Kairo } from './context';
+import {createScopedRefresh} from './scoped-refresh.mjs';
+import {retainValue, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
 import { Choice, Panel, DataTable } from './ui';
 import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
 import { Connections, Modules } from './connections';
@@ -46,21 +48,49 @@ export default function Dashboard() {
     const [page, setPage] = useState('overview'), [boot, setBoot] = useState<Bootstrap | null>(null), [data, setData] = useState<Record<string, ModuleState>>({}), [names, setNames] = useState<any>({}), [character, setCharacterState] = useState(0), [sessions, setSessions] = useState<any[]>([]), [opsec, setOpsec] = useState<any>({ state: 'unknown' }), [err, setErr] = useState(''), [refreshing, setRefreshing] = useState(false), [search, setSearch] = useState(false), [connected, setConnected] = useState(false);
     const [datasetConnection, setDatasetConnection] = useState<DatasetConnectionState>({ phase: 'idle', build: null, message: '' });
     const datasetConnectionRef = useRef<ReturnType<typeof createDatasetConnection> | null>(null);
-    const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null), loading = useRef(0);
-    function setCharacter(id: number) { charRef.current = id; setCharacterState(id); try {
+    const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null);
+    const snapshotEvents = useRef<Record<string,number>>({}), resourceEvents = useRef<Record<string,number>>({}), ancillaryEvents = useRef({names:0,opsec:0}), stateError = useRef<unknown>(null);
+    const stateOwner = useRef<ReturnType<typeof createScopedRefresh> | null>(null);
+    const [resourceRevisions, setResourceRevisions] = useState<Record<string,string>>({}), resourceRef = useRef<Record<string,string>>({});
+    const [stateReady, setStateReady] = useState(false), stateHasPublished = useRef(false);
+    const [recoveryRevision, setRecoveryRevision] = useState(0), [goalClock, setGoalClock] = useState(0);
+    const setCharacter = useCallback((id: number) => { if (charRef.current !== id) {stateOwner.current?.close(); stateOwner.current = null; stateHasPublished.current = false; setErr(''); setStateReady(false); setData({}); setSessions([]); snapshotEvents.current = {}; resourceEvents.current = {}; stateError.current = null; resourceRef.current = {}; setResourceRevisions({});} charRef.current = id; setCharacterState(id); try {
         localStorage.setItem('kairo-character', String(id));
     }
-    catch { } }
+    catch { } }, []);
     const navigate = useCallback((id: string) => {
         const target=workspaceDestination(id);
         // Keep the framework's history metadata and the selected page in sync.
         if(typeof window!=='undefined'&&window.location.hash!=='#'+target)window.history.pushState(window.history.state,'',window.location.pathname+window.location.search+'#'+target);
         setPage(target);setSearch(false);window.scrollTo({top:0,behavior:'instant'});
     }, []);
-    const refresh = useCallback(async () => { const requestId = ++loading.current, id = charRef.current; const state = await api('/state?character=' + id); if (requestId !== loading.current || id !== charRef.current)
-        return; setData(state.data); setNames(state.names); setOpsec(state.opsec); setSessions(state.sessions); }, []);
-    const reload = useCallback(async () => { const result = await api('/bootstrap'); bootRef.current = result; setBoot(result); if (charRef.current && !result.characters.some((c: any) => c.id === charRef.current))
-        setCharacter(result.characters[0]?.id || 0); document.documentElement.dataset.theme = result.settings.theme || 'mint'; }, []);
+    const applyResourceRevisions = useCallback((next: Record<string,string> = {}, resources = Object.keys(next), notify = true) => {
+        const merged = mergeResourceRevisions(resourceRef.current, next, resources);
+        if (merged === resourceRef.current) return;
+        const changed = Object.keys(merged).filter(resource => merged[resource] !== resourceRef.current[resource]);
+        resourceRef.current = merged; setResourceRevisions(merged);
+        if (notify) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:charRef.current,resources:changed}}));
+    }, []);
+    const publishState = useCallback(({state, observed, resources, ancillary}: any) => {
+        setData(previous => {const next = {...state.data}; for (const key of Object.keys(snapshotEvents.current)) if (snapshotEvents.current[key] !== observed[key]) next[key] = previous[key]; return retainSnapshots(previous, next);});
+        if (ancillary.names === ancillaryEvents.current.names) setNames((previous: any) => retainValue(previous, state.names));
+        if (ancillary.opsec === ancillaryEvents.current.opsec) setOpsec((previous: any) => retainValue(previous, state.opsec));
+        setSessions(previous => retainValue(previous, state.sessions));
+        applyResourceRevisions(state.resourceRevisions, Object.keys(state.resourceRevisions || {}).filter(key => resources[key] === resourceEvents.current[key])); setGoalClock(Date.now()); setStateReady(true); stateHasPublished.current = true; setErr('');
+    }, [applyResourceRevisions]);
+    const refresh = useCallback(async () => {await stateOwner.current?.request(); if (stateError.current) throw stateError.current;}, []);
+    const reload = useCallback(async () => {
+        const result = await api('/bootstrap'), prior = bootRef.current?.characters;
+        const rosterChanged = retainValue(prior, result.characters) !== prior;
+        bootRef.current = result; setBoot(result);
+        if (charRef.current && !result.characters.some((c: any) => c.id === charRef.current)) setCharacter(result.characters[0]?.id || 0);
+        document.documentElement.dataset.theme = result.settings.theme || 'mint';
+        if (rosterChanged) {
+            setRecoveryRevision(value => value + 1);
+            window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{resources:['goalSources']}}));
+            window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{resources:['recovery','roster']}}));
+        }
+    }, [setCharacter]);
     useEffect(() => { let alive = true; const initial = async () => { try {
         const result = await api('/bootstrap');
         if (!alive)
@@ -101,8 +131,15 @@ export default function Dashboard() {
     } }; window.addEventListener('keydown', hotkey); return () => { alive = false; window.removeEventListener('hashchange', hash);window.removeEventListener('kairo:workspace-traverse',traverseWorkspace); window.removeEventListener('keydown', hotkey); }; }, [refresh]);
     const activePilotSync=useRef<Promise<unknown>>(Promise.resolve());
     useEffect(() => {if(boot?.csrf&&character&&boot.characters.some(pilot=>pilot.id===character))activePilotSync.current=activePilotSync.current.catch(()=>{}).then(()=>api('/universe/jspace/tracking/active','PUT',{character_id:character},boot.csrf)).catch(()=>{});},[character,boot?.csrf]);
-    useEffect(() => { if (boot)
-        refresh().catch(e => toast.error(e.message)); }, [character, refresh, !!boot]);
+    useEffect(() => {
+        if (!boot) return;
+        const requested = character;
+        const owner = createScopedRefresh({read: async () => {const observed = {...snapshotEvents.current}, resources = {...resourceEvents.current}, ancillary = {...ancillaryEvents.current}; const state = await api('/state?character=' + requested); return {state,observed,resources,ancillary};},
+            publish: value => {if (requested === charRef.current) {stateError.current = null; publishState(value);}},
+            onError: (error: any) => {if (requested === charRef.current) {stateError.current = error; if (!stateHasPublished.current) setErr(error.message); else toast.error(error.message);}}});
+        stateOwner.current = owner; void owner.request();
+        return () => {owner.close(); if (stateOwner.current === owner) stateOwner.current = null;};
+    }, [character, !!boot, publishState]);
     useEffect(() => {
         if (!boot) return;
         const recoveryKey = 'kairo-dataset-recovery-notices';
@@ -114,24 +151,34 @@ export default function Dashboard() {
             seenRecovery: key => remembered.includes(key),
             rememberRecovery: key => { remembered = [...remembered.slice(-9), key]; try { sessionStorage.setItem(recoveryKey, JSON.stringify(remembered)); } catch { } },
             refresh: async (revision, isCurrent) => {
-                const characterId = charRef.current, requestId = ++loading.current;
-                const [nextBoot, nextState] = await Promise.all([api('/bootstrap'), api('/state?character=' + characterId)]);
+                const nextBoot = await api('/bootstrap');
                 if (!isCurrent()) return;
                 if (nextBoot.datasetRevision !== revision) throw new Error('Dataset generation changed while reconnecting.');
                 bootRef.current = nextBoot; setBoot(nextBoot);
                 document.documentElement.dataset.theme = nextBoot.settings.theme || 'mint';
+                const characterId = charRef.current;
                 if (characterId && !nextBoot.characters.some((pilot: any) => pilot.id === characterId)) setCharacter(nextBoot.characters[0]?.id || 0);
-                if (requestId === loading.current && characterId === charRef.current) {
-                    setData(nextState.data); setNames(nextState.names); setOpsec(nextState.opsec); setSessions(nextState.sessions);
-                }
+                else await refresh();
+                if (!isCurrent()) return;
+                setRecoveryRevision(value => value + 1);
+                window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{resources:['recovery']}}));
                 window.dispatchEvent(new CustomEvent('kairo:universe-changed', { detail: { datasets: true, revision } }));
             },
             onComplete: () => toast.success('Static datasets updated. Your workspace is ready.'),
         });
         datasetConnectionRef.current = connection;
         const events = new EventSource('/api/events');
-        let timer: ReturnType<typeof setTimeout> | null = null;
-        events.onopen = () => { setConnected(true); connection.connect(); };
+        let timer: ReturnType<typeof setTimeout> | null = null, reloadRoster = false;
+        let hasConnected = false;
+        events.onopen = () => {
+            setConnected(true); connection.connect();
+            window.dispatchEvent(new CustomEvent('kairo:events-connected'));
+            if (hasConnected) {
+                setRecoveryRevision(value => value + 1); void reload().then(refresh).catch(() => {});
+                window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{resources:['recovery']}}));
+            }
+            hasConnected = true;
+        };
         events.onerror = () => { setConnected(false); connection.disconnect(); };
         events.addEventListener('dataset-restarting', e => connection.restarting(JSON.parse(e.data)));
         events.addEventListener('dataset-restart-cancelled', e => connection.cancelled(JSON.parse(e.data)));
@@ -139,16 +186,30 @@ export default function Dashboard() {
         events.addEventListener('datasets', e => window.dispatchEvent(new CustomEvent('datasets-changed', { detail: JSON.parse(e.data) })));
         events.addEventListener('snapshot', e => {
             const r = JSON.parse(e.data);
-            if (r.characterId === 0 || r.characterId === charRef.current) {
-                setData(d => ({ ...d, [r.key]: r.snapshot })); setNames((n: any) => ({ ...n, ...r.names }));
+            window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{characterId:r.characterId,key:r.key,resource:'snapshot'}}));
+            if (changeAffectsPilot(r, charRef.current)) {
+                snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1; ancillaryEvents.current.names++;
+                setData(previous => {const value = retainSnapshot(previous[r.key], r.snapshot); return value === previous[r.key] ? previous : {...previous,[r.key]:value};});
+                setNames((previous: any) => retainValue(previous, {...previous,...r.names}));
+                if (goalSourceKeys.includes(r.key)) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:r.characterId,resources:['goalSources'],key:r.key}}));
             }
         });
         events.addEventListener('universe', e => { const detail = JSON.parse(e.data); if (!detail.characterId || detail.characterId === charRef.current) window.dispatchEvent(new CustomEvent('kairo:universe-changed', { detail })); });
-        events.addEventListener('opsec', e => setOpsec(JSON.parse(e.data)));
-        events.addEventListener('changed', () => { if (!timer) timer = setTimeout(() => { timer = null; refresh().catch(() => {}); }, 1500); });
+        events.addEventListener('obs', e => window.dispatchEvent(new CustomEvent('kairo:obs-status', {detail:JSON.parse(e.data)})));
+        events.addEventListener('opsec', e => {ancillaryEvents.current.opsec++; setOpsec((previous: any) => retainValue(previous, JSON.parse(e.data)));});
+        events.addEventListener('changed', e => {
+            const detail = JSON.parse(e.data);
+            window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail}));
+            if (!changeAffectsPilot(detail, charRef.current)) return;
+            for (const resource of detail.resources || Object.keys(detail.resourceRevisions || {})) resourceEvents.current[resource] = (resourceEvents.current[resource] || 0) + 1;
+            applyResourceRevisions(detail.resourceRevisions, detail.resources, false);
+            window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail}));
+            reloadRoster ||= !!detail.resources?.includes('roster');
+            if ((changeNeedsState(detail) || reloadRoster) && !timer) timer = setTimeout(() => {timer = null; const task = reloadRoster ? reload().then(refresh) : refresh(); reloadRoster = false; void task.catch(() => {});}, 1500);
+        });
         const poll = setInterval(() => refresh().catch(() => {}), 30000);
         return () => { connection.dispose(); datasetConnectionRef.current = null; events.close(); if (timer) clearTimeout(timer); clearInterval(poll); };
-    }, [!!boot, refresh]);
+    }, [!!boot, refresh, reload, applyResourceRevisions]);
     async function retryDatasetConnection() {
         const connection = datasetConnectionRef.current;
         if (!connection) return;
@@ -167,6 +228,11 @@ export default function Dashboard() {
     finally {
         setRefreshing(false);
     } }
+    const activityRevision = `${recoveryRevision}:${resourceRevisions.activity || ''}`;
+    const goalsRevision = `${recoveryRevision}:${resourceRevisions.goals || ''}:${goalInputRevision(data, goalClock || Date.now())}`;
+    const sessionsRevision = `${recoveryRevision}:${resourceRevisions.sessions || ''}`;
+    const contextValue = useMemo(() => boot ? {boot,data,names,character,setCharacter,page,navigate,reload,refresh,opsec,sessions,activityRevision,goalsRevision,sessionsRevision} : null,
+        [boot,data,names,character,setCharacter,page,navigate,reload,refresh,opsec,sessions,activityRevision,goalsRevision,sessionsRevision]);
     const customPages = (boot as any)?.pages || [];
     const navRoutes = [...routes, ...customPages.map((p: any) => ({ id: 'module:' + p.id, name: p.title, group: 'EXTENSIONS' }))];
     const current = navRoutes.find(r => r.id === page);
@@ -221,7 +287,7 @@ export default function Dashboard() {
     const datasetUpdating = ['restarting', 'refreshing', 'delayed'].includes(datasetConnection.phase);
     const datasetBanner = datasetConnection.phase !== 'idle' && <div className="dataset-connection-banner" data-phase={datasetConnection.phase} role="status" aria-live="polite">{datasetConnection.phase === 'warning' || datasetConnection.phase === 'delayed' ? <AlertTriangle size={21}/> : <RefreshCw size={21} className="animate-spin"/>}<div><strong>{datasetConnection.phase === 'warning' ? 'Continuing with the previous dataset' : datasetConnection.phase === 'delayed' ? 'Still waiting for the updated core' : 'Applying dataset update — reconnecting'}</strong><p>{datasetConnection.message || 'Your current page stays open. Kairo will reconnect automatically.'}</p></div>{datasetConnection.phase === 'delayed' && <Button size="sm" variant="outline" onClick={() => void retryDatasetConnection()}>Retry connection</Button>}{datasetConnection.phase === 'warning' && <Button size="icon" variant="ghost" aria-label="Dismiss dataset notice" onClick={() => datasetConnectionRef.current?.dismiss()}><X size={16}/></Button>}</div>;
     const pilotControls = <div className="page-actions">{boot?.characters.length ? <Choice label="Active character" value={String(character)} onChange={v => setCharacter(Number(v))} options={boot.characters.map(c => ({ value: String(c.id), label: c.name }))}/> : <Button variant="outline" onClick={() => navigate('connections')}><Link2 size={15}/> Connect EVE</Button>}<Button size="icon" variant="outline" aria-label="Refresh ESI data" disabled={refreshing || !boot} onClick={sync}><RefreshCw size={16} className={refreshing ? 'animate-spin' : ''}/></Button></div>;
-    return <SidebarProvider style={{ '--sidebar-width': '238px' } as React.CSSProperties}><Sidebar className="k-sidebar"><SidebarHeader><a className="brand" href="/#overview"><span className="brand-symbol">K</span><span>KAIRO<small>CAPSULEER OPERATIONS</small></span></a><button className="workspace-search" onClick={() => setSearch(true)}><Search size={15}/><span>Jump to module</span><kbd>⌘ K</kbd></button></SidebarHeader><SidebarContent>{[...workspaceGroups, ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <SidebarGroup key={group} data-workspace-group={group}><SidebarGroupLabel>{group}</SidebarGroupLabel><SidebarMenu>{navRoutes.filter(r => r.group === group).map(r => <SidebarDestination key={r.id} route={r} active={page === r.id} navigate={navigate} />)}</SidebarMenu></SidebarGroup>)}</SidebarContent><SidebarFooter><div className="local-stamp"><ShieldCheck size={16}/><span>LOCAL ENVIRONMENT<small>Private by design · v{boot?.version || '0.8.0-rc.17'}</small></span></div></SidebarFooter></Sidebar><SidebarInset className={jspacePage ? 'jspace-shell' : undefined}><header className="topbar"><div className="flex items-center gap-3"><WorkspaceSidebarToggle /><span className="muted">{current?.group === 'UNIVERSE' ? 'Universe' : 'Workspace'}</span><ChevronRight size={14}/><span>{current?.name || 'Command centre'}</span></div>{jspacePage && pilotControls}<div className="topbar-right"><span className={'connection-status ' + (datasetUpdating ? 'updating' : connected ? 'online' : '')}><i />{datasetUpdating ? 'Updating datasets' : connected ? 'Core connected' : 'Reconnecting to core'}</span><EveClock /></div></header>{datasetBanner}<div className="workspace">{!jspacePage && <div className="page-heading"><div><p className="eyebrow">{current?.group === 'UNIVERSE' ? 'UNIVERSE' : page === 'studio' || page === 'opsec' ? 'BROADCAST SYSTEMS' : page === 'connections' || page === 'modules' ? 'WORKSPACE CONTROL' : 'YOUR FLIGHT DECK'}</p><h1>{current?.name || 'Command centre'}</h1><p className="muted">{descriptions[page]}</p></div>{pilotControls}</div>}{err ? <div className="panel server-error"><Orbit size={38}/><h2>Kairo’s local core is unavailable.</h2><p>{err}</p><p className="muted">Start Kairo on your computer, then reload this page.</p><Button onClick={() => window.location.reload()}>Retry connection</Button></div> : boot ? <Kairo.Provider value={{ boot, data, names, character, setCharacter, page, navigate, reload, refresh, opsec, sessions, time: Date.now() }}>{active?.needsReauth && <div className="inline-error mb-5">EVE access needs to be renewed. <button onClick={() => navigate('connections')}>Reconnect {active.name}</button></div>}<div className="page-transition" key={page}>{content}</div></Kairo.Provider> : <div className="loading-layout"><div className="stats-grid">{[0, 1, 2, 3].map(x => <Skeleton key={x} className="h-40"/>)}</div><Skeleton className="h-80"/></div>}<footer className="workspace-footer"><span>KAIRO / CAPSULEER OPERATIONS</span><span>Local memory. Modular growth.</span></footer></div></SidebarInset><Toaster theme="dark"/><CommandDialog open={search} onOpenChange={setSearch} title="Jump to a module" description="Search your Kairo workspace"><CommandInput placeholder="Search modules…"/><CommandList><CommandEmpty>No module found.</CommandEmpty>{[...workspaceGroups, ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <CommandGroup key={group} heading={group === 'UNIVERSE' ? 'Universe' : group.charAt(0)+group.slice(1).toLowerCase()}>{navRoutes.filter(r => r.group === group).map(r => { const Icon = icons[r.id] || Blocks; return <CommandItem key={r.id} value={r.name} keywords={r.keywords || []} onSelect={() => navigate(r.id)}><Icon size={17}/><span>{r.name}</span></CommandItem>; })}</CommandGroup>)}</CommandList></CommandDialog></SidebarProvider>;
+    return <SidebarProvider style={{ '--sidebar-width': '238px' } as React.CSSProperties}><Sidebar className="k-sidebar"><SidebarHeader><a className="brand" href="/#overview"><span className="brand-symbol">K</span><span>KAIRO<small>CAPSULEER OPERATIONS</small></span></a><button className="workspace-search" onClick={() => setSearch(true)}><Search size={15}/><span>Jump to module</span><kbd>⌘ K</kbd></button></SidebarHeader><SidebarContent>{[...workspaceGroups, ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <SidebarGroup key={group} data-workspace-group={group}><SidebarGroupLabel>{group}</SidebarGroupLabel><SidebarMenu>{navRoutes.filter(r => r.group === group).map(r => <SidebarDestination key={r.id} route={r} active={page === r.id} navigate={navigate} />)}</SidebarMenu></SidebarGroup>)}</SidebarContent><SidebarFooter><div className="local-stamp"><ShieldCheck size={16}/><span>LOCAL ENVIRONMENT<small>Private by design · v{boot?.version || '0.8.0-rc.17'}</small></span></div></SidebarFooter></Sidebar><SidebarInset className={jspacePage ? 'jspace-shell' : undefined}><header className="topbar"><div className="flex items-center gap-3"><WorkspaceSidebarToggle /><span className="muted">{current?.group === 'UNIVERSE' ? 'Universe' : 'Workspace'}</span><ChevronRight size={14}/><span>{current?.name || 'Command centre'}</span></div>{jspacePage && pilotControls}<div className="topbar-right"><span className={'connection-status ' + (datasetUpdating ? 'updating' : connected ? 'online' : '')}><i />{datasetUpdating ? 'Updating datasets' : connected ? 'Core connected' : 'Reconnecting to core'}</span><EveClock /></div></header>{datasetBanner}<div className="workspace">{!jspacePage && <div className="page-heading"><div><p className="eyebrow">{current?.group === 'UNIVERSE' ? 'UNIVERSE' : page === 'studio' || page === 'opsec' ? 'BROADCAST SYSTEMS' : page === 'connections' || page === 'modules' ? 'WORKSPACE CONTROL' : 'YOUR FLIGHT DECK'}</p><h1>{current?.name || 'Command centre'}</h1><p className="muted">{descriptions[page]}</p></div>{pilotControls}</div>}{err ? <div className="panel server-error"><Orbit size={38}/><h2>Kairo’s local core is unavailable.</h2><p>{err}</p><p className="muted">Start Kairo on your computer, then reload this page.</p><Button onClick={() => window.location.reload()}>Retry connection</Button></div> : boot && stateReady ? <Kairo.Provider value={contextValue}>{active?.needsReauth && <div className="inline-error mb-5">EVE access needs to be renewed. <button onClick={() => navigate('connections')}>Reconnect {active.name}</button></div>}<div className="page-transition" key={page}>{content}</div></Kairo.Provider> : <div className="loading-layout"><div className="stats-grid">{[0, 1, 2, 3].map(x => <Skeleton key={x} className="h-40"/>)}</div><Skeleton className="h-80"/></div>}<footer className="workspace-footer"><span>KAIRO / CAPSULEER OPERATIONS</span><span>Local memory. Modular growth.</span></footer></div></SidebarInset><Toaster theme="dark"/><CommandDialog open={search} onOpenChange={setSearch} title="Jump to a module" description="Search your Kairo workspace"><CommandInput placeholder="Search modules…"/><CommandList><CommandEmpty>No module found.</CommandEmpty>{[...workspaceGroups, ...(customPages.length ? ['EXTENSIONS'] : [])].map(group => <CommandGroup key={group} heading={group === 'UNIVERSE' ? 'Universe' : group.charAt(0)+group.slice(1).toLowerCase()}>{navRoutes.filter(r => r.group === group).map(r => { const Icon = icons[r.id] || Blocks; return <CommandItem key={r.id} value={r.name} keywords={r.keywords || []} onSelect={() => navigate(r.id)}><Icon size={17}/><span>{r.name}</span></CommandItem>; })}</CommandGroup>)}</CommandList></CommandDialog></SidebarProvider>;
 }
 function ExtensionPage({ id, character }: {
     id: string;

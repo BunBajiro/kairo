@@ -21,7 +21,7 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     const { atlas, publish = () => {}, onChange = () => {} } = options, now = options.now || Date.now;
     if (!atlas?.systems) throw new Error('Universe operations require a static atlas.');
     const byId = atlas.bySystemId || new Map(atlas.systems.map(system => [system.system_id, system]));
-    const byName = new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
+    const byName = atlas.bySystemName || new Map(atlas.systems.map(system => [system.name.toLowerCase(), system]));
     const parseIntel = createIntelParser(atlas), cooldowns = new Map(), fleetNext = new Map(), fleetBusy = new Set(), fleetFlights = new Map(), logPilots = new Set();
     let closed = false, ticking = false, fleetCursor = 0, tickFlight = null;
     store.db.exec(`CREATE TABLE IF NOT EXISTS universe_operations_records(

@@ -1,9 +1,11 @@
 /** Local observations are unverified reports. Parsing never changes standings or OPSEC. */
 const clean = (value, limit = 4000) => String(value ?? '').replace(/<[^>]*>/g, '').trim().slice(0, limit);
 export function createIntelParser(atlas) {
-    const exact = new Map(), prefixes = new Map();
+    const sharedNames = atlas.bySystemName;
+    const exact = sharedNames || new Map(), prefixes = new Map();
     for (const system of atlas.systems || []) {
-        const name = system.name.toLowerCase(); exact.set(name, system.system_id);
+        const name = system.name.toLowerCase();
+        if (!sharedNames) exact.set(name, system.system_id);
         if (name.length > 3) {
             const prefix = name.slice(0, 3);
             if (!prefixes.has(prefix)) prefixes.set(prefix, []);
@@ -45,7 +47,8 @@ export function createIntelParser(atlas) {
         for (let i = 0; i < tokens.length; i++) {
             let found = false;
             for (let size = Math.min(5, tokens.length - i); size > 0; size--) {
-                const id = exact.get(tokens.slice(i, i + size).join(' '));
+                const match = exact.get(tokens.slice(i, i + size).join(' '));
+                const id = sharedNames ? match?.system_id : match;
                 if (id) { ids.add(id); i += size - 1; found = true; break; }
             }
             if (found || tokens[i].length < 3) continue;

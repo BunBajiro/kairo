@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { openSdeArchive } from './sde-archive.mjs';
+import { sdeLimits, sdeLimitError, requireDatasetSpace, availableDatasetBytes } from './sde-limits.mjs';
 
 const LY = 9460000000000000;
 const SHARD_BYTES = 8 * 1024 * 1024;
@@ -36,27 +37,44 @@ async function sha256(path, signal) {
 }
 
 /** Build one complete generation. Called in a worker, never the core event loop. */
-export async function buildSde({ archivePath, outputDir, expectedBuild, onProgress = () => {}, signal }) {
+export async function buildSde({ archivePath, outputDir, expectedBuild, onProgress = () => {}, signal,
+  limits: limitOverrides, readAvailable = availableDatasetBytes, openFile = open, remove = rm, memoryUsage = process.memoryUsage }) {
+  const limits = sdeLimits(limitOverrides);
   signal?.throwIfAborted();
   if (!Number.isSafeInteger(expectedBuild) || expectedBuild <= 0) throw new Error('Expected SDE build is required');
   await mkdir(outputDir, { recursive: true });
+  await requireDatasetSpace(outputDir, limits.reserveBytes, readAvailable);
   // Scratch lives inside the managed stage so crash recovery can remove it too.
   const spoolDirectory = await mkdtemp(join(outputDir, '.spool-'));
-  const archive = await openSdeArchive(archivePath, { signal }).catch(async error => { await rm(spoolDirectory, { recursive: true, force: true }); throw error; });
+  const archive = await openSdeArchive(archivePath, { signal }).catch(async error => {
+    try { await remove(spoolDirectory, { recursive: true, force: true }); } catch (cleanupError) { error.cleanupErrors = [cleanupError]; }
+    throw error;
+  });
   const createdFiles = [];
-  let done = false;
-  const progress = (phase, detail) => { signal?.throwIfAborted(); onProgress({ phase, ...detail }); };
+  let done = false, failure, inputRows = 0, lastProgress = 0, currentPhase = 'validating', spoolBytes = 0, bufferedBytes = 0, outputBytes = 0;
+  const checkMemory = () => {
+    if (memoryUsage().external > limits.externalBytes) throw sdeLimitError('SDE_EXTERNAL_MEMORY', 'Dataset conversion exceeded its external-memory budget');
+  };
+  const progress = (phase, detail) => { signal?.throwIfAborted(); checkMemory(); currentPhase = phase; lastProgress = performance.now(); onProgress({ phase, inputRows, spoolBytes, outputBytes, ...detail }); };
+  async function* rows(name) {
+    for await (const row of archive.rows(name)) {
+      inputRows++;
+      if (inputRows % 1000 === 0) { signal?.throwIfAborted(); checkMemory(); if (performance.now() - lastProgress >= 500) progress(currentPhase); }
+      yield row;
+    }
+    if (performance.now() - lastProgress >= 500) progress(currentPhase);
+  }
   try {
     progress('validating');
     let sde;
-    for await (const record of archive.rows('_sde.jsonl')) if (record._key === 'sde') {
+    for await (const record of rows('_sde.jsonl')) if (record._key === 'sde') {
       if (sde) throw new Error('Duplicate SDE build metadata'); sde = record;
     }
     if (!sde || sde.buildNumber !== expectedBuild || !Number.isFinite(Date.parse(sde.releaseDate))) throw new Error('SDE archive build or release date does not match the requested update');
     const source = `https://developers.eveonline.com/static-data/tranquility/eve-online-static-data-${expectedBuild}-jsonl.zip`;
     async function loadMap(name) {
       const map = new Map();
-      for await (const row of archive.rows(name)) {
+      for await (const row of rows(name)) {
         if (!Number.isSafeInteger(row._key) || map.has(row._key)) throw new Error(`Invalid or duplicate SDE key in ${name}`);
         map.set(row._key, row);
       }
@@ -69,14 +87,14 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
     const rawGates = await loadMap('mapStargates.jsonl');
     if (rawSystems.size > 100000) throw new Error('SDE system count exceeds supported limits');
     const marketGroups = new Map();
-    for await (const row of archive.rows('marketGroups.jsonl')) {
+    for await (const row of rows('marketGroups.jsonl')) {
       if (!Number.isSafeInteger(row._key) || marketGroups.has(row._key)) throw new Error('Invalid or duplicate market group');
       marketGroups.set(row._key, { id: row._key, parentId: row.parentGroupID ?? 0, name: english(row.name), types: [] });
     }
     if (!marketGroups.size) throw new Error('Empty SDE market groups');
     for (const group of marketGroups.values()) if (group.parentId) required(marketGroups, group.parentId, 'market group parent');
     const typeNames = new Map(), descriptions = new Map(), volumes = {};
-    for await (const row of archive.rows('types.jsonl')) {
+    for await (const row of rows('types.jsonl')) {
       if (!Number.isSafeInteger(row._key) || typeNames.has(row._key)) throw new Error('Invalid or duplicate type');
       typeNames.set(row._key, english(row.name));
       if (row._key >= 30000 && row._key < 32000) descriptions.set(row._key, english(row.description));
@@ -89,7 +107,7 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
     if (!typeNames.size) throw new Error('Empty SDE types');
     for (const group of marketGroups.values()) group.types.sort((a, b) => a - b);
     const owners = new Map(), corporations = {};
-    for await (const row of archive.rows('npcCorporations.jsonl')) {
+    for await (const row of rows('npcCorporations.jsonl')) {
       if (!Number.isSafeInteger(row._key) || owners.has(row._key)) throw new Error('Invalid or duplicate NPC corporation');
       owners.set(row._key, english(row.name));
       corporations[row._key] = { name: english(row.name), factionId: row.factionID ?? 0 };
@@ -118,8 +136,10 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
     }));
     async function flush(bucket) {
       if (!bucket.buffered) return;
+      await requireDatasetSpace(outputDir, limits.reserveBytes + bucket.buffered, readAvailable);
       const bytes = Buffer.concat(bucket.buffer, bucket.buffered);
-      const handle = await open(bucket.path, 'a');
+      const handle = await openFile(bucket.path, 'a');
+      let writeFailure;
       try {
         let cursor = 0;
         while (cursor < bytes.length) {
@@ -130,8 +150,9 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
         await handle.datasync();
         const size = (await handle.stat()).size;
         if (size !== bucket.bytes + bytes.length) throw new Error('SDE conversion spool lost data while writing');
-      } finally { await handle.close(); }
-      bucket.bytes += bytes.length; bucket.digest.update(bytes); bucket.buffer = []; bucket.buffered = 0;
+      } catch (cause) { writeFailure = cause; throw cause; }
+      finally { try { await handle.close(); } catch (cause) { if (writeFailure) writeFailure.cleanupErrors = [...(writeFailure.cleanupErrors || []), cause]; else throw cause; } }
+      bucket.bytes += bytes.length; bufferedBytes -= bytes.length; bucket.digest.update(bytes); bucket.buffer = []; bucket.buffered = 0;
     }
     async function append(sid, key, item) {
       signal?.throwIfAborted();
@@ -140,6 +161,11 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
       expected[key]++;
       const bucket = buckets[bucketBySystem.get(sid)];
       const bytes = Buffer.from(`${JSON.stringify([sid, key, item])}\n`);
+      if (spoolBytes + bytes.length > limits.spoolBytes) throw sdeLimitError('SDE_SPOOL_LIMIT', 'Dataset conversion exceeded its total scratch-file budget');
+      if (bucket.bytes + bucket.buffered + bytes.length > limits.bucketBytes) throw sdeLimitError('SDE_BUCKET_LIMIT', 'Dataset conversion exceeded its per-bucket scratch-file budget');
+      if (bytes.length > limits.bufferedSpoolBytes) throw sdeLimitError('SDE_BUFFER_LIMIT', 'Dataset conversion exceeded its buffered scratch-file budget');
+      if (bufferedBytes + bytes.length > limits.bufferedSpoolBytes) for (const pending of buckets) await flush(pending);
+      spoolBytes += bytes.length; bufferedBytes += bytes.length;
       bucket.buffer.push(bytes); bucket.buffered += bytes.length; bucket.rows++;
       if (bucket.buffered >= BUFFER_BYTES) await flush(bucket);
     }
@@ -151,25 +177,25 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
     }
     progress('converting', { completed: 0, total: systems.size });
     const orbitNames = new Map(), effects = new Map();
-    for await (const row of archive.rows('mapStars.jsonl')) {
+    for await (const row of rows('mapStars.jsonl')) {
       const item = { ...body(row, 'star'), name: required(systems, row.solarSystemID, 'star system').name, statistics: row.statistics ?? {} };
       orbitNames.set(item.id, item.name); await append(row.solarSystemID, 'star', item);
     }
     for (const [file, kind] of [['mapPlanets.jsonl','planet'],['mapMoons.jsonl','moon'],['mapAsteroidBelts.jsonl','asteroid_belt']]) {
-      for await (const row of archive.rows(file)) {
+      for await (const row of rows(file)) {
         const item = body(row, kind), name = systems.get(row.solarSystemID).name;
         const fallback = kind === 'planet' ? `${name} ${roman(row.celestialIndex)}` : `${orbitNames.get(row.orbitID) ?? name} - ${kind === 'moon' ? 'Moon' : 'Asteroid Belt'} ${row.orbitIndex}`;
         item.name = english(row.uniqueName, fallback); orbitNames.set(item.id, item.name);
         await append(row.solarSystemID, 'celestials', item);
       }
     }
-    for await (const row of archive.rows('mapSecondarySuns.jsonl')) {
+    for await (const row of rows('mapSecondarySuns.jsonl')) {
       const item = { ...body(row, 'secondary_star'), name: typeNames.get(row.typeID) ?? 'Secondary star', effect_id: row.effectBeaconTypeID };
       Object.assign(systems.get(row.solarSystemID), { effect: typeNames.get(row.effectBeaconTypeID) ?? String(row.effectBeaconTypeID), effect_id: row.effectBeaconTypeID });
       effects.set(row.solarSystemID, descriptions.get(row.effectBeaconTypeID) ?? '');
       await append(row.solarSystemID, 'celestials', item);
     }
-    for await (const row of archive.rows('npcStations.jsonl')) {
+    for await (const row of rows('npcStations.jsonl')) {
       const item = body(row, 'station'), owner = owners.get(row.ownerID) ?? String(row.ownerID);
       const operation = required(operations, row.operationID, 'station operation');
       const fallback = `${orbitNames.get(row.orbitID) ?? systems.get(row.solarSystemID).name} - ${owner}${row.useOperationName ? ` ${english(operation.operationName)}` : ''}`;
@@ -194,10 +220,16 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
     let shardLength = 0, detailBytes = 0, completed = 0, celestialCount = 0, stationCount = 0, gateCount = 0;
     async function writeOutput(name, bytes) {
       signal?.throwIfAborted();
-      const handle = await open(join(outputDir, name), 'wx');
+      checkMemory();
+      if (outputBytes + bytes.length > limits.outputBytes) throw sdeLimitError('SDE_OUTPUT_LIMIT', 'Dataset conversion exceeded its generated-file budget');
+      await requireDatasetSpace(outputDir, limits.reserveBytes + bytes.length, readAvailable);
+      const handle = await openFile(join(outputDir, name), 'wx');
       createdFiles.push(name);
+      let writeFailure;
       try { await handle.writeFile(bytes, { signal }); await handle.datasync(); }
-      finally { await handle.close(); }
+      catch (cause) { writeFailure = cause; throw cause; }
+      finally { try { await handle.close(); } catch (cause) { if (writeFailure) writeFailure.cleanupErrors = [...(writeFailure.cleanupErrors || []), cause]; else throw cause; } }
+      outputBytes += bytes.length;
       return { name, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') };
     }
     async function flushShard() {
@@ -242,7 +274,7 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
         }
         completed++;
       }
-      if (bucket.bytes) await rm(bucket.path);
+      if (bucket.bytes) await remove(bucket.path);
       progress('converting', { completed, total: systems.size });
     }
     await flushShard();
@@ -271,9 +303,17 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
     await writeOutput('manifest.json', Buffer.concat([json(manifest), Buffer.from('\n')]));
     done = true;
     return manifest;
-  } finally {
-    await archive.close();
-    await rm(spoolDirectory, { recursive: true, force: true });
-    if (!done) for (const name of createdFiles) await rm(join(outputDir, name), { force: true });
+  } catch (cause) { failure = cause; throw cause; }
+  finally {
+    const cleanupErrors = [];
+    try { await archive.close(); } catch (cause) { cleanupErrors.push(cause); }
+    try { await remove(spoolDirectory, { recursive: true, force: true }); } catch (cause) { cleanupErrors.push(cause); }
+    if (!done) for (const name of createdFiles) {
+      try { await remove(join(outputDir, name), { force: true }); } catch (cause) { cleanupErrors.push(cause); }
+    }
+    if (cleanupErrors.length) {
+      if (failure) failure.cleanupErrors = [...(failure.cleanupErrors || []), ...cleanupErrors];
+      else throw Object.assign(new AggregateError(cleanupErrors, 'Dataset conversion scratch files could not be removed'), { code: 'SDE_CLEANUP_FAILED' });
+    }
   }
 }

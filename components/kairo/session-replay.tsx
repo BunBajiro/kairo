@@ -5,6 +5,7 @@ import {Activity, ChevronLeft, ChevronRight, Crosshair, Factory, Film, Graduatio
 import {Button} from '@/components/ui/button';
 import {api} from './model';
 import type {ReplaySovereigntyOwner} from './session-replay-sovereignty.mjs';
+import {prepareReplayTimeline} from './session-replay-timeline.mjs';
 import './session-replay.css';
 
 type ReplayVisit = {id: number | string; systemId: number; name: string; entered: string; exited?: string | null; seconds?: number; inferred?: boolean; clipped?: boolean; active?: boolean; coordinates_available?: boolean; location_basis?: string; sovereignty_at_visit?: ReplaySovereigntyOwner | null};
@@ -40,10 +41,6 @@ function elapsedLabel(ms: number) {
   return `${hours ? String(hours).padStart(2, '0') + ':' : ''}${String(minutes % 60).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 }
 function timeLabel(at: string | number) {return UTC_TIME.format(new Date(at));}
-// Defend older snapshots too: all event surfaces consume this filtered timeline.
-function visibleReplayEvent(event: ReplayEvent) {
-  return !['system.entered', 'location.changed'].includes(event.type) && !event.type.startsWith('opsec.') && event.module !== 'opsec';
-}
 function eventPresentation(type: string) {
   if (type === 'killmail.kill') return {Icon: Swords, tone: 'combat', label: 'Kill'};
   if (type === 'killmail.loss') return {Icon: Skull, tone: 'loss', label: 'Loss'};
@@ -99,41 +96,34 @@ export function useSessionReplay(characterId: number) {
     if (elapsedRef.current >= data.durationMs) {elapsedRef.current = 0; setElapsedMs(0); setScrubKey(key => key + 1);}
     setSmooth(true); setPlaying(current => !current);
   }, [data]);
-  const timeline = useMemo(() => {
-    if (!data) return {visits: [] as (ReplayVisit & {start: number; end: number})[], events: [] as (ReplayEvent & {time: number})[], start: 0};
-    const start = Date.parse(data.startedAt);
-    return {start, visits: data.visits.map(visit => ({...visit, start: Date.parse(visit.entered), end: visit.exited ? Date.parse(visit.exited) : Date.parse(data.endedAt)})).sort((a, b) => a.start - b.start), events: data.events.filter(visibleReplayEvent).map(event => ({...event, time: Date.parse(event.at)})).sort((a, b) => a.time - b.time)};
-  }, [data]);
+  const timeline = useMemo(() => prepareReplayTimeline(data), [data]);
   const at = timeline.start + elapsedMs;
-  const currentVisit = useMemo(() => [...timeline.visits].reverse().find(visit => visit.start <= at && (at < visit.end || (at === visit.end && at === Date.parse(data?.endedAt || '')))) || null, [timeline.visits, at, data?.endedAt]);
-  const recentEvents = useMemo(() => timeline.events.filter(event => event.time <= at).slice(-5).reverse(), [timeline.events, at]);
-  const nextVisit = useMemo(() => timeline.visits.find(visit => visit.start > at) || null, [timeline.visits, at]);
-  const discoveredSystemIds = useMemo(() => [...new Set(timeline.visits.map(visit => visit.systemId))], [timeline.visits]);
+  const position = useMemo(() => timeline.at(at), [timeline, at]);
+  const {currentVisit, nextVisit, recentEvents, previousEvent, nextEvent} = position;
+  const discoveredSystemIds = timeline.discoveredSystemIds;
   const frame = useMemo<ReplayMapFrame | null>(() => data ? {
     systemId: currentVisit?.coordinates_available === false ? null : currentVisit?.systemId || null,
     sovereigntyAtVisit: currentVisit?.sovereignty_at_visit || null,
     follow, smooth, focusKey: `${request?.sessionId}:${currentVisit?.id || 'gap'}:${scrubKey}`,
-    trailSystemIds: [...new Set(timeline.visits.filter(visit => visit.start <= at).map(visit => visit.systemId))],
+    trailSystemIds: position.trailSystemIds,
     discoveredSystemIds, allTravel: data.travel,
-    travel: data.travel.filter(edge => Date.parse(edge.at) <= at),
+    travel: position.travel,
     eventSystemIds: [...new Set(recentEvents.filter(event => event.system_id && at - event.time < Math.max(30000, speed * 1800)).map(event => event.system_id!))],
     events: recentEvents.filter(event => event.system_id && at - event.time < Math.max(30000, speed * 1800)).slice(0, 3).map(event => ({id: event.id, systemId: event.system_id!, summary: event.summary || event.type, type: event.type, locationBasis: event.location_basis || 'unknown'})),
     at: new Date(at).toISOString(),
-  } : null, [data, currentVisit, follow, smooth, request?.sessionId, scrubKey, timeline.visits, at, recentEvents, discoveredSystemIds, speed]);
-  const previous = useCallback(() => {const visit = [...timeline.visits].reverse().find(item => item.start < at - 1000); seek(visit ? visit.start - timeline.start : 0);}, [timeline, at, seek]);
+  } : null, [data, currentVisit, follow, smooth, request?.sessionId, scrubKey, position, at, recentEvents, discoveredSystemIds, speed]);
+  const previous = useCallback(() => seek(position.previousVisit ? position.previousVisit.start - timeline.start : 0), [position.previousVisit, timeline.start, seek]);
   const next = useCallback(() => seek(nextVisit ? nextVisit.start - timeline.start : Number(data?.durationMs) || 0), [nextVisit, timeline.start, data?.durationMs, seek]);
-  const previousEvent = [...timeline.events].reverse().find(event => event.time < at);
-  const nextEvent = timeline.events.find(event => event.time > at);
-  return {active: Boolean(request), request, data, loading, error, elapsedMs, playing, speed, follow, frame, currentVisit, nextVisit, recentEvents, previousEvent, nextEvent, timeline, seek, close, stopFollowing, toggleFollow, togglePlaying, previous, next, setSpeed, retry: () => setReload(value => value + 1)};
+  return {active: Boolean(request), request, data, loading, error, elapsedMs, playing, speed, follow, frame, currentVisit, nextVisit, recentEvents, previousEvent, nextEvent, timeline, gap: position.gap, seek, close, stopFollowing, toggleFollow, togglePlaying, previous, next, setSpeed, retry: () => setReload(value => value + 1)};
 }
 
 export function SessionReplayControls({replay}: {replay: ReturnType<typeof useSessionReplay>}) {
   if (!replay.active) return null;
   const {data, currentVisit, playing, timeline} = replay;
   const duration = Math.max(0, Number(data?.durationMs) || 0), percent = duration ? replay.elapsedMs / duration * 100 : 0;
-  const ticks = timeline.events.filter((_, index) => index % Math.max(1, Math.ceil(timeline.events.length / 120)) === 0);
+  const ticks = timeline.ticks;
   const currentAt = timeline.start + replay.elapsedMs;
-  const gap = data?.coverage?.gaps?.find(item => Date.parse(item.from) <= currentAt && Date.parse(item.to) > currentAt);
+  const gap = replay.gap;
   return <section className={'session-replay'+(playing?' is-playing':'')} aria-label="Session replay">
     <div className="session-replay-heading">
       <div className="session-replay-title"><Film size={22} aria-hidden="true"/><div><span className="eyebrow">SESSION REPLAY</span><h3>{data?.session.label || (replay.loading ? 'Loading recorded session…' : 'Recorded session')}</h3></div></div>

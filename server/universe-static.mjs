@@ -72,6 +72,7 @@ export function getUniverseStatic() {
         metadata: freeze(data.metadata), systems: Object.freeze(systems),
         regions: Object.freeze([...regions.values()]), constellations: Object.freeze([...constellations.values()]),
         gates: Object.freeze(data.gates), bySystemId: readonlyMap(bySystemId),
+        bySystemName: readonlyMap(new Map(systems.map(system => [system.name.toLowerCase(), system]))),
         neighbors: readonlyMap(new Map([...neighbors].map(([id, adjacent]) => [id, readonlySet(adjacent)]))),
     });
     return topology;

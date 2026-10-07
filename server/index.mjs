@@ -136,7 +136,7 @@ export async function startKairo(options = {}) {
         }
         if (path === '/state' && read) {
             const id = checkedChar(url);
-            return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id) });
+            return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id), resourceRevisions:core.resourceRevisions(id) });
         }
         if (path === '/events' && read) {
             if (applyingDataset) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Applying a dataset update.'});}
@@ -205,7 +205,7 @@ export async function startKairo(options = {}) {
         if (path.startsWith('/characters/') && req.method === 'DELETE') {
             const id = Number(path.split('/')[2]);
             await auth.disconnect(id);
-            core.refreshOPSEC();core.updateBindings();
+            core.refreshOPSEC();core.updateBindings();core.changed({resources:['roster','state','goals','goalSources']});
             return json(res, 200, { ok: true });
         }
         if (path === '/modules' && req.method === 'PUT') {
@@ -221,6 +221,7 @@ export async function startKairo(options = {}) {
         if(path==='/stream/sources'&&read)return json(res,200,{goals:store.db.prepare('SELECT id,character_id,title,progress,target,done FROM goals ORDER BY done,title').all(),contexts:toastContexts});
         if(path==='/stream/preview'&&req.method==='POST'){const c=sanitizeConfig(await body(req));return json(res,200,bindingProjections(store,auth,c.elements));}
         if(path==='/obs'&&read)return json(res,200,{config:core.obs.config(),status:core.obs.status()});
+        if(path==='/obs/status'&&read)return json(res,200,core.obs.status());
         if(path==='/obs'&&req.method==='PUT')return json(res,200,{status:await core.obs.save(await body(req)),config:core.obs.config()});
         if(path==='/obs/targets'&&read)return json(res,200,await core.obs.inventory());
         if(path==='/obs/filters'&&read)return json(res,200,await core.obs.filters(url.searchParams.get('source')));
@@ -294,6 +295,7 @@ export async function startKairo(options = {}) {
             const id=path.split('/')[2],g=store.db.prepare('SELECT character_id FROM goals WHERE id=?').get(id);
             if(!g||url.searchParams.has('character')&&g.character_id!==checkedChar(url))throw new Error('Goal not found for this character.');
             store.db.prepare('DELETE FROM goals WHERE id=?').run(id);
+            core.changed({characterId:g.character_id,resources:['goals']});
             core.updateBindings();
             return json(res, 200, { ok: true });
         }
@@ -310,14 +312,17 @@ export async function startKairo(options = {}) {
             return json(res, 201, { id });
         }
         if (path.startsWith('/notes/') && req.method === 'DELETE') {
-            store.db.prepare('DELETE FROM notes WHERE id=?').run(path.split('/')[2]);
+            const id=path.split('/')[2],note=store.db.prepare('SELECT character_id FROM notes WHERE id=?').get(id);
+            if(note&&url.searchParams.has('character')&&note.character_id!==checkedChar(url))throw new Error('Note not found for this character.');
+            store.db.prepare('DELETE FROM notes WHERE id=?').run(id);
+            if(note)core.changed({characterId:note.character_id,resources:['notes']});
             return json(res, 200, { ok: true });
         }
         if(path==='/session'&&req.method==='POST'){const characterId=checkedChar(url),r=changeSession(store,core.publish,characterId,await body(req));core.updateBindings();if(!options.noSync)core.sessionCombat.sessionChanged(r.id,characterId).catch(()=>{});return json(res,200,r);}
         if(path==='/sessions'&&read){const offset=Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))),rows=store.db.prepare('SELECT id,character_id,label,started,ended FROM sessions WHERE character_id=? ORDER BY started DESC,id DESC LIMIT 31 OFFSET ?').all(checkedChar(url),offset);return json(res,200,{items:rows.slice(0,30),more:rows.length>30});}
         if(/^\/sessions\/[^/]+\/replay$/.test(path) && read) return json(res,200,sessionReplay(store,decodeURIComponent(path.split('/')[2]),checkedChar(url)));
         if(path.startsWith('/sessions/')){const id=path.split('/')[2],characterId=checkedChar(url);if(read){const report=sessionReport(store,id,characterId,Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))));if(!options.noSync)core.sessionCombat.sync(id,characterId).catch(()=>{});const coverage=store.get('session:combat:'+id,null);if(coverage&&store.get('module:combat',true))report.allianceCombat.coverage=coverage;return json(res,200,report);}
-            if(req.method==='PUT'){const b=await body(req),label=String(b.label||'').trim().slice(0,100);if(!label)throw new Error('Give this session a name.');const r=store.db.prepare('UPDATE sessions SET label=?,notes=? WHERE id=? AND character_id=?').run(label,String(b.notes||'').slice(0,12000),id,characterId);if(!r.changes)throw new Error('Session not found for this character.');core.updateBindings();return json(res,200,{ok:true});}}
+            if(req.method==='PUT'){const b=await body(req),label=String(b.label||'').trim().slice(0,100);if(!label)throw new Error('Give this session a name.');const r=store.db.prepare('UPDATE sessions SET label=?,notes=? WHERE id=? AND character_id=?').run(label,String(b.notes||'').slice(0,12000),id,characterId);if(!r.changes)throw new Error('Session not found for this character.');core.changed({characterId,resources:['sessions']});core.updateBindings();return json(res,200,{ok:true});}}
         if (path === '/universe/static' && read) {
             if (!universeAtlasResponse) {
                 const raw=Buffer.from(JSON.stringify(core.universe.static()));
@@ -478,6 +483,7 @@ export async function startKairo(options = {}) {
                 }
                 try {
                     const identity = await auth.callback(s.key, url.searchParams.get('state'), url.searchParams.get('code'));
+                    core.changed({resources:['roster','state','goals','goalSources']});
                     core.requestSync(identity.id);
                     res.writeHead(303, { Location: '/?auth=connected#connections' });
                     return res.end();

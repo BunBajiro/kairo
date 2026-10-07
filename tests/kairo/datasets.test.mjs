@@ -89,7 +89,7 @@ test('concurrent manual and automatic requests share one metadata request and on
 
 test('startup and recurring checks use one hourly deadline timer, no interval loop', async t => {
   const { service, timers, calls, runTimer } = await setup(t, { fetcher: async () => metadata(BASE - 1) });
-  service.start(); service.start(); await tick();
+  service.start(); await service.start();
   assert.equal(timers.size, 1);
   assert.equal([...timers.values()][0].delay, 1000);
   await runTimer(); await service.check();
@@ -100,7 +100,7 @@ test('startup and recurring checks use one hourly deadline timer, no interval lo
 
 test('automatic=false disables scheduled requests but leaves manual checks available', async t => {
   const { service, timers, calls } = await setup(t, { automatic: false });
-  service.start(); await tick();
+  await service.start();
   assert.equal(timers.size, 0); assert.equal(calls.length, 0);
   await service.check({ manual: true }); assert.equal(calls.length, 1);
 });
@@ -250,4 +250,77 @@ test('successful pointer publication is not rolled back when post-commit bookkee
   const active = JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json')));
   assert.equal(active.build, NEXT);
   assert.equal((await prepareDatasetRuntime(dataDir)).directory, candidate.directory);
+});
+
+test('insufficient preparation space leaves the active generation and never downloads', async t => {
+  const { service, dataDir, calls } = await setup(t, { readAvailable: async () => 0 });
+  const old = await managed(dataDir, BASE);
+  await service.install();
+  assert.match(service.status().error, /free space/); assert.equal(calls.length, 1);
+  assert.equal((await prepareDatasetRuntime(dataDir)).directory, old.directory);
+});
+
+test('failed temporary cleanup is visible, durable across restart and retried on check', async t => {
+  const { service, dataDir } = await setup(t, { remove: async (path, options) => {
+    if (path.endsWith('.zip')) throw Object.assign(new Error('File is locked'), { code: 'EPERM' });
+    return rm(path, options);
+  } });
+  await service.install();
+  assert.equal(service.status().phase, 'ready');
+  const warning = service.status().cleanupWarning;
+  assert.equal(warning.count, 1); assert.equal(warning.failures[0].code, 'EPERM');
+  assert.match(warning.failures[0].path, /^download-[a-f0-9-]+\.zip$/);
+  assert.deepEqual(JSON.parse(await readFile(join(dataDir, 'datasets', 'cleanup.json'))), warning);
+  await service.close();
+  const next = createDatasetService({ dataDir, automatic: false, fetcher: async () => metadata() });
+  t.after(() => next.close()); await next.ready;
+  assert.equal(next.status().cleanupWarning.count, 1);
+  await next.check();
+  assert.equal(next.status().cleanupWarning, null);
+  const entries = await readdir(join(dataDir, 'datasets'));
+  assert.ok(entries.includes('pending.json')); assert.ok(!entries.some(name => name.endsWith('.zip')));
+});
+
+test('retirement failure never rolls back a committed generation and persists an actionable warning', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const old = await managed(dataDir, NEXT), candidate = await managed(dataDir, NEXT + 1, 'pending');
+  const result = await commitDatasetRuntime(dataDir, candidate, { remove: async (path, options) => {
+    if (path === old.directory) throw Object.assign(new Error('Access denied'), { code: 'EACCES' });
+    return rm(path, options);
+  } });
+  assert.equal(result.cleanupWarning.failures[0].path, basename(old.directory));
+  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).build, NEXT + 1);
+  assert.equal((await prepareDatasetRuntime(dataDir)).directory, candidate.directory);
+  const entries = await readdir(join(dataDir, 'datasets'));
+  assert.ok(!entries.includes(basename(old.directory))); assert.ok(!entries.includes('cleanup.json'));
+});
+
+test('new runtime refreshes post-ready retirement warnings at activation', async t => {
+  const { service, dataDir } = await setup(t);
+  assert.equal(service.status().cleanupWarning, null);
+  const warning = { message: 'Check locked old dataset files', failedAt: new Date().toISOString(), count: 1, failures: [{ path: 'old-generation', code: 'EPERM', message: 'Locked' }] };
+  await writeFile(join(dataDir, 'datasets', 'cleanup.json'), JSON.stringify(warning));
+  await service.start();
+  assert.deepEqual(service.status().cleanupWarning, warning);
+});
+
+test('unreadable advisory cleanup status never blocks valid runtime readiness', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  await mkdir(join(dataDir, 'datasets', 'cleanup.json'));
+  const next = createDatasetService({ dataDir, automatic: false }); t.after(() => next.close());
+  await next.ready; await next.start();
+  assert.equal(next.status().phase, 'idle'); assert.equal(next.status().cleanupWarning.failures[0].path, 'cleanup.json');
+});
+
+test('locked redundant pending pointer cannot prevent restart on valid active data', async t => {
+  const { service, dataDir } = await setup(t); await service.close();
+  const active = await managed(dataDir, NEXT);
+  await writeFile(join(dataDir, 'datasets', 'pending.json'), JSON.stringify({ schema: 1, directory: basename(active.directory), build: NEXT }));
+  const selected = await prepareDatasetRuntime(dataDir, { remove: async (path, options) => {
+    if (path.endsWith('pending.json')) throw Object.assign(new Error('Locked pending pointer'), { code: 'EPERM' });
+    return rm(path, options);
+  } });
+  assert.equal(selected.directory, active.directory); assert.equal(selected.pending, false);
+  const warning = JSON.parse(await readFile(join(dataDir, 'datasets', 'cleanup.json')));
+  assert.equal(warning.failures[0].path, 'pending.json');
 });

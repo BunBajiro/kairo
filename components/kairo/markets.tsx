@@ -14,6 +14,7 @@ import {MarketCategories,MarketCategoryPath} from './market-categories';
 import {useKairo} from './context';
 import {api,stamp} from './model';
 import {Choice,ItemName} from './ui';
+import {createAdministrativeRefresh,marketRefreshPeriod} from './administrative-refresh.mjs';
 const price=(n:any)=>typeof n==='number'?n.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
 const units=(n:any)=>typeof n==='number'?n.toLocaleString('en-GB',{maximumFractionDigits:1}):'—';
 function Delta({value,stale=false}:{value:any;stale?:boolean}){return <span className={'market-delta '+(value>0?'above':value<0?'below':'')} title={stale?'Reference was observed more than 24 hours ago':''}>{typeof value==='number'?(value>0?'+':'')+value.toFixed(1)+'%':'No Jita scan'}{stale&&typeof value==='number'?' *':''}</span>;}
@@ -21,9 +22,9 @@ function Pager({page,pages,onChange}:{page:number;pages:number;onChange:(p:numbe
 export function Markets(){
  const {boot,character,navigate}=useKairo();const [state,setState]=useState<any>(null),[hubId,setHubId]=useState(60003760),[scanChar,setScanChar]=useState(character),[compare,setCompare]=useState(true),[busy,setBusy]=useState(false),[manage,setManage]=useState(false),[basket,setBasket]=useState(false),[error,setError]=useState(''),[tab,setTab]=useState('browse');
  const [category,setCategory]=useState('choose'),[categoryData,setCategoryData]=useState<any>(null);
- const [query,setQuery]=useState(''),[filter,setFilter]=useState('all'),[sort,setSort]=useState('name'),[page,setPage]=useState(0),[results,setResults]=useState<any>(null),[loading,setLoading]=useState(false),[selected,setSelected]=useState(0),[revision,setRevision]=useState(0);const alive=useRef(true),seq=useRef(0);
- const load=useCallback(async()=>{const ticket=++seq.current;const r=await api('/markets');if(!alive.current||ticket!==seq.current)return;setState(r);setError('');setHubId(id=>r.hubs.some((h:any)=>h.id===id)?id:r.hubs[0]?.id||0);},[]);
- useEffect(()=>{alive.current=true;load().catch(e=>setError(e.message));const timer=setInterval(()=>load().catch(e=>{if(alive.current)setError(e.message);}),4000);return()=>{alive.current=false;seq.current++;clearInterval(timer);};},[load]);
+ const [query,setQuery]=useState(''),[filter,setFilter]=useState('all'),[sort,setSort]=useState('name'),[page,setPage]=useState(0),[results,setResults]=useState<any>(null),[loading,setLoading]=useState(false),[selected,setSelected]=useState(0),[revision,setRevision]=useState(0);const refreshOwner=useRef<ReturnType<typeof createAdministrativeRefresh>|null>(null);
+ const load=useCallback(()=>refreshOwner.current?.request({force:true})||Promise.resolve(),[]);
+ useEffect(()=>{const owner=createAdministrativeRefresh({read:()=>api('/markets'),publish:r=>{setState(r);setError('');setHubId(id=>r.hubs.some((h:any)=>h.id===id)?id:r.hubs[0]?.id||0);},onError:e=>setError((e as Error).message),visible:()=>!document.hidden,period:marketRefreshPeriod});refreshOwner.current=owner;void owner.request();const wake=()=>owner.visibilityChanged();document.addEventListener('visibilitychange',wake);window.addEventListener('focus',wake);window.addEventListener('kairo:events-connected',wake);return()=>{owner.close();refreshOwner.current=null;document.removeEventListener('visibilitychange',wake);window.removeEventListener('focus',wake);window.removeEventListener('kairo:events-connected',wake);};},[]);
  const hub=state?.hubs.find((h:any)=>h.id===hubId),job=state?.job,running=job?.status==='running',scan=hub?.last_scan;
  const stampKey=scan?.jobId+':'+job?.status+':'+(job?.historyDone||0)+':'+revision+':'+boot.datasetRevision;
  useEffect(()=>{setPage(0);setSelected(0);setResults(null);setCategoryData(null);},[hubId]);

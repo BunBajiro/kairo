@@ -7,6 +7,7 @@ import {randomUUID} from 'node:crypto';
 import {createMarketCategories} from '../../server/market-categories.mjs';
 import {createIntelParser} from '../../server/universe-intel.mjs';
 import {datasetFile} from '../../server/dataset-paths.mjs';
+import {getUniverseStatic} from '../../server/universe-static.mjs';
 
 const catalog = () => ({source: 'fixture', build: 123, groups: [
     {id: 4, parentId: 0, name: 'Ships', types: []},
@@ -67,6 +68,27 @@ const references = (parse, text) => {
     const {system_ids, ambiguous_systems} = parse({text}, AT);
     return {system_ids, ambiguous_systems};
 };
+
+test('shared immutable atlas names preserve exact Intel lookup and mutable atlas isolation', () => {
+    const atlas = getUniverseStatic(), lookup = atlas.bySystemName;
+    assert.strictEqual(lookup, getUniverseStatic().bySystemName);
+    assert.equal(lookup.set, undefined); assert.equal(lookup.delete, undefined); assert.equal(lookup.clear, undefined);
+    assert.ok(Object.isFrozen(lookup));
+    const shared = createIntelParser(atlas), independent = createIntelParser({systems: atlas.systems});
+    for (const system of atlas.systems) {
+        assert.strictEqual(lookup.get(system.name.toLowerCase()), system);
+        assert.deepEqual(references(shared, system.name), references(independent, system.name));
+    }
+    const custom = {systems: [{name: 'Original', system_id: 1}]};
+    const before = createIntelParser(custom);
+    custom.systems[0].system_id = 99;
+    assert.deepEqual(references(before, 'Original Orig'), {system_ids:[1], ambiguous_systems:[]});
+    custom.systems = [{name: 'Changed', system_id: 2}];
+    const after = createIntelParser(custom);
+    assert.deepEqual(references(before, 'Original'), {system_ids:[1], ambiguous_systems:[]});
+    assert.deepEqual(references(after, 'Original'), {system_ids:[], ambiguous_systems:[]});
+    assert.deepEqual(references(after, 'Changed'), {system_ids:[2], ambiguous_systems:[]});
+});
 
 test('intel abbreviations retain exact precedence, longest multiword matches and duplicate ambiguity', () => {
     const names = ['Alp', 'Alpha', 'Alpine', 'New', 'New Caldari', 'New Caldari Prime', 'New Canaan', 'Beta', "O'Connell", 'Étoile', 'XY', 'J123456', 'J123456'];

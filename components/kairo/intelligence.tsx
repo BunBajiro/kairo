@@ -10,25 +10,30 @@ import { useKairo } from './context';
 import { api, stamp } from './model';
 import { Panel, DataTable, DataStatus, NoData, ItemName } from './ui';
 import { SessionReport } from './session-report';
+import {createSessionArchive} from './session-archive.mjs';
 import { CombatCoverage } from './combat-coverage';
 export { Goals } from './goals';
 
 export function SessionsPage() {
-    const { character, boot, data, names, sessions, refresh } = useKairo();
+    const { character, boot, data, names, sessions, sessionsRevision, refresh } = useKairo();
     const [sessionList, setSessionList] = useState<any[]>([]), [more, setMore] = useState(false);
     const [reportId, setReportId] = useState(''), [starting, setStarting] = useState(false), [label, setLabel] = useState('');
-    const [busy, setBusy] = useState(false), [error, setError] = useState('');
+    const [busy, setBusy] = useState(false), [loading, setLoading] = useState(false), [error, setError] = useState('');
+    const archive = useRef<ReturnType<typeof createSessionArchive> | null>(null);
     const current = useRef(character); current.current = character;
     const active = sessions.find(s => !s.ended), query = '?character=' + character;
-    const load = useCallback(async () => {
+    const load = useCallback(async () => {await archive.current?.refresh();}, []);
+    useEffect(() => {
+        setSessionList([]); setMore(false); setReportId(''); setStarting(false); setLabel(''); setError(''); setBusy(false);
         const requested = character;
-        const result = await api('/sessions?character=' + requested);
-        if (current.current !== requested) return;
-        setSessionList(old => [...result.items, ...old.filter(row => !result.items.some((item: any) => item.id === row.id))]);
-        setMore(result.more); setError('');
+        const owner = createSessionArchive({read: offset => api('/sessions?character=' + requested + '&offset=' + offset),
+            publish: result => {if (current.current === requested) {setSessionList(result.items); setMore(result.more); setError('');}},
+            onError: error => {if (current.current === requested) setError(error.message);},
+            onBusy: value => {if (current.current === requested) setLoading(value);}});
+        archive.current = owner;
+        return () => {owner.close(); if (archive.current === owner) archive.current = null;};
     }, [character]);
-    useEffect(() => { setSessionList([]); setReportId(''); setStarting(false); setLabel(''); setError(''); }, [character]);
-    useEffect(() => { load().catch(e => { if (current.current === character) setError(e.message); }); }, [load, sessions, character]);
+    useEffect(() => {void load();}, [load, sessionsRevision, character]);
     async function changeSession() {
         const requested = character;
         setBusy(true);
@@ -36,9 +41,9 @@ export function SessionsPage() {
             const result = await api('/session' + query, 'POST', { action: active ? 'end' : 'start', label }, boot.csrf);
             if (current.current !== requested) return;
             setStarting(false); setLabel(''); if (active) setReportId(result.id);
-            await refresh(); await load();
+            await refresh();
             toast.success(active ? 'Flight session ended.' : 'Flight session started.');
-        } catch (e: any) { toast.error(e.message); } finally { setBusy(false); }
+        } catch (e: any) { if (current.current === requested) toast.error(e.message); } finally { if (current.current === requested) setBusy(false); }
     }
     const killmails = (data.killmails?.data || []).map((kill: any) => ({ ...kill,
         hull: names[kill.victim?.ship_type_id] || 'Ship ' + kill.victim?.ship_type_id,
@@ -52,7 +57,7 @@ export function SessionsPage() {
                 {active ? <Square size={14}/> : <Play size={14}/>} {active ? 'End session' : 'Start session'}
             </Button>
         </section>
-        {error && <p className="inline-error" role="alert">{error}</p>}
+        {error && <div className="inline-error" role="alert">{error} <Button variant="ghost" disabled={loading} onClick={() => void load()}>Retry archive</Button></div>}
         <Tabs defaultValue="sessions" className="mt-5"><TabsList className="page-tabs">
             <TabsTrigger value="sessions">Sessions</TabsTrigger><TabsTrigger value="combat">Combat record</TabsTrigger>
         </TabsList><TabsContent value="sessions"><Panel title="Session archive" meta={<span className="meta">Open any session to review its report</span>}>
@@ -62,13 +67,7 @@ export function SessionsPage() {
                 </span><span className={'tag ' + (!session.ended ? 'positive' : '')}>{session.ended ? 'REPORT' : 'ACTIVE'}</span><ChevronRight size={18}/>
             </button>)}</div>
             {!sessionList.length && <NoData title="Start your first session" description="Give an operation a name and collect its activity and outcomes in a report."/>}
-            {more && <Button variant="outline" className="mt-4" disabled={busy} onClick={async () => {
-                const requested = character; setBusy(true);
-                try { const result = await api('/sessions' + query + '&offset=' + sessionList.length);
-                    if (current.current !== requested) return;
-                    setSessionList(old => [...old, ...result.items.filter((row: any) => !old.some(existing => existing.id === row.id))]); setMore(result.more);
-                } catch (e: any) { toast.error(e.message); } finally { setBusy(false); }
-            }}>Load earlier sessions</Button>}
+            {more && <Button variant="outline" className="mt-4" disabled={busy || loading} onClick={() => void archive.current?.loadMore()}>Load earlier sessions</Button>}
         </Panel></TabsContent><TabsContent value="combat"><Panel title="Recent kills & losses" meta={<DataStatus state={data.killmails}/>}>
             <CombatCoverage coverage={data.killmails?.participation}/><DataTable rows={killmails} state={data.killmails} columns={[
                 { key: 'killmail_time', label: 'Time', render: row => stamp(row.killmail_time) },
@@ -85,6 +84,6 @@ export function SessionsPage() {
             <label className="field-label">Session name<Input autoFocus required maxLength={100} value={label} onChange={e => setLabel(e.target.value)} placeholder="Friday fleet · Tenerifis roam"/></label>
             <Button disabled={busy || !label.trim()}><Play size={15}/> Start recording session</Button>
         </form></DialogContent></Dialog>
-        {reportId && <SessionReport key={character} id={reportId} onClose={() => setReportId('')} onSaved={() => { load().catch(e => toast.error(e.message)); refresh(); }}/>}
+        {reportId && <SessionReport key={character} id={reportId} onClose={() => setReportId('')} onSaved={() => {void refresh().catch(e => toast.error(e.message)); }}/>}
     </>;
 }

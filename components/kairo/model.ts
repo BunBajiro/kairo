@@ -84,8 +84,7 @@ export type Bootstrap = {
     localOnly: boolean;
 };
 export {workspaceRoutes as routes} from './workspace-navigation.mjs';
-export const isk = (n: any, compact = false) => typeof n === 'number' ? new Intl.NumberFormat('en-GB', { maximumFractionDigits: compact ? 2 : 0, notation: compact ? 'compact' : 'standard' }).format(n) : '—';
-export const stamp = (v?: string) => v ? new Date(v).toLocaleString('en-GB', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }) + ' EVE' : 'Awaiting data';
+export { isk, stamp } from './formatters.mjs';
 export const remaining = (v?: string | number) => { if (!v)
     return 'Not scheduled'; const t = Math.max(0, Math.floor((new Date(v).getTime() - Date.now()) / 1000)); return t > 86400 ? `${Math.floor(t / 86400)}d ${Math.floor(t % 86400 / 3600)}h` : t > 3600 ? `${Math.floor(t / 3600)}h ${Math.floor(t % 3600 / 60)}m` : `${Math.floor(t / 60)}m ${t % 60}s`; };
 export async function api(path: string, method = 'GET', body?: any, csrf?: string) { const r = await fetch('/api' + path, { method, headers: { ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}), ...(csrf ? { 'X-Kairo-CSRF': csrf } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) }); const d = await r.json().catch(() => ({ error: 'Kairo could not read the response.' })); if (!r.ok)

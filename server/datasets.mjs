@@ -6,6 +6,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { Readable, Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { Worker } from 'node:worker_threads';
+import { sdeLimits, sdeLimitError, requireDatasetSpace, availableDatasetBytes } from './sde-limits.mjs';
 
 const BUNDLED = fileURLToPath(new URL('./data/', import.meta.url));
 const LATEST = 'https://developers.eveonline.com/static-data/tranquility/latest.jsonl';
@@ -69,49 +70,78 @@ async function markFailed(root, build, error) {
   const state = await optionalJson(join(root, 'state.json')) || {};
   await atomicJson(join(root, 'state.json'), { ...state, failedBuild: build || null, activationError: errorText(error) });
 }
-async function cleanup(root, keep = []) {
+async function readCleanupWarning(root, now = Date.now) {
+  try { return await optionalJson(join(root, 'cleanup.json')); }
+  catch (cause) { return { message: 'Dataset cleanup status could not be read. Check file permissions; the installed dataset remains available.', failedAt: iso(now()), count: 1,
+    failures: [{ path: 'cleanup.json', code: cause?.code || 'CLEANUP_STATUS_FAILED', message: errorText(cause) }] }; }
+}
+async function cleanup(root, keep = [], { remove = rm, paths, extraPaths = [], now = Date.now } = {}) {
   const safe = new Set(keep.map(directory => basename(directory)));
-  for (const entry of await readdir(root, { withFileTypes: true }).catch(() => [])) {
-    if ((BUILD_DIRECTORY.test(entry.name) && !safe.has(entry.name)) || /^staging-[a-f0-9-]{36}$/.test(entry.name) || /^download-[a-f0-9-]{36}\.zip$/.test(entry.name) || /\.json\.[a-f0-9-]{36}\.tmp$/.test(entry.name)) {
-      await rm(join(root, entry.name), { recursive: true, force: true }).catch(() => {});
-    }
+  const previous = await optionalJson(join(root, 'cleanup.json')).catch(() => null);
+  const failures = new Map((Array.isArray(previous?.failures) ? previous.failures : []).map(value => [value.path, value]));
+  const failed = (path, cause) => failures.set(path, { path, code: cause?.code || 'CLEANUP_FAILED', message: errorText(cause) });
+  let candidates = paths;
+  if (!candidates) {
+    try {
+      candidates = (await readdir(root, { withFileTypes: true })).map(entry => entry.name).filter(name =>
+        (BUILD_DIRECTORY.test(name) && !safe.has(name)) || /^staging-[a-f0-9-]{36}$/.test(name) || /^download-[a-f0-9-]{36}\.zip$/.test(name) || /\.json\.[a-f0-9-]{36}\.tmp$/.test(name));
+      // A full scan supersedes warnings for already removed or newly protected paths.
+      failures.clear();
+    } catch (cause) { failed('.', cause); candidates = []; }
   }
+  for (const name of [...candidates, ...extraPaths]) {
+    if (safe.has(name)) continue;
+    try { await remove(join(root, name), { recursive: true, force: true }); failures.delete(name); }
+    catch (cause) { failed(name, cause); }
+  }
+  const warning = failures.size ? { message: 'Some old dataset files could not be removed. Check free disk space and file permissions; Kairo retries cleanup at the next update check or restart.',
+    failedAt: iso(now()), count: failures.size, failures: [...failures.values()].slice(0, 32) } : null;
+  try {
+    if (warning) await atomicJson(join(root, 'cleanup.json'), warning);
+    else await rm(join(root, 'cleanup.json'), { force: true });
+  } catch (cause) {
+    const persistence = { path: 'cleanup.json', code: cause?.code || 'CLEANUP_STATUS_FAILED', message: errorText(cause) };
+    // Activation already succeeded; report housekeeping failure without rolling it back.
+    console.warn(`Kairo dataset cleanup status could not be saved: ${errorText(cause)}`);
+    return { ...(warning || { message: 'Dataset cleanup status could not be saved. Check disk space and file permissions.', failedAt: iso(now()), count: 0, failures: [] }), persistence };
+  }
+  return warning;
 }
 
 /** Select a complete generation before starting any consumers. The supervisor owns the directory lease. */
-export async function prepareDatasetRuntime(dataDir) {
+export async function prepareDatasetRuntime(dataDir, maintenance = {}) {
   const root = rootFor(dataDir), minimumBuild = await baselineBuild();
   await mkdir(root, { recursive: true });
   let active = null, pending = null;
+  const pointerCleanup = [];
   try { active = await pointerSelection(root, 'active', minimumBuild); }
-  catch { await rm(join(root, 'active.json'), { force: true }); }
+  catch { pointerCleanup.push('active.json'); }
   try { pending = await pointerSelection(root, 'pending', Math.max(minimumBuild, active?.manifest.build || 0), true); }
   catch (error) {
     const pointer = await optionalJson(join(root, 'pending.json'));
     await markFailed(root, pointer?.build, error);
-    await rm(join(root, 'pending.json'), { force: true });
+    pointerCleanup.push('pending.json');
   }
   if (pending && active && pending.manifest.build <= active.manifest.build) {
-    await rm(join(root, 'pending.json'), { force: true }); pending = null;
+    pointerCleanup.push('pending.json'); pending = null;
   }
-  await cleanup(root, [active?.directory, pending?.directory].filter(Boolean));
+  await cleanup(root, [active?.directory, pending?.directory].filter(Boolean), { ...maintenance, extraPaths: pointerCleanup });
   return pending || active;
 }
 
 /** Publish only after the replacement core has reported ready, then retire all other downloaded versions. */
-export async function commitDatasetRuntime(dataDir, selected) {
+export async function commitDatasetRuntime(dataDir, selected, maintenance = {}) {
   if (!selected) return;
   const root = rootFor(dataDir), directory = resolve(selected.directory);
   if (directory !== join(root, basename(directory)) || !BUILD_DIRECTORY.test(basename(directory))) throw new Error('Invalid SDE activation directory');
   const manifest = await validateDirectory(directory, { minimumBuild: await baselineBuild() });
   await atomicJson(join(root, 'active.json'), { schema: 1, directory: basename(directory), build: manifest.build });
   // The pointer is committed. Housekeeping must not turn a successful activation into a rollback.
-  await rm(join(root, 'pending.json'), { force: true }).catch(() => {});
   try {
     const state = await optionalJson(join(root, 'state.json')) || {};
     await atomicJson(join(root, 'state.json'), { ...state, failedBuild: null, activationError: null });
-  } catch {}
-  await cleanup(root, [directory]).catch(() => {});
+  } catch (cause) { console.warn(`Kairo dataset activation status could not be saved: ${errorText(cause)}`); }
+  return { cleanupWarning: await cleanup(root, [directory], { ...maintenance, extraPaths: ['pending.json'] }) };
 }
 
 export async function rollbackDatasetRuntime(dataDir, selected) {
@@ -142,19 +172,30 @@ async function inventory(directory, manifest) {
     reference('points', 'Landmarks & historical references', 'SMT', points.metadata?.revision)];
 }
 
-function workerBuild(workerData, { signal, onProgress } = {}) {
+export function workerBuild(workerData, { signal, onProgress, createWorker = (url, options) => new Worker(url, options), setTimer = setTimeout, clearTimer = clearTimeout } = {}) {
   return new Promise((resolveResult, reject) => {
-    const worker = new Worker(new URL('./sde-worker.mjs', import.meta.url), { workerData, resourceLimits: { maxOldGenerationSizeMb: 512 } });
-    let result, failure, aborted = false;
-    const abort = () => { aborted = true; void worker.terminate(); };
+    const limits = sdeLimits(workerData.limits);
+    const worker = createWorker(new URL('./sde-worker.mjs', import.meta.url), { workerData: { ...workerData, limits }, resourceLimits: { maxOldGenerationSizeMb: 512 } });
+    let result, failure, aborted = false, terminating = false, progressTimer;
+    const terminate = () => { if (!terminating) { terminating = true; void worker.terminate().catch(error => { failure ||= error; }); } };
+    const abort = () => { aborted = true; terminate(); };
+    const fail = (code, message) => { failure ||= sdeLimitError(code, message); terminate(); };
+    const conversionTimer = setTimer(() => fail('SDE_CONVERSION_TIMEOUT', 'Dataset conversion exceeded its 20-minute time budget'), limits.conversionMs);
+    const progressing = () => {
+      clearTimer(progressTimer);
+      progressTimer = setTimer(() => fail('SDE_NO_PROGRESS', 'Dataset conversion made no progress within its 2-minute limit'), limits.noProgressMs);
+    };
+    progressing();
     signal?.addEventListener('abort', abort, { once: true });
     worker.on('message', message => {
-      if (message.type === 'progress') onProgress?.(message.progress || message);
+      if (terminating) return;
+      if (message.type === 'progress') { progressing(); onProgress?.(message.progress || message); }
       else if (message.type === 'result') result = message.result || message.manifest;
-      else if (message.type === 'error') failure = new Error(errorText(message.error));
+      else if (message.type === 'error') failure = Object.assign(new Error(errorText(message.error)), { code: message.error?.code });
     });
     worker.on('error', error => { failure = error; });
     worker.on('exit', code => {
+      clearTimer(conversionTimer); clearTimer(progressTimer);
       signal?.removeEventListener('abort', abort);
       if (aborted) reject(new DOMException('Dataset update cancelled', 'AbortError'));
       else if (failure) reject(failure);
@@ -189,19 +230,24 @@ function retryDelay(header, time) {
 }
 
 export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now, setTimer = setTimeout, clearTimer = clearTimeout,
-  onChange = () => {}, onReady = () => {}, automatic = true, activeDirectory, build = workerBuild } = {}) {
+  onChange = () => {}, onReady = () => {}, automatic = true, activeDirectory, build = workerBuild,
+  limits: limitOverrides, readAvailable = availableDatasetBytes, remove = rm } = {}) {
   const root = rootFor(dataDir);
+  const limits = sdeLimits(limitOverrides);
   let cache = {}, datasets = [], minimumBuild = 0, currentBuild = 0, oldestBuild = 0;
+  let cleanupWarning = null, maintenanceAt = now();
   let phase = 'idle', progress = null, error = null, available = null, timer, flight, activationFlight, controller, closed = false, started = false;
-  let wantsInstall = false, wantsManual = false, nextCheck = null, readySelection = null, activeManifest = null;
+  let wantsInstall = false, wantsManual = false, nextCheck = null, readySelection = null, activeManifest = null, startFlight;
   const status = () => ({ phase, busy: phase !== 'ready' && (!!flight || ['checking', 'downloading', 'building'].includes(phase)), datasets: datasets.map(value => ({ ...value })),
     available: available && { ...available }, lastCheckedAt: cache.lastCheckedAt || null, nextCheckAt: iso(nextCheck), error,
+    cleanupWarning: cleanupWarning && structuredClone(cleanupWarning),
     progress: progress && { ...progress }, schedule: { intervalMinutes: 60, startup: true }, restartRequired: phase === 'ready' });
   const emit = () => { try { onChange(status()); } catch {} };
   const persist = () => atomicJson(join(root, 'state.json'), cache);
   const ready = (async () => {
     await mkdir(root, { recursive: true });
     cache = await optionalJson(join(root, 'state.json')) || {};
+    cleanupWarning = await readCleanupWarning(root, now);
     minimumBuild = await baselineBuild();
     let directory = activeDirectory;
     if (directory && resolve(directory) !== resolve(BUNDLED)) activeManifest = await validateDirectory(directory, { minimumBuild });
@@ -227,6 +273,9 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
     const id = randomUUID(), archivePath = join(root, `download-${id}.zip`), outputDir = join(root, `staging-${id}`);
     let finalDirectory;
     try {
+      // Reserve the worst-case remaining archive/stage footprint before starting. This is
+      // advisory against other writers; subsequent writes and ENOSPC still fail safely.
+      await requireDatasetSpace(root, MAX_ARCHIVE + limits.spoolBytes + limits.outputBytes + limits.reserveBytes, readAvailable);
       phase = 'downloading'; progress = { stage: 'downloading', message: 'Downloading the official SDE', receivedBytes: 0 }; emit();
       const response = await fetcher(archiveUrl(candidate.build), { signal: AbortSignal.any([signal, AbortSignal.timeout(30 * 60_000)]), redirect: 'error', headers: { 'User-Agent': 'Kairo/0.8 SDE updater' } });
       if (!response.ok) throw new Error(`SDE download returned HTTP ${response.status}`);
@@ -244,7 +293,7 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
       if (!bytes || (length && bytes !== length)) throw new Error('Incomplete SDE download');
       phase = 'building'; progress = { stage: 'building', message: 'Preparing and validating the new dataset' }; emit();
       await mkdir(outputDir);
-      const manifest = await build({ archivePath, outputDir, expectedBuild: candidate.build }, { signal, onProgress: value => {
+      const manifest = await build({ archivePath, outputDir, expectedBuild: candidate.build, limits }, { signal, onProgress: value => {
         if (closed) return;
         const messages = { validating: 'Validating the official archive', converting: 'Preparing Universe and market data', verifying: 'Verifying the completed dataset' };
         progress = { stage: 'building', message: value.message || messages[value.phase] || 'Preparing dataset',
@@ -268,12 +317,10 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
         cache.failedBuild = candidate.build;
         await persist().catch(() => {});
       }
-      if (finalDirectory && phase !== 'ready') await rm(finalDirectory, { recursive: true, force: true });
       throw cause;
     } finally {
       // Worker cancellation has completed before build() rejects, so it cannot recreate deleted files.
-      await rm(archivePath, { force: true }).catch(() => {});
-      await rm(outputDir, { recursive: true, force: true }).catch(() => {});
+      cleanupWarning = await cleanup(root, [], { remove, now, paths: [basename(archivePath), basename(outputDir), ...(finalDirectory && phase !== 'ready' ? [basename(finalDirectory)] : [])] });
     }
   }
   function check({ install = false, manual = false } = {}) {
@@ -313,6 +360,18 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
           cache.failures = 0;
           await persist();
         }
+        // Crash leftovers are handled by the supervisor before readers start. Retry
+        // known failures here; ordinary cached checks must not rescan the directory.
+        if (cleanupWarning || now() - maintenanceAt >= HOUR) {
+          maintenanceAt = now();
+          cleanupWarning = await readCleanupWarning(root, now) || cleanupWarning;
+          if (cleanupWarning) {
+            const pointers = await Promise.all(['active', 'pending'].map(name => optionalJson(join(root, `${name}.json`))));
+            const keep = [activeDirectory, ...pointers.filter(value => BUILD_DIRECTORY.test(value?.directory || '')).map(value => value.directory)].filter(Boolean);
+            const samePointer = pointers[0]?.directory && pointers[0].directory === pointers[1]?.directory;
+            cleanupWarning = await cleanup(root, keep, { remove, now, extraPaths: samePointer ? ['pending.json'] : [] });
+          }
+        }
         available = cache.latest?.build >= currentBuild && cache.latest.build > oldestBuild ? { ...cache.latest } : null;
         if (available && wantsInstall && (wantsManual || cache.failedBuild !== available.build)) await download(available, controller.signal);
         else { phase = 'idle'; progress = null; }
@@ -350,13 +409,18 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
     return activationFlight;
   }
   function start() {
-    if (started || closed) return;
+    if (started || closed) return startFlight;
     started = true;
-    void ready.then(() => { if (!closed) { schedule(1_000); emit(); } }).catch(cause => { error = errorText(cause); phase = 'error'; emit(); });
+    // The supervisor commits after this child reports ready. Refresh the advisory
+    // status at activation so retirement errors appear immediately in this runtime.
+    startFlight = ready.then(async () => { cleanupWarning = await readCleanupWarning(root, now); if (!closed) { schedule(1_000); emit(); } })
+      .catch(cause => { error = errorText(cause); phase = 'error'; emit(); });
+    return startFlight;
   }
   async function close() {
     closed = true; if (timer) clearTimer(timer); timer = null; nextCheck = null;
     controller?.abort();
+    await startFlight;
     await flight?.catch(() => {});
     await activationFlight?.catch(() => {});
   }
