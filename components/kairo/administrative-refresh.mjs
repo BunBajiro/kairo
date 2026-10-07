@@ -3,7 +3,8 @@ import {createScopedRefresh} from './scoped-refresh.mjs';
 // Mounted administrative reads only. Server polling and OBS sources have their
 // own lifetimes. Schedule from completion so a slow read cannot build a queue.
 export function createAdministrativeRefresh({read, publish, onError, visible = () => true,
-    period = () => 30000, timers = {setTimeout, clearTimeout}}) {
+    period = () => 30000,
+    timers = {setTimeout: (run, ms) => globalThis.setTimeout(run, ms), clearTimeout: id => globalThis.clearTimeout(id)}}) {
     let closed = false, timer = null, value, requested = 0;
     const clear = () => {if (timer !== null) timers.clearTimeout(timer); timer = null;};
     const owner = createScopedRefresh({read: () => {clear(); return read();},

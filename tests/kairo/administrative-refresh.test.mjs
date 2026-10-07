@@ -5,6 +5,19 @@ import {createGoalResourceReads} from '../../components/kairo/goal-resource-read
 
 const flush = async () => {for (let i = 0; i < 12; i++) await Promise.resolve();};
 const deferred = () => {let resolve, reject;const promise = new Promise((yes, no) => {resolve = yes; reject = no;});return {promise, resolve, reject};};
+
+test('default administrative timers keep the Window receiver when scheduling, rearming and closing', async t => {
+    const calls = [];let callback, id = 0, reads = 0;
+    t.mock.method(globalThis, 'setTimeout', function (run, ms) {calls.push(['set', this === globalThis, ms]);callback = run;return ++id;});
+    t.mock.method(globalThis, 'clearTimeout', function (timer) {calls.push(['clear', this === globalThis, timer]);});
+    const owner = createAdministrativeRefresh({read: async () => ++reads, publish() {}, period: () => 2000});
+    await owner.request();await flush();
+    callback();await flush();
+    owner.close();
+    assert.equal(reads, 2);
+    assert.deepEqual(calls, [['set', true, 2000], ['set', true, 2000], ['clear', true, 2]]);
+});
+
 function clock() {
     let now = 0, id = 0; const jobs = new Map();
     return {setTimeout(run, delay) {jobs.set(++id, {at: now + delay, run}); return id;}, clearTimeout(id) {jobs.delete(id);},
