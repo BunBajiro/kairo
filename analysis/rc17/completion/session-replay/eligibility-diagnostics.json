@@ -1,0 +1,536 @@
+{
+  "kind": "deterministic-planner-and-cardinality-diagnostic",
+  "node": "v24.19.0",
+  "harnessSha256": "2067857b66f9af0f539526406855bbfdbfd6c72799036182dcb353c1dd01eaaf",
+  "original": "SELECT id FROM sessions WHERE character_id=? AND (ended IS NULL OR ended>?) ORDER BY ended IS NULL DESC,started DESC",
+  "candidate": "SELECT id FROM (\n SELECT id,started,1 AS is_open,rowid AS sequence FROM sessions WHERE character_id=? AND ended IS NULL\n UNION ALL\n SELECT id,started,0 AS is_open,rowid AS sequence FROM sessions WHERE character_id=? AND ended>?\n) ORDER BY is_open DESC,started DESC,sequence",
+  "index": "CREATE INDEX idx_sessions_character_ended ON sessions(character_id,ended)",
+  "measurements": [
+    {
+      "archivedPerPilot": 100,
+      "pilots": 1,
+      "totalRows": 105,
+      "ticksPerPilot": 41,
+      "queryCalls": 41,
+      "returnedIds": 143,
+      "firstEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2",
+        "1-near-boundary"
+      ],
+      "lastEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2"
+      ],
+      "equal": true,
+      "beforePlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 82,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_started (character_id=?)"
+        },
+        {
+          "id": 24,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "afterPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-2)"
+        },
+        {
+          "id": 3,
+          "parent": 2,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 4,
+          "parent": 3,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 7,
+          "parent": 4,
+          "notused": 41,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended=?)"
+        },
+        {
+          "id": 21,
+          "parent": 3,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 24,
+          "parent": 21,
+          "notused": 72,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended>?)"
+        },
+        {
+          "id": 41,
+          "parent": 0,
+          "notused": 64,
+          "detail": "SCAN (subquery-2)"
+        },
+        {
+          "id": 51,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "beforeAllocatedBytes": 32768,
+      "afterAllocatedBytes": 36864,
+      "resultSha256": "667085da7a06ca2f2dec9d9dfb167ef905b9033e5e306d6c4797dee31f271fb5"
+    },
+    {
+      "archivedPerPilot": 100,
+      "pilots": 4,
+      "totalRows": 420,
+      "ticksPerPilot": 41,
+      "queryCalls": 164,
+      "returnedIds": 572,
+      "firstEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2",
+        "1-near-boundary"
+      ],
+      "lastEligible": [
+        "4-active",
+        "4-recent1",
+        "4-recent2"
+      ],
+      "equal": true,
+      "beforePlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 91,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_started (character_id=?)"
+        },
+        {
+          "id": 24,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "afterPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-2)"
+        },
+        {
+          "id": 3,
+          "parent": 2,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 4,
+          "parent": 3,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 7,
+          "parent": 4,
+          "notused": 42,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended=?)"
+        },
+        {
+          "id": 21,
+          "parent": 3,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 24,
+          "parent": 21,
+          "notused": 72,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended>?)"
+        },
+        {
+          "id": 41,
+          "parent": 0,
+          "notused": 64,
+          "detail": "SCAN (subquery-2)"
+        },
+        {
+          "id": 51,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "beforeAllocatedBytes": 81920,
+      "afterAllocatedBytes": 102400,
+      "resultSha256": "8d292590d72f5e46bdeeaff47ef61b76ed165c38b8a9749e2158cdc88c2b3ce8"
+    },
+    {
+      "archivedPerPilot": 1000,
+      "pilots": 1,
+      "totalRows": 1005,
+      "ticksPerPilot": 41,
+      "queryCalls": 41,
+      "returnedIds": 143,
+      "firstEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2",
+        "1-near-boundary"
+      ],
+      "lastEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2"
+      ],
+      "equal": true,
+      "beforePlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 114,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_started (character_id=?)"
+        },
+        {
+          "id": 24,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "afterPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-2)"
+        },
+        {
+          "id": 3,
+          "parent": 2,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 4,
+          "parent": 3,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 7,
+          "parent": 4,
+          "notused": 43,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended=?)"
+        },
+        {
+          "id": 21,
+          "parent": 3,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 24,
+          "parent": 21,
+          "notused": 103,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended>?)"
+        },
+        {
+          "id": 41,
+          "parent": 0,
+          "notused": 95,
+          "detail": "SCAN (subquery-2)"
+        },
+        {
+          "id": 51,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "beforeAllocatedBytes": 163840,
+      "afterAllocatedBytes": 204800,
+      "resultSha256": "667085da7a06ca2f2dec9d9dfb167ef905b9033e5e306d6c4797dee31f271fb5"
+    },
+    {
+      "archivedPerPilot": 1000,
+      "pilots": 4,
+      "totalRows": 4020,
+      "ticksPerPilot": 41,
+      "queryCalls": 164,
+      "returnedIds": 572,
+      "firstEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2",
+        "1-near-boundary"
+      ],
+      "lastEligible": [
+        "4-active",
+        "4-recent1",
+        "4-recent2"
+      ],
+      "equal": true,
+      "beforePlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 123,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_started (character_id=?)"
+        },
+        {
+          "id": 24,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "afterPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-2)"
+        },
+        {
+          "id": 3,
+          "parent": 2,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 4,
+          "parent": 3,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 7,
+          "parent": 4,
+          "notused": 45,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended=?)"
+        },
+        {
+          "id": 21,
+          "parent": 3,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 24,
+          "parent": 21,
+          "notused": 103,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended>?)"
+        },
+        {
+          "id": 41,
+          "parent": 0,
+          "notused": 95,
+          "detail": "SCAN (subquery-2)"
+        },
+        {
+          "id": 51,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "beforeAllocatedBytes": 589824,
+      "afterAllocatedBytes": 729088,
+      "resultSha256": "8d292590d72f5e46bdeeaff47ef61b76ed165c38b8a9749e2158cdc88c2b3ce8"
+    },
+    {
+      "archivedPerPilot": 10000,
+      "pilots": 1,
+      "totalRows": 10005,
+      "ticksPerPilot": 41,
+      "queryCalls": 41,
+      "returnedIds": 143,
+      "firstEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2",
+        "1-near-boundary"
+      ],
+      "lastEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2"
+      ],
+      "equal": true,
+      "beforePlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 147,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_started (character_id=?)"
+        },
+        {
+          "id": 24,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "afterPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-2)"
+        },
+        {
+          "id": 3,
+          "parent": 2,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 4,
+          "parent": 3,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 7,
+          "parent": 4,
+          "notused": 45,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended=?)"
+        },
+        {
+          "id": 21,
+          "parent": 3,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 24,
+          "parent": 21,
+          "notused": 136,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended>?)"
+        },
+        {
+          "id": 41,
+          "parent": 0,
+          "notused": 128,
+          "detail": "SCAN (subquery-2)"
+        },
+        {
+          "id": 51,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "beforeAllocatedBytes": 1429504,
+      "afterAllocatedBytes": 1765376,
+      "resultSha256": "667085da7a06ca2f2dec9d9dfb167ef905b9033e5e306d6c4797dee31f271fb5"
+    },
+    {
+      "archivedPerPilot": 10000,
+      "pilots": 4,
+      "totalRows": 40020,
+      "ticksPerPilot": 41,
+      "queryCalls": 164,
+      "returnedIds": 572,
+      "firstEligible": [
+        "1-active",
+        "1-recent1",
+        "1-recent2",
+        "1-near-boundary"
+      ],
+      "lastEligible": [
+        "4-active",
+        "4-recent1",
+        "4-recent2"
+      ],
+      "equal": true,
+      "beforePlan": [
+        {
+          "id": 4,
+          "parent": 0,
+          "notused": 156,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_started (character_id=?)"
+        },
+        {
+          "id": 24,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "afterPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 0,
+          "detail": "CO-ROUTINE (subquery-2)"
+        },
+        {
+          "id": 3,
+          "parent": 2,
+          "notused": 0,
+          "detail": "COMPOUND QUERY"
+        },
+        {
+          "id": 4,
+          "parent": 3,
+          "notused": 0,
+          "detail": "LEFT-MOST SUBQUERY"
+        },
+        {
+          "id": 7,
+          "parent": 4,
+          "notused": 47,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended=?)"
+        },
+        {
+          "id": 21,
+          "parent": 3,
+          "notused": 0,
+          "detail": "UNION ALL"
+        },
+        {
+          "id": 24,
+          "parent": 21,
+          "notused": 136,
+          "detail": "SEARCH sessions USING INDEX idx_sessions_character_ended (character_id=? AND ended>?)"
+        },
+        {
+          "id": 41,
+          "parent": 0,
+          "notused": 128,
+          "detail": "SCAN (subquery-2)"
+        },
+        {
+          "id": 51,
+          "parent": 0,
+          "notused": 0,
+          "detail": "USE TEMP B-TREE FOR ORDER BY"
+        }
+      ],
+      "beforeAllocatedBytes": 5779456,
+      "afterAllocatedBytes": 7155712,
+      "resultSha256": "8d292590d72f5e46bdeeaff47ef61b76ed165c38b8a9749e2158cdc88c2b3ce8"
+    }
+  ],
+  "limits": [
+    "No elapsed/CPU measurements. Query plans establish access paths, not measured rows examined.",
+    "Two-minute cadence is simulated at exact three-second deadlines, inclusive endpoints (41 ticks). Real timer jitter and provider latency are excluded."
+  ]
+}

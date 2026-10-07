@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": true
+  },
+  "harnessSha256": "00437e26ce333c6a477fd4ad3d48201d4ec11a42de227a6b775c24eaf1d6a21e",
+  "startedAt": "2026-10-07T11:18:23.585Z",
+  "fixture": {
+    "pilots": [
+      42,
+      43
+    ],
+    "sessions": 65,
+    "sourceKeys": [
+      "wallet",
+      "journal",
+      "skills",
+      "queue",
+      "assets",
+      "mining",
+      "jobs",
+      "killmails"
+    ]
+  },
+  "fixtureSha256": "aeacd058cb9ca6c76474c8213194d38273dfdd86f6ebd726e14c161e0d9afba4",
+  "checks": [
+    {
+      "label": "one initial state, timeline and Goals read",
+      "passed": true
+    },
+    {
+      "label": "unchanged fallback reads only state",
+      "passed": true
+    },
+    {
+      "label": "other-pilot update does not request selected resources",
+      "passed": true
+    },
+    {
+      "label": "manual Goal invalidates only Goals",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation wallet",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation journal",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation skills",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation queue",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation assets",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation mining",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation jobs",
+      "passed": true
+    },
+    {
+      "label": "automatic Goal invalidation killmails",
+      "passed": true
+    },
+    {
+      "label": "state burst retains one follow-up",
+      "passed": true
+    },
+    {
+      "label": "state transport never overlaps within selected scope",
+      "passed": true
+    },
+    {
+      "label": "late state cannot overwrite newer snapshot",
+      "passed": true
+    },
+    {
+      "label": "refresh preserves loaded pages and updates old debrief",
+      "passed": true
+    },
+    {
+      "label": "archive refresh retains exhausted tail",
+      "passed": true
+    },
+    {
+      "label": "same-pilot delayed archive cannot replace latest",
+      "passed": true
+    },
+    {
+      "label": "pilot switch suppresses old state/archive",
+      "passed": true
+    },
+    {
+      "label": "reconnect recovers current pilot archive",
+      "passed": true
+    },
+    {
+      "label": "roster removal recovers selection and bootstrap",
+      "passed": true
+    }
+  ],
+  "counts": [
+    {
+      "label": "initial",
+      "counts": {
+        "/api/bootstrap": 1,
+        "/api/state": 1,
+        "/api/universe/jspace/tracking/active": 1,
+        "/api/timeline": 1,
+        "/api/goals": 1
+      }
+    },
+    {
+      "label": "unchanged-recovery",
+      "counts": {
+        "/api/bootstrap": 1,
+        "/api/state": 2,
+        "/api/universe/jspace/tracking/active": 1,
+        "/api/timeline": 1,
+        "/api/goals": 1
+      }
+    },
+    {
+      "label": "manual-goal-change",
+      "counts": {
+        "/api/bootstrap": 1,
+        "/api/state": 2,
+        "/api/universe/jspace/tracking/active": 1,
+        "/api/timeline": 1,
+        "/api/goals": 2
+      }
+    },
+    {
+      "label": "coalesced-state-burst",
+      "counts": {
+        "/api/bootstrap": 1,
+        "/api/state": 4,
+        "/api/universe/jspace/tracking/active": 1,
+        "/api/timeline": 1,
+        "/api/goals": 11
+      }
+    },
+    {
+      "label": "roster-removal",
+      "counts": {
+        "/api/bootstrap": 4,
+        "/api/state": 10,
+        "/api/universe/jspace/tracking/active": 3,
+        "/api/timeline": 1,
+        "/api/goals": 11,
+        "/api/sessions": 16
+      }
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "complete": true,
+  "limitations": [
+    "Compiled synthetic connected-pilot UI diagnostics; no real ESI traffic or time/CPU improvement claim.",
+    "Fetch instrumentation counts requests and deliberately holds response delivery for races. Recovery timer callback is invoked directly, keeping its actual Dashboard callback; no timing result is collected.",
+    "Session archive correctness covers 65 loaded rows and response ordering; growing-history presentation and latency need a separate matched lane.",
+    "Production bundle deferral/F4 remains a separate adopt/reject decision."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "sourceVerified": true,
+  "endedAt": "2026-10-07T11:18:35.003Z"
+}

@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T11:48:49.683Z",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": false
+  },
+  "harnessSha256": "2b975084a62ba581b15c290e8bded501cf9f29026ccef9349538ed4cb95ab048",
+  "complete": true,
+  "checks": [
+    {
+      "name": "Markets visible idle 120s",
+      "passed": true,
+      "reads": 4,
+      "includesInitial": false
+    },
+    {
+      "name": "Markets hidden no background reads",
+      "passed": true
+    },
+    {
+      "name": "Markets visibility recovery",
+      "passed": true
+    },
+    {
+      "name": "Markets running 10s",
+      "passed": true,
+      "reads": 5
+    },
+    {
+      "name": "Markets complete preserves old book and returns to idle",
+      "passed": true
+    },
+    {
+      "name": "Markets cancelled preserves old book and returns to idle",
+      "passed": true
+    },
+    {
+      "name": "Markets failed preserves old book and returns to idle",
+      "passed": true
+    },
+    {
+      "name": "Markets slow transport and burst retain one follow-up without overlap",
+      "passed": true
+    },
+    {
+      "name": "Markets failed recovery keeps old book and Retry recovers",
+      "passed": true
+    },
+    {
+      "name": "OBS idle status-only fallback",
+      "passed": true,
+      "fullReads": 0,
+      "statusReads": 4
+    },
+    {
+      "name": "OBS stream immediate and draft retained",
+      "passed": true
+    },
+    {
+      "name": "OBS real EventSource reconnect preserves dirty fields",
+      "passed": true
+    },
+    {
+      "name": "OBS focus recovery preserves dirty fields",
+      "passed": true
+    },
+    {
+      "name": "Goals eight snapshots isolate progress",
+      "passed": true,
+      "progress": 8,
+      "notes": 0,
+      "sources": 0
+    },
+    {
+      "name": "Goals ignores other-pilot invalidation",
+      "passed": true
+    },
+    {
+      "name": "Note create refreshes notes only",
+      "passed": true
+    },
+    {
+      "name": "Note delete refreshes notes only",
+      "passed": true
+    },
+    {
+      "name": "Goals pilot switch publishes only selected pilot",
+      "passed": true
+    }
+  ],
+  "requests": [
+    {
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets/categories?hub=60003760",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets/categories?hub=60003760",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET"
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs/status",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs/status",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs/status",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs/status",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/obs/status",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals/sources?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/notes?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/notes?character=42",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "url": "/api/notes?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/notes?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/notes/287416ae-8d3a-4a2e-bc8b-bea4fc40a8e1",
+      "method": "DELETE",
+      "status": 200
+    },
+    {
+      "url": "/api/notes?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/notes?character=42",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/state?character=43",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200
+    },
+    {
+      "url": "/api/goals/sources?character=43",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/goals?character=43",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "url": "/api/notes?character=43",
+      "method": "GET",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "limitations": [
+    "Compiled components and real local HTTP/SSE endpoints with two synthetic pilots; no credentials or external providers.",
+    "Only administrative 2s/30s setTimeout deadlines are driven by a diagnostic virtual clock. Native intervals, Date, server cadence and other timeouts remain unchanged.",
+    "Visibility is a controlled document.hidden getter plus visibilitychange event; this verifies mounted UI behavior, not OS background throttling.",
+    "Injected market job rows and synthetic OBS/snapshot SSE payloads test UI presentation and recovery; this does not test provider scans or OBS WebSocket integration.",
+    "Request counts and publication correctness only; no CPU, latency or general browser performance claim."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "endedAt": "2026-10-07T11:48:57.428Z"
+}

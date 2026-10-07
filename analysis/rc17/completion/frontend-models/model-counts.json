@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "kind": "diagnostic-counts-not-timing",
+  "node": "v24.19.0",
+  "files": {
+    "components/kairo/operations.tsx": "6a30058f04f1c671a4dfe18fd403ce6b59fde95ff6bbb1e8566c5f8075f078db",
+    "components/kairo/ui.tsx": "3e4f2b811235ca36e8e6720af0b8987ad91fdc54cd37253959a382be8091df18",
+    "components/kairo/model.ts": "74be1682a3a6331807003012a8581177f025618ffcbf046f07d215a0dce4cac4",
+    "components/kairo/derived-models.mjs": "28cd32e42b9b5d2dbac86220c8382acd025cd8e31e34df6f292b5eff4fdde7b8",
+    "components/kairo/formatters.mjs": "6416928ba83605871352617941a337f2fd7f3ddf9fdd33c3c00c9cffc7b0a122"
+  },
+  "fixtures": [
+    {
+      "rows": 1000,
+      "repeatedInputs": 101,
+      "baseline": {
+        "derivations": 101,
+        "derivedRows": 101000,
+        "normalizedRows": 101000,
+        "comparisons": 691143
+      },
+      "candidate": {
+        "derivations": 1,
+        "derivedRows": 1000,
+        "normalizedRows": 1000,
+        "comparisons": 6843
+      },
+      "unrelatedNameChangeAdditionalDerivations": 0,
+      "relevantNameChangeAdditionalDerivations": 1,
+      "orderedRowSemanticsEqual": true
+    },
+    {
+      "rows": 10000,
+      "repeatedInputs": 101,
+      "baseline": {
+        "derivations": 101,
+        "derivedRows": 1010000,
+        "normalizedRows": 1010000,
+        "comparisons": 7823965
+      },
+      "candidate": {
+        "derivations": 1,
+        "derivedRows": 10000,
+        "normalizedRows": 10000,
+        "comparisons": 77465
+      },
+      "unrelatedNameChangeAdditionalDerivations": 0,
+      "relevantNameChangeAdditionalDerivations": 1,
+      "orderedRowSemanticsEqual": true
+    }
+  ]
+}

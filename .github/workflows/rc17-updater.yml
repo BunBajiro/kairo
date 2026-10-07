@@ -1,0 +1,102 @@
+name: Internal RC17 real updater evidence
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths: ['analysis/rc17/completion/updater/request.json']
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: 'Full internal source commit SHA; never a clean review package'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-kairo-real-updater-evidence
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: checkpoint
+          persist-credentials: false
+      - name: Validate exact internal source identity
+        id: request
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          if os.environ['GITHUB_EVENT_NAME'] == 'push':
+              request = json.loads(Path('analysis/rc17/completion/updater/request.json').read_text())
+              sha = request['candidateCommit']
+          else:
+              sha = os.environ['CANDIDATE_SHA']
+          assert re.fullmatch('[0-9a-f]{40}', sha)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f'candidate_sha={sha}\n')
+          PY
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: BunBajiro/kairo
+          ref: ${{ steps.request.outputs.candidate_sha }}
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.19.0'
+      - name: Build and validate pinned candidate before measurement
+        working-directory: candidate
+        run: |
+          npm run install:ci
+          npm run build
+          npm run check:kairo
+          npm run test:kairo
+      - name: Recover the exact previously measured official archive
+        run: |
+          mkdir -p "$RUNNER_TEMP/kairo-updater" "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/updater-current"
+          curl --fail --location --retry 3 --max-time 600 'https://developers.eveonline.com/static-data/tranquility/eve-online-static-data-3552227-jsonl.zip' --output "$RUNNER_TEMP/kairo-updater/official.zip"
+          python3 - <<'PY'
+          import hashlib, os
+          from pathlib import Path
+          archive = Path(os.environ['RUNNER_TEMP']) / 'kairo-updater/official.zip'
+          assert archive.stat().st_size == 99197259
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == '0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83'
+          PY
+      - name: Capture exact source and compiled identity
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+        run: node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/updater-current/source.json "$CANDIDATE_SHA"
+      - name: Measure current inventory cost and loaded real conversion sequentially
+        working-directory: checkpoint
+        run: |
+          export KAIRO_PERF_APP_ROOT="$GITHUB_WORKSPACE/candidate"
+          export KAIRO_SOURCE_MANIFEST="$PWD/analysis/rc17/raw/updater-current/source.json"
+          export KAIRO_UPDATER_ARCHIVE="$RUNNER_TEMP/kairo-updater/official.zip"
+          export KAIRO_UPDATER_BUILD=3552227
+          export KAIRO_UPDATER_ARCHIVE_SHA256=0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83
+          flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/updater/inventory-run.mjs analysis/rc17/raw/updater-current/inventory.json
+          node analysis/rc17/completion/updater/loaded-run.mjs analysis/rc17/raw/updater-current
+      - name: Verify source after real loaded conversion
+        if: ${{ always() && !cancelled() }}
+        working-directory: checkpoint
+        run: node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/updater-current/source.json
+      - name: Retain internal raw evidence only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-updater-evidence
+          path: checkpoint/analysis/rc17/raw/updater-current/
+          if-no-files-found: error
+          retention-days: 30

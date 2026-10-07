@@ -1,5 +1,7 @@
 # RC17 completion trace — 7 October 2026
 
+Later implementation work is banked in the [current work checkpoint](WORK-CHECKPOINT-20261007.md). This audit retains its original a27 source boundary; newer tests and trials do not retroactively change its historical evidence.
+
 **The optimisation/refactor is incomplete. PR #10 remains withdrawn and in draft.** The previous fourteen-item gate list was not exhaustive: it omitted substantial frontend work, updater resilience/load measurements, and several conditional recommendations elsewhere in the whitepaper. A passing test build does not close these findings.
 
 This audit traces the canonical RC17 report, its linked RC16/RC17 reviews, the whole-application refactoring design and the Journey-retirement contract against the current implementation. Each detailed trace identifies source functions/lines, original evidence, established mechanisms versus hypotheses, concrete changes and the tests or matched measurements required for closure. Findings are consolidated by ownership rather than counted again wherever the papers repeat them.

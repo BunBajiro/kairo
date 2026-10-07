@@ -108,3 +108,43 @@ overwritten. Set `KAIRO_CHROME_PATH` to the prepared Chromium wrapper when neede
 Both probes self-acquire the shared runtime lock and must wait for the root's
 exclusive slot. None of the reconstructed scripts or prepared changes imply
 recovery of the lost 3 October raw evidence.
+
+## Fresh G8/G9 causal run preparation (7 October)
+
+`prepare-causal.mjs <workspace-root> <unused-input-directory>` captures manifests
+for frozen RC16, fa6, the isolated two-file startup-allocation variant, and exact
+original `05d0d4b36c154329006d6772769063db874762da`. RC16 and 05d have fresh local
+builds; these are not mislabelled as recovered historical build artifacts. The
+allocation variant must differ from fa6 in exactly `market-categories.mjs` and
+`universe-intel.mjs`, verified against full source manifest file sets (including
+staged/untracked/deleted files), and inherit identical compiled assets.
+
+It writes a two-process, one-source fa6 sanity config (one 10-sample window,
+4-second warmup), the prescribed G8 RC16/fa6/allocation ABCCBA active/noSync
+config, and a G9 RC16/original05d/fa6 ABCCBA config. It does not run measurements.
+Only execute after the coordinator freezes the builds and grants the runtime
+slot. Outputs are written into unused directories and historical raw files are
+unchanged.
+
+`idle-startup-run.mjs <g9-config.json> <unused-output-directory>` self-acquires
+the common benchmark lock and runs `idle-startup-worker.mjs`. Each fresh stress
+process retains a 1-second warmup and a 35-second startup-inclusive window,
+then three consecutive 30-second settled windows. The latter begin roughly
+36 seconds after startup, not the earlier standalone observation's 30-second
+boundary. This intentional difference is explicit in every result; the three
+windows are correlated trajectories, not extra independent repetitions.
+
+The worker records startup/warmup user and system CPU, queue boundaries,
+per-window CPU/loop/memory observations and actual successful Universe ticks.
+Both boundaries of every settled window must have an empty Politics queue;
+all network attempts, tick failures, or ticks still pending after close fail the
+run. It has no Inspector, snapshot/SQL/JSON counter wrappers, forced GC, manual
+ticks or UI/OBS clients. Source and harness verification occurs outside measured
+windows. `idle-startup-summary.mjs` verifies child hashes and independently
+recomputes CPU arithmetic, workload controls and per-process settled totals.
+
+These are diagnostic lanes. A local non-reproduction does not convert the old
+CI increases into harmless noise or identify their cause. GC/tick correlation
+and equal call counts do not prove allocation ownership. Final acceptance still
+requires the unchanged original backend adapter on final pinned local/CI source;
+all original adverse results remain in the whitepaper.

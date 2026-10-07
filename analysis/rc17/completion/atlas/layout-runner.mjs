@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {spawn,spawnSync} from 'node:child_process';
+import {mkdir,readFile,writeFile,access} from 'node:fs/promises';
+import {join,resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {loadSourceManifest,verifySource} from '../../harness/source-manifest.mjs';
+import {digest} from '../startup/fixture.mjs';
+const here=dirname(fileURLToPath(import.meta.url));
+if(process.env.KAIRO_LAYOUT_LOCKED!=='1'){const code=await new Promise((done,reject)=>{const child=spawn('flock',['-x','/tmp/kairo-rc16-benchmark.lock',process.execPath,fileURLToPath(import.meta.url),...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_LAYOUT_LOCKED:'1'}});child.on('error',reject);child.on('exit',code=>done(code??1));});process.exit(code);}
+const [manifestArg,outArg,cyclesArg='3']=process.argv.slice(2);assert.ok(manifestArg&&outArg,'layout-runner <source-manifest> <output> [cycles=3]');const manifestPath=resolve(manifestArg),output=resolve(outArg),cycles=Number(cyclesArg);assert.ok(Number.isInteger(cycles)&&cycles>0&&cycles<=8);
+const source=await loadSourceManifest(manifestPath),complete=join(output,'layout-completed.json');await mkdir(output,{recursive:true});try{await access(complete);throw Error('Completed evidence already exists');}catch(error){if(error.code!=='ENOENT')throw error;}
+const copied=join(output,'source-manifest.json');await writeFile(copied,await readFile(manifestPath));const hashes={};for(const path of ['layout-worker.mjs','layout-runner.mjs','../startup/fixture.mjs','../../harness/source-manifest.mjs'])hashes[path]=digest(await readFile(join(here,path)));
+const results=[],report={startedAt:new Date().toISOString(),complete:false,productionAcceptance:false,source:{root:source.root,commit:source.sourceCommit,fingerprint:source.fingerprint},hashes,cycles,order:'fresh physical/schematic/schematic/physical; timing and collected-heap separate',results};const semantic=new Map();
+try{for(const mode of ['timing','heap'])for(let cycle=1;cycle<=(mode==='timing'?cycles:1);cycle++)for(const [position,first]of ['physical','schematic','schematic','physical'].entries()){
+ await verifySource(source);const filename=[mode,cycle,position+1,first].join('-')+'.json';const run=spawnSync(process.execPath,[...(mode==='heap'?['--expose-gc']:[]),join(here,'layout-worker.mjs'),source.root,copied,first,mode],{encoding:'utf8',timeout:120000,maxBuffer:8*1024*1024});await writeFile(join(output,filename),run.stdout||'');if(run.stderr)await writeFile(join(output,filename+'.stderr.log'),run.stderr);assert.equal(run.status,0,run.stderr||run.error?.message);
+ const data=JSON.parse(run.stdout);assert.equal(data.complete,true);assert.equal(data.endVerified,true);assert.equal(data.source.fingerprint,source.fingerprint);for(const [key,value]of Object.entries(data.semantic)){if(semantic.has(key))assert.equal(value,semantic.get(key));semantic.set(key,value);}results.push({mode,cycle,position:position+1,first,filename,sha256:digest(run.stdout),timings:data.timings,heap:data.heap,fixture:data.fixture});await writeFile(join(output,'layout-progress.json'),JSON.stringify(report,null,2));process.stderr.write(filename+' complete\n');
+ }await verifySource(source);for(const [path,hash]of Object.entries(hashes))assert.equal(digest(await readFile(join(here,path))),hash);report.complete=true;report.endVerified=true;report.finishedAt=new Date().toISOString();await writeFile(complete,JSON.stringify(report,null,2)+'\n',{flag:'wx'});
+}catch(error){report.failure=error.stack;throw error;}finally{await writeFile(join(output,'layout-progress.json'),JSON.stringify(report,null,2)+'\n');}

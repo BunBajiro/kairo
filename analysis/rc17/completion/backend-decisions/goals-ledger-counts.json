@@ -1,0 +1,101 @@
+{
+  "kind": "deterministic-goal-ledger-diagnostic",
+  "sourceCommit": null,
+  "node": "v24.19.0",
+  "sourceHashes": {
+    "server/goals.mjs": "8e0b49f550fe17c632a6d2e139b8ffec13b930d5cf2d41b4d209265a419d5f23",
+    "server/store.mjs": "67fa4dd354f4a196e7356235ee566339b16cc62f87fcba39acc7be774f663a16"
+  },
+  "harnessSha256": "2f55a931b0430dd7b25c81913e83f9a4bd548d9662c9415b0775c4999a1059cb",
+  "cases": [
+    {
+      "retained": 100,
+      "currentWindow": 50,
+      "before": {
+        "progress": 100,
+        "rows": 100,
+        "total": 100
+      },
+      "unchanged": {
+        "loops": 3,
+        "sumQueries": 3,
+        "entryLookups": 150,
+        "ledgerWrites": 0,
+        "databaseWrites": 0
+      },
+      "addition": {
+        "sumQueries": 1,
+        "entryLookups": 60,
+        "ledgerWrites": 11
+      },
+      "after": {
+        "progress": 152,
+        "rows": 110,
+        "total": 152
+      },
+      "ledgerSha256": "cdd959c6bfda05d3d1becd9aee08bd07ab5b4ccd1599473900c0939f6f555432",
+      "publishedEvents": 0
+    },
+    {
+      "retained": 10000,
+      "currentWindow": 50,
+      "before": {
+        "progress": 10000,
+        "rows": 10000,
+        "total": 10000
+      },
+      "unchanged": {
+        "loops": 3,
+        "sumQueries": 3,
+        "entryLookups": 150,
+        "ledgerWrites": 0,
+        "databaseWrites": 0
+      },
+      "addition": {
+        "sumQueries": 1,
+        "entryLookups": 60,
+        "ledgerWrites": 11
+      },
+      "after": {
+        "progress": 10052,
+        "rows": 10010,
+        "total": 10052
+      },
+      "ledgerSha256": "fbc99eeafd4150e5339dd5d4d844cfb9910c3977fd91b477dcd186bda9a8b12a",
+      "publishedEvents": 0
+    },
+    {
+      "retained": 100000,
+      "currentWindow": 50,
+      "before": {
+        "progress": 100000,
+        "rows": 100000,
+        "total": 100000
+      },
+      "unchanged": {
+        "loops": 3,
+        "sumQueries": 3,
+        "entryLookups": 150,
+        "ledgerWrites": 0,
+        "databaseWrites": 0
+      },
+      "addition": {
+        "sumQueries": 1,
+        "entryLookups": 60,
+        "ledgerWrites": 11
+      },
+      "after": {
+        "progress": 100052,
+        "rows": 100010,
+        "total": 100052
+      },
+      "ledgerSha256": "d7432b985307a15b9b3fc0f396d35ac22d4df04fe3c0595a2b34c873b6f3f2c5",
+      "publishedEvents": 0
+    }
+  ],
+  "limits": [
+    "Synthetic retained income-credit ledgers:100/10000/100000 rows;100000 is a stress scenario, not a typical player claim.",
+    "50 recent records remain in the source window while older credits are retained. No production aggregate introduced.",
+    "Diagnostic SQL wrappers are absent from ordinary timing mode. Compare matched immutable source candidates in ABBA order."
+  ]
+}

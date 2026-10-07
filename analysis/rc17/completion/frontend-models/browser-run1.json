@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T11:49:17.764Z",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": false
+  },
+  "harnessSha256": "5343952b1c83ef05cdf380567b4c786254603894f612b08a99eae1a7837a7d88",
+  "mode": "diagnostic-counts",
+  "baseline": false,
+  "fixture": {
+    "pilots": 2,
+    "rowsPerLargeDataset": 10000,
+    "digest": "0c71f0a3f1a5d5c1ffdb576d1d04b2acfa5bdeaad9caffe820c4a3d3fd11c5c2"
+  },
+  "checks": [
+    {
+      "label": "unrelated snapshot does not derive asset rows",
+      "passed": true
+    },
+    {
+      "label": "matching visible record",
+      "passed": true
+    }
+  ],
+  "samples": [],
+  "counts": [
+    {
+      "label": "assets-first-open",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 1,
+          "rows": 20000
+        },
+        "assets": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-unrelated-wallet-snapshot",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/timeline?limit=5&character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/goals?character=42"
+    }
+  ],
+  "complete": false,
+  "limitations": [
+    "Synthetic populated connected pilots; no real ESI traffic.",
+    "Diagnostic counters wrap Array.map/Object.values/Intl constructors by fixture row shape; they count operations, not React commits. Counter mode is never used for CPU comparisons.",
+    "Timing mode contains no row/formatter instrumentation. Compare fresh baseline/candidate browsers in ABBA order, same fixture/build configuration.",
+    "Renderer CDP task/script/style/layout duration excludes browser/GPU/worker CPU.",
+    "No browser virtualization or archive-history performance conclusion; archive belongs to its separate acceptance lane."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "coldOverviewCounts": {
+    "map": {
+      "journal": {
+        "calls": 1,
+        "rows": 80
+      }
+    },
+    "searchRows": 0,
+    "numberFormat": 2,
+    "dateFormat": 3
+  },
+  "failure": "Error: SyntaxError: missing ) after argument list\n    at Object.evaluate (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs:17:156)\n    at async file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/frontend-models/browser-acceptance.mjs:56:269\n    at async phase (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/frontend-models/browser-acceptance.mjs:36:137)\n    at async file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/frontend-models/browser-acceptance.mjs:56:2",
+  "failureState": {
+    "url": "http://127.0.0.1:18730/#assets",
+    "body": "K\nKAIRO\nCAPSULEER OPERATIONS\nJump to module\n⌘ K\nOPERATIONS\nCommand centre\nPilot & training\nWallet & trade\nHangar & assets\nMarkets\nIndustry & planets\nSessions\nUNIVERSE\nAtlas\nMaps\nUniverse settings\nINTELLIGENCE\nGoals & notes\nBROADCAST\nStream studio\nOBS\nOPSEC control\nSYSTEM\nSettings\nConnections\nLOCAL ENVIRONMENT\nPrivate by design · v0.8.0-rc.17\nHide sidebar\nWorkspace\nHangar & assets\nCore connected\n11:49:19 EVE\n\nYOUR FLIGHT DECK\n\nHangar & assets\n\nYour ships, equipment and fittings, all accounted for.\n\nModel Pilot\nASSET REFERENCE VALUE\n100.01M ISK\nESI market averages · excludes unpriced items · not a sale quote\nAll assets\nSaved fittings\nContracts\nAsset inventory\nSynced\n1 records\nItem\tQuantity\tLocation / container\tStorage\tReference value\nAsset 00001\t2\tFixture station\tHangar\t4 ISK\n\n7 Oct, 09:00 EVE\n\nKAIRO / CAPSULEER OPERATIONS\nLocal memory. Modular growth.\nJump to a module\n\nSearch your Kairo workspace\n\n7 Oct"
+  },
+  "endedAt": "2026-10-07T11:49:19.522Z"
+}

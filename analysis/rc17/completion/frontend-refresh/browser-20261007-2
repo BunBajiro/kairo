@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": true
+  },
+  "harnessSha256": "104c59f2df06b43d9db44f24db130cc8a516df04500bcb6fb4fac037793af108",
+  "startedAt": "2026-10-07T11:16:36.012Z",
+  "fixture": {
+    "pilots": [
+      42,
+      43
+    ],
+    "sessions": 65,
+    "sourceKeys": [
+      "wallet",
+      "journal",
+      "skills",
+      "queue",
+      "assets",
+      "mining",
+      "jobs",
+      "killmails"
+    ]
+  },
+  "fixtureSha256": "aeacd058cb9ca6c76474c8213194d38273dfdd86f6ebd726e14c161e0d9afba4",
+  "checks": [],
+  "counts": [],
+  "errors": [],
+  "external": [],
+  "complete": false,
+  "limitations": [
+    "Compiled synthetic connected-pilot UI diagnostics; no real ESI traffic or time/CPU improvement claim.",
+    "Fetch instrumentation counts requests and deliberately holds response delivery for races. Recovery timer callback is invoked directly, keeping its actual Dashboard callback; no timing result is collected.",
+    "Session archive correctness covers 65 loaded rows and response ordering; growing-history presentation and latency need a separate matched lane.",
+    "Production bundle deferral/F4 remains a separate adopt/reject decision."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "failure": "Error: {\"code\":-32000,\"message\":\"Object reference chain is too long\"}\n    at WebSocket.<anonymous> (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs:12:141)\n    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)\n    at WebSocket.dispatchEvent (node:internal/event_target:789:26)\n    at fireEvent (node:internal/deps/undici/undici:14403:14)\n    at #onMessage (node:internal/deps/undici/undici:15726:9)\n    at Object.onMessage (node:internal/deps/undici/undici:15433:76)\n    at websocketMessageReceived (node:internal/deps/undici/undici:14407:15)\n    at node:internal/deps/undici/undici:15135:21\n    at node:internal/deps/undici/undici:14915:11\n    at afterWrite (node:internal/streams/writable:708:5)",
+  "failureState": {
+    "url": "http://127.0.0.1:18740/#overview",
+    "body": "K\nKAIRO\nCAPSULEER OPERATIONS\nJump to module\n⌘ K\nOPERATIONS\nCommand centre\nPilot & training\nWallet & trade\nHangar & assets\nMarkets\nIndustry & planets\nSessions\nUNIVERSE\nAtlas\nMaps\nUniverse settings\nINTELLIGENCE\nGoals & notes\nBROADCAST\nStream studio\nOBS\nOPSEC control\nSYSTEM\nSettings\nConnections\nLOCAL ENVIRONMENT\nPrivate by design · v0.8.0-rc.17\nHide sidebar\nWorkspace\nCommand centre\n11:16:36 EVE\n\nYOUR FLIGHT DECK\n\nCommand centre\n\nYour pilot. Your operations. Your next move.\n\nRefresh Pilot 42\nWALLET BALANCE\n4.2KISK\n\nPersonal wallet\n\nSynced\nTOTAL SKILL POINTS\n1KSP\n\nSkills & progression\n\nSynced\nCURRENT TRAINING\n—\n\nSkill queue\n\nSynced\nINDUSTRY JOBS\n00ACTIVE\n\n0 jobs ready for delivery\n\nSynced\nIn space\nAwaiting sync\nLocation unavailable\nAWAITING SHIP TELEMETRY\n\nCURRENT HULL\n\nNo ship connected\nYour active ship appears here\nCAPSULEER\nRefresh Pilot 42\nSTATUS\nUnknown\nBROADCAST\nUnknown\nTraining queue\nSynced\nTraining queue is empty\nQueue skills in EVE and they will appear here after syncing.\n0 skills in queue\nView training\nWallet activity\nRECENT JOURNAL\n4,200 ISK\nBalance across recent journal entries\n\nYour wallet history builds the picture.\n\nConnect the wallet module to see your balance over time.\nYour objectives\nSet your next destination.\n\nTrack the ships, skills and projects you’re working toward.\n\nAdd an objective\nRecent activity\nLOCAL FLIGHT LOG\nA flight log that grows with you.\n\nObserved travel, ship changes, skills and milestones will appear here.\n\nKAIRO / CAPSULEER OPERATIONS\nLocal memory. Modular growth.\nJump to a module\n\nSearch your Kairo workspace",
+    "reads": [
+      "/api/bootstrap",
+      "/api/state?character=42",
+      "/api/universe/jspace/tracking/active",
+      "/api/timeline?limit=5&character=42",
+      "/api/goals?character=42"
+    ]
+  },
+  "endedAt": "2026-10-07T11:16:36.520Z"
+}

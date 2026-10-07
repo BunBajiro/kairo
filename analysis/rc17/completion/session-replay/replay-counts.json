@@ -1,0 +1,45 @@
+{
+  "kind": "deterministic-row-timestamp-read-counts",
+  "node": "v24.19.0",
+  "harnessSha256": "4abfd6b99301c4958691261da720335ca5eb9a3e1616ef00063c4971f01a4181",
+  "sourceSha256": "d6b5b1b0c6e0bcec29b9313836e893abfd14f60b8a5b7c86708126cd84c6ae02",
+  "measurements": [
+    {
+      "visits": 1000,
+      "distinctSystems": 11,
+      "events": 200,
+      "ticksAndSeeks": 1205,
+      "baselineTimestampReads": 4030151,
+      "indexedTimestampReads": 42853,
+      "baselineTickTravelDateParses": 1203795,
+      "indexedTickTravelDateParses": 0,
+      "outputsEqual": true
+    },
+    {
+      "visits": 1000,
+      "distinctSystems": 1000,
+      "events": 10000,
+      "ticksAndSeeks": 1205,
+      "baselineTimestampReads": 27649327,
+      "indexedTimestampReads": 56287,
+      "baselineTickTravelDateParses": 1203795,
+      "indexedTickTravelDateParses": 0,
+      "outputsEqual": true
+    },
+    {
+      "visits": 4000,
+      "distinctSystems": 4000,
+      "events": 10000,
+      "ticksAndSeeks": 1205,
+      "baselineTimestampReads": 38488927,
+      "indexedTimestampReads": 61121,
+      "baselineTickTravelDateParses": 4818795,
+      "indexedTickTravelDateParses": 0,
+      "outputsEqual": true
+    }
+  ],
+  "limits": [
+    "Timestamp getter reads are actual property accesses, not total operations or CPU costs. Private numeric tree/prefix-array accesses are not included.",
+    "No host timing, preparation-cost, retained-memory or compiled-browser acceptance claim."
+  ]
+}

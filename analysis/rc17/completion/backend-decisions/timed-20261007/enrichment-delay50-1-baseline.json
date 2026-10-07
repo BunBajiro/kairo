@@ -1,0 +1,1492 @@
+{
+  "kind": "ordinary-core-enrichment-trial",
+  "sourceCommit": "a27d36c602435ce220452b5d45b0109d30efa533",
+  "node": "v24.19.0",
+  "sourceHashes": {
+    "server/core.mjs": "ae872f977507be838988d7e412287865bf9b0c2e0572595853580d3b065e09fa",
+    "server/asset-locations.mjs": "49383a3dee1c34969ccf19a56daf1295b950445635256d846e33de835801c697",
+    "server/esi.mjs": "fe40c7e2ebf25715a874d049d78c6718f8c616c39455c0a6dbf56f438b421872",
+    "server/store.mjs": "c3beb0750fb959ae87e033132a1d1a01b381e2c93f26c8266fc92ae088219f07",
+    "server/enrichment.mjs": null
+  },
+  "harnessSha256": "df49b996572cbfe155ed8de770afba1ca744cdf66a8accbd7a01a73efe93f107",
+  "delayMs": 50,
+  "cases": [
+    {
+      "kind": "stations",
+      "count": 0,
+      "measurement": {
+        "coldMs": 58.05380800000003,
+        "coldCPU": {
+          "user": 8506,
+          "system": 0
+        },
+        "warmMs": 1.6225140000000238
+      },
+      "coldProviderCalls": 1,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 1,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 1,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "equal": true
+    },
+    {
+      "kind": "stations",
+      "count": 1,
+      "measurement": {
+        "coldMs": 155.818062,
+        "coldCPU": {
+          "user": 21589,
+          "system": 4412
+        },
+        "warmMs": 0.9634910000000332
+      },
+      "coldProviderCalls": 3,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 3,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 3,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/names",
+          "method": "POST"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000000",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "7016eef060900a329f64440670454b37f97e5d63d4550eb46ac366adac4c66df",
+      "equal": true
+    },
+    {
+      "kind": "stations",
+      "count": 10,
+      "measurement": {
+        "coldMs": 614.9112340000001,
+        "coldCPU": {
+          "user": 13061,
+          "system": 4704
+        },
+        "warmMs": 1.0223899999998594
+      },
+      "coldProviderCalls": 12,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 12,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 12,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/names",
+          "method": "POST"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000000",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000001",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000002",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000003",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000004",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000005",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000006",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000007",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000008",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000009",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "14647cb97f076a34ba0c10599fdbc4c008fa2900ed912a1070161406f2e4f9c6",
+      "equal": true
+    },
+    {
+      "kind": "stations",
+      "count": 50,
+      "measurement": {
+        "coldMs": 2650.927492,
+        "coldCPU": {
+          "user": 109827,
+          "system": 0
+        },
+        "warmMs": 1.2715760000000955
+      },
+      "coldProviderCalls": 52,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 52,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 52,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/names",
+          "method": "POST"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000000",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000001",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000002",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000003",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000004",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000005",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000006",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000007",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000008",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000009",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000010",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000011",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000012",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000013",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000014",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000015",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000016",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000017",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000018",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000019",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000020",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000021",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000022",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000023",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000024",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000025",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000026",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000027",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000028",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000029",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000030",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000031",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000032",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000033",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000034",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000035",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000036",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000037",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000038",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000039",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000040",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000041",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000042",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000043",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000044",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000045",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000046",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000047",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000048",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/stations/60000049",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "d145cc805a563a53fcf03f25247023ed9c4a1e1ec8472438c0e4b11789975b69",
+      "equal": true
+    },
+    {
+      "kind": "structures",
+      "count": 0,
+      "measurement": {
+        "coldMs": 51.97381899999982,
+        "coldCPU": {
+          "user": 2250,
+          "system": 0
+        },
+        "warmMs": 0.9123340000001008
+      },
+      "coldProviderCalls": 1,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 1,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 1,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "equal": true
+    },
+    {
+      "kind": "structures",
+      "count": 1,
+      "measurement": {
+        "coldMs": 102.47210300000006,
+        "coldCPU": {
+          "user": 2129,
+          "system": 384
+        },
+        "warmMs": 0.7107799999998861
+      },
+      "coldProviderCalls": 2,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 2,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 2,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000000",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "c02bbfbdb07b8833c9699e578fde9a4f95c301f3f710dc951b4bf05c7ca5a7aa",
+      "equal": true
+    },
+    {
+      "kind": "structures",
+      "count": 10,
+      "measurement": {
+        "coldMs": 561.9368609999997,
+        "coldCPU": {
+          "user": 11840,
+          "system": 0
+        },
+        "warmMs": 0.9051339999996344
+      },
+      "coldProviderCalls": 11,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 11,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 11,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000000",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000001",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000002",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000003",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000004",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000005",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000006",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000007",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000008",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000009",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "4664cd48d76797977856c53f4beadb4ecb497ad9fa0a56af339fe85a6241df58",
+      "equal": true
+    },
+    {
+      "kind": "structures",
+      "count": 50,
+      "measurement": {
+        "coldMs": 2606.337383,
+        "coldCPU": {
+          "user": 56218,
+          "system": 3542
+        },
+        "warmMs": 1.1226710000000821
+      },
+      "coldProviderCalls": 51,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 51,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 51,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/assets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000000",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000001",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000002",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000003",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000004",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000005",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000006",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000007",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000008",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000009",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000010",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000011",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000012",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000013",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000014",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000015",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000016",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000017",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000018",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000019",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000020",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000021",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000022",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000023",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000024",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000025",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000026",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000027",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000028",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000029",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000030",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000031",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000032",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000033",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000034",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000035",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000036",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000037",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000038",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000039",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000040",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000041",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000042",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000043",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000044",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000045",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000046",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000047",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000048",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/universe/structures/1000000000049",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "9c6d3fbb41ed5f7c60ef93fa0dfd48d68876227e54e12c867565ecaea791eed3",
+      "equal": true
+    },
+    {
+      "kind": "planets",
+      "count": 0,
+      "measurement": {
+        "coldMs": 51.44860599999993,
+        "coldCPU": {
+          "user": 0,
+          "system": 1467
+        },
+        "warmMs": 0.9051840000001903
+      },
+      "coldProviderCalls": 1,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 1,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 1,
+        "cacheHits": 1,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "equal": true
+    },
+    {
+      "kind": "planets",
+      "count": 1,
+      "measurement": {
+        "coldMs": 102.53613000000041,
+        "coldCPU": {
+          "user": 2010,
+          "system": 370
+        },
+        "warmMs": 0.8135050000000774
+      },
+      "coldProviderCalls": 2,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 2,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 2,
+        "cacheHits": 2,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000000",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "e1180ea2f03c1b0ace92f78d495b931128a2a3fe9cd4376ee18a552a0bc02d03",
+      "equal": true
+    },
+    {
+      "kind": "planets",
+      "count": 10,
+      "measurement": {
+        "coldMs": 559.7631890000002,
+        "coldCPU": {
+          "user": 6200,
+          "system": 2981
+        },
+        "warmMs": 1.8862410000001546
+      },
+      "coldProviderCalls": 11,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 11,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 11,
+        "cacheHits": 11,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000000",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000001",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000002",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000003",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000004",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000005",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000006",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000007",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000008",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000009",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "06173f7ff709623de9d8ba51209bdd9d1cf7f1f1bd8ce1288c4add2f6b573936",
+      "equal": true
+    },
+    {
+      "kind": "planets",
+      "count": 50,
+      "measurement": {
+        "coldMs": 2596.5849529999996,
+        "coldCPU": {
+          "user": 41415,
+          "system": 3452
+        },
+        "warmMs": 6.324626999999964
+      },
+      "coldProviderCalls": 51,
+      "warmProviderCalls": 0,
+      "maxConcurrentCold": 1,
+      "maxConcurrentWarm": 0,
+      "coldHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 51,
+        "cacheHits": 0,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "warmHealth": {
+        "active": 0,
+        "queued": 0,
+        "errorUntil": 0,
+        "requests": 51,
+        "cacheHits": 51,
+        "coalesced": 0,
+        "notModified": 0,
+        "failed": 0
+      },
+      "calls": [
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000000",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000001",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000002",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000003",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000004",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000005",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000006",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000007",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000008",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000009",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000010",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000011",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000012",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000013",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000014",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000015",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000016",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000017",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000018",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000019",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000020",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000021",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000022",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000023",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000024",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000025",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000026",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000027",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000028",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000029",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000030",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000031",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000032",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000033",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000034",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000035",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000036",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000037",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000038",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000039",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000040",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000041",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000042",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000043",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000044",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000045",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000046",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000047",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000048",
+          "method": "GET"
+        },
+        {
+          "phase": "cold",
+          "path": "/characters/42/planets/40000049",
+          "method": "GET"
+        }
+      ],
+      "dataSha256": "b306466bc22ddf915efb0ab979082192bf2ad934fecafa1088a873182489ed35",
+      "equal": true
+    }
+  ],
+  "limits": [
+    "Synthetic responses; no external providers/credentials. Delay models transport/response wait, not measured real provider latency.",
+    "Each lane exercises real Core.sync/requestSync, cache, name resolution and the four-request ESI limiter.",
+    "50 PI planets is an explicit stress case beyond ordinary single-pilot holdings, not typical usage.",
+    "No production concurrency change is implied; compare immutable source candidates with identical cases and ABBA ordering."
+  ]
+}

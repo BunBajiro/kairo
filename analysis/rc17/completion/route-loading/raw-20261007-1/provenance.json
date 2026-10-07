@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T11:49:01.380Z",
+  "complete": false,
+  "order": [
+    "baseline-1",
+    "candidate-1",
+    "candidate-2",
+    "baseline-2"
+  ],
+  "harness": {
+    "run.mjs": "e4a04eb9336cabf4fbf68093d83ef0a3fc649a6a3262c395a52f47273a9a8cda",
+    "browser-worker.mjs": "dfea7734c7fe2a09bae1082dbe8d8db2391ffdab75e4f229f54e3f44a4ed39f2",
+    "bundle-inventory.mjs": "6cb1766c0e18d36a68340c425d7c08dd6854ef3a642d9421df98dfef2cff2b68"
+  },
+  "source": {
+    "baseline": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-route-lazy-baseline",
+      "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+      "fingerprint": "a19b2d5c09f58425118f4ecbd41e414f68b4ad9b7b1e459aa2cd2779360245bd",
+      "dirty": false
+    },
+    "candidate": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-route-lazy-trial",
+      "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+      "fingerprint": "03c1fe0a5843c24aa694f0bd610edc2fa40e79f0d92bbba614baf231f7de40f5",
+      "dirty": true
+    }
+  },
+  "method": "Matched a27 sources except isolated route boundaries; identical package lock/build config/dependency installation; fresh backend/browser per ABBA entry; all measured observations precede fault/draft/detached diagnostics.",
+  "failure": "Error: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node failed: 1\n    at ChildProcess.<anonymous> (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/route-loading/run.mjs:9:210)\n    at ChildProcess.emit (node:events:509:28)\n    at ChildProcess._handle.onexit (node:internal/child_process:295:12)",
+  "endedAt": "2026-10-07T11:49:17.536Z"
+}

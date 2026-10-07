@@ -1,0 +1,45 @@
+// New G9 attribution lane; historical idle-worker and acceptance files are unchanged.
+import assert from 'node:assert/strict';
+import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
+import {tmpdir,cpus} from 'node:os';
+import {join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
+import {createServer} from 'node:net';
+import {performance,monitorEventLoopDelay} from 'node:perf_hooks';
+import {setTimeout as delay} from 'node:timers/promises';
+import {loadSourceManifest,verifySource} from '../../harness/source-manifest.mjs';
+assert.equal(process.env.KAIRO_G9_LOCKED,'1','Use the exclusive locking runner');
+const[rootArg,outputArg,manifestArg,clockArg]=process.argv.slice(2),root=resolve(rootArg),output=resolve(outputArg),fixtureNow=Number(clockArg);
+assert.ok(Number.isFinite(fixtureNow));const source=await loadSourceManifest(manifestArg,root);assert.equal(source.dirty,false);
+process.env.KAIRO_PERF_APP_ROOT=root;
+const{startKairo}=await import(pathToFileURL(join(root,'server/index.mjs'))),{seedFixture}=await import('../../harness/backend/fixture.mjs');
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),files=['idle-startup-worker.mjs','../../harness/source-manifest.mjs','../../harness/backend/fixture.mjs','../../harness/backend/target.mjs','../../harness/legacy-discovery-fixture.mjs'],hashes={};for(const file of files)hashes[file]=hash(await readFile(new URL(file,import.meta.url)));
+const report={schemaVersion:1,diagnosticOnly:true,performanceAcceptance:false,source:{commit:source.sourceCommit,fingerprint:source.fingerprint,dirty:source.dirty},harnessHashes:hashes,startedAt:new Date().toISOString(),fixtureNow,environment:{node:process.version,cpu:cpus()[0]?.model,logicalCpus:cpus().length},settings:{scheduler:'active real timers',clients:0,warmupMs:1000,startupWindowMs:35000,settledWindows:3,settledWindowMs:30000,profile:false,sqlWrappers:false,snapshotWrappers:false,forcedGc:false},limitations:['Startup-inclusive window retains the historical one-second warmup/35-second meter geometry, with new boundary diagnostics; this is not a replacement acceptance run.','The three settled windows follow that first window, beginning roughly36seconds after startup. This differs from the earlier30-second-warmup standalone settled observation.','All windows in one process are correlated trajectories. No pooling into independent repetitions.','Only low-frequency successful real tick auditing, common250ms RSS sampling and10ms event-loop-delay observation are active. No instrumentation identifies an allocation owner.','Historical05d source is rebuilt locally; compiled output is newly produced and is not the recovered historical artifact.'],windows:[],ticks:[],externalAttempts:0,complete:false};
+const dir=await mkdtemp(join(tmpdir(),'kairo-g9-'));
+let app;const denied=async()=>{report.externalAttempts++;throw Error('External request blocked by G9 fixture');};globalThis.fetch=denied;
+async function port(){const server=createServer();await new Promise((ok,bad)=>server.once('error',bad).listen(0,'127.0.0.1',ok));const result=server.address().port;await new Promise(ok=>server.close(ok));return result;}
+const queue=()=>Number(app.store.db.prepare('SELECT COUNT(*) count FROM universe_politics_queue').get().count);
+const counts={started:0,completed:0,successful:0,pending:0,operations:0,feeds:0},rejections=[];
+const subtract=(before,after)=>Object.fromEntries(Object.keys(after).map(key=>[key,after[key]-before[key]]));
+async function window(label,targetMs,index){
+ const queueBefore=queue();if(label==='settled')assert.equal(queueBefore,0,'Settled window requires an empty Politics queue');
+ const before={...counts},pendingBefore=counts.pending,memory=process.memoryUsage();let peakRss=memory.rss;
+ const observer=monitorEventLoopDelay({resolution:10});observer.enable();const sampler=setInterval(()=>{peakRss=Math.max(peakRss,process.memoryUsage().rss);},250);sampler.unref();
+ const elu=performance.eventLoopUtilization(),cpu=process.cpuUsage(),start=performance.now(),startedAt=new Date().toISOString();await delay(targetMs);
+ const end=performance.now(),used=process.cpuUsage(cpu),endElu=performance.eventLoopUtilization(elu),elapsedMs=end-start;clearInterval(sampler);observer.disable();const afterMemory=process.memoryUsage();
+ const record={label,index,targetMs,startTime:start,endTime:end,startedAt,endedAt:new Date().toISOString(),elapsedMs,cpuUserMs:used.user/1000,cpuSystemMs:used.system/1000,cpuMs:(used.user+used.system)/1000,cpuPercentOneCore:(used.user+used.system)/elapsedMs/10,eventLoopUtilization:endElu.utilization,eventLoopDelaySamples:observer.count,eventLoopDelayP95Ms:observer.count?observer.percentile(95)/1e6:null,eventLoopDelayMaxMs:observer.count?observer.max/1e6:null,rssBeforeBytes:memory.rss,rssAfterBytes:afterMemory.rss,peakRssBytes:Math.max(peakRss,afterMemory.rss),heapBeforeBytes:memory.heapUsed,heapAfterBytes:afterMemory.heapUsed,counts:subtract(before,counts),pendingTicksBefore:pendingBefore,pendingTicksAfter:counts.pending,politicsQueueBefore:queueBefore,politicsQueueAfter:queue(),networkAttempts:report.externalAttempts};
+ report.windows.push(record);if(label==='settled')assert.equal(record.politicsQueueAfter,0,'Settled window must finish with an empty Politics queue');assert.ok(record.counts.successful>=(label==='settled'?8:10),'Real ticks must occur in every window');assert.equal(record.counts.operations,record.counts.successful);assert.equal(record.counts.feeds,record.counts.successful);assert.equal(report.externalAttempts,0);assert.deepEqual(rejections,[]);
+}
+try {
+ report.fixture=await seedFixture(join(dir,'data'),'stress',fixtureNow);const first=await port();let second=await port();while(second===first)second=await port();
+ const begin=performance.now(),startupCpu=process.cpuUsage();app=await startKairo({port:first,streamPort:second,dataDir:join(dir,'data'),noSync:false,fetcher:denied,combatFetcher:denied,sessionFeedFetcher:denied,markets:{historyFetcher:denied},universe:{feeds:{fetcher:denied}},datasets:{fetcher:denied},deferDatasetStart:true});const startupUsed=process.cpuUsage(startupCpu);
+ report.startup={ms:performance.now()-begin,cpuUserMs:startupUsed.user/1000,cpuSystemMs:startupUsed.system/1000,politicsQueue:queue()};
+ const feeds=app.core.universe.feeds.state();assert.ok(Array.isArray(feeds.storms)&&Array.isArray(feeds.points));assert.equal(feeds.sources.storms.status,'ready');report.feedStateValidation={storms:feeds.storms.length,points:feeds.points.length,status:feeds.sources.storms.status};
+ const tick=app.core.universe.tick;app.core.universe.tick=async(...args)=>{counts.started++;counts.pending++;const item={startTime:performance.now(),endTime:null,success:false};report.ticks.push(item);try{const values=await tick(...args);assert.ok(Array.isArray(values));assert.equal(values.length,2);for(const[rowIndex,value]of values.entries()){assert.equal(value.status,'fulfilled',String(value.reason?.stack||value.reason));counts[rowIndex?'feeds':'operations']++;}counts.completed++;counts.successful++;item.success=true;return values;}catch(error){rejections.push(error.stack);throw error;}finally{counts.pending--;item.endTime=performance.now();}};
+ const warmStart=performance.now(),warmCpu=process.cpuUsage();await delay(1000);const warmUsed=process.cpuUsage(warmCpu);report.warmup={ms:performance.now()-warmStart,cpuUserMs:warmUsed.user/1000,cpuSystemMs:warmUsed.system/1000,politicsQueue:queue(),counts:{...counts}};
+ await window('startup-inclusive',35000,0);for(let index=1;index<=3;index++)await window('settled',30000,index);
+ report.finalClients={dashboard:app.core.uiClients.size,obs:app.core.stream.clients.size};assert.deepEqual(report.finalClients,{dashboard:0,obs:0});assert.equal(report.externalAttempts,0);assert.deepEqual(rejections,[]);await verifySource(source);for(const[file,expected]of Object.entries(hashes))assert.equal(hash(await readFile(new URL(file,import.meta.url))),expected);report.sourceVerified=true;report.complete=true;
+}catch(error){report.failure=error.stack;throw error;}
+finally{try{await app?.close();assert.equal(report.externalAttempts,0);assert.deepEqual(rejections,[],'No tick may fail while verifying or closing');assert.equal(counts.pending,0,'No tick may remain in flight after close');assert.equal(counts.started,counts.completed);report.finalTickCounts={...counts};report.finalTickRejections=[...rejections];report.cleanupComplete=true;}catch(error){report.cleanupFailure=error.stack;report.complete=false;}report.endedAt=new Date().toISOString();await mkdir(output,{recursive:true});await writeFile(join(output,'idle.json'),JSON.stringify(report,null,2)+'\n',{flag:'wx'});await rm(dir,{recursive:true,force:true,maxRetries:5,retryDelay:100});}
+assert.equal(report.complete,true);console.log(JSON.stringify({complete:true,source:report.source.commit,windows:report.windows.map(({label,index,cpuMs,cpuPercentOneCore,politicsQueueBefore,politicsQueueAfter,counts})=>({label,index,cpuMs,cpuPercentOneCore,politicsQueueBefore,politicsQueueAfter,counts}))}));

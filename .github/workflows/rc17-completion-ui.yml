@@ -1,0 +1,223 @@
+name: Internal RC17 completion UI evidence
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths: ['analysis/rc17/completion/ui-request.json']
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: 'Full exact internal candidate commit SHA; never a clean review package'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-kairo-rc17-completion-ui
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: checkpoint
+          persist-credentials: false
+      - name: Validate pinned internal request and record harness provenance
+        id: request
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, platform, re, shutil, subprocess
+          from pathlib import Path
+          request = json.loads(Path('analysis/rc17/completion/ui-request.json').read_text()) if os.environ['GITHUB_EVENT_NAME'] == 'push' else {'candidateCommit': os.environ['CANDIDATE_SHA']}
+          sha = request['candidateCommit']
+          assert re.fullmatch('[0-9a-f]{40}', sha), 'Pin the full lowercase source commit SHA'
+          assert request.get('sourceCommit', sha) == sha, 'Candidate/sourceCommit request mismatch'
+          assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == os.environ['GITHUB_SHA']
+          root = Path('analysis/rc17/raw/completion-ui')
+          shutil.rmtree(root, ignore_errors=True)
+          root.mkdir(parents=True)
+          harnesses = [p for directory in ['analysis/rc17/completion', 'analysis/rc17/harness', 'analysis/rc16/historical/tests/performance'] for p in Path(directory).rglob('*.mjs')]
+          harnesses.append(Path('.github/workflows/rc17-completion-ui.yml'))
+          (root / 'run-provenance.json').write_text(json.dumps({'schemaVersion':1, 'startedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(), 'runUrl':f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}", 'runAttempt':os.environ['GITHUB_RUN_ATTEMPT'], 'harnessCommit':os.environ['GITHUB_SHA'], 'candidateCommit':sha, 'request':request, 'platform':platform.platform(), 'harnessSha256':{str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(set(harnesses))}, 'reviewReady':False, 'note':'Internal raw evidence only. Independent lanes run sequentially; any failed/missing lane keeps this job failed. No clean package or review handoff.'}, indent=2)+'\n')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f'candidate_sha={sha}\n')
+          PY
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: BunBajiro/kairo
+          ref: ${{ steps.request.outputs.candidate_sha }}
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24.19.0'
+      - name: Install exact locked candidate dependencies
+        id: install
+        working-directory: candidate
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
+          test -z "$(git status --porcelain --untracked-files=all)"
+          npm run install:ci 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/install.log"
+      - name: Type-check exact candidate
+        id: types
+        if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: candidate
+        run: npm run check:kairo 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/types.log"
+      - name: Run exact candidate runtime tests
+        id: runtime_tests
+        if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: candidate
+        run: npm run test:kairo 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/runtime-tests.log"
+      - name: Build exact candidate with locked dependencies
+        id: build
+        if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
+        working-directory: candidate
+        run: |
+          date -u +%FT%TZ > "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/build-started.txt"
+          npm run build 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/build.log"
+      - name: Capture compiled source and build receipt
+        id: manifest
+        if: ${{ always() && !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+        run: |
+          node analysis/rc17/harness/source-manifest.mjs capture "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json "$CANDIDATE_SHA"
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, subprocess
+          from pathlib import Path
+          root = Path('analysis/rc17/raw/completion-ui').resolve()
+          candidate = Path(os.environ['GITHUB_WORKSPACE']) / 'candidate'
+          source = json.loads((root / 'source-manifest.json').read_text())
+          assert source['sourceCommit'] == os.environ['CANDIDATE_SHA'] and not source['dirty'] and source['builtFiles']
+          receipt = {'schemaVersion':1, 'sourceCommit':source['sourceCommit'], 'sourceTree':subprocess.check_output(['git','-C',str(candidate),'rev-parse','HEAD^{tree}'],text=True).strip(), 'sourceFingerprint':source['fingerprint'], 'buildCommand':'npm run build', 'exitCode':0, 'startedAt':(root/'build-started.txt').read_text().strip(), 'completedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(), 'buildLog':str(root/'build.log'), 'logSha256':hashlib.sha256((root/'build.log').read_bytes()).hexdigest(), 'lockfileSha256':hashlib.sha256((candidate/'package-lock.json').read_bytes()).hexdigest(), 'node':subprocess.check_output(['node','--version'],text=True).strip(), 'reviewReady':False}
+          (root/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          PY
+          command -v google-chrome
+          google-chrome --version > analysis/rc17/raw/completion-ui/chrome-version.txt
+      - name: Check Dashboard refresh and Session archive publication
+        id: refresh
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs frontend-refresh "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Check Markets, OBS and Goals administrative polling
+        id: admin
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs admin-polling "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Check populated frontend row models
+        id: models
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs frontend-models "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Check Studio and browser-source rendered safety
+        id: studio
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs studio-stream "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Check compiled replay with repeated geography and small event history
+        id: replay_small
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs session-replay-repeat-small "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Check compiled replay at event cap with repeated geography
+        id: replay_repeat_cap
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs session-replay-repeat-cap "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Check compiled replay at event cap with distinct geography
+        id: replay_distinct_cap
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' && steps.types.outcome == 'success' && steps.runtime_tests.outcome == 'success' }}
+        working-directory: checkpoint
+        env:
+          CANDIDATE_SHA: ${{ steps.request.outputs.candidate_sha }}
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+        run: flock /tmp/kairo-rc16-benchmark.lock node analysis/rc17/completion/ui-ci-lane.mjs session-replay-distinct-cap "$GITHUB_WORKSPACE/candidate" analysis/rc17/raw/completion-ui/source-manifest.json analysis/rc17/raw/completion-ui
+      - name: Verify source and compiled assets after every attempted lane
+        id: final_source
+        if: ${{ always() && !cancelled() && steps.manifest.outcome == 'success' }}
+        working-directory: checkpoint
+        run: node analysis/rc17/harness/source-manifest.mjs verify analysis/rc17/raw/completion-ui/source-manifest.json 2>&1 | tee analysis/rc17/raw/completion-ui/final-source-verify.log
+      - name: Verify analysis harness identity after attempted lanes
+        id: final_harness
+        if: ${{ always() && !cancelled() && steps.request.outcome == 'success' }}
+        working-directory: checkpoint
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, subprocess
+          from pathlib import Path
+          root = Path('analysis/rc17/raw/completion-ui')
+          prior = json.loads((root/'run-provenance.json').read_text())
+          paths = [p for directory in ['analysis/rc17/completion','analysis/rc17/harness','analysis/rc16/historical/tests/performance'] for p in Path(directory).rglob('*.mjs')]
+          paths.append(Path('.github/workflows/rc17-completion-ui.yml'))
+          current = {str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(set(paths))}
+          changed = [path for path in sorted(set(current)|set(prior['harnessSha256'])) if current.get(path) != prior['harnessSha256'].get(path)]
+          head = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          valid = not changed and head == prior['harnessCommit'] == os.environ['GITHUB_SHA']
+          (root/'final-harness-verify.json').write_text(json.dumps({'verified':valid,'harnessCommit':head,'changedOrMissingPaths':changed},indent=2)+'\n')
+          assert valid, 'Harness source or inventory changed during verification'
+          PY
+      - name: Record completeness and hash retained evidence
+        if: always()
+        working-directory: checkpoint
+        env:
+          KAIRO_UI_STEPS: ${{ toJSON(steps) }}
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os
+          from pathlib import Path
+          root = Path('analysis/rc17/raw/completion-ui')
+          root.mkdir(parents=True, exist_ok=True)
+          steps = json.loads(os.environ['KAIRO_UI_STEPS'])
+          required = ['request','install','types','runtime_tests','build','manifest','refresh','admin','models','studio','replay_small','replay_repeat_cap','replay_distinct_cap','final_source','final_harness']
+          missing = [name for name in required if steps.get(name,{}).get('outcome') != 'success']
+          receipts = {}
+          for lane in ['frontend-refresh','admin-polling','frontend-models','studio-stream','session-replay-repeat-small','session-replay-repeat-cap','session-replay-distinct-cap']:
+              path = root/lane/'lane-receipt.json'
+              receipts[lane] = json.loads(path.read_text()) if path.exists() else None
+              if not receipts[lane] or not receipts[lane].get('complete'): missing.append(lane)
+          (root/'completion.json').write_text(json.dumps({'schemaVersion':1, 'completedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(), 'complete':not missing, 'failedOrMissing':missing, 'steps':steps, 'reviewReady':False, 'note':'Raw internal verification only. Replay is single-candidate coverage, not a matched performance comparison. PR #10 remains withdrawn.'},indent=2)+'\n')
+          files = [{'path':str(p.relative_to(root)), 'bytes':p.stat().st_size, 'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(root.rglob('*')) if p.is_file() and p.name != 'evidence-sha256.json']
+          (root/'evidence-sha256.json').write_text(json.dumps({'schemaVersion':1,'files':files},indent=2)+'\n')
+          assert not missing, 'Incomplete/failed internal UI evidence: '+', '.join(missing)
+          PY
+      - name: Retain raw internal evidence only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-rc17-completion-ui-${{ github.run_id }}-${{ github.run_attempt }}
+          path: checkpoint/analysis/rc17/raw/completion-ui/
+          if-no-files-found: error
+          retention-days: 30
