@@ -1,0 +1,183 @@
+{
+  "startedAt": "2026-10-07T13:30:26.689Z",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "217c8f0f2539aaac102e3b5d8cd3d78cfa58cb4a0dd39f22a3ac0394c28f429c",
+    "dirty": true
+  },
+  "harnessSha256": "7ba3035c0e15074a7df0d5bf680e98406c66c403eb773bf782cbaf9856c01995",
+  "fixture": {
+    "elements": 32,
+    "clocks": 4,
+    "wallet": 4,
+    "static": 24,
+    "dragSteps": 40,
+    "drags": 3
+  },
+  "samples": [
+    {
+      "label": "studio-idle-native-6s",
+      "windowMs": 6003.641941999999,
+      "taskMs": 41.136,
+      "scriptMs": 12.765999999999986,
+      "layoutMs": 4.562999999999998,
+      "recalcMs": 0,
+      "heapBefore": 7879484,
+      "heapAfter": 8738452,
+      "requests": []
+    },
+    {
+      "label": "studio-three-drags",
+      "windowMs": 4114.482319000001,
+      "taskMs": 790.159,
+      "scriptMs": 443.241,
+      "layoutMs": 28.775999999999996,
+      "recalcMs": 22.463,
+      "heapBefore": 8738452,
+      "heapAfter": 12604612,
+      "requests": []
+    },
+    {
+      "label": "studio-ten-source-updates",
+      "windowMs": 4012.1250230000005,
+      "taskMs": 198.18700000000013,
+      "scriptMs": 127.48899999999996,
+      "layoutMs": 7.098000000000007,
+      "recalcMs": 0,
+      "heapBefore": 12604612,
+      "heapAfter": 8916828,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/api/stream/preview"
+        }
+      ]
+    },
+    {
+      "label": "markets-idle-native-6s",
+      "windowMs": 6003.140249,
+      "taskMs": 13.022000000000089,
+      "scriptMs": 1.9559999999999578,
+      "layoutMs": 1.3910000000000033,
+      "recalcMs": 0,
+      "heapBefore": 12638796,
+      "heapAfter": 12647176,
+      "requests": []
+    },
+    {
+      "label": "markets-running-native-6s",
+      "windowMs": 6002.584746,
+      "taskMs": 41.8820000000002,
+      "scriptMs": 16.105999999999952,
+      "layoutMs": 1.7620000000000136,
+      "recalcMs": 0.28400000000000647,
+      "heapBefore": 9965412,
+      "heapAfter": 7870480,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/markets"
+        },
+        {
+          "method": "GET",
+          "path": "/api/markets"
+        },
+        {
+          "method": "GET",
+          "path": "/api/markets"
+        }
+      ]
+    },
+    {
+      "label": "obs-idle-native-6s",
+      "windowMs": 6002.153112,
+      "taskMs": 12.143000000000015,
+      "scriptMs": 2.118999999999982,
+      "layoutMs": 1.3029999999999986,
+      "recalcMs": 0,
+      "heapBefore": 9016432,
+      "heapAfter": 9024068,
+      "requests": []
+    },
+    {
+      "label": "source-idle-native-6s",
+      "windowMs": 6003.721539000006,
+      "taskMs": 12.866000000000003,
+      "scriptMs": 2.6570000000000005,
+      "layoutMs": 1.6940000000000002,
+      "recalcMs": 0.28100000000000086,
+      "heapBefore": 1055168,
+      "heapAfter": 1080136,
+      "requests": []
+    },
+    {
+      "label": "source-ten-binding-updates",
+      "windowMs": 1017.5279259999952,
+      "taskMs": 30.173,
+      "scriptMs": 9.34,
+      "layoutMs": 3.6949999999999994,
+      "recalcMs": 3.02,
+      "heapBefore": 1080136,
+      "heapAfter": 1353640,
+      "requests": []
+    }
+  ],
+  "complete": true,
+  "errors": [],
+  "external": [],
+  "limitations": [
+    "Synthetic populated 32-element layout and local HTTP/SSE; no real OBS/ESI or GPU/whole-browser CPU claim.",
+    "Uninstrumented production application; CDP counters include action/wait time and observed request events only.",
+    "Native 6-second administrative idle windows cover old 3s/4s polling but not the new 30s fallback; exact longer-window correctness is separate.",
+    "Compare ABBA fresh processes/browsers under shared exclusive lock; these are descriptive samples, not significance tests."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "finalGeometry": {
+    "left": "40px",
+    "count": 32
+  },
+  "sourceVerified": true,
+  "endedAt": "2026-10-07T13:31:11.470Z"
+}

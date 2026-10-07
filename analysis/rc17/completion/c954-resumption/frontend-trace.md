@@ -1,5 +1,7 @@
 # Frontend findings at the approved c954 source boundary
 
+Later source-bound work: [native F5 timer correction at 9331b19](resumed/admin/README.md). The tables below retain their exact c954 audit boundary; this later correction does not retroactively change that source or close remaining performance gates.
+
 7 October 2026. Read-only source/evidence audit. **Use test build #54, commit `c954c0d808847f249df0659ed15fdce2e89f84c4`; disregard build #55 / `508f2d450c7cc17cc464cf316b80748367adc9e2`. PR #10 remains withdrawn.** This is a trace of remaining work, not a clean-RC17 acceptance certificate.
 
 The clean continuation root is `/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation`, tree `87c20772b3843504a467c3e7f6de05f9018b3b6c`, with 482 source files and 26 compiled assets. Its source/build fingerprint is `472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27`. Source inspection used `git show c954c0d:<path>`; the older active checkout's HEAD is 508 and was not used as the source authority. No builds, tests, benchmarks or runtime edits were performed for this audit.

@@ -1,5 +1,7 @@
 # Weekly-reset recovery checkpoint
 
+**Resumed after this bank:** the user explicitly asked to continue working on 7 October after checkpoint `801829695f5f5956b1fac137c2e4e77b54c4dfb7` was verified. The pause instruction below is historical; newer work is recorded under `resumed/` and should be banked at verified milestones. Continue from the newest verified successor on the c954 continuation branch, never from excluded 508.
+
 The user requested a durable bank and pause on 7 October 2026 because credits are nearly exhausted. **Stop further investigation, builds, benchmarks and implementation after publishing this checkpoint.** Resume only when the user returns. The local workspace may disappear; GitHub must contain the recovery record.
 
 ## Source of truth

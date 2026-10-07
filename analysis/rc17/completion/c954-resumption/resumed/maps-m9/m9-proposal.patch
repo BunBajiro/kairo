@@ -1,0 +1,380 @@
+diff --git a/server/universe-jspace.mjs b/server/universe-jspace.mjs
+--- a/server/universe-jspace.mjs
++++ b/server/universe-jspace.mjs
+@@ -215,6 +215,14 @@
+     // Only systems have an archive. A departed connection has no notes, passages,
+     // activity entries or undo snapshot that can bring it back.
+     function forgetMapConnections(map, removed, canonical = null) {
++        // Common reads only need topology/reference checks. Avoid serializing all
++        // notes and passages twice when reconciliation cannot change the map.
++        if (!removed.length && !own(map, 'archived_connections') && map.connections.every(edge =>
++            !own(edge, 'locked') && (!canonical || edge.kind === 'gate' || canonical.has(edge.link_id)))) {
++            const present = new Set(map.connections.map(edge => edge.id));
++            if (map.passages.every(row => present.has(row.connection_id)) && map.comments.every(row => !row.connection_id || present.has(row.connection_id)) &&
++                Array.isArray(map.activity) && !map.activity.some(row => /^(connection|passage)\./.test(row.op))) return false;
++        }
+         const before = JSON.stringify(map), ended = new Map(removed.map(link => [link.id, link.ended_at || link.expires_at || iso()]));
+         const dead = map.connections.filter(edge => ended.has(edge.link_id) || canonical && edge.kind !== 'gate' && !canonical.has(edge.link_id));
+         markDetached(map, dead, ended);
+@@ -415,7 +423,7 @@
+             connection_ids: connectionsBySignature.get(row.id) || [] }));
+         map.can_undo = (read(id, 'jspace_undo', map.id)?.entries.length || 0) > 0;
+         map.operations = operational;
+-        map.pilots = tracking.projectPilots(map);
++        map.pilots = tracking.projectPilots(map, shared.operational);
+         map.read_only = map.kind === 'tracking_source';
+         return map;
+     }
+diff --git a/server/universe-jspace-tracking.mjs b/server/universe-jspace-tracking.mjs
+--- a/server/universe-jspace-tracking.mjs
++++ b/server/universe-jspace-tracking.mjs
+@@ -55,10 +55,10 @@
+         indexed = true;
+         for (const row of getMaps.all()) syncMap(row.character_id, JSON.parse(row.body));
+     }
+-    function allowed(id, source) {
+-        const pilot = character(id);
++    function allowed(id, source, projection) {
++        const pilot = projection ? projection.character(id) : character(id);
+         if (!pilot || pilot.needsReauth || !store.get('module:universe', true)) return false;
+-        const cfg = operations.config?.(id);
++        const cfg = projection ? projection.config(id) : operations.config?.(id);
+         if (cfg?.enabled === false) return false;
+         if (source === 'esi') return cfg?.location_source !== 'logs' && store.get('module:pilot', true) && (pilot.scopes || []).includes(LOCATION_SCOPE);
+         return source === 'chat_log' && cfg?.logs_enabled === true && cfg?.location_source !== 'esi';
+@@ -111,10 +111,10 @@
+         // The caller synchronises subscriptions only after its enclosing transaction succeeds.
+         return row;
+     }
+-    function projectPilots(map) {
++    function projectPilots(map, projection) {
+         return (map.pilots || []).map(row => {
+-            const pilot = character(row.character_id), last = row.last_location;
+-            const visible = row.tracking && last && allowed(row.character_id, last.source) && Date.parse(last.expires_at) > now();
++            const pilot = projection ? projection.character(row.character_id) : character(row.character_id), last = row.last_location;
++            const visible = row.tracking && last && allowed(row.character_id, last.source, projection) && Date.parse(last.expires_at) > now();
+             return { character_id: row.character_id, name: pilot?.name || String(row.character_id), tracking: row.tracking !== false,
+                 status: !row.tracking ? 'paused' : !pilot ? 'disconnected' : pilot.needsReauth ? 'reauth_required' : visible ? 'ready' : 'waiting',
+                 system_id: visible ? last.system_id : null, system_name: visible ? byId.get(last.system_id)?.name || null : null,
+diff --git a/server/universe-operations.mjs b/server/universe-operations.mjs
+--- a/server/universe-operations.mjs
++++ b/server/universe-operations.mjs
+@@ -37,10 +37,10 @@
+     const rows = (id, kind) => getRows.all(id, kind).map(parse);
+     const row = (id, kind, key) => parse(getRow.get(id, kind, String(key)));
+     const iso = () => new Date(now()).toISOString();
+-    const character = id => auth.characters().find(pilot => pilot.id === id);
+-    function pilotId(value) {
++    const character = (id, roster) => roster ? roster.byId.get(id) : auth.characters().find(pilot => pilot.id === id);
++    function pilotId(value, roster) {
+         const id = Number(value ?? 0);
+-        if (!Number.isSafeInteger(id) || id < 0 || id && !character(id)) throw new Error('Choose a connected pilot.');
++        if (!Number.isSafeInteger(id) || id < 0 || id && !character(id, roster)) throw new Error('Choose a connected pilot.');
+         return id;
+     }
+     function systemId(value) {
+@@ -211,8 +211,8 @@
+         trimRows.run(id, kind, id, kind, limit); return record;
+     }
+     function changed(id) { onChange(id); }
+-    function config(characterId) {
+-        const id = pilotId(characterId);
++    function config(characterId, roster) {
++        const id = pilotId(characterId, roster);
+         return { ...clone(DEFAULTS), ...store.get('universe:operations:config:' + id, {}) };
+     }
+     function validateConfig(id, input) {
+@@ -262,8 +262,8 @@
+     function fresh(sample) {
+         return sample?.status === 'ready' && sample.stale !== true && finiteDate(sample.updatedAt) && Date.parse(sample.updatedAt) <= now() + 1000 && Date.parse(sample.expiresAt) > now();
+     }
+-    function location(id) {
+-        const pilot = character(id), cfg = config(id);
++    function location(id, roster) {
++        const pilot = character(id, roster), cfg = config(id, roster);
+         const empty = (status, source = 'esi') => ({ system_id: null, system_name: null, status, source, updated_at: null, expires_at: null });
+         if (!pilot) return empty('disconnected');
+         if (!cfg.enabled || !store.get('module:universe', true)) return empty('disabled');
+@@ -290,19 +290,19 @@
+         store.saveSnapshot(id, 'universe_log_location', { status: 'ready', data: { system_id: system.system_id }, updatedAt: new Date(observed).toISOString(), expiresAt: new Date(observed + 300000).toISOString() });
+         options.onLocation?.(id); changed(id); return true;
+     }
+-    function pilots(id) {
++    function pilots(id, roster) {
+         if (!id) return [];
+-        return auth.characters().slice(0, 100).map(pilot => {
+-            const position = location(pilot.id), online = store.snapshot(pilot.id, 'online'), ship = store.snapshot(pilot.id, 'ship');
+-            const allowed = store.get('module:pilot', true) && !pilot.needsReauth && config(pilot.id).enabled;
++        return (roster?.rows || auth.characters()).slice(0, 100).map(pilot => {
++            const position = location(pilot.id, roster), online = store.snapshot(pilot.id, 'online'), ship = store.snapshot(pilot.id, 'ship');
++            const allowed = store.get('module:pilot', true) && !pilot.needsReauth && config(pilot.id, roster).enabled;
+             return { character_id: pilot.id, name: pilot.name, ...position,
+                 ship_type_id: allowed && arr(pilot.scopes).includes('esi-location.read_ship_type.v1') && fresh(ship) ? ship.data?.ship_type_id || null : null,
+                 online: allowed && arr(pilot.scopes).includes('esi-location.read_online.v1') && fresh(online) && typeof online.data?.online === 'boolean' ? online.data.online : null };
+         });
+     }
+     function emptyFleet(status, error = null) { return { status, scope: FLEET_SCOPE, fleet_id: null, role: null, members: [], updated_at: null, expires_at: null, error }; }
+-    function fleetState(id, cfg) {
+-        const pilot = character(id);
++    function fleetState(id, cfg, roster) {
++        const pilot = character(id, roster);
+         if (!cfg.enabled || !cfg.fleet_enabled || !store.get('module:universe', true)) return emptyFleet('disabled');
+         if (!pilot) return emptyFleet('disconnected');
+         if (pilot.needsReauth) return emptyFleet('reauth_required');
+@@ -578,7 +578,18 @@
+     // Scope validation stays here; callers never supply trusted map documents.
+     function readContext(characterId) {
+         const id = pilotId(characterId), scopes = new Map();
+-        let common;
++        let common, roster;
++        // One synchronous projection owns its roster. Capture lazily so link
++        // expiry/reconciliation can finish before projection reads begin. Never
++        // pass this owner across an await or retain it for the next request.
++        function readRoster() {
++            if (!roster) {
++                const rows = auth.characters(), byId = new Map();
++                for (const pilot of rows) if (!byId.has(pilot.id)) byId.set(pilot.id, pilot);
++                roster = { rows, byId };
++            }
++            return roster;
++        }
+         function scoped(scope) {
+             const key = scope == null || scope === '' ? null : scope;
+             if (!scopes.has(key)) scopes.set(mapScope(id, key), { records: new Map() });
+@@ -593,8 +604,8 @@
+             const { mapId, value } = scoped(scope);
+             if (value.state) return value.state;
+             if (!common) {
+-                const cfg = config(id), enabled = store.get('module:universe', true) && cfg.enabled;
+-                common = { config: { ...cfg, enabled }, location: location(id), pilots: enabled ? pilots(id) : [], fleet: fleetState(id, cfg), logs: tail.status(id) };
++                const roster = readRoster(), cfg = config(id, roster), enabled = store.get('module:universe', true) && cfg.enabled;
++                common = { config: { ...cfg, enabled }, location: location(id, roster), pilots: enabled ? pilots(id, roster) : [], fleet: fleetState(id, cfg, roster), logs: tail.status(id) };
+             }
+             value.state = { version: 1, character_id: id, map_id: mapId, generated_at: iso(), config: common.config, location: common.location,
+                 intel: rows(id, scopedKind('intel', mapId)).map(({ identity, ...item }) => ({ ...item, expired: Date.parse(item.expires_at) <= now() })),
+@@ -602,7 +613,7 @@
+                 deleted_signatures: rows(id, scopedKind('signature_deleted', mapId)).filter(item => Date.parse(item.expires_at) > now()), upgrades: rows(id, scopedKind('upgrade', mapId)), logs: common.logs };
+             return value.state;
+         }
+-        return { state, signatures };
++        return { state, signatures, character: id => character(id, readRoster()), config: id => config(id, readRoster()) };
+     }
+     function state(characterId, scope = null) { return readContext(characterId).state(scope); }
+     async function runTick() {
+diff --git a/tests/kairo/universe-jspace-reads.test.mjs b/tests/kairo/universe-jspace-reads.test.mjs
+--- a/tests/kairo/universe-jspace-reads.test.mjs
++++ b/tests/kairo/universe-jspace-reads.test.mjs
+@@ -5,6 +5,7 @@
+ import { tmpdir } from 'node:os';
+ import { openStore } from '../../server/store.mjs';
+ import { createUniverse } from '../../server/universe.mjs';
++import { createAuth } from '../../server/auth.mjs';
+ import { mapSystemIndex, searchMapSystems } from '../../components/kairo/map-discovery-search-model.mjs';
+ import { searchMapNotes } from '../../components/kairo/jspace-notes-model.mjs';
+ 
+@@ -27,7 +28,11 @@
+         }
+         return statement;
+     };
+-    const auth = { characters: () => [{ id: 42, name: 'Scout', scopes: [] }, { id: 43, name: 'Other scout', scopes: [] }] };
++    for (const [id, name] of [[42, 'Scout'], [43, 'Other scout']]) store.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)').run(id, name, '[]', 'synthetic-unused');
++    const auth = createAuth(store, {}, { origin: 'http://127.0.0.1', fetcher: async () => { throw new Error('No auth network expected'); } });
++    let authReads = 0;
++    const characters = auth.characters;
++    auth.characters = () => { authReads++; return characters(); };
+     const service = createUniverse(store, auth, { request: async () => { throw new Error('No network expected'); } }, { staticData: atlas, now: () => clock, noSync: true });
+     t.after(async () => { await service.close(); store.close(); await rm(dir, { recursive: true, force: true }); });
+     const api = service.jspace;
+@@ -53,7 +58,7 @@
+             return { value, queries, links: bodies.filter(row => ['wormhole', 'ansiblex'].includes(row.kind)), signatures: bodies.filter(row => row.signature_id && row.system_id) };
+         } finally { recording = null; }
+     }
+-    return { service, api, store, create, read, time: value => { clock = value; } };
++    return { service, api, store, create, read, authReads: () => authReads, time: value => { clock = value; } };
+ }
+ 
+ test('selected reads remain scoped and full reads share canonical links and signature records', async t => {
+@@ -177,3 +182,138 @@
+     assert.throws(() => f.api.search(42, { q: 'x'.repeat(241) }), /too long/);
+     assert.throws(() => f.service.jspaceDestinations(42, { map_id: 'tracking-source-42', originId: W, category: 'highsec' }), /private chain map/);
+ });
++
++
++test('unchanged map reads preserve stored notes, passage references, revision and database writes', async t => {
++    const f = await fixture(t);
++    let map = f.create('Retained map');
++    const edge = map.connections[0];
++    map = f.api.command(42, map.id, { revision: map.revision, op: 'passage.add', passage: {
++        connection_id: edge.id, from_system_id: edge.from_system_id, to_system_id: edge.to_system_id,
++        ship_name: 'Retained passage', mass_kg: 1000,
++    } });
++    f.api.summaries(42);
++    const row = () => f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(map.id).body;
++    const before = row(), revision = JSON.parse(before).revision;
++    const changes = Number(f.store.db.prepare('SELECT total_changes() value').get().value);
++    const first = f.api.map(42, map.id), summary = f.api.summaries(42), full = f.api.state(42);
++    assert.equal(row(), before);
++    assert.equal(Number(f.store.db.prepare('SELECT total_changes() value').get().value), changes);
++    assert.equal(first.revision, revision);
++    assert.deepEqual(full.maps.find(value => value.id === map.id), first);
++    assert.equal(summary.maps.find(value => value.id === map.id).revision, revision);
++    assert.equal(first.comments.length, 2);
++    assert.equal(first.passages.length, 1);
++    assert.equal(first.passages[0].connection_id, edge.id);
++    assert.equal(first.passages[0].ship_name, 'Retained passage');
++});
++
++for (const legacy of ['locked false', 'empty archive', 'missing activity', 'stale references', 'connection activity']) {
++    test('summary reconciliation still normalizes ' + legacy, async t => {
++        const f = await fixture(t), map = f.create('Legacy map');
++        f.api.summaries(42);
++        const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(map.id).body);
++        const raw = get();
++        if (legacy === 'locked false') raw.connections[0].locked = false;
++        if (legacy === 'empty archive') raw.archived_connections = [];
++        if (legacy === 'missing activity') delete raw.activity;
++        if (legacy === 'stale references') {
++            raw.passages.push({ id: 'missing-edge-passage', connection_id: 'missing-edge' });
++            raw.comments.push({ id: 'missing-edge-comment', connection_id: 'missing-edge', body: 'stale' });
++        }
++        if (legacy === 'connection activity') raw.activity.push({ id: 'legacy-activity', op: 'connection.save', summary: 'legacy' });
++        f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(raw), map.id);
++        const changes = Number(f.store.db.prepare('SELECT total_changes() value').get().value);
++        const summary = f.api.summaries(42), normalized = get();
++        assert.ok(Number(f.store.db.prepare('SELECT total_changes() value').get().value) > changes, 'Normalization persists before publishing summary');
++        assert.equal(normalized.revision, raw.revision, 'Legacy cleanup retains its existing revision contract');
++        assert.equal(summary.maps.find(value => value.id === map.id).revision, raw.revision);
++        assert.ok(normalized.connections.every(edge => !Object.hasOwn(edge, 'locked')));
++        assert.equal(Object.hasOwn(normalized, 'archived_connections'), false);
++        assert.ok(Array.isArray(normalized.activity));
++        assert.ok(normalized.activity.every(row => !/^(connection|passage)\./.test(row.op)));
++        assert.ok(normalized.passages.every(row => normalized.connections.some(edge => edge.id === row.connection_id)));
++        assert.ok(normalized.comments.every(row => !row.connection_id || normalized.connections.some(edge => edge.id === row.connection_id)));
++        assert.equal(normalized.comments.filter(row => !row.connection_id).length, 1, 'System notes survive cleanup');
++    });
++}
++
++test('selected and full projections keep real Auth roster reads bounded as maps and tracked pilots increase', async t => {
++    const f = await fixture(t), first = f.create('Selected roster map');
++    for (let id = 44; id < 50; id++) f.store.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)').run(id, 'Scout ' + id, '[]', 'synthetic-unused');
++    const maps = [first, ...Array.from({ length: 7 }, (_, i) => f.create('Roster map ' + i))];
++    const put = f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?");
++    for (const map of maps) {
++        const body = JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(map.id).body);
++        body.pilots = Array.from({ length: 8 }, (_, i) => ({ character_id: 42 + i, tracking: true }));
++        put.run(JSON.stringify(body), map.id);
++    }
++    let before = f.authReads();
++    const selected = f.api.map(42, first.id), selectedReads = f.authReads() - before;
++    before = f.authReads();
++    const full = f.api.state(42), fullReads = f.authReads() - before;
++    assert.deepEqual(full.maps.find(map => map.id === first.id), selected);
++    assert.ok(full.maps.every(map => map.pilots.length === 8));
++    assert.ok(selectedReads <= 8, 'A selected read must not query the whole roster per tracked pilot');
++    assert.ok(fullReads <= 8, 'A full read must not query the whole roster per map or tracked pilot');
++    assert.equal(fullReads, selectedReads, 'One request owns the roster regardless of projected map count');
++    f.store.db.prepare("UPDATE characters SET name='Renamed scout' WHERE id=43").run();
++    assert.equal(f.api.map(42, first.id).pilots.find(p => p.character_id === 43).name, 'Renamed scout');
++});
++
++test('projection roster ownership never retains changed access, location freshness or mutations across reads', async t => {
++    const f = await fixture(t), map = f.create('Fresh access map');
++    const scopes = ['esi-location.read_location.v1', 'esi-location.read_ship_type.v1', 'esi-location.read_online.v1'];
++    const setScopes = value => f.store.db.prepare('UPDATE characters SET scopes=? WHERE id=43').run(JSON.stringify(value));
++    setScopes(scopes);
++    const stamp = new Date(AT).toISOString(), expiry = new Date(AT + 60000).toISOString();
++    for (const [key, data] of [['location', { solar_system_id: X }], ['ship', { ship_type_id: 587 }], ['online', { online: true }]]) {
++        f.store.saveSnapshot(43, key, { status: 'ready', data, updatedAt: stamp, expiresAt: expiry });
++    }
++    const raw = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(map.id).body);
++    const save = body => f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(body), map.id);
++    const body = raw();
++    body.pilots.push({ character_id: 43, tracking: true, last_location: { system_id: X, source: 'esi', updated_at: stamp, expires_at: expiry } });
++    save(body);
++    const view = () => {
++        const next = f.api.map(42, map.id);
++        return { map: next, tracked: next.pilots.find(p => p.character_id === 43), operational: next.operations.pilots.find(p => p.character_id === 43) };
++    };
++    let value = view();
++    assert.equal(value.tracked.status, 'ready'); assert.equal(value.tracked.system_id, X);
++    assert.equal(value.operational.ship_type_id, 587); assert.equal(value.operational.online, true);
++
++    setScopes([]); value = view();
++    assert.equal(value.tracked.system_id, null); assert.equal(value.operational.status, 'missing_scope');
++    assert.equal(value.operational.ship_type_id, null); assert.equal(value.operational.online, null);
++    setScopes(scopes);
++    f.store.db.prepare('UPDATE characters SET reauth=1 WHERE id=43').run(); value = view();
++    assert.equal(value.tracked.status, 'reauth_required'); assert.equal(value.tracked.system_id, null);
++    assert.equal(value.operational.status, 'reauth_required');
++    f.store.db.prepare('UPDATE characters SET reauth=0 WHERE id=43').run();
++
++    f.service.operations.saveConfig(43, { ...f.service.operations.config(43), location_source: 'logs', logs_enabled: false });
++    assert.equal(view().tracked.system_id, null, 'ESI tracking is hidden after choosing log-only location');
++    f.service.operations.saveConfig(43, { ...f.service.operations.config(43), location_source: 'esi' });
++    f.store.set('module:pilot', false); value = view();
++    assert.equal(value.tracked.system_id, null); assert.equal(value.operational.ship_type_id, null);
++    f.store.set('module:pilot', true);
++    f.store.set('module:universe', false); value = view();
++    assert.equal(value.tracked.system_id, null); assert.deepEqual(value.map.operations.pilots, []);
++    f.store.set('module:universe', true);
++
++    f.store.db.prepare('DELETE FROM characters WHERE id=43').run(); value = view();
++    assert.equal(value.tracked.status, 'disconnected'); assert.equal(value.tracked.system_id, null);
++    assert.equal(value.operational, undefined);
++    f.store.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)').run(43, 'Reconnected scout', JSON.stringify(scopes), 'synthetic-unused');
++    assert.equal(view().tracked.name, 'Reconnected scout'); assert.equal(view().tracked.system_id, X);
++    f.time(AT + 60000); value = view();
++    assert.equal(value.tracked.system_id, null); assert.equal(value.operational.status, 'stale');
++    assert.equal(value.operational.ship_type_id, null); assert.equal(value.operational.online, null);
++    const paused = raw(); paused.pilots.find(p => p.character_id === 43).tracking = false; save(paused);
++    assert.equal(view().tracked.status, 'paused');
++
++    f.store.db.prepare('DELETE FROM characters WHERE id=42').run();
++    assert.throws(() => f.api.map(42, map.id), /connected pilot/);
++    assert.throws(() => f.api.command(42, map.id, { revision: map.revision, op: 'map.update', name: 'Rejected stale author' }), /connected pilot/);
++});
+diff --git a/tests/kairo/universe-operations.test.mjs b/tests/kairo/universe-operations.test.mjs
+--- a/tests/kairo/universe-operations.test.mjs
++++ b/tests/kairo/universe-operations.test.mjs
+@@ -177,6 +177,41 @@
+     setTime(AT + 60001); await service.tick(); assert.equal(calls, 4);
+     characters[0].scopes = [];
+     assert.equal(service.state(42).fleet.status, 'missing_scope'); assert.deepEqual(service.state(42).fleet.members, []);
++});
++
++test('a projection read before fleet IO cannot retain authorization across its await', async t => {
++    let release, started;
++    const began = new Promise(resolve => { started = resolve; });
++    const response = new Promise(resolve => { release = resolve; });
++    const f = await fixture(t, { esi: { request: async () => { started(); return response; } } });
++    f.service.saveConfig(42, { ...f.service.config(42), fleet_enabled: true });
++    f.service.state(42);
++    const pending = f.service.refresh(42);
++    await began;
++    f.characters[0].scopes = [];
++    release(sample({ fleet_id: 123456789012, role: 'squad_member' }));
++    const value = await pending;
++    assert.equal(value.fleet.status, 'missing_scope');
++    assert.deepEqual(value.fleet.members, []);
++    assert.equal(f.store.snapshot(42, 'universe_fleet'), null, 'Revocation while IO waits prevents publication');
++    assert.equal(value.location.status, 'missing_scope');
++});
++
++test('disconnect during fleet IO is checked afresh before the next projection', async t => {
++    let release, started;
++    const began = new Promise(resolve => { started = resolve; });
++    const response = new Promise(resolve => { release = resolve; });
++    const f = await fixture(t, { esi: { request: async () => { started(); return response; } } });
++    f.service.saveConfig(42, { ...f.service.config(42), fleet_enabled: true });
++    f.service.state(42);
++    const pending = f.service.refresh(42);
++    await began;
++    f.characters.splice(f.characters.findIndex(pilot => pilot.id === 42), 1);
++    release(sample({ fleet_id: 123456789012, role: 'squad_member' }));
++    await assert.rejects(pending, /connected pilot/);
++    assert.equal(f.store.snapshot(42, 'universe_fleet'), null);
++    assert.throws(() => f.service.state(42), /connected pilot/);
++    assert.equal(f.service.state(43).character_id, 43, 'Other connected pilots remain independently readable');
+ });
+ 
+ test('fleet replacement failure never exposes previous fleet members; revoked access clears last-good roster', async t => {
