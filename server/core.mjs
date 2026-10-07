@@ -15,6 +15,7 @@ import {bindingProjections} from './projections.mjs';
 import {createOBS} from './obs.mjs';
 import {createCombat} from './combat.mjs';
 import {createSessionCombat} from './session-combat.mjs';
+import {createPublicFeedTransport} from './public-feed-transport.mjs';
 import {reconcileSessionLoyalty} from './session-details.mjs';
 import {createMarkets} from './markets.mjs';
 import {createGoals} from './goals.mjs';
@@ -23,6 +24,7 @@ const DATASET_NOT_DUE = Symbol('dataset-not-due');
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
     let stopped = false, closing, quiesceFailures;
+    let universe, stopUniverseHistory, registry, stream, obs, goals, markets, combat, sessionCombat, publicFeedTransport, ticker, heartbeat;
     const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
     const protectionKeys = new Set(['location', 'fw', 'sovereignty', 'profile', 'contacts', 'corporation_contacts', 'alliance_contacts']);
     const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
@@ -37,25 +39,30 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         bus.emit({ ...e, at });
         send('changed', { characterId: e.characterId });
     } }
-    const universe = createUniverse(store, auth, esi, {...options.universe, noSync: options.noSync,
-        publish, onChange: characterId => send('universe', {characterId: characterId || 0})});
-    const stopUniverseHistory = registerUniverseHistory({store, bus, esi, publish});
-    const registry = await createRegistry(moduleDir, { store, db: store.db, bus, esi, publish });
-    const stream=createStream(store,bus,publish);
-    const obs=createOBS(store,options.vault,{...options.obs,onChange:status=>send('obs',status)});
-    const goals=createGoals(store,auth,publish);
-    const markets=createMarkets(store,auth,esi,{autoUpgrade:!options.noSync,...options.markets,refreshCharacter:async(id,keys)=>{
-        const c=auth.characters().find(c=>c.id===id);if(!c||c.needsReauth)return;
-        const tasks=[];for(const m of catalog)if(enabled(m))for(const d of m.datasets)if(keys.includes(d.key)&&(!d.scope||c.scopes.includes(d.scope))){requested.add(id+':'+d.key);tasks.push(syncDataset(c,m,d));}
-        await Promise.allSettled(tasks);
-    }});
-    const combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
-        goals.refresh(id,'killmails');updateBindings();
-        send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
-    }});
-    const sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:options.sessionFeedFetcher,onChange:id=>send('changed',{characterId:id})});
+    try {
+        publicFeedTransport = createPublicFeedTransport();
+        universe = createUniverse(store, auth, esi, {...options.universe, noSync: options.noSync,
+            feeds: {...options.universe?.feeds, fetcher: publicFeedTransport.wrap(options.universe?.feeds?.fetcher,
+                {maximum: 2 * 1024 * 1024, checkContentLength: true, sizeError: 'Public feed response exceeded the size limit.'})},
+            publish, onChange: characterId => send('universe', {characterId: characterId || 0})});
+        stopUniverseHistory = registerUniverseHistory({store, bus, esi, publish});
+        registry = await createRegistry(moduleDir, { store, db: store.db, bus, esi, publish });
+        stream=createStream(store,bus,publish);
+        obs=createOBS(store,options.vault,{...options.obs,onChange:status=>send('obs',status)});
+        goals=createGoals(store,auth,publish);
+        markets=createMarkets(store,auth,esi,{autoUpgrade:!options.noSync,...options.markets,refreshCharacter:async(id,keys)=>{
+            const c=auth.characters().find(c=>c.id===id);if(!c||c.needsReauth)return;
+            const tasks=[];for(const m of catalog)if(enabled(m))for(const d of m.datasets)if(keys.includes(d.key)&&(!d.scope||c.scopes.includes(d.scope))){requested.add(id+':'+d.key);tasks.push(syncDataset(c,m,d));}
+            await Promise.allSettled(tasks);
+        }});
+        combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
+            goals.refresh(id,'killmails');updateBindings();
+            send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
+        }});
+        sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>send('changed',{characterId:id})});
+    } catch (error) { return rollback(error); }
     function combatSnapshot(id){const s=store.snapshot(id,'killmails')||{status:'waiting',data:null},records=combat.recent(id);return {...s,data:records.length?records:s.data,participation:combat.coverage(id)};}
-    const enabled = m => store.get('module:' + m.id, true);
+    function enabled(m) { return store.get('module:' + m.id, true); }
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));
     function rememberNames(names) {
         let changed = false;
@@ -314,7 +321,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         const next = { ...protection({ manual: settings.manual, location: s.location, system: s.location?.data?.system, constellation: s.location?.data?.constellation, region: s.location?.data?.region, fw: s.fw, sovereignty: s.sovereignty, contacts: s.contacts, corporation_contacts: s.corporation_contacts, alliance_contacts: s.alliance_contacts, profile: s.profile, settings, characterId: id, available: !!character && !character.needsReauth && character.scopes.includes('esi-location.read_location.v1') }), characterId: id };
         const previous = stream.getOPSEC();
-        next.standingSources = ['contacts', 'corporation_contacts', 'alliance_contacts'].map(key => ({ key, status: s[key]?.status || 'waiting', updatedAt: s[key]?.updatedAt, expiresAt: s[key]?.expiresAt, error: s[key]?.error, scope: catalog.find(m => m.id === 'opsec').datasets.find(d => d.key === key).scope, count: Array.isArray(s[key]?.data) ? s[key].data.filter(c => c.contact_type === 'alliance').length : 0 }));
+        next.standingSources = ['contacts', 'corporation_contacts', 'alliance_contacts'].map(key => ({ key, status: s[key]?.status || 'waiting', updatedAt: s[key]?.updatedAt, expiresAt: s[key]?.expiresAt, error: s[key]?.error, scope: datasets.get(key).dataset.scope, count: Array.isArray(s[key]?.data) ? s[key].data.filter(c => c.contact_type === 'alliance').length : 0 }));
         stream.setOPSEC(next); obs.setState(next.state);
         if (previous.state !== next.state || previous.reason !== next.reason || previous.characterId !== id || !!previous.pending !== !!next.pending || JSON.stringify(previous.standingSources) !== JSON.stringify(next.standingSources)) send('opsec', next);
     }
@@ -323,9 +330,9 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         if (stopped) return Promise.resolve();
         const tasks = [];
         for (const key of protectionKeys) {
-            const m = catalog.find(m => m.datasets.some(d => d.key === key));
+            const {module: m, dataset} = datasets.get(key);
             if (m.id !== 'universe' && (!character || character.needsReauth)) continue;
-            tasks.push(syncDataset(m.id === 'universe' ? undefined : character, m, m.datasets.find(d => d.key === key)));
+            tasks.push(syncDataset(m.id === 'universe' ? undefined : character, m, dataset));
         }
         return Promise.allSettled(tasks).then(results => {
             if (!stopped) refreshOPSEC();
@@ -337,17 +344,19 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         if (!store.get('module:universe', true)) return;
         try { universe.refreshPolitics(); } catch (error) { console.warn('Universe relationship refresh deferred:', error.message); }
     }
-    const ticker = setInterval(() => { if (!options.noSync) { universe.tick().catch(error => console.warn('Universe collection deferred:', error.message)); refreshPolitics(); syncProtection(); sync(0); for (const c of auth.characters())
-        if (!c.needsReauth){
-            sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
-        } } refreshOPSEC(); }, 3000);
-    ticker.unref();
-    const heartbeat = setInterval(() => {
-        for (const clients of [uiClients, stream.clients]) for (const client of clients)
-            if (!heartbeatSSE(client)) clients.delete(client);
-        updateBindings();
-    }, 10000);
-    heartbeat.unref();
+    function startTimers() {
+        ticker = setInterval(() => { if (!options.noSync) { universe.tick().catch(error => console.warn('Universe collection deferred:', error.message)); refreshPolitics(); syncProtection(); sync(0); for (const c of auth.characters())
+            if (!c.needsReauth){
+                sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
+            } } refreshOPSEC(); }, 3000);
+        ticker.unref();
+        heartbeat = setInterval(() => {
+            for (const clients of [uiClients, stream.clients]) for (const client of clients)
+                if (!heartbeatSSE(client)) clients.delete(client);
+            updateBindings();
+        }, 10000);
+        heartbeat.unref();
+    }
     function quiesce() { quiesceFailures ??= bus.health().failures; clearInterval(ticker); clearInterval(heartbeat); }
     function close() {
         if (closing) return closing;
@@ -364,17 +373,18 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 const results = await Promise.allSettled([...syncing.values(), ...datasetSync.values()]);
                 errors.push(...results.filter(result => result.status === 'rejected').map(result => result.reason));
             }
-            await finish(() => universe.close());
-            await finish(() => markets.close());
-            await finish(() => sessionCombat.close());
-            await finish(() => combat.close());
+            await finish(() => universe?.close());
+            await finish(() => markets?.close());
+            await finish(() => sessionCombat?.close());
+            await finish(() => publicFeedTransport?.close());
+            await finish(() => combat?.close());
             await bus.drain();
-            await finish(() => registry.close());
+            await finish(() => registry?.close());
             // Promise-returning module cleanup may publish final semantic work.
             await bus.drain();
-            await finish(() => stopUniverseHistory());
-            await finish(() => stream.close());
-            await finish(() => obs.close());
+            await finish(() => stopUniverseHistory?.());
+            await finish(() => stream?.close());
+            await finish(() => obs?.close());
             await Promise.all([...uiClients].map(closeSSE));
             uiClients.clear();
             const events = await bus.close();
@@ -383,8 +393,20 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         })();
         return closing;
     }
-    refreshOPSEC();updateBindings();
-    if (!options.noSync) refreshPolitics();
+    async function rollback(error) {
+        // Caller-owned Store and ESI remain open while accepted module work drains.
+        try { await close(); }
+        catch (cleanupError) {
+            // Preserve the original error/code even if it is frozen or primitive.
+            try { Object.defineProperty(error, 'cleanupErrors', {value: [...(error.cleanupErrors || []), cleanupError], configurable: true}); } catch {}
+        }
+        throw error;
+    }
+    try {
+        startTimers();
+        refreshOPSEC();updateBindings();
+        if (!options.noSync) refreshPolitics();
+    } catch (error) { return rollback(error); }
     return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
         }

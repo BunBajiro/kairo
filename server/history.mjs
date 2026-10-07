@@ -2,7 +2,8 @@ import {randomUUID} from 'node:crypto';
 import {snapshotFresh} from './polling.mjs';
 import {loyaltySample,reconcileSessionLoyalty,sessionDetails} from './session-details.mjs';
 import {captureVisitSovereignty} from './visit-sovereignty.mjs';
-import {readSessionVisits,sessionObservationOwnershipSql} from './session-travel.mjs';
+import {readSessionVisits} from './session-travel.mjs';
+import {sessionEventWindow} from './session-event-window.mjs';
 export function captureContext(store,characterId){
  const owners={wallet:'wallet',journal:'wallet',skills:'training',location:'pilot',ship:'pilot',profile:'pilot',loyalty:'combat',killmails:'combat',jobs:'industry'};
  const snap=key=>{const s=store.snapshot(characterId,key);return store.get('module:'+owners[key],true)&&snapshotFresh(s)?s:null;},wallet=snap('wallet'),skills=snap('skills'),location=snap('location'),ship=snap('ship'),profile=snap('profile');
@@ -25,8 +26,7 @@ export function changeSession(store,publish,characterId,input){
 export function sessionReport(store,id,characterId,offset=0){
  const session=store.db.prepare('SELECT * FROM sessions WHERE id=? AND character_id=?').get(id,characterId);if(!session)throw new Error('Session not found for this character.');
  const end=session.ended||new Date().toISOString(),start=JSON.parse(session.start_context),finish=session.ended?JSON.parse(session.end_context):captureContext(store,characterId);
- const where=`character_id=? AND at>=? AND at<=? AND (type NOT IN ('session.started','session.ended') OR json_extract(payload,'$.session_id')=?) AND ((type IN ('killmail.kill','killmail.loss') AND at<?) OR (type NOT IN ('killmail.kill','killmail.loss') AND (at>? OR id>?) AND (at<? OR id<=? OR json_extract(payload,'$.session_id')=?))) AND ${sessionObservationOwnershipSql()}`;
- const params=[characterId,session.started,end,session.id,end,session.started,start.eventCursor??0,end,session.ended?(finish.eventCursor??Number.MAX_SAFE_INTEGER):Number.MAX_SAFE_INTEGER,session.id,session.id];
+ const {where,params}=sessionEventWindow(session,start,finish,end);
  const counts=store.db.prepare(`SELECT type,COUNT(*) count FROM events WHERE ${where} GROUP BY type`).all(...params),events=store.db.prepare(`SELECT * FROM events WHERE ${where} ORDER BY at,id LIMIT 101 OFFSET ?`).all(...params,offset),stats=Object.fromEntries(counts.map(c=>[c.type,c.count]));
  const travel=readSessionVisits(store,session,end,{inclusiveEnd:true}),visits=travel.map(({system_name,...visit})=>visit);
  const cash=store.db.prepare(`SELECT COALESCE(SUM(CASE WHEN json_extract(payload,'$.amount')>0 THEN json_extract(payload,'$.amount') ELSE 0 END),0) income,COALESCE(SUM(CASE WHEN json_extract(payload,'$.amount')<0 THEN -json_extract(payload,'$.amount') ELSE 0 END),0) expenses FROM events WHERE ${where} AND type='wallet.entry'`).get(...params);

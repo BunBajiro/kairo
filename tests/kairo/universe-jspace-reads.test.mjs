@@ -87,10 +87,37 @@ test('selected reads remain scoped and full reads share canonical links and sign
     assert.equal(summary.value.maps[0].next_expiry_at, new Date(AT + 3600000).toISOString());
     for (const map of [...summary.value.maps, summary.value.source_map]) for (const key of ['nodes', 'connections', 'operations', 'signatures', 'comments', 'pilots']) assert.equal(Object.hasOwn(map, key), false);
     assert.ok(Buffer.byteLength(JSON.stringify(summary.value)) < Buffer.byteLength(JSON.stringify(full.value)) / 5);
-    const linkQuery = selected.queries.find(query => query.sql.includes('UNION ALL'));
+    const linkQuery = selected.queries.find(query => query.sql.includes('UNION ALL') && query.sql.includes("'$.map_id'"));
     const plan = f.store.db.prepare('EXPLAIN QUERY PLAN ' + linkQuery.sql).all(...linkQuery.args);
     assert.equal(plan.filter(row => row.detail.includes('idx_universe_links_scope')).length, 2, 'Both selected and global link scopes use the map index');
+    const expiryQuery = selected.queries.find(query => query.sql.includes('SELECT character_id,body') && query.sql.includes("kind='link'"));
+    const expiryPlan = f.store.db.prepare('EXPLAIN QUERY PLAN ' + expiryQuery.sql).all(...expiryQuery.args);
+    assert.ok(expiryPlan.some(row => row.detail.includes('SEARCH universe_records USING INDEX idx_universe_wormholes_collapsed')), 'Collapsed-link lookup does not scan every live link for this pilot');
+    assert.ok(expiryPlan.some(row => row.detail.includes('idx_universe_wormholes_pilot_expiry') && row.detail.includes('<expr><?')), 'Dated expiry seeks only due links');
+    const deadlineQuery = selected.queries.find(query => query.sql.includes('expires_at FROM universe_records'));
+    const deadlinePlan = f.store.db.prepare('EXPLAIN QUERY PLAN ' + deadlineQuery.sql).all(...deadlineQuery.args);
+    assert.ok(deadlinePlan.some(row => row.detail.includes('idx_universe_wormholes_expiry')));
+    assert.equal(deadlinePlan.some(row => row.detail.includes('TEMP B-TREE')), false, 'Next-expiry scheduling does not sort the whole library');
     t.diagnostic(JSON.stringify({ selectedLinkBodiesBeforeOtherMaps: single.links.length, selectedLinkBodiesAfterOtherMaps: selected.links.length, fullEightMapsLinkBodies: full.links.length, fullEightMapsSignatureBodies: full.signatures.length, fullQueries: full.queries.length, summaryQueries: summary.queries.length }));
+});
+
+test('indexed expiry sees canonical updates immediately, including collapsed unknown lifetimes and dated timezone offsets', async t => {
+    const f = await fixture(t), first = f.create('Changed canonical links'), other = f.create('Unaffected links');
+    const put = f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='link' AND id=?");
+    for (const [index, edge] of first.connections.entries()) {
+        const row = f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='link' AND id=?").get(edge.link_id);
+        const link = JSON.parse(row.body);
+        if (index === 0) link.expires_at = '2026-09-25T19:00:00+01:00';
+        else { link.life_status = 'collapsed'; link.expires_at = null; }
+        put.run(JSON.stringify(link), link.id);
+    }
+    const expired = f.api.map(42, first.id);
+    assert.deepEqual(expired.connections, []);
+    assert.deepEqual(expired.signatures, []);
+    assert.ok(expired.revision > first.revision);
+    assert.deepEqual(f.api.map(42, other.id), other, 'Other current links retain their response and revision');
+    assert.equal(f.store.db.prepare("SELECT COUNT(*) n FROM universe_records WHERE character_id=42 AND kind='link'").get().n, other.connections.length);
+    assert.deepEqual(f.api.map(42, first.id), expired, 'Repeated reads do not re-delete links or increment the revision');
 });
 
 test('summary and search reads reconcile expiry and pruning without stale revisions or a cross-request cache', async t => {

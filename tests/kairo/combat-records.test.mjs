@@ -7,15 +7,15 @@ import {openStore} from '../../server/store.mjs';
 import {createCombat} from '../../server/combat.mjs';
 import {createUniversePolitics} from '../../server/universe-politics.mjs';
 
-async function fixture(t) {
+async function fixture(t, {inference = true} = {}) {
     const directory = await mkdtemp(join(tmpdir(), 'kairo-combat-records-')), store = openStore(directory);
     const auth = {characters: () => [{id: 42}]}, hash = 'a'.repeat(40), calls = [];
     const raw = {killmail_id: 991, killmail_time: new Date(Date.now() - 60000).toISOString(), solar_system_id: 30000142,
         victim: {character_id: 99, ship_type_id: 587, alliance_id: 990001}, attackers: [{character_id: 42, alliance_id: 990002}]};
-    // Use the real UPDATE triggers, including when inference is disabled.
+    // Use the real UPDATE triggers for enabled and disabled ownership policies.
     createUniversePolitics(store, auth);
-    store.set('module:universe', false);
-    const combat = createCombat(store, auth, {request: async path => { calls.push(path); return {data: raw}; }}, {
+    store.set('module:universe', inference);
+    const combat = createCombat(store, auth, {request: async path => { calls.push(path); return {data: {...raw,killmail_id:Number(path.split('/')[2])}}; }}, {
         publish: event => store.db.prepare('INSERT OR IGNORE INTO events(character_id,type,module,summary,payload,at,dedupe) VALUES(?,?,?,?,?,?,?)')
             .run(event.characterId, event.type, event.module, event.summary, JSON.stringify(event.payload), event.at, event.dedupe),
     });
@@ -60,4 +60,34 @@ test('corrected valuations update once while ESI provenance and semantic identit
     for (const value of [0, undefined, -1, null]) await h.combat.ingest(42, [h.ref(value)], 'zkillboard');
     assert.equal(h.writes(), before); assert.equal(h.queued(), 0);
     assert.equal(h.row().source, 'esi'); assert.equal(JSON.parse(h.row().body).zkb.totalValue, 0); assert.equal(h.calls.length, 1);
+});
+
+
+test('disabled inference records one replay marker and identical combat remains write-free', async t => {
+    const h = await fixture(t,{inference:false});
+    await h.combat.ingest(42,[h.ref(100)],'esi');
+    assert.equal(h.queued(),0); assert.deepEqual(h.store.get('universe:politics:rescan'),{pending:true});
+    const before=h.writes();
+    for(let count=0;count<5;count++)await h.combat.ingest(42,[h.ref(100)],'esi');
+    assert.equal(h.writes(),before);assert.equal(h.queued(),0);
+    await h.combat.ingest(42,[h.ref(200)],'zkillboard');
+    assert.equal(JSON.parse(h.row().body).zkb.totalValue,200);assert.equal(h.queued(),0);
+    assert.deepEqual(h.store.get('universe:politics:rescan'),{pending:true});
+});
+
+
+test('an identical 200-reference page is write-free; missing-event repair and a corrected valuation stay isolated',async t=>{
+    const h=await fixture(t),refs=Array.from({length:200},(_,i)=>({...h.ref(100),killmail_id:i+1}));
+    assert.equal((await h.combat.ingest(42,refs,'esi')).pending,100);
+    assert.equal((await h.combat.ingest(42,refs,'esi')).pending,0);
+    assert.equal(h.store.db.prepare('SELECT COUNT(*) n FROM combat_records').get().n,200);
+    assert.equal(h.store.db.prepare('SELECT COUNT(*) n FROM events').get().n,200);
+    assert.equal(h.calls.length,200);h.clearQueue();let before=h.writes();
+    await h.combat.ingest(42,refs,'esi');assert.equal(h.writes(),before);assert.equal(h.queued(),0);
+    h.store.db.prepare('DELETE FROM events WHERE dedupe=?').run('killmail:42:101');before=h.writes();
+    await h.combat.ingest(42,refs,'esi');assert.equal(h.writes()-before,1);assert.equal(h.queued(),0);
+    const corrected=refs.map(r=>r.killmail_id===101?{...r,zkb:{totalValue:250}}:r);
+    await h.combat.ingest(42,corrected,'zkillboard');assert.equal(h.queued(),1);
+    assert.equal(JSON.parse(h.store.db.prepare('SELECT body FROM combat_records WHERE killmail_id=101').get().body).zkb.totalValue,250);
+    assert.equal(h.store.db.prepare('SELECT COUNT(*) n FROM events').get().n,200);assert.equal(h.calls.length,200);
 });

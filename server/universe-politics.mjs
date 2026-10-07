@@ -2,7 +2,9 @@ import { createHash, randomUUID } from 'node:crypto';
 import { allocateTerritoryColours, territoryColourEntities, configuredTerritoryColourConflict } from '../lib/universe-territory-colours.mjs';
 
 const DAY = 86400000, WINDOW = 60 * DAY, HALF_LIFE = 14 * DAY, REFRESH = 5 * 60000;
-const MAX_EVENTS = 20000, BATCH = 1000, BOOTSTRAP = 2000;
+const MAX_EVENTS = 20000, BATCH = 1000;
+const RESCAN_KEY = 'universe:politics:rescan';
+const SOURCES = ['combat_records', 'alliance_combat_records'];
 const MAX_PAIRS = 12000, MAX_ALLIANCES = 2000;
 const METHOD = 'observed-cooperation-v1';
 const CONFIG_KEY = 'universe:politics:config', SNAPSHOT_KEY = 'universe:politics:snapshot';
@@ -204,21 +206,84 @@ export function inferPolitics(events, { now = Date.now(), config = defaultConfig
 
 /** Module-wide config and observed evidence. Private standings/access never enter this resolver. */
 export function createUniversePolitics(store, auth, { now = Date.now, atlas = { gates: [] } } = {}) {
-    store.db.exec(`CREATE TABLE IF NOT EXISTS universe_politics_events(killmail_id INTEGER PRIMARY KEY,at INTEGER NOT NULL,body TEXT NOT NULL);
+    store.db.exec(`CREATE TABLE IF NOT EXISTS universe_politics_events(killmail_id INTEGER PRIMARY KEY,at INTEGER NOT NULL,body TEXT NOT NULL,source TEXT NOT NULL DEFAULT '',owner_id INTEGER NOT NULL DEFAULT 0,row_id INTEGER NOT NULL DEFAULT 0);
         CREATE INDEX IF NOT EXISTS idx_universe_politics_events_at ON universe_politics_events(at);
         CREATE TABLE IF NOT EXISTS universe_politics_queue(source TEXT NOT NULL,row_id INTEGER NOT NULL,PRIMARY KEY(source,row_id));
         CREATE TABLE IF NOT EXISTS universe_politics_history(id TEXT PRIMARY KEY,kind TEXT NOT NULL,at TEXT NOT NULL,body TEXT NOT NULL);
         CREATE INDEX IF NOT EXISTS idx_universe_politics_history_kind_at ON universe_politics_history(kind,at DESC);`);
-    for (const table of ['combat_records', 'alliance_combat_records']) for (const operation of ['INSERT', 'UPDATE'])
-        store.db.exec(`CREATE TRIGGER IF NOT EXISTS politics_${table}_${operation.toLowerCase()} AFTER ${operation} ON ${table}
-            BEGIN INSERT OR IGNORE INTO universe_politics_queue VALUES('${table}',NEW.rowid); END;`);
+    if (store.get('universe:politics:queue-version', 0) < 3) {
+        // Disabled inference keeps authoritative ledgers and one replay marker,
+        // rather than an unbounded duplicate row-pointer queue.
+        const enabled = `(COALESCE((SELECT value FROM settings WHERE key='module:universe'),'true')<>'false'
+            AND COALESCE((SELECT json_extract(value,'$.inference_enabled') FROM settings WHERE key='${CONFIG_KEY}'),1)=1)`;
+        store.db.exec('SAVEPOINT politics_queue_upgrade');
+        try {
+            const columns = new Set(store.db.prepare('PRAGMA table_info(universe_politics_events)').all().map(row => row.name));
+            for (const [column,definition] of [['source',"TEXT NOT NULL DEFAULT ''"],['owner_id','INTEGER NOT NULL DEFAULT 0'],['row_id','INTEGER NOT NULL DEFAULT 0']])
+                if (!columns.has(column)) store.db.exec('ALTER TABLE universe_politics_events ADD COLUMN ' + column + ' ' + definition);
+            store.db.exec('CREATE INDEX IF NOT EXISTS idx_universe_politics_source_row ON universe_politics_events(source,row_id)');
+            for (const table of SOURCES) for (const operation of ['INSERT', 'UPDATE']) {
+                const name = `politics_${table}_${operation.toLowerCase()}`;
+                store.db.exec(`DROP TRIGGER IF EXISTS ${name}; CREATE TRIGGER ${name} AFTER ${operation} ON ${table} BEGIN
+                    INSERT OR IGNORE INTO universe_politics_queue SELECT '${table}',NEW.rowid WHERE ${enabled};
+                    INSERT INTO settings SELECT '${RESCAN_KEY}','{"pending":true}' WHERE NOT ${enabled}
+                        ON CONFLICT(key) DO UPDATE SET value=excluded.value WHERE value<>excluded.value;
+                    DELETE FROM universe_politics_queue WHERE NOT ${enabled}; END;`);
+            }
+            for (const table of SOURCES) store.db.exec(`DROP TRIGGER IF EXISTS politics_${table}_delete;
+                CREATE TRIGGER politics_${table}_delete AFTER DELETE ON ${table} BEGIN
+                DELETE FROM universe_politics_events WHERE source='${table}' AND row_id=OLD.rowid;
+                DELETE FROM universe_politics_queue WHERE source='${table}' AND row_id=OLD.rowid;
+                INSERT INTO settings VALUES('${RESCAN_KEY}','{"pending":true}')
+                    ON CONFLICT(key) DO UPDATE SET value=excluded.value WHERE value<>excluded.value; END;`);
+            // Old compact rows have no provenance; earlier capped bootstrap may
+            // also have omitted still-relevant rows. Replay both cases.
+            if (store.get('universe:politics:bootstrap', null)) store.set(RESCAN_KEY, { pending: true });
+            store.set('universe:politics:queue-version', 3);
+            store.db.exec('RELEASE politics_queue_upgrade');
+        } catch (error) { store.db.exec('ROLLBACK TO politics_queue_upgrade; RELEASE politics_queue_upgrade'); throw error; }
+    }
     let config = store.get(CONFIG_KEY, defaultConfig()), snapshot = store.get(SNAPSHOT_KEY, null), nextRefresh = 0, lastError = null, lastInputSignature = null;
     let paletteSignature = null, paletteRevision = null, palette = new Map(), paletteObject = {};
-    const eventPut = store.db.prepare('INSERT INTO universe_politics_events VALUES(?,?,?) ON CONFLICT(killmail_id) DO UPDATE SET at=excluded.at,body=excluded.body WHERE body<>excluded.body');
-    const queueRead = store.db.prepare('SELECT source,row_id FROM universe_politics_queue ORDER BY row_id DESC,source LIMIT ?');
+    // Copies normally agree. Observation timestamps are unavailable, so choose
+    // a stable canonical owner: personal first, then lowest owner ID. This is
+    // not a claim that the last replayed or edited copy is the newest evidence.
+    const eventPut = store.db.prepare(`INSERT INTO universe_politics_events(killmail_id,at,body,source,owner_id,row_id) VALUES(?,?,?,?,?,?)
+        ON CONFLICT(killmail_id) DO UPDATE SET at=excluded.at,body=excluded.body,source=excluded.source,owner_id=excluded.owner_id,row_id=excluded.row_id
+        WHERE (source='' OR (excluded.source='combat_records' AND source='alliance_combat_records')
+            OR (excluded.source=source AND excluded.owner_id<=owner_id))
+        AND (body<>excluded.body OR at<>excluded.at OR source<>excluded.source OR owner_id<>excluded.owner_id OR row_id<>excluded.row_id)`);
+    const priorEvidence = store.db.prepare('SELECT 1 FROM universe_politics_events WHERE killmail_id=?');
+    const evidenceColumns = table => 'rowid,killmail_id,at,body,' + (table === 'combat_records' ? 'character_id' : 'alliance_id') + ' owner_id';
+    const queueRead = store.db.prepare('SELECT source,row_id FROM universe_politics_queue ORDER BY source,row_id LIMIT ?');
     const queueDelete = store.db.prepare('DELETE FROM universe_politics_queue WHERE source=? AND row_id=?');
-    const inputs = Object.fromEntries(['combat_records', 'alliance_combat_records'].map(table => [table, store.db.prepare('SELECT body FROM ' + table + ' WHERE rowid=?')]));
+    const inputs = Object.fromEntries(SOURCES.map(table => [table, store.db.prepare('SELECT ' + evidenceColumns(table) + ' FROM ' + table + ' WHERE rowid=?')]));
     const history = store.db.prepare('INSERT OR IGNORE INTO universe_politics_history VALUES(?,?,?,?)');
+    function deferEvidence() {
+        const state = store.get(RESCAN_KEY, null);
+        if (store.db.prepare('SELECT 1 FROM universe_politics_queue LIMIT 1').get() || state && !state.pending) {
+            store.set(RESCAN_KEY, { pending: true }); store.db.exec('DELETE FROM universe_politics_queue');
+        }
+    }
+    function replayEvidence(budget, ingest) {
+        let state = store.get(RESCAN_KEY, null);
+        if (!store.get('universe:politics:bootstrap', null) && !state) state = { pending: true };
+        if (!state) return false;
+        if (state.pending) state = { source: 0, cursor: 0,
+            ends: SOURCES.map(table => Number(store.db.prepare('SELECT COALESCE(MAX(rowid),0) last FROM ' + table).get().last)) };
+        while (budget > 0 && state.source < SOURCES.length) {
+            const rows = store.db.prepare('SELECT ' + evidenceColumns(SOURCES[state.source]) + ' FROM ' + SOURCES[state.source] + ' WHERE rowid>? AND rowid<=? ORDER BY rowid LIMIT ?')
+                .all(state.cursor,state.ends[state.source],budget);
+            for (const row of rows) { ingest(row,SOURCES[state.source]); state.cursor = row.rowid; }
+            budget -= rows.length;
+            if (!rows.length || state.cursor >= state.ends[state.source]) { state.source++; state.cursor = 0; }
+        }
+        if (state.source >= SOURCES.length) {
+            store.db.prepare('DELETE FROM settings WHERE key=?').run(RESCAN_KEY);
+            store.set('universe:politics:bootstrap', { at: iso(now()), truncated: false }); return false;
+        }
+        store.set(RESCAN_KEY,state); return true;
+    }
     function configRead() { return structuredClone(config); }
     function saveConfig(input) {
         const updated = validatePoliticsConfig(input, config, now());
@@ -229,6 +294,7 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
             store.db.exec('COMMIT');
         } catch (error) { store.db.exec('ROLLBACK'); throw error; }
         config = updated; nextRefresh = 0;
+        if (!config.inference_enabled) deferEvidence();
         // Manual assignments resolve immediately. Prior inferred clusters are
         // withheld until recomputed so configured members cannot act as bridges.
         return configRead();
@@ -246,47 +312,61 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
     }
     function refresh({ force = false } = {}) {
         if (!force && now() < nextRefresh) return null;
-        if (!store.get('module:universe', true) || !config.inference_enabled) { nextRefresh = now() + REFRESH; return force ? read() : null; }
+        if (!store.get('module:universe', true) || !config.inference_enabled) { deferEvidence(); nextRefresh = now() + REFRESH; return force ? read() : null; }
         nextRefresh = now() + REFRESH;
         try {
             store.db.exec('BEGIN IMMEDIATE');
-            let bootstrap = store.get('universe:politics:bootstrap', null);
-            if (!bootstrap) {
-                let truncated = false;
-                for (const table of ['combat_records', 'alliance_combat_records']) {
-                    const rows = store.db.prepare('SELECT rowid FROM ' + table + ' ORDER BY rowid DESC LIMIT ?').all(BOOTSTRAP + 1);
-                    truncated ||= rows.length > BOOTSTRAP;
-                    const enqueue = store.db.prepare('INSERT OR IGNORE INTO universe_politics_queue VALUES(?,?)');
-                    for (const row of rows.slice(0, BOOTSTRAP)) enqueue.run(table, row.rowid);
+            let skipped = store.get('universe:politics:skipped',0), changed = 0;
+            const ingest = (row,source) => {
+                if (!row) return;
+                const raw = parse(row.body), compact = compactPoliticsKillmail(raw,now());
+                const recent = Date.parse(row.at) >= now() - WINDOW;
+                if (compact && compact.killmail_id === row.killmail_id)
+                    changed += Number(eventPut.run(row.killmail_id,compact.at,JSON.stringify(compact),source,row.owner_id,row.rowid).changes);
+                else if (recent || priorEvidence.get(row.killmail_id)) {
+                    // Exclusion markers prevent stale replicas restoring an
+                    // ineligible canonical correction. They share the age/cap.
+                    changed += Number(eventPut.run(row.killmail_id,recent ? Math.min(now(),Date.parse(row.at)) : now(),'null',source,row.owner_id,row.rowid).changes);
+                    skipped++;
                 }
-                bootstrap = { at: iso(now()), truncated }; store.set('universe:politics:bootstrap', bootstrap);
-            }
-            let skipped = store.get('universe:politics:skipped', 0), changed = 0;
-            for (const row of queueRead.all(BATCH)) {
-                const raw = parse(inputs[row.source]?.get(row.row_id)?.body), compact = compactPoliticsKillmail(raw, now());
-                if (compact) changed += Number(eventPut.run(compact.killmail_id, compact.at, JSON.stringify(compact)).changes);
-                else if (raw && Date.parse(raw.killmail_time) >= now() - WINDOW) skipped++;
-                queueDelete.run(row.source, row.row_id);
-            }
+            };
+            const queued = queueRead.all(BATCH);
+            for (const row of queued) { ingest(inputs[row.source]?.get(row.row_id),row.source); queueDelete.run(row.source,row.row_id); }
+            const rebuilding = replayEvidence(BATCH-queued.length,ingest);
+            const bootstrap = store.get('universe:politics:bootstrap',{at:iso(now()),truncated:false});
             store.set('universe:politics:skipped', skipped);
             changed += Number(store.db.prepare('DELETE FROM universe_politics_events WHERE at<?').run(now() - WINDOW).changes);
             const capped = !!store.db.prepare('SELECT 1 FROM universe_politics_events ORDER BY at DESC LIMIT 1 OFFSET ?').get(MAX_EVENTS);
-            if (capped) store.db.prepare('DELETE FROM universe_politics_events WHERE killmail_id NOT IN (SELECT killmail_id FROM universe_politics_events ORDER BY at DESC,killmail_id DESC LIMIT ?)').run(MAX_EVENTS);
+            let capacityUntil = store.get('universe:politics:capacity-until',0);
+            if (capped) {
+                const lost = store.db.prepare('SELECT MAX(at) at FROM universe_politics_events WHERE killmail_id NOT IN (SELECT killmail_id FROM universe_politics_events ORDER BY at DESC,killmail_id DESC LIMIT ?)').get(MAX_EVENTS);
+                capacityUntil = Math.max(capacityUntil,Number(lost.at)+WINDOW);
+                store.set('universe:politics:capacity-until',capacityUntil);
+                store.db.prepare('DELETE FROM universe_politics_events WHERE killmail_id NOT IN (SELECT killmail_id FROM universe_politics_events ORDER BY at DESC,killmail_id DESC LIMIT ?)').run(MAX_EVENTS);
+            }
+            const capacityLimited = capacityUntil > now();
             const pending_records = Number(store.db.prepare('SELECT COUNT(*) count FROM universe_politics_queue').get().count);
+            if (rebuilding) {
+                const progress = store.db.prepare("SELECT COUNT(*) killmails,MIN(at) oldest,MAX(at) newest FROM universe_politics_events WHERE body<>'null'").get();
+                store.set(RESCAN_KEY,{...store.get(RESCAN_KEY),coverage:progress,pending_records});
+                store.db.exec('COMMIT'); lastError = null; nextRefresh = now()+3000;
+                return read();
+            }
             const sov = store.snapshot(0, 'sovereignty'), sovereignty = ['ready', 'stale'].includes(sov?.status) ? array(sov.data) : [];
-            const inputSignature = hash([config.revision, Math.floor(now() / (3 * 3600000)), sov?.updatedAt, pending_records, skipped, collection()]);
+            const inputSignature = hash([config.revision, Math.floor(now() / (3 * 3600000)), sov?.updatedAt, pending_records, rebuilding, capacityLimited, skipped, collection()]);
             if (!changed && snapshot && lastInputSignature === inputSignature) {
                 store.db.exec('COMMIT'); lastError = null;
+                if (pending_records || rebuilding) nextRefresh = now()+3000;
                 return read();
             }
             const events = store.db.prepare('SELECT body FROM universe_politics_events ORDER BY at,killmail_id').all().map(row => parse(row.body)).filter(Boolean);
             const value = inferPolitics(events, { now: now(), config, names: store.get('names', {}), sovereignty, gates: atlas.gates, previous: snapshot,
-                coverage: { ...collection(), pending_records, skipped_records: skipped, max_killmails: MAX_EVENTS,
-                    truncated: capped || bootstrap.truncated && Date.parse(bootstrap.at) >= now() - WINDOW || pending_records > 0 } });
+                coverage: { ...collection(), pending_records, rebuilding, skipped_records: skipped, max_killmails: MAX_EVENTS,
+                    truncated: rebuilding || capacityLimited || bootstrap.truncated && Date.parse(bootstrap.at) >= now() - WINDOW || pending_records > 0 } });
             store.set(SNAPSHOT_KEY, value); history.run(value.id, 'inference', value.generated_at, JSON.stringify(value));
             store.db.prepare("DELETE FROM universe_politics_history WHERE kind='inference' AND id NOT IN (SELECT id FROM universe_politics_history WHERE kind='inference' ORDER BY at DESC,id DESC LIMIT 64)").run();
             store.db.exec('COMMIT'); snapshot = value; lastError = null; lastInputSignature = inputSignature;
-            if (pending_records) nextRefresh = now() + 3000;
+            if (pending_records || rebuilding) nextRefresh = now() + 3000;
         } catch (error) {
             try { store.db.exec('ROLLBACK'); } catch { /* transaction may not have started */ }
             lastError = String(error.message || error); nextRefresh = now() + 60000;
@@ -295,7 +375,8 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
     }
     function read(names = store.get('names', {}), sovereigntyRows = null) {
         const enabled = store.get('module:universe', true), collectionInfo = collection();
-        const matching = snapshot && snapshot.config_revision === config.revision;
+        const replay = store.get(RESCAN_KEY,null), rebuilding = !!replay;
+        const matching = !rebuilding && snapshot && snapshot.config_revision === config.revision;
         const current = matching && Date.parse(snapshot.expires_at) > now();
         const inferred = config.inference_enabled && matching ? snapshot.groups.filter(group => Date.parse(group.valid_until || snapshot.expires_at) > now()) : [];
         const rawGroups = config.blocs.map(bloc => ({ ...bloc, source: 'configured', config_revision: config.revision,
@@ -316,9 +397,14 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
             const paint = palette.get('bloc:' + group.id);
             return paint ? { ...group, color: paint.fill, outline: paint.outline, configured_color: group.source === 'configured' ? group.color : undefined } : group;
         });
+        const pendingCoverage = replay?.coverage;
         const coverage = { scope: 'local_cached_combat', label: 'Observed local pilot and session killmails · incomplete New Eden coverage',
             killmails: 0, alliance_count: 0, system_count: 0, oldest_at: null, newest_at: null, truncated: false,
-            ...(snapshot?.coverage || {}), ...collectionInfo };
+            ...(snapshot?.coverage || {}), ...collectionInfo,
+            rebuilding,truncated:rebuilding || !!snapshot?.coverage.truncated,
+            ...(pendingCoverage ? {killmails:pendingCoverage.killmails,alliance_count:0,system_count:0,
+                oldest_at:pendingCoverage.oldest == null ? null : iso(pendingCoverage.oldest),
+                newest_at:pendingCoverage.newest == null ? null : iso(pendingCoverage.newest),pending_records:replay.pending_records || 0} : {}) };
         const status = !enabled || !config.inference_enabled ? 'disabled' : !snapshot || !coverage.killmails ? 'unavailable' :
             !current || lastError || coverage.collection_status === 'stale' || coverage.collection_status === 'disabled' ? 'stale' : 'limited';
         return { snapshot_id: 'resolved-' + hash([config.revision, config.inference_enabled && matching ? snapshot?.id : null, inferred.map(group => group.id), status, paletteRevision]),
@@ -327,7 +413,7 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
             method_version: METHOD, status, inference_enabled: config.inference_enabled, coverage, groups,
             independent_alliance_ids: config.independent_alliance_ids, unresolved: current ? snapshot.unresolved : [],
             window_from: snapshot?.window_from || null, window_to: snapshot?.window_to || null, criteria: snapshot?.criteria || null,
-            notice: 'Inferred groups estimate cooperation from observed activity and may not match formal coalitions. Unobserved alliances remain unassigned.',
+            notice: (rebuilding ? 'Combat evidence is being rebuilt; inferred memberships are withheld until replay completes. ' : '') + 'Inferred groups estimate cooperation from observed activity and may not match formal coalitions. Unobserved alliances remain unassigned.',
             error: lastError };
     }
     function resolver(politics = read(), names = store.get('names', {})) {

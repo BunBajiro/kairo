@@ -15,7 +15,14 @@ export function paintChainCamera(surface, camera, size, limits) {
     if (surface.world) surface.world.style.transform = `translate(${x}px,${y}px) scale(${zoom})`;
     if (surface.output) {
         const label = `${Math.round(zoom * 100)}%`;
-        if (surface.output.textContent !== label) surface.output.textContent = label;
+        if (surface.output.textContent !== label) {
+            // Retain the text node across camera frames. Replacing it with
+            // textContent invalidates ancestor :has() selectors and can force
+            // the entire dense map through style recalculation for one label.
+            const text = surface.output.firstChild;
+            if (text?.nodeType === 3 && text === surface.output.lastChild) text.nodeValue = label;
+            else surface.output.textContent = label;
+        }
         surface.output.dataset.zoom = String(zoom);
     }
     if (surface.zoomOut) surface.zoomOut.disabled = zoom <= limits.min + .001;

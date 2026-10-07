@@ -53,7 +53,10 @@ export async function createRegistry(directory, context) {
     } }
     try { modules.forEach(activate); }
     catch (error) {
-        try { await close(); } catch (cleanupError) { throw new AggregateError([error, cleanupError], 'Module activation and cleanup failed.'); }
+        try { await close(); } catch (cleanupError) {
+            // A cleanup failure must not replace the activation error/code.
+            try { Object.defineProperty(error, 'cleanupErrors', {value: [...(error.cleanupErrors || []), cleanupError], configurable: true}); } catch {}
+        }
         throw error;
     }
     return { modules, enabled, toggle(id, value) { if (closed) throw new Error('The module registry is closed.'); const m = modules.find(m => m.id === id); if (!m)

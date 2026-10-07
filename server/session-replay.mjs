@@ -1,5 +1,5 @@
 import { sessionRoute } from './session-details.mjs';
-import { sessionObservationOwnershipSql } from './session-travel.mjs';
+import { sessionEventWindow } from './session-event-window.mjs';
 import { getUniverseStatic, LIGHT_YEAR_METRES } from './universe-static.mjs';
 
 export const SESSION_REPLAY_EVENT_LIMIT = 10000;
@@ -28,18 +28,7 @@ export function sessionReplay(store, id, characterId, { now = Date.now, eventLim
     const eventCursor = store.db.prepare('SELECT COALESCE(MAX(id),0) id FROM events').get().id;
     const limit = Math.max(1, Math.min(SESSION_REPLAY_EVENT_LIMIT, Math.floor(Number(eventLimit)) || SESSION_REPLAY_EVENT_LIMIT));
 
-    // Keep these boundary semantics aligned with history.mjs: late-arriving
-    // killmail events are selected by occurrence time, while other events at the
-    // exact start/end use captured event cursors. The session's own end event is
-    // emitted after its end cursor and must still be included.
-    const where = `e.character_id=? AND e.at>=? AND e.at<=? AND e.id<=?
-        AND (e.type NOT IN ('session.started','session.ended') OR json_extract(e.payload,'$.session_id')=?)
-        AND ((e.type IN ('killmail.kill','killmail.loss') AND e.at<?)
-        OR (e.type NOT IN ('killmail.kill','killmail.loss') AND (e.at>? OR e.id>?)
-        AND (e.at<? OR e.id<=? OR json_extract(e.payload,'$.session_id')=?)))
-        AND ${sessionObservationOwnershipSql('e.')}`;
-    const params = [characterId, startedAt, endedAt, eventCursor, session.id, endedAt, startedAt,
-        start.eventCursor ?? 0, endedAt, session.ended ? (finish.eventCursor ?? Number.MAX_SAFE_INTEGER) : eventCursor, session.id, session.id];
+    const { where, params } = sessionEventWindow(session, start, finish, endedAt, { prefix: 'e.', eventCursor });
     // Visits already describe movement. Routine location/protection changes
     // should neither clutter replay nor consume its meaningful-event budget.
     // This affects only this snapshot; the source history and reports are intact.

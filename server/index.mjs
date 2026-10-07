@@ -31,11 +31,40 @@ export async function startKairo(options = {}) {
         throw new Error('Choose two different local ports between 1024 and 65535.');
     const origin = `http://127.0.0.1:${port}`, streamOrigin = `http://127.0.0.1:${streamPort}`;
     const dir = options.dataDir || defaultDataDirectory();
-    const store = openStore(dir), vault = openVault(dir), auth = createAuth(store, vault, { origin, fetcher: options.fetcher }), esi = createESI(store, auth, { fetcher: options.fetcher });
-    const core = await createCore(store, auth, esi, join(root, 'server', 'modules'),{vault,noSync:options.noSync,obs:options.obs,markets:options.markets,combatFetcher:options.combatFetcher||options.fetcher,sessionFeedFetcher:options.sessionFeedFetcher,universe:options.universe});
-    const sessions = new Map((options.initialSessions || []).filter(([key, value]) => typeof key === 'string' && typeof value?.csrf === 'string' && value.expires > Date.now()));
+    let store, vault, auth, esi, core, datasets, dashboard, broadcast;
     let stopping = false, applyingDataset = false, closing, restartTimer;
     const requests = new Set();
+    function close() {
+        if (closing) return closing;
+        stopping = true; clearTimeout(restartTimer);
+        closing = (async () => {
+            const errors = [];
+            async function finish(work) {
+                try { await work(); } catch (error) { errors.push(error); }
+            }
+            await finish(() => core?.quiesce());
+            await finish(() => datasets?.close());
+            // Start disconnecting streams before draining accepted handlers.
+            const uiClosing = Promise.allSettled([...(core?.uiClients || [])].map(client => Promise.resolve().then(() => closeSSE(client))));
+            core?.uiClients.clear();
+            // Includes accepted writes whose HTTP client disconnected early.
+            await Promise.allSettled([...requests]);
+            await finish(() => core?.close());
+            errors.push(...(await uiClosing).filter(result => result.status === 'rejected').map(result => result.reason));
+            await finish(() => esi?.close());
+            for (const server of [dashboard, broadcast]) if (server) {
+                await finish(() => server.closeAllConnections());
+                await finish(() => new Promise((resolve, reject) => server.close(error => error && error.code !== 'ERR_SERVER_NOT_RUNNING' ? reject(error) : resolve())));
+            }
+            await finish(() => store?.close());
+            if (errors.length) throw new AggregateError(errors, 'Kairo could not finish all accepted work.');
+        })();
+        return closing;
+    }
+    try {
+    store = openStore(dir); vault = openVault(dir); auth = createAuth(store, vault, { origin, fetcher: options.fetcher }); esi = createESI(store, auth, { fetcher: options.fetcher });
+    core = await createCore(store, auth, esi, join(root, 'server', 'modules'),{vault,noSync:options.noSync,obs:options.obs,markets:options.markets,combatFetcher:options.combatFetcher||options.fetcher,sessionFeedFetcher:options.sessionFeedFetcher,universe:options.universe});
+    const sessions = new Map((options.initialSessions || []).filter(([key, value]) => typeof key === 'string' && typeof value?.csrf === 'string' && value.expires > Date.now()));
     const datasetRecovery = options.datasetRecovery || null;
     function announce(type, value) {
         const event = sseEvent(type, value);
@@ -46,8 +75,6 @@ export async function startKairo(options = {}) {
         void datasets.activationFailed(message).catch(() => {});
         announce('dataset-restart-cancelled', {message: String(message || 'The update could not be activated. Your current dataset is still in use.')});
     }
-    let datasets;
-    try {
     datasets = createDatasetService({...(options.datasets || {}), dataDir: dir,
         activeDirectory: activeDatasetDirectory, automatic: !options.noSync,
         onChange: status => announce('datasets', {...status, managedRestart: !!options.onDatasetsReady}),
@@ -62,11 +89,6 @@ export async function startKairo(options = {}) {
         },
     });
     await datasets.ready;
-    } catch (error) {
-        await datasets?.close().catch(() => {});
-        await core.close(); store.close();
-        throw error;
-    }
     const datasetStatus = () => ({...datasets.status(), managedRestart: !!options.onDatasetsReady});
     const datasetRevision = datasets.status().datasets.filter(row => row.automatic).map(row => row.build).join(':');
     let universeAtlasResponse;
@@ -488,12 +510,13 @@ export async function startKairo(options = {}) {
                 res.end();
         }
     };
-    const dashboard = createServer((req, res) => {
+    dashboard = createServer((req, res) => {
         const work = handleDashboard(req, res);
         requests.add(work);
         work.then(() => requests.delete(work), () => requests.delete(work));
     });
-    const broadcast = createServer(async (req, res) => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors ${origin}; base-uri 'none'; form-action 'none'`); try {
+    broadcast = createServer(async (req, res) => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors ${origin}; base-uri 'none'; form-action 'none'`); try {
+        if (stopping) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Kairo is reconnecting after a dataset update.'});}
         if (!validHost(req.headers.host, streamPort))
             return json(res, 403, { error: 'Local requests only.' });
         if (req.method !== 'GET')
@@ -518,18 +541,8 @@ export async function startKairo(options = {}) {
             res.end();
     } });
     const listen = (s, p) => new Promise((resolve, reject) => { s.once('error', reject); s.listen(p, '127.0.0.1', resolve); });
-    try {
-        await listen(dashboard, port);
-        await listen(broadcast, streamPort);
-    }
-    catch (e) {
-        dashboard.close();
-        broadcast.close();
-        await datasets.close();
-        await core.close();
-        store.close();
-        throw e;
-    }
+    await listen(dashboard, port);
+    await listen(broadcast, streamPort);
     if (!options.noSync) {
         core.syncProtection();
         core.sync(0);
@@ -540,26 +553,16 @@ export async function startKairo(options = {}) {
     return {origin, streamOrigin, store, core, auth, dashboard, broadcast, datasets,
         startDatasetUpdates: () => datasets.start(), cancelDatasetRestart,
         exportSessions: () => [...sessions].filter(([, value]) => value.expires > Date.now()),
-        close() {
-            if (closing) return closing;
-            stopping = true; clearTimeout(restartTimer); core.quiesce();
-            closing = (async () => {
-                await datasets.close();
-                const uiClosing = Promise.all([...core.uiClients].map(closeSSE));
-                core.uiClients.clear();
-                // Drain the handlers themselves, including writes whose client
-                // disconnected early, before collectors and SQLite are closed.
-                await Promise.allSettled([...requests]);
-                await core.close();
-                await uiClosing;
-                await esi.close();
-                dashboard.closeAllConnections(); broadcast.closeAllConnections();
-                await Promise.all([new Promise(r => dashboard.close(r)), new Promise(r => broadcast.close(r))]);
-                store.close();
-            })();
-            return closing;
-        },
+        close,
     };
+    } catch (error) {
+        try { await close(); } catch (cleanup) {
+            // Keep the startup failure (including EADDRINUSE) as the primary
+            // error, while retaining cleanup diagnostics wherever possible.
+            try { Object.defineProperty(error, 'cleanupErrors', {value: [...(error.cleanupErrors || []), ...cleanup.errors], configurable: true}); } catch {}
+        }
+        throw error;
+    }
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
     try {

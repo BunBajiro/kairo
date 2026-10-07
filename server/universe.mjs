@@ -92,7 +92,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     const operations = createUniverseOperations(store, auth, esi, {...options.operations, atlas, now, noSync: options.noSync,
         publish: options.publish, onChange: options.onChange, onLocation: id => observeSelectedLocation(id)});
     let navigation;
-    const feeds = createUniverseFeeds(store, esi, {...options.feeds, atlas, now, noSync: options.noSync,
+    const feeds = createUniverseFeeds(store, esi, {...options.feeds, atlas, now, noSync: options.noSync, deferExpiry: true,
         onChange: () => options.onChange?.(0), onForgetConnections: rows => navigation?.forgetConnections(null, rows.map(row => row.id))});
     navigation = createUniverseNavigation(store, auth, esi, {...options.navigation, atlas, now,
         planRoute: (id, input) => route(id, input, true), planJump: jump,
@@ -110,19 +110,25 @@ export function createUniverse(store, auth, esi, options = {}) {
         character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,
         PRIMARY KEY(character_id,kind,id));
         CREATE INDEX IF NOT EXISTS idx_universe_records_character_kind ON universe_records(character_id,kind,updated_at DESC);
-        CREATE INDEX IF NOT EXISTS idx_universe_links_scope ON universe_records(character_id,COALESCE(json_extract(body,'$.map_id'),''),updated_at DESC,id) WHERE kind='link';`);
+        CREATE INDEX IF NOT EXISTS idx_universe_links_scope ON universe_records(character_id,COALESCE(json_extract(body,'$.map_id'),''),updated_at DESC,id) WHERE kind='link';
+        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_expiry ON universe_records(julianday(json_extract(body,'$.expires_at')),character_id) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL;
+        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_pilot_expiry ON universe_records(character_id,julianday(json_extract(body,'$.expires_at'))) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole';
+        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_collapsed ON universe_records(character_id) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed';`);
     const select = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id');
     const get = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?');
     const put = store.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at');
     const remove = store.db.prepare('DELETE FROM universe_records WHERE character_id=? AND kind=? AND id=?');
     const nextWormholeExpiry = store.db.prepare("SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1");
-    const expiredWormholes = store.db.prepare("SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))");
-    const expiredPilotWormholes = store.db.prepare("SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))");
+    // Separate collapsed links from dated expiry so a no-op read seeks indexes
+    // instead of decoding every live link. SQLite maintains these indexes even
+    // for imports/direct canonical writes; no cross-request expiry cache is used.
+    const expiredWormholes = store.db.prepare("SELECT character_id,body FROM universe_records INDEXED BY idx_universe_wormholes_collapsed WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed' UNION ALL SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at'))<=julianday(?) AND json_extract(body,'$.life_status') IS NOT 'collapsed'");
+    const expiredPilotWormholes = store.db.prepare("SELECT character_id,body FROM universe_records INDEXED BY idx_universe_wormholes_collapsed WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed' UNION ALL SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at'))<=julianday(?) AND json_extract(body,'$.life_status') IS NOT 'collapsed'");
     const scopedLinks = store.db.prepare("SELECT body FROM (SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')='' UNION ALL SELECT body,updated_at,id FROM universe_records WHERE character_id=? AND kind='link' AND COALESCE(json_extract(body,'$.map_id'),'')=?) ORDER BY updated_at DESC,id");
     const getSignature = store.db.prepare('SELECT body FROM universe_operations_records WHERE character_id=? AND kind=? AND id=?');
     const signatureKind = mapId => mapId ? 'signature:map:' + mapId : 'signature';
     const iso = () => new Date(now()).toISOString();
-    let expiryTimer = null, scheduledExpiryAt = null, lifecycleClosed = false, sweeping = false, closing;
+    let expiryTimer = null, scheduledExpiryAt = null, lifecycleClosed = false, lifecycleReady = false, sweeping = false, closing;
     const setExpiryTimer = options.lifecycle?.setTimeout || setTimeout, clearExpiryTimer = options.lifecycle?.clearTimeout || clearTimeout;
     const jspace = createUniverseJSpace(store, auth, { atlas, now, operations, getLinks: links, readLinks: linkReadContext, saveLink:(id,input)=>saveLink(id,input,true), deleteLink:(id,key)=>deleteLink(id,key,true),
         validateLink: (id, input, scopeMap = null) => normalizeLink(id, input, null, undefined, scopeMap), getScopeContext, onChange: options.onChange });
@@ -144,7 +150,7 @@ export function createUniverse(store, auth, esi, options = {}) {
     function persist(id, kind, value) { put.run(id, kind, String(value.id), JSON.stringify(value), value.updated_at || iso()); if (kind === 'link') scheduleExpiry(); return value; }
     const expiredLink = link => link.kind === 'wormhole' && (link.life_status === 'collapsed' || Number.isFinite(Date.parse(link.expires_at)) && Date.parse(link.expires_at) <= now());
     function scheduleExpiry() {
-        if (lifecycleClosed) return;
+        if (lifecycleClosed || !lifecycleReady) return;
         const expiry = Date.parse(nextWormholeExpiry.get()?.expires_at);
         if (expiryTimer !== null && expiry === scheduledExpiryAt) return;
         if (expiryTimer !== null) { clearExpiryTimer(expiryTimer); expiryTimer = null; }
@@ -187,7 +193,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         sweeping = true;
         let deleted = 0;
         try {
-            const rows = characterId == null ? expiredWormholes.all(iso()) : expiredPilotWormholes.all(characterId, iso());
+            const rows = characterId == null ? expiredWormholes.all(iso()) : expiredPilotWormholes.all(characterId, characterId, iso());
             const groups = new Map();
             for (const row of rows) {
                 const link = parse(row.body);
@@ -741,6 +747,23 @@ export function createUniverse(store, auth, esi, options = {}) {
     cleanupExpired(); feeds.pruneExpired();
     const publicIds = new Set(['thera','turnur'].flatMap(source => (store.get('universe:feeds:' + source, null)?.data || []).map(row => String(row.id))));
     navigation.forgetMissingConnections((id, key) => record(id, 'link', key)?.kind === 'wormhole' || publicIds.has(String(key)));
+    // Constructors above only prepare local state. Arm their expiry work after
+    // every schema/migration/projection operation has succeeded, so a throwing
+    // synchronous constructor never hands an ownerless timer to its caller.
+    try {
+        lifecycleReady = true;
+        feeds.startExpiry();
+        scheduleExpiry();
+    } catch (error) {
+        lifecycleClosed = true;
+        const cleanupErrors = [];
+        try { if (expiryTimer !== null) clearExpiryTimer(expiryTimer); } catch (failure) { cleanupErrors.push(failure); }
+        try { feeds.close(); } catch (failure) { cleanupErrors.push(failure); }
+        if (cleanupErrors.length) {
+            try { Object.defineProperty(error, 'cleanupErrors', {value: cleanupErrors, configurable: true}); } catch {}
+        }
+        throw error;
+    }
     return { static: staticData, state, detail, route, jump, saveView, deleteView: (id, key) => deleteRecord(id, 'view', key),
         saveLinkList, deleteLinkList, saveLink, deleteLink, savePin, deletePin: (id, key) => deleteRecord(id, 'pin', key),
         verifyStructure, observeTravel, observeSelectedLocation, pruneExpired, exportUserData, previewLinks, exportLinks, operations, feeds, navigation, jspace, jspaceDestinations, scopeOptions, searchOwners:ownerSearch.search,

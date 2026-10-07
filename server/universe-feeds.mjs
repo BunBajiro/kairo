@@ -28,11 +28,11 @@ function metadata(sample, key, now) {
 }
 /** Public operational feeds are independent of personal session combat collection. */
 export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetcher = fetch, noSync = false, onChange = () => {}, onForgetConnections = () => {}, points = bundledPoints,
-    setExpiryTimer = setTimeout, clearExpiryTimer = clearTimeout } = {}) {
+    setExpiryTimer = setTimeout, clearExpiryTimer = clearTimeout, deferExpiry = false } = {}) {
     if (!atlas?.systems || !atlas?.gates) throw new Error('Universe feeds need the bundled atlas.');
     const known = new Set(atlas.systems.map(s => s.system_id));
     const flights = new Map(), controllers = new Set();
-    let closed = false, expiryTimer = null;
+    let closed = false, expiryTimer = null, expiryStarted = !deferExpiry;
     const key = source => 'universe:feeds:' + source;
     const cached = source => store.get(key(source), null);
     const enabled = () => !closed && store.get('module:universe', true);
@@ -40,7 +40,7 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
     const isConnectionSource = source => source === 'thera' || source === 'turnur';
     function scheduleExpiry() {
         if (expiryTimer !== null) { clearExpiryTimer(expiryTimer); expiryTimer = null; }
-        if (closed) return;
+        if (closed || !expiryStarted) return;
         const deadlines = ['thera','turnur'].flatMap(source => (cached(source)?.data || []).map(row => Date.parse(row.expires_at))).filter(Number.isFinite);
         if (!deadlines.length) return;
         expiryTimer = setExpiryTimer(() => { expiryTimer = null; if (pruneExpired().length) changed(); }, Math.max(1, Math.min(2147483647, Math.min(...deadlines) - now())));
@@ -237,6 +237,7 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         if (!closed) pruneExpired();
     }
     function close() { closed = true; if (expiryTimer !== null) clearExpiryTimer(expiryTimer); expiryTimer = null; for (const controller of controllers) controller.abort(); controllers.clear(); return Promise.allSettled([...flights.values()]); }
+    function startExpiry() { if (!closed) { expiryStarted = true; scheduleExpiry(); } }
     scheduleExpiry();
-    return { state, refresh, tick, close, config, saveConfig, saveStorms, import: importData, importData, observeNpc, pruneExpired };
+    return { state, refresh, tick, close, startExpiry, config, saveConfig, saveStorms, import: importData, importData, observeNpc, pruneExpired };
 }

@@ -32,3 +32,22 @@ test('camera paints only its supplied surface and tolerates a collapsed overview
     assert.deepEqual(original.root.dataset, {});
     assert.doesNotThrow(() => paintChainCamera({}, {x: 0, y: 0, zoom: 1}, {width: 0, height: 0}, {min: .1, max: 2}));
 });
+
+test('zoom output updates character data without replacing the owned text node on animation frames', () => {
+    let replacements = 0, node = null;
+    const output = {
+        dataset: {},
+        get firstChild() { return node; },
+        get lastChild() { return node; },
+        get textContent() { return node?.nodeValue || ''; },
+        set textContent(value) { replacements++; node = { nodeType: 3, nodeValue: value }; },
+    };
+    const paint = zoom => paintChainCamera({ output }, { x: 0, y: 0, zoom }, { width: 800, height: 600 }, { min: .1, max: 2 });
+    paint(.5);
+    const original = node;
+    for (const zoom of [.6, .72, .9, 1.125, 1.1251]) paint(zoom);
+    assert.equal(output.textContent, '113%');
+    assert.equal(output.dataset.zoom, '1.1251');
+    assert.equal(node, original, 'Frame changes preserve the text node identity');
+    assert.equal(replacements, 1, 'Only the initial output mount changes its child list');
+});

@@ -4,11 +4,22 @@ export function createIntelParser(atlas) {
     const exact = new Map(), prefixes = new Map();
     for (const system of atlas.systems || []) {
         const name = system.name.toLowerCase(); exact.set(name, system.system_id);
-        for (let length = 3; length < name.length; length++) {
-            const prefix = name.slice(0, length);
+        if (name.length > 3) {
+            const prefix = name.slice(0, 3);
             if (!prefixes.has(prefix)) prefixes.set(prefix, []);
-            prefixes.get(prefix).push(system.system_id);
+            prefixes.get(prefix).push({name, id: system.system_id});
         }
+    }
+    // Store one candidate per name, rather than materializing every possible
+    // abbreviation. Only the matching three-character bucket needs inspection.
+    function abbreviation(prefix) {
+        let id, count = 0;
+        for (const candidate of prefixes.get(prefix.slice(0, 3)) || []) {
+            if (candidate.name.length <= prefix.length || !candidate.name.startsWith(prefix)) continue;
+            id = candidate.id;
+            if (++count > 1) break;
+        }
+        return {id, count};
     }
     return function parseIntel(input, receivedAt) {
         const raw = clean(input.text), source = input.source || 'manual';
@@ -38,9 +49,9 @@ export function createIntelParser(atlas) {
                 if (id) { ids.add(id); i += size - 1; found = true; break; }
             }
             if (found || tokens[i].length < 3) continue;
-            const candidates = prefixes.get(tokens[i]);
-            if (candidates?.length === 1) ids.add(candidates[0]);
-            else if (candidates?.length > 1) ambiguous.add(tokens[i]);
+            const candidate = abbreviation(tokens[i]);
+            if (candidate.count === 1) ids.add(candidate.id);
+            else if (candidate.count > 1) ambiguous.add(tokens[i]);
         }
         const hostileText = body.replace(/\b(?:no|without|clear\s+of)\s+(?:known\s+|any\s+|all\s+)?(?:hostiles?|neuts?|neutrals?|reds?)\b/gi, '');
         const hostileLanguage = /\b(?:hostiles?|neuts?|neutrals?|reds?|tackled|camp(?:ed)?)\b/i.test(hostileText);

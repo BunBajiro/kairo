@@ -1,5 +1,6 @@
 import {setTimeout as wait} from 'node:timers/promises';
 import {killValue} from './session-details.mjs';
+import {createCacheRetention} from './cache-retention.mjs';
 
 const HOUR=3600000, DAY=24*HOUR;
 const validId=id=>Number.isSafeInteger(id)&&id>0;
@@ -10,6 +11,7 @@ export function participation(killmail,characterId){
  return Array.isArray(killmail?.attackers)&&killmail.attackers.some(a=>a.character_id===characterId)?'kill':null;
 }
 export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},onChange=()=>{},fetcher=fetch,now=Date.now,spacingMs=1100}={}){
+ const retention=createCacheRetention(store);
  const pending=new Map(),publicPending=new Map();let nextRequest=0,closed=false,queue=Promise.resolve();
  const active=id=>!closed&&store.get('module:combat',true)&&auth.characters().some(c=>c.id===id&&!c.needsReauth);
  const recent=id=>store.db.prepare('SELECT body FROM combat_records WHERE character_id=? ORDER BY at DESC,killmail_id DESC LIMIT 200').all(id).map(r=>JSON.parse(r.body));
@@ -70,6 +72,8 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
  }
  async function fetchPublicPage(id,path,key){
   const cached=store.db.prepare('SELECT * FROM cache WHERE key=?').get(key);
+  if(cached)retention.touch(key);
+  retention.maintain();
   if(cached&&cached.expires>now())return {refs:JSON.parse(cached.body),updatedAt:new Date(cached.updated).toISOString(),expiresAt:new Date(cached.expires).toISOString()};
   const task=queue.then(async()=>{
    if(nextRequest>now())await wait(nextRequest-now());

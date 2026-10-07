@@ -47,6 +47,11 @@ export function createHistoryArchive(store,{fetcher=fetch,now=()=>Date.now(),spa
      const rows=db.prepare('SELECT * FROM market_history_days WHERE region_id=? AND date>=? AND date<? ORDER BY type_id,date').all(region,date(start),date(end)),byType=new Map();for(const r of rows){if(!byType.has(r.type_id))byType.set(r.type_id,[]);byType.get(r.type_id).push({date:r.date,average:r.average,highest:r.highest,lowest:r.lowest,volume:r.volume,order_count:r.order_count});}
      // Daily archive rows retain history; the analysis projection only needs
      // its current calendar window. Yield between atomic, bounded batches.
+     // A corrected archive can remove the final observed day for a type. Its
+     // previous EVE Ref projection must become an explicit empty window, not
+     // remain fresh with a row that the corrected source no longer contains.
+     for(const prior of db.prepare("SELECT h.type_id FROM market_history h JOIN market_history_meta m USING(region_id,type_id) WHERE h.region_id=? AND m.source='EVE Ref'").all(region))
+      if(!byType.has(prior.type_id))byType.set(prior.type_id,[]);
      const entries=[...byType];
      for(let offset=0;offset<entries.length;offset+=100){check();saveHistories(store,region,entries.slice(offset,offset+100),iso(now()),iso(now()+DAY),'EVE Ref',now());await delay(0);}
     }

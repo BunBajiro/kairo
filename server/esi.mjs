@@ -1,12 +1,16 @@
 import { createHash } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
+import { createCacheRetention } from './cache-retention.mjs';
 export const COMPATIBILITY_DATE = '2026-09-04';
 const iso = value => new Date(value).toISOString();
 const validId = id => Number.isSafeInteger(id) && id > 0 && id < 2147483647;
 const transportHeaders = { Accept: 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE,
     'User-Agent': 'Kairo/0.8 (local EVE companion)' };
+const pacingOwner = Symbol('pacingOwner'), pacingStage = Symbol('pacingStage'), admissionCheck = Symbol('admissionCheck');
 
 export function createESI(store, auth, { fetcher = fetch } = {}) {
     const limits = store.get('esi:limits', {});
+    const retention = createCacheRetention(store);
     const inflight = new Map(), nameFlights = new Map(), routeGroups = new Map(Object.entries(limits.groups || {}));
     const blocks = new Map((limits.blocks || []).filter(([, until]) => until > Date.now()));
     let errorUntil = limits.errorUntil || 0, active = 0;
@@ -82,7 +86,10 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         return out;
     }
-    async function request(path, { characterId = 0, method = 'GET', body, ttl = 300, priority = false } = {}) {
+    async function request(path, options = {}) {
+        let { characterId = 0, method = 'GET', body, ttl = 300, priority = false } = options;
+        const pace = options[pacingOwner], checkAdmission = options[admissionCheck];
+        checkAdmission?.();
         if (!path.startsWith('/') || path.startsWith('//')) throw new Error('Invalid ESI path.');
         method = method.toUpperCase();
         const url = new URL('https://esi.evetech.net' + path);
@@ -94,16 +101,32 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         const key = characterId + ':' + method + ':' + path + ':' + (body ? createHash('sha256').update(JSON.stringify(body)).digest('hex') : '');
         if (inflight.has(key)) { counters.coalesced++; return inflight.get(key); }
         const cached = readCache.get(key);
+        if (cached) retention.touch(key);
         if (cached && cached.expires > Date.now()) {
             counters.cacheHits++;
             const result = sample(cached);
             if (path === '/universe/names') rememberNames(result.data, cached.expires, cached.updated);
             return result;
         }
+        if (pace && options[pacingStage] !== 'ready') {
+            if (options[pacingStage] !== 'queued') {
+                const task = pace.tail.then(() => request(path, { ...options, [pacingStage]: 'queued' }));
+                pace.tail = task.catch(() => {});
+                return task;
+            }
+            const wait = pace.spacingMs - (pace.now() - pace.lastRequest);
+            if (wait > 0) await pace.wait(wait);
+            // Waiting owns no network slot or shared request flight. Recheck
+            // access, cache and coalescing after the wait; a cancelled caller
+            // cannot fail another consumer's accepted request.
+            return request(path, { ...options, [pacingStage]: 'ready' });
+        }
         const route = method + ':' + pathname.replace(/^(\/killmails\/\d+)\/[^/]+$/, '$1/{hash}').replace(/\/\d+(?=\/|$)/g, '/{id}');
         const cachedGroup = cached && JSON.parse(cached.headers)['x-ratelimit-group'];
         if (cachedGroup) routeGroups.set(route, cachedGroup);
         const retryKey = 'esi-retry:' + key, previousFailure = readCache.get(retryKey);
+        if (previousFailure) retention.touch(retryKey);
+        retention.maintain();
         const task = Promise.resolve().then(async () => {
             let release, attempted = false;
             try {
@@ -119,6 +142,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 else if (cached && JSON.parse(cached.headers)['last-modified']) headers['If-Modified-Since'] = JSON.parse(cached.headers)['last-modified'];
                 if (body) headers['Content-Type'] = 'application/json';
                 const fetchResponse = () => {
+                    if (pace) pace.lastRequest = pace.now();
                     attempted = true; counters.requests++;
                     return fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) });
                 };
@@ -253,6 +277,13 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     // keeps its private request chain alive until all cache writes complete.
     return {
         request: (...args) => own(request, args), mutate: (...args) => own(mutate, args),
+        paced({ spacingMs = 250, now = Date.now, wait = delay } = {}) {
+            if (closing) throw closedError();
+            if (!Number.isFinite(spacingMs) || spacingMs < 0) throw new Error('Choose a valid ESI request spacing.');
+            const pace = { spacingMs, now, wait, lastRequest: 0, tail: Promise.resolve() };
+            return (path, options = {}, checkAdmission) => own(request, [path,
+                { ...options, [pacingOwner]: pace, [admissionCheck]: checkAdmission }]);
+        },
         paged: (...args) => own(paged, args), names: (...args) => own(names, args),
         cachedNames(ids) { if (closing) throw closedError(); return cachedNames(ids); },
         clearAccessFailures(id) { if (closing) throw closedError(); return clearAccessFailures(id); },
