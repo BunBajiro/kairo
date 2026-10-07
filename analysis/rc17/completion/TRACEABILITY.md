@@ -1,5 +1,7 @@
 # RC17 completion trace — 7 October 2026
 
+**Current source selection and updated trace:** [continue from c954 / test build #54](c954-resumption/README.md). The user excludes parallel-process build #55 / 508. The tables below retain their original a27 boundary and are superseded only where the new trace supplies source-bound evidence.
+
 Later implementation work is banked in the [current work checkpoint](WORK-CHECKPOINT-20261007.md). This audit retains its original a27 source boundary; newer tests and trials do not retroactively change its historical evidence.
 
 **The optimisation/refactor is incomplete. PR #10 remains withdrawn and in draft.** The previous fourteen-item gate list was not exhaustive: it omitted substantial frontend work, updater resilience/load measurements, and several conditional recommendations elsewhere in the whitepaper. A passing test build does not close these findings.

@@ -1,0 +1,2805 @@
+{
+  "schemaVersion": 1,
+  "reconstructedHarness": true,
+  "diagnosticOnly": true,
+  "performanceAcceptance": false,
+  "startedAt": "2026-10-07T12:35:39.039Z",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": false
+  },
+  "harnessSha256": "8290cd90fd5958301450a59602d70273d6abf7840fdd08053f085fb579eaf03e",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "totalMemory": 10451464192,
+    "viewport": {
+      "width": 1600,
+      "height": 1050,
+      "dpr": 1
+    },
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/138.0.7204.0",
+      "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+      "jsVersion": "13.8.258"
+    },
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "maps": [
+      {
+        "nodes": 100,
+        "connections": 139,
+        "digest": "896d23d42c3b764b5313daa2dc6e554117727ab79b418650b049ad736e2ea991"
+      },
+      {
+        "nodes": 600,
+        "connections": 823,
+        "digest": "4e277e3d323855033bedcfd371d717ddba34c6bddc52837f80c2d4712af364cc"
+      }
+    ],
+    "digest": "1bdcd7885c7b62164663e1b21515c9a174e047f32db858cc8d6cb187c885077f",
+    "layout": "RC16 frozen frontend fixture: BFS from Jita, bundled gate order, deterministic 340×240 grid; map sizes 100/600 only"
+  },
+  "samples": [
+    {
+      "nodes": 100,
+      "action": "zoom",
+      "beforeCamera": {
+        "zoom": 0.2896608164612676,
+        "transform": "translate(189.584px, 62.0553px) scale(0.289661)"
+      },
+      "afterCamera": {
+        "zoom": 0.5657437821509133,
+        "transform": "translate(-269.266px, -247.71px) scale(0.565744)"
+      },
+      "observed": {
+        "commits": 2,
+        "mutations": {
+          "worldStyle": 51,
+          "leafAttributes": 0,
+          "childList": 0
+        },
+        "elements": 3206
+      },
+      "requests": [],
+      "trace": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.100-zoom.trace.json",
+        "sha256": "938c93ede53b7fdf10a3ae032511db4816d4d519f1bd852824b058b572d403bf",
+        "eventCount": 3369,
+        "events": {
+          "thread_name": {
+            "count": 12,
+            "durationMicros": 0
+          },
+          "process_name": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "process_uptime_seconds": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "CpuProfiler::StartProfiling": {
+            "count": 1,
+            "durationMicros": 27846
+          },
+          "V8.GC_TIME_TO_SAFEPOINT": {
+            "count": 6,
+            "durationMicros": 16
+          },
+          "PrePaint": {
+            "count": 136,
+            "durationMicros": 10269
+          },
+          "HitTest": {
+            "count": 76,
+            "durationMicros": 10775
+          },
+          "V8.RunMicrotasks": {
+            "count": 60,
+            "durationMicros": 6302
+          },
+          "StyleRecalcInvalidationTracking": {
+            "count": 405,
+            "durationMicros": 0
+          },
+          "UpdateLayoutTree": {
+            "count": 64,
+            "durationMicros": 11590
+          },
+          "StyleResolver::ResolveStyle": {
+            "count": 292,
+            "durationMicros": 0
+          },
+          "EventDispatch": {
+            "count": 40,
+            "durationMicros": 4260
+          },
+          "v8.callFunction": {
+            "count": 247,
+            "durationMicros": 43325
+          },
+          "FunctionCall": {
+            "count": 247,
+            "durationMicros": 36544
+          },
+          "V8.Execute": {
+            "count": 249,
+            "durationMicros": 33392
+          },
+          "Paint": {
+            "count": 139,
+            "durationMicros": 48287
+          },
+          "Layerize": {
+            "count": 58,
+            "durationMicros": 314730
+          },
+          "RequestAnimationFrame": {
+            "count": 54,
+            "durationMicros": 0
+          },
+          "FireAnimationFrame": {
+            "count": 54,
+            "durationMicros": 35003
+          },
+          "LayoutInvalidationTracking": {
+            "count": 80,
+            "durationMicros": 0
+          },
+          "v8.newInstance": {
+            "count": 2,
+            "durationMicros": 16
+          },
+          "Layout": {
+            "count": 55,
+            "durationMicros": 15117
+          },
+          "ScheduleStyleInvalidationTracking": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "StyleInvalidatorInvalidationTracking": {
+            "count": 7,
+            "durationMicros": 0
+          },
+          "Responsiveness.Renderer.UserInteraction": {
+            "count": 4,
+            "durationMicros": 24
+          },
+          "V8.IncrementalMarkingJob.Task": {
+            "count": 15,
+            "durationMicros": 14496
+          },
+          "V8.GCIncrementalMarkingStart": {
+            "count": 1,
+            "durationMicros": 384
+          },
+          "V8.GC_MC_INCREMENTAL_START": {
+            "count": 3,
+            "durationMicros": 378
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.GC_MC_MARK_EMBEDDER_PROLOGUE": {
+            "count": 2,
+            "durationMicros": 102
+          },
+          "V8.GC_MC_MARK_ROOTS": {
+            "count": 3,
+            "durationMicros": 152
+          },
+          "Major concurrent marking started": {
+            "count": 7,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GCIncrementalMarking": {
+            "count": 23,
+            "durationMicros": 11863
+          },
+          "V8.GC_MC_BACKGROUND_MARKING": {
+            "count": 20,
+            "durationMicros": 48286
+          },
+          "V8.GC_MC_INCREMENTAL": {
+            "count": 69,
+            "durationMicros": 7364
+          },
+          "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING": {
+            "count": 23,
+            "durationMicros": 2702
+          },
+          "Major concurrent marking rescheduled": {
+            "count": 97,
+            "durationMicros": 713
+          },
+          "ConcurrentMarking::RunMajor Preempted": {
+            "count": 5,
+            "durationMicros": 81
+          },
+          "V8.GC_HEAP_EXTERNAL_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 10
+          },
+          "MajorGC": {
+            "count": 1,
+            "durationMicros": 4813
+          },
+          "V8.GC_HEAP_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GCFinalizeMC": {
+            "count": 1,
+            "durationMicros": 4774
+          },
+          "V8.GC_MARK_COMPACTOR": {
+            "count": 1,
+            "durationMicros": 4756
+          },
+          "V8.GC_HEAP_PROLOGUE_SAFEPOINT": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 8
+          },
+          "V8.GC_MC_MARK": {
+            "count": 1,
+            "durationMicros": 156
+          },
+          "V8.GC_MC_MARK_FINISH_INCREMENTAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_MARK_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_MARK_RETAIN_MAPS": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL": {
+            "count": 1,
+            "durationMicros": 59
+          },
+          "V8.GC_MC_MARK_EMBEDDER_TRACING": {
+            "count": 3,
+            "durationMicros": 12
+          },
+          "V8.GC_MC_MARK_WEAK_CLOSURE_EPHEMERON_MARKING": {
+            "count": 3,
+            "durationMicros": 14
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL_JOIN": {
+            "count": 1,
+            "durationMicros": 7
+          },
+          "V8.GC_CONSERVATIVE_STACK_SCANNING": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_SERIAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_CLEAR": {
+            "count": 1,
+            "durationMicros": 498
+          },
+          "V8.GC_MC_CLEAR_STRING_FORWARDING_TABLE": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "ClearStringTableJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 41
+          },
+          "V8.GC_MC_CLEAR_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 278
+          },
+          "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 55
+          },
+          "V8.GC_MC_CLEAR_FLUSHABLE_BYTECODE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_JS_DISPATCH_TABLE": {
+            "count": 1,
+            "durationMicros": 28
+          },
+          "V8.GC_MC_CLEAR_FLUSHED_JS_FUNCTIONS": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "V8.GC_MC_CLEAR_WEAK_LISTS": {
+            "count": 1,
+            "durationMicros": 62
+          },
+          "V8.GC_MC_CLEAR_MAPS": {
+            "count": 1,
+            "durationMicros": 39
+          },
+          "ClearTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "FilterNonTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_EXTERNAL_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 34
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 121
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_FILTER_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 25
+          },
+          "V8.GC_MC_SWEEP_TRUSTED_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 17
+          },
+          "V8.GC_MC_SWEEP_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_SWEEP_WASM_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_JOIN_FILTER_JOB": {
+            "count": 1,
+            "durationMicros": 22
+          },
+          "V8.GC_MC_WEAKNESS_HANDLING": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_WEAK_COLLECTIONS": {
+            "count": 1,
+            "durationMicros": 6
+          },
+          "V8.GC_MC_CLEAR_JS_WEAK_REFERENCES": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_JOIN_JOB": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_SWEEP": {
+            "count": 25,
+            "durationMicros": 1101
+          },
+          "V8.GC_MC_EVACUATE": {
+            "count": 2,
+            "durationMicros": 3360
+          },
+          "V8.GC_MC_EVACUATE_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 12
+          },
+          "V8.GC_MC_EVACUATE_COPY": {
+            "count": 1,
+            "durationMicros": 2391
+          },
+          "PageEvacuationJob started": {
+            "count": 9,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_COPY_PARALLEL": {
+            "count": 1,
+            "durationMicros": 2024
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_COPY": {
+            "count": 3,
+            "durationMicros": 4934
+          },
+          "V8.GC_MC_BACKGROUND_SWEEPING": {
+            "count": 73,
+            "durationMicros": 3807
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS": {
+            "count": 1,
+            "durationMicros": 914
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS": {
+            "count": 1,
+            "durationMicros": 324
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN": {
+            "count": 1,
+            "durationMicros": 423
+          },
+          "PointersUpdatingJob started": {
+            "count": 11,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL": {
+            "count": 1,
+            "durationMicros": 297
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_UPDATE_POINTERS": {
+            "count": 4,
+            "durationMicros": 849
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_WEAK": {
+            "count": 1,
+            "durationMicros": 9
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES": {
+            "count": 1,
+            "durationMicros": 148
+          },
+          "V8.GC_MC_EVACUATE_CLEAN_UP": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 7
+          },
+          "V8.GC_MC_SWEEP_NEW_LO": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "V8.GC_MC_EVACUATE_REBALANCE": {
+            "count": 1,
+            "durationMicros": 29
+          },
+          "V8.GC_MC_FINISH": {
+            "count": 1,
+            "durationMicros": 107
+          },
+          "V8.GC_MC_SWEEP_START_JOBS": {
+            "count": 9,
+            "durationMicros": 20
+          },
+          "V8.GC_MC_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_HEAP_EXTERNAL_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 12
+          },
+          "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 100
+          },
+          "Sweeper::ConcurrentMajorSweeper Preempted": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_HEAP_EPILOGUE_SAFEPOINT": {
+            "count": 1,
+            "durationMicros": 8
+          },
+          "V8.GC_HEAP_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_HEAP_EXTERNAL_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GCPhantomHandleProcessingCallback": {
+            "count": 1,
+            "durationMicros": 7
+          },
+          "V8.GC_HEAP_EXTERNAL_SECOND_PASS_CALLBACKS": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "TimerFire": {
+            "count": 1,
+            "durationMicros": 170
+          },
+          "AnimationFrame": {
+            "count": 232,
+            "durationMicros": 0
+          },
+          "EventTiming": {
+            "count": 58,
+            "durationMicros": 0
+          },
+          "Animation": {
+            "count": 8,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Render": {
+            "count": 116,
+            "durationMicros": 0
+          },
+          "AnimationFrame::StyleAndLayout": {
+            "count": 116,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Presentation": {
+            "count": 58,
+            "durationMicros": 0
+          }
+        }
+      },
+      "cpu": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.100-zoom.cpuprofile",
+        "sha256": "dcf649b93ffadd1d34e794cfbd332698ef3f1a21033478093f0bc6910fa11a59"
+      }
+    },
+    {
+      "nodes": 100,
+      "action": "pan",
+      "beforeCamera": {
+        "zoom": 0.2896608164612676,
+        "transform": "translate(189.584px, 62.0553px) scale(0.289661)"
+      },
+      "afterCamera": {
+        "zoom": 0.2896608164612676,
+        "transform": "translate(381.584px, 45.2903px) scale(0.289661)"
+      },
+      "observed": {
+        "commits": 3,
+        "mutations": {
+          "worldStyle": 24,
+          "leafAttributes": 0,
+          "childList": 0
+        },
+        "elements": 3206
+      },
+      "requests": [],
+      "trace": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.100-pan.trace.json",
+        "sha256": "b3ee4d186604f7e58a4d363e71252ec088db63fc7f44114287a4b8980e2b575e",
+        "eventCount": 4167,
+        "events": {
+          "thread_name": {
+            "count": 7,
+            "durationMicros": 0
+          },
+          "process_name": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "process_uptime_seconds": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "CpuProfiler::StartProfiling": {
+            "count": 1,
+            "durationMicros": 25905
+          },
+          "V8.GC_TIME_TO_SAFEPOINT": {
+            "count": 6,
+            "durationMicros": 83
+          },
+          "V8.GC_MC_COMPLETE_SWEEPING": {
+            "count": 2,
+            "durationMicros": 36
+          },
+          "V8.GC_MC_SWEEP": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "PrePaint": {
+            "count": 39,
+            "durationMicros": 5606
+          },
+          "HitTest": {
+            "count": 6,
+            "durationMicros": 8100
+          },
+          "StyleRecalcInvalidationTracking": {
+            "count": 372,
+            "durationMicros": 0
+          },
+          "EventDispatch": {
+            "count": 45,
+            "durationMicros": 49082
+          },
+          "v8.callFunction": {
+            "count": 198,
+            "durationMicros": 73864
+          },
+          "FunctionCall": {
+            "count": 190,
+            "durationMicros": 47475
+          },
+          "V8.Execute": {
+            "count": 199,
+            "durationMicros": 45839
+          },
+          "UpdateLayoutTree": {
+            "count": 35,
+            "durationMicros": 31328
+          },
+          "StyleResolver::ResolveStyle": {
+            "count": 2270,
+            "durationMicros": 0
+          },
+          "Paint": {
+            "count": 69,
+            "durationMicros": 29088
+          },
+          "Layerize": {
+            "count": 32,
+            "durationMicros": 148106
+          },
+          "V8.DeoptimizeCode": {
+            "count": 2,
+            "durationMicros": 10
+          },
+          "V8.RunMicrotasks": {
+            "count": 29,
+            "durationMicros": 25800
+          },
+          "V8.GC_HEAP_EXTERNAL_PROLOGUE": {
+            "count": 2,
+            "durationMicros": 8
+          },
+          "MinorGC": {
+            "count": 2,
+            "durationMicros": 2645
+          },
+          "V8.GC_HEAP_PROLOGUE": {
+            "count": 2,
+            "durationMicros": 2
+          },
+          "V8.GCScavenger": {
+            "count": 2,
+            "durationMicros": 2591
+          },
+          "V8.GC_BACKGROUND_SAFEPOINT": {
+            "count": 1,
+            "durationMicros": 762
+          },
+          "V8.GC_SCAVENGER": {
+            "count": 2,
+            "durationMicros": 2496
+          },
+          "V8.GC_HEAP_PROLOGUE_SAFEPOINT": {
+            "count": 2,
+            "durationMicros": 2
+          },
+          "V8.GC_SCAVENGER_SCAVENGE": {
+            "count": 2,
+            "durationMicros": 2461
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_IDENTIFY": {
+            "count": 2,
+            "durationMicros": 160
+          },
+          "ComputeWeaknessProcessor start": {
+            "count": 8,
+            "durationMicros": 3
+          },
+          "V8.GC_SCAVENGER_TRACED_HANDLES_COMPUTE_WEAKNESS_PARALLEL": {
+            "count": 2,
+            "durationMicros": 69
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_ROOTS": {
+            "count": 2,
+            "durationMicros": 108
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE": {
+            "count": 2,
+            "durationMicros": 1986
+          },
+          "Parallel scavenge started": {
+            "count": 12,
+            "durationMicros": 2
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_PARALLEL": {
+            "count": 2,
+            "durationMicros": 1891
+          },
+          "V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL": {
+            "count": 3,
+            "durationMicros": 3276
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_PROCESS": {
+            "count": 2,
+            "durationMicros": 85
+          },
+          "ClearWeaknessProcessor start": {
+            "count": 8,
+            "durationMicros": 3
+          },
+          "V8.GC_SCAVENGER_TRACED_HANDLES_RESET_PARALLEL": {
+            "count": 2,
+            "durationMicros": 41
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_FINALIZE": {
+            "count": 2,
+            "durationMicros": 47
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_UPDATE_REFS": {
+            "count": 2,
+            "durationMicros": 2
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_RESTORE_AND_QUARANTINE_PINNED": {
+            "count": 2,
+            "durationMicros": 3
+          },
+          "V8.GC_SCAVENGER_FREE_REMEMBERED_SET": {
+            "count": 2,
+            "durationMicros": 20
+          },
+          "V8.GC_SCAVENGER_RESIZE_NEW_SPACE": {
+            "count": 2,
+            "durationMicros": 3
+          },
+          "V8.GC_HEAP_EPILOGUE_SAFEPOINT": {
+            "count": 2,
+            "durationMicros": 10
+          },
+          "V8.GC_HEAP_EPILOGUE": {
+            "count": 2,
+            "durationMicros": 8
+          },
+          "V8.GC_HEAP_EXTERNAL_EPILOGUE": {
+            "count": 2,
+            "durationMicros": 4
+          },
+          "ScheduleStyleInvalidationTracking": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "StyleInvalidatorInvalidationTracking": {
+            "count": 206,
+            "durationMicros": 0
+          },
+          "LayoutInvalidationTracking": {
+            "count": 27,
+            "durationMicros": 0
+          },
+          "Layout": {
+            "count": 27,
+            "durationMicros": 2422
+          },
+          "TimerFire": {
+            "count": 1,
+            "durationMicros": 168
+          },
+          "v8.newInstance": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.MinorGCJob.Task": {
+            "count": 1,
+            "durationMicros": 1868
+          },
+          "V8.GC_SCAVENGER_BACKGROUND_TRACED_HANDLES_COMPUTE_WEAKNESS_PARALLEL": {
+            "count": 1,
+            "durationMicros": 27
+          },
+          "V8.GC_SCAVENGER_BACKGROUND_TRACED_HANDLES_RESET_PARALLEL": {
+            "count": 1,
+            "durationMicros": 27
+          },
+          "AnimationFrame": {
+            "count": 126,
+            "durationMicros": 0
+          },
+          "EventTiming": {
+            "count": 20,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Render": {
+            "count": 64,
+            "durationMicros": 0
+          },
+          "Animation": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "AnimationFrame::StyleAndLayout": {
+            "count": 64,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Script::Execute": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Presentation": {
+            "count": 31,
+            "durationMicros": 0
+          }
+        }
+      },
+      "cpu": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.100-pan.cpuprofile",
+        "sha256": "679503f6b37209ed05d23e78a0f3f647a91fbed18ac9aeb3dcd68653874a51a3"
+      }
+    },
+    {
+      "nodes": 100,
+      "action": "unchanged-refresh",
+      "beforeCamera": {
+        "zoom": 0.2896608164612676,
+        "transform": "translate(189.584px, 62.0553px) scale(0.289661)"
+      },
+      "afterCamera": {
+        "zoom": 0.2896608164612676,
+        "transform": "translate(189.584px, 62.0553px) scale(0.289661)"
+      },
+      "observed": {
+        "commits": 4,
+        "mutations": {
+          "worldStyle": 0,
+          "leafAttributes": 0,
+          "childList": 0
+        },
+        "elements": 3206
+      },
+      "requests": [
+        {
+          "url": "/api/universe/jspace/summaries?character=42",
+          "method": "GET"
+        },
+        {
+          "url": "/api/universe/jspace/maps/camera-100?character=42",
+          "method": "GET"
+        },
+        {
+          "url": "/api/universe?character=42",
+          "method": "GET"
+        }
+      ],
+      "trace": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.100-unchanged-refresh.trace.json",
+        "sha256": "688d3c78151070ca38b82eb3397f8937f3724a2866c4627e751c367477ab0f7c",
+        "eventCount": 661,
+        "events": {
+          "thread_name": {
+            "count": 13,
+            "durationMicros": 0
+          },
+          "process_name": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "process_uptime_seconds": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "CpuProfiler::StartProfiling": {
+            "count": 1,
+            "durationMicros": 28389
+          },
+          "V8.GC_TIME_TO_SAFEPOINT": {
+            "count": 9,
+            "durationMicros": 290
+          },
+          "v8.callFunction": {
+            "count": 23,
+            "durationMicros": 66868
+          },
+          "V8.Execute": {
+            "count": 23,
+            "durationMicros": 66022
+          },
+          "TimerRemove": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "TimerInstall": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "ResourceSendRequest": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "V8.RunMicrotasks": {
+            "count": 14,
+            "durationMicros": 1180
+          },
+          "ResourceReceiveResponse": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "ResourceReceivedData": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "ResourceFinish": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "FunctionCall": {
+            "count": 21,
+            "durationMicros": 65732
+          },
+          "V8.GC_HEAP_EXTERNAL_PROLOGUE": {
+            "count": 4,
+            "durationMicros": 27
+          },
+          "MinorGC": {
+            "count": 3,
+            "durationMicros": 4464
+          },
+          "V8.GC_HEAP_PROLOGUE": {
+            "count": 4,
+            "durationMicros": 6
+          },
+          "V8.GCScavenger": {
+            "count": 3,
+            "durationMicros": 4362
+          },
+          "V8.GC_SCAVENGER": {
+            "count": 3,
+            "durationMicros": 4187
+          },
+          "V8.GC_HEAP_PROLOGUE_SAFEPOINT": {
+            "count": 4,
+            "durationMicros": 26
+          },
+          "V8.GC_SCAVENGER_SCAVENGE": {
+            "count": 3,
+            "durationMicros": 4073
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_IDENTIFY": {
+            "count": 3,
+            "durationMicros": 86
+          },
+          "ComputeWeaknessProcessor start": {
+            "count": 9,
+            "durationMicros": 3
+          },
+          "V8.GC_SCAVENGER_TRACED_HANDLES_COMPUTE_WEAKNESS_PARALLEL": {
+            "count": 3,
+            "durationMicros": 29
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_ROOTS": {
+            "count": 3,
+            "durationMicros": 172
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE": {
+            "count": 3,
+            "durationMicros": 3275
+          },
+          "Parallel scavenge started": {
+            "count": 27,
+            "durationMicros": 2
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_PARALLEL": {
+            "count": 4,
+            "durationMicros": 3080
+          },
+          "V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL": {
+            "count": 8,
+            "durationMicros": 4675
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_PROCESS": {
+            "count": 3,
+            "durationMicros": 71
+          },
+          "ClearWeaknessProcessor start": {
+            "count": 9,
+            "durationMicros": 4
+          },
+          "V8.GC_SCAVENGER_TRACED_HANDLES_RESET_PARALLEL": {
+            "count": 3,
+            "durationMicros": 19
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_FINALIZE": {
+            "count": 3,
+            "durationMicros": 118
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_UPDATE_REFS": {
+            "count": 3,
+            "durationMicros": 19
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_RESTORE_AND_QUARANTINE_PINNED": {
+            "count": 3,
+            "durationMicros": 9
+          },
+          "V8.GC_SCAVENGER_FREE_REMEMBERED_SET": {
+            "count": 3,
+            "durationMicros": 102
+          },
+          "V8.GC_SCAVENGER_RESIZE_NEW_SPACE": {
+            "count": 3,
+            "durationMicros": 3
+          },
+          "V8.GC_HEAP_EPILOGUE_SAFEPOINT": {
+            "count": 4,
+            "durationMicros": 26
+          },
+          "V8.GC_HEAP_EPILOGUE": {
+            "count": 4,
+            "durationMicros": 24
+          },
+          "V8.GC_HEAP_EXTERNAL_EPILOGUE": {
+            "count": 4,
+            "durationMicros": 9
+          },
+          "StyleRecalcInvalidationTracking": {
+            "count": 16,
+            "durationMicros": 0
+          },
+          "LayoutInvalidationTracking": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "UpdateLayoutTree": {
+            "count": 4,
+            "durationMicros": 525
+          },
+          "StyleResolver::ResolveStyle": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "Layout": {
+            "count": 4,
+            "durationMicros": 451
+          },
+          "PrePaint": {
+            "count": 8,
+            "durationMicros": 554
+          },
+          "HitTest": {
+            "count": 4,
+            "durationMicros": 359
+          },
+          "Paint": {
+            "count": 8,
+            "durationMicros": 4162
+          },
+          "Layerize": {
+            "count": 4,
+            "durationMicros": 568
+          },
+          "V8.GC_BACKGROUND_SAFEPOINT": {
+            "count": 3,
+            "durationMicros": 2847
+          },
+          "V8.GCIncrementalMarkingStart": {
+            "count": 1,
+            "durationMicros": 296
+          },
+          "V8.GC_MC_INCREMENTAL_START": {
+            "count": 3,
+            "durationMicros": 293
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 12
+          },
+          "V8.GC_MC_MARK_EMBEDDER_PROLOGUE": {
+            "count": 2,
+            "durationMicros": 126
+          },
+          "V8.GC_MC_MARK_ROOTS": {
+            "count": 3,
+            "durationMicros": 64
+          },
+          "Major concurrent marking started": {
+            "count": 13,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_BACKGROUND_MARKING": {
+            "count": 18,
+            "durationMicros": 50575
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GCIncrementalMarking": {
+            "count": 12,
+            "durationMicros": 2030
+          },
+          "V8.GC_MC_INCREMENTAL": {
+            "count": 36,
+            "durationMicros": 1989
+          },
+          "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING": {
+            "count": 12,
+            "durationMicros": 1829
+          },
+          "Major concurrent marking rescheduled": {
+            "count": 63,
+            "durationMicros": 10
+          },
+          "ConcurrentMarking::RunMajor Preempted": {
+            "count": 7,
+            "durationMicros": 26
+          },
+          "V8.IncrementalMarkingJob.Task": {
+            "count": 1,
+            "durationMicros": 3120
+          },
+          "MajorGC": {
+            "count": 1,
+            "durationMicros": 3039
+          },
+          "V8.GCFinalizeMC": {
+            "count": 1,
+            "durationMicros": 3009
+          },
+          "V8.GC_MARK_COMPACTOR": {
+            "count": 1,
+            "durationMicros": 2996
+          },
+          "V8.GC_MC_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 8
+          },
+          "V8.GC_MC_MARK": {
+            "count": 1,
+            "durationMicros": 169
+          },
+          "V8.GC_MC_MARK_FINISH_INCREMENTAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_MARK_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_MARK_RETAIN_MAPS": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL": {
+            "count": 1,
+            "durationMicros": 69
+          },
+          "V8.GC_MC_MARK_EMBEDDER_TRACING": {
+            "count": 3,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_MARK_WEAK_CLOSURE_EPHEMERON_MARKING": {
+            "count": 3,
+            "durationMicros": 13
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL_JOIN": {
+            "count": 1,
+            "durationMicros": 6
+          },
+          "V8.GC_CONSERVATIVE_STACK_SCANNING": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_SERIAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_CLEAR": {
+            "count": 1,
+            "durationMicros": 691
+          },
+          "V8.GC_MC_CLEAR_STRING_FORWARDING_TABLE": {
+            "count": 1,
+            "durationMicros": 20
+          },
+          "ClearStringTableJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 111
+          },
+          "V8.GC_MC_CLEAR_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 625
+          },
+          "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 89
+          },
+          "V8.GC_MC_CLEAR_FLUSHABLE_BYTECODE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_SWEEP_JS_DISPATCH_TABLE": {
+            "count": 1,
+            "durationMicros": 26
+          },
+          "V8.GC_MC_CLEAR_FLUSHED_JS_FUNCTIONS": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_WEAK_LISTS": {
+            "count": 1,
+            "durationMicros": 25
+          },
+          "V8.GC_MC_CLEAR_MAPS": {
+            "count": 1,
+            "durationMicros": 30
+          },
+          "ClearTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "FilterNonTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_EXTERNAL_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 39
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 130
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_FILTER_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 23
+          },
+          "V8.GC_MC_SWEEP_TRUSTED_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 16
+          },
+          "V8.GC_MC_SWEEP_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_SWEEP_WASM_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_JOIN_FILTER_JOB": {
+            "count": 1,
+            "durationMicros": 10
+          },
+          "V8.GC_MC_WEAKNESS_HANDLING": {
+            "count": 1,
+            "durationMicros": 9
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_WEAK_COLLECTIONS": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_MC_CLEAR_JS_WEAK_REFERENCES": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_JOIN_JOB": {
+            "count": 1,
+            "durationMicros": 211
+          },
+          "V8.GC_MC_SWEEP": {
+            "count": 15,
+            "durationMicros": 117
+          },
+          "V8.GC_MC_EVACUATE": {
+            "count": 2,
+            "durationMicros": 1415
+          },
+          "V8.GC_MC_EVACUATE_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_EVACUATE_COPY": {
+            "count": 1,
+            "durationMicros": 599
+          },
+          "PageEvacuationJob started": {
+            "count": 7,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_COPY_PARALLEL": {
+            "count": 1,
+            "durationMicros": 488
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_COPY": {
+            "count": 2,
+            "durationMicros": 763
+          },
+          "V8.GC_MC_BACKGROUND_SWEEPING": {
+            "count": 11,
+            "durationMicros": 4666
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS": {
+            "count": 1,
+            "durationMicros": 795
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS": {
+            "count": 1,
+            "durationMicros": 392
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN": {
+            "count": 1,
+            "durationMicros": 275
+          },
+          "PointersUpdatingJob started": {
+            "count": 17,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL": {
+            "count": 1,
+            "durationMicros": 157
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_UPDATE_POINTERS": {
+            "count": 7,
+            "durationMicros": 768
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_WEAK": {
+            "count": 1,
+            "durationMicros": 6
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES": {
+            "count": 1,
+            "durationMicros": 112
+          },
+          "V8.GC_MC_EVACUATE_CLEAN_UP": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 7
+          },
+          "V8.GC_MC_SWEEP_NEW_LO": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_REBALANCE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_FINISH": {
+            "count": 1,
+            "durationMicros": 22
+          },
+          "V8.GC_MC_SWEEP_START_JOBS": {
+            "count": 11,
+            "durationMicros": 18
+          },
+          "V8.GC_MC_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_HEAP_EXTERNAL_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 8
+          },
+          "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 207
+          },
+          "V8.GCPhantomHandleProcessingCallback": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_HEAP_EXTERNAL_SECOND_PASS_CALLBACKS": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "TimerFire": {
+            "count": 1,
+            "durationMicros": 735
+          },
+          "V8.GC_MC_COMPLETE_SWEEPING": {
+            "count": 4,
+            "durationMicros": 63
+          },
+          "AnimationFrame": {
+            "count": 8,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Script::Execute": {
+            "count": 8,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Render": {
+            "count": 8,
+            "durationMicros": 0
+          },
+          "AnimationFrame::StyleAndLayout": {
+            "count": 8,
+            "durationMicros": 0
+          }
+        }
+      },
+      "cpu": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.100-unchanged-refresh.cpuprofile",
+        "sha256": "78461255ee48d6721f4e9dfde2728503fd41ac4101a3378267e6a1604c0369a4"
+      }
+    },
+    {
+      "nodes": 600,
+      "action": "zoom",
+      "beforeCamera": {
+        "zoom": 0.116851806640625,
+        "transform": "translate(178.82px, 59.6359px) scale(0.116852)"
+      },
+      "afterCamera": {
+        "zoom": 0.2282261848449707,
+        "transform": "translate(-290.289px, -252.435px) scale(0.228226)"
+      },
+      "observed": {
+        "commits": 1,
+        "mutations": {
+          "worldStyle": 30,
+          "leafAttributes": 0,
+          "childList": 0
+        },
+        "elements": 18626
+      },
+      "requests": [],
+      "trace": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.600-zoom.trace.json",
+        "sha256": "6ed138469ff74489ed48aa707ff9ee6ad6e5e8877ff79a7eff397efd3f594454",
+        "eventCount": 2055,
+        "events": {
+          "thread_name": {
+            "count": 5,
+            "durationMicros": 0
+          },
+          "process_name": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "process_uptime_seconds": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "CpuProfiler::StartProfiling": {
+            "count": 1,
+            "durationMicros": 41366
+          },
+          "V8.GC_TIME_TO_SAFEPOINT": {
+            "count": 4,
+            "durationMicros": 14
+          },
+          "V8.GC_MC_COMPLETE_SWEEPING": {
+            "count": 2,
+            "durationMicros": 94
+          },
+          "V8.GC_MC_SWEEP": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "PrePaint": {
+            "count": 97,
+            "durationMicros": 11075
+          },
+          "HitTest": {
+            "count": 54,
+            "durationMicros": 18587
+          },
+          "V8.RunMicrotasks": {
+            "count": 39,
+            "durationMicros": 2409
+          },
+          "StyleRecalcInvalidationTracking": {
+            "count": 256,
+            "durationMicros": 0
+          },
+          "UpdateLayoutTree": {
+            "count": 43,
+            "durationMicros": 11531
+          },
+          "StyleResolver::ResolveStyle": {
+            "count": 185,
+            "durationMicros": 0
+          },
+          "EventDispatch": {
+            "count": 40,
+            "durationMicros": 3108
+          },
+          "v8.callFunction": {
+            "count": 205,
+            "durationMicros": 24855
+          },
+          "FunctionCall": {
+            "count": 205,
+            "durationMicros": 22280
+          },
+          "V8.Execute": {
+            "count": 205,
+            "durationMicros": 20558
+          },
+          "Paint": {
+            "count": 88,
+            "durationMicros": 129468
+          },
+          "Layerize": {
+            "count": 39,
+            "durationMicros": 746492
+          },
+          "RequestAnimationFrame": {
+            "count": 33,
+            "durationMicros": 0
+          },
+          "FireAnimationFrame": {
+            "count": 33,
+            "durationMicros": 20632
+          },
+          "LayoutInvalidationTracking": {
+            "count": 46,
+            "durationMicros": 0
+          },
+          "Layout": {
+            "count": 34,
+            "durationMicros": 29587
+          },
+          "ScheduleStyleInvalidationTracking": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "StyleInvalidatorInvalidationTracking": {
+            "count": 7,
+            "durationMicros": 0
+          },
+          "Responsiveness.Renderer.UserInteraction": {
+            "count": 4,
+            "durationMicros": 27
+          },
+          "ResourceReceivedData": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "TimerFire": {
+            "count": 1,
+            "durationMicros": 188
+          },
+          "AnimationFrame": {
+            "count": 156,
+            "durationMicros": 0
+          },
+          "EventTiming": {
+            "count": 58,
+            "durationMicros": 0
+          },
+          "Animation": {
+            "count": 8,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Render": {
+            "count": 78,
+            "durationMicros": 0
+          },
+          "AnimationFrame::StyleAndLayout": {
+            "count": 78,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Presentation": {
+            "count": 39,
+            "durationMicros": 0
+          }
+        }
+      },
+      "cpu": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.600-zoom.cpuprofile",
+        "sha256": "9f3d716dc5f3915e93801bc6a2ab24ed88d493e9dce27f7c73ee974c5e704372"
+      }
+    },
+    {
+      "nodes": 600,
+      "action": "pan",
+      "beforeCamera": {
+        "zoom": 0.116851806640625,
+        "transform": "translate(178.82px, 59.6359px) scale(0.116852)"
+      },
+      "afterCamera": {
+        "zoom": 0.116851806640625,
+        "transform": "translate(370.82px, 42.871px) scale(0.116852)"
+      },
+      "observed": {
+        "commits": 4,
+        "mutations": {
+          "worldStyle": 24,
+          "leafAttributes": 0,
+          "childList": 0
+        },
+        "elements": 18626
+      },
+      "requests": [],
+      "trace": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.600-pan.trace.json",
+        "sha256": "d9627c2859054c6545ad02a2067dab40fc7737a7b1100934144396ac1018e2f7",
+        "eventCount": 16905,
+        "events": {
+          "thread_name": {
+            "count": 11,
+            "durationMicros": 0
+          },
+          "process_name": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "process_uptime_seconds": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "CpuProfiler::StartProfiling": {
+            "count": 1,
+            "durationMicros": 44037
+          },
+          "V8.GC_TIME_TO_SAFEPOINT": {
+            "count": 6,
+            "durationMicros": 16
+          },
+          "PrePaint": {
+            "count": 35,
+            "durationMicros": 9999
+          },
+          "HitTest": {
+            "count": 8,
+            "durationMicros": 84765
+          },
+          "StyleRecalcInvalidationTracking": {
+            "count": 1364,
+            "durationMicros": 0
+          },
+          "EventDispatch": {
+            "count": 45,
+            "durationMicros": 103343
+          },
+          "v8.callFunction": {
+            "count": 203,
+            "durationMicros": 175538
+          },
+          "FunctionCall": {
+            "count": 195,
+            "durationMicros": 102003
+          },
+          "V8.Execute": {
+            "count": 203,
+            "durationMicros": 100242
+          },
+          "UpdateLayoutTree": {
+            "count": 31,
+            "durationMicros": 137465
+          },
+          "StyleResolver::ResolveStyle": {
+            "count": 12734,
+            "durationMicros": 0
+          },
+          "Paint": {
+            "count": 57,
+            "durationMicros": 170148
+          },
+          "Layerize": {
+            "count": 28,
+            "durationMicros": 580706
+          },
+          "V8.RunMicrotasks": {
+            "count": 29,
+            "durationMicros": 72963
+          },
+          "ScheduleStyleInvalidationTracking": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "StyleInvalidatorInvalidationTracking": {
+            "count": 1206,
+            "durationMicros": 0
+          },
+          "LayoutInvalidationTracking": {
+            "count": 27,
+            "durationMicros": 0
+          },
+          "Layout": {
+            "count": 26,
+            "durationMicros": 5366
+          },
+          "V8.IncrementalMarkingJob.Task": {
+            "count": 2,
+            "durationMicros": 13808
+          },
+          "V8.GCIncrementalMarkingStart": {
+            "count": 1,
+            "durationMicros": 4823
+          },
+          "V8.GC_MC_INCREMENTAL_START": {
+            "count": 3,
+            "durationMicros": 4819
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.GC_MC_MARK_EMBEDDER_PROLOGUE": {
+            "count": 2,
+            "durationMicros": 4522
+          },
+          "V8.GC_MC_MARK_ROOTS": {
+            "count": 3,
+            "durationMicros": 75
+          },
+          "Major concurrent marking started": {
+            "count": 13,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_BACKGROUND_MARKING": {
+            "count": 13,
+            "durationMicros": 90810
+          },
+          "ConcurrentMarking::RunMajor Preempted": {
+            "count": 6,
+            "durationMicros": 15
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GCIncrementalMarking": {
+            "count": 30,
+            "durationMicros": 12577
+          },
+          "V8.GC_MC_INCREMENTAL": {
+            "count": 90,
+            "durationMicros": 12490
+          },
+          "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING": {
+            "count": 30,
+            "durationMicros": 8137
+          },
+          "Major concurrent marking rescheduled": {
+            "count": 41,
+            "durationMicros": 11
+          },
+          "V8.GC_HEAP_EXTERNAL_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 14
+          },
+          "MajorGC": {
+            "count": 1,
+            "durationMicros": 8717
+          },
+          "V8.GC_HEAP_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 24
+          },
+          "V8.GCFinalizeMC": {
+            "count": 1,
+            "durationMicros": 8657
+          },
+          "V8.GC_MARK_COMPACTOR": {
+            "count": 1,
+            "durationMicros": 8645
+          },
+          "V8.GC_HEAP_PROLOGUE_SAFEPOINT": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 12
+          },
+          "V8.GC_MC_MARK": {
+            "count": 1,
+            "durationMicros": 536
+          },
+          "V8.GC_MC_MARK_FINISH_INCREMENTAL": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_MARK_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_MARK_RETAIN_MAPS": {
+            "count": 1,
+            "durationMicros": 15
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL": {
+            "count": 1,
+            "durationMicros": 134
+          },
+          "V8.GC_MC_MARK_EMBEDDER_TRACING": {
+            "count": 3,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_MARK_WEAK_CLOSURE_EPHEMERON_MARKING": {
+            "count": 3,
+            "durationMicros": 23
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL_JOIN": {
+            "count": 1,
+            "durationMicros": 77
+          },
+          "V8.GC_CONSERVATIVE_STACK_SCANNING": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_SERIAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_CLEAR": {
+            "count": 1,
+            "durationMicros": 831
+          },
+          "V8.GC_MC_CLEAR_STRING_FORWARDING_TABLE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "ClearStringTableJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 133
+          },
+          "V8.GC_MC_CLEAR_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 281
+          },
+          "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 263
+          },
+          "V8.GC_MC_CLEAR_FLUSHABLE_BYTECODE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_JS_DISPATCH_TABLE": {
+            "count": 1,
+            "durationMicros": 32
+          },
+          "V8.GC_MC_CLEAR_FLUSHED_JS_FUNCTIONS": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_WEAK_LISTS": {
+            "count": 1,
+            "durationMicros": 79
+          },
+          "V8.GC_MC_CLEAR_MAPS": {
+            "count": 1,
+            "durationMicros": 43
+          },
+          "ClearTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "FilterNonTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_EXTERNAL_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 96
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 125
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_FILTER_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 20
+          },
+          "V8.GC_MC_SWEEP_TRUSTED_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 18
+          },
+          "V8.GC_MC_SWEEP_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_MC_SWEEP_WASM_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_JOIN_FILTER_JOB": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_WEAKNESS_HANDLING": {
+            "count": 1,
+            "durationMicros": 16
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_CLEAR_WEAK_COLLECTIONS": {
+            "count": 1,
+            "durationMicros": 9
+          },
+          "V8.GC_MC_CLEAR_JS_WEAK_REFERENCES": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_JOIN_JOB": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_SWEEP": {
+            "count": 13,
+            "durationMicros": 122
+          },
+          "V8.GC_MC_EVACUATE": {
+            "count": 2,
+            "durationMicros": 3836
+          },
+          "V8.GC_MC_EVACUATE_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 21
+          },
+          "V8.GC_MC_EVACUATE_COPY": {
+            "count": 1,
+            "durationMicros": 2299
+          },
+          "PageEvacuationJob started": {
+            "count": 11,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_EVACUATE_COPY_PARALLEL": {
+            "count": 1,
+            "durationMicros": 1584
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_COPY": {
+            "count": 4,
+            "durationMicros": 5900
+          },
+          "V8.GC_MC_BACKGROUND_SWEEPING": {
+            "count": 34,
+            "durationMicros": 6765
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS": {
+            "count": 1,
+            "durationMicros": 1504
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS": {
+            "count": 1,
+            "durationMicros": 576
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN": {
+            "count": 1,
+            "durationMicros": 685
+          },
+          "PointersUpdatingJob started": {
+            "count": 11,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL": {
+            "count": 1,
+            "durationMicros": 453
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_UPDATE_POINTERS": {
+            "count": 4,
+            "durationMicros": 1770
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_WEAK": {
+            "count": 1,
+            "durationMicros": 27
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES": {
+            "count": 1,
+            "durationMicros": 204
+          },
+          "V8.GC_MC_EVACUATE_CLEAN_UP": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_EVACUATE_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_NEW_LO": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_REBALANCE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_FINISH": {
+            "count": 1,
+            "durationMicros": 31
+          },
+          "V8.GC_MC_SWEEP_START_JOBS": {
+            "count": 9,
+            "durationMicros": 21
+          },
+          "V8.GC_MC_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_HEAP_EXTERNAL_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 1056
+          },
+          "Sweeper::ConcurrentMajorSweeper Preempted": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_HEAP_EPILOGUE_SAFEPOINT": {
+            "count": 1,
+            "durationMicros": 12
+          },
+          "V8.GC_HEAP_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_HEAP_EXTERNAL_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 6
+          },
+          "V8.GCPhantomHandleProcessingCallback": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.GC_HEAP_EXTERNAL_SECOND_PASS_CALLBACKS": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "TimerFire": {
+            "count": 1,
+            "durationMicros": 185
+          },
+          "AnimationFrame::FirstUIEvent": {
+            "count": 6,
+            "durationMicros": 0
+          },
+          "AnimationFrame": {
+            "count": 110,
+            "durationMicros": 0
+          },
+          "EventTiming": {
+            "count": 20,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Render": {
+            "count": 56,
+            "durationMicros": 0
+          },
+          "Animation": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "AnimationFrame::StyleAndLayout": {
+            "count": 56,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Script::Execute": {
+            "count": 6,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Presentation": {
+            "count": 27,
+            "durationMicros": 0
+          }
+        }
+      },
+      "cpu": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.600-pan.cpuprofile",
+        "sha256": "6ae45009aa25a985a4ae6b8a94b49781a37f59085e495f44e5b46de73190a62d"
+      }
+    },
+    {
+      "nodes": 600,
+      "action": "unchanged-refresh",
+      "beforeCamera": {
+        "zoom": 0.116851806640625,
+        "transform": "translate(178.82px, 59.6359px) scale(0.116852)"
+      },
+      "afterCamera": {
+        "zoom": 0.116851806640625,
+        "transform": "translate(178.82px, 59.6359px) scale(0.116852)"
+      },
+      "observed": {
+        "commits": 5,
+        "mutations": {
+          "worldStyle": 0,
+          "leafAttributes": 0,
+          "childList": 0
+        },
+        "elements": 18626
+      },
+      "requests": [
+        {
+          "url": "/api/universe/jspace/summaries?character=42",
+          "method": "GET"
+        },
+        {
+          "url": "/api/universe/jspace/maps/camera-600?character=42",
+          "method": "GET"
+        },
+        {
+          "url": "/api/universe?character=42",
+          "method": "GET"
+        }
+      ],
+      "trace": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.600-unchanged-refresh.trace.json",
+        "sha256": "1725f406711aab46ce2dc1257d5174d1e0c37d92ab09e6ba191e6a594afbaea3",
+        "eventCount": 1063,
+        "events": {
+          "thread_name": {
+            "count": 12,
+            "durationMicros": 0
+          },
+          "process_name": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "process_uptime_seconds": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "CpuProfiler::StartProfiling": {
+            "count": 1,
+            "durationMicros": 53512
+          },
+          "V8.GC_TIME_TO_SAFEPOINT": {
+            "count": 8,
+            "durationMicros": 17
+          },
+          "V8.GC_MC_COMPLETE_SWEEPING": {
+            "count": 2,
+            "durationMicros": 111
+          },
+          "V8.GC_MC_SWEEP": {
+            "count": 5,
+            "durationMicros": 75
+          },
+          "v8.callFunction": {
+            "count": 27,
+            "durationMicros": 170027
+          },
+          "V8.Execute": {
+            "count": 27,
+            "durationMicros": 169185
+          },
+          "TimerRemove": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "TimerInstall": {
+            "count": 1,
+            "durationMicros": 0
+          },
+          "ResourceSendRequest": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "V8.RunMicrotasks": {
+            "count": 16,
+            "durationMicros": 1273
+          },
+          "ResourceReceiveResponse": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "ResourceReceivedData": {
+            "count": 7,
+            "durationMicros": 0
+          },
+          "ResourceFinish": {
+            "count": 3,
+            "durationMicros": 0
+          },
+          "FunctionCall": {
+            "count": 25,
+            "durationMicros": 169047
+          },
+          "V8.GC_HEAP_EXTERNAL_PROLOGUE": {
+            "count": 3,
+            "durationMicros": 20
+          },
+          "MinorGC": {
+            "count": 2,
+            "durationMicros": 8445
+          },
+          "V8.GC_HEAP_PROLOGUE": {
+            "count": 3,
+            "durationMicros": 5
+          },
+          "V8.GCScavenger": {
+            "count": 2,
+            "durationMicros": 8389
+          },
+          "V8.GC_SCAVENGER": {
+            "count": 2,
+            "durationMicros": 8369
+          },
+          "V8.GC_HEAP_PROLOGUE_SAFEPOINT": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_SCAVENGER_SCAVENGE": {
+            "count": 2,
+            "durationMicros": 8325
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_IDENTIFY": {
+            "count": 2,
+            "durationMicros": 101
+          },
+          "ComputeWeaknessProcessor start": {
+            "count": 6,
+            "durationMicros": 3
+          },
+          "V8.GC_SCAVENGER_TRACED_HANDLES_COMPUTE_WEAKNESS_PARALLEL": {
+            "count": 2,
+            "durationMicros": 45
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_ROOTS": {
+            "count": 2,
+            "durationMicros": 113
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE": {
+            "count": 2,
+            "durationMicros": 7493
+          },
+          "Parallel scavenge started": {
+            "count": 36,
+            "durationMicros": 1
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_PARALLEL": {
+            "count": 3,
+            "durationMicros": 6934
+          },
+          "V8.GC_SCAVENGER_BACKGROUND_SCAVENGE_PARALLEL": {
+            "count": 14,
+            "durationMicros": 46412
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_PROCESS": {
+            "count": 2,
+            "durationMicros": 83
+          },
+          "ClearWeaknessProcessor start": {
+            "count": 6,
+            "durationMicros": 4
+          },
+          "V8.GC_SCAVENGER_TRACED_HANDLES_RESET_PARALLEL": {
+            "count": 2,
+            "durationMicros": 41
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_FINALIZE": {
+            "count": 2,
+            "durationMicros": 202
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_UPDATE_REFS": {
+            "count": 2,
+            "durationMicros": 2
+          },
+          "V8.GC_SCAVENGER_SCAVENGE_RESTORE_AND_QUARANTINE_PINNED": {
+            "count": 2,
+            "durationMicros": 35
+          },
+          "V8.GC_SCAVENGER_FREE_REMEMBERED_SET": {
+            "count": 2,
+            "durationMicros": 50
+          },
+          "V8.GC_SCAVENGER_RESIZE_NEW_SPACE": {
+            "count": 2,
+            "durationMicros": 3
+          },
+          "V8.GC_HEAP_EPILOGUE_SAFEPOINT": {
+            "count": 3,
+            "durationMicros": 22
+          },
+          "V8.GC_HEAP_EPILOGUE": {
+            "count": 3,
+            "durationMicros": 12
+          },
+          "V8.GC_HEAP_EXTERNAL_EPILOGUE": {
+            "count": 3,
+            "durationMicros": 8
+          },
+          "StyleRecalcInvalidationTracking": {
+            "count": 16,
+            "durationMicros": 0
+          },
+          "LayoutInvalidationTracking": {
+            "count": 5,
+            "durationMicros": 0
+          },
+          "UpdateLayoutTree": {
+            "count": 4,
+            "durationMicros": 562
+          },
+          "StyleResolver::ResolveStyle": {
+            "count": 4,
+            "durationMicros": 0
+          },
+          "Layout": {
+            "count": 5,
+            "durationMicros": 2471
+          },
+          "PrePaint": {
+            "count": 10,
+            "durationMicros": 819
+          },
+          "HitTest": {
+            "count": 5,
+            "durationMicros": 427
+          },
+          "Paint": {
+            "count": 10,
+            "durationMicros": 13491
+          },
+          "Layerize": {
+            "count": 5,
+            "durationMicros": 2365
+          },
+          "V8.MinorGCJob.Task": {
+            "count": 1,
+            "durationMicros": 4766
+          },
+          "V8.IncrementalMarkingJob.Task": {
+            "count": 55,
+            "durationMicros": 24996
+          },
+          "V8.GCIncrementalMarkingStart": {
+            "count": 1,
+            "durationMicros": 510
+          },
+          "V8.GC_MC_INCREMENTAL_START": {
+            "count": 3,
+            "durationMicros": 505
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 11
+          },
+          "V8.GC_MC_MARK_EMBEDDER_PROLOGUE": {
+            "count": 2,
+            "durationMicros": 326
+          },
+          "V8.GC_MC_MARK_ROOTS": {
+            "count": 3,
+            "durationMicros": 72
+          },
+          "Major concurrent marking started": {
+            "count": 11,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_BACKGROUND_MARKING": {
+            "count": 13,
+            "durationMicros": 62524
+          },
+          "V8.GC_MC_INCREMENTAL_EXTERNAL_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GCIncrementalMarking": {
+            "count": 58,
+            "durationMicros": 17246
+          },
+          "V8.GC_MC_INCREMENTAL": {
+            "count": 174,
+            "durationMicros": 17171
+          },
+          "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING": {
+            "count": 58,
+            "durationMicros": 14392
+          },
+          "Major concurrent marking rescheduled": {
+            "count": 190,
+            "durationMicros": 76
+          },
+          "MajorGC": {
+            "count": 1,
+            "durationMicros": 7082
+          },
+          "V8.GCFinalizeMC": {
+            "count": 1,
+            "durationMicros": 7036
+          },
+          "V8.GC_MARK_COMPACTOR": {
+            "count": 1,
+            "durationMicros": 7020
+          },
+          "V8.GC_MC_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 9
+          },
+          "V8.GC_MC_MARK": {
+            "count": 1,
+            "durationMicros": 412
+          },
+          "V8.GC_MC_MARK_FINISH_INCREMENTAL": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_MC_MARK_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_MARK_RETAIN_MAPS": {
+            "count": 1,
+            "durationMicros": 13
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL": {
+            "count": 1,
+            "durationMicros": 77
+          },
+          "V8.GC_MC_MARK_EMBEDDER_TRACING": {
+            "count": 4,
+            "durationMicros": 15
+          },
+          "V8.GC_MC_MARK_WEAK_CLOSURE_EPHEMERON_MARKING": {
+            "count": 4,
+            "durationMicros": 23
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL_JOIN": {
+            "count": 1,
+            "durationMicros": 8
+          },
+          "V8.GC_CONSERVATIVE_STACK_SCANNING": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_MARK_FULL_CLOSURE_SERIAL": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_CLEAR": {
+            "count": 1,
+            "durationMicros": 1482
+          },
+          "V8.GC_MC_CLEAR_STRING_FORWARDING_TABLE": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "ClearStringTableJob started": {
+            "count": 3,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 284
+          },
+          "V8.GC_MC_CLEAR_STRING_TABLE": {
+            "count": 1,
+            "durationMicros": 261
+          },
+          "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 308
+          },
+          "V8.GC_MC_CLEAR_FLUSHABLE_BYTECODE": {
+            "count": 1,
+            "durationMicros": 313
+          },
+          "V8.GC_MC_SWEEP_JS_DISPATCH_TABLE": {
+            "count": 1,
+            "durationMicros": 38
+          },
+          "V8.GC_MC_CLEAR_FLUSHED_JS_FUNCTIONS": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_CLEAR_WEAK_LISTS": {
+            "count": 1,
+            "durationMicros": 76
+          },
+          "V8.GC_MC_CLEAR_MAPS": {
+            "count": 1,
+            "durationMicros": 50
+          },
+          "ClearTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 2
+          },
+          "FilterNonTrivialWeakRefJob started": {
+            "count": 3,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_EXTERNAL_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 93
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 219
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_FILTER_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 22
+          },
+          "V8.GC_MC_SWEEP_TRUSTED_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 32
+          },
+          "V8.GC_MC_SWEEP_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 5
+          },
+          "V8.GC_MC_SWEEP_WASM_CODE_POINTER_TABLE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_JOIN_FILTER_JOB": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_WEAKNESS_HANDLING": {
+            "count": 1,
+            "durationMicros": 69
+          },
+          "V8.GC_MC_CLEAR_WEAK_REFERENCES_NON_TRIVIAL": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_CLEAR_WEAK_COLLECTIONS": {
+            "count": 1,
+            "durationMicros": 59
+          },
+          "V8.GC_MC_CLEAR_JS_WEAK_REFERENCES": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_CLEAR_JOIN_JOB": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_MC_EVACUATE": {
+            "count": 2,
+            "durationMicros": 2099
+          },
+          "V8.GC_MC_EVACUATE_PROLOGUE": {
+            "count": 1,
+            "durationMicros": 27
+          },
+          "V8.GC_MC_EVACUATE_COPY": {
+            "count": 1,
+            "durationMicros": 705
+          },
+          "PageEvacuationJob started": {
+            "count": 9,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_COPY_PARALLEL": {
+            "count": 1,
+            "durationMicros": 571
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_COPY": {
+            "count": 3,
+            "durationMicros": 1500
+          },
+          "V8.GC_MC_BACKGROUND_SWEEPING": {
+            "count": 8,
+            "durationMicros": 16735
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS": {
+            "count": 1,
+            "durationMicros": 1334
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS": {
+            "count": 1,
+            "durationMicros": 673
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_CLIENT_HEAPS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN": {
+            "count": 1,
+            "durationMicros": 418
+          },
+          "PointersUpdatingJob started": {
+            "count": 17,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL": {
+            "count": 1,
+            "durationMicros": 320
+          },
+          "V8.GC_MC_BACKGROUND_EVACUATE_UPDATE_POINTERS": {
+            "count": 7,
+            "durationMicros": 1613
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_WEAK": {
+            "count": 1,
+            "durationMicros": 28
+          },
+          "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES": {
+            "count": 1,
+            "durationMicros": 201
+          },
+          "V8.GC_MC_EVACUATE_CLEAN_UP": {
+            "count": 1,
+            "durationMicros": 3
+          },
+          "V8.GC_MC_EVACUATE_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_SWEEP_NEW_LO": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_MC_EVACUATE_REBALANCE": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "V8.GC_MC_FINISH": {
+            "count": 1,
+            "durationMicros": 35
+          },
+          "V8.GC_MC_SWEEP_START_JOBS": {
+            "count": 11,
+            "durationMicros": 24
+          },
+          "V8.GC_MC_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 1
+          },
+          "V8.GC_HEAP_EXTERNAL_WEAK_GLOBAL_HANDLES": {
+            "count": 1,
+            "durationMicros": 10
+          },
+          "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE": {
+            "count": 1,
+            "durationMicros": 596
+          },
+          "V8.GCPhantomHandleProcessingCallback": {
+            "count": 1,
+            "durationMicros": 4
+          },
+          "V8.GC_HEAP_EXTERNAL_SECOND_PASS_CALLBACKS": {
+            "count": 1,
+            "durationMicros": 2
+          },
+          "TimerFire": {
+            "count": 2,
+            "durationMicros": 684
+          },
+          "AnimationFrame": {
+            "count": 10,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Script::Execute": {
+            "count": 8,
+            "durationMicros": 0
+          },
+          "AnimationFrame::Render": {
+            "count": 10,
+            "durationMicros": 0
+          },
+          "AnimationFrame::StyleAndLayout": {
+            "count": 10,
+            "durationMicros": 0
+          }
+        }
+      },
+      "cpu": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/maps-final/scene-profile-20261007.json.600-unchanged-refresh.cpuprofile",
+        "sha256": "3658bcff6dcf02f8a0d8ef5dad361b16598ed913c89fa55ae72881b4cd84d052"
+      }
+    }
+  ],
+  "diagnostics": {},
+  "requests": [
+    {
+      "url": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "url": "/api/state?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT"
+    },
+    {
+      "url": "/api/events",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/summaries?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/summaries?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/maps/camera-100?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/summaries?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/maps/camera-100?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/summaries?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/maps/camera-600?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/summaries?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe/jspace/maps/camera-600?character=42",
+      "method": "GET"
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET"
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "complete": true,
+  "limitations": [
+    "One source-pinned instrumented profile per 100/600-node action; no cross-version acceptance claims.",
+    "Tracing changes execution and frame count; elapsed trace durations must not be used as final acceptance speedups.",
+    "Full canonical 100/600-node graphs, default scales/detail, viewport and native zoom/pan gestures remain unchanged.",
+    "This probe observes the current frontend without changing its DOM setter or reducing scene detail.",
+    "Raw trace event names/fields are retained for independent invalidation analysis."
+  ],
+  "derivation": {
+    "baseAdapterSha256": "535bbaac093e18fe5d432f03ecca300cde2a48bd87caf8ce12b67987a4362261",
+    "manifestHelperSha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+  },
+  "sourceVerified": true,
+  "cleanupComplete": true,
+  "endedAt": "2026-10-07T12:35:53.908Z"
+}

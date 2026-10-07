@@ -14,8 +14,8 @@ const source=await captureSource(repo,{expectedCommit:process.env.KAIRO_BENCH_SO
 const hash=v=>createHash('sha256').update(v).digest('hex');
 const load=p=>import(pathToFileURL(join(repo,p)));
 const [{openStore},{createCore},{catalog,allScopes},{defaultStream},{bindingProjections}]=await Promise.all(['server/store.mjs','server/core.mjs','server/modules/catalog.mjs','server/stream.mjs','server/projections.mjs'].map(load));
-const result={schema:1,mode:timed?'ordinary-timing':'untimed-counters',node:process.version,source:{commit:source.sourceCommit,fingerprint:source.fingerprint,dirty:source.dirty},harnessSha256:hash(await readFile(new URL(import.meta.url))),cases:[],controls:[],limits:['Synthetic local SQLite and immediate ESI adapter; no external service or real pilot data.','Core, projections, stream sanitization and SSE encoding/chunking are the actual production implementations.','Client sinks model consuming local SSE clients, not browser parsing/layout or TCP backpressure.','100/1000/10000 directory entries and 10/50 configured widgets are declared small/populated/stress fixtures, not claims about a typical user.','Frozen Date.now keeps no-work projection values stable; explicit freshness controls advance it separately.','Counter wrappers never run inside ordinary timing; elapsed numbers are diagnostic component costs, not end-user FPS or whole-app CPU.']};
-const actualNow=Date.now,base=actualNow();let now=base;Date.now=()=>now;
+const result={schema:1,mode:timed?'ordinary-timing':'untimed-counters',node:process.version,source:{commit:source.sourceCommit,fingerprint:source.fingerprint,dirty:source.dirty},harnessSha256:hash(await readFile(new URL(import.meta.url))),cases:[],controls:[],limits:['Synthetic local SQLite and immediate ESI adapter; no external service or real pilot data.','Core, projections, stream sanitization and SSE encoding/chunking are the actual production implementations.','Client sinks model consuming local SSE clients, not browser parsing/layout or TCP backpressure.','100/1000/10000/20000 directory entries and 10/50 configured widgets are declared small/populated/stress fixtures, not claims about a typical user.','Frozen Date.now keeps no-work projection values stable; explicit freshness controls advance it separately.','Counter wrappers never run inside ordinary timing; elapsed numbers are diagnostic component costs, not end-user FPS or whole-app CPU.']};
+const actualNow=Date.now,base=Number(process.env.KAIRO_FIXTURE_NOW)||actualNow();result.fixtureNow=base;let now=base;Date.now=()=>now;
 const iso=offset=>new Date(base+offset).toISOString(),sample=data=>({status:'ready',data,updatedAt:iso(-1000),expiresAt:iso(3600000),refreshAt:iso(3600000)});
 function sink(){const r=new EventEmitter();r.frames=[];r.bytes=0;r.writes=0;r.capture=!timed;r.write=b=>{if(r.capture)r.frames.push(b);r.bytes+=b.length;r.writes++;return true;};r.end=()=>{r.writableEnded=true;r.emit('finish');};r.destroy=()=>{r.destroyed=true;r.emit('close');};r.clear=()=>{r.frames=[];r.bytes=0;r.writes=0;};return r;}
 function counterStore(store,counts){return {...store,get(k,f){counts.settings[k]=(counts.settings[k]||0)+1;return store.get(k,f);},snapshot(id,key){counts.snapshots[id+':'+key]=(counts.snapshots[id+':'+key]||0)+1;return store.snapshot(id,key);},db:new Proxy(store.db,{get(target,key){if(key==='prepare')return sql=>{counts.sql[sql]=(counts.sql[sql]||0)+1;return target.prepare(sql);};const v=Reflect.get(target,key,target);return typeof v==='function'?v.bind(target):v;}})};}
@@ -51,7 +51,7 @@ async function fixture(namesCount,elementCount,visibility,clients,{walletOnly=fa
 function summarize(times){const values=[...times].sort((a,b)=>a-b);return {n:values.length,medianMs:values[Math.floor(values.length/2)],p95Ms:values[Math.min(values.length-1,Math.floor(values.length*.95))],maxMs:values.at(-1),sumMs:values.reduce((a,b)=>a+b,0)};}
 async function runOperation(f,operation,repetitions){const values=[],cpu=timed?process.cpuUsage():null;f.clear();for(let i=0;i<repetitions;i++){const start=timed?performance.now():0;await operation();if(timed)values.push(performance.now()-start);}return {repetitions,...(timed?{timing:summarize(values),cpu:process.cpuUsage(cpu)}:{counts:structuredClone(f.counts)}),streamBytes:f.streamClients.map(c=>c.bytes),streamWrites:f.streamClients.map(c=>c.writes),uiBytes:f.uiClients.map(c=>c.bytes),providerCalls:f.requests()};}
 try{
- for(const namesCount of [100,1000,10000])for(const elementCount of [0,10,50])for(const visibility of elementCount?['all','none']:['none'])for(const clients of [0,1,3]){
+ for(const namesCount of [100,1000,10000,20000])for(const elementCount of [0,10,50])for(const visibility of elementCount?['all','none']:['none'])for(const clients of [0,1,3]){
   const f=await fixture(namesCount,elementCount,visibility,clients);
   try{
    for(let i=0;i<5;i++)f.core.updateBindings();
@@ -63,7 +63,7 @@ try{
    result.cases.push({kind:'binding-boundaries',namesCount,elementCount,visibility,clients,updateBindings,noWorkSync,stateSha256:hash(JSON.stringify(initial.elements))});
   }finally{await f.close();}
  }
- for(const namesCount of [100,1000,10000])for(const clients of [0,1,3]){
+ for(const namesCount of [100,1000,10000,20000])for(const clients of [0,1,3]){
   const f=await fixture(namesCount,0,'none',clients,{walletOnly:true});
   try{
    const lane=await runOperation(f,()=>f.core.requestSync(42),timed?12:2);
@@ -72,7 +72,8 @@ try{
    const first=frames[0]||[];for(const frame of first){assert.deepEqual(frame.names,f.names);assert.equal(frame.snapshot.status,'ready');}
    if(clients)assert.equal(first.length,(timed?1:lane.repetitions)*4,'Wallet module emits balance, journal, transaction and order snapshots');
    for(const other of frames.slice(1))assert.deepEqual(other,first,'All UI clients receive identical names and data');
-   result.cases.push({kind:'full-name-snapshots',namesCount,clients,...lane,measuredFramesPerClient:clients?lane.repetitions*4:0,verifiedFramesPerClient:first.length,averageFrameBytes:first.length?f.uiClients[0].bytes/first.length:0,namesJsonBytes:Buffer.byteLength(JSON.stringify(f.names)),equivalentData:clients?hash(JSON.stringify(first.map(({names,...frame})=>frame))):null});
+   const normalized=first.map(({names,...frame})=>({...frame,snapshot:{...frame.snapshot,dataRevision:frame.snapshot.dataRevision?.split(':').slice(1).join(':')}}));
+   result.cases.push({kind:'full-name-snapshots',namesCount,clients,...lane,measuredFramesPerClient:clients?lane.repetitions*4:0,verifiedFramesPerClient:first.length,averageFrameBytes:first.length?f.uiClients[0].bytes/first.length:0,namesJsonBytes:Buffer.byteLength(JSON.stringify(f.names)),equivalentData:clients?hash(JSON.stringify(normalized)):null,semanticHashNormalization:'Only the per-process random epoch prefix of snapshot dataRevision is removed; revision counters and all data/metadata remain.'});
   }finally{await f.close();}
  }
  const f=await fixture(1000,50,'all',1);
@@ -80,6 +81,7 @@ try{
   f.clear();const before=f.core.stream.state();f.store.saveSnapshot(42,'wallet',{...sample(1),expiresAt:new Date(now).toISOString()});f.core.updateBindings();
   assert.equal(f.core.stream.state().elements.find(e=>e.id==='widget-0').bindingStatus,'unavailable');result.controls.push('Exact-expiry wallet transitions to unavailable through Core updateBindings');
   f.store.saveSnapshot(42,'wallet',sample(54321));f.core.updateBindings();assert.equal(f.core.stream.state().elements.find(e=>e.id==='widget-0').text,'54,321 ISK');result.controls.push('Fresh changed wallet publishes immediately through Core updateBindings');
+  f.core.rememberNames({100000:'Updated hull name'});f.core.updateBindings();assert.equal(f.core.stream.state().elements.find(e=>e.id==='widget-1').text,'Updated hull name');result.controls.push('Core-owned name updates are reflected in the next projection');
   const reconnect=sink();reconnect.capture=true;f.core.stream.connect(reconnect);const fresh=JSON.parse(Buffer.concat(reconnect.frames).toString().split('data: ')[1]);assert.equal(fresh.elements.find(e=>e.id==='widget-0').text,'54,321 ISK');result.controls.push('New stream client immediately receives current binding state');
   f.core.stream.setOPSEC({state:'blue-space',hidden:false});f.clear();f.core.stream.setOPSEC({state:'unknown',hidden:true});assert.ok(f.streamClients[0].bytes>0);assert.equal(f.core.stream.state().opsec.hidden,true);result.controls.push('Protection changes publish immediately and independently from binding changes');
   const hidden=f.core.stream.config();hidden.elements=hidden.elements.map(e=>({...e,visible:false}));f.core.stream.save(hidden,bindingProjections(f.store,f.auth,hidden.elements));f.core.updateBindings();assert.equal(f.core.stream.state().elements.length,0);

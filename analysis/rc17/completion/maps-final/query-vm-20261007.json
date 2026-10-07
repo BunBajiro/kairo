@@ -1,0 +1,497 @@
+{
+  "schemaVersion": 1,
+  "complete": true,
+  "diagnosticOnly": true,
+  "sqliteVersion": "3.53.1",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "sources": [
+    {
+      "commit": "fa6e852b76089b51cd552fa202de85ad6948b0ec",
+      "fingerprint": "39b0f3e5bb815d4455dada3db3f891b90393159c2674d1ac572aebb199cc34a6",
+      "file": "/workspace/scratch/a2f3334402fc/kairo-rc17-idle/server/universe.mjs",
+      "sha256": "caa2e590f265f910c883f3e8ebea829bf1d321465b4fa6c6799bdec3bd5ec561",
+      "schema": "CREATE TABLE IF NOT EXISTS universe_records(\n        character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,\n        PRIMARY KEY(character_id,kind,id));\n        CREATE INDEX IF NOT EXISTS idx_universe_records_character_kind ON universe_records(character_id,kind,updated_at DESC);\n        CREATE INDEX IF NOT EXISTS idx_universe_links_scope ON universe_records(character_id,COALESCE(json_extract(body,'$.map_id'),''),updated_at DESC,id) WHERE kind='link';",
+      "queries": {
+        "nextWormholeExpiry": "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1",
+        "expiredWormholes": "SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))",
+        "expiredPilotWormholes": "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))"
+      }
+    },
+    {
+      "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+      "file": "/workspace/scratch/a2f3334402fc/kairo-maps-c954-frozen/server/universe.mjs",
+      "sha256": "81732780f6d7af9e0b8e61b1b1fbdf6c28d59312239cdf0c475a7a6fe8f1d732",
+      "schema": "CREATE TABLE IF NOT EXISTS universe_records(\n        character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,\n        PRIMARY KEY(character_id,kind,id));\n        CREATE INDEX IF NOT EXISTS idx_universe_records_character_kind ON universe_records(character_id,kind,updated_at DESC);\n        CREATE INDEX IF NOT EXISTS idx_universe_links_scope ON universe_records(character_id,COALESCE(json_extract(body,'$.map_id'),''),updated_at DESC,id) WHERE kind='link';\n        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_expiry ON universe_records(julianday(json_extract(body,'$.expires_at')),character_id) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL;\n        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_pilot_expiry ON universe_records(character_id,julianday(json_extract(body,'$.expires_at'))) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole';\n        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_collapsed ON universe_records(character_id) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed';",
+      "queries": {
+        "nextWormholeExpiry": "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1",
+        "expiredWormholes": "SELECT character_id,body FROM universe_records INDEXED BY idx_universe_wormholes_collapsed WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed' UNION ALL SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at'))<=julianday(?) AND json_extract(body,'$.life_status') IS NOT 'collapsed'",
+        "expiredPilotWormholes": "SELECT character_id,body FROM universe_records INDEXED BY idx_universe_wormholes_collapsed WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed' UNION ALL SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at'))<=julianday(?) AND json_extract(body,'$.life_status') IS NOT 'collapsed'"
+      }
+    }
+  ],
+  "fixtures": [
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "58f8075261bcc19b7ba01dc315960e83b90d6d2dbf88d1bfb6d2d9eead39d765",
+      "sources": [
+        {
+          "nextWormholeExpiry": {
+            "vmSteps": 6420,
+            "rows": 1,
+            "result": [
+              [
+                "2026-09-25T19:00:00.000Z"
+              ]
+            ],
+            "plan": [
+              [
+                5,
+                0,
+                215,
+                "SCAN universe_records USING INDEX idx_universe_links_scope"
+              ],
+              [
+                28,
+                0,
+                0,
+                "USE TEMP B-TREE FOR ORDER BY"
+              ]
+            ]
+          },
+          "expiredWormholes": {
+            "vmSteps": 5214,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                3,
+                0,
+                215,
+                "SCAN universe_records USING INDEX idx_universe_links_scope"
+              ]
+            ]
+          },
+          "expiredPilotWormholes": {
+            "vmSteps": 1418,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                3,
+                0,
+                61,
+                "SEARCH universe_records USING INDEX idx_universe_records_character_kind (character_id=? AND kind=?)"
+              ]
+            ]
+          }
+        },
+        {
+          "nextWormholeExpiry": {
+            "vmSteps": 15,
+            "rows": 1,
+            "result": [
+              [
+                "2026-09-25T19:00:00.000Z"
+              ]
+            ],
+            "plan": [
+              [
+                5,
+                0,
+                213,
+                "SCAN universe_records USING INDEX idx_universe_wormholes_expiry"
+              ]
+            ]
+          },
+          "expiredWormholes": {
+            "vmSteps": 19,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                1,
+                0,
+                0,
+                "COMPOUND QUERY"
+              ],
+              [
+                2,
+                1,
+                0,
+                "LEFT-MOST SUBQUERY"
+              ],
+              [
+                5,
+                2,
+                212,
+                "SCAN universe_records USING INDEX idx_universe_wormholes_collapsed"
+              ],
+              [
+                12,
+                1,
+                0,
+                "UNION ALL"
+              ],
+              [
+                15,
+                12,
+                193,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_expiry (<expr><?)"
+              ]
+            ]
+          },
+          "expiredPilotWormholes": {
+            "vmSteps": 25,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                1,
+                0,
+                0,
+                "COMPOUND QUERY"
+              ],
+              [
+                2,
+                1,
+                0,
+                "LEFT-MOST SUBQUERY"
+              ],
+              [
+                5,
+                2,
+                60,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_collapsed (character_id=?)"
+              ],
+              [
+                16,
+                1,
+                0,
+                "UNION ALL"
+              ],
+              [
+                19,
+                16,
+                49,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_pilot_expiry (character_id=? AND <expr><?)"
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "309a2e73a4da03aa4b2e7023c7be5e8ddf6b4254a20d1e163ab3c59c0687e8fa",
+      "sources": [
+        {
+          "nextWormholeExpiry": {
+            "vmSteps": 51220,
+            "rows": 1,
+            "result": [
+              [
+                "2026-09-25T19:00:00.000Z"
+              ]
+            ],
+            "plan": [
+              [
+                5,
+                0,
+                215,
+                "SCAN universe_records USING INDEX idx_universe_links_scope"
+              ],
+              [
+                28,
+                0,
+                0,
+                "USE TEMP B-TREE FOR ORDER BY"
+              ]
+            ]
+          },
+          "expiredWormholes": {
+            "vmSteps": 41614,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                3,
+                0,
+                215,
+                "SCAN universe_records USING INDEX idx_universe_links_scope"
+              ]
+            ]
+          },
+          "expiredPilotWormholes": {
+            "vmSteps": 11218,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                3,
+                0,
+                61,
+                "SEARCH universe_records USING INDEX idx_universe_records_character_kind (character_id=? AND kind=?)"
+              ]
+            ]
+          }
+        },
+        {
+          "nextWormholeExpiry": {
+            "vmSteps": 15,
+            "rows": 1,
+            "result": [
+              [
+                "2026-09-25T19:00:00.000Z"
+              ]
+            ],
+            "plan": [
+              [
+                5,
+                0,
+                213,
+                "SCAN universe_records USING INDEX idx_universe_wormholes_expiry"
+              ]
+            ]
+          },
+          "expiredWormholes": {
+            "vmSteps": 19,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                1,
+                0,
+                0,
+                "COMPOUND QUERY"
+              ],
+              [
+                2,
+                1,
+                0,
+                "LEFT-MOST SUBQUERY"
+              ],
+              [
+                5,
+                2,
+                212,
+                "SCAN universe_records USING INDEX idx_universe_wormholes_collapsed"
+              ],
+              [
+                12,
+                1,
+                0,
+                "UNION ALL"
+              ],
+              [
+                15,
+                12,
+                193,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_expiry (<expr><?)"
+              ]
+            ]
+          },
+          "expiredPilotWormholes": {
+            "vmSteps": 25,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                1,
+                0,
+                0,
+                "COMPOUND QUERY"
+              ],
+              [
+                2,
+                1,
+                0,
+                "LEFT-MOST SUBQUERY"
+              ],
+              [
+                5,
+                2,
+                60,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_collapsed (character_id=?)"
+              ],
+              [
+                16,
+                1,
+                0,
+                "UNION ALL"
+              ],
+              [
+                19,
+                16,
+                49,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_pilot_expiry (character_id=? AND <expr><?)"
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "62fc2d50cfa8380d71539bbae5434e17994b71c6c948f82ce1841e7f8e1f8527",
+      "sources": [
+        {
+          "nextWormholeExpiry": {
+            "vmSteps": 153620,
+            "rows": 1,
+            "result": [
+              [
+                "2026-09-25T19:00:00.000Z"
+              ]
+            ],
+            "plan": [
+              [
+                5,
+                0,
+                215,
+                "SCAN universe_records USING INDEX idx_universe_links_scope"
+              ],
+              [
+                28,
+                0,
+                0,
+                "USE TEMP B-TREE FOR ORDER BY"
+              ]
+            ]
+          },
+          "expiredWormholes": {
+            "vmSteps": 124814,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                3,
+                0,
+                215,
+                "SCAN universe_records USING INDEX idx_universe_links_scope"
+              ]
+            ]
+          },
+          "expiredPilotWormholes": {
+            "vmSteps": 33618,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                3,
+                0,
+                61,
+                "SEARCH universe_records USING INDEX idx_universe_records_character_kind (character_id=? AND kind=?)"
+              ]
+            ]
+          }
+        },
+        {
+          "nextWormholeExpiry": {
+            "vmSteps": 15,
+            "rows": 1,
+            "result": [
+              [
+                "2026-09-25T19:00:00.000Z"
+              ]
+            ],
+            "plan": [
+              [
+                5,
+                0,
+                213,
+                "SCAN universe_records USING INDEX idx_universe_wormholes_expiry"
+              ]
+            ]
+          },
+          "expiredWormholes": {
+            "vmSteps": 19,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                1,
+                0,
+                0,
+                "COMPOUND QUERY"
+              ],
+              [
+                2,
+                1,
+                0,
+                "LEFT-MOST SUBQUERY"
+              ],
+              [
+                5,
+                2,
+                212,
+                "SCAN universe_records USING INDEX idx_universe_wormholes_collapsed"
+              ],
+              [
+                12,
+                1,
+                0,
+                "UNION ALL"
+              ],
+              [
+                15,
+                12,
+                193,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_expiry (<expr><?)"
+              ]
+            ]
+          },
+          "expiredPilotWormholes": {
+            "vmSteps": 25,
+            "rows": 0,
+            "result": [],
+            "plan": [
+              [
+                1,
+                0,
+                0,
+                "COMPOUND QUERY"
+              ],
+              [
+                2,
+                1,
+                0,
+                "LEFT-MOST SUBQUERY"
+              ],
+              [
+                5,
+                2,
+                60,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_collapsed (character_id=?)"
+              ],
+              [
+                16,
+                1,
+                0,
+                "UNION ALL"
+              ],
+              [
+                19,
+                16,
+                49,
+                "SEARCH universe_records USING INDEX idx_universe_wormholes_pilot_expiry (character_id=? AND <expr><?)"
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "SQLite progress callback every virtual-machine opcode counts VM steps, not visited B-tree rows.",
+    "Python system SQLite version is recorded; this is a separate plan-work diagnostic, not the Node SQLite runtime or acceptance latency.",
+    "All links are live; mixed expired/collapsed/timezone identity is tested separately in expiry-plans diagnostic."
+  ],
+  "harnessSha256": "57905ede70721c3c91ee4e206e6bd0604acf053f7411aa6b16c3cf3f3e74f82e"
+}

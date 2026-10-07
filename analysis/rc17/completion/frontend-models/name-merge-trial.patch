@@ -1,0 +1,76 @@
+diff --git a/components/kairo/dashboard.tsx b/components/kairo/dashboard.tsx
+index 03769e4..b74d543 100644
+--- a/components/kairo/dashboard.tsx
++++ b/components/kairo/dashboard.tsx
+@@ -11,7 +11,7 @@ import { routes, api, type Bootstrap, type ModuleState } from './model';
+ import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
+ import { Kairo } from './context';
+ import {createScopedRefresh} from './scoped-refresh.mjs';
+-import {retainValue, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
++import {retainValue, mergeResourceNames, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
+ import { Choice, Panel, DataTable } from './ui';
+ import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
+ import { Connections, Modules } from './connections';
+@@ -190,7 +190,7 @@ export default function Dashboard() {
+             if (changeAffectsPilot(r, charRef.current)) {
+                 snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1; ancillaryEvents.current.names++;
+                 setData(previous => {const value = retainSnapshot(previous[r.key], r.snapshot); return value === previous[r.key] ? previous : {...previous,[r.key]:value};});
+-                setNames((previous: any) => retainValue(previous, {...previous,...r.names}));
++                setNames((previous: any) => mergeResourceNames(previous, r.names));
+                 if (goalSourceKeys.includes(r.key)) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:r.characterId,resources:['goalSources'],key:r.key}}));
+             }
+         });
+diff --git a/components/kairo/resource-state.d.mts b/components/kairo/resource-state.d.mts
+index 65abdc6..43d8a5e 100644
+--- a/components/kairo/resource-state.d.mts
++++ b/components/kairo/resource-state.d.mts
+@@ -1,6 +1,7 @@
+ export const goalSourceKeys: string[];
+ export function sameValue(left: any, right: any): boolean;
+ export function retainValue<T>(previous: T, next: T): T;
++export function mergeResourceNames(previous: Record<string, string>, incoming?: Record<string, string> | null): Record<string, string>;
+ export function retainSnapshot<T>(previous: T, next: T): T;
+ export function retainSnapshots<T extends Record<string, any>>(previous: T, next: T): T;
+ export function changeAffectsPilot(detail: any, characterId: number): boolean;
+diff --git a/components/kairo/resource-state.mjs b/components/kairo/resource-state.mjs
+index a5f8d8f..a2bbbbc 100644
+--- a/components/kairo/resource-state.mjs
++++ b/components/kairo/resource-state.mjs
+@@ -9,6 +9,16 @@ export function sameValue(left, right) {
+     return keys.length === Object.keys(right).length && keys.every(key => Object.hasOwn(right, key) && sameValue(left[key], right[key]));
+ }
+ export function retainValue(previous, next) { return sameValue(previous, next) ? previous : next; }
++// Snapshot name payloads merge into a flat ID -> string map. Unchanged full
++// maps need no copy and no recursive equality traversal; partial maps retain
++// names omitted from that event. Copy only when an own key/value changes.
++export function mergeResourceNames(previous, incoming) {
++    if (!incoming) return previous;
++    for (const key of Object.keys(incoming)) {
++        if (!Object.hasOwn(previous, key) || !Object.is(previous[key], incoming[key])) return {...previous, ...incoming};
++    }
++    return previous;
++}
+ export function retainSnapshot(previous, next) {
+     if (!previous || !next) return next;
+     const data = next.dataRevision !== undefined && next.dataRevision === previous.dataRevision ? previous.data : next.data;
+diff --git a/tests/kairo/resource-state.test.mjs b/tests/kairo/resource-state.test.mjs
+index 0468692..f75e591 100644
+--- a/tests/kairo/resource-state.test.mjs
++++ b/tests/kairo/resource-state.test.mjs
+@@ -53,3 +53,16 @@ test('resource versions isolate pilots, preserve global invalidation and reject
+     assert.deepEqual(eventResources({type:'note.created'}),['activity','notes']);
+     assert.deepEqual(eventResources({type:'session.ended'}),['activity','sessions']);
+ });
++
++
++test('snapshot name merges retain unchanged full/partial maps and copy changed names without dropping unrelated IDs', async () => {
++    const {mergeResourceNames} = await import('../../components/kairo/resource-state.mjs');
++    const before = Object.freeze({'0':'Zero','42':'Pilot','99':'Station'});
++    for (const incoming of [undefined,null,{}, {...before}, {'42':'Pilot'}]) assert.equal(mergeResourceNames(before,incoming),before);
++    const next = mergeResourceNames(before, Object.freeze({'42':'Renamed','100':'New'}));
++    assert.notEqual(next,before);assert.deepEqual(next,{'0':'Zero','42':'Renamed','99':'Station','100':'New'});assert.equal(before['42'],'Pilot');
++    const absentUndefined = mergeResourceNames(before, {'new':undefined});
++    assert.ok(Object.hasOwn(absentUndefined,'new'));assert.notEqual(absentUndefined,before);
++    const special = mergeResourceNames(before, JSON.parse('{"__proto__":"Name","constructor":"Constructor name"}'));
++    assert.equal(Object.getPrototypeOf(special),Object.prototype);assert.ok(Object.hasOwn(special,'__proto__'));assert.equal(special.__proto__,'Name');
++});

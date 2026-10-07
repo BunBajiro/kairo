@@ -1,0 +1,72 @@
+diff --git a/server/universe-jspace.mjs b/server/universe-jspace.mjs
+index 3ef00f2..1793336 100644
+--- a/server/universe-jspace.mjs
++++ b/server/universe-jspace.mjs
+@@ -215,6 +215,14 @@ export function createUniverseJSpace(store, auth, options) {
+     // Only systems have an archive. A departed connection has no notes, passages,
+     // activity entries or undo snapshot that can bring it back.
+     function forgetMapConnections(map, removed, canonical = null) {
++        // Common reads only need topology/reference checks. Avoid serializing all
++        // notes and passages twice when reconciliation cannot change the map.
++        if (!removed.length && !own(map, 'archived_connections') && map.connections.every(edge =>
++            !own(edge, 'locked') && (!canonical || edge.kind === 'gate' || canonical.has(edge.link_id)))) {
++            const present = new Set(map.connections.map(edge => edge.id));
++            if (map.passages.every(row => present.has(row.connection_id)) && map.comments.every(row => !row.connection_id || present.has(row.connection_id)) &&
++                Array.isArray(map.activity) && !map.activity.some(row => /^(connection|passage)\./.test(row.op))) return false;
++        }
+         const before = JSON.stringify(map), ended = new Map(removed.map(link => [link.id, link.ended_at || link.expires_at || iso()]));
+         const dead = map.connections.filter(edge => ended.has(edge.link_id) || canonical && edge.kind !== 'gate' && !canonical.has(edge.link_id));
+         markDetached(map, dead, ended);
+diff --git a/tests/kairo/universe-jspace-reads.test.mjs b/tests/kairo/universe-jspace-reads.test.mjs
+index 91e0d2c..0f95bb7 100644
+--- a/tests/kairo/universe-jspace-reads.test.mjs
++++ b/tests/kairo/universe-jspace-reads.test.mjs
+@@ -177,3 +177,48 @@ test('library search retains shared result semantics and keeps sources and other
+     assert.throws(() => f.api.search(42, { q: 'x'.repeat(241) }), /too long/);
+     assert.throws(() => f.service.jspaceDestinations(42, { map_id: 'tracking-source-42', originId: W, category: 'highsec' }), /private chain map/);
+ });
++
++test('unchanged map reads preserve stored notes, passage references, revision and database writes', async t => {
++    const f = await fixture(t), map = f.create('Retained map');
++    f.api.summaries(42);
++    const row = () => f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(map.id).body;
++    const before = row(), revision = JSON.parse(before).revision;
++    const changes = Number(f.store.db.prepare('SELECT total_changes() value').get().value);
++    const first = f.api.map(42, map.id), summary = f.api.summaries(42), full = f.api.state(42);
++    assert.equal(row(), before);
++    assert.equal(Number(f.store.db.prepare('SELECT total_changes() value').get().value), changes);
++    assert.equal(first.revision, revision);
++    assert.deepEqual(full.maps.find(value => value.id === map.id), first);
++    assert.equal(summary.maps.find(value => value.id === map.id).revision, revision);
++    assert.equal(first.comments.length, 2);
++});
++
++for (const legacy of ['locked false', 'empty archive', 'missing activity', 'stale references', 'connection activity']) {
++    test('summary reconciliation still normalizes ' + legacy, async t => {
++        const f = await fixture(t), map = f.create('Legacy map');
++        f.api.summaries(42);
++        const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(map.id).body);
++        const raw = get();
++        if (legacy === 'locked false') raw.connections[0].locked = false;
++        if (legacy === 'empty archive') raw.archived_connections = [];
++        if (legacy === 'missing activity') delete raw.activity;
++        if (legacy === 'stale references') {
++            raw.passages.push({ id: 'missing-edge-passage', connection_id: 'missing-edge' });
++            raw.comments.push({ id: 'missing-edge-comment', connection_id: 'missing-edge', body: 'stale' });
++        }
++        if (legacy === 'connection activity') raw.activity.push({ id: 'legacy-activity', op: 'connection.save', summary: 'legacy' });
++        f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(raw), map.id);
++        const changes = Number(f.store.db.prepare('SELECT total_changes() value').get().value);
++        const summary = f.api.summaries(42), normalized = get();
++        assert.ok(Number(f.store.db.prepare('SELECT total_changes() value').get().value) > changes, 'Normalization persists before publishing summary');
++        assert.equal(normalized.revision, raw.revision, 'Legacy cleanup retains its existing revision contract');
++        assert.equal(summary.maps.find(value => value.id === map.id).revision, raw.revision);
++        assert.ok(normalized.connections.every(edge => !Object.hasOwn(edge, 'locked')));
++        assert.equal(Object.hasOwn(normalized, 'archived_connections'), false);
++        assert.ok(Array.isArray(normalized.activity));
++        assert.ok(normalized.activity.every(row => !/^(connection|passage)\./.test(row.op)));
++        assert.ok(normalized.passages.every(row => normalized.connections.some(edge => edge.id === row.connection_id)));
++        assert.ok(normalized.comments.every(row => !row.connection_id || normalized.connections.some(edge => edge.id === row.connection_id)));
++        assert.equal(normalized.comments.filter(row => !row.connection_id).length, 1, 'System notes survive cleanup');
++    });
++}

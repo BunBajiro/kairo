@@ -1,5 +1,7 @@
 # RC17 work checkpoint — 7 October 2026
 
+**Current instruction:** use [c954 / test build #54](c954-resumption/README.md), excluding parallel-process build #55 / 508. Later paragraphs are historical checkpoints; current-source status is in the linked resumption trace.
+
 **Internal work in progress. Optimisation is incomplete; PR #10 remains withdrawn and in draft.** This checkpoint banks the work following the [a27 source audit](TRACEABILITY.md). It does not prepare a clean RC17 or authorize a merge/release.
 
 ## Saved source and verification

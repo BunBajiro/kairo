@@ -1,5 +1,7 @@
 # Conditional Goals and enrichment decisions
 
+> Updated after resumed work: the bounded enrichment comparison is now complete; see [the measured adoption decision](ENRICHMENT-RESULTS-20261007.md). The earlier pending descriptions below are retained as the prepared-trial record. Goals retained-ledger measurements remain in progress.
+
 7 October 2026. Source-count diagnostics passed; no timed runs or production changes were made for these two conditional findings. They remain open pending matched measurements and an explicit accept-or-reject decision. Each JSON pins actual source file hashes, harness hash and Node version; final source commit must be supplied by the coordinator when running frozen lanes.
 
 ## Retained Goals credit total

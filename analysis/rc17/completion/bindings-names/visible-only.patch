@@ -1,0 +1,6 @@
+diff --git a/server/core.mjs b/server/core.mjs
+--- a/server/core.mjs
++++ b/server/core.mjs
+@@ -342,1 +342,1 @@
+-    function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements));}
++    function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements.filter(element=>element.visible)));}

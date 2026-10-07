@@ -1,0 +1,983 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T12:33:01.977Z",
+  "complete": true,
+  "sources": [
+    {
+      "sourceCommit": "fa6e852b76089b51cd552fa202de85ad6948b0ec",
+      "sourceFingerprint": "39b0f3e5bb815d4455dada3db3f891b90393159c2674d1ac572aebb199cc34a6",
+      "sourceSha256": "caa2e590f265f910c883f3e8ebea829bf1d321465b4fa6c6799bdec3bd5ec561",
+      "schema": "CREATE TABLE IF NOT EXISTS universe_records(\n        character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,\n        PRIMARY KEY(character_id,kind,id));\n        CREATE INDEX IF NOT EXISTS idx_universe_records_character_kind ON universe_records(character_id,kind,updated_at DESC);\n        CREATE INDEX IF NOT EXISTS idx_universe_links_scope ON universe_records(character_id,COALESCE(json_extract(body,'$.map_id'),''),updated_at DESC,id) WHERE kind='link';",
+      "queries": {
+        "nextWormholeExpiry": "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1",
+        "expiredWormholes": "SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))",
+        "expiredPilotWormholes": "SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND (json_extract(body,'$.life_status')='collapsed' OR julianday(json_extract(body,'$.expires_at'))<=julianday(?))"
+      },
+      "write": "INSERT INTO universe_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at"
+    },
+    {
+      "sourceCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "sourceFingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+      "sourceSha256": "81732780f6d7af9e0b8e61b1b1fbdf6c28d59312239cdf0c475a7a6fe8f1d732",
+      "schema": "CREATE TABLE IF NOT EXISTS universe_records(\n        character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,\n        PRIMARY KEY(character_id,kind,id));\n        CREATE INDEX IF NOT EXISTS idx_universe_records_character_kind ON universe_records(character_id,kind,updated_at DESC);\n        CREATE INDEX IF NOT EXISTS idx_universe_links_scope ON universe_records(character_id,COALESCE(json_extract(body,'$.map_id'),''),updated_at DESC,id) WHERE kind='link';\n        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_expiry ON universe_records(julianday(json_extract(body,'$.expires_at')),character_id) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL;\n        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_pilot_expiry ON universe_records(character_id,julianday(json_extract(body,'$.expires_at'))) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole';\n        CREATE INDEX IF NOT EXISTS idx_universe_wormholes_collapsed ON universe_records(character_id) WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed';",
+      "queries": {
+        "nextWormholeExpiry": "SELECT json_extract(body,'$.expires_at') expires_at FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at')) IS NOT NULL ORDER BY julianday(json_extract(body,'$.expires_at')) LIMIT 1",
+        "expiredWormholes": "SELECT character_id,body FROM universe_records INDEXED BY idx_universe_wormholes_collapsed WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed' UNION ALL SELECT character_id,body FROM universe_records WHERE kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at'))<=julianday(?) AND json_extract(body,'$.life_status') IS NOT 'collapsed'",
+        "expiredPilotWormholes": "SELECT character_id,body FROM universe_records INDEXED BY idx_universe_wormholes_collapsed WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND json_extract(body,'$.life_status')='collapsed' UNION ALL SELECT character_id,body FROM universe_records WHERE character_id=? AND kind='link' AND json_extract(body,'$.kind')='wormhole' AND julianday(json_extract(body,'$.expires_at'))<=julianday(?) AND json_extract(body,'$.life_status') IS NOT 'collapsed'"
+      },
+      "write": "INSERT INTO universe_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at"
+    }
+  ],
+  "harnessSha256": "0b779cb44e7890d81a2d93dc6f14606c80eaf6d204234d694b5c91ad9fef9c4d",
+  "environment": {
+    "node": "v24.19.0",
+    "sqlite": "3.53.3",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "method": "Three ABBA blocks per size; fresh WAL database per observation, same before-schema and live canonical rows; separately time upgrade, 400 canonical UPSERTs, and 400 UPSERT-plus-next-expiry queries. Three warmup updates precede write samples; serialization inputs are prepared before timing. No external IO.",
+  "limitations": [
+    "Synthetic expression-index isolation, not complete Universe service write or app startup latency.",
+    "Upgrade is one-time existing-database construction; full app startup lane retains its separate timing.",
+    "Database bytes include live schema/index page_count; WAL bytes/checkpoint policy and real user distributions can differ."
+  ],
+  "samples": [
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 0,
+      "kind": "baseline",
+      "beforeBytes": 200704,
+      "afterBytes": 200704,
+      "upgradeMs": 0.08522800000002917,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.7010310000000004,
+          "perWriteMs": 0.004252577500000001
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 134.19131899999996,
+          "perWriteMs": 0.3354782974999999
+        }
+      ],
+      "finalBytes": 200704
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 0,
+      "kind": "candidate",
+      "beforeBytes": 200704,
+      "afterBytes": 229376,
+      "upgradeMs": 1.0356800000000135,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.100248000000022,
+          "perWriteMs": 0.007750620000000054
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.541572999999971,
+          "perWriteMs": 0.008853932499999929
+        }
+      ],
+      "finalBytes": 229376
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 0,
+      "kind": "candidate",
+      "beforeBytes": 200704,
+      "afterBytes": 229376,
+      "upgradeMs": 1.0351080000000366,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.1108150000000023,
+          "perWriteMs": 0.0077770375000000055
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.696717000000035,
+          "perWriteMs": 0.009241792500000089
+        }
+      ],
+      "finalBytes": 229376
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 0,
+      "kind": "baseline",
+      "beforeBytes": 200704,
+      "afterBytes": 200704,
+      "upgradeMs": 0.016534999999976208,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.5529279999999517,
+          "perWriteMs": 0.0038823199999998793
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 126.24317100000007,
+          "perWriteMs": 0.31560792750000016
+        }
+      ],
+      "finalBytes": 200704
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 1,
+      "kind": "baseline",
+      "beforeBytes": 200704,
+      "afterBytes": 200704,
+      "upgradeMs": 0.01948000000004413,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.4399879999999712,
+          "perWriteMs": 0.003599969999999928
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 129.12802499999998,
+          "perWriteMs": 0.32282006249999995
+        }
+      ],
+      "finalBytes": 200704
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 1,
+      "kind": "candidate",
+      "beforeBytes": 200704,
+      "afterBytes": 229376,
+      "upgradeMs": 0.9763500000000249,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 2.8673479999999927,
+          "perWriteMs": 0.007168369999999982
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.5260500000000548,
+          "perWriteMs": 0.008815125000000137
+        }
+      ],
+      "finalBytes": 229376
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 1,
+      "kind": "candidate",
+      "beforeBytes": 200704,
+      "afterBytes": 229376,
+      "upgradeMs": 0.9337759999999662,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.238456000000042,
+          "perWriteMs": 0.008096140000000106
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.0895080000000235,
+          "perWriteMs": 0.010223770000000059
+        }
+      ],
+      "finalBytes": 229376
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 1,
+      "kind": "baseline",
+      "beforeBytes": 200704,
+      "afterBytes": 200704,
+      "upgradeMs": 0.014652000000069165,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.4202679999999646,
+          "perWriteMs": 0.0035506699999999112
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 125.70772499999998,
+          "perWriteMs": 0.31426931249999995
+        }
+      ],
+      "finalBytes": 200704
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 2,
+      "kind": "baseline",
+      "beforeBytes": 200704,
+      "afterBytes": 200704,
+      "upgradeMs": 0.014231999999992695,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.4476789999999937,
+          "perWriteMs": 0.0036191974999999843
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 130.30013899999994,
+          "perWriteMs": 0.32575034749999987
+        }
+      ],
+      "finalBytes": 200704
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 2,
+      "kind": "candidate",
+      "beforeBytes": 200704,
+      "afterBytes": 229376,
+      "upgradeMs": 0.9343670000000657,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 2.932215000000042,
+          "perWriteMs": 0.007330537500000105
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.469284000000016,
+          "perWriteMs": 0.00867321000000004
+        }
+      ],
+      "finalBytes": 229376
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 2,
+      "kind": "candidate",
+      "beforeBytes": 200704,
+      "afterBytes": 229376,
+      "upgradeMs": 0.9743570000000545,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 2.732014000000163,
+          "perWriteMs": 0.006830035000000408
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.7751610000000255,
+          "perWriteMs": 0.011937902500000064
+        }
+      ],
+      "finalBytes": 229376
+    },
+    {
+      "mapsPerPilot": 1,
+      "pilots": 4,
+      "rows": 400,
+      "inputSha256": "3500cc631e5077bfbf7c93c5f3fdcad7ecda18ac145a126e8cc625d4a022c1dd",
+      "block": 2,
+      "kind": "baseline",
+      "beforeBytes": 200704,
+      "afterBytes": 200704,
+      "upgradeMs": 0.016485000000102445,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.3903129999998782,
+          "perWriteMs": 0.0034757824999996955
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 126.726539,
+          "perWriteMs": 0.3168163475
+        }
+      ],
+      "finalBytes": 200704
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 0,
+      "kind": "baseline",
+      "beforeBytes": 1462272,
+      "afterBytes": 1462272,
+      "upgradeMs": 0.02126300000008996,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.559829000000036,
+          "perWriteMs": 0.0038995725000000904
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 1013.3937740000001,
+          "perWriteMs": 2.533484435
+        }
+      ],
+      "finalBytes": 1462272
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 0,
+      "kind": "candidate",
+      "beforeBytes": 1462272,
+      "afterBytes": 1597440,
+      "upgradeMs": 7.0108869999999115,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 4.73428899999999,
+          "perWriteMs": 0.011835722499999974
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.626437000000351,
+          "perWriteMs": 0.011566092500000878
+        }
+      ],
+      "finalBytes": 1609728
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 0,
+      "kind": "candidate",
+      "beforeBytes": 1462272,
+      "afterBytes": 1597440,
+      "upgradeMs": 7.315955999999915,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.506930999999895,
+          "perWriteMs": 0.008767327499999738
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.604297000000315,
+          "perWriteMs": 0.009010742500000788
+        }
+      ],
+      "finalBytes": 1609728
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 0,
+      "kind": "baseline",
+      "beforeBytes": 1462272,
+      "afterBytes": 1462272,
+      "upgradeMs": 0.021783000000141328,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.552787999999964,
+          "perWriteMs": 0.00388196999999991
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 1036.3991259999998,
+          "perWriteMs": 2.5909978149999997
+        }
+      ],
+      "finalBytes": 1462272
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 1,
+      "kind": "baseline",
+      "beforeBytes": 1462272,
+      "afterBytes": 1462272,
+      "upgradeMs": 0.026340000000345754,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.643145000000004,
+          "perWriteMs": 0.0041078625000000105
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 999.9282269999999,
+          "perWriteMs": 2.4998205674999996
+        }
+      ],
+      "finalBytes": 1462272
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 1,
+      "kind": "candidate",
+      "beforeBytes": 1462272,
+      "afterBytes": 1597440,
+      "upgradeMs": 7.2991320000001,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.306680000000597,
+          "perWriteMs": 0.008266700000001492
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.9785310000006575,
+          "perWriteMs": 0.009946327500001644
+        }
+      ],
+      "finalBytes": 1609728
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 1,
+      "kind": "candidate",
+      "beforeBytes": 1462272,
+      "afterBytes": 1597440,
+      "upgradeMs": 6.626858999999968,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.0423110000001543,
+          "perWriteMs": 0.007605777500000386
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.9516100000000733,
+          "perWriteMs": 0.009879025000000183
+        }
+      ],
+      "finalBytes": 1609728
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 1,
+      "kind": "baseline",
+      "beforeBytes": 1462272,
+      "afterBytes": 1462272,
+      "upgradeMs": 0.028782999999748426,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.565987999999379,
+          "perWriteMs": 0.003914969999998448
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 1021.6257859999996,
+          "perWriteMs": 2.554064464999999
+        }
+      ],
+      "finalBytes": 1462272
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 2,
+      "kind": "baseline",
+      "beforeBytes": 1462272,
+      "afterBytes": 1462272,
+      "upgradeMs": 0.021191999999246036,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.8124390000002677,
+          "perWriteMs": 0.004531097500000669
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 988.1548739999998,
+          "perWriteMs": 2.4703871849999994
+        }
+      ],
+      "finalBytes": 1462272
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 2,
+      "kind": "candidate",
+      "beforeBytes": 1462272,
+      "afterBytes": 1597440,
+      "upgradeMs": 7.13404300000002,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.3724879999999757,
+          "perWriteMs": 0.008431219999999939
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.739321000000018,
+          "perWriteMs": 0.009348302500000046
+        }
+      ],
+      "finalBytes": 1609728
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 2,
+      "kind": "candidate",
+      "beforeBytes": 1462272,
+      "afterBytes": 1597440,
+      "upgradeMs": 6.699667999999292,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.1333690000001297,
+          "perWriteMs": 0.007833422500000324
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.954385000000002,
+          "perWriteMs": 0.009885962500000005
+        }
+      ],
+      "finalBytes": 1609728
+    },
+    {
+      "mapsPerPilot": 8,
+      "pilots": 4,
+      "rows": 3200,
+      "inputSha256": "fdf41f6a2e507e25eba6227ce3caf86ef96d4ec27d1cfd41d2545cd41fbf8045",
+      "block": 2,
+      "kind": "baseline",
+      "beforeBytes": 1462272,
+      "afterBytes": 1462272,
+      "upgradeMs": 0.021832999999787717,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.8549229999998715,
+          "perWriteMs": 0.004637307499999679
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 1019.0325910000001,
+          "perWriteMs": 2.5475814775000005
+        }
+      ],
+      "finalBytes": 1462272
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 0,
+      "kind": "baseline",
+      "beforeBytes": 4366336,
+      "afterBytes": 4366336,
+      "upgradeMs": 0.03421100000014121,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.7303959999999279,
+          "perWriteMs": 0.00432598999999982
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3264.5364769999996,
+          "perWriteMs": 8.161341192499998
+        }
+      ],
+      "finalBytes": 4366336
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 0,
+      "kind": "candidate",
+      "beforeBytes": 4366336,
+      "afterBytes": 4730880,
+      "upgradeMs": 23.72044900000037,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.4914170000010927,
+          "perWriteMs": 0.008728542500002733
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.221497000000454,
+          "perWriteMs": 0.010553742500001136
+        }
+      ],
+      "finalBytes": 4743168
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 0,
+      "kind": "candidate",
+      "beforeBytes": 4366336,
+      "afterBytes": 4730880,
+      "upgradeMs": 22.01762499999859,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.361692000000403,
+          "perWriteMs": 0.008404230000001007
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.123768999999811,
+          "perWriteMs": 0.010309422499999528
+        }
+      ],
+      "finalBytes": 4743168
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 0,
+      "kind": "baseline",
+      "beforeBytes": 4366336,
+      "afterBytes": 4366336,
+      "upgradeMs": 0.029494000000340748,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.6931000000004133,
+          "perWriteMs": 0.004232750000001033
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3296.0444909999987,
+          "perWriteMs": 8.240111227499996
+        }
+      ],
+      "finalBytes": 4366336
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 1,
+      "kind": "baseline",
+      "beforeBytes": 4366336,
+      "afterBytes": 4366336,
+      "upgradeMs": 0.0311070000007021,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.8851790000007895,
+          "perWriteMs": 0.004712947500001974
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3217.130161000001,
+          "perWriteMs": 8.042825402500002
+        }
+      ],
+      "finalBytes": 4366336
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 1,
+      "kind": "candidate",
+      "beforeBytes": 4366336,
+      "afterBytes": 4730880,
+      "upgradeMs": 22.642973000001803,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.542977000000974,
+          "perWriteMs": 0.008857442500002435
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.838200999998662,
+          "perWriteMs": 0.009595502499996656
+        }
+      ],
+      "finalBytes": 4743168
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 1,
+      "kind": "candidate",
+      "beforeBytes": 4366336,
+      "afterBytes": 4730880,
+      "upgradeMs": 21.791261000002123,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.656607000000804,
+          "perWriteMs": 0.00914151750000201
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.01024999999936,
+          "perWriteMs": 0.010025624999998399
+        }
+      ],
+      "finalBytes": 4743168
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 1,
+      "kind": "baseline",
+      "beforeBytes": 4366336,
+      "afterBytes": 4366336,
+      "upgradeMs": 0.03271899999890593,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.7200300000004063,
+          "perWriteMs": 0.004300075000001016
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3262.553480999999,
+          "perWriteMs": 8.156383702499998
+        }
+      ],
+      "finalBytes": 4366336
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 2,
+      "kind": "baseline",
+      "beforeBytes": 4366336,
+      "afterBytes": 4366336,
+      "upgradeMs": 0.03406100000211154,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.6880209999981162,
+          "perWriteMs": 0.00422005249999529
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3384.684314000002,
+          "perWriteMs": 8.461710785000005
+        }
+      ],
+      "finalBytes": 4366336
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 2,
+      "kind": "candidate",
+      "beforeBytes": 4366336,
+      "afterBytes": 4730880,
+      "upgradeMs": 26.76748100000259,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.5842179999999644,
+          "perWriteMs": 0.00896054499999991
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3.8114500000010594,
+          "perWriteMs": 0.009528625000002648
+        }
+      ],
+      "finalBytes": 4743168
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 2,
+      "kind": "candidate",
+      "beforeBytes": 4366336,
+      "afterBytes": 4730880,
+      "upgradeMs": 25.42911599999934,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 3.7651000000005297,
+          "perWriteMs": 0.009412750000001325
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 4.597754000002169,
+          "perWriteMs": 0.011494385000005422
+        }
+      ],
+      "finalBytes": 4743168
+    },
+    {
+      "mapsPerPilot": 24,
+      "pilots": 4,
+      "rows": 9600,
+      "inputSha256": "f2817add66778804e5891d6375434b0c8e2ce17dfd4ca951e7d0a315aafcc6ea",
+      "block": 2,
+      "kind": "baseline",
+      "beforeBytes": 4366336,
+      "afterBytes": 4366336,
+      "upgradeMs": 0.03137799999967683,
+      "writeSamples": [
+        {
+          "scheduled": false,
+          "count": 400,
+          "elapsedMs": 1.7787089999983436,
+          "perWriteMs": 0.004446772499995859
+        },
+        {
+          "scheduled": true,
+          "count": 400,
+          "elapsedMs": 3319.817006999998,
+          "perWriteMs": 8.299542517499994
+        }
+      ],
+      "finalBytes": 4366336
+    }
+  ],
+  "sourceVerified": true,
+  "endedAt": "2026-10-07T12:33:30.055Z"
+}

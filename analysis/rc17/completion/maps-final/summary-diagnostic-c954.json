@@ -1,0 +1,1213 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T12:34:54.932Z",
+  "complete": true,
+  "mode": "diagnostics",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27"
+  },
+  "harnessSha256": "659b4c8f90d35ac189409ca799dae76d7bbdc043a5bdfc9405eb84cde6f5a877",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "cases": [
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 25199,
+        "inputSha256": "f0eb6b6ee7df28e31d2b865b086c32e333e606265ac29103a17797f3b5898420"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 1.0954810000000066,
+          "cpuMs": 1.478,
+          "serializationMs": 0.004457000000002154,
+          "outputBytes": 818,
+          "outputSha256": "39abcef8053dfe63fd8766144590d91a29cf8812f96412b92109995ed93bc7cc",
+          "diagnostics": {
+            "parse": {
+              "calls": 104,
+              "characters": 57899,
+              "elapsedMs": 0.335681000000136,
+              "mapCalls": 3,
+              "mapCharacters": 25965
+            },
+            "stringify": {
+              "calls": 4,
+              "characters": 51164,
+              "elapsedMs": 0.12622000000004618,
+              "mapCalls": 4,
+              "mapCharacters": 51164
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 2,
+              "elapsedMs": 0.07193799999998873
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 25199,
+        "inputSha256": "f0eb6b6ee7df28e31d2b865b086c32e333e606265ac29103a17797f3b5898420"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 1.7761960000000272,
+          "cpuMs": 2.097,
+          "serializationMs": 0.28560099999998556,
+          "outputBytes": 90374,
+          "outputSha256": "63b14fbf8813414027d7a579f7e52fb5e130760cba4b3b846236bb2890e83124",
+          "diagnostics": {
+            "parse": {
+              "calls": 119,
+              "characters": 85675,
+              "elapsedMs": 0.3803189999997585,
+              "mapCalls": 2,
+              "mapCharacters": 50398
+            },
+            "stringify": {
+              "calls": 7,
+              "characters": 53378,
+              "elapsedMs": 0.13341899999988982,
+              "mapCalls": 2,
+              "mapCharacters": 50398
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.15128599999991366
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 25199,
+        "inputSha256": "f0eb6b6ee7df28e31d2b865b086c32e333e606265ac29103a17797f3b5898420"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 1.9617660000000114,
+          "cpuMs": 2.772,
+          "serializationMs": 0.3239379999999983,
+          "outputBytes": 90791,
+          "outputSha256": "e47b4fad6736639cf67f07bd3941fbf59a0c4b0a10b20de02bdabb653b627827",
+          "diagnostics": {
+            "parse": {
+              "calls": 121,
+              "characters": 86441,
+              "elapsedMs": 0.4011790000000701,
+              "mapCalls": 4,
+              "mapCharacters": 51164
+            },
+            "stringify": {
+              "calls": 9,
+              "characters": 54144,
+              "elapsedMs": 0.13737600000007433,
+              "mapCalls": 4,
+              "mapCharacters": 51164
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.22188399999998865
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 201592,
+        "inputSha256": "4107b8a0f831930f9444ff43ea6d13f4345a7d3fd971d66b88966579a949a2f6"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 6.035023999999964,
+          "cpuMs": 7.196,
+          "serializationMs": 0.009494999999958509,
+          "outputBytes": 2792,
+          "outputSha256": "3ad98e29b6458122595eeb6c209bab7b6e3a810a1d1f9c4a04404423f8fd72a6",
+          "diagnostics": {
+            "parse": {
+              "calls": 804,
+              "characters": 457368,
+              "elapsedMs": 2.0188820000005308,
+              "mapCalls": 10,
+              "mapCharacters": 202358
+            },
+            "stringify": {
+              "calls": 18,
+              "characters": 403950,
+              "elapsedMs": 1.131534999999758,
+              "mapCalls": 18,
+              "mapCharacters": 403950
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 2,
+              "elapsedMs": 0.057054999999991196
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 201592,
+        "inputSha256": "4107b8a0f831930f9444ff43ea6d13f4345a7d3fd971d66b88966579a949a2f6"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 1.9072840000000042,
+          "cpuMs": 2.185,
+          "serializationMs": 0.3024260000000254,
+          "outputBytes": 90374,
+          "outputSha256": "63b14fbf8813414027d7a579f7e52fb5e130760cba4b3b846236bb2890e83124",
+          "diagnostics": {
+            "parse": {
+              "calls": 119,
+              "characters": 85675,
+              "elapsedMs": 0.35564299999981586,
+              "mapCalls": 2,
+              "mapCharacters": 50398
+            },
+            "stringify": {
+              "calls": 7,
+              "characters": 53378,
+              "elapsedMs": 0.13660599999991518,
+              "mapCalls": 2,
+              "mapCharacters": 50398
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.16463899999985188
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 201592,
+        "inputSha256": "4107b8a0f831930f9444ff43ea6d13f4345a7d3fd971d66b88966579a949a2f6"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 13.392651,
+          "cpuMs": 15.393,
+          "serializationMs": 2.9334800000000314,
+          "outputBytes": 723416,
+          "outputSha256": "ebf9ffc7d02804374625a993420e5ce433771e64c5a92735bbc4dc90f2b0ce39",
+          "diagnostics": {
+            "parse": {
+              "calls": 856,
+              "characters": 667168,
+              "elapsedMs": 2.459680000000276,
+              "mapCalls": 18,
+              "mapCharacters": 403950
+            },
+            "stringify": {
+              "calls": 30,
+              "characters": 411102,
+              "elapsedMs": 1.4091530000000603,
+              "mapCalls": 18,
+              "mapCharacters": 403950
+            },
+            "auth": {
+              "calls": 34,
+              "rows": 34,
+              "elapsedMs": 0.4908900000000358
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 607576,
+        "inputSha256": "f974a3c673b4e25daa3bbe10fbd24ab636b204a42865656811ee6009f0537145"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 13.353390999999988,
+          "cpuMs": 22.952,
+          "serializationMs": 0.02156200000001718,
+          "outputBytes": 7332,
+          "outputSha256": "9828755b28e8793aa9e56a20c1fe29653679e2017519d1224ebc3c1be1587e82",
+          "diagnostics": {
+            "parse": {
+              "calls": 2404,
+              "characters": 1376012,
+              "elapsedMs": 4.555739999996831,
+              "mapCalls": 26,
+              "mapCharacters": 608342
+            },
+            "stringify": {
+              "calls": 50,
+              "characters": 1215918,
+              "elapsedMs": 2.51247699999999,
+              "mapCalls": 50,
+              "mapCharacters": 1215918
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 2,
+              "elapsedMs": 0.12889499999994314
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 607576,
+        "inputSha256": "f974a3c673b4e25daa3bbe10fbd24ab636b204a42865656811ee6009f0537145"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 1.5705960000000232,
+          "cpuMs": 1.575,
+          "serializationMs": 0.2744639999999663,
+          "outputBytes": 90374,
+          "outputSha256": "63b14fbf8813414027d7a579f7e52fb5e130760cba4b3b846236bb2890e83124",
+          "diagnostics": {
+            "parse": {
+              "calls": 119,
+              "characters": 85675,
+              "elapsedMs": 0.35823800000036954,
+              "mapCalls": 2,
+              "mapCharacters": 50398
+            },
+            "stringify": {
+              "calls": 7,
+              "characters": 53378,
+              "elapsedMs": 0.12318500000003496,
+              "mapCalls": 2,
+              "mapCharacters": 50398
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.22140500000011798
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "plain",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 607576,
+        "inputSha256": "f974a3c673b4e25daa3bbe10fbd24ab636b204a42865656811ee6009f0537145"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 51.919483000000014,
+          "cpuMs": 58.49,
+          "serializationMs": 9.63581899999997,
+          "outputBytes": 2173616,
+          "outputSha256": "f0da5be7e03b1e53bf3335ea3a57525fe4bf83e377f9e10e684e7f22f1906538",
+          "diagnostics": {
+            "parse": {
+              "calls": 2536,
+              "characters": 2002916,
+              "elapsedMs": 9.740239000002816,
+              "mapCalls": 50,
+              "mapCharacters": 1215918
+            },
+            "stringify": {
+              "calls": 78,
+              "characters": 1232606,
+              "elapsedMs": 3.984372999999664,
+              "mapCalls": 50,
+              "mapCharacters": 1215918
+            },
+            "auth": {
+              "calls": 82,
+              "rows": 82,
+              "elapsedMs": 1.8566100000007282
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 3569257,
+        "inputSha256": "f73eaaf213bf5723d89aebad97fe3608dc6c489132df421c7d21c322136343ae"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 18.09375399999999,
+          "cpuMs": 18.107,
+          "serializationMs": 0.006148999999936677,
+          "outputBytes": 818,
+          "outputSha256": "39abcef8053dfe63fd8766144590d91a29cf8812f96412b92109995ed93bc7cc",
+          "diagnostics": {
+            "parse": {
+              "calls": 104,
+              "characters": 3601957,
+              "elapsedMs": 2.820559999999432,
+              "mapCalls": 3,
+              "mapCharacters": 3570023
+            },
+            "stringify": {
+              "calls": 4,
+              "characters": 7139280,
+              "elapsedMs": 8.189119000000005,
+              "mapCalls": 4,
+              "mapCharacters": 7139280
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 2,
+              "elapsedMs": 0.13665500000001884
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 3569257,
+        "inputSha256": "f73eaaf213bf5723d89aebad97fe3608dc6c489132df421c7d21c322136343ae"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 21.338392999999996,
+          "cpuMs": 21.63,
+          "serializationMs": 9.015614999999912,
+          "outputBytes": 3634630,
+          "outputSha256": "69552e78c736ad227c006872da82414207aa9e038d884dc441cc3393ce2806d9",
+          "diagnostics": {
+            "parse": {
+              "calls": 119,
+              "characters": 7173791,
+              "elapsedMs": 4.820505999999568,
+              "mapCalls": 2,
+              "mapCharacters": 7138514
+            },
+            "stringify": {
+              "calls": 7,
+              "characters": 7141494,
+              "elapsedMs": 7.4069399999998495,
+              "mapCalls": 2,
+              "mapCharacters": 7138514
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.3265319999998155
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 3569257,
+        "inputSha256": "f73eaaf213bf5723d89aebad97fe3608dc6c489132df421c7d21c322136343ae"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 33.09118199999989,
+          "cpuMs": 42.775,
+          "serializationMs": 8.053896000000009,
+          "outputBytes": 3635047,
+          "outputSha256": "e7adff70a615d2d93abea2f614f6a1f238f42103ec3e688ef5910ecaa41f4542",
+          "diagnostics": {
+            "parse": {
+              "calls": 121,
+              "characters": 7174557,
+              "elapsedMs": 5.627678999999375,
+              "mapCalls": 4,
+              "mapCharacters": 7139280
+            },
+            "stringify": {
+              "calls": 9,
+              "characters": 7142260,
+              "elapsedMs": 7.515554999999949,
+              "mapCalls": 4,
+              "mapCharacters": 7139280
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.23194100000000617
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 28554056,
+        "inputSha256": "3fbe34acc73211880a6c50f008d76c917a612aeb67fa073d6d32c86f6def97bc"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 168.83168899999987,
+          "cpuMs": 259.078,
+          "serializationMs": 0.014551999999866894,
+          "outputBytes": 2792,
+          "outputSha256": "3ad98e29b6458122595eeb6c209bab7b6e3a810a1d1f9c4a04404423f8fd72a6",
+          "diagnostics": {
+            "parse": {
+              "calls": 804,
+              "characters": 28809832,
+              "elapsedMs": 18.10816200000386,
+              "mapCalls": 10,
+              "mapCharacters": 28554822
+            },
+            "stringify": {
+              "calls": 18,
+              "characters": 57108878,
+              "elapsedMs": 77.63294900000096,
+              "mapCalls": 18,
+              "mapCharacters": 57108878
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 2,
+              "elapsedMs": 0.17754699999977674
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 28554056,
+        "inputSha256": "3fbe34acc73211880a6c50f008d76c917a612aeb67fa073d6d32c86f6def97bc"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 19.30582000000004,
+          "cpuMs": 19.726,
+          "serializationMs": 12.065050000000156,
+          "outputBytes": 3634630,
+          "outputSha256": "69552e78c736ad227c006872da82414207aa9e038d884dc441cc3393ce2806d9",
+          "diagnostics": {
+            "parse": {
+              "calls": 119,
+              "characters": 7173791,
+              "elapsedMs": 4.492980999999872,
+              "mapCalls": 2,
+              "mapCharacters": 7138514
+            },
+            "stringify": {
+              "calls": 7,
+              "characters": 7141494,
+              "elapsedMs": 7.130365000000211,
+              "mapCalls": 2,
+              "mapCharacters": 7138514
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.2973290000004454
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 28554056,
+        "inputSha256": "3fbe34acc73211880a6c50f008d76c917a612aeb67fa073d6d32c86f6def97bc"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 235.7904450000001,
+          "cpuMs": 300.665,
+          "serializationMs": 146.08422800000017,
+          "outputBytes": 29077464,
+          "outputSha256": "792deeaa45f32a8eda8e186c66fb80d5793909798f7cca64635f84ff1fd978c7",
+          "diagnostics": {
+            "parse": {
+              "calls": 856,
+              "characters": 57372096,
+              "elapsedMs": 59.22596999999769,
+              "mapCalls": 18,
+              "mapCharacters": 57108878
+            },
+            "stringify": {
+              "calls": 30,
+              "characters": 57116030,
+              "elapsedMs": 59.16348500000004,
+              "mapCalls": 18,
+              "mapCharacters": 57108878
+            },
+            "auth": {
+              "calls": 34,
+              "rows": 34,
+              "elapsedMs": 1.0082489999995232
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 85713968,
+        "inputSha256": "bb768b65659803786b9766b504b8859c4ea8f7fe68c74b58bfc9ddfb5434c069"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 449.47066399999994,
+          "cpuMs": 576.864,
+          "serializationMs": 0.036243999999896914,
+          "outputBytes": 7332,
+          "outputSha256": "9828755b28e8793aa9e56a20c1fe29653679e2017519d1224ebc3c1be1587e82",
+          "diagnostics": {
+            "parse": {
+              "calls": 2404,
+              "characters": 86482404,
+              "elapsedMs": 91.52272799998218,
+              "mapCalls": 26,
+              "mapCharacters": 85714734
+            },
+            "stringify": {
+              "calls": 50,
+              "characters": 171428702,
+              "elapsedMs": 189.38549899999816,
+              "mapCalls": 50,
+              "mapCharacters": 171428702
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 2,
+              "elapsedMs": 0.13800699999956123
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 85713968,
+        "inputSha256": "bb768b65659803786b9766b504b8859c4ea8f7fe68c74b58bfc9ddfb5434c069"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 18.878222000000278,
+          "cpuMs": 19.288,
+          "serializationMs": 6.522372999999789,
+          "outputBytes": 3634630,
+          "outputSha256": "69552e78c736ad227c006872da82414207aa9e038d884dc441cc3393ce2806d9",
+          "diagnostics": {
+            "parse": {
+              "calls": 119,
+              "characters": 7173791,
+              "elapsedMs": 4.396080000004986,
+              "mapCalls": 2,
+              "mapCharacters": 7138514
+            },
+            "stringify": {
+              "calls": 7,
+              "characters": 7141494,
+              "elapsedMs": 6.577776000000995,
+              "mapCalls": 2,
+              "mapCharacters": 7138514
+            },
+            "auth": {
+              "calls": 13,
+              "rows": 13,
+              "elapsedMs": 0.27689699999973527
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "wide",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 1,
+        "comments": 500,
+        "passages": 1000,
+        "inputBytes": 85713968,
+        "inputSha256": "bb768b65659803786b9766b504b8859c4ea8f7fe68c74b58bfc9ddfb5434c069"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 618.4048999999995,
+          "cpuMs": 782.303,
+          "serializationMs": 335.10978799999975,
+          "outputBytes": 87284760,
+          "outputSha256": "3caf5c9f5320dbe414bcc2bbe3064786ea638b7f3883b897bc514d9f5ae2ec38",
+          "diagnostics": {
+            "parse": {
+              "calls": 2536,
+              "characters": 172215700,
+              "elapsedMs": 140.9428739999721,
+              "mapCalls": 50,
+              "mapCharacters": 171428702
+            },
+            "stringify": {
+              "calls": 78,
+              "characters": 171445390,
+              "elapsedMs": 170.5155869999935,
+              "mapCalls": 50,
+              "mapCharacters": 171428702
+            },
+            "auth": {
+              "calls": 82,
+              "rows": 82,
+              "elapsedMs": 2.4146470000059708
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 42071,
+        "inputSha256": "51c2e457701828e08529d80214a1b21caccd01e1c17896fac340d17e15b20bd5"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 1.1570019999999204,
+          "cpuMs": 6.939,
+          "serializationMs": 0.0050580000006448245,
+          "outputBytes": 820,
+          "outputSha256": "0b9c413729c54b03939604ec5eed05eb815902e4feb68b1f8988a03019b75f47",
+          "diagnostics": {
+            "parse": {
+              "calls": 302,
+              "characters": 81305,
+              "elapsedMs": 0.2713460000068153,
+              "mapCalls": 3,
+              "mapCharacters": 42837
+            },
+            "stringify": {
+              "calls": 4,
+              "characters": 84908,
+              "elapsedMs": 0.19431299999905605,
+              "mapCalls": 4,
+              "mapCharacters": 84908
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 200,
+              "elapsedMs": 0.271137999999155
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 42071,
+        "inputSha256": "51c2e457701828e08529d80214a1b21caccd01e1c17896fac340d17e15b20bd5"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 81.73530899999969,
+          "cpuMs": 82.552,
+          "serializationMs": 0.7517019999995682,
+          "outputBytes": 130964,
+          "outputSha256": "b3ef51e0a38ba308143a7b07b17290814db8330dfc3ff025e6592301efec0975",
+          "diagnostics": {
+            "parse": {
+              "calls": 61103,
+              "characters": 2299102,
+              "elapsedMs": 13.166176999864547,
+              "mapCalls": 2,
+              "mapCharacters": 84142
+            },
+            "stringify": {
+              "calls": 304,
+              "characters": 264134,
+              "elapsedMs": 1.1809870000115552,
+              "mapCalls": 2,
+              "mapCharacters": 84142
+            },
+            "auth": {
+              "calls": 607,
+              "rows": 60700,
+              "elapsedMs": 73.73824099999456
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 1,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 42071,
+        "inputSha256": "51c2e457701828e08529d80214a1b21caccd01e1c17896fac340d17e15b20bd5"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 79.62625000000025,
+          "cpuMs": 80.119,
+          "serializationMs": 0.7158079999999245,
+          "outputBytes": 131381,
+          "outputSha256": "a818f8d263531e521733e8d4166c686000135dbfdca8b65f1becc35bbe7fc8ab",
+          "diagnostics": {
+            "parse": {
+              "calls": 61105,
+              "characters": 2299868,
+              "elapsedMs": 11.872740999921007,
+              "mapCalls": 4,
+              "mapCharacters": 84908
+            },
+            "stringify": {
+              "calls": 306,
+              "characters": 264900,
+              "elapsedMs": 1.1005049999967014,
+              "mapCalls": 4,
+              "mapCharacters": 84908
+            },
+            "auth": {
+              "calls": 607,
+              "rows": 60700,
+              "elapsedMs": 73.10278299998208
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 336568,
+        "inputSha256": "3d7c245d1509ff1ba7ea5316e469aa26566ed974ef4bb6748f96ab1f2bd9b1fd"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 5.593517000000247,
+          "cpuMs": 6.15,
+          "serializationMs": 0.008603000000221073,
+          "outputBytes": 2808,
+          "outputSha256": "55b46dee17c55c1df98354315937c7ff31cae626d251f4ddfff476e640c5e4f6",
+          "diagnostics": {
+            "parse": {
+              "calls": 1002,
+              "characters": 598878,
+              "elapsedMs": 2.080102999999326,
+              "mapCalls": 10,
+              "mapCharacters": 337334
+            },
+            "stringify": {
+              "calls": 18,
+              "characters": 673902,
+              "elapsedMs": 1.3454659999997602,
+              "mapCalls": 18,
+              "mapCharacters": 673902
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 200,
+              "elapsedMs": 0.2990300000001298
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 336568,
+        "inputSha256": "3d7c245d1509ff1ba7ea5316e469aa26566ed974ef4bb6748f96ab1f2bd9b1fd"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 75.12188500000047,
+          "cpuMs": 75.127,
+          "serializationMs": 0.6985230000000229,
+          "outputBytes": 130964,
+          "outputSha256": "b3ef51e0a38ba308143a7b07b17290814db8330dfc3ff025e6592301efec0975",
+          "diagnostics": {
+            "parse": {
+              "calls": 61103,
+              "characters": 2299102,
+              "elapsedMs": 12.042235000108121,
+              "mapCalls": 2,
+              "mapCharacters": 84142
+            },
+            "stringify": {
+              "calls": 304,
+              "characters": 264134,
+              "elapsedMs": 1.119431999999506,
+              "mapCalls": 2,
+              "mapCharacters": 84142
+            },
+            "auth": {
+              "calls": 607,
+              "rows": 60700,
+              "elapsedMs": 68.77321999999003
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 8,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 336568,
+        "inputSha256": "3d7c245d1509ff1ba7ea5316e469aa26566ed974ef4bb6748f96ab1f2bd9b1fd"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 337.9608019999996,
+          "cpuMs": 345.392,
+          "serializationMs": 3.378990999999587,
+          "outputBytes": 1048136,
+          "outputSha256": "9a67c6eca13990c1d179723f1012c28ab746865ec2eb1e4ee9a720a48a9ad794",
+          "diagnostics": {
+            "parse": {
+              "calls": 272512,
+              "characters": 10459138,
+              "elapsedMs": 52.430255000432226,
+              "mapCalls": 18,
+              "mapCharacters": 673902
+            },
+            "stringify": {
+              "calls": 1020,
+              "characters": 1271094,
+              "elapsedMs": 4.41708400000789,
+              "mapCalls": 18,
+              "mapCharacters": 673902
+            },
+            "auth": {
+              "calls": 2707,
+              "rows": 270700,
+              "elapsedMs": 309.5517750000199
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 1012504,
+        "inputSha256": "dbbf5e8d419965ab2e9c9925f10de18207cd9980d73b11c5208fe80a7f70a305"
+      },
+      "action": "summary",
+      "samples": [
+        {
+          "serviceMs": 15.758723999999347,
+          "cpuMs": 15.776,
+          "serializationMs": 0.020259999999325373,
+          "outputBytes": 7380,
+          "outputSha256": "71a3681ca8868986b9f2cb89a8f3985f869bf6c0fa14c0376cfee969518346e3",
+          "diagnostics": {
+            "parse": {
+              "calls": 2602,
+              "characters": 1787474,
+              "elapsedMs": 5.475272000010591,
+              "mapCalls": 26,
+              "mapCharacters": 1013270
+            },
+            "stringify": {
+              "calls": 50,
+              "characters": 2025774,
+              "elapsedMs": 3.840280000005805,
+              "mapCalls": 50,
+              "mapCharacters": 2025774
+            },
+            "auth": {
+              "calls": 2,
+              "rows": 200,
+              "elapsedMs": 0.3293659999999363
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 1012504,
+        "inputSha256": "dbbf5e8d419965ab2e9c9925f10de18207cd9980d73b11c5208fe80a7f70a305"
+      },
+      "action": "selected",
+      "samples": [
+        {
+          "serviceMs": 80.084562,
+          "cpuMs": 82.537,
+          "serializationMs": 0.5637090000000171,
+          "outputBytes": 130964,
+          "outputSha256": "b3ef51e0a38ba308143a7b07b17290814db8330dfc3ff025e6592301efec0975",
+          "diagnostics": {
+            "parse": {
+              "calls": 61103,
+              "characters": 2299102,
+              "elapsedMs": 12.354719000168188,
+              "mapCalls": 2,
+              "mapCharacters": 84142
+            },
+            "stringify": {
+              "calls": 304,
+              "characters": 264134,
+              "elapsedMs": 1.0248370000008435,
+              "mapCalls": 2,
+              "mapCharacters": 84142
+            },
+            "auth": {
+              "calls": 607,
+              "rows": 60700,
+              "elapsedMs": 73.89477100001568
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "flavor": "roster",
+        "maps": 24,
+        "nodes": 100,
+        "links": 99,
+        "roster": 100,
+        "comments": 0,
+        "passages": 0,
+        "inputBytes": 1012504,
+        "inputSha256": "dbbf5e8d419965ab2e9c9925f10de18207cd9980d73b11c5208fe80a7f70a305"
+      },
+      "action": "full",
+      "samples": [
+        {
+          "serviceMs": 1005.0289959999991,
+          "cpuMs": 1038.733,
+          "serializationMs": 12.027812999998787,
+          "outputBytes": 3147776,
+          "outputSha256": "c2fb7cd4cde28acd2a2a6f6c97c87e7602664b9a4da48f7f62d2234f3e242e92",
+          "diagnostics": {
+            "parse": {
+              "calls": 755728,
+              "characters": 29117270,
+              "elapsedMs": 175.15560800105231,
+              "mapCalls": 50,
+              "mapCharacters": 2025774
+            },
+            "stringify": {
+              "calls": 2652,
+              "characters": 3576566,
+              "elapsedMs": 13.55825800002276,
+              "mapCalls": 50,
+              "mapCharacters": 2025774
+            },
+            "auth": {
+              "calls": 7507,
+              "rows": 750700,
+              "elapsedMs": 924.5470030000306
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Service/serialization timings are separate and diagnostics instrument JSON/Auth only in a separate process.",
+    "Synthetic supported maxima: 24 maps; each wide document below 4,000,000 bytes; 500 comments, 1000 passages, 100 nodes; roster case uses 100 connected tracked pilots per map.",
+    "No credentials or external provider traffic; production createAuth.characters executes its real SQLite roster read.",
+    "This is service work, not HTTP transfer, concurrent UI latency or retained-heap acceptance."
+  ],
+  "sourceVerified": true,
+  "endedAt": "2026-10-07T12:35:06.920Z"
+}

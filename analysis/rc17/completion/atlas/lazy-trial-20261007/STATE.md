@@ -1,6 +1,6 @@
 # Isolated Atlas lazy layout trial
 
-Base c954c0d; do not adopt or release on this checkpoint alone. Patch and raw source/build manifests are bankable. Trial compiled successfully; type check and 26 layout/math/operation tests pass. Fresh-process kernel ABBA and compiled browser metrics/heap runs completed using /tmp/kairo-performance.lock; see KERNEL-RESULTS.md and BROWSER-RESULTS.md. Independent compiled replay/source review and combined integration gates remain separate. Existing backend index decision remains independent.
+Base c954c0d; do not adopt or release on this checkpoint alone. Patch and raw source/build manifests are bankable. Trial compiled successfully; type check and 26 layout/math/operation tests pass. Fresh-process kernel ABBA and compiled browser metrics/heap runs completed using /tmp/kairo-performance.lock; see KERNEL-RESULTS.md and BROWSER-RESULTS.md. Independent compiled replay/source review now passes (see replay-verification.json and KERNEL-RESULTS.md); combined integration gates remain separate. Existing backend index decision remains independent.
 
 The lazy owner is replaced with atlas.systems identity. Metadata retains physical extent/first-valid-system semantics without allocating both full layouts. First switch pays the previously eager calculation and retains the result for the current revision; ordinary refresh does not invalidate it. Full source replacement, empty/invalid coordinates, point identity and both projection orders are covered.
 

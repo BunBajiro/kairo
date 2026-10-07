@@ -1,0 +1,463 @@
+{
+  "schemaVersion": 1,
+  "diagnosticOnly": true,
+  "performanceAcceptance": false,
+  "source": {
+    "commit": "05d0d4b36c154329006d6772769063db874762da",
+    "fingerprint": "ad815d62f28fce7994f9a2abe261066728babf5e1946fb6abaeb9026fc6457c5",
+    "dirty": false
+  },
+  "harnessHashes": {
+    "idle-startup-worker.mjs": "7f7f103c4999d6792c151e08e0a7cf73be1c3deb1d3b2ae09ffbe544b1744177",
+    "../../harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "../../harness/backend/fixture.mjs": "62ea73e7fc23ab6c69ba7986c2162823146e350e474729f7cc9c478485cc4073",
+    "../../harness/backend/target.mjs": "a7e061ea9e8e961214f39ec794ff855e947e017bce350368336d891f3b67ad2e",
+    "../../harness/legacy-discovery-fixture.mjs": "486671013d230998828929e24e4fd83ee33e765a052dfffb5d22e03efce4545b"
+  },
+  "startedAt": "2026-10-07T12:17:49.380Z",
+  "fixtureNow": 1791374003764,
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9
+  },
+  "settings": {
+    "scheduler": "active real timers",
+    "clients": 0,
+    "warmupMs": 1000,
+    "startupWindowMs": 35000,
+    "settledWindows": 3,
+    "settledWindowMs": 30000,
+    "profile": false,
+    "sqlWrappers": false,
+    "snapshotWrappers": false,
+    "forcedGc": false
+  },
+  "limitations": [
+    "Startup-inclusive window retains the historical one-second warmup/35-second meter geometry, with new boundary diagnostics; this is not a replacement acceptance run.",
+    "The three settled windows follow that first window, beginning roughly36seconds after startup. This differs from the earlier30-second-warmup standalone settled observation.",
+    "All windows in one process are correlated trajectories. No pooling into independent repetitions.",
+    "Only low-frequency successful real tick auditing, common250ms RSS sampling and10ms event-loop-delay observation are active. No instrumentation identifies an allocation owner.",
+    "Historical05d source is rebuilt locally; compiled output is newly produced and is not the recovered historical artifact."
+  ],
+  "windows": [
+    {
+      "label": "startup-inclusive",
+      "index": 0,
+      "targetMs": 35000,
+      "startTime": 2031.831834,
+      "endTime": 37032.294975,
+      "startedAt": "2026-10-07T12:17:51.156Z",
+      "endedAt": "2026-10-07T12:18:26.157Z",
+      "elapsedMs": 35000.463141,
+      "cpuUserMs": 557.21,
+      "cpuSystemMs": 89.319,
+      "cpuMs": 646.529,
+      "cpuPercentOneCore": 1.8472012710101755,
+      "eventLoopUtilization": 0.015211267283924289,
+      "eventLoopDelaySamples": 3420,
+      "eventLoopDelayP95Ms": 10.264575,
+      "eventLoopDelayMaxMs": 71.041023,
+      "rssBeforeBytes": 164339712,
+      "rssAfterBytes": 207368192,
+      "peakRssBytes": 207368192,
+      "heapBeforeBytes": 62196648,
+      "heapAfterBytes": 78313024,
+      "counts": {
+        "started": 12,
+        "completed": 12,
+        "successful": 12,
+        "pending": 0,
+        "operations": 12,
+        "feeds": 12
+      },
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "politicsQueueBefore": 3000,
+      "politicsQueueAfter": 0,
+      "networkAttempts": 0
+    },
+    {
+      "label": "settled",
+      "index": 1,
+      "targetMs": 30000,
+      "startTime": 37033.162892,
+      "endTime": 67032.839125,
+      "startedAt": "2026-10-07T12:18:26.157Z",
+      "endedAt": "2026-10-07T12:18:56.157Z",
+      "elapsedMs": 29999.676233,
+      "cpuUserMs": 374.842,
+      "cpuSystemMs": 117.971,
+      "cpuMs": 492.813,
+      "cpuPercentOneCore": 1.6427277287009514,
+      "eventLoopUtilization": 0.013728512393484726,
+      "eventLoopDelaySamples": 2937,
+      "eventLoopDelayP95Ms": 10.280959,
+      "eventLoopDelayMaxMs": 47.874047,
+      "rssBeforeBytes": 207499264,
+      "rssAfterBytes": 242806784,
+      "peakRssBytes": 248918016,
+      "heapBeforeBytes": 78354312,
+      "heapAfterBytes": 59175688,
+      "counts": {
+        "started": 10,
+        "completed": 10,
+        "successful": 10,
+        "pending": 0,
+        "operations": 10,
+        "feeds": 10
+      },
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "politicsQueueBefore": 0,
+      "politicsQueueAfter": 0,
+      "networkAttempts": 0
+    },
+    {
+      "label": "settled",
+      "index": 2,
+      "targetMs": 30000,
+      "startTime": 67033.345588,
+      "endTime": 97033.58779,
+      "startedAt": "2026-10-07T12:18:56.157Z",
+      "endedAt": "2026-10-07T12:19:26.158Z",
+      "elapsedMs": 30000.24220200001,
+      "cpuUserMs": 354.113,
+      "cpuSystemMs": 93.644,
+      "cpuMs": 447.757,
+      "cpuPercentOneCore": 1.492511283692735,
+      "eventLoopUtilization": 0.012323708084151393,
+      "eventLoopDelaySamples": 2939,
+      "eventLoopDelayP95Ms": 10.280959,
+      "eventLoopDelayMaxMs": 39.649279,
+      "rssBeforeBytes": 242806784,
+      "rssAfterBytes": 253816832,
+      "peakRssBytes": 253816832,
+      "heapBeforeBytes": 59179816,
+      "heapAfterBytes": 111167616,
+      "counts": {
+        "started": 10,
+        "completed": 10,
+        "successful": 10,
+        "pending": 0,
+        "operations": 10,
+        "feeds": 10
+      },
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "politicsQueueBefore": 0,
+      "politicsQueueAfter": 0,
+      "networkAttempts": 0
+    },
+    {
+      "label": "settled",
+      "index": 3,
+      "targetMs": 30000,
+      "startTime": 97034.150257,
+      "endTime": 127034.255993,
+      "startedAt": "2026-10-07T12:19:26.158Z",
+      "endedAt": "2026-10-07T12:19:56.158Z",
+      "elapsedMs": 30000.105735999998,
+      "cpuUserMs": 498.87,
+      "cpuSystemMs": 81.713,
+      "cpuMs": 580.583,
+      "cpuPercentOneCore": 1.9352698457435864,
+      "eventLoopUtilization": 0.014660571970188272,
+      "eventLoopDelaySamples": 2934,
+      "eventLoopDelayP95Ms": 10.256383,
+      "eventLoopDelayMaxMs": 48.431103,
+      "rssBeforeBytes": 253816832,
+      "rssAfterBytes": 127807488,
+      "peakRssBytes": 256438272,
+      "heapBeforeBytes": 111178128,
+      "heapAfterBytes": 46585448,
+      "counts": {
+        "started": 10,
+        "completed": 10,
+        "successful": 10,
+        "pending": 0,
+        "operations": 10,
+        "feeds": 10
+      },
+      "pendingTicksBefore": 0,
+      "pendingTicksAfter": 0,
+      "politicsQueueBefore": 0,
+      "politicsQueueAfter": 0,
+      "networkAttempts": 0
+    }
+  ],
+  "ticks": [
+    {
+      "startTime": 3973.03661,
+      "endTime": 3983.663325,
+      "success": true
+    },
+    {
+      "startTime": 6973.018921,
+      "endTime": 6993.826388,
+      "success": true
+    },
+    {
+      "startTime": 9972.798908,
+      "endTime": 9980.400568,
+      "success": true
+    },
+    {
+      "startTime": 12973.521652,
+      "endTime": 13007.767015,
+      "success": true
+    },
+    {
+      "startTime": 15973.530515,
+      "endTime": 15982.933599,
+      "success": true
+    },
+    {
+      "startTime": 18974.501365,
+      "endTime": 19000.99337,
+      "success": true
+    },
+    {
+      "startTime": 21975.40365,
+      "endTime": 21983.27823,
+      "success": true
+    },
+    {
+      "startTime": 24976.164943,
+      "endTime": 24982.471212,
+      "success": true
+    },
+    {
+      "startTime": 27975.836849,
+      "endTime": 27983.234009,
+      "success": true
+    },
+    {
+      "startTime": 30976.25022,
+      "endTime": 30984.385843,
+      "success": true
+    },
+    {
+      "startTime": 33976.000035,
+      "endTime": 33983.51933,
+      "success": true
+    },
+    {
+      "startTime": 36976.289754,
+      "endTime": 36984.46664,
+      "success": true
+    },
+    {
+      "startTime": 39976.158847,
+      "endTime": 39984.62001,
+      "success": true
+    },
+    {
+      "startTime": 42976.330198,
+      "endTime": 42984.428635,
+      "success": true
+    },
+    {
+      "startTime": 45975.933361,
+      "endTime": 45984.779894,
+      "success": true
+    },
+    {
+      "startTime": 48976.442012,
+      "endTime": 48987.712437,
+      "success": true
+    },
+    {
+      "startTime": 51977.008315,
+      "endTime": 51985.69663,
+      "success": true
+    },
+    {
+      "startTime": 54977.43876,
+      "endTime": 54986.892669,
+      "success": true
+    },
+    {
+      "startTime": 57978.262026,
+      "endTime": 57986.994237,
+      "success": true
+    },
+    {
+      "startTime": 60978.315487,
+      "endTime": 60985.977917,
+      "success": true
+    },
+    {
+      "startTime": 63977.840447,
+      "endTime": 63985.340703,
+      "success": true
+    },
+    {
+      "startTime": 66978.534924,
+      "endTime": 66985.27177,
+      "success": true
+    },
+    {
+      "startTime": 69979.053136,
+      "endTime": 69985.677893,
+      "success": true
+    },
+    {
+      "startTime": 72978.871539,
+      "endTime": 72985.582858,
+      "success": true
+    },
+    {
+      "startTime": 75978.746905,
+      "endTime": 75987.05629,
+      "success": true
+    },
+    {
+      "startTime": 78978.620816,
+      "endTime": 78986.494625,
+      "success": true
+    },
+    {
+      "startTime": 81979.162865,
+      "endTime": 81985.144343,
+      "success": true
+    },
+    {
+      "startTime": 84979.191306,
+      "endTime": 84986.738023,
+      "success": true
+    },
+    {
+      "startTime": 87978.706611,
+      "endTime": 87985.519883,
+      "success": true
+    },
+    {
+      "startTime": 90979.402337,
+      "endTime": 90986.964396,
+      "success": true
+    },
+    {
+      "startTime": 93979.85895,
+      "endTime": 93986.139279,
+      "success": true
+    },
+    {
+      "startTime": 96980.373969,
+      "endTime": 96988.587911,
+      "success": true
+    },
+    {
+      "startTime": 99980.889072,
+      "endTime": 99988.607838,
+      "success": true
+    },
+    {
+      "startTime": 102981.329785,
+      "endTime": 102989.521714,
+      "success": true
+    },
+    {
+      "startTime": 105981.223841,
+      "endTime": 105990.512833,
+      "success": true
+    },
+    {
+      "startTime": 108980.97559,
+      "endTime": 108990.719716,
+      "success": true
+    },
+    {
+      "startTime": 111981.331543,
+      "endTime": 111990.488565,
+      "success": true
+    },
+    {
+      "startTime": 114980.921753,
+      "endTime": 114988.978467,
+      "success": true
+    },
+    {
+      "startTime": 117980.916903,
+      "endTime": 117990.330912,
+      "success": true
+    },
+    {
+      "startTime": 120980.636172,
+      "endTime": 120992.376235,
+      "success": true
+    },
+    {
+      "startTime": 123980.475747,
+      "endTime": 123987.25526,
+      "success": true
+    },
+    {
+      "startTime": 126980.869804,
+      "endTime": 126990.327109,
+      "success": true
+    }
+  ],
+  "externalAttempts": 0,
+  "complete": true,
+  "fixture": {
+    "version": 1,
+    "profile": "stress",
+    "characters": 4,
+    "assets": 20000,
+    "events": 50000,
+    "visits": 2000,
+    "combat": 4000,
+    "sessions": 200,
+    "marketTypes": 5000,
+    "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+    "now": 1791374003764,
+    "discoveryPreparation": {
+      "available": true,
+      "expectedMemberships": 100,
+      "seededMemberships": 100,
+      "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+    }
+  },
+  "startup": {
+    "ms": 160.7172629999999,
+    "cpuUserMs": 268.288,
+    "cpuSystemMs": 25.138,
+    "politicsQueue": 3000
+  },
+  "feedStateValidation": {
+    "storms": 0,
+    "points": 2384,
+    "status": "ready"
+  },
+  "warmup": {
+    "ms": 1001.449574,
+    "cpuUserMs": 25.127,
+    "cpuSystemMs": 0,
+    "politicsQueue": 3000,
+    "counts": {
+      "started": 0,
+      "completed": 0,
+      "successful": 0,
+      "pending": 0,
+      "operations": 0,
+      "feeds": 0
+    }
+  },
+  "finalClients": {
+    "dashboard": 0,
+    "obs": 0
+  },
+  "sourceVerified": true,
+  "finalTickCounts": {
+    "started": 42,
+    "completed": 42,
+    "successful": 42,
+    "pending": 0,
+    "operations": 42,
+    "feeds": 42
+  },
+  "finalTickRejections": [],
+  "cleanupComplete": true,
+  "endedAt": "2026-10-07T12:19:56.313Z"
+}
