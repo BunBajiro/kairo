@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T12:06:34.740Z",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "615799709626ba337ca36b82c9b084875912a9598167e7b6cace4018c6bfe150",
+    "dirty": true
+  },
+  "harnessSha256": "84ee2a61eca73b3e2ea454e8d3cca40f37bc44fbfce178ae1d363e88988e572a",
+  "mode": "retained-heap-diagnostic",
+  "baseline": true,
+  "fixture": {
+    "pilots": 2,
+    "rowsPerLargeDataset": 10000,
+    "digest": "0c71f0a3f1a5d5c1ffdb576d1d04b2acfa5bdeaad9caffe820c4a3d3fd11c5c2"
+  },
+  "checks": [
+    {
+      "label": "numeric sort ascending",
+      "passed": true
+    },
+    {
+      "label": "numeric sort descending",
+      "passed": true
+    },
+    {
+      "label": "matching visible record",
+      "passed": true
+    },
+    {
+      "label": "filter survives unrelated data refresh",
+      "passed": true
+    },
+    {
+      "label": "expanded details survive unrelated refresh",
+      "passed": true
+    },
+    {
+      "label": "active tab sees latest source",
+      "passed": true
+    },
+    {
+      "label": "pilot switch publishes selected-pilot rows",
+      "passed": true
+    },
+    {
+      "label": "stale data remains visible",
+      "passed": true
+    },
+    {
+      "label": "disabled empty state renders",
+      "passed": true
+    },
+    {
+      "label": "missing scope prompts connection",
+      "passed": true
+    }
+  ],
+  "samples": [
+    {
+      "label": "assets-first-open",
+      "windowMs": 304.56435899999997,
+      "taskMs": 114.72000000000004,
+      "scriptMs": 38.33900000000001,
+      "layoutMs": 6.344000000000002,
+      "recalcMs": 11.258999999999999,
+      "heapBefore": 18376948,
+      "heapAfter": 15172564
+    },
+    {
+      "label": "assets-sort-directions",
+      "windowMs": 320.49880900000016,
+      "taskMs": 66.16299999999997,
+      "scriptMs": 18.303000000000015,
+      "layoutMs": 5.208999999999999,
+      "recalcMs": 8.443,
+      "heapBefore": 15178308,
+      "heapAfter": 15262124
+    },
+    {
+      "label": "assets-unrelated-wallet-snapshot",
+      "windowMs": 315.9932140000001,
+      "taskMs": 65.27399999999994,
+      "scriptMs": 41.099000000000025,
+      "layoutMs": 0.1810000000000006,
+      "recalcMs": 0.9829999999999978,
+      "heapBefore": 15277692,
+      "heapAfter": 16453640
+    },
+    {
+      "label": "assets-search-and-page",
+      "windowMs": 642.8866909999997,
+      "taskMs": 149.50799999999998,
+      "scriptMs": 65.46199999999996,
+      "layoutMs": 7.526000000000005,
+      "recalcMs": 13.427000000000001,
+      "heapBefore": 16453640,
+      "heapAfter": 16975760
+    },
+    {
+      "label": "assets-relevant-name",
+      "windowMs": 142.041561,
+      "taskMs": 64.57599999999996,
+      "scriptMs": 36.04299999999999,
+      "layoutMs": 0.39000000000000146,
+      "recalcMs": 0,
+      "heapBefore": 22977064,
+      "heapAfter": 19685700
+    },
+    {
+      "label": "assets-unrelated-name",
+      "windowMs": 325.70173699999987,
+      "taskMs": 64.62100000000004,
+      "scriptMs": 42.33100000000001,
+      "layoutMs": 0.20499999999999685,
+      "recalcMs": 0,
+      "heapBefore": 19685700,
+      "heapAfter": 20648660
+    },
+    {
+      "label": "inactive-assets-source-change",
+      "windowMs": 335.4953749999995,
+      "taskMs": 72.93800000000017,
+      "scriptMs": 39.20200000000007,
+      "layoutMs": 0.19600000000000173,
+      "recalcMs": 0,
+      "heapBefore": 19486724,
+      "heapAfter": 20971544
+    },
+    {
+      "label": "wallet-journal-open",
+      "windowMs": 254.97950299999957,
+      "taskMs": 81.23999999999998,
+      "scriptMs": 23.293999999999926,
+      "layoutMs": 2.3149999999999977,
+      "recalcMs": 8.596999999999994,
+      "heapBefore": 21439216,
+      "heapAfter": 16776424
+    },
+    {
+      "label": "wallet-unrelated-snapshot",
+      "windowMs": 318.6324089999998,
+      "taskMs": 75.81100000000008,
+      "scriptMs": 45.75099999999998,
+      "layoutMs": 0.1789999999999986,
+      "recalcMs": 2.4259999999999975,
+      "heapBefore": 16776424,
+      "heapAfter": 19053284
+    },
+    {
+      "label": "wallet-transaction-first-use",
+      "windowMs": 213.865855,
+      "taskMs": 54.050999999999846,
+      "scriptMs": 9.365000000000068,
+      "layoutMs": 3.411999999999998,
+      "recalcMs": 10.383000000000003,
+      "heapBefore": 19053284,
+      "heapAfter": 19016896
+    },
+    {
+      "label": "wallet-journal-return",
+      "windowMs": 226.24489099999937,
+      "taskMs": 50.953999999999944,
+      "scriptMs": 8.476999999999958,
+      "layoutMs": 1.919000000000004,
+      "recalcMs": 12.403999999999998,
+      "heapBefore": 19016896,
+      "heapAfter": 18980988
+    },
+    {
+      "label": "industry-first-use",
+      "windowMs": 271.3717319999996,
+      "taskMs": 94.7960000000001,
+      "scriptMs": 24.74900000000002,
+      "layoutMs": 4.290000000000002,
+      "recalcMs": 9.978000000000002,
+      "heapBefore": 18980988,
+      "heapAfter": 16294024
+    }
+  ],
+  "counts": [],
+  "errors": [],
+  "external": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/timeline?limit=5&character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/goals?character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=43"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    }
+  ],
+  "complete": true,
+  "limitations": [
+    "Synthetic populated connected pilots; no real ESI traffic.",
+    "Diagnostic counters wrap Array.map/Object.values/Intl constructors by fixture row shape; they count operations, not React commits. Counter mode is never used for CPU comparisons.",
+    "Timing mode contains no row/formatter instrumentation. Compare fresh baseline/candidate browsers in ABBA order, same fixture/build configuration.",
+    "Forced garbage collection after each phase changes execution; disregard all elapsed/task metrics here. Only JSHeapUsedSize after collection is used for retained-heap comparison.",
+    "No browser virtualization or archive-history performance conclusion; archive belongs to its separate acceptance lane."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "sourceVerified": true,
+  "endedAt": "2026-10-07T12:06:41.810Z"
+}

@@ -1,0 +1,33 @@
+{
+  "sources": {
+    "rc16": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+      "manifest": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/diagnostics/inputs-20261007/rc16-source.json"
+    },
+    "fa6": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-idle",
+      "manifest": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/diagnostics/inputs-20261007/fa6-source.json"
+    },
+    "allocation": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-startup-trial",
+      "manifest": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/diagnostics/inputs-20261007/allocation-source.json"
+    }
+  },
+  "order": [
+    "rc16",
+    "fa6",
+    "allocation",
+    "allocation",
+    "fa6",
+    "rc16"
+  ],
+  "schedulers": [
+    "active",
+    "nosync"
+  ],
+  "windows": 4,
+  "samples": 25,
+  "warmupSeconds": 36,
+  "cpuProfile": false,
+  "fixtureNow": 1791374003764
+}

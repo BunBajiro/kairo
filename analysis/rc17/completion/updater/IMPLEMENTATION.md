@@ -1,5 +1,7 @@
 # RC17 updater completion checkpoint — 7 October 2026
 
+Later same-day follow-up: [RESULTS-20261007.md](RESULTS-20261007.md) records the completed real-archive loaded/isolated measurements, fresh U3 decision and a further rollback-recovery fix. The original pending-measurement statements below describe this earlier checkpoint.
+
 This checkpoint implements the concrete U2/U2b resilience gaps. It does **not** close U1, does not assert a clean RC17, and does not replace the final exact-source verification/performance gates. PR #10 remains withdrawn. Source edits are in the shared `kairo-rc17-completion` tree after `a27d36c`; the parent owns the final commit/fingerprint. No commit or push was made by this workstream.
 
 ## Changes and evidence

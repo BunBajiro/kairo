@@ -1,0 +1,3844 @@
+{
+  "schema": 1,
+  "mode": "untimed-counters",
+  "node": "v24.19.0",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": false
+  },
+  "harnessSha256": "53b796e29cc14327c421d75a2a0d547301d955c0e5f9ae8cd75ee4eba68528dc",
+  "cases": [
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 100,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 1000,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 0,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3
+          },
+          "snapshots": {},
+          "sql": {},
+          "roster": 0
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 21,
+            "module:training": 18,
+            "module:wallet": 15,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 15,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3
+          },
+          "sql": {},
+          "roster": 9
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 10,
+      "visibility": "all",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "c4a50c3354227628da8ddee8556e85609b3e8d06db69c1cb41be6fd4fbe16e36"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 10,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 3,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 50,
+      "visibility": "all",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "6063ef0ac4d10e0228f60777a40979457ded66038d44eed80044fce4bedcb3cf"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 0,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [],
+        "streamWrites": [],
+        "uiBytes": [],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 1,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0
+        ],
+        "streamWrites": [
+          0
+        ],
+        "uiBytes": [
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "binding-boundaries",
+      "namesCount": 10000,
+      "elementCount": 50,
+      "visibility": "none",
+      "clients": 3,
+      "updateBindings": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "stream": 3,
+            "module:wallet": 3,
+            "module:pilot": 3,
+            "names": 3,
+            "module:training": 3,
+            "module:industry": 3
+          },
+          "snapshots": {
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 3
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "noWorkSync": {
+        "repetitions": 3,
+        "counts": {
+          "settings": {
+            "module:pilot": 24,
+            "module:training": 21,
+            "module:wallet": 18,
+            "module:markets": 3,
+            "module:hangar": 3,
+            "module:industry": 18,
+            "module:combat": 3,
+            "module:opsec": 12,
+            "module:comms": 3,
+            "opsec": 9,
+            "module:universe": 6,
+            "stream": 3,
+            "names": 3
+          },
+          "snapshots": {
+            "42:location": 3,
+            "42:profile": 3,
+            "42:wallet": 3,
+            "43:ship": 3,
+            "42:queue": 3,
+            "43:jobs": 3
+          },
+          "sql": {
+            "SELECT * FROM goals WHERE id=? AND character_id=?": 18,
+            "SELECT * FROM sessions WHERE character_id=? AND ended IS NULL ORDER BY started DESC LIMIT 1": 6,
+            "SELECT type,COUNT(*) n FROM events WHERE character_id=? AND at>=? GROUP BY type": 3,
+            "SELECT COUNT(*) n FROM goals WHERE character_id=? AND done=1": 3
+          },
+          "roster": 12
+        },
+        "streamBytes": [
+          0,
+          0,
+          0
+        ],
+        "streamWrites": [
+          0,
+          0,
+          0
+        ],
+        "uiBytes": [
+          0,
+          0,
+          0
+        ],
+        "providerCalls": 0
+      },
+      "stateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "kind": "full-name-snapshots",
+      "namesCount": 100,
+      "clients": 0,
+      "repetitions": 2,
+      "counts": {
+        "settings": {
+          "opsec": 38,
+          "module:pilot": 42,
+          "module:universe": 40,
+          "module:opsec": 62,
+          "module:training": 2,
+          "module:wallet": 10,
+          "module:markets": 2,
+          "module:hangar": 2,
+          "module:industry": 2,
+          "module:combat": 2,
+          "module:comms": 2,
+          "stream": 2
+        },
+        "snapshots": {
+          "42:wallet": 4,
+          "42:journal": 4,
+          "42:transactions": 4,
+          "42:queue": 6,
+          "42:orders": 4
+        },
+        "sql": {
+          "SELECT g.*,t.source,t.type_id,t.state,t.status,t.detail,t.updated_at,t.completed_at\n        FROM goals g JOIN goal_tracking t ON t.goal_id=g.id WHERE g.character_id=? AND g.done=0 AND t.source IN (?)": 2
+        },
+        "roster": 22
+      },
+      "streamBytes": [],
+      "streamWrites": [],
+      "uiBytes": [],
+      "providerCalls": 8,
+      "measuredFramesPerClient": 0,
+      "verifiedFramesPerClient": 0,
+      "averageFrameBytes": 0,
+      "namesJsonBytes": 3801,
+      "equivalentData": null
+    }
+  ],
+  "controls": [],
+  "limits": [
+    "Synthetic local SQLite and immediate ESI adapter; no external service or real pilot data.",
+    "Core, projections, stream sanitization and SSE encoding/chunking are the actual production implementations.",
+    "Client sinks model consuming local SSE clients, not browser parsing/layout or TCP backpressure.",
+    "100/1000/10000 directory entries and 10/50 configured widgets are declared small/populated/stress fixtures, not claims about a typical user.",
+    "Frozen Date.now keeps no-work projection values stable; explicit freshness controls advance it separately.",
+    "Counter wrappers never run inside ordinary timing; elapsed numbers are diagnostic component costs, not end-user FPS or whole-app CPU."
+  ]
+}

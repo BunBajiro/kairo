@@ -1,0 +1,601 @@
+{
+  "schema": 2,
+  "purpose": "matched compiled replay geography/event-cap and retained ownership trial",
+  "replayCase": "repeat-small",
+  "retention": [],
+  "ownership": [
+    {
+      "label": "after-replay-1000",
+      "requests": [],
+      "staleUniverseRequests": 0
+    }
+  ],
+  "harnessSha256": "332a1ce4584f0d303dceb1098c2d8cf921968ad3d7d969891401a5999dcc7acf",
+  "sourceCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4-minus-S3-R1",
+  "sourceHashes": {
+    "package.json": "876452aa395ef8bb38834b469853fc8235ae9935abf2fd72bedaffb33b1139e5",
+    "server/index.mjs": "2b237d3260540a335b392139bdb27e5eed5fd781e1b355f3accd82a651de5936",
+    "server/store.mjs": "1e9665ff130a6a69ca3fcd4fb9d3a151ec521d0d21bae9aa751c82e21f51194f",
+    "components/kairo/dashboard.tsx": "dadda0771c5b9cf3f0f673371c26f57410542ef20ecf6d78a2eeff2cab469a24",
+    "components/kairo/session-replay.tsx": "ebae48030dc69cbea81daaef2d091c0832e464adeaf9c06d3ddcd71dba4622a9",
+    "components/kairo/universe.tsx": "3d11bcdf1bcb628b57f652e9b30d89ec43311f97d62b45108f30332d9bd99b6e",
+    "server/universe-static.mjs": "543672680423b48199482deeb5ba2d3dc7eea33d797a77d84f71350220d19579",
+    "components/kairo/session-replay-timeline.mjs": null
+  },
+  "version": "0.8.0-rc.17",
+  "repo": "/workspace/scratch/a2f3334402fc/kairo-session-replay-baseline-c954",
+  "overviewOnly": false,
+  "retentionMode": "none",
+  "profiling": false,
+  "schematicPreference": false,
+  "startedAt": "2026-10-07T12:06:44.049Z",
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "totalMemory": 10451464192,
+    "viewport": {
+      "width": 1600,
+      "height": 1050,
+      "dpr": 1
+    },
+    "chromeFlags": [
+      "--headless",
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ],
+    "limitations": [
+      "Synthetic connected pilot; no ESI traffic or real player credentials.",
+      "Headless Linux software rendering; no desktop GPU/FPS claim.",
+      "CDP TaskDuration covers renderer main-thread tasks, not total browser/worker/GPU CPU.",
+      "Two synthetic pilots each own 25/100-node maps. Replay uses1000 visits at60-second spacing. repeat-small uses200 events; repeat-cap/distinct-cap use10000. Distinct geography uses1000 different known systems and does not claim confirmed gate travel.",
+      "Browser HTTPS and known image CDN HTTP requests blocked using CDP; application CSP restricts connections to same-origin.",
+      "Instrumentation: canvas clearRect counter and long-task observer, CDP metrics and network events; no CPU profile. Forced GC, DOM counters and global listener inspection run outside timed samples.",
+      "Idle samples have no RAF probe. Interaction samples have an RAF interval observer; identical for all sizes.",
+      "Retention snapshots use three explicit GC passes after two seconds on Overview; this is retained-heap diagnosis, not natural-GC memory or desktop residency. No leak inference from RSS."
+    ],
+    "smoke": false,
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/138.0.7204.0",
+      "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+      "jsVersion": "13.8.258"
+    },
+    "webgl": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    }
+  },
+  "fixture": {
+    "characters": [
+      {
+        "id": 42,
+        "name": "Synthetic Followup Pilot 42"
+      },
+      {
+        "id": 43,
+        "name": "Synthetic Followup Pilot 43"
+      }
+    ],
+    "maps": [
+      {
+        "id": "followup-42-25",
+        "characterId": 42,
+        "nodes": 25,
+        "connections": 34
+      },
+      {
+        "id": "followup-42-100",
+        "characterId": 42,
+        "nodes": 100,
+        "connections": 139
+      },
+      {
+        "id": "followup-43-25",
+        "characterId": 43,
+        "nodes": 25,
+        "connections": 34
+      },
+      {
+        "id": "followup-43-100",
+        "characterId": 43,
+        "nodes": 100,
+        "connections": 139
+      }
+    ],
+    "replays": [
+      {
+        "id": "followup-replay-1000",
+        "characterId": 42,
+        "visits": 1000,
+        "events": 200,
+        "travel": 999,
+        "durationMs": 60000000,
+        "uniqueSystems": 11,
+        "firstSystem": "Jita",
+        "lastSystem": "Itamo",
+        "started": "2026-09-27T12:06:44.214Z",
+        "ended": "2026-09-28T04:46:44.214Z",
+        "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358",
+        "validated": {
+          "visits": 1000,
+          "events": 200,
+          "travel": 999,
+          "durationMs": 60000000,
+          "uniqueSystems": 11,
+          "owner": 42,
+          "live": false,
+          "gaps": 0,
+          "missingCoordinates": 0,
+          "inferredVisits": 0,
+          "truncated": false,
+          "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358"
+        },
+        "responseBytes": 639707,
+        "backwardStart": {
+          "playing": false,
+          "elapsed": 0,
+          "duration": 60000000,
+          "location": "Jita",
+          "title": "1000-visit synthetic recorded journey"
+        },
+        "endTransition": {
+          "playing": false,
+          "elapsed": 60000000,
+          "duration": 60000000,
+          "location": "Itamo",
+          "title": "1000-visit synthetic recorded journey"
+        }
+      }
+    ],
+    "spacingMs": 60000,
+    "staticSystems": 8490,
+    "knownSystems": 5485,
+    "gates": 6989
+  },
+  "samples": [
+    {
+      "name": "replay-prepare",
+      "visits": 1000,
+      "warmAtlas": true,
+      "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+      "domElementCount": 655,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 884.5474490000006,
+      "taskMs": 231.2590000000001,
+      "scriptMs": 81.10400000000001,
+      "layoutMs": 11.092000000000004,
+      "recalcMs": 19.77500000000001,
+      "layouts": 12,
+      "recalcs": 35,
+      "heapUsed": 22276544,
+      "heapTotal": 71700480,
+      "domNodes": 846,
+      "canvasDraws": 3,
+      "longTasks": [],
+      "raf": null,
+      "requests": [
+        {
+          "requestId": "73.28",
+          "at": 9520.02462,
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 23.8389999994979,
+          "totalMs": 41.23799999979383,
+          "encodedBytes": 696
+        },
+        {
+          "requestId": "73.29",
+          "at": 9520.025431,
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 22.69700000033481,
+          "totalMs": 12.265999999726773,
+          "encodedBytes": 544081
+        },
+        {
+          "requestId": "73.30",
+          "at": 9520.048935,
+          "url": "/api/sessions/followup-replay-1000/replay?character=42",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 63.99099999907776,
+          "totalMs": 22.236999999222462,
+          "encodedBytes": 640329
+        }
+      ]
+    },
+    {
+      "name": "replay-playback-start-60x",
+      "visits": 1000,
+      "speed": 60,
+      "domElementCount": 668,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6062.308454,
+      "taskMs": 1490.789,
+      "scriptMs": 554.53,
+      "layoutMs": 33.164,
+      "recalcMs": 95.46400000000001,
+      "layouts": 283,
+      "recalcs": 405,
+      "heapUsed": 30321208,
+      "heapTotal": 96387072,
+      "domNodes": 893,
+      "canvasDraws": 238,
+      "longTasks": [],
+      "raf": {
+        "count": 363,
+        "p50": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 16.80000000000109,
+        "over33ms": 0
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 360000,
+        "duration": 60000000,
+        "location": "Itamo",
+        "title": "1000-visit synthetic recorded journey"
+      }
+    },
+    {
+      "name": "replay-playback-middle-60x",
+      "visits": 1000,
+      "speed": 60,
+      "startElapsed": 30000000,
+      "domElementCount": 732,
+      "mapNodes": 0,
+      "camera": null,
+      "windowMs": 6069.131095999999,
+      "taskMs": 1850.7640000000004,
+      "scriptMs": 519.2459999999999,
+      "layoutMs": 33.084,
+      "recalcMs": 94.863,
+      "layouts": 272,
+      "recalcs": 395,
+      "heapUsed": 74153804,
+      "heapTotal": 106348544,
+      "domNodes": 1246,
+      "canvasDraws": 229,
+      "longTasks": [],
+      "raf": {
+        "count": 355,
+        "p50": 16.69999999999891,
+        "p95": 16.700000000000728,
+        "max": 166.6999999999989,
+        "over33ms": 1
+      },
+      "requests": [],
+      "replayState": {
+        "playing": false,
+        "elapsed": 30360000,
+        "duration": 60000000,
+        "location": "Maurasi",
+        "title": "1000-visit synthetic recorded journey"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "requestId": "73.17",
+      "at": 9515.815247,
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.747999999992317,
+      "totalMs": 5.8429999990039505,
+      "encodedBytes": 7088
+    },
+    {
+      "requestId": "73.18",
+      "at": 9515.835432,
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 9.877000000415137,
+      "totalMs": 4.382999999506865,
+      "encodedBytes": 6944
+    },
+    {
+      "requestId": "73.19",
+      "at": 9515.842186,
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "status": 200,
+      "responseHeadersMs": 3.4940000005008187,
+      "totalMs": 4.108000000996981,
+      "encodedBytes": 638
+    },
+    {
+      "requestId": "73.20",
+      "at": 9515.842556,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.791000001205248
+    },
+    {
+      "requestId": "73.21",
+      "at": 9515.887513,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 3.9699999997537816,
+      "totalMs": 4.14699999964796,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "73.22",
+      "at": 9515.888145,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.26799999877403,
+      "totalMs": 4.496999999901163,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "73.23",
+      "at": 9517.773192,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 113.43599999963772,
+      "totalMs": 127.40800000028685,
+      "encodedBytes": 867000
+    },
+    {
+      "requestId": "73.24",
+      "at": 9517.773768,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 167.03200000119978,
+      "totalMs": 126.18800000018382,
+      "encodedBytes": 544081
+    },
+    {
+      "requestId": "73.26",
+      "at": 9519.287144,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.421000000249478,
+      "totalMs": 4.161000000749482,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "73.27",
+      "at": 9519.287487,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 7.246999999551917,
+      "totalMs": 4.053000000567408,
+      "encodedBytes": 620
+    },
+    {
+      "requestId": "73.28",
+      "at": 9520.02462,
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 23.8389999994979,
+      "totalMs": 41.23799999979383,
+      "encodedBytes": 696
+    },
+    {
+      "requestId": "73.29",
+      "at": 9520.025431,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 22.69700000033481,
+      "totalMs": 12.265999999726773,
+      "encodedBytes": 544081
+    },
+    {
+      "requestId": "73.30",
+      "at": 9520.048935,
+      "url": "/api/sessions/followup-replay-1000/replay?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 63.99099999907776,
+      "totalMs": 22.236999999222462,
+      "encodedBytes": 640329
+    },
+    {
+      "requestId": "73.32",
+      "at": 9533.846947,
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 82.27000000078988,
+      "totalMs": 10.398000000350294,
+      "encodedBytes": 544081
+    },
+    {
+      "requestId": "73.33",
+      "at": 9533.987242,
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 16.107000001284177,
+      "totalMs": 3.274000000601518,
+      "encodedBytes": 1774
+    },
+    {
+      "requestId": "73.34",
+      "at": 9533.987588,
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 15.991000000212807,
+      "totalMs": 3.034999999727006,
+      "encodedBytes": 620
+    }
+  ],
+  "errors": [],
+  "startup": {
+    "rendererMetrics": {
+      "Timestamp": 9517.728192,
+      "AudioHandlers": 0,
+      "AudioWorkletProcessors": 0,
+      "Documents": 3,
+      "Frames": 1,
+      "JSEventListeners": 703,
+      "LayoutObjects": 578,
+      "MediaKeySessions": 0,
+      "MediaKeys": 0,
+      "Nodes": 634,
+      "Resources": 13,
+      "ContextLifecycleStateObservers": 4,
+      "V8PerContextDatas": 2,
+      "WorkerGlobalScopes": 0,
+      "UACSSResources": 0,
+      "RTCPeerConnections": 0,
+      "ResourceFetchers": 3,
+      "AdSubframes": 0,
+      "DetachedScriptStates": 1,
+      "ArrayBufferContents": 4,
+      "LayoutCount": 8,
+      "RecalcStyleCount": 20,
+      "LayoutDuration": 0.069138,
+      "RecalcStyleDuration": 0.01459,
+      "DevToolsCommandDuration": 0.000771,
+      "ScriptDuration": 0.112181,
+      "V8CompileDuration": 0.000279,
+      "TaskDuration": 0.247872,
+      "TaskOtherDuration": 0.050913,
+      "ThreadTime": 0.189277,
+      "ProcessTime": 0,
+      "JSHeapUsedSize": 5651296,
+      "JSHeapTotalSize": 10485760,
+      "FirstMeaningfulPaint": 9515.760294,
+      "DomContentLoaded": 9515.681815,
+      "NavigationStart": 9515.633125
+    },
+    "navigation": [
+      {
+        "name": "http://127.0.0.1:18690/#overview",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 55.30000000074506,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "workerStart": 0,
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.2000000011175871,
+        "domainLookupStart": 2.800000000745058,
+        "domainLookupEnd": 2.800000000745058,
+        "connectStart": 2.800000000745058,
+        "secureConnectionStart": 0,
+        "connectEnd": 2.900000000372529,
+        "requestStart": 3,
+        "responseStart": 7.700000001117587,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 7.700000001117587,
+        "responseEnd": 9,
+        "transferSize": 42044,
+        "encodedBodySize": 41744,
+        "decodedBodySize": 41744,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 48.70000000111759,
+        "domContentLoadedEventStart": 48.70000000111759,
+        "domContentLoadedEventEnd": 48.70000000111759,
+        "domComplete": 55.20000000111759,
+        "loadEventStart": 55.30000000074506,
+        "loadEventEnd": 55.30000000074506,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null
+      }
+    ],
+    "resources": [
+      {
+        "url": "/assets/index-DGoGoinT.css",
+        "duration": 21.799999998882413,
+        "transferSize": 252120,
+        "decodedBodySize": 251820
+      },
+      {
+        "url": "/assets/page-Ch-8o9su.css",
+        "duration": 22.699999999254942,
+        "transferSize": 296932,
+        "decodedBodySize": 296632
+      },
+      {
+        "url": "/assets/layout-segment-context-CZkXwNG_.js",
+        "duration": 20.300000000745058,
+        "transferSize": 588,
+        "decodedBodySize": 288
+      },
+      {
+        "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+        "duration": 20.5,
+        "transferSize": 994,
+        "decodedBodySize": 694
+      },
+      {
+        "url": "/assets/index-BrpEfx-4.js",
+        "duration": 21.09999999962747,
+        "transferSize": 81042,
+        "decodedBodySize": 80742
+      },
+      {
+        "url": "/assets/framework-CXnKph_e.js",
+        "duration": 21.799999998882413,
+        "transferSize": 190105,
+        "decodedBodySize": 189805
+      },
+      {
+        "url": "/assets/page-COoI8948.js",
+        "duration": 34.29999999888241,
+        "transferSize": 1402800,
+        "decodedBodySize": 1402500
+      }
+    ]
+  },
+  "builtAssetHashes": {
+    "/assets/index-DGoGoinT.css": "066a5cff94ccefbaf3743400e3349cb2d18e7b310c9de0731f8ce496fc071950",
+    "/assets/page-Ch-8o9su.css": "09c22104c3f4f3fa2e1e0eb5fe03f7413644810c900496b2aa05043263a2b3ac",
+    "/assets/layout-segment-context-CZkXwNG_.js": "bd3a94cec47208acc50cee2c769001255876160ce441ca409b435bd9f37b3228",
+    "/assets/rolldown-runtime-S-ySWqyJ.js": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+    "/assets/index-BrpEfx-4.js": "6fb88eab4939e1fa847f3a09d098d785d73d1438ad95b7f2da1165966d820384",
+    "/assets/framework-CXnKph_e.js": "73b45b606448e4dc310fbe851d8089ee752f3eb081980b3a6fec88988820ee12",
+    "/assets/page-COoI8948.js": "f7bad57e20798aa36feda33dec04afa2c63eeacb86451b4bd1e876acb013ecac"
+  },
+  "eventSourceRequests": [
+    {
+      "requestId": "73.20",
+      "at": 9515.842556,
+      "url": "/api/events",
+      "method": "GET",
+      "status": 200,
+      "responseHeadersMs": 4.791000001205248
+    }
+  ],
+  "externalFetches": [],
+  "blockedBrowserExternalAttempts": [],
+  "controls": {
+    "successfulBrowserExternalResponses": 0,
+    "rendererExceptions": 0,
+    "deniedBackendFetchAttempts": 0
+  },
+  "endedAt": "2026-10-07T12:07:03.933Z"
+}

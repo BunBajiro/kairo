@@ -1,0 +1,68 @@
+diff --git a/components/kairo/universe-map.tsx b/components/kairo/universe-map.tsx
+index ba843f5..3b6af57 100644
+--- a/components/kairo/universe-map.tsx
++++ b/components/kairo/universe-map.tsx
+@@ -546,6 +546,9 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
+     if (surface().hidden) return;
+     const context = canvas.current?.getContext('2d'); if (!context) return;
+     const {width, height, dpr} = dimensions.current, camera = view.current;
++    const diagnosticStart = performance.now();
++    let diagnosticVisibleAt = 0, diagnosticVisibleDone = 0, diagnosticGatesDone = 0, diagnosticSystemsAt = 0, diagnosticLabelsAt = 0, diagnosticLabelsDone = 0;
++    let diagnosticGatesDrawn = 0;
+     const screen = (point: Point) => ({x: point.x * camera.scale + camera.x, y: point.y * camera.scale + camera.y});
+     const hits: SymbolHit[] = [];
+     const register = (symbol: MapSymbolContext, x: number, y: number, radius = 11, priority = 1, segment?: {x: number; y: number}, systemIds?: number[]) => {
+@@ -606,16 +609,19 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
+       }
+       context.restore();
+     }
++    diagnosticVisibleAt = performance.now();
+     const visible = points.filter(point => {const p = screen(point); return p.x > -35 && p.x < width + 35 && p.y > -35 && p.y < height + 35;});
++    diagnosticVisibleDone = performance.now();
+     if (showConnections && space === 'known') {
+       context.strokeStyle = camera.scale > 2 ? '#8391a539' : '#8391a521'; context.lineWidth = .65; context.beginPath();
+-      for (const gate of atlas.gates) {const from = byId.get(gate.from_system_id), to = byId.get(gate.to_system_id); if (!from || !to) continue; const a = screen(from), b = screen(to); if ((a.x < 0 && b.x < 0) || (a.y < 0 && b.y < 0) || (a.x > width && b.x > width) || (a.y > height && b.y > height)) continue; context.moveTo(a.x, a.y); context.lineTo(b.x, b.y);} context.stroke();
++      for (const gate of atlas.gates) {const from = byId.get(gate.from_system_id), to = byId.get(gate.to_system_id); if (!from || !to) continue; const a = screen(from), b = screen(to); if ((a.x < 0 && b.x < 0) || (a.y < 0 && b.y < 0) || (a.x > width && b.x > width) || (a.y > height && b.y > height)) continue; diagnosticGatesDrawn++; context.moveTo(a.x, a.y); context.lineTo(b.x, b.y);} context.stroke();
+       const hover = byId.get(hoveredRef.current || 0);
+       if (hover) for (const next of graph.get(hover.system.system_id) || []) {
+         const target = byId.get(next); if (!target) continue; const a = screen(hover), b = screen(target);
+         context.strokeStyle = hover.system.region_id !== target.system.region_id ? '#e6bf83' : hover.system.constellation_id !== target.system.constellation_id ? '#94bfea' : '#8bd8cd'; context.lineWidth = 1.7; context.beginPath(); context.moveTo(a.x, a.y); context.lineTo(b.x, b.y); context.stroke();
+       }
+     }
++    diagnosticGatesDone = performance.now();
+     if (showSpecialLinks && !replay) for (const link of intel?.links || []) {
+       if (!activeLink(link) || (space === 'wormhole' && link.kind !== 'wormhole')) continue;
+       const from = byId.get(link.from_system_id), to = byId.get(link.to_system_id); if (!from || !to) continue;
+@@ -763,6 +769,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
+       context.lineWidth = .7; context.beginPath(); context.arc(p.x, p.y, radius, 0, Math.PI * 2); context.fill(); context.stroke();
+       register({id:`indicator:${point.system.system_id}`,kind:'indicator',title:INDICATOR_LABELS[indicator],description:`${value.toLocaleString()}${indicator==='npc_delta'?' change between rolling one-hour snapshots, not new kills.':''}`,systemId:point.system.system_id,systemName:point.system.name,source:'Map data snapshot'},p.x,p.y,radius+3,3);
+     }
++    diagnosticSystemsAt = performance.now();
+     const occupied: LabelRect[] = [];
+     const claimLabel = (bounds: LabelRect) => {
+       const rect = labelCollisionBounds(bounds);
+@@ -816,6 +823,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
+       register(symbol,x,y,radius+5,10,undefined,endpoints.map(endpoint=>endpoint.systemId));
+       if(selected && endpoints.length===1)systemLabels.push({name:`${endpoints[0].system.name} · ${source==='thera'?'Thera':'Turnur'}`,x:x+5,y:y-5,priority:3,dim:false});
+     }
++    diagnosticLabelsAt = performance.now();
+     for (const label of systemLabels.sort((a, b) => b.priority - a.priority)) {
+       const fontSize = label.priority ? 16 : 14;
+       context.font = `${label.priority ? '600 ' : ''}${fontSize}px "Cascadia Code", Consolas, monospace`;
+@@ -856,6 +864,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
+         if (paintLabel(text,x,y,14,region.id === focusedRegionId ? '#e0f0f5' : '#b9ccdd',1,bounds)) drawn++;
+       }
+     }
++    diagnosticLabelsDone = performance.now();
+     if (replay?.events.length) {
+       const grouped = new Set<number>();
+       for (const event of replay.events) {
+@@ -883,6 +892,8 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
+       else if (active.symbol.systemId) {const point=byId.get(active.symbol.systemId);if(point){const p=screen(point);active.x=p.x;active.y=p.y;}}
+       positionMapContext(symbolContextElement.current,{x:active.x,y:active.y},{width,height},!!pinnedSymbolRef.current);
+     }
++    const destination = (globalThis as any).__atlasDraw;
++    if (destination) destination.push({projection,background,camera:{...camera,width,height},scale:camera.scale,points:points.length,visible:visible.length,gates:atlas.gates.length,gatesDrawn:diagnosticGatesDrawn,labels:systemLabels.length,totalMs:performance.now()-diagnosticStart,visibleMs:diagnosticVisibleDone-diagnosticVisibleAt,gatesWithCanvasMs:diagnosticGatesDone-diagnosticVisibleDone,systemsWithCanvasMs:diagnosticLabelsAt-diagnosticSystemsAt,labelsWithCanvasMs:diagnosticLabelsDone-diagnosticLabelsAt});
+   };
+   useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, routeEdges, route, showConnections, showSpecialLinks, focusedRegionId, space, replayTrail, pins, cynoPins, replay, standingFilter, territoryPalette, territoryFocus, overviewOpen, overview, worldUnitsPerLightYear, tactical, operational, feeds, intelPulse, projection, surfaceKey, portalEndpoints, portalNetwork, redraw]);
+ 

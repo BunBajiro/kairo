@@ -8,7 +8,7 @@ import {createHash} from 'node:crypto';
 import {loadSourceManifest,verifySource} from '../../harness/source-manifest.mjs';
 const self=fileURLToPath(import.meta.url),here=dirname(self),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 async function execute(command,args,env=process.env){await new Promise((ok,bad)=>{const child=spawn(command,args,{stdio:'inherit',env});child.on('error',bad);child.on('exit',(code,signal)=>code===0?ok():bad(Error(`${command}: ${code??signal}`)));});}
-if(process.env.KAIRO_G9_LOCKED!=='1'){await execute('flock',['-n','/tmp/kairo-rc16-benchmark.lock',process.execPath,self,...process.argv.slice(2)],{...process.env,KAIRO_G9_LOCKED:'1'});process.exit(0);}
+if(process.env.KAIRO_G9_LOCKED!=='1'){await execute('flock',['/tmp/kairo-performance.lock',process.execPath,self,...process.argv.slice(2)],{...process.env,KAIRO_G9_LOCKED:'1'});process.exit(0);}
 const[configArg,outputArg]=process.argv.slice(2),configPath=resolve(configArg),configBytes=await readFile(configPath),config=JSON.parse(configBytes),output=resolve(outputArg),sources={};
 for(const[name,entry]of Object.entries(config.sources)){sources[name]=await loadSourceManifest(entry.manifest,entry.root);assert.equal(sources[name].dirty,false);}assert.ok(config.order.length>=2&&config.order.every(name=>sources[name]));
 const hashes={};for(const file of ['idle-startup-run.mjs','idle-startup-worker.mjs','../../harness/source-manifest.mjs','../../harness/backend/fixture.mjs','../../harness/backend/target.mjs','../../harness/legacy-discovery-fixture.mjs'])hashes[file]=hash(await readFile(join(here,file)));

@@ -1,0 +1,520 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-07T12:02:10.505Z",
+  "mode": "archive",
+  "sourceCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+  "sourceFingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+  "sourceDirty": false,
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "notes": [
+    "Analysis-only harness; production modules are imported without modification.",
+    "Timings are local elapsed and process CPU. RSS includes worker threads; JS heap snapshots report the main thread.",
+    "Event-loop delay uses a 5 ms histogram; memory sampled every 100 ms; disk every 1000 ms (sampled peaks are lower bounds)."
+  ],
+  "measurements": [
+    {
+      "label": "bundled_inventory_before_archive",
+      "elapsedMs": 14.04282999999998,
+      "cpuUserMs": 11.613,
+      "cpuSystemMs": 3.971,
+      "eventLoop": {
+        "activeMs": 13.895588999525785,
+        "idleMs": 0.1675520000000006,
+        "utilization": 0.9880857341894211,
+        "delayMeanMs": 7.706624,
+        "delayP99Ms": 7.708671,
+        "delayMaxMs": 7.708671,
+        "samples": 1
+      },
+      "memory": {
+        "rssBefore": 53649408,
+        "rssAfter": 58302464,
+        "peakRss": 58302464,
+        "peakMainHeapUsed": 13806016,
+        "processMaxRssKiB": 71392
+      },
+      "disk": {
+        "finalBytes": 0,
+        "sampledPeakBytes": 0,
+        "samples": 0
+      }
+    },
+    {
+      "label": "local_archive_stream_real_worker_install",
+      "elapsedMs": 11384.266351,
+      "cpuUserMs": 14584.269,
+      "cpuSystemMs": 1101.335,
+      "eventLoop": {
+        "activeMs": 234.0491280004478,
+        "idleMs": 11150.237012,
+        "utilization": 0.020558963919404667,
+        "delayMeanMs": 5.104304638851503,
+        "delayP99Ms": 5.681151,
+        "delayMaxMs": 7.942143,
+        "samples": 2229
+      },
+      "memory": {
+        "rssBefore": 58302464,
+        "rssAfter": 344494080,
+        "peakRss": 365047808,
+        "peakMainHeapUsed": 13860088,
+        "processMaxRssKiB": 358028
+      },
+      "disk": {
+        "finalBytes": 23040599,
+        "sampledPeakBytes": 211529255,
+        "samples": 11
+      },
+      "result": {
+        "phase": "ready",
+        "requests": 2,
+        "distinctStatusTransitions": 43
+      }
+    },
+    {
+      "label": "prepare_pending_with_full_rehash",
+      "elapsedMs": 30.89762200000041,
+      "cpuUserMs": 37.589,
+      "cpuSystemMs": 7.902,
+      "eventLoop": {
+        "activeMs": 29.093358001231536,
+        "idleMs": 1.829381999999896,
+        "utilization": 0.9408402360228413,
+        "delayMeanMs": 5.1974144,
+        "delayP99Ms": 5.988351,
+        "delayMaxMs": 5.988351,
+        "samples": 5
+      },
+      "memory": {
+        "rssBefore": 344494080,
+        "rssAfter": 344563712,
+        "peakRss": 344563712,
+        "peakMainHeapUsed": 9827304,
+        "processMaxRssKiB": 358028
+      },
+      "disk": {
+        "finalBytes": 23040599,
+        "sampledPeakBytes": 23040599,
+        "samples": 0
+      },
+      "result": {
+        "files": 7,
+        "bytes": 23038926,
+        "counts": {
+          "systems": 8490,
+          "regions": 114,
+          "constellations": 1184,
+          "gates": 6989,
+          "stargates": 13978,
+          "celestials": 454830,
+          "stations": 5210,
+          "space": {
+            "known": 5485,
+            "wormhole": 2604,
+            "abyssal": 200,
+            "other": 201
+          }
+        },
+        "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+      }
+    },
+    {
+      "label": "commit_pending_and_cleanup",
+      "elapsedMs": 5.793644999999742,
+      "cpuUserMs": 0.014,
+      "cpuSystemMs": 6.023,
+      "eventLoop": {
+        "activeMs": 4.526501999607717,
+        "idleMs": 1.2845400000005611,
+        "utilization": 0.778948422660316,
+        "delayMeanMs": null,
+        "delayP99Ms": null,
+        "delayMaxMs": null,
+        "samples": 0
+      },
+      "memory": {
+        "rssBefore": 344563712,
+        "rssAfter": 344530944,
+        "peakRss": 344563712,
+        "peakMainHeapUsed": 9911384,
+        "processMaxRssKiB": 358028
+      },
+      "disk": {
+        "finalBytes": 23040641,
+        "sampledPeakBytes": 23040641,
+        "samples": 0
+      }
+    },
+    {
+      "label": "prepare_active_without_rehash_10_repeats",
+      "elapsedMs": 39.124572000000626,
+      "cpuUserMs": 38.372,
+      "cpuSystemMs": 1.304,
+      "eventLoop": {
+        "activeMs": 32.37397399962538,
+        "idleMs": 6.784459000000425,
+        "utilization": 0.8267433479765327,
+        "delayMeanMs": 5.151402666666667,
+        "delayP99Ms": 6.262783,
+        "delayMaxMs": 6.262783,
+        "samples": 6
+      },
+      "memory": {
+        "rssBefore": 344662016,
+        "rssAfter": 348696576,
+        "peakRss": 348696576,
+        "peakMainHeapUsed": 12850232,
+        "processMaxRssKiB": 358028
+      },
+      "disk": {
+        "finalBytes": 23040641,
+        "sampledPeakBytes": 23040641,
+        "samples": 0
+      },
+      "result": {
+        "timesMs": [
+          4.260997000001225,
+          3.8650109999998676,
+          4.20494300000064,
+          3.550537000000986,
+          3.7785100000000966,
+          4.449260999999751,
+          3.4185789999992267,
+          3.522134000000733,
+          4.498314000000391,
+          3.4561849999990955
+        ]
+      }
+    }
+  ],
+  "input": {
+    "archiveBasename": "official.zip",
+    "archiveBytes": 99197259,
+    "expectedBuild": 3552227
+  },
+  "finalInventory": [
+    {
+      "name": "active.json",
+      "bytes": 93
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/manifest.json",
+      "bytes": 1384
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/market-categories.json",
+      "bytes": 483778
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/npc-market-owners.json",
+      "bytes": 16536
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/universe-details-000.bin",
+      "bytes": 8388608
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/universe-details-001.bin",
+      "bytes": 8388608
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/universe-details-002.bin",
+      "bytes": 4914461
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/universe-provenance.json",
+      "bytes": 2805
+    },
+    {
+      "name": "build-3552227-25eedaaa-d3b5-4aba-8e89-f8a34ec6c98b/universe.json.gz",
+      "bytes": 844130
+    },
+    {
+      "name": "state.json",
+      "bytes": 238
+    }
+  ],
+  "manifest": {
+    "schema": 1,
+    "build": 3552227,
+    "releasedAt": "2026-09-28T11:08:09Z",
+    "source": "https://developers.eveonline.com/static-data/tranquility/eve-online-static-data-3552227-jsonl.zip",
+    "files": [
+      {
+        "name": "universe-details-000.bin",
+        "bytes": 8388608,
+        "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+      },
+      {
+        "name": "universe-details-001.bin",
+        "bytes": 8388608,
+        "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+      },
+      {
+        "name": "universe-details-002.bin",
+        "bytes": 4914461,
+        "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+      },
+      {
+        "name": "universe.json.gz",
+        "bytes": 844130,
+        "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+      },
+      {
+        "name": "universe-provenance.json",
+        "bytes": 2805,
+        "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+      },
+      {
+        "name": "market-categories.json",
+        "bytes": 483778,
+        "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+      },
+      {
+        "name": "npc-market-owners.json",
+        "bytes": 16536,
+        "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+      }
+    ],
+    "counts": {
+      "systems": 8490,
+      "regions": 114,
+      "constellations": 1184,
+      "gates": 6989,
+      "stargates": 13978,
+      "celestials": 454830,
+      "stations": 5210,
+      "space": {
+        "known": 5485,
+        "wormhole": 2604,
+        "abyssal": 200,
+        "other": 201
+      }
+    },
+    "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83",
+    "installedAt": "2026-10-07T12:02:21.864Z"
+  },
+  "phases": [
+    {
+      "atMs": 14.672637999999978,
+      "phase": "idle::",
+      "rss": 58302464
+    },
+    {
+      "atMs": 16.004452999999984,
+      "phase": "checking::",
+      "rss": 58433536
+    },
+    {
+      "atMs": 23.785066,
+      "phase": "downloading:Downloading the official SDE:",
+      "rss": 58957824
+    },
+    {
+      "atMs": 27.088639,
+      "phase": "downloading:Downloading the official SDE:0",
+      "rss": 59219968
+    },
+    {
+      "atMs": 187.124411,
+      "phase": "building:Preparing and validating the new dataset:",
+      "rss": 119779328
+    },
+    {
+      "atMs": 253.040751,
+      "phase": "building:Validating the official archive:",
+      "rss": 79011840
+    },
+    {
+      "atMs": 1952.4789230000001,
+      "phase": "building:Preparing Universe and market data:0",
+      "rss": 176730112
+    },
+    {
+      "atMs": 2457.418726,
+      "phase": "building:Preparing Universe and market data:",
+      "rss": 212086784
+    },
+    {
+      "atMs": 7594.65616,
+      "phase": "building:Preparing Universe and market data:3",
+      "rss": 327495680
+    },
+    {
+      "atMs": 7713.373837,
+      "phase": "building:Preparing Universe and market data:6",
+      "rss": 333787136
+    },
+    {
+      "atMs": 7835.094228,
+      "phase": "building:Preparing Universe and market data:9",
+      "rss": 334065664
+    },
+    {
+      "atMs": 7946.774851,
+      "phase": "building:Preparing Universe and market data:12",
+      "rss": 338915328
+    },
+    {
+      "atMs": 8066.346928999999,
+      "phase": "building:Preparing Universe and market data:15",
+      "rss": 346476544
+    },
+    {
+      "atMs": 8179.1631130000005,
+      "phase": "building:Preparing Universe and market data:18",
+      "rss": 347394048
+    },
+    {
+      "atMs": 8297.882678,
+      "phase": "building:Preparing Universe and market data:21",
+      "rss": 352505856
+    },
+    {
+      "atMs": 8431.570284,
+      "phase": "building:Preparing Universe and market data:24",
+      "rss": 352878592
+    },
+    {
+      "atMs": 8558.565963000001,
+      "phase": "building:Preparing Universe and market data:27",
+      "rss": 353402880
+    },
+    {
+      "atMs": 8681.381376,
+      "phase": "building:Preparing Universe and market data:30",
+      "rss": 354320384
+    },
+    {
+      "atMs": 8817.636248,
+      "phase": "building:Preparing Universe and market data:33",
+      "rss": 355155968
+    },
+    {
+      "atMs": 8936.787773,
+      "phase": "building:Preparing Universe and market data:36",
+      "rss": 355942400
+    },
+    {
+      "atMs": 9058.854899,
+      "phase": "building:Preparing Universe and market data:39",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9197.373691,
+      "phase": "building:Preparing Universe and market data:42",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9308.131214,
+      "phase": "building:Preparing Universe and market data:45",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9430.948204,
+      "phase": "building:Preparing Universe and market data:48",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9554.63782,
+      "phase": "building:Preparing Universe and market data:51",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9669.612864,
+      "phase": "building:Preparing Universe and market data:54",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9789.682832,
+      "phase": "building:Preparing Universe and market data:57",
+      "rss": 356073472
+    },
+    {
+      "atMs": 9903.348034,
+      "phase": "building:Preparing Universe and market data:60",
+      "rss": 359481344
+    },
+    {
+      "atMs": 10012.915951,
+      "phase": "building:Preparing Universe and market data:63",
+      "rss": 359178240
+    },
+    {
+      "atMs": 10116.60164,
+      "phase": "building:Preparing Universe and market data:66",
+      "rss": 359178240
+    },
+    {
+      "atMs": 10217.402749,
+      "phase": "building:Preparing Universe and market data:69",
+      "rss": 358883328
+    },
+    {
+      "atMs": 10308.820265,
+      "phase": "building:Preparing Universe and market data:72",
+      "rss": 359407616
+    },
+    {
+      "atMs": 10420.437848,
+      "phase": "building:Preparing Universe and market data:75",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10502.345343,
+      "phase": "building:Preparing Universe and market data:78",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10597.976541,
+      "phase": "building:Preparing Universe and market data:81",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10677.393245,
+      "phase": "building:Preparing Universe and market data:84",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10769.661733,
+      "phase": "building:Preparing Universe and market data:87",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10864.069283,
+      "phase": "building:Preparing Universe and market data:90",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10958.751706000001,
+      "phase": "building:Preparing Universe and market data:93",
+      "rss": 359538688
+    },
+    {
+      "atMs": 10983.705598,
+      "phase": "building:Preparing Universe and market data:96",
+      "rss": 360456192
+    },
+    {
+      "atMs": 10987.915087,
+      "phase": "building:Preparing Universe and market data:100",
+      "rss": 360456192
+    },
+    {
+      "atMs": 11133.743999,
+      "phase": "building:Verifying the completed dataset:",
+      "rss": 360198144
+    },
+    {
+      "atMs": 11395.790377,
+      "phase": "ready::",
+      "rss": 344494080
+    }
+  ],
+  "endVerified": true
+}

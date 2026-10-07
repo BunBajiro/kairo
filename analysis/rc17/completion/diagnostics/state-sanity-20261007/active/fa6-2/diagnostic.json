@@ -1,0 +1,2005 @@
+{
+  "schemaVersion": 2,
+  "reconstructedHarness": true,
+  "diagnosticOnly": true,
+  "performanceAcceptance": false,
+  "startedAt": "2026-10-07T11:58:27.051Z",
+  "source": {
+    "commit": "fa6e852b76089b51cd552fa202de85ad6948b0ec",
+    "fingerprint": "39b0f3e5bb815d4455dada3db3f891b90393159c2674d1ac572aebb199cc34a6",
+    "dirty": false
+  },
+  "harnessHashes": {
+    "state-tail-worker.mjs": "591e34d16df9a50babb0cb2703062c7b926dadb70d826a4cbad316cf6400465c",
+    "../../harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "../../harness/backend/fixture.mjs": "62ea73e7fc23ab6c69ba7986c2162823146e350e474729f7cc9c478485cc4073",
+    "../../harness/backend/target.mjs": "a7e061ea9e8e961214f39ec794ff855e947e017bce350368336d891f3b67ad2e",
+    "../../harness/legacy-discovery-fixture.mjs": "486671013d230998828929e24e4fd83ee33e765a052dfffb5d22e03efce4545b"
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9,
+    "timeOrigin": 1791374306868.114
+  },
+  "settings": {
+    "scheduler": "active",
+    "fixture": "stress",
+    "fixtureNow": 1791374003764,
+    "windows": 1,
+    "samples": 10,
+    "warmupsPerWindow": 3,
+    "warmupSeconds": 4,
+    "forcedGc": false,
+    "cpuProfilerDuringWindows": false,
+    "perIterationHash": false,
+    "perIterationByteWalk": false
+  },
+  "limitations": [
+    "GC observation and phase timestamps are diagnostic instrumentation, not original backend acceptance timings.",
+    "Windows in one process are correlated; fresh processes remain separate observations.",
+    "GC overlap is association and does not identify the owner responsible for allocation.",
+    "Active and noSync variants use the same supported setting across sources; no modern-only quiesce API is called.",
+    "Reconstructed harness has a new identity; lost earlier measurements are not recreated."
+  ],
+  "windows": [
+    {
+      "index": 0,
+      "startTime": 5017.943213,
+      "memoryBefore": {
+        "rss": 155041792,
+        "heapUsed": 73228920,
+        "heapTotal": 129671168,
+        "external": 6381199,
+        "arrayBuffers": 2477097
+      },
+      "warmupIterations": [
+        {
+          "startTime": 5018.119508,
+          "endTime": 5027.844419
+        },
+        {
+          "startTime": 5027.858891,
+          "endTime": 5038.000299
+        },
+        {
+          "startTime": 5038.010965,
+          "endTime": 5049.48516
+        }
+      ],
+      "iterations": [
+        {
+          "index": 0,
+          "startTime": 5049.536027,
+          "projectedAt": 5060.936511,
+          "serializedAt": 5073.655539,
+          "endTime": 5073.69615,
+          "projectionMs": 11.400483999999778,
+          "serializationMs": 12.719028000000435,
+          "totalMs": 24.160122999999658,
+          "cpuMs": 24.146,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.008061999999881664
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.00945400000000518
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.004887000000053376
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.003374999999323336
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.006890999999995984
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.0031650000000809086
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.00315500000033353
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.004256000000168569
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0028949999996257247
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.003424999999879219
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.4900579999994079
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.0042569999995976104
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.0030350000006365008
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 9.776468999999452
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.014791999999943073
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.009214000000611122
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.004697000000305707
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.004226000000016938
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.0035550000002331217
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.0033849999999802094
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.006059000000277592
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.009173000000373577
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.004457000000002154
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.0034750000004351023
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0028940000001966837
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0032850000006874325
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0030839999999443535
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.0032650000002831803
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.0032650000002831803
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.005438000000140164
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.0030740000001969747
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.003095000000030268
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.0028439999996408005
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.004275999999663327
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.003275000000030559
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002694000000701635
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.0030240000005505863
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0028439999996408005
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.0028350000002319575
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 1,
+          "startTime": 5073.813627,
+          "projectedAt": 5090.844097,
+          "serializedAt": 5102.729351,
+          "endTime": 5102.766026,
+          "projectionMs": 17.030469999999696,
+          "serializationMs": 11.885253999999804,
+          "totalMs": 28.952398999999787,
+          "cpuMs": 33.288,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.029263999999784573
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.010085999999319029
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.006930000000465952
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.004237000000102853
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.006448999999520311
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.004537000000709668
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.0034750000004351023
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.005288000000291504
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0031749999998282874
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.004918000000543543
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.5564680000006774
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.006108999999923981
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.003845999999612104
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 15.470110999999633
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.021512999999686144
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.00497799999993731
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.004146000000218919
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.00501799999983632
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.0033249999996769475
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.0036450000006880146
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.006540000000313739
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.009052999999767053
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.004415999999764608
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.003426000000217755
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.003584999999475258
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0035049999996772385
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.00330500000018219
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.0035349999998288695
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.003244999999878928
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.003244999999878928
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.0030249999999796273
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0032049999999799184
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.003095000000030268
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.0032650000002831803
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.0029949999998279964
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.0027440000003480236
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.0030740000001969747
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0031650000000809086
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.002854000000297674
+            }
+          },
+          "gc": [
+            {
+              "event": 13,
+              "duration": 6.23012899979949,
+              "projectionMs": 6.23012899979949,
+              "serializationMs": 0
+            }
+          ],
+          "tickOverlap": []
+        },
+        {
+          "index": 2,
+          "startTime": 5103.540261,
+          "projectedAt": 5125.793545,
+          "serializedAt": 5138.031309,
+          "endTime": 5138.065801,
+          "projectionMs": 22.25328400000035,
+          "serializationMs": 12.237763999999515,
+          "totalMs": 34.52553999999964,
+          "cpuMs": 106.979,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.027411000000029162
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.01181799999994837
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.007101000000147906
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.006059000000277592
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.009483999999247317
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.004496999999901163
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.007832000000234984
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.007660999999643536
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.005539000000680971
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.004997000000003027
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.7814969999999448
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.010385999999925843
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.005658999999468506
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 13.328946999999971
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.03323999999975058
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.004697000000305707
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.004477000000406406
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.005677999999534222
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.003846000000521599
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.0036250000002837623
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.04795200000080513
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.04947400000037305
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.008652999999867461
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.0050979999996343395
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.005068000000392203
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.00497799999993731
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0044060000000172295
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.004385999999612977
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.0043769999992946396
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.004377000000204134
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.0044060000000172295
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.004557000000204425
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.004317000000810367
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.0042860000003202
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.004267000000254484
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.0044069999994462705
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.004597000000103435
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.004246000000421191
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.0043370000003051246
+            }
+          },
+          "gc": [
+            {
+              "event": 15,
+              "duration": 6.586286000907421,
+              "projectionMs": 6.586286000907421,
+              "serializationMs": 0
+            }
+          ],
+          "tickOverlap": []
+        },
+        {
+          "index": 3,
+          "startTime": 5138.30448,
+          "projectedAt": 5148.704398,
+          "serializedAt": 5160.75458,
+          "endTime": 5160.783884,
+          "projectionMs": 10.39991800000007,
+          "serializationMs": 12.05018199999995,
+          "totalMs": 22.479404000000613,
+          "cpuMs": 22.954,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.023966000000655185
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.009294000000409142
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.004676999999901454
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.004627000000255066
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.06576899999981833
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.005248000000392494
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.003665999999611813
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.0052169999999023275
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0032039999996413826
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.0032450000007884228
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.4928219999992507
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.0063589999999749125
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.003956000000471249
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 8.773729999999887
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.01625400000011723
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.03753599999981816
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.006900000000314321
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.008743000000322354
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.004916999999295513
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.004517000000305416
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.0095339999998032
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.012378999999782536
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.0050369999999020365
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.003424999999879219
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0030849999993733945
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.003254999999626307
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0030450000003838795
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.0034849999992729863
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.0027440000003480236
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.002664000000550004
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.0030150000002322486
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0031749999998282874
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.002793999999994412
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.002854000000297674
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.0028739999997924315
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002763999999842781
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.0027740000004996546
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0028339999998934218
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.0030939999996917322
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 4,
+          "startTime": 5160.908141,
+          "projectedAt": 5171.045203,
+          "serializedAt": 5182.809824,
+          "endTime": 5182.855763,
+          "projectionMs": 10.137061999999787,
+          "serializationMs": 11.764621000000261,
+          "totalMs": 21.947621999999683,
+          "cpuMs": 22.3,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.026939999999740394
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.010275999999976193
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.005488000000696047
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.0046469999997498235
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.0074709999998958665
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.0035250000000814907
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.0033249999996769475
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.004837000000406988
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.003244999999878928
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.003184999999575666
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.4789909999999509
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.005949000000327942
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.003244999999878928
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 8.687318999999661
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.013230000000476139
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.004245999999511696
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.00360499999987951
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.00531799999953364
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.0032550000005358015
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.003154999999424035
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.006039000000782835
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.007180999999945925
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.004536000000371132
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.0033149999999295687
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0037459999994098325
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.003275000000030559
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.003013999999893713
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.0032349999992220546
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.03233799999998155
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.006008999999721709
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.0032650000002831803
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.003184999999575666
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.0034650000006877235
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.0030740000001969747
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.0030249999999796273
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002943999999843072
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.002734000000600645
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0028640000000450527
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.00273399999969115
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 5,
+          "startTime": 5182.937797,
+          "projectedAt": 5193.534701,
+          "serializedAt": 5205.864124,
+          "endTime": 5205.905045,
+          "projectionMs": 10.596903999999995,
+          "serializationMs": 12.329423000000133,
+          "totalMs": 22.967248000000836,
+          "cpuMs": 22.954,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.029134000000340166
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.01013500000044587
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.004686999999648833
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.004385999999612977
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.007381000000350468
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.0028950000005352194
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.0034949999999298598
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.005106999999952677
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0028140000003986643
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.002884999999878346
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.58933800000068
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.00805300000047282
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.0037959999999657157
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 8.549831999999697
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.011877999999342137
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.0037659999998140847
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.003124000000752858
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.009945000000698201
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.2813639999994848
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.007620999999744527
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.0069810000004508765
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.010545999999521882
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.004667000000154076
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.00300500000048487
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0033149999999295687
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0030850000002828892
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.002943999999843072
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.002644000000145752
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.0033149999999295687
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.002884000000449305
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.0054879999997865525
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0044669999997495324
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.0040660000004209
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.003674999999930151
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.0030639999995401013
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002893999999287189
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.002935000000434229
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.003013999999893713
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.002563000000009197
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 6,
+          "startTime": 5205.989903,
+          "projectedAt": 5215.883047,
+          "serializedAt": 5227.540758,
+          "endTime": 5227.565265,
+          "projectionMs": 9.893144000000575,
+          "serializationMs": 11.657710999999836,
+          "totalMs": 21.575362000000496,
+          "cpuMs": 21.573,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.02905300000020361
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.009253999999600637
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.004916999999295513
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.004286999999749241
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.008231999999225081
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.0033849999999802094
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.00345500000003085
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.005618000000140455
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0028339999998934218
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.0034860000005210168
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.4813750000002983
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.005207000000154949
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.003125000000181899
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 8.490592000000106
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.011175999999977648
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.0037359999996624538
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.0035250000000814907
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.004866999999649124
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.003013999999893713
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.0028040000006512855
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.005740000000514556
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.008143000000018219
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.003845999999612104
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.003154999999424035
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0028539999993881793
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0028940000001966837
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0031149999995250255
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.002975000000333239
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.002803999999741791
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.0026040000002467423
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.003004000000146334
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0029850000000806176
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.002713999999286898
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.002492999999958556
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.002763999999842781
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002674000000297383
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.002734000000600645
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0027440000003480236
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.0026540000008026254
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 7,
+          "startTime": 5227.652156,
+          "projectedAt": 5237.744831,
+          "serializedAt": 5250.366823,
+          "endTime": 5250.396428,
+          "projectionMs": 10.092674999999872,
+          "serializationMs": 12.621992000000319,
+          "totalMs": 22.74427199999991,
+          "cpuMs": 22.74,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.027391000000534405
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.011336999999912223
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.005188000000089232
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.0035959999995611724
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.00748100000055274
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.003004000000146334
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.003926000000319618
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.0055179999999381835
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0031140000000959844
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.0033849999999802094
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.45170000000052823
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.004167000000052212
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.0029649999996763654
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 8.636964000000262
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.017796999999518448
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.003855999999359483
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.003626000000622298
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.004777000000103726
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.003064000000449596
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.009785000000192667
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.0066299999998591375
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.009584000000359083
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.004085999999915657
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.0032250000003841706
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0033849999999802094
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.002913999999691441
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.002674000000297383
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.00311500000043452
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.0032849999997779378
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.0028839999995398102
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.003095000000030268
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0031049999997776467
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.0030150000002322486
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.0029649999996763654
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.002905000000282598
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002803999999741791
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.0033249999996769475
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0030350000006365008
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.00258399999984249
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 8,
+          "startTime": 5250.522668,
+          "projectedAt": 5260.91892,
+          "serializedAt": 5273.688335,
+          "endTime": 5273.711109,
+          "projectionMs": 10.396252000000459,
+          "serializationMs": 12.769414999999753,
+          "totalMs": 23.18844100000024,
+          "cpuMs": 23.185,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.03054599999995844
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.011427000000367116
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.0054679999993823
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.004485999999815249
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.006849999999758438
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.0031439999993381207
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.003636000000369677
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.005777999999736494
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.0037350000002334127
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.0031140000000959844
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.45138999999926455
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.004837999999836029
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.003344999999171705
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 9.006940000000213
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.013571000000411004
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.003705999999510823
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.0031950000002325396
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.004597000000103435
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.0032650000002831803
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.0028650000003835885
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.005939000000580563
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.008503000000018801
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.0041659999997136765
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.0030740000001969747
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0037160000001676963
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0030839999999443535
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0030249999999796273
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.003153999999994994
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.00315500000033353
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.002553999999690859
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.003125000000181899
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0029049999993731035
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.003244999999878928
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.00273399999969115
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.0026949999992211815
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.0029949999998279964
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.0030550000001312583
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.0026840000000447617
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.002664000000550004
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        },
+        {
+          "index": 9,
+          "startTime": 5273.787244,
+          "projectedAt": 5283.938697,
+          "serializedAt": 5295.424609,
+          "endTime": 5295.473393,
+          "projectionMs": 10.151452999999492,
+          "serializationMs": 11.485912000000098,
+          "totalMs": 21.686149000000114,
+          "cpuMs": 21.993,
+          "reads": {
+            "profile": {
+              "calls": 1,
+              "elapsedMs": 0.0250080000005255
+            },
+            "location": {
+              "calls": 1,
+              "elapsedMs": 0.011257000000114203
+            },
+            "ship": {
+              "calls": 1,
+              "elapsedMs": 0.004485999999815249
+            },
+            "online": {
+              "calls": 1,
+              "elapsedMs": 0.003756000000066706
+            },
+            "skills": {
+              "calls": 1,
+              "elapsedMs": 0.006950999999389751
+            },
+            "queue": {
+              "calls": 1,
+              "elapsedMs": 0.0030949999991207733
+            },
+            "attributes": {
+              "calls": 1,
+              "elapsedMs": 0.0035360000001674052
+            },
+            "clones": {
+              "calls": 1,
+              "elapsedMs": 0.005258000000139873
+            },
+            "implants": {
+              "calls": 1,
+              "elapsedMs": 0.002995000000737491
+            },
+            "wallet": {
+              "calls": 1,
+              "elapsedMs": 0.0030450000003838795
+            },
+            "journal": {
+              "calls": 1,
+              "elapsedMs": 0.6751770000000761
+            },
+            "transactions": {
+              "calls": 1,
+              "elapsedMs": 0.00930400000015652
+            },
+            "orders": {
+              "calls": 1,
+              "elapsedMs": 0.0036250000002837623
+            },
+            "assets": {
+              "calls": 1,
+              "elapsedMs": 8.48711700000058
+            },
+            "fittings": {
+              "calls": 1,
+              "elapsedMs": 0.011397999999644526
+            },
+            "contracts": {
+              "calls": 1,
+              "elapsedMs": 0.003965999999309133
+            },
+            "jobs": {
+              "calls": 1,
+              "elapsedMs": 0.003355000000738073
+            },
+            "blueprints": {
+              "calls": 1,
+              "elapsedMs": 0.004717000000709959
+            },
+            "mining": {
+              "calls": 1,
+              "elapsedMs": 0.0031349999999292777
+            },
+            "planets": {
+              "calls": 1,
+              "elapsedMs": 0.0030850000002828892
+            },
+            "killmails": {
+              "calls": 2,
+              "elapsedMs": 0.006049999999959255
+            },
+            "combat_public": {
+              "calls": 1,
+              "elapsedMs": 0.00843299999996816
+            },
+            "standings": {
+              "calls": 1,
+              "elapsedMs": 0.003905999999915366
+            },
+            "loyalty": {
+              "calls": 1,
+              "elapsedMs": 0.0037160000001676963
+            },
+            "contacts": {
+              "calls": 1,
+              "elapsedMs": 0.003064999999878637
+            },
+            "corporation_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.0031049999997776467
+            },
+            "alliance_contacts": {
+              "calls": 1,
+              "elapsedMs": 0.003214999999727297
+            },
+            "calendar": {
+              "calls": 1,
+              "elapsedMs": 0.002704999999878055
+            },
+            "notifications": {
+              "calls": 1,
+              "elapsedMs": 0.003094000000601227
+            },
+            "mail": {
+              "calls": 1,
+              "elapsedMs": 0.00273399999969115
+            },
+            "status": {
+              "calls": 1,
+              "elapsedMs": 0.002884000000449305
+            },
+            "prices": {
+              "calls": 1,
+              "elapsedMs": 0.0034749999995256076
+            },
+            "sovereignty": {
+              "calls": 1,
+              "elapsedMs": 0.0032350000001315493
+            },
+            "fw": {
+              "calls": 1,
+              "elapsedMs": 0.0035360000001674052
+            },
+            "kills": {
+              "calls": 1,
+              "elapsedMs": 0.0028949999996257247
+            },
+            "jumps": {
+              "calls": 1,
+              "elapsedMs": 0.002644000000145752
+            },
+            "sovereignty_campaigns": {
+              "calls": 1,
+              "elapsedMs": 0.003095000000030268
+            },
+            "incursions": {
+              "calls": 1,
+              "elapsedMs": 0.003456000000369386
+            },
+            "industry_systems": {
+              "calls": 1,
+              "elapsedMs": 0.0025439999999434804
+            }
+          },
+          "gc": [],
+          "tickOverlap": []
+        }
+      ],
+      "measureStart": 5049.495265,
+      "measureEnd": 5295.559332,
+      "memoryAfter": {
+        "rss": 212996096,
+        "heapUsed": 137068992,
+        "heapTotal": 255475712,
+        "external": 4247565,
+        "arrayBuffers": 277679
+      },
+      "endTime": 5295.639353,
+      "summary": {
+        "all": {
+          "count": 10,
+          "p50": 22.74427199999991,
+          "p95": 34.52553999999964,
+          "max": 34.52553999999964
+        },
+        "gcOverlap": {
+          "count": 2,
+          "p50": 28.952398999999787,
+          "p95": 34.52553999999964,
+          "max": 34.52553999999964
+        },
+        "noGcOverlap": {
+          "count": 8,
+          "p50": 22.479404000000613,
+          "p95": 24.160122999999658,
+          "max": 24.160122999999658
+        },
+        "tickOverlapCount": 0
+      }
+    }
+  ],
+  "gc": [
+    {
+      "startTime": 207.007021,
+      "endTime": 207.66494100107468,
+      "duration": 0.6579200010746717,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 221.186008,
+      "endTime": 222.70881000086533,
+      "duration": 1.5228020008653402,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 225.849809,
+      "endTime": 227.32048400092089,
+      "duration": 1.4706750009208918,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 257.515854,
+      "endTime": 258.8888909992554,
+      "duration": 1.3730369992554188,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 284.849355,
+      "endTime": 287.36249899950207,
+      "duration": 2.513143999502063,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 432.854301,
+      "endTime": 434.84275499916174,
+      "duration": 1.9884539991617203,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 601.101823,
+      "endTime": 602.2469770011912,
+      "duration": 1.1451540011912584,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 846.2455,
+      "endTime": 846.5416160000414,
+      "duration": 0.2961160000413656,
+      "kind": 8,
+      "flags": 0
+    },
+    {
+      "startTime": 854.538375,
+      "endTime": 858.1644939989745,
+      "duration": 3.6261189989745617,
+      "kind": 4,
+      "flags": 64
+    },
+    {
+      "startTime": 876.219857,
+      "endTime": 877.8553799988695,
+      "duration": 1.635522998869419,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 888.736952,
+      "endTime": 892.8913370004673,
+      "duration": 4.1543850004673,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 925.483445,
+      "endTime": 925.735393999241,
+      "duration": 0.25194899924099445,
+      "kind": 8,
+      "flags": 0
+    },
+    {
+      "startTime": 944.314336,
+      "endTime": 951.2589759994195,
+      "duration": 6.944639999419451,
+      "kind": 4,
+      "flags": 64
+    },
+    {
+      "startTime": 5075.293255,
+      "endTime": 5081.523383999799,
+      "duration": 6.23012899979949,
+      "kind": 1,
+      "flags": 0
+    },
+    {
+      "startTime": 5102.838785,
+      "endTime": 5103.290735998977,
+      "duration": 0.45195099897682667,
+      "kind": 8,
+      "flags": 0
+    },
+    {
+      "startTime": 5118.526854,
+      "endTime": 5125.113140000907,
+      "duration": 6.586286000907421,
+      "kind": 4,
+      "flags": 64
+    },
+    {
+      "startTime": 5403.761524,
+      "endTime": 5404.224490999039,
+      "duration": 0.4629669990390539,
+      "kind": 8,
+      "flags": 0
+    },
+    {
+      "startTime": 5417.750105,
+      "endTime": 5423.11516200089,
+      "duration": 5.365057000890374,
+      "kind": 4,
+      "flags": 64
+    }
+  ],
+  "ticks": [
+    {
+      "startTime": 3933.607745,
+      "endTime": 3938.385769,
+      "success": true
+    }
+  ],
+  "complete": true,
+  "workload": {
+    "version": 1,
+    "profile": "stress",
+    "characters": 4,
+    "assets": 20000,
+    "events": 50000,
+    "visits": 2000,
+    "combat": 4000,
+    "sessions": 200,
+    "marketTypes": 5000,
+    "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b",
+    "now": 1791374003764,
+    "discoveryPreparation": {
+      "available": true,
+      "expectedMemberships": 100,
+      "seededMemberships": 100,
+      "method": "Migration-equivalent INSERT from legacy visits, before measured startup/work"
+    }
+  },
+  "startup": {
+    "startTime": 821.288255,
+    "endTime": 982.75886
+  },
+  "warmup": {
+    "startTime": 982.770718,
+    "endTime": 4984.543458
+  },
+  "responseBefore": {
+    "bytes": 3472850,
+    "digest": "17495cfb36cd5c743fca671d38b1d780555e66eb35e92bf266a8916b38607615",
+    "assetCount": 20000
+  },
+  "responseAfter": {
+    "bytes": 3472850,
+    "digest": "17495cfb36cd5c743fca671d38b1d780555e66eb35e92bf266a8916b38607615"
+  },
+  "sourceVerified": true,
+  "cleanupComplete": true,
+  "externalAttempts": 0,
+  "endedAt": "2026-10-07T11:58:32.295Z"
+}

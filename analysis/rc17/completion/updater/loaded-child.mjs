@@ -58,6 +58,9 @@ async function prepare(dir) {
         store.saveSnapshot(id, 'location', { status: 'ready', data: { solar_system_id: HIGH, system: { ...local, security_status: local.security }, constellation: local.constellation, region: local.region }, updatedAt: iso(now), expiresAt: iso(now + 1000), refreshAt: iso(now + 1000) });
         const assets = store.snapshot(id, 'assets'); store.saveSnapshot(id, 'assets', { ...assets, expiresAt: iso(now + 1000), refreshAt: iso(now + 1000) });
       }
+      // Universe creates this table when Core starts; fixture seeding precedes Core.
+      // Match the canonical schema, and let the real owner create its indexes.
+      store.db.exec('CREATE TABLE IF NOT EXISTS universe_records(character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,body TEXT NOT NULL,updated_at TEXT NOT NULL,PRIMARY KEY(character_id,kind,id))');
       const systems = getUniverseStatic().systems.filter(system => system.space === 'wormhole').slice(0, 100), stamp = iso(now);
       for (let index = 0; index < 8; index++) {
         const map = { id: 'updater-map-' + index, name: 'Synthetic updater map ' + index, description: '', scope: null, scope_version: 2, revision: 1, created_at: stamp, updated_at: stamp,

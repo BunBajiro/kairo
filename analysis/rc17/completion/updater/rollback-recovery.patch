@@ -1,0 +1,183 @@
+diff --git a/server/datasets.mjs b/server/datasets.mjs
+index 13589d5..9fb6ee9 100644
+--- a/server/datasets.mjs
++++ b/server/datasets.mjs
+@@ -66,9 +66,14 @@ async function pointerSelection(root, name, minimumBuild, hashes = false) {
+   if (manifest.build !== pointer.build) throw new Error('SDE pointer build mismatch');
+   return { directory, manifest, pending: name === 'pending' };
+ }
+-async function markFailed(root, build, error) {
+-  const state = await optionalJson(join(root, 'state.json')) || {};
+-  await atomicJson(join(root, 'state.json'), { ...state, failedBuild: build || null, activationError: errorText(error) });
++async function rejectionState(root) {
++  try { return await readJson(join(root, 'state.json')); }
++  catch (cause) { if (cause.code === 'ENOENT') return null; throw cause; }
++}
++async function markFailed(root, build, error, directory = null) {
++  const state = await rejectionState(root) || {};
++  const failedDirectory = typeof directory === 'string' && BUILD_DIRECTORY.test(basename(directory)) ? basename(directory) : state.failedDirectory || null;
++  await atomicJson(join(root, 'state.json'), { ...state, failedBuild: build || null, failedDirectory, activationError: errorText(error) });
+ }
+ async function readCleanupWarning(root, now = Date.now) {
+   try { return await optionalJson(join(root, 'cleanup.json')); }
+@@ -113,15 +118,22 @@ export async function prepareDatasetRuntime(dataDir, maintenance = {}) {
+   const root = rootFor(dataDir), minimumBuild = await baselineBuild();
+   await mkdir(root, { recursive: true });
+   let active = null, pending = null;
++  // A failed activation's exact generation stays rejected if its locked pointer
++  // or directory cannot yet be removed. Manual retry creates a different UUID.
++  // Unlike advisory cleanup status, unreadable rejection state cannot be ignored:
++  // doing so could reactivate a known-bad generation whose files remain locked.
++  const failedDirectory = (await rejectionState(root))?.failedDirectory;
+   const pointerCleanup = [];
+   try { active = await pointerSelection(root, 'active', minimumBuild); }
+   catch { pointerCleanup.push('active.json'); }
++  if (active && basename(active.directory) === failedDirectory) { pointerCleanup.push('active.json'); active = null; }
+   try { pending = await pointerSelection(root, 'pending', Math.max(minimumBuild, active?.manifest.build || 0), true); }
+   catch (error) {
+     const pointer = await optionalJson(join(root, 'pending.json'));
+-    await markFailed(root, pointer?.build, error);
++    await markFailed(root, pointer?.build, error, pointer?.directory);
+     pointerCleanup.push('pending.json');
+   }
++  if (pending && basename(pending.directory) === failedDirectory) { pointerCleanup.push('pending.json'); pending = null; }
+   if (pending && active && pending.manifest.build <= active.manifest.build) {
+     pointerCleanup.push('pending.json'); pending = null;
+   }
+@@ -139,19 +151,21 @@ export async function commitDatasetRuntime(dataDir, selected, maintenance = {})
+   // The pointer is committed. Housekeeping must not turn a successful activation into a rollback.
+   try {
+     const state = await optionalJson(join(root, 'state.json')) || {};
+-    await atomicJson(join(root, 'state.json'), { ...state, failedBuild: null, activationError: null });
++    await atomicJson(join(root, 'state.json'), { ...state, failedBuild: null, failedDirectory: null, activationError: null });
+   } catch (cause) { console.warn(`Kairo dataset activation status could not be saved: ${errorText(cause)}`); }
+   return { cleanupWarning: await cleanup(root, [directory], { ...maintenance, extraPaths: ['pending.json'] }) };
+ }
+ 
+-export async function rollbackDatasetRuntime(dataDir, selected) {
++export async function rollbackDatasetRuntime(dataDir, selected, maintenance = {}) {
+   const root = rootFor(dataDir), minimumBuild = await baselineBuild();
+-  await markFailed(root, selected?.manifest?.build, 'The updated core could not start. The previous dataset was restored.');
+-  await rm(join(root, 'pending.json'), { force: true });
++  // Persist rejection before best-effort removal. Failure to save this marker is
++  // a recovery failure; a locked housekeeping path must not hide a valid fallback.
++  await markFailed(root, selected?.manifest?.build, 'The updated core could not start. The previous dataset was restored.', selected?.directory);
++  const pointerCleanup = ['pending.json'];
+   let active = null;
+-  try { active = await pointerSelection(root, 'active', minimumBuild); } catch { await rm(join(root, 'active.json'), { force: true }); }
+-  if (active?.directory === selected?.directory) { await rm(join(root, 'active.json'), { force: true }); active = null; }
+-  await cleanup(root, active ? [active.directory] : []);
++  try { active = await pointerSelection(root, 'active', minimumBuild); } catch { pointerCleanup.push('active.json'); }
++  if (active?.directory === selected?.directory) { pointerCleanup.push('active.json'); active = null; }
++  await cleanup(root, active ? [active.directory] : [], { ...maintenance, extraPaths: pointerCleanup });
+   return active;
+ }
+ 
+diff --git a/tests/kairo/datasets.test.mjs b/tests/kairo/datasets.test.mjs
+index 7c5b2c8..5edff6f 100644
+--- a/tests/kairo/datasets.test.mjs
++++ b/tests/kairo/datasets.test.mjs
+@@ -249,7 +249,8 @@ test('successful pointer publication is not rolled back when post-commit bookkee
+   await assert.doesNotReject(commitDatasetRuntime(dataDir, candidate));
+   const active = JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json')));
+   assert.equal(active.build, NEXT);
+-  assert.equal((await prepareDatasetRuntime(dataDir)).directory, candidate.directory);
++  await assert.rejects(prepareDatasetRuntime(dataDir), { code: 'EISDIR' });
++  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(candidate.directory));
+ });
+ 
+ test('insufficient preparation space leaves the active generation and never downloads', async t => {
+@@ -324,3 +325,93 @@ test('locked redundant pending pointer cannot prevent restart on valid active da
+   const warning = JSON.parse(await readFile(join(dataDir, 'datasets', 'cleanup.json')));
+   assert.equal(warning.failures[0].path, 'pending.json');
+ });
++
++
++test('rollback recovers valid active data when failed pending pointer and generation stay locked', async t => {
++  const { service, dataDir } = await setup(t); await service.close();
++  const active = await managed(dataDir, NEXT), candidate = await managed(dataDir, NEXT + 1, 'pending');
++  const maintenance = { remove: async (path, options) => {
++    if (path === candidate.directory || path.endsWith('pending.json')) throw Object.assign(new Error('Locked failed generation'), { code: 'EPERM' });
++    return rm(path, options);
++  } };
++  assert.equal((await rollbackDatasetRuntime(dataDir, candidate, maintenance)).directory, active.directory);
++  const readState = async () => JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json')));
++  assert.equal((await readState()).failedDirectory, basename(candidate.directory));
++  const warning = JSON.parse(await readFile(join(dataDir, 'datasets', 'cleanup.json')));
++  assert.deepEqual(warning.failures.map(value => value.path).sort(), [basename(candidate.directory), 'pending.json'].sort());
++  assert.ok(warning.failures.every(value => value.code === 'EPERM'));
++  for (let launch = 0; launch < 2; launch++) {
++    const selected = await prepareDatasetRuntime(dataDir, maintenance);
++    assert.equal(selected.directory, active.directory); assert.equal(selected.pending, false);
++  }
++  const next = createDatasetService({ dataDir, automatic: false }); t.after(() => next.close()); await next.ready;
++  assert.match(next.status().error, /updated core could not start/);
++  assert.equal(next.status().cleanupWarning.count, 2);
++  // Once unlocked, both leftovers are retired without touching the valid active generation.
++  assert.equal((await prepareDatasetRuntime(dataDir)).directory, active.directory);
++  assert.ok(!(await readdir(join(dataDir, 'datasets'))).includes(basename(candidate.directory)));
++  assert.ok(!(await readdir(join(dataDir, 'datasets'))).includes('pending.json'));
++});
++
++test('failed generation marker allows a fresh manual retry of the same official build', async t => {
++  const { service, dataDir } = await setup(t); await service.close();
++  await managed(dataDir, NEXT);
++  const failed = await managed(dataDir, NEXT + 1, 'pending');
++  await rollbackDatasetRuntime(dataDir, failed);
++  const fresh = await managed(dataDir, NEXT + 1, 'pending');
++  assert.notEqual(fresh.directory, failed.directory);
++  const selected = await prepareDatasetRuntime(dataDir);
++  assert.equal(selected.directory, fresh.directory); assert.equal(selected.pending, true);
++  await commitDatasetRuntime(dataDir, selected);
++  const state = JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json')));
++  assert.equal(state.failedDirectory, null); assert.equal(state.failedBuild, null); assert.equal(state.activationError, null);
++  assert.equal((await prepareDatasetRuntime(dataDir)).directory, fresh.directory);
++});
++
++test('rollback refuses cleanup when durable failed-generation recording cannot complete', async t => {
++  const { service, dataDir } = await setup(t); await service.close();
++  const active = await managed(dataDir, NEXT), candidate = await managed(dataDir, NEXT + 1, 'pending');
++  await mkdir(join(dataDir, 'datasets', 'state.json'));
++  let removals = 0;
++  await assert.rejects(rollbackDatasetRuntime(dataDir, candidate, { remove: async () => { removals++; } }), { code: 'EISDIR' });
++  assert.equal(removals, 0);
++  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(active.directory));
++  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'pending.json'))).directory, basename(candidate.directory));
++});
++
++
++test('unreadable rejection state cannot reactivate a still-locked failed pending generation', async t => {
++  const { service, dataDir } = await setup(t); await service.close();
++  const active = await managed(dataDir, NEXT), candidate = await managed(dataDir, NEXT + 1, 'pending');
++  const maintenance = { remove: async (path, options) => {
++    if (path === candidate.directory || path.endsWith('pending.json')) throw Object.assign(new Error('Locked failed generation'), { code: 'EPERM' });
++    return rm(path, options);
++  } };
++  await rollbackDatasetRuntime(dataDir, candidate, maintenance);
++  const statePath = join(dataDir, 'datasets', 'state.json'), state = await readFile(statePath);
++  await rm(statePath); await mkdir(statePath);
++  await assert.rejects(prepareDatasetRuntime(dataDir, maintenance), { code: 'EISDIR' });
++  assert.equal(JSON.parse(await readFile(join(dataDir, 'datasets', 'active.json'))).directory, basename(active.directory));
++  await rm(statePath, { recursive: true }); await writeFile(statePath, '{truncated');
++  await assert.rejects(prepareDatasetRuntime(dataDir, maintenance), SyntaxError);
++  // Restoring readable state recovers the valid fallback and still rejects the bad UUID.
++  await writeFile(statePath, state);
++  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
++});
++
++test('unrelated invalid pending pointer cannot clear a durable failed-generation identity', async t => {
++  const { service, dataDir } = await setup(t); await service.close();
++  const active = await managed(dataDir, NEXT), candidate = await managed(dataDir, NEXT + 1, 'pending');
++  const maintenance = { remove: async (path, options) => {
++    if (path === candidate.directory || path.endsWith('pending.json')) throw Object.assign(new Error('Locked failed generation'), { code: 'EPERM' });
++    return rm(path, options);
++  } };
++  await rollbackDatasetRuntime(dataDir, candidate, maintenance);
++  const pointer = join(dataDir, 'datasets', 'pending.json');
++  await writeFile(pointer, JSON.stringify({ schema: 1, directory: 42, build: NEXT + 2 }));
++  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
++  const state = JSON.parse(await readFile(join(dataDir, 'datasets', 'state.json')));
++  assert.equal(state.failedDirectory, basename(candidate.directory)); assert.match(state.activationError, /Invalid SDE pointer/);
++  await writeFile(pointer, JSON.stringify({ schema: 1, directory: basename(candidate.directory), build: NEXT + 1 }));
++  assert.equal((await prepareDatasetRuntime(dataDir, maintenance)).directory, active.directory);
++});

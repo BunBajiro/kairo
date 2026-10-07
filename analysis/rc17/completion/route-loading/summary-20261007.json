@@ -1,0 +1,744 @@
+{
+  "complete": true,
+  "decision": "reject-unmodified-trial",
+  "reason": "No demonstrated cold Overview benefit; first deferred route reveal delays around 250–325ms dominate small loopback module-fetch time, including OPSEC when module bytes are already delivered.",
+  "source": {
+    "baseline": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-route-lazy-baseline",
+      "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+      "fingerprint": "a19b2d5c09f58425118f4ecbd41e414f68b4ad9b7b1e459aa2cd2779360245bd",
+      "dirty": false
+    },
+    "candidate": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-route-lazy-trial",
+      "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+      "fingerprint": "03c1fe0a5843c24aa694f0bd610edc2fa40e79f0d92bbba614baf231f7de40f5",
+      "dirty": true
+    }
+  },
+  "bundle": {
+    "baseline": {
+      "initial": {
+        "files": 5,
+        "bytes": 1657020,
+        "gzipBytes": 477502
+      },
+      "js": {
+        "files": 8,
+        "bytes": 1666867,
+        "gzipBytes": 481742
+      },
+      "css": {
+        "files": 4,
+        "bytes": 554369,
+        "gzipBytes": 97230
+      }
+    },
+    "candidate": {
+      "initial": {
+        "files": 21,
+        "bytes": 985812,
+        "gzipBytes": 302070
+      },
+      "js": {
+        "files": 36,
+        "bytes": 1678351,
+        "gzipBytes": 503632
+      },
+      "css": {
+        "files": 7,
+        "bytes": 554372,
+        "gzipBytes": 99358
+      }
+    },
+    "delta": {
+      "initial": {
+        "files": 16,
+        "bytes": -671208,
+        "gzipBytes": -175432
+      },
+      "allJavaScript": {
+        "files": 28,
+        "bytes": 11484,
+        "gzipBytes": 21890
+      },
+      "allCss": {
+        "files": 3,
+        "bytes": 3,
+        "gzipBytes": 2128
+      }
+    }
+  },
+  "rows": [
+    {
+      "name": "cold-overview",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 264.241534,
+            "settledReadyMs": 581.425516,
+            "rendererTaskMs": 270.057,
+            "scriptMs": 146.372
+          },
+          {
+            "visibleReadyMs": 305.232311,
+            "settledReadyMs": 616.097216,
+            "rendererTaskMs": 293.25300000000004,
+            "scriptMs": 144.233
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 284.7369225,
+          "settledReadyMs": 598.761366,
+          "rendererTaskMs": 281.65500000000003,
+          "scriptMs": 145.3025
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/layout-segment-context-r5Oxd9gY.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-D-aH34pE.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DUCP82OA.js"
+            ],
+            "files": 5,
+            "bytes": 1657020,
+            "gzipBytes": 477502
+          },
+          {
+            "paths": [
+              "/assets/layout-segment-context-r5Oxd9gY.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-D-aH34pE.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DUCP82OA.js"
+            ],
+            "files": 5,
+            "bytes": 1657020,
+            "gzipBytes": 477502
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 271.792654,
+            "settledReadyMs": 572.809949,
+            "rendererTaskMs": 269.235,
+            "scriptMs": 146.60899999999998
+          },
+          {
+            "visibleReadyMs": 308.621666,
+            "settledReadyMs": 609.304485,
+            "rendererTaskMs": 302.896,
+            "scriptMs": 167.55900000000003
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 290.20716000000004,
+          "settledReadyMs": 591.057217,
+          "rendererTaskMs": 286.06550000000004,
+          "scriptMs": 157.084
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/layout-segment-context-D319w2wB.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-BZp6JKKI.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DYh-xzJK.js",
+              "/assets/ui-vxNUUxmN.js",
+              "/assets/alert-dialog-B8mVd1Ie.js",
+              "/assets/dist-DT3cXLAL.js",
+              "/assets/progress-C-DRgLHw.js",
+              "/assets/x-D3xgXHvY.js",
+              "/assets/tabs-CXrKSPvz.js",
+              "/assets/slider-C-i1HqJx.js",
+              "/assets/switch-BfAtEN8C.js",
+              "/assets/route-ETMelPL9.js",
+              "/assets/shield-CwTSdpMi.js",
+              "/assets/protection-BUdcKYZJ.js",
+              "/assets/waypoints-CbVAmE3g.js",
+              "/assets/play-C8Tj5ADO.js",
+              "/assets/trash-2-Cc6jLJws.js",
+              "/assets/textarea-ojf_p3oz.js",
+              "/assets/target-DNm-VxR1.js"
+            ],
+            "files": 21,
+            "bytes": 985812,
+            "gzipBytes": 302070
+          },
+          {
+            "paths": [
+              "/assets/layout-segment-context-D319w2wB.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-BZp6JKKI.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DYh-xzJK.js",
+              "/assets/ui-vxNUUxmN.js",
+              "/assets/alert-dialog-B8mVd1Ie.js",
+              "/assets/dist-DT3cXLAL.js",
+              "/assets/progress-C-DRgLHw.js",
+              "/assets/x-D3xgXHvY.js",
+              "/assets/tabs-CXrKSPvz.js",
+              "/assets/slider-C-i1HqJx.js",
+              "/assets/switch-BfAtEN8C.js",
+              "/assets/route-ETMelPL9.js",
+              "/assets/shield-CwTSdpMi.js",
+              "/assets/protection-BUdcKYZJ.js",
+              "/assets/waypoints-CbVAmE3g.js",
+              "/assets/play-C8Tj5ADO.js",
+              "/assets/trash-2-Cc6jLJws.js",
+              "/assets/textarea-ojf_p3oz.js",
+              "/assets/target-DNm-VxR1.js"
+            ],
+            "files": 21,
+            "bytes": 985812,
+            "gzipBytes": 302070
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 5.470237500000053,
+        "settledReadyMs": -7.704148999999916,
+        "rendererTaskMs": 4.410500000000013,
+        "scriptMs": 11.781499999999994
+      }
+    },
+    {
+      "name": "first-markets",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 111.30432900000005,
+            "settledReadyMs": 417.3737130000002,
+            "rendererTaskMs": 85.335,
+            "scriptMs": 43.412000000000006
+          },
+          {
+            "visibleReadyMs": 131.10956099999976,
+            "settledReadyMs": 435.38052999999945,
+            "rendererTaskMs": 99.72099999999995,
+            "scriptMs": 38.68699999999997
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 121.2069449999999,
+          "settledReadyMs": 426.3771214999998,
+          "rendererTaskMs": 92.52799999999996,
+          "scriptMs": 41.04949999999999
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 451.69449499999996,
+            "settledReadyMs": 758.5894209999999,
+            "rendererTaskMs": 116.533,
+            "scriptMs": 64.29700000000003
+          },
+          {
+            "visibleReadyMs": 439.50406999999996,
+            "settledReadyMs": 755.2806059999994,
+            "rendererTaskMs": 115.29499999999993,
+            "scriptMs": 45.252000000000066
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 445.59928249999996,
+          "settledReadyMs": 756.9350134999996,
+          "rendererTaskMs": 115.91399999999996,
+          "scriptMs": 54.774500000000046
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/markets-BDw8167c.js",
+              "/assets/chart-column-DyMSf2SQ.js",
+              "/assets/users-DcHb2LPX.js",
+              "/assets/layers-iyus3t7-.js",
+              "/assets/radio-GDN4hpP6.js"
+            ],
+            "files": 5,
+            "bytes": 69911,
+            "gzipBytes": 20152
+          },
+          {
+            "paths": [
+              "/assets/markets-BDw8167c.js"
+            ],
+            "files": 1,
+            "bytes": 68372,
+            "gzipBytes": 19180
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 324.39233750000005,
+        "settledReadyMs": 330.5578919999998,
+        "rendererTaskMs": 23.385999999999996,
+        "scriptMs": 13.725000000000058
+      }
+    },
+    {
+      "name": "first-studio",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 104.49079200000006,
+            "settledReadyMs": 414.66076699999985,
+            "rendererTaskMs": 71.30199999999998,
+            "scriptMs": 22.689999999999987
+          },
+          {
+            "visibleReadyMs": 119.251487,
+            "settledReadyMs": 425.5273040000002,
+            "rendererTaskMs": 66.87900000000002,
+            "scriptMs": 23.406000000000038
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 111.87113950000003,
+          "settledReadyMs": 420.0940355,
+          "rendererTaskMs": 69.09049999999999,
+          "scriptMs": 23.048000000000012
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 398.54208200000016,
+            "settledReadyMs": 711.4537539999999,
+            "rendererTaskMs": 80.72600000000001,
+            "scriptMs": 26.565999999999978
+          },
+          {
+            "visibleReadyMs": 439.69443599999977,
+            "settledReadyMs": 752.1264659999997,
+            "rendererTaskMs": 108.95800000000011,
+            "scriptMs": 31.807999999999947
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 419.11825899999997,
+          "settledReadyMs": 731.7901099999998,
+          "rendererTaskMs": 94.84200000000007,
+          "scriptMs": 29.186999999999962
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/studio-CKx_zi_Q.js",
+              "/assets/opsec-controls-DimtNN7t.js",
+              "/assets/type-BhJMqWhu.js",
+              "/assets/volume-2-DMFfjSUq.js"
+            ],
+            "files": 4,
+            "bytes": 46916,
+            "gzipBytes": 15591
+          },
+          {
+            "paths": [
+              "/assets/studio-CKx_zi_Q.js",
+              "/assets/chart-column-DyMSf2SQ.js"
+            ],
+            "files": 2,
+            "bytes": 26775,
+            "gzipBytes": 8704
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 307.24711949999994,
+        "settledReadyMs": 311.6960744999998,
+        "rendererTaskMs": 25.751500000000078,
+        "scriptMs": 6.13899999999995
+      }
+    },
+    {
+      "name": "first-universe-kspace",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 467.24645699999996,
+            "settledReadyMs": 782.422523,
+            "rendererTaskMs": 383.01,
+            "scriptMs": 204.59500000000003
+          },
+          {
+            "visibleReadyMs": 307.66265599999997,
+            "settledReadyMs": 620.2710979999997,
+            "rendererTaskMs": 314.1039999999999,
+            "scriptMs": 165.041
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 387.45455649999997,
+          "settledReadyMs": 701.3468104999998,
+          "rendererTaskMs": 348.55699999999996,
+          "scriptMs": 184.818
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 1,
+            "bytes": 1185,
+            "gzipBytes": 696
+          },
+          {
+            "paths": [
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 1,
+            "bytes": 1185,
+            "gzipBytes": 696
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 757.4707579999999,
+            "settledReadyMs": 1077.3754840000001,
+            "rendererTaskMs": 424.53499999999997,
+            "scriptMs": 227.216
+          },
+          {
+            "visibleReadyMs": 333.04057200000034,
+            "settledReadyMs": 670.9961399999997,
+            "rendererTaskMs": 366.3239999999999,
+            "scriptMs": 175.066
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 545.2556650000001,
+          "settledReadyMs": 874.1858119999999,
+          "rendererTaskMs": 395.42949999999996,
+          "scriptMs": 201.14100000000002
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/universe-Cq0NcaIv.js",
+              "/assets/universe-CA5UWLaO.js",
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 3,
+            "bytes": 532808,
+            "gzipBytes": 152167
+          },
+          {
+            "paths": [
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 1,
+            "bytes": 1185,
+            "gzipBytes": 696
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 157.80110850000017,
+        "settledReadyMs": 172.8390015000001,
+        "rendererTaskMs": 46.8725,
+        "scriptMs": 16.323000000000008
+      }
+    },
+    {
+      "name": "first-universe-jspace",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 208.37626899999987,
+            "settledReadyMs": 511.25162199999977,
+            "rendererTaskMs": 111.549,
+            "scriptMs": 29.46099999999996
+          },
+          {
+            "visibleReadyMs": 216.4394540000003,
+            "settledReadyMs": 514.1617840000004,
+            "rendererTaskMs": 156.802,
+            "scriptMs": 49.49599999999998
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 212.40786150000008,
+          "settledReadyMs": 512.7067030000001,
+          "rendererTaskMs": 134.1755,
+          "scriptMs": 39.47849999999997
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 196.90200000000004,
+            "settledReadyMs": 502.831905,
+            "rendererTaskMs": 122.78699999999998,
+            "scriptMs": 33.78799999999998
+          },
+          {
+            "visibleReadyMs": 562.1804400000001,
+            "settledReadyMs": 878.1540880000002,
+            "rendererTaskMs": 239.08399999999997,
+            "scriptMs": 110.239
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 379.54122000000007,
+          "settledReadyMs": 690.4929965000001,
+          "rendererTaskMs": 180.9355,
+          "scriptMs": 72.0135
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [
+              "/assets/universe-Cq0NcaIv.js",
+              "/assets/type-BhJMqWhu.js",
+              "/assets/layers-iyus3t7-.js"
+            ],
+            "files": 3,
+            "bytes": 497956,
+            "gzipBytes": 139203
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 167.13335849999999,
+        "settledReadyMs": 177.78629350000006,
+        "rendererTaskMs": 46.75999999999999,
+        "scriptMs": 32.535000000000025
+      }
+    },
+    {
+      "name": "first-universe-settings",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 186.48391999999967,
+            "settledReadyMs": 497.9734119999998,
+            "rendererTaskMs": 105.82599999999998,
+            "scriptMs": 19.699999999999996
+          },
+          {
+            "visibleReadyMs": 312.46367899999996,
+            "settledReadyMs": 613.4597919999999,
+            "rendererTaskMs": 138.39000000000001,
+            "scriptMs": 31.53600000000001
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 249.4737994999998,
+          "settledReadyMs": 555.7166019999999,
+          "rendererTaskMs": 122.108,
+          "scriptMs": 25.618000000000002
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 498.0561769999995,
+            "settledReadyMs": 813.0534179999995,
+            "rendererTaskMs": 155.66400000000002,
+            "scriptMs": 31.258000000000063
+          },
+          {
+            "visibleReadyMs": 634.004772,
+            "settledReadyMs": 943.8910400000002,
+            "rendererTaskMs": 154.70100000000002,
+            "scriptMs": 32.62000000000001
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 566.0304744999997,
+          "settledReadyMs": 878.4722289999999,
+          "rendererTaskMs": 155.1825,
+          "scriptMs": 31.939000000000036
+        },
+        "additionalJs": [
+          {
+            "paths": [
+              "/assets/universe-settings-DJVQ6FtZ.js"
+            ],
+            "files": 1,
+            "bytes": 34242,
+            "gzipBytes": 10108
+          },
+          {
+            "paths": [
+              "/assets/universe-settings-DJVQ6FtZ.js",
+              "/assets/universe-CA5UWLaO.js",
+              "/assets/users-DcHb2LPX.js",
+              "/assets/radio-GDN4hpP6.js",
+              "/assets/volume-2-DMFfjSUq.js"
+            ],
+            "files": 5,
+            "bytes": 70576,
+            "gzipBytes": 23897
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 316.5566749999999,
+        "settledReadyMs": 322.755627,
+        "rendererTaskMs": 33.0745,
+        "scriptMs": 6.3210000000000335
+      }
+    },
+    {
+      "name": "first-opsec",
+      "baseline": {
+        "observations": [
+          {
+            "visibleReadyMs": 144.95938999999998,
+            "settledReadyMs": 447.54806299999973,
+            "rendererTaskMs": 50.12299999999992,
+            "scriptMs": 16.337000000000046
+          },
+          {
+            "visibleReadyMs": 165.06384000000003,
+            "settledReadyMs": 467.26230799999985,
+            "rendererTaskMs": 72.57999999999998,
+            "scriptMs": 29.965999999999994
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 155.011615,
+          "settledReadyMs": 457.4051854999998,
+          "rendererTaskMs": 61.35149999999995,
+          "scriptMs": 23.15150000000002
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        ]
+      },
+      "candidate": {
+        "observations": [
+          {
+            "visibleReadyMs": 406.6561439999996,
+            "settledReadyMs": 709.9547189999994,
+            "rendererTaskMs": 63.10899999999986,
+            "scriptMs": 23.829999999999906
+          },
+          {
+            "visibleReadyMs": 411.69993999999997,
+            "settledReadyMs": 711.912703,
+            "rendererTaskMs": 72.911,
+            "scriptMs": 31.669999999999977
+          }
+        ],
+        "median": {
+          "visibleReadyMs": 409.1780419999998,
+          "settledReadyMs": 710.9337109999997,
+          "rendererTaskMs": 68.00999999999993,
+          "scriptMs": 27.749999999999943
+        },
+        "additionalJs": [
+          {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          },
+          {
+            "paths": [
+              "/assets/opsec-controls-DimtNN7t.js"
+            ],
+            "files": 1,
+            "bytes": 19013,
+            "gzipBytes": 6338
+          }
+        ]
+      },
+      "delta": {
+        "visibleReadyMs": 254.16642699999977,
+        "settledReadyMs": 253.5285254999999,
+        "rendererTaskMs": 6.658499999999982,
+        "scriptMs": 4.598499999999923
+      }
+    }
+  ],
+  "checks": 28,
+  "errors": [],
+  "buildLogs": {
+    "baseline.log": "43bbb592f37fe588b500c8e758b3f0289c61a1eaafb4db5828510c5d5e5ca119",
+    "candidate.log": "54688382e738e70a83357066d728f43f2d59f147933a8c354f260fad1803388b",
+    "candidate-typecheck.log": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+  }
+}

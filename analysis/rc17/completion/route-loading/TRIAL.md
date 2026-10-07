@@ -14,7 +14,7 @@ Overview retains its existing operations module and Recharts dependency because 
 
 The roots have identical package lock SHA-256 `ee62865dfc3f03b1aca7978d205583f4d67c0c0e4a6fd489fa6c1baa0b6f78b2` and symmetric symlinks to the same installed dependency tree. Fresh build both roots with `npm run build`, sequentially after the coordinator grants the runtime slot. Do not rebuild the separate frozen `kairo-rc17-a27-baseline`; it is used by other evidence lanes.
 
-**Current status: source/harness prepared; builds, type check and browser run pending runtime slot.**
+**Current status: completed and rejected on measured navigation cost. Matched builds/type check and all 28 compiled checks pass, but first deferred navigation regresses without a demonstrated cold Overview speed benefit. See `RESULTS-20261007.md`.**
 
 ## Evidence harness
 
@@ -28,6 +28,8 @@ KAIRO_CHROME_PATH=/path/to/chrome node analysis/rc17/completion/route-loading/ru
 
 Separate diagnostics run after timing: ordinary navigation does not reload; back/forward retains routing; an unsaved Studio draft survives a source update without reaching saved output; detached Atlas opens and restores; the independent browser source renders its saved fixture. Candidate-only fault injection holds then fails the Markets module request, verifies loading/navigation/error states, and retries at the same route with a fresh module map. This intentionally tests the new route boundary; the eager baseline cannot fail one page chunk independently of the whole entry.
 
-## Decision pending
+## Original decision criterion
 
 Adopt only with material measured entry deferral and successful compiled navigation/diagnostics, while explicitly retaining first-navigation costs and any total-JS/CSS increase. Otherwise record a measured no-change disposition. Parent will port an accepted change into the integrated RC17 source and repeat its acceptance after integration.
+
+Final disposition: preserve the existing integrated routing. `integration-c954.patch` is an unapplied, rejected experiment artifact. See the measured result for complete byte, timing and correctness evidence.

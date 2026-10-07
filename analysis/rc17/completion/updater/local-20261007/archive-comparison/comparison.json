@@ -1,0 +1,1424 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-07T12:01:59.046Z",
+  "baselineCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "candidateCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+  "harnessHash": "45f9186c4f3c36995e87484775761c39ce8d65099d80ee86b7e41c11d6b6a0a2",
+  "order": [
+    "baseline-1",
+    "candidate-1",
+    "candidate-2",
+    "baseline-2",
+    "baseline-3",
+    "candidate-3"
+  ],
+  "complete": true,
+  "runs": [
+    {
+      "label": "baseline-1",
+      "complete": true,
+      "exitCode": 0,
+      "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "measurements": [
+        {
+          "label": "bundled_inventory_before_archive",
+          "elapsedMs": 14.591465999999997,
+          "cpuUserMs": 16.186,
+          "cpuSystemMs": 0,
+          "eventLoop": {
+            "activeMs": 14.390601999818074,
+            "idleMs": 0.22859500000001276,
+            "utilization": 0.9843633682477323,
+            "delayMeanMs": 5.351424,
+            "delayP99Ms": 5.353471,
+            "delayMaxMs": 5.353471,
+            "samples": 1
+          },
+          "memory": {
+            "rssBefore": 51195904,
+            "rssAfter": 57044992,
+            "peakRss": 57044992,
+            "peakMainHeapUsed": 14231280,
+            "processMaxRssKiB": 71688
+          },
+          "disk": {
+            "finalBytes": 0,
+            "sampledPeakBytes": 0,
+            "samples": 0
+          }
+        },
+        {
+          "label": "local_archive_stream_real_worker_install",
+          "elapsedMs": 10792.04156,
+          "cpuUserMs": 13614.336,
+          "cpuSystemMs": 999.963,
+          "eventLoop": {
+            "activeMs": 232.10919799956716,
+            "idleMs": 10560.060816,
+            "utilization": 0.0215071850886778,
+            "delayMeanMs": 5.11441679658606,
+            "delayP99Ms": 6.107135,
+            "delayMaxMs": 10.584063,
+            "samples": 2109
+          },
+          "memory": {
+            "rssBefore": 57176064,
+            "rssAfter": 416464896,
+            "peakRss": 430718976,
+            "peakMainHeapUsed": 14284680,
+            "processMaxRssKiB": 420752
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 228017128,
+            "samples": 10
+          },
+          "result": {
+            "phase": "ready",
+            "requests": 2,
+            "distinctStatusTransitions": 42
+          }
+        },
+        {
+          "label": "prepare_pending_with_full_rehash",
+          "elapsedMs": 31.847756000001027,
+          "cpuUserMs": 24.97,
+          "cpuSystemMs": 12.213,
+          "eventLoop": {
+            "activeMs": 29.371808000802048,
+            "idleMs": 2.5010649999985617,
+            "utilization": 0.9215299794299768,
+            "delayMeanMs": 4.8371712,
+            "delayP99Ms": 5.177343,
+            "delayMaxMs": 5.177343,
+            "samples": 5
+          },
+          "memory": {
+            "rssBefore": 416464896,
+            "rssAfter": 416874496,
+            "peakRss": 416874496,
+            "peakMainHeapUsed": 10131088,
+            "processMaxRssKiB": 420752
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 23040599,
+            "samples": 0
+          },
+          "result": {
+            "files": 7,
+            "bytes": 23038926,
+            "counts": {
+              "systems": 8490,
+              "regions": 114,
+              "constellations": 1184,
+              "gates": 6989,
+              "stargates": 13978,
+              "celestials": 454830,
+              "stations": 5210,
+              "space": {
+                "known": 5485,
+                "wormhole": 2604,
+                "abyssal": 200,
+                "other": 201
+              }
+            },
+            "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+          }
+        },
+        {
+          "label": "commit_pending_and_cleanup",
+          "elapsedMs": 5.723619000000326,
+          "cpuUserMs": 5.523,
+          "cpuSystemMs": 0.103,
+          "eventLoop": {
+            "activeMs": 4.471720001183712,
+            "idleMs": 1.2705769999993208,
+            "utilization": 0.7787336670782519,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 416874496,
+            "rssAfter": 416985088,
+            "peakRss": 416985088,
+            "peakMainHeapUsed": 10189824,
+            "processMaxRssKiB": 420752
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          }
+        },
+        {
+          "label": "prepare_active_without_rehash_10_repeats",
+          "elapsedMs": 40.8623860000007,
+          "cpuUserMs": 28.734,
+          "cpuSystemMs": 11.957,
+          "eventLoop": {
+            "activeMs": 33.90166400014823,
+            "idleMs": 6.984608000000662,
+            "utilization": 0.8291698494796682,
+            "delayMeanMs": 5.369173333333333,
+            "delayP99Ms": 6.365183,
+            "delayMaxMs": 6.365183,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 416985088,
+            "rssAfter": 420937728,
+            "peakRss": 420937728,
+            "peakMainHeapUsed": 13384696,
+            "processMaxRssKiB": 420752
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          },
+          "result": {
+            "timesMs": [
+              3.372579000000769,
+              4.2411859999992885,
+              4.837444999999207,
+              3.6488349999999627,
+              4.3362899999992806,
+              4.749723000000813,
+              3.4147029999985534,
+              3.7476339999993797,
+              4.715141000000585,
+              3.683487000000241
+            ]
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "universe-details-000.bin",
+          "bytes": 8388608,
+          "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+        },
+        {
+          "name": "universe-details-001.bin",
+          "bytes": 8388608,
+          "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+        },
+        {
+          "name": "universe-details-002.bin",
+          "bytes": 4914461,
+          "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+        },
+        {
+          "name": "universe.json.gz",
+          "bytes": 844130,
+          "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+        },
+        {
+          "name": "universe-provenance.json",
+          "bytes": 2805,
+          "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+        },
+        {
+          "name": "market-categories.json",
+          "bytes": 483778,
+          "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+        },
+        {
+          "name": "npc-market-owners.json",
+          "bytes": 16536,
+          "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+        }
+      ],
+      "counts": {
+        "systems": 8490,
+        "regions": 114,
+        "constellations": 1184,
+        "gates": 6989,
+        "stargates": 13978,
+        "celestials": 454830,
+        "stations": 5210,
+        "space": {
+          "known": 5485,
+          "wormhole": 2604,
+          "abyssal": 200,
+          "other": 201
+        }
+      }
+    },
+    {
+      "label": "candidate-1",
+      "complete": true,
+      "exitCode": 0,
+      "sourceCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "measurements": [
+        {
+          "label": "bundled_inventory_before_archive",
+          "elapsedMs": 14.04282999999998,
+          "cpuUserMs": 11.613,
+          "cpuSystemMs": 3.971,
+          "eventLoop": {
+            "activeMs": 13.895588999525785,
+            "idleMs": 0.1675520000000006,
+            "utilization": 0.9880857341894211,
+            "delayMeanMs": 7.706624,
+            "delayP99Ms": 7.708671,
+            "delayMaxMs": 7.708671,
+            "samples": 1
+          },
+          "memory": {
+            "rssBefore": 53649408,
+            "rssAfter": 58302464,
+            "peakRss": 58302464,
+            "peakMainHeapUsed": 13806016,
+            "processMaxRssKiB": 71392
+          },
+          "disk": {
+            "finalBytes": 0,
+            "sampledPeakBytes": 0,
+            "samples": 0
+          }
+        },
+        {
+          "label": "local_archive_stream_real_worker_install",
+          "elapsedMs": 11384.266351,
+          "cpuUserMs": 14584.269,
+          "cpuSystemMs": 1101.335,
+          "eventLoop": {
+            "activeMs": 234.0491280004478,
+            "idleMs": 11150.237012,
+            "utilization": 0.020558963919404667,
+            "delayMeanMs": 5.104304638851503,
+            "delayP99Ms": 5.681151,
+            "delayMaxMs": 7.942143,
+            "samples": 2229
+          },
+          "memory": {
+            "rssBefore": 58302464,
+            "rssAfter": 344494080,
+            "peakRss": 365047808,
+            "peakMainHeapUsed": 13860088,
+            "processMaxRssKiB": 358028
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 211529255,
+            "samples": 11
+          },
+          "result": {
+            "phase": "ready",
+            "requests": 2,
+            "distinctStatusTransitions": 43
+          }
+        },
+        {
+          "label": "prepare_pending_with_full_rehash",
+          "elapsedMs": 30.89762200000041,
+          "cpuUserMs": 37.589,
+          "cpuSystemMs": 7.902,
+          "eventLoop": {
+            "activeMs": 29.093358001231536,
+            "idleMs": 1.829381999999896,
+            "utilization": 0.9408402360228413,
+            "delayMeanMs": 5.1974144,
+            "delayP99Ms": 5.988351,
+            "delayMaxMs": 5.988351,
+            "samples": 5
+          },
+          "memory": {
+            "rssBefore": 344494080,
+            "rssAfter": 344563712,
+            "peakRss": 344563712,
+            "peakMainHeapUsed": 9827304,
+            "processMaxRssKiB": 358028
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 23040599,
+            "samples": 0
+          },
+          "result": {
+            "files": 7,
+            "bytes": 23038926,
+            "counts": {
+              "systems": 8490,
+              "regions": 114,
+              "constellations": 1184,
+              "gates": 6989,
+              "stargates": 13978,
+              "celestials": 454830,
+              "stations": 5210,
+              "space": {
+                "known": 5485,
+                "wormhole": 2604,
+                "abyssal": 200,
+                "other": 201
+              }
+            },
+            "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+          }
+        },
+        {
+          "label": "commit_pending_and_cleanup",
+          "elapsedMs": 5.793644999999742,
+          "cpuUserMs": 0.014,
+          "cpuSystemMs": 6.023,
+          "eventLoop": {
+            "activeMs": 4.526501999607717,
+            "idleMs": 1.2845400000005611,
+            "utilization": 0.778948422660316,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 344563712,
+            "rssAfter": 344530944,
+            "peakRss": 344563712,
+            "peakMainHeapUsed": 9911384,
+            "processMaxRssKiB": 358028
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          }
+        },
+        {
+          "label": "prepare_active_without_rehash_10_repeats",
+          "elapsedMs": 39.124572000000626,
+          "cpuUserMs": 38.372,
+          "cpuSystemMs": 1.304,
+          "eventLoop": {
+            "activeMs": 32.37397399962538,
+            "idleMs": 6.784459000000425,
+            "utilization": 0.8267433479765327,
+            "delayMeanMs": 5.151402666666667,
+            "delayP99Ms": 6.262783,
+            "delayMaxMs": 6.262783,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 344662016,
+            "rssAfter": 348696576,
+            "peakRss": 348696576,
+            "peakMainHeapUsed": 12850232,
+            "processMaxRssKiB": 358028
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          },
+          "result": {
+            "timesMs": [
+              4.260997000001225,
+              3.8650109999998676,
+              4.20494300000064,
+              3.550537000000986,
+              3.7785100000000966,
+              4.449260999999751,
+              3.4185789999992267,
+              3.522134000000733,
+              4.498314000000391,
+              3.4561849999990955
+            ]
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "universe-details-000.bin",
+          "bytes": 8388608,
+          "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+        },
+        {
+          "name": "universe-details-001.bin",
+          "bytes": 8388608,
+          "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+        },
+        {
+          "name": "universe-details-002.bin",
+          "bytes": 4914461,
+          "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+        },
+        {
+          "name": "universe.json.gz",
+          "bytes": 844130,
+          "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+        },
+        {
+          "name": "universe-provenance.json",
+          "bytes": 2805,
+          "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+        },
+        {
+          "name": "market-categories.json",
+          "bytes": 483778,
+          "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+        },
+        {
+          "name": "npc-market-owners.json",
+          "bytes": 16536,
+          "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+        }
+      ],
+      "counts": {
+        "systems": 8490,
+        "regions": 114,
+        "constellations": 1184,
+        "gates": 6989,
+        "stargates": 13978,
+        "celestials": 454830,
+        "stations": 5210,
+        "space": {
+          "known": 5485,
+          "wormhole": 2604,
+          "abyssal": 200,
+          "other": 201
+        }
+      }
+    },
+    {
+      "label": "candidate-2",
+      "complete": true,
+      "exitCode": 0,
+      "sourceCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "measurements": [
+        {
+          "label": "bundled_inventory_before_archive",
+          "elapsedMs": 14.93460300000001,
+          "cpuUserMs": 16.211,
+          "cpuSystemMs": 0.152,
+          "eventLoop": {
+            "activeMs": 14.750646000726462,
+            "idleMs": 0.20716099999999926,
+            "utilization": 0.9861503093341197,
+            "delayMeanMs": 4.98688,
+            "delayP99Ms": 4.988927,
+            "delayMaxMs": 4.988927,
+            "samples": 1
+          },
+          "memory": {
+            "rssBefore": 54312960,
+            "rssAfter": 58843136,
+            "peakRss": 58843136,
+            "peakMainHeapUsed": 13829360,
+            "processMaxRssKiB": 72064
+          },
+          "disk": {
+            "finalBytes": 0,
+            "sampledPeakBytes": 0,
+            "samples": 0
+          }
+        },
+        {
+          "label": "local_archive_stream_real_worker_install",
+          "elapsedMs": 10909.163475,
+          "cpuUserMs": 14011.751,
+          "cpuSystemMs": 1096.782,
+          "eventLoop": {
+            "activeMs": 239.9127739998036,
+            "idleMs": 10669.273997,
+            "utilization": 0.0219918110337583,
+            "delayMeanMs": 5.13840063336475,
+            "delayP99Ms": 6.901759,
+            "delayMaxMs": 9.592831,
+            "samples": 2122
+          },
+          "memory": {
+            "rssBefore": 58843136,
+            "rssAfter": 330133504,
+            "peakRss": 352456704,
+            "peakMainHeapUsed": 13883432,
+            "processMaxRssKiB": 346500
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 225401211,
+            "samples": 10
+          },
+          "result": {
+            "phase": "ready",
+            "requests": 2,
+            "distinctStatusTransitions": 43
+          }
+        },
+        {
+          "label": "prepare_pending_with_full_rehash",
+          "elapsedMs": 43.59095299999899,
+          "cpuUserMs": 42.188,
+          "cpuSystemMs": 9.788,
+          "eventLoop": {
+            "activeMs": 40.72107899998446,
+            "idleMs": 2.8950819999990927,
+            "utilization": 0.9336236400998202,
+            "delayMeanMs": 5.705557333333333,
+            "delayP99Ms": 9.936895,
+            "delayMaxMs": 9.936895,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 330133504,
+            "rssAfter": 344682496,
+            "peakRss": 344682496,
+            "peakMainHeapUsed": 9547152,
+            "processMaxRssKiB": 346500
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 23040599,
+            "samples": 0
+          },
+          "result": {
+            "files": 7,
+            "bytes": 23038926,
+            "counts": {
+              "systems": 8490,
+              "regions": 114,
+              "constellations": 1184,
+              "gates": 6989,
+              "stargates": 13978,
+              "celestials": 454830,
+              "stations": 5210,
+              "space": {
+                "known": 5485,
+                "wormhole": 2604,
+                "abyssal": 200,
+                "other": 201
+              }
+            },
+            "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+          }
+        },
+        {
+          "label": "commit_pending_and_cleanup",
+          "elapsedMs": 4.802192999999534,
+          "cpuUserMs": 4.707,
+          "cpuSystemMs": 0.039,
+          "eventLoop": {
+            "activeMs": 4.172467000127654,
+            "idleMs": 0.6476330000004964,
+            "utilization": 0.8656390946280621,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 344682496,
+            "rssAfter": 345862144,
+            "peakRss": 345862144,
+            "peakMainHeapUsed": 11734568,
+            "processMaxRssKiB": 346500
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          }
+        },
+        {
+          "label": "prepare_active_without_rehash_10_repeats",
+          "elapsedMs": 39.02369400000134,
+          "cpuUserMs": 28.388,
+          "cpuSystemMs": 12.244,
+          "eventLoop": {
+            "activeMs": 35.252547999607486,
+            "idleMs": 3.806169999999838,
+            "utilization": 0.9025526132209946,
+            "delayMeanMs": 5.332992,
+            "delayP99Ms": 6.414335,
+            "delayMaxMs": 6.414335,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 343920640,
+            "rssAfter": 349540352,
+            "peakRss": 349540352,
+            "peakMainHeapUsed": 15283968,
+            "processMaxRssKiB": 346500
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          },
+          "result": {
+            "timesMs": [
+              3.5213739999999234,
+              4.490653000000748,
+              3.2484129999993456,
+              4.2224890000015876,
+              4.630833999999595,
+              3.495033000001058,
+              3.5218949999998586,
+              4.502221000000645,
+              3.703599000000395,
+              3.509234999999535
+            ]
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "universe-details-000.bin",
+          "bytes": 8388608,
+          "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+        },
+        {
+          "name": "universe-details-001.bin",
+          "bytes": 8388608,
+          "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+        },
+        {
+          "name": "universe-details-002.bin",
+          "bytes": 4914461,
+          "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+        },
+        {
+          "name": "universe.json.gz",
+          "bytes": 844130,
+          "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+        },
+        {
+          "name": "universe-provenance.json",
+          "bytes": 2805,
+          "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+        },
+        {
+          "name": "market-categories.json",
+          "bytes": 483778,
+          "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+        },
+        {
+          "name": "npc-market-owners.json",
+          "bytes": 16536,
+          "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+        }
+      ],
+      "counts": {
+        "systems": 8490,
+        "regions": 114,
+        "constellations": 1184,
+        "gates": 6989,
+        "stargates": 13978,
+        "celestials": 454830,
+        "stations": 5210,
+        "space": {
+          "known": 5485,
+          "wormhole": 2604,
+          "abyssal": 200,
+          "other": 201
+        }
+      }
+    },
+    {
+      "label": "baseline-2",
+      "complete": true,
+      "exitCode": 0,
+      "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "measurements": [
+        {
+          "label": "bundled_inventory_before_archive",
+          "elapsedMs": 14.401400999999993,
+          "cpuUserMs": 14.486,
+          "cpuSystemMs": 1.239,
+          "eventLoop": {
+            "activeMs": 14.266145999276631,
+            "idleMs": 0.15860000000000696,
+            "utilization": 0.9890050057028414,
+            "delayMeanMs": 4.524032,
+            "delayP99Ms": 4.526079,
+            "delayMaxMs": 4.526079,
+            "samples": 1
+          },
+          "memory": {
+            "rssBefore": 51048448,
+            "rssAfter": 56840192,
+            "peakRss": 56840192,
+            "peakMainHeapUsed": 14229576,
+            "processMaxRssKiB": 71100
+          },
+          "disk": {
+            "finalBytes": 0,
+            "sampledPeakBytes": 0,
+            "samples": 0
+          }
+        },
+        {
+          "label": "local_archive_stream_real_worker_install",
+          "elapsedMs": 11442.21816,
+          "cpuUserMs": 14222.294,
+          "cpuSystemMs": 1164.861,
+          "eventLoop": {
+            "activeMs": 222.61389699936882,
+            "idleMs": 11219.783953,
+            "utilization": 0.01945517888100536,
+            "delayMeanMs": 5.123662451612903,
+            "delayP99Ms": 6.107135,
+            "delayMaxMs": 11.018239,
+            "samples": 2232
+          },
+          "memory": {
+            "rssBefore": 56840192,
+            "rssAfter": 372244480,
+            "peakRss": 384884736,
+            "peakMainHeapUsed": 14282976,
+            "processMaxRssKiB": 377272
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 207539127,
+            "samples": 11
+          },
+          "result": {
+            "phase": "ready",
+            "requests": 2,
+            "distinctStatusTransitions": 42
+          }
+        },
+        {
+          "label": "prepare_pending_with_full_rehash",
+          "elapsedMs": 41.29537999999957,
+          "cpuUserMs": 59.588,
+          "cpuSystemMs": 9.553,
+          "eventLoop": {
+            "activeMs": 39.102956999309754,
+            "idleMs": 2.214466999999786,
+            "utilization": 0.9464035560388084,
+            "delayMeanMs": 6.1824,
+            "delayP99Ms": 9.109503,
+            "delayMaxMs": 9.109503,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 372244480,
+            "rssAfter": 371023872,
+            "peakRss": 372244480,
+            "peakMainHeapUsed": 9235544,
+            "processMaxRssKiB": 377272
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 23040599,
+            "samples": 0
+          },
+          "result": {
+            "files": 7,
+            "bytes": 23038926,
+            "counts": {
+              "systems": 8490,
+              "regions": 114,
+              "constellations": 1184,
+              "gates": 6989,
+              "stargates": 13978,
+              "celestials": 454830,
+              "stations": 5210,
+              "space": {
+                "known": 5485,
+                "wormhole": 2604,
+                "abyssal": 200,
+                "other": 201
+              }
+            },
+            "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+          }
+        },
+        {
+          "label": "commit_pending_and_cleanup",
+          "elapsedMs": 5.674319999998261,
+          "cpuUserMs": 1.055,
+          "cpuSystemMs": 4.207,
+          "eventLoop": {
+            "activeMs": 4.016881999154066,
+            "idleMs": 1.6728920000005019,
+            "utilization": 0.7059826980387844,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 371023872,
+            "rssAfter": 372203520,
+            "peakRss": 372203520,
+            "peakMainHeapUsed": 9183672,
+            "processMaxRssKiB": 377272
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          }
+        },
+        {
+          "label": "prepare_active_without_rehash_10_repeats",
+          "elapsedMs": 57.32366400000137,
+          "cpuUserMs": 44.788,
+          "cpuSystemMs": 12.383,
+          "eventLoop": {
+            "activeMs": 48.79328400049053,
+            "idleMs": 8.557501999999658,
+            "utilization": 0.8507866657672919,
+            "delayMeanMs": 5.652707555555556,
+            "delayP99Ms": 7.606271,
+            "delayMaxMs": 7.606271,
+            "samples": 9
+          },
+          "memory": {
+            "rssBefore": 372203520,
+            "rssAfter": 375304192,
+            "peakRss": 375304192,
+            "peakMainHeapUsed": 10547896,
+            "processMaxRssKiB": 377272
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          },
+          "result": {
+            "timesMs": [
+              6.270809999999983,
+              4.073455000001559,
+              6.011543000000529,
+              4.361869000000297,
+              8.147360000000845,
+              3.92374000000018,
+              10.330116999999518,
+              4.533707999999024,
+              4.160826999999699,
+              5.393181999999797
+            ]
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "universe-details-000.bin",
+          "bytes": 8388608,
+          "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+        },
+        {
+          "name": "universe-details-001.bin",
+          "bytes": 8388608,
+          "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+        },
+        {
+          "name": "universe-details-002.bin",
+          "bytes": 4914461,
+          "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+        },
+        {
+          "name": "universe.json.gz",
+          "bytes": 844130,
+          "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+        },
+        {
+          "name": "universe-provenance.json",
+          "bytes": 2805,
+          "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+        },
+        {
+          "name": "market-categories.json",
+          "bytes": 483778,
+          "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+        },
+        {
+          "name": "npc-market-owners.json",
+          "bytes": 16536,
+          "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+        }
+      ],
+      "counts": {
+        "systems": 8490,
+        "regions": 114,
+        "constellations": 1184,
+        "gates": 6989,
+        "stargates": 13978,
+        "celestials": 454830,
+        "stations": 5210,
+        "space": {
+          "known": 5485,
+          "wormhole": 2604,
+          "abyssal": 200,
+          "other": 201
+        }
+      }
+    },
+    {
+      "label": "baseline-3",
+      "complete": true,
+      "exitCode": 0,
+      "sourceCommit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "measurements": [
+        {
+          "label": "bundled_inventory_before_archive",
+          "elapsedMs": 14.898367000000007,
+          "cpuUserMs": 8.028,
+          "cpuSystemMs": 8.259,
+          "eventLoop": {
+            "activeMs": 14.663002998974562,
+            "idleMs": 0.2599909999999994,
+            "utilization": 0.9825778258694023,
+            "delayMeanMs": 5.122048,
+            "delayP99Ms": 5.124095,
+            "delayMaxMs": 5.124095,
+            "samples": 1
+          },
+          "memory": {
+            "rssBefore": 51834880,
+            "rssAfter": 57790464,
+            "peakRss": 57790464,
+            "peakMainHeapUsed": 14231000,
+            "processMaxRssKiB": 71860
+          },
+          "disk": {
+            "finalBytes": 0,
+            "sampledPeakBytes": 0,
+            "samples": 0
+          }
+        },
+        {
+          "label": "local_archive_stream_real_worker_install",
+          "elapsedMs": 11101.234504999999,
+          "cpuUserMs": 14224.689,
+          "cpuSystemMs": 865.689,
+          "eventLoop": {
+            "activeMs": 235.36470599980552,
+            "idleMs": 10866.050079999999,
+            "utilization": 0.0212013252848302,
+            "delayMeanMs": 5.124111135334872,
+            "delayP99Ms": 6.373375,
+            "delayMaxMs": 10.854399,
+            "samples": 2165
+          },
+          "memory": {
+            "rssBefore": 57921536,
+            "rssAfter": 313470976,
+            "peakRss": 355168256,
+            "peakMainHeapUsed": 14284400,
+            "processMaxRssKiB": 347228
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 228017128,
+            "samples": 11
+          },
+          "result": {
+            "phase": "ready",
+            "requests": 2,
+            "distinctStatusTransitions": 42
+          }
+        },
+        {
+          "label": "prepare_pending_with_full_rehash",
+          "elapsedMs": 36.407044999999925,
+          "cpuUserMs": 28.746,
+          "cpuSystemMs": 15.627,
+          "eventLoop": {
+            "activeMs": 29.602194000985037,
+            "idleMs": 6.829748000000109,
+            "utilization": 0.8125340669510446,
+            "delayMeanMs": 5.320704,
+            "delayP99Ms": 6.918143,
+            "delayMaxMs": 6.918143,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 313470976,
+            "rssAfter": 328282112,
+            "peakRss": 328282112,
+            "peakMainHeapUsed": 9289736,
+            "processMaxRssKiB": 347228
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 23040599,
+            "samples": 0
+          },
+          "result": {
+            "files": 7,
+            "bytes": 23038926,
+            "counts": {
+              "systems": 8490,
+              "regions": 114,
+              "constellations": 1184,
+              "gates": 6989,
+              "stargates": 13978,
+              "celestials": 454830,
+              "stations": 5210,
+              "space": {
+                "known": 5485,
+                "wormhole": 2604,
+                "abyssal": 200,
+                "other": 201
+              }
+            },
+            "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+          }
+        },
+        {
+          "label": "commit_pending_and_cleanup",
+          "elapsedMs": 4.541529999998602,
+          "cpuUserMs": 0.062,
+          "cpuSystemMs": 4.222,
+          "eventLoop": {
+            "activeMs": 3.338857999535321,
+            "idleMs": 1.216273000000001,
+            "utilization": 0.7329883596928222,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 328282112,
+            "rssAfter": 329461760,
+            "peakRss": 329461760,
+            "peakMainHeapUsed": 11455200,
+            "processMaxRssKiB": 347228
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          }
+        },
+        {
+          "label": "prepare_active_without_rehash_10_repeats",
+          "elapsedMs": 39.39013800000066,
+          "cpuUserMs": 30.21,
+          "cpuSystemMs": 9.03,
+          "eventLoop": {
+            "activeMs": 32.455560999022055,
+            "idleMs": 6.9568899999994755,
+            "utilization": 0.8234849692506515,
+            "delayMeanMs": 5.331626666666667,
+            "delayP99Ms": 6.696959,
+            "delayMaxMs": 6.696959,
+            "samples": 6
+          },
+          "memory": {
+            "rssBefore": 329461760,
+            "rssAfter": 333012992,
+            "peakRss": 333012992,
+            "peakMainHeapUsed": 14984000,
+            "processMaxRssKiB": 347228
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          },
+          "result": {
+            "timesMs": [
+              3.6337930000008782,
+              4.203771999998935,
+              3.1691630000004807,
+              3.8910199999991164,
+              4.662401999999929,
+              3.6002319999988686,
+              4.143340000000535,
+              5.003536000000167,
+              3.4898859999993874,
+              3.49311200000011
+            ]
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "universe-details-000.bin",
+          "bytes": 8388608,
+          "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+        },
+        {
+          "name": "universe-details-001.bin",
+          "bytes": 8388608,
+          "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+        },
+        {
+          "name": "universe-details-002.bin",
+          "bytes": 4914461,
+          "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+        },
+        {
+          "name": "universe.json.gz",
+          "bytes": 844130,
+          "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+        },
+        {
+          "name": "universe-provenance.json",
+          "bytes": 2805,
+          "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+        },
+        {
+          "name": "market-categories.json",
+          "bytes": 483778,
+          "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+        },
+        {
+          "name": "npc-market-owners.json",
+          "bytes": 16536,
+          "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+        }
+      ],
+      "counts": {
+        "systems": 8490,
+        "regions": 114,
+        "constellations": 1184,
+        "gates": 6989,
+        "stargates": 13978,
+        "celestials": 454830,
+        "stations": 5210,
+        "space": {
+          "known": 5485,
+          "wormhole": 2604,
+          "abyssal": 200,
+          "other": 201
+        }
+      }
+    },
+    {
+      "label": "candidate-3",
+      "complete": true,
+      "exitCode": 0,
+      "sourceCommit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "measurements": [
+        {
+          "label": "bundled_inventory_before_archive",
+          "elapsedMs": 13.338540000000023,
+          "cpuUserMs": 15.138,
+          "cpuSystemMs": 0,
+          "eventLoop": {
+            "activeMs": 13.251047000935188,
+            "idleMs": 0.11386299999999494,
+            "utilization": 0.991480451421519,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 54296576,
+            "rssAfter": 58638336,
+            "peakRss": 58638336,
+            "peakMainHeapUsed": 13936264,
+            "processMaxRssKiB": 71620
+          },
+          "disk": {
+            "finalBytes": 0,
+            "sampledPeakBytes": 0,
+            "samples": 0
+          }
+        },
+        {
+          "label": "local_archive_stream_real_worker_install",
+          "elapsedMs": 10867.427309,
+          "cpuUserMs": 13938.191,
+          "cpuSystemMs": 1031.923,
+          "eventLoop": {
+            "activeMs": 234.37016399984054,
+            "idleMs": 10633.078537000001,
+            "utilization": 0.021566254458443197,
+            "delayMeanMs": 5.10198596899953,
+            "delayP99Ms": 5.701631,
+            "delayMaxMs": 9.011199,
+            "samples": 2129
+          },
+          "memory": {
+            "rssBefore": 58638336,
+            "rssAfter": 370929664,
+            "peakRss": 410746880,
+            "peakMainHeapUsed": 13987920,
+            "processMaxRssKiB": 401504
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 228017128,
+            "samples": 10
+          },
+          "result": {
+            "phase": "ready",
+            "requests": 2,
+            "distinctStatusTransitions": 43
+          }
+        },
+        {
+          "label": "prepare_pending_with_full_rehash",
+          "elapsedMs": 28.101807999999437,
+          "cpuUserMs": 33.451,
+          "cpuSystemMs": 0.076,
+          "eventLoop": {
+            "activeMs": 26.727614000310496,
+            "idleMs": 1.4154059999982564,
+            "utilization": 0.9497066768249204,
+            "delayMeanMs": 5.000192,
+            "delayP99Ms": 5.029887,
+            "delayMaxMs": 5.029887,
+            "samples": 4
+          },
+          "memory": {
+            "rssBefore": 370929664,
+            "rssAfter": 371535872,
+            "peakRss": 371535872,
+            "peakMainHeapUsed": 10372136,
+            "processMaxRssKiB": 401504
+          },
+          "disk": {
+            "finalBytes": 23040599,
+            "sampledPeakBytes": 23040599,
+            "samples": 0
+          },
+          "result": {
+            "files": 7,
+            "bytes": 23038926,
+            "counts": {
+              "systems": 8490,
+              "regions": 114,
+              "constellations": 1184,
+              "gates": 6989,
+              "stargates": 13978,
+              "celestials": 454830,
+              "stations": 5210,
+              "space": {
+                "known": 5485,
+                "wormhole": 2604,
+                "abyssal": 200,
+                "other": 201
+              }
+            },
+            "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+          }
+        },
+        {
+          "label": "commit_pending_and_cleanup",
+          "elapsedMs": 5.940839999999298,
+          "cpuUserMs": 1.707,
+          "cpuSystemMs": 4.024,
+          "eventLoop": {
+            "activeMs": 4.321267001363594,
+            "idleMs": 1.6351560000002792,
+            "utilization": 0.7254802085705013,
+            "delayMeanMs": null,
+            "delayP99Ms": null,
+            "delayMaxMs": null,
+            "samples": 0
+          },
+          "memory": {
+            "rssBefore": 371535872,
+            "rssAfter": 371503104,
+            "peakRss": 371535872,
+            "peakMainHeapUsed": 10430872,
+            "processMaxRssKiB": 401504
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          }
+        },
+        {
+          "label": "prepare_active_without_rehash_10_repeats",
+          "elapsedMs": 58.44191099999989,
+          "cpuUserMs": 35.03,
+          "cpuSystemMs": 23.21,
+          "eventLoop": {
+            "activeMs": 48.11292099895218,
+            "idleMs": 10.369450999998662,
+            "utilization": 0.8226909982347383,
+            "delayMeanMs": 5.880490666666667,
+            "delayP99Ms": 9.314303,
+            "delayMaxMs": 9.314303,
+            "samples": 9
+          },
+          "memory": {
+            "rssBefore": 371503104,
+            "rssAfter": 376057856,
+            "peakRss": 376057856,
+            "peakMainHeapUsed": 13708592,
+            "processMaxRssKiB": 401504
+          },
+          "disk": {
+            "finalBytes": 23040641,
+            "sampledPeakBytes": 23040641,
+            "samples": 0
+          },
+          "result": {
+            "timesMs": [
+              4.862210999999661,
+              4.438446000000113,
+              4.555784000000131,
+              5.266229000000749,
+              7.515251999999236,
+              7.094366999999693,
+              4.551075999999739,
+              4.770888000000923,
+              6.02715999999964,
+              9.214787999999317
+            ]
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "universe-details-000.bin",
+          "bytes": 8388608,
+          "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+        },
+        {
+          "name": "universe-details-001.bin",
+          "bytes": 8388608,
+          "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+        },
+        {
+          "name": "universe-details-002.bin",
+          "bytes": 4914461,
+          "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+        },
+        {
+          "name": "universe.json.gz",
+          "bytes": 844130,
+          "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+        },
+        {
+          "name": "universe-provenance.json",
+          "bytes": 2805,
+          "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+        },
+        {
+          "name": "market-categories.json",
+          "bytes": 483778,
+          "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+        },
+        {
+          "name": "npc-market-owners.json",
+          "bytes": 16536,
+          "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+        }
+      ],
+      "counts": {
+        "systems": 8490,
+        "regions": 114,
+        "constellations": 1184,
+        "gates": 6989,
+        "stargates": 13978,
+        "celestials": 454830,
+        "stations": 5210,
+        "space": {
+          "known": 5485,
+          "wormhole": 2604,
+          "abyssal": 200,
+          "other": 201
+        }
+      }
+    }
+  ],
+  "scope": "Three fresh processes per source, identical pinned archive, full real service/default Worker conversion, pending validation and commit. Isolated process only; loaded HTTP/SSE acceptance is separate.",
+  "endVerified": true
+}

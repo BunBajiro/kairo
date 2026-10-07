@@ -1,6 +1,6 @@
 # Studio and browser-source completion work (F8 / F9)
 
-Status: source mechanisms and ten targeted correctness checks pass. **Compiled browser acceptance and matched populated-layout profiling are still pending.** This record does not close F8/F9 or authorize clean RC17 review.
+Status: source mechanisms, ten targeted correctness checks and **10 / 10 compiled browser acceptance checks pass**. Matched populated-layout profiling remains pending. This record does not close F8/F9 or authorize clean RC17 review.
 
 ## F8: Studio work and source ownership
 
@@ -42,6 +42,13 @@ KAIRO_BROWSER_OUTPUT=analysis/rc17/completion/studio-stream/browser-result \
 node analysis/rc17/completion/studio-stream/browser-acceptance.mjs
 ```
 
-Remaining closure evidence: execute and review that compiled lane; run matched realistic populated-layout drag/idle windows without diagnostic instrumentation; retain first-use/active/idle output costs and failures. The harness checks real rendered recovery and request/write counts, not total OBS CPU. Native audio playback/disposal and screen-reader/real-OBS behavior remain outside this standalone browser lane; the renderer's audio lifecycle code was not changed.
+Compiled acceptance is complete as recorded below. Remaining closure evidence: run matched realistic populated-layout drag/idle windows without diagnostic instrumentation; retain first-use/active/idle output costs and failures. The harness checks real rendered recovery and request/write counts, not total OBS CPU. Native audio playback/disposal and screen-reader/real-OBS behavior remain outside this standalone browser lane; the renderer's audio lifecycle code was not changed.
 
 Browser runs require the coordinator's build receipt containing `sourceFingerprint` (the captured source+compiled manifest fingerprint), `buildCommand`, `completedAt`, `exitCode: 0`, and `logSha256`; optional `buildLog` is verified against that hash. This explicitly binds the successful frozen build record to the captured source/assets, beyond merely finding nonempty `dist`. Harness and helper hashes are also verified after the run.
+
+
+## Recovered compiled acceptance — 7 October 2026
+
+[Browser run 4](browser-run4/result.json) completed all ten checks against clean source `c954c0d808847f249df0659ed15fdce2e89f84c4`, source/build fingerprint `472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27`. It verifies its frozen build receipt and harness/helper hashes, has no runtime exceptions or external calls, and completed cleanup. Real Chromium DOM acceptance covers geometry-only POST suppression, one-flight stale-preview fencing, nonselected-pilot Goal invalidation, clock/countdown/Session progress, persisted Save/live output, changed-text/recovery writes, quota-denial protection, real SSE disconnect/reconnect, and offline last-successful-geometry recovery.
+
+Earlier failed attempts remain retained. Run 1 assumed an uncontrolled protection state/count; run 3 overlooked shared-origin live iframe persistence in its storage-denial fixture; run 4 drives real Core protection and closes the live iframe before storage-denial fault injection. These are diagnostic harness corrections, not source modifications or discarded performance samples. Compiled acceptance does not measure total OBS CPU.

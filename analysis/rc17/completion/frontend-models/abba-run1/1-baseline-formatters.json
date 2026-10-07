@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "615799709626ba337ca36b82c9b084875912a9598167e7b6cace4018c6bfe150",
+    "dirty": true
+  },
+  "harnessSha256": "5c7002b2e02967f3173b49cc2f19b028617189ce7d95ad14c37072fd18a1a993",
+  "node": "v24.19.0",
+  "importMs": 36.031555,
+  "cold": {
+    "calls": 3,
+    "ms": 15.096418999999997,
+    "outputs": [
+      "1,235",
+      "1.23k",
+      "7 Oct, 10:20 EVE"
+    ]
+  },
+  "warm": [
+    {
+      "round": 0,
+      "calls": 30000,
+      "ms": 1098.9872440000001,
+      "outputCharacters": 302325
+    },
+    {
+      "round": 1,
+      "calls": 30000,
+      "ms": 1156.134528,
+      "outputCharacters": 302325
+    },
+    {
+      "round": 2,
+      "calls": 30000,
+      "ms": 1244.037887,
+      "outputCharacters": 302325
+    },
+    {
+      "round": 3,
+      "calls": 30000,
+      "ms": 1294.587211,
+      "outputCharacters": 302325
+    },
+    {
+      "round": 4,
+      "calls": 30000,
+      "ms": 1203.6017550000006,
+      "outputCharacters": 302325
+    }
+  ],
+  "sourceVerified": true,
+  "limitations": [
+    "Actual UI formatter exports executed by Node 24, not Chromium; this isolates formatter cost and does not establish browser frame/CPU improvement.",
+    "Cold first-call cost is retained separately; import-time changes are reported.",
+    "Run matched fresh processes ABBA under the same runtime lock; first warm round is retained, not discarded."
+  ]
+}

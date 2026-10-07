@@ -1,6 +1,8 @@
 # F5 administrative refresh completion — implementation and acceptance
 
-7 October 2026. This is completion work on top of `a27d36c`, not approval to create a clean RC17. PR #10 remains withdrawn. Source changes below are uncommitted until the coordinator captures the integrated source and compiled output.
+**Native timer defect found after the virtual-clock checks:** the c954 compiled diagnostic passes below do not close F5. Native scheduling invokes detached Window timers with an invalid receiver. The fix and new native verification are recorded below.
+
+7 October 2026. This is completion work on top of `a27d36c`, not approval to create a clean RC17. PR #10 remains withdrawn. The source changes below are now committed in the internal c954 checkpoint; fresh compiled acceptance is recorded below.
 
 ## Changed paths and ownership
 
@@ -30,7 +32,7 @@ These are deterministic scheduler/request and publication tests, not host perfor
 
 Additional assertions cover failed-read recovery with retained view; disposal and late publication; newer OBS SSE status winning over an older HTTP response; dirty fields surviving full recovery; save response preserving subsequent edits; failed initial configuration retry; hidden reconnect; unrelated pilot events; and old-pilot pending reads.
 
-The three edited TSX files were syntax-transpiled successfully. The coordinator owns the integrated type check, full test suite and production build. No benchmark, full build, commit or push was run by this owner.
+The three edited TSX files were syntax-transpiled successfully. The coordinator completed the integrated type check, 941-test suite and production build at c954; this lane adds source-bound compiled acceptance.
 
 ## Executable compiled UI acceptance
 
@@ -40,7 +42,7 @@ The three edited TSX files were syntax-transpiled successfully. The coordinator 
 KAIRO_CHROME_PATH=/path/to/chrome node analysis/rc17/completion/admin-polling/browser-acceptance.mjs /absolute/path/to/kairo-rc17-completion /absolute/path/to/admin-polling/browser-acceptance.json
 ```
 
-The runner is syntax-checked; **compiled execution is pending**. It asserts:
+The runner has now completed against source `c954c0d808847f249df0659ed15fdce2e89f84c4`, fingerprint `472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27`: **18 / 18 compiled checks pass** in [browser-run1.json](browser-run1.json), with no browser exceptions or external requests. The associated successful frozen build receipt is retained as [candidate-build-receipt.json](candidate-build-receipt.json). It asserts:
 
 - Idle/running/hidden/focus Markets request counts, complete/cancel/error transitions, old cached book visibility, delayed transport with a 20-event burst, no overlap and retry after a failed request.
 - OBS status-only idle fallback, direct SSE status publication, dirty port/password through real EventSource disconnect/reconnect and focus recovery.
@@ -50,4 +52,11 @@ Administrative two-second/thirty-second timeout deadlines are driven by a diagno
 
 ## Closure disposition
 
-F5 source work and targeted logical contracts are implemented. Final closure still requires the integrated source/build verification, successful compiled acceptance with a source-bound raw result, and the frontend matched measurement/acceptance disposition. Keep PR #10 withdrawn until the complete RC17 ledger has closure evidence.
+F5 source work, targeted contracts and source-bound compiled acceptance are implemented and pass. The integrated 941-test source/build verification is recorded in the parent completion checkpoint. The frontend matched loaded/idle measurement and final frozen-source matrix remain separate closure requirements. Keep PR #10 withdrawn until the complete RC17 ledger has closure evidence.
+
+
+## Native-browser correction found during measurement
+
+The first uninstrumented candidate in `../frontend-models/abba-run1` raised four Chromium `TypeError: Illegal invocation` exceptions when Markets/OBS tried to arm their ordinary timers. The source was `createAdministrativeRefresh` constructing `timers = {setTimeout, clearTimeout}` and then calling `timers.setTimeout(...)`: the receiver becomes the helper object instead of the browser Window. Node timers and the earlier virtual-clock wrappers tolerate this receiver, masking the real-browser defect. The complete failed ABBA attempt is retained and is not performance acceptance.
+
+[native-timer-fix.patch](native-timer-fix.patch) uses default wrappers that invoke `globalThis.setTimeout` and `globalThis.clearTimeout` on their required receiver. Injected timer-object methods remain unchanged. A new regression checks the receiver for both scheduling and disposal. The fix is prepared in an isolated c954 worktree; native compiled verification and corrected ABBA are pending.

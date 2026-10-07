@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T11:50:19.060Z",
+  "source": {
+    "commit": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "fingerprint": "472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27",
+    "dirty": false
+  },
+  "harnessSha256": "3f98b274d1afa13749fbfcf1833cb750a7c7b53931681172b625cc1e9613f08e",
+  "mode": "diagnostic-counts",
+  "baseline": false,
+  "fixture": {
+    "pilots": 2,
+    "rowsPerLargeDataset": 10000,
+    "digest": "0c71f0a3f1a5d5c1ffdb576d1d04b2acfa5bdeaad9caffe820c4a3d3fd11c5c2"
+  },
+  "checks": [
+    {
+      "label": "unrelated snapshot does not derive asset rows",
+      "passed": true
+    },
+    {
+      "label": "matching visible record",
+      "passed": true
+    },
+    {
+      "label": "filter survives unrelated data refresh",
+      "passed": true
+    },
+    {
+      "label": "clamped page stays clamped after growth",
+      "passed": true
+    },
+    {
+      "label": "relevant name rebuilds asset labels",
+      "passed": true
+    },
+    {
+      "label": "unrelated name does not rebuild assets",
+      "passed": true
+    },
+    {
+      "label": "expanded details survive unrelated refresh",
+      "passed": true
+    },
+    {
+      "label": "inactive assets do not derive rows",
+      "passed": true
+    },
+    {
+      "label": "active tab sees latest source",
+      "passed": true
+    },
+    {
+      "label": "wallet balance does not rebuild journal/hidden rows",
+      "passed": true
+    },
+    {
+      "label": "industry mounts jobs without hidden mining derivation",
+      "passed": true
+    },
+    {
+      "label": "pilot switch publishes selected-pilot rows",
+      "passed": true
+    }
+  ],
+  "samples": [],
+  "counts": [
+    {
+      "label": "assets-first-open",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 1,
+          "rows": 20000
+        },
+        "assets": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-unrelated-wallet-snapshot",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-search-and-page",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 10000,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-relevant-name",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 10000,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-unrelated-name",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "inactive-assets-source-change",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-journal-open",
+      "map": {
+        "journal": {
+          "calls": 1,
+          "rows": 10000
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-unrelated-snapshot",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-transaction-first-use",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        },
+        "transactions": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-journal-return",
+      "map": {
+        "journal": {
+          "calls": 1,
+          "rows": 10000
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        },
+        "transactions": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "industry-first-use",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        },
+        "transactions": {
+          "calls": 0,
+          "rows": 0
+        },
+        "jobs": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/timeline?limit=5&character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/goals?character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=43"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    }
+  ],
+  "complete": false,
+  "limitations": [
+    "Synthetic populated connected pilots; no real ESI traffic.",
+    "Diagnostic counters wrap Array.map/Object.values/Intl constructors by fixture row shape; they count operations, not React commits. Counter mode is never used for CPU comparisons.",
+    "Timing mode contains no row/formatter instrumentation. Compare fresh baseline/candidate browsers in ABBA order, same fixture/build configuration.",
+    "Renderer CDP task/script/style/layout duration excludes browser/GPU/worker CPU.",
+    "No browser virtualization or archive-history performance conclusion; archive belongs to its separate acceptance lane."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "coldOverviewCounts": {
+    "map": {
+      "journal": {
+        "calls": 1,
+        "rows": 80
+      }
+    },
+    "searchRows": 0,
+    "numberFormat": 2,
+    "dateFormat": 3
+  },
+  "failure": "Error: {\"code\":-32000,\"message\":\"Object reference chain is too long\"}\n    at WebSocket.<anonymous> (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs:12:141)\n    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)\n    at WebSocket.dispatchEvent (node:internal/event_target:789:26)\n    at fireEvent (node:internal/deps/undici/undici:14403:14)\n    at #onMessage (node:internal/deps/undici/undici:15726:9)\n    at Object.onMessage (node:internal/deps/undici/undici:15433:76)\n    at websocketMessageReceived (node:internal/deps/undici/undici:14407:15)\n    at node:internal/deps/undici/undici:15135:21\n    at node:internal/deps/undici/undici:14915:11\n    at afterWrite (node:internal/streams/writable:708:5)",
+  "failureState": {
+    "url": "http://127.0.0.1:18730/#assets",
+    "body": "K\nKAIRO\nCAPSULEER OPERATIONS\nJump to module\n⌘ K\nOPERATIONS\nCommand centre\nPilot & training\nWallet & trade\nHangar & assets\nMarkets\nIndustry & planets\nSessions\nUNIVERSE\nAtlas\nMaps\nUniverse settings\nINTELLIGENCE\nGoals & notes\nBROADCAST\nStream studio\nOBS\nOPSEC control\nSYSTEM\nSettings\nConnections\nLOCAL ENVIRONMENT\nPrivate by design · v0.8.0-rc.17\nHide sidebar\nWorkspace\nHangar & assets\nCore connected\n11:50:24 EVE\n\nYOUR FLIGHT DECK\n\nHangar & assets\n\nYour ships, equipment and fittings, all accounted for.\n\nSecond Model Pilot\nASSET REFERENCE VALUE\n100.01M ISK\nESI market averages · excludes unpriced items · not a sale quote\nAll assets\nSaved fittings\nContracts\nAsset inventory\nCached · stale\n10,000 records\nItem\tQuantity\tLocation / container\tStorage\tReference value\nSecond Asset 00000\t1\tFixture station\tHangar\t2 ISK\nSecond Asset 00001\t2\tFixture station\tHangar\t4 ISK\nSecond Asset 00002\t3\tFixture station\tHangar\t6 ISK\nSecond Asset 00003\t4\tFixture station\tHangar\t8 ISK\nSecond Asset 00004\t5\tFixture station\tHangar\t10 ISK\nSecond Asset 00005\t6\tFixture station\tHangar\t12 ISK\nSecond Asset 00006\t7\tFixture station\tHangar\t14 ISK\nSecond Asset 00007\t8\tFixture station\tHangar\t16 ISK\nSecond Asset 00008\t9\tFixture station\tHangar\t18 ISK\nSecond Asset 00009\t10\tFixture station\tHangar\t20 ISK\nSecond Asset 00010\t11\tFixture station\tHangar\t22 ISK\nSecond Asset 00011\t12\tFixture station\tHangar\t24 ISK\nSecond Asset 00012\t13\tFixture station\tHangar\t26 ISK\nSecond Asset 00013\t14\tFixture station\tHangar\t28 ISK\nSecond Asset 00014\t15\tFixture station\tHangar\t30 ISK\nSecond Asset 00015\t16\tFixture station\tHangar\t32 ISK\nSecond Asset 00016\t17\tFixture station\tHangar\t34 ISK\nSecond Asset 00017\t18\tFixture station\tHangar\t36 ISK\nSecond Asset 00018\t19\tFixture station\tHangar\t38 ISK\nSecond Asset 00019\t20\tFixture station\tHangar\t40 ISK\nSecond Asset 00020\t21\tFixture station\tHangar\t42 ISK\nSecond Asset 00021\t22\tFixture station\tHangar\t44 ISK\nSecond Asset 00022\t23\tFixture station\tHangar\t46 ISK\nSecond Asset 00023\t24\tFixture station\tHangar\t48 ISK\nSecond Asset 00024\t25\tFixture station\tHangar\t50 ISK\nSecond Asset 00025\t26\tFixture station\tHangar\t52 ISK\nSecond Asset 00026\t27\tFixture station\tHangar\t54 ISK\nSecond Asset 00027\t28\tFixture station\tHangar\t56 ISK\nSecond Asset 00028\t29\tFixture station\tHangar\t58 ISK\nSecond Asset 00029\t30\tFixture station\tHangar\t60 ISK\nPage 1 of 334\n\n7 Oct, 09:00 EVE\n\nKAIRO / CAPSULEER OPERATIONS\nLocal memory. Modular growth.\nJump to a module\n\nSearch your Kairo workspace\n\n7 Oct"
+  },
+  "endedAt": "2026-10-07T11:50:25.348Z"
+}

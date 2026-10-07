@@ -11,7 +11,7 @@ import {createHash} from 'node:crypto';
 import {loadSourceManifest,verifySource} from '../../harness/source-manifest.mjs';
 const self=fileURLToPath(import.meta.url);
 if(process.env.KAIRO_MAPS_EXPIRY_LOCKED!=='1'){
-  const code=await new Promise((done,bad)=>{const child=spawn('flock',['-n','/tmp/kairo-rc16-benchmark.lock',process.execPath,self,...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_MAPS_EXPIRY_LOCKED:'1'}});child.on('error',bad);child.on('exit',code=>done(code??1));});process.exit(code);
+  const code=await new Promise((done,bad)=>{const child=spawn('flock',['/tmp/kairo-performance.lock',process.execPath,self,...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_MAPS_EXPIRY_LOCKED:'1'}});child.on('error',bad);child.on('exit',code=>done(code??1));});process.exit(code);
 }
 const [beforeArg,afterArg,outputArg]=process.argv.slice(2);assert.ok(beforeArg&&afterArg&&outputArg,'Provide before manifest, after manifest, new output JSON');
 const manifests=[await loadSourceManifest(beforeArg),await loadSourceManifest(afterArg)],output=resolve(outputArg),hash=value=>createHash('sha256').update(value).digest('hex');

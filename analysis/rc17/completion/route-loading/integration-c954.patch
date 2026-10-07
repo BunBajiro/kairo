@@ -1,0 +1,90 @@
+--- a/components/kairo/dashboard.tsx
++++ b/components/kairo/dashboard.tsx
+@@ -1,5 +1,5 @@
+ "use client";
+-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
++import { lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+ import { ShoppingCart, LayoutDashboard, Link2, ShieldCheck, RefreshCw, Orbit, BrainCircuit, Wallet, Boxes, Factory, Route, Globe, Waypoints, Target, Monitor, Blocks, ChevronRight, Search, Command as CommandIcon, Settings2, ExternalLink, PanelLeftClose, PanelLeftOpen, AlertTriangle, X } from 'lucide-react';
+ import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, useSidebar } from '@/components/ui/sidebar';
+ import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
+@@ -16,12 +16,14 @@
+ import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
+ import { Connections, Modules } from './connections';
+ import { Goals, SessionsPage } from './intelligence';
+-import { Universe } from './universe';
+-import { UniverseSettings } from './universe-settings';
+-import {Markets} from './markets';
+-import { Studio, OPSEC } from './studio';
++import {DeferredPage} from './deferred-page';
+ import { createDatasetConnection, type DatasetConnectionState } from './dataset-connection.mjs';
+ import './dataset-connection.css';
++const Universe = lazy(() => import('./universe').then(module => ({default: module.Universe})));
++const UniverseSettings = lazy(() => import('./universe-settings').then(module => ({default: module.UniverseSettings})));
++const Markets = lazy(() => import('./markets').then(module => ({default: module.Markets})));
++const Studio = lazy(() => import('./studio').then(module => ({default: module.Studio})));
++const OPSEC = lazy(() => import('./opsec-controls').then(module => ({default: module.OPSEC})));
+ const icons: any = { markets:ShoppingCart, overview: LayoutDashboard, character: BrainCircuit, wallet: Wallet, assets: Boxes, industry: Factory, sessions: Route, 'universe-kspace': Globe, 'universe-jspace': Waypoints, 'universe-settings': Settings2, goals: Target, studio: Monitor, opsec: ShieldCheck, modules: Settings2, connections: Link2 };
+ const descriptions: any = { markets:'A shared market desk for every character. Scan, compare, and plan your next supply run.', overview: 'Your pilot. Your operations. Your next move.', character: 'Training, clones and the capabilities behind your next undock.', wallet: 'Follow your ISK, orders and recent trades.', assets: 'Your ships, equipment and fittings, all accounted for.', industry: 'Keep production, extraction and research moving.', sessions: 'Record an operation. Review its activity, progress and outcomes.', 'universe-kspace': 'Read the landscape of New Eden. Follow its borders, activity and routes.', 'universe-jspace': 'Build your maps. Follow your pilots. Connect your space.', 'universe-settings': 'Manage navigation networks, power blocs and intelligence sources.', goals: 'Make progress. Leave yourself a trail.', studio: 'A clear canvas for the parts of Kairo you choose to broadcast.', opsec: 'Control what your stream can see.', modules: 'Manage modules, local datasets, appearance and EVE refresh settings.', connections: 'Connect your characters. Choose your ESI access.' };
+ function workspaceDestination(id: string) {
+@@ -246,7 +248,7 @@
+             content = <WalletPage />;
+             break;
+         case 'markets':
+-            content = <Markets />;
++            content = <DeferredPage name="Markets"><Markets /></DeferredPage>;
+             break;
+         case 'assets':
+             content = <AssetsPage />;
+@@ -258,22 +260,22 @@
+             content = <SessionsPage />;
+             break;
+         case 'universe-kspace':
+-            content = <Universe space="known" />;
++            content = <DeferredPage name="Atlas"><Universe space="known" /></DeferredPage>;
+             break;
+         case 'universe-jspace':
+-            content = <Universe space="wormhole" />;
++            content = <DeferredPage name="Maps"><Universe space="wormhole" /></DeferredPage>;
+             break;
+         case 'universe-settings':
+-            content = <UniverseSettings key={character} />;
++            content = <DeferredPage name="Universe settings"><UniverseSettings key={character} /></DeferredPage>;
+             break;
+         case 'goals':
+             content = <Goals />;
+             break;
+         case 'studio':
+-            content = <Studio />;
++            content = <DeferredPage name="Stream Studio"><Studio /></DeferredPage>;
+             break;
+         case 'opsec':
+-            content = <OPSEC />;
++            content = <DeferredPage name="OPSEC"><OPSEC /></DeferredPage>;
+             break;
+         case 'modules':
+             content = <Modules />;
+--- /dev/null
++++ b/components/kairo/deferred-page.tsx
+@@ -0,0 +1,22 @@
++"use client";
++import {Component, Suspense, type ReactNode} from 'react';
++import {Button} from '@/components/ui/button';
++
++class PageLoadBoundary extends Component<{name: string; children: ReactNode}, {failed: boolean}> {
++    state = {failed: false};
++    static getDerivedStateFromError() {return {failed: true};}
++    render() {
++        if (this.state.failed) return <section className="panel" role="alert" data-route-load-error>
++            <h2>Could not open {this.props.name}</h2>
++            <p className="muted">The page could not finish loading. Retry when Kairo is available.</p>
++            <Button onClick={() => window.location.reload()}>Retry page</Button>
++        </section>;
++        return this.props.children;
++    }
++}
++
++export function DeferredPage({name, children}: {name: string; children: ReactNode}) {
++    return <PageLoadBoundary name={name}><Suspense fallback={<section className="panel" role="status" aria-live="polite" data-route-loading>
++        <p>Opening {name}…</p>
++    </section>}>{children}</Suspense></PageLoadBoundary>;
++}

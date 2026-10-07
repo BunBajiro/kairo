@@ -23,6 +23,9 @@ assert.ok(Number.isSafeInteger(build) && build > 0);
 const windowMs = Number(process.env.KAIRO_UPDATER_WINDOW_MS || 60000);
 assert.ok(windowMs >= 30000 && windowMs <= 600000);
 const source = await loadSourceManifest(process.env.KAIRO_SOURCE_MANIFEST, root);
+const order = process.env.KAIRO_UPDATER_ORDER ? JSON.parse(process.env.KAIRO_UPDATER_ORDER) : ['loaded-control-1', 'loaded-conversion-1', 'loaded-conversion-2', 'loaded-control-2', 'loaded-control-3', 'loaded-conversion-3'];
+assert.ok(Array.isArray(order) && order.length >= 2 && order.length <= 12 && new Set(order).size === order.length && order.every(name => /^loaded-(control|conversion)-[1-9]$/.test(name)));
+assert.equal(order.filter(name => name.includes('control')).length, order.filter(name => name.includes('conversion')).length);
 const { runKairoSupervisor } = await import(pathToFileURL(join(root, 'server/runtime-supervisor.mjs')).href);
 const hash = async file => { const h = createHash('sha256'); for await (const chunk of createReadStream(file)) h.update(chunk); return h.digest('hex'); };
 const archiveSha256 = await hash(archive), harnessHashes = {};
@@ -31,7 +34,7 @@ for (const file of ['loaded-run.mjs', 'loaded-child.mjs', '../../harness/backend
 const report = { schema: 1, suite: 'real-updater-under-loaded-app', sourceCommit: source.sourceCommit, sourceFingerprint: source.fingerprint, sourceDirty: source.dirty,
   harnessCommit: process.env.GITHUB_SHA || null, runUrl: process.env.GITHUB_RUN_ID ? `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}` : null,
   generatedAt: new Date().toISOString(), environment: { node: process.version, platform: process.platform, cpu: cpus()[0]?.model, logicalCpus: cpus().length },
-  archive: { build, bytes: (await stat(archive)).size, sha256: archiveSha256 }, harnessHashes, windowMs, order: ['loaded-control-1', 'loaded-conversion-1', 'loaded-conversion-2', 'loaded-control-2'],
+  archive: { build, bytes: (await stat(archive)).size, sha256: archiveSha256 }, harnessHashes, windowMs, order,
   scope: ['Real default SDE builder and Worker; actual supervisor and forked runtime generations, HTTP and dashboard/Stream SSE.', 'Two synthetic pilots, 20,000 assets each, 50,000 events, 200 Sessions, 8 Maps with 100 nodes each; real Core scheduler and synthetic cached/provider responses.', 'Archive streams from local disk; Internet download time excluded. No browser/OBS executable or real private data.', 'Per-generation CPU/RSS/event-loop measures include the real SDE worker. RSS is process-wide, sampled peaks are lower bounds. Quiet controls mean the same loaded app without conversion.', 'Automatic dataset startup check is suppressed only by the analysis adapter; installation begins at 5s. All other Core drivers remain enabled.'], runs: [], complete: false };
 await mkdir(out, { recursive: true });
 const save = () => writeFile(join(out, 'loaded.json'), JSON.stringify(report, null, 2) + '\n');

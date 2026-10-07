@@ -35,7 +35,7 @@ An unrelated name addition causes zero additional model derivations; a reference
 - [browser-acceptance.mjs](browser-acceptance.mjs) launches the actual compiled app with synthetic populated pilots, dataset bodies and blocked external traffic. Diagnostic mode instruments row-shaped Array.map calls, search normalization and Intl construction outside timing; it checks actual tabs, unrelated and relevant data/name changes, filter survival, page clamp after shrink/regrowth, expanded details, selected-pilot rows, stale data and disabled empty state. `--timing` uses fresh uninstrumented renderer metrics for the same actions. `--baseline` observes the old behavior without asserting new count/clamp guarantees.
 - [formatter-cost.mjs](formatter-cost.mjs) imports the actual UI `model.ts` exports using Node 24 type stripping. It retains import and first-use costs separately and measures five 30k-call warm windows. This isolates formatter work under Node; it does not establish Chromium frame/CPU improvement.
 
-Both require the coordinator's `KAIRO_MODELS_LOCKED=1` and a source manifest captured after a fresh build, and verify the source/build fingerprint again at completion. Both passed syntax checks only. Neither has been run against a fresh compiled candidate in this lane. Use baseline/candidate ABBA under the shared runtime lock, separate diagnostic count runs from timing, and retain adverse results.
+Both require the coordinator's `KAIRO_MODELS_LOCKED=1` and a source manifest captured after a fresh build, and verify the source/build fingerprint again at completion. At preparation both passed syntax checks only. The later compiled acceptance section supersedes that preparation status; matched timing results are recorded separately when complete. Use baseline/candidate ABBA under the shared runtime lock, separate diagnostic count runs from timing, and retain adverse results.
 
 Example commands (run from the analysis repository after coordinator scheduling):
 
@@ -46,3 +46,21 @@ KAIRO_MODELS_LOCKED=1 node analysis/rc17/completion/frontend-models/formatter-co
 ```
 
 Remaining limits: broad React context subscriptions and eager page delivery need their own measured disposition; no archive DOM/windowing decision, real-user latency claim, or clean-release readiness follows from these deterministic counts.
+
+
+## Compiled acceptance completed — 7 October 2026
+
+[Browser run 3](browser-run3.json) passes **17 / 17 checks** with two synthetic pilots and 10,000 rows per large dataset, no browser exceptions and no external traffic. The source/build is clean `c954c0d808847f249df0659ed15fdce2e89f84c4`, fingerprint `472afe35fc135243350cad554205ac5845e5bd9404e81838a52aca8d09b63b27`, with [candidate-source.json](candidate-source.json) and its successful build receipt.
+
+Actual compiled controls preserve numeric ascending/descending sorting, search through unrelated refresh, persistent page clamp after 10,000→35→10,000 rows, expanded details, pilot selection, cached stale data, disabled state and missing-scope guidance. Instrumentation observes one 10,000-row active model on first use, zero asset derivations/search normalization on unrelated snapshot or unrelated-name replacement, zero inactive asset derivation, and one relevant-name rebuild. Wallet balance changes do not rebuild journal/hidden rows; Industry mounts jobs without deriving hidden mining data. Search normalizes the active array once; pagination/sort reuse it. Counter mode is separate from timings.
+
+Failed harness runs remain: run 1 had nested quoting in a browser-evaluated selector; run 2 returned a DOM node through CDP `returnByValue`, failing with an object-reference-depth error after twelve checks. Exact prior harnesses and raw failures are retained. Neither failure was a product defect. Run 3 uses a boolean existence check, corrected selector quoting, and adds compiled sorting/missing-scope acceptance.
+
+The timed comparison uses a separate clean, byte-identical frozen candidate checkout and a matched c954 baseline with eight UI files restored from a27. The [exact ablation patch](legacy-ui-ablation.patch), baseline manifest and successful baseline build receipt are retained. This compares the combined UI mechanisms; it does not assign all speed changes to one line or to context subscription separation.
+
+
+## Separate retained-heap diagnostic
+
+[heap-run1](heap-run1/) completed a fresh-browser ABBA with identical 10,000-row inputs and forced collection after each phase. These runs have a distinct `retained-heap-diagnostic` mode; their time/CPU values are deliberately excluded from performance comparison. The ordinary timing fixture was not forced to collect. [Raw heap comparison](heap-run1/comparisons.json) retains both values for each variant.
+
+Median post-collection renderer JS heap, old UI ablation → c954: first Assets open **14.47→15.28 MiB**; after search/page **16.18→16.54 MiB**; after inactive Assets source change **19.55→17.37 MiB**; Wallet journal first open **16.00→15.34 MiB**; Wallet transaction first use **18.14→15.49 MiB**; Industry first use **15.54→15.44 MiB**. This records a bounded extra ~0.81 MiB on first active Assets and ~0.36 MiB after search, while removed inactive models reduce other observed states. It is renderer JS heap for this fixture, not a guarantee about process RSS, GPU memory, all pilot datasets or all cardinalities.

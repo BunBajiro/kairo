@@ -8,7 +8,7 @@ import {createHash} from 'node:crypto';
 import {loadSourceManifest,verifySource} from '../../harness/source-manifest.mjs';
 const self=fileURLToPath(import.meta.url),here=dirname(self);
 if(process.env.KAIRO_STATE_TAIL_LOCKED!=='1'){
-    const code=await new Promise((done,bad)=>{const child=spawn('flock',['-n','/tmp/kairo-rc16-benchmark.lock',process.execPath,self,...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_STATE_TAIL_LOCKED:'1'}});child.on('error',bad);child.on('exit',code=>done(code??1));});process.exit(code);
+    const code=await new Promise((done,bad)=>{const child=spawn('flock',['/tmp/kairo-performance.lock',process.execPath,self,...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_STATE_TAIL_LOCKED:'1'}});child.on('error',bad);child.on('exit',code=>done(code??1));});process.exit(code);
 }
 const[configArg,outputArg]=process.argv.slice(2);assert.ok(configArg&&outputArg,'Provide configuration JSON and output directory');
 const configPath=resolve(configArg),configBytes=await readFile(configPath),config=JSON.parse(configBytes),output=resolve(outputArg);

@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 1,
+  "label": "baseline-2",
+  "startedAt": "2026-10-07T11:56:18.563Z",
+  "complete": true,
+  "source": {
+    "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+    "fingerprint": "a19b2d5c09f58425118f4ecbd41e414f68b4ad9b7b1e459aa2cd2779360245bd",
+    "dirty": false
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "viewport": {
+      "width": 1600,
+      "height": 1100,
+      "dpr": 1
+    },
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "HeadlessChrome/138.0.7204.0",
+      "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+      "jsVersion": "13.8.258"
+    }
+  },
+  "samples": [
+    {
+      "name": "cold-overview",
+      "visibleReadyMs": 305.232311,
+      "readyMs": 616.097216,
+      "windowMs": 617.9401710000001,
+      "taskMs": 293.25300000000004,
+      "scriptMs": 144.233,
+      "layoutMs": 69.773,
+      "assets": {
+        "paths": [
+          "/assets/layout-segment-context-r5Oxd9gY.js",
+          "/assets/rolldown-runtime-S-ySWqyJ.js",
+          "/assets/index-D-aH34pE.js",
+          "/assets/framework-CXnKph_e.js",
+          "/assets/page-DUCP82OA.js"
+        ],
+        "files": 5,
+        "bytes": 1657020,
+        "gzipBytes": 477502
+      },
+      "requests": [
+        {
+          "url": "/",
+          "method": "GET",
+          "at": 8890.094555,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 42491,
+          "totalMs": 13.697000000320259
+        },
+        {
+          "url": "/assets/index-DGoGoinT.css",
+          "method": "GET",
+          "at": 8890.113205,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 252446,
+          "totalMs": 21.188000000620377
+        },
+        {
+          "url": "/assets/page-Ch-8o9su.css",
+          "method": "GET",
+          "at": 8890.113435,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 297258,
+          "totalMs": 23.42500000122527
+        },
+        {
+          "url": "/assets/layout-segment-context-r5Oxd9gY.js",
+          "method": "GET",
+          "at": 8890.113504,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 919,
+          "totalMs": 17.363999999361113
+        },
+        {
+          "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+          "method": "GET",
+          "at": 8890.113563,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 1325,
+          "totalMs": 17.839999998614076
+        },
+        {
+          "url": "/assets/index-D-aH34pE.js",
+          "method": "GET",
+          "at": 8890.113606,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 81375,
+          "totalMs": 19.902000000001863
+        },
+        {
+          "url": "/assets/framework-CXnKph_e.js",
+          "method": "GET",
+          "at": 8890.113655,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 190438,
+          "totalMs": 21.036000000094646
+        },
+        {
+          "url": "/assets/page-DUCP82OA.js",
+          "method": "GET",
+          "at": 8890.113883,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 1386125,
+          "totalMs": 28.953000000910833
+        },
+        {
+          "url": "/api/bootstrap",
+          "method": "GET",
+          "at": 8890.258478,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 7301,
+          "totalMs": 6.509000000733067
+        },
+        {
+          "url": "/api/timeline?limit=5&character=42",
+          "method": "GET",
+          "at": 8890.277909,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 662,
+          "totalMs": 3.2559999999648426
+        },
+        {
+          "url": "/api/goals?character=42",
+          "method": "GET",
+          "at": 8890.278232,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 813,
+          "totalMs": 4.004999998869607
+        },
+        {
+          "url": "/api/state?character=42",
+          "method": "GET",
+          "at": 8890.278506,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 7521,
+          "totalMs": 6.321999999272521
+        },
+        {
+          "url": "/api/universe/jspace/tracking/active",
+          "method": "PUT",
+          "at": 8890.285288,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 638,
+          "totalMs": 9.78900000154681
+        },
+        {
+          "url": "/api/events",
+          "method": "GET",
+          "at": 8890.318907,
+          "phase": "timing",
+          "status": 200
+        },
+        {
+          "url": "/api/timeline?limit=5&character=42",
+          "method": "GET",
+          "at": 8890.348295,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 662,
+          "totalMs": 4.441999999471591
+        },
+        {
+          "url": "/api/goals?character=42",
+          "method": "GET",
+          "at": 8890.348729,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 813,
+          "totalMs": 4.177000000709086
+        }
+      ]
+    },
+    {
+      "name": "first-opsec",
+      "visibleReadyMs": 165.06384000000003,
+      "readyMs": 467.26230799999985,
+      "windowMs": 468.7453659999999,
+      "taskMs": 72.57999999999998,
+      "scriptMs": 29.965999999999994,
+      "layoutMs": 9.470999999999993,
+      "assets": {
+        "paths": [],
+        "files": 0,
+        "bytes": 0,
+        "gzipBytes": 0
+      },
+      "requests": [
+        {
+          "url": "/api/obs",
+          "method": "GET",
+          "at": 8890.856934,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 1009,
+          "totalMs": 3.2339999997930136
+        }
+      ]
+    },
+    {
+      "name": "first-universe-settings",
+      "visibleReadyMs": 312.46367899999996,
+      "readyMs": 613.4597919999999,
+      "windowMs": 615.004373,
+      "taskMs": 138.39000000000001,
+      "scriptMs": 31.53600000000001,
+      "layoutMs": 18.143000000000008,
+      "assets": {
+        "paths": [],
+        "files": 0,
+        "bytes": 0,
+        "gzipBytes": 0
+      },
+      "requests": [
+        {
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "at": 8891.314267,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 867000,
+          "totalMs": 137.35900000028778
+        },
+        {
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "at": 8891.314609,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 543829,
+          "totalMs": 136.25100000172097
+        }
+      ]
+    },
+    {
+      "name": "first-universe-jspace",
+      "visibleReadyMs": 216.4394540000003,
+      "readyMs": 514.1617840000004,
+      "windowMs": 515.4245350000001,
+      "taskMs": 156.802,
+      "scriptMs": 49.49599999999998,
+      "layoutMs": 6.128999999999996,
+      "assets": {
+        "paths": [],
+        "files": 0,
+        "bytes": 0,
+        "gzipBytes": 0
+      },
+      "requests": [
+        {
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "at": 8891.932099,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 867000,
+          "totalMs": 17.483999999967637
+        },
+        {
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "at": 8891.932533,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 543829,
+          "totalMs": 12.837000000217813
+        },
+        {
+          "url": "/api/universe/jspace/summaries?character=42",
+          "method": "GET",
+          "at": 8892.028556,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 1157,
+          "totalMs": 6.7710000002989545
+        }
+      ]
+    },
+    {
+      "name": "first-universe-kspace",
+      "visibleReadyMs": 307.66265599999997,
+      "readyMs": 620.2710979999997,
+      "windowMs": 621.3997669999999,
+      "taskMs": 314.1039999999999,
+      "scriptMs": 165.041,
+      "layoutMs": 20.427,
+      "assets": {
+        "paths": [
+          "/assets/universe-map-worker-BBtk5q05.js"
+        ],
+        "files": 1,
+        "bytes": 1185,
+        "gzipBytes": 696
+      },
+      "requests": [
+        {
+          "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+          "method": "GET",
+          "at": 8892.439389,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 867000,
+          "totalMs": 19.091000000116765
+        },
+        {
+          "url": "/api/universe?character=42",
+          "method": "GET",
+          "at": 8892.440176,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 543829,
+          "totalMs": 9.831999999732943
+        },
+        {
+          "url": "/assets/universe-map-worker-BBtk5q05.js",
+          "method": "GET",
+          "at": 8892.636876,
+          "phase": "timing",
+          "workerLifecycleComplete": true
+        }
+      ]
+    },
+    {
+      "name": "first-studio",
+      "visibleReadyMs": 119.251487,
+      "readyMs": 425.5273040000002,
+      "windowMs": 426.67301899999984,
+      "taskMs": 66.87900000000002,
+      "scriptMs": 23.406000000000038,
+      "layoutMs": 8.493000000000015,
+      "assets": {
+        "paths": [],
+        "files": 0,
+        "bytes": 0,
+        "gzipBytes": 0
+      },
+      "requests": [
+        {
+          "url": "/api/stream/sources",
+          "method": "GET",
+          "at": 8893.092265,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 2768,
+          "totalMs": 2.7140000001963926
+        },
+        {
+          "url": "/api/stream/preview",
+          "method": "POST",
+          "at": 8893.293102,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 638,
+          "totalMs": 2.7549999995244434
+        }
+      ]
+    },
+    {
+      "name": "first-markets",
+      "visibleReadyMs": 131.10956099999976,
+      "readyMs": 435.38052999999945,
+      "windowMs": 436.90042900000026,
+      "taskMs": 99.72099999999995,
+      "scriptMs": 38.68699999999997,
+      "layoutMs": 13.75699999999999,
+      "assets": {
+        "paths": [],
+        "files": 0,
+        "bytes": 0,
+        "gzipBytes": 0
+      },
+      "requests": [
+        {
+          "url": "/api/markets",
+          "method": "GET",
+          "at": 8893.495643,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 2771,
+          "totalMs": 4.1650000002846355
+        },
+        {
+          "url": "/api/markets/categories?hub=60003760",
+          "method": "GET",
+          "at": 8893.496239,
+          "phase": "timing",
+          "status": 200,
+          "encodedBytes": 131791,
+          "totalMs": 13.71599999947648
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "Ordinary lazy navigation does not reload the document",
+      "passed": true
+    },
+    {
+      "name": "Back/forward restores selected route",
+      "passed": true
+    },
+    {
+      "name": "Mounted Studio draft survives context updates and stays unsaved",
+      "passed": true
+    },
+    {
+      "name": "Detached Atlas surface opens with a visible canvas and loaded CSS, then restores after deferred import",
+      "passed": true,
+      "detachedState": {
+        "canvas": true,
+        "width": 778,
+        "height": 384,
+        "missingCss": []
+      }
+    },
+    {
+      "name": "Independent browser source still loads",
+      "passed": true
+    },
+    {
+      "name": "Baseline eager bundle has no independent route failure boundary",
+      "passed": true,
+      "baselineOnly": true
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "requests": [
+    {
+      "url": "/",
+      "method": "GET",
+      "at": 8890.094555,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 42491,
+      "totalMs": 13.697000000320259
+    },
+    {
+      "url": "/assets/index-DGoGoinT.css",
+      "method": "GET",
+      "at": 8890.113205,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 252446,
+      "totalMs": 21.188000000620377
+    },
+    {
+      "url": "/assets/page-Ch-8o9su.css",
+      "method": "GET",
+      "at": 8890.113435,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 297258,
+      "totalMs": 23.42500000122527
+    },
+    {
+      "url": "/assets/layout-segment-context-r5Oxd9gY.js",
+      "method": "GET",
+      "at": 8890.113504,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 919,
+      "totalMs": 17.363999999361113
+    },
+    {
+      "url": "/assets/rolldown-runtime-S-ySWqyJ.js",
+      "method": "GET",
+      "at": 8890.113563,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 1325,
+      "totalMs": 17.839999998614076
+    },
+    {
+      "url": "/assets/index-D-aH34pE.js",
+      "method": "GET",
+      "at": 8890.113606,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 81375,
+      "totalMs": 19.902000000001863
+    },
+    {
+      "url": "/assets/framework-CXnKph_e.js",
+      "method": "GET",
+      "at": 8890.113655,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 190438,
+      "totalMs": 21.036000000094646
+    },
+    {
+      "url": "/assets/page-DUCP82OA.js",
+      "method": "GET",
+      "at": 8890.113883,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 1386125,
+      "totalMs": 28.953000000910833
+    },
+    {
+      "url": "/api/bootstrap",
+      "method": "GET",
+      "at": 8890.258478,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 7301,
+      "totalMs": 6.509000000733067
+    },
+    {
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "at": 8890.277909,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 662,
+      "totalMs": 3.2559999999648426
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "at": 8890.278232,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 813,
+      "totalMs": 4.004999998869607
+    },
+    {
+      "url": "/api/state?character=42",
+      "method": "GET",
+      "at": 8890.278506,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 7521,
+      "totalMs": 6.321999999272521
+    },
+    {
+      "url": "/api/universe/jspace/tracking/active",
+      "method": "PUT",
+      "at": 8890.285288,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 638,
+      "totalMs": 9.78900000154681
+    },
+    {
+      "url": "/api/events",
+      "method": "GET",
+      "at": 8890.318907,
+      "phase": "timing",
+      "status": 200
+    },
+    {
+      "url": "/api/timeline?limit=5&character=42",
+      "method": "GET",
+      "at": 8890.348295,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 662,
+      "totalMs": 4.441999999471591
+    },
+    {
+      "url": "/api/goals?character=42",
+      "method": "GET",
+      "at": 8890.348729,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 813,
+      "totalMs": 4.177000000709086
+    },
+    {
+      "url": "/api/obs",
+      "method": "GET",
+      "at": 8890.856934,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 1009,
+      "totalMs": 3.2339999997930136
+    },
+    {
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "at": 8891.314267,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 867000,
+      "totalMs": 137.35900000028778
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "at": 8891.314609,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 543829,
+      "totalMs": 136.25100000172097
+    },
+    {
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "at": 8891.932099,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 867000,
+      "totalMs": 17.483999999967637
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "at": 8891.932533,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 543829,
+      "totalMs": 12.837000000217813
+    },
+    {
+      "url": "/api/universe/jspace/summaries?character=42",
+      "method": "GET",
+      "at": 8892.028556,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 1157,
+      "totalMs": 6.7710000002989545
+    },
+    {
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "at": 8892.439389,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 867000,
+      "totalMs": 19.091000000116765
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "at": 8892.440176,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 543829,
+      "totalMs": 9.831999999732943
+    },
+    {
+      "url": "/assets/universe-map-worker-BBtk5q05.js",
+      "method": "GET",
+      "at": 8892.636876,
+      "phase": "timing",
+      "workerLifecycleComplete": true
+    },
+    {
+      "url": "/api/stream/sources",
+      "method": "GET",
+      "at": 8893.092265,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 2768,
+      "totalMs": 2.7140000001963926
+    },
+    {
+      "url": "/api/stream/preview",
+      "method": "POST",
+      "at": 8893.293102,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 638,
+      "totalMs": 2.7549999995244434
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "at": 8893.495643,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 2771,
+      "totalMs": 4.1650000002846355
+    },
+    {
+      "url": "/api/markets/categories?hub=60003760",
+      "method": "GET",
+      "at": 8893.496239,
+      "phase": "timing",
+      "status": 200,
+      "encodedBytes": 131791,
+      "totalMs": 13.71599999947648
+    },
+    {
+      "url": "/api/stream/sources",
+      "method": "GET",
+      "at": 8893.862237,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 2768,
+      "totalMs": 2.873000001272885
+    },
+    {
+      "url": "/api/markets",
+      "method": "GET",
+      "at": 8893.8751,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 2771,
+      "totalMs": 3.2480000008945353
+    },
+    {
+      "url": "/api/markets/categories?hub=60003760",
+      "method": "GET",
+      "at": 8893.875552,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 131791,
+      "totalMs": 4.354000000603264
+    },
+    {
+      "url": "/api/stream/sources",
+      "method": "GET",
+      "at": 8894.027386,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 2768,
+      "totalMs": 3.0079999996814877
+    },
+    {
+      "url": "/api/stream/preview",
+      "method": "POST",
+      "at": 8894.228278,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 638,
+      "totalMs": 3.118999999060179
+    },
+    {
+      "url": "/api/stream/preview",
+      "method": "POST",
+      "at": 8894.488287,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 680,
+      "totalMs": 2.7609999997366685
+    },
+    {
+      "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+      "method": "GET",
+      "at": 8894.869277,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 867000,
+      "totalMs": 21.085000000311993
+    },
+    {
+      "url": "/api/universe?character=42",
+      "method": "GET",
+      "at": 8894.869653,
+      "phase": "diagnostic",
+      "status": 200,
+      "encodedBytes": 543829,
+      "totalMs": 11.898000000655884
+    },
+    {
+      "url": "/assets/universe-map-worker-BBtk5q05.js",
+      "method": "GET",
+      "at": 8895.034149,
+      "phase": "diagnostic",
+      "workerLifecycleComplete": true
+    }
+  ],
+  "workers": [
+    {
+      "targetId": "2194C296FEF899EF4724D5B61986580B",
+      "sessionId": "BBDC37AC76462DE7F625684DC9CCA3A1",
+      "url": "/assets/universe-map-worker-BBtk5q05.js",
+      "phase": "timing",
+      "createdAt": 3131.85806,
+      "endedAt": 3308.206181
+    },
+    {
+      "targetId": "AA5A4724B6BC55E0062C45F5CB73BAA1",
+      "sessionId": "48B5DD5B695DBE0DCB84B5BE10EC5D42",
+      "url": "/assets/universe-map-worker-BBtk5q05.js",
+      "phase": "diagnostic",
+      "createdAt": 5512.845591,
+      "endedAt": 5724.875455
+    }
+  ],
+  "limitations": [
+    "Synthetic pilot with populated Overview wallet graph and one manual goal; no credentials or external provider traffic.",
+    "Fresh backend/browser per ABBA entry; cold module cache. Route order is reversed in pair two to expose shared-chunk first-use cost.",
+    "Headless Linux and loopback transport; elapsed and CDP renderer-task observations are bounded comparative samples, not desktop/GPU or internet speed claims.",
+    "Settled ready time includes two animation frames plus 200ms minimum settle guard and 80ms quiet request confirmation; visibleReadyMs is also retained. No initial route reads may spill into the next sample.",
+    "Dedicated Atlas worker script completion transfers away from parent CDP Network; its observed target detachment closes that request and is required for settled completion. Renderer task metrics exclude worker-thread CPU.",
+    "Gzip bytes are compressed asset potential, not actual HTTP content-encoding; this server can deliver raw JavaScript.",
+    "Loading/failure/retry, mounted-draft and detached-surface diagnostics run after every timed observation."
+  ],
+  "fixture": {
+    "pilot": 42,
+    "journalRows": 30,
+    "goals": 1,
+    "profile": true,
+    "wallet": 123456789,
+    "streamWidgets": 1,
+    "digest": "3a53fa7e3479d6157ca781a3e1a1ee6120ed218e867adc274a5061c6ad4f660a"
+  },
+  "routeOrder": [
+    "opsec",
+    "universe-settings",
+    "universe-jspace",
+    "universe-kspace",
+    "studio",
+    "markets"
+  ],
+  "sourceVerified": true,
+  "endedAt": "2026-10-07T11:56:24.434Z"
+}

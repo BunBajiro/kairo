@@ -1,0 +1,515 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-07T11:55:45.912Z",
+  "complete": true,
+  "order": [
+    "baseline-1",
+    "candidate-1",
+    "candidate-2",
+    "baseline-2"
+  ],
+  "harness": {
+    "run.mjs": "e4a04eb9336cabf4fbf68093d83ef0a3fc649a6a3262c395a52f47273a9a8cda",
+    "browser-worker.mjs": "2ea0213f611be067337af1fe4758554de7a183a41a63c066e3f063837ef04e1b",
+    "bundle-inventory.mjs": "6cb1766c0e18d36a68340c425d7c08dd6854ef3a642d9421df98dfef2cff2b68"
+  },
+  "source": {
+    "baseline": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-route-lazy-baseline",
+      "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+      "fingerprint": "a19b2d5c09f58425118f4ecbd41e414f68b4ad9b7b1e459aa2cd2779360245bd",
+      "dirty": false
+    },
+    "candidate": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-route-lazy-trial",
+      "commit": "a27d36c602435ce220452b5d45b0109d30efa533",
+      "fingerprint": "03c1fe0a5843c24aa694f0bd610edc2fa40e79f0d92bbba614baf231f7de40f5",
+      "dirty": true
+    }
+  },
+  "method": "Matched a27 sources except isolated route boundaries; identical package lock/build config/dependency installation; fresh backend/browser per ABBA entry; all measured observations precede fault/draft/detached diagnostics.",
+  "comparison": [
+    {
+      "name": "cold-overview",
+      "baseline": [
+        {
+          "readyMs": 581.425516,
+          "taskMs": 270.057,
+          "scriptMs": 146.372,
+          "assets": {
+            "paths": [
+              "/assets/layout-segment-context-r5Oxd9gY.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-D-aH34pE.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DUCP82OA.js"
+            ],
+            "files": 5,
+            "bytes": 1657020,
+            "gzipBytes": 477502
+          }
+        },
+        {
+          "readyMs": 616.097216,
+          "taskMs": 293.25300000000004,
+          "scriptMs": 144.233,
+          "assets": {
+            "paths": [
+              "/assets/layout-segment-context-r5Oxd9gY.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-D-aH34pE.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DUCP82OA.js"
+            ],
+            "files": 5,
+            "bytes": 1657020,
+            "gzipBytes": 477502
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 572.809949,
+          "taskMs": 269.235,
+          "scriptMs": 146.60899999999998,
+          "assets": {
+            "paths": [
+              "/assets/layout-segment-context-D319w2wB.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-BZp6JKKI.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DYh-xzJK.js",
+              "/assets/ui-vxNUUxmN.js",
+              "/assets/alert-dialog-B8mVd1Ie.js",
+              "/assets/dist-DT3cXLAL.js",
+              "/assets/progress-C-DRgLHw.js",
+              "/assets/x-D3xgXHvY.js",
+              "/assets/tabs-CXrKSPvz.js",
+              "/assets/slider-C-i1HqJx.js",
+              "/assets/switch-BfAtEN8C.js",
+              "/assets/route-ETMelPL9.js",
+              "/assets/shield-CwTSdpMi.js",
+              "/assets/protection-BUdcKYZJ.js",
+              "/assets/waypoints-CbVAmE3g.js",
+              "/assets/play-C8Tj5ADO.js",
+              "/assets/trash-2-Cc6jLJws.js",
+              "/assets/textarea-ojf_p3oz.js",
+              "/assets/target-DNm-VxR1.js"
+            ],
+            "files": 21,
+            "bytes": 985812,
+            "gzipBytes": 302070
+          }
+        },
+        {
+          "readyMs": 609.304485,
+          "taskMs": 302.896,
+          "scriptMs": 167.55900000000003,
+          "assets": {
+            "paths": [
+              "/assets/layout-segment-context-D319w2wB.js",
+              "/assets/rolldown-runtime-S-ySWqyJ.js",
+              "/assets/index-BZp6JKKI.js",
+              "/assets/framework-CXnKph_e.js",
+              "/assets/page-DYh-xzJK.js",
+              "/assets/ui-vxNUUxmN.js",
+              "/assets/alert-dialog-B8mVd1Ie.js",
+              "/assets/dist-DT3cXLAL.js",
+              "/assets/progress-C-DRgLHw.js",
+              "/assets/x-D3xgXHvY.js",
+              "/assets/tabs-CXrKSPvz.js",
+              "/assets/slider-C-i1HqJx.js",
+              "/assets/switch-BfAtEN8C.js",
+              "/assets/route-ETMelPL9.js",
+              "/assets/shield-CwTSdpMi.js",
+              "/assets/protection-BUdcKYZJ.js",
+              "/assets/waypoints-CbVAmE3g.js",
+              "/assets/play-C8Tj5ADO.js",
+              "/assets/trash-2-Cc6jLJws.js",
+              "/assets/textarea-ojf_p3oz.js",
+              "/assets/target-DNm-VxR1.js"
+            ],
+            "files": 21,
+            "bytes": 985812,
+            "gzipBytes": 302070
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": -7.704148999999916,
+        "taskMs": 4.410500000000013
+      }
+    },
+    {
+      "name": "first-markets",
+      "baseline": [
+        {
+          "readyMs": 417.3737130000002,
+          "taskMs": 85.335,
+          "scriptMs": 43.412000000000006,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 435.38052999999945,
+          "taskMs": 99.72099999999995,
+          "scriptMs": 38.68699999999997,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 758.5894209999999,
+          "taskMs": 116.533,
+          "scriptMs": 64.29700000000003,
+          "assets": {
+            "paths": [
+              "/assets/markets-BDw8167c.js",
+              "/assets/chart-column-DyMSf2SQ.js",
+              "/assets/users-DcHb2LPX.js",
+              "/assets/layers-iyus3t7-.js",
+              "/assets/radio-GDN4hpP6.js"
+            ],
+            "files": 5,
+            "bytes": 69911,
+            "gzipBytes": 20152
+          }
+        },
+        {
+          "readyMs": 755.2806059999994,
+          "taskMs": 115.29499999999993,
+          "scriptMs": 45.252000000000066,
+          "assets": {
+            "paths": [
+              "/assets/markets-BDw8167c.js"
+            ],
+            "files": 1,
+            "bytes": 68372,
+            "gzipBytes": 19180
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": 330.5578919999998,
+        "taskMs": 23.385999999999996
+      }
+    },
+    {
+      "name": "first-studio",
+      "baseline": [
+        {
+          "readyMs": 414.66076699999985,
+          "taskMs": 71.30199999999998,
+          "scriptMs": 22.689999999999987,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 425.5273040000002,
+          "taskMs": 66.87900000000002,
+          "scriptMs": 23.406000000000038,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 711.4537539999999,
+          "taskMs": 80.72600000000001,
+          "scriptMs": 26.565999999999978,
+          "assets": {
+            "paths": [
+              "/assets/studio-CKx_zi_Q.js",
+              "/assets/opsec-controls-DimtNN7t.js",
+              "/assets/type-BhJMqWhu.js",
+              "/assets/volume-2-DMFfjSUq.js"
+            ],
+            "files": 4,
+            "bytes": 46916,
+            "gzipBytes": 15591
+          }
+        },
+        {
+          "readyMs": 752.1264659999997,
+          "taskMs": 108.95800000000011,
+          "scriptMs": 31.807999999999947,
+          "assets": {
+            "paths": [
+              "/assets/studio-CKx_zi_Q.js",
+              "/assets/chart-column-DyMSf2SQ.js"
+            ],
+            "files": 2,
+            "bytes": 26775,
+            "gzipBytes": 8704
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": 311.6960744999998,
+        "taskMs": 25.751500000000078
+      }
+    },
+    {
+      "name": "first-universe-kspace",
+      "baseline": [
+        {
+          "readyMs": 782.422523,
+          "taskMs": 383.01,
+          "scriptMs": 204.59500000000003,
+          "assets": {
+            "paths": [
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 1,
+            "bytes": 1185,
+            "gzipBytes": 696
+          }
+        },
+        {
+          "readyMs": 620.2710979999997,
+          "taskMs": 314.1039999999999,
+          "scriptMs": 165.041,
+          "assets": {
+            "paths": [
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 1,
+            "bytes": 1185,
+            "gzipBytes": 696
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 1077.3754840000001,
+          "taskMs": 424.53499999999997,
+          "scriptMs": 227.216,
+          "assets": {
+            "paths": [
+              "/assets/universe-Cq0NcaIv.js",
+              "/assets/universe-CA5UWLaO.js",
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 3,
+            "bytes": 532808,
+            "gzipBytes": 152167
+          }
+        },
+        {
+          "readyMs": 670.9961399999997,
+          "taskMs": 366.3239999999999,
+          "scriptMs": 175.066,
+          "assets": {
+            "paths": [
+              "/assets/universe-map-worker-BBtk5q05.js"
+            ],
+            "files": 1,
+            "bytes": 1185,
+            "gzipBytes": 696
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": 172.8390015000001,
+        "taskMs": 46.8725
+      }
+    },
+    {
+      "name": "first-universe-jspace",
+      "baseline": [
+        {
+          "readyMs": 511.25162199999977,
+          "taskMs": 111.549,
+          "scriptMs": 29.46099999999996,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 514.1617840000004,
+          "taskMs": 156.802,
+          "scriptMs": 49.49599999999998,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 502.831905,
+          "taskMs": 122.78699999999998,
+          "scriptMs": 33.78799999999998,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 878.1540880000002,
+          "taskMs": 239.08399999999997,
+          "scriptMs": 110.239,
+          "assets": {
+            "paths": [
+              "/assets/universe-Cq0NcaIv.js",
+              "/assets/type-BhJMqWhu.js",
+              "/assets/layers-iyus3t7-.js"
+            ],
+            "files": 3,
+            "bytes": 497956,
+            "gzipBytes": 139203
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": 177.78629350000006,
+        "taskMs": 46.75999999999999
+      }
+    },
+    {
+      "name": "first-universe-settings",
+      "baseline": [
+        {
+          "readyMs": 497.9734119999998,
+          "taskMs": 105.82599999999998,
+          "scriptMs": 19.699999999999996,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 613.4597919999999,
+          "taskMs": 138.39000000000001,
+          "scriptMs": 31.53600000000001,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 813.0534179999995,
+          "taskMs": 155.66400000000002,
+          "scriptMs": 31.258000000000063,
+          "assets": {
+            "paths": [
+              "/assets/universe-settings-DJVQ6FtZ.js"
+            ],
+            "files": 1,
+            "bytes": 34242,
+            "gzipBytes": 10108
+          }
+        },
+        {
+          "readyMs": 943.8910400000002,
+          "taskMs": 154.70100000000002,
+          "scriptMs": 32.62000000000001,
+          "assets": {
+            "paths": [
+              "/assets/universe-settings-DJVQ6FtZ.js",
+              "/assets/universe-CA5UWLaO.js",
+              "/assets/users-DcHb2LPX.js",
+              "/assets/radio-GDN4hpP6.js",
+              "/assets/volume-2-DMFfjSUq.js"
+            ],
+            "files": 5,
+            "bytes": 70576,
+            "gzipBytes": 23897
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": 322.755627,
+        "taskMs": 33.0745
+      }
+    },
+    {
+      "name": "first-opsec",
+      "baseline": [
+        {
+          "readyMs": 447.54806299999973,
+          "taskMs": 50.12299999999992,
+          "scriptMs": 16.337000000000046,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 467.26230799999985,
+          "taskMs": 72.57999999999998,
+          "scriptMs": 29.965999999999994,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        }
+      ],
+      "candidate": [
+        {
+          "readyMs": 709.9547189999994,
+          "taskMs": 63.10899999999986,
+          "scriptMs": 23.829999999999906,
+          "assets": {
+            "paths": [],
+            "files": 0,
+            "bytes": 0,
+            "gzipBytes": 0
+          }
+        },
+        {
+          "readyMs": 711.912703,
+          "taskMs": 72.911,
+          "scriptMs": 31.669999999999977,
+          "assets": {
+            "paths": [
+              "/assets/opsec-controls-DimtNN7t.js"
+            ],
+            "files": 1,
+            "bytes": 19013,
+            "gzipBytes": 6338
+          }
+        }
+      ],
+      "medianDelta": {
+        "readyMs": 253.5285254999999,
+        "taskMs": 6.658499999999982
+      }
+    }
+  ],
+  "endedAt": "2026-10-07T11:56:26.675Z"
+}

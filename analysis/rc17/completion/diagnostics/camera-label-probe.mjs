@@ -11,7 +11,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {loadSourceManifest,verifySource} from '../../harness/source-manifest.mjs';
 
 if(process.env.KAIRO_CAMERA_LOCKED!=='1'){
- const code=await new Promise((done,bad)=>{const child=spawn('flock',['-n','/tmp/kairo-rc16-benchmark.lock',process.execPath,fileURLToPath(import.meta.url),...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_CAMERA_LOCKED:'1'}});child.on('error',bad);child.on('exit',code=>done(code??1));});process.exit(code);
+ const code=await new Promise((done,bad)=>{const child=spawn('flock',['/tmp/kairo-performance.lock',process.execPath,fileURLToPath(import.meta.url),...process.argv.slice(2)],{stdio:'inherit',env:{...process.env,KAIRO_CAMERA_LOCKED:'1'}});child.on('error',bad);child.on('exit',code=>done(code??1));});process.exit(code);
 }
 const [rootArg,outputArg,manifestArg]=process.argv.slice(2),repo=resolve(rootArg),output=resolve(outputArg),source=await loadSourceManifest(manifestArg,repo);
 assert.equal(process.env.KAIRO_CAMERA_LOCKED,'1','Run through browser-camera-run.mjs to acquire the timing lock');

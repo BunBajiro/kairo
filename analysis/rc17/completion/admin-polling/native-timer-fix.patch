@@ -1,0 +1,31 @@
+diff --git a/components/kairo/administrative-refresh.mjs b/components/kairo/administrative-refresh.mjs
+index 3805e02..fa4e277 100644
+--- a/components/kairo/administrative-refresh.mjs
++++ b/components/kairo/administrative-refresh.mjs
+@@ -3,7 +3,7 @@ import {createScopedRefresh} from './scoped-refresh.mjs';
+ // Mounted administrative reads only. Server polling and OBS sources have their
+ // own lifetimes. Schedule from completion so a slow read cannot build a queue.
+ export function createAdministrativeRefresh({read, publish, onError, visible = () => true,
+-    period = () => 30000, timers = {setTimeout, clearTimeout}}) {
++    period = () => 30000, timers = {setTimeout: (run, ms) => globalThis.setTimeout(run, ms), clearTimeout: id => globalThis.clearTimeout(id)}}) {
+     let closed = false, timer = null, value, requested = 0;
+     const clear = () => {if (timer !== null) timers.clearTimeout(timer); timer = null;};
+     const owner = createScopedRefresh({read: () => {clear(); return read();},
+diff --git a/tests/kairo/administrative-refresh.test.mjs b/tests/kairo/administrative-refresh.test.mjs
+index d4853f5..b424086 100644
+--- a/tests/kairo/administrative-refresh.test.mjs
++++ b/tests/kairo/administrative-refresh.test.mjs
+@@ -108,3 +108,13 @@ test('Goals note/source events are pilot scoped, hidden invalidations resume, an
+     dialog = true;owner.resume();await flush();assert.equal(calls.length, 5);
+     pending.resolve('OLD PILOT');await flush();assert.deepEqual(published, ['/goals?character=2']);owner.close();
+ });
++
++
++test('default administrative timers retain the global receiver required by Window timers', async t => {
++    const receivers = [];
++    t.mock.method(globalThis, 'setTimeout', function () {receivers.push(['set', this === globalThis]); return 17;});
++    t.mock.method(globalThis, 'clearTimeout', function (id) {receivers.push(['clear', this === globalThis, id]);});
++    const owner = createAdministrativeRefresh({read: async () => 'current', publish() {}});
++    await owner.request();await flush();owner.close();
++    assert.deepEqual(receivers, [['set', true], ['clear', true, 17]]);
++});
