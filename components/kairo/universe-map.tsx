@@ -5,9 +5,9 @@ import {ChevronDown, Crosshair, Flag, Focus, HelpCircle, LocateFixed, Map as Map
 import {Button} from '@/components/ui/button';
 import type {UniverseAtlas, UniverseBackground, UniverseIndicator, UniverseIntel, UniverseOverlay, UniverseStandingFilter, UniverseSystem, UniverseTerritoryFocus} from './universe-types';
 import type {ReplayMapFrame} from './session-replay';
-import {schematicLayout} from '@/lib/universe-schematic-layout.mjs';
+import {createAtlasLayouts} from './universe-map-layouts.mjs';
 import {historicalSovereigntyLabel} from './session-replay-sovereignty.mjs';
-import {projectKnownSystems, pointBounds, fitCamera, clampCamera, resizeCamera, geometryRevision, paintRevision, createTerritoryGeometry, territoryComponents, territoryOwnerAt} from './universe-map-math.mjs';
+import {pointBounds, fitCamera, clampCamera, resizeCamera, geometryRevision, paintRevision, createTerritoryGeometry, territoryComponents, territoryOwnerAt} from './universe-map-math.mjs';
 import type {Geometry, TerritoryStyle} from './universe-map-math.mjs';
 import {wheelZoomFactor, anchoredWheelCamera, pinchCamera, dragCoast, overviewTransform, overviewViewport, projectedDistanceScale} from './universe-map-navigation.mjs';
 import './universe-map-motion.css';
@@ -226,13 +226,12 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     for (const overlay of intel?.systems || []) {const bloc = overlay.power_bloc; if (bloc?.group_id && !groups.has(bloc.group_id)) groups.set(bloc.group_id, {id: bloc.group_id, color: bloc.color, source: bloc.source, name: bloc.name});}
     return allocateTerritoryColours(territoryColourEntities((intel?.systems || []).flatMap(overlay => overlay.sovereignty ? [overlay.sovereignty] : []), [...groups.values()]));
   }, [intel?.politics?.territory_colours, intel?.politics?.groups, intel?.systems]);
-  const knownPoints = useMemo(() => projectKnownSystems(atlas.systems), [atlas.systems]);
+  const layouts = useMemo(() => createAtlasLayouts(atlas.systems), [atlas.systems]);
   const graph = useMemo(() => buildGateGraph(atlas.gates), [atlas.gates]);
   const projection = space !== 'known' || replay && tactical.projection === 'radar' ? 'physical' : tactical.projection || 'physical';
-  const tacticalCenter = tactical.centerSystemId || selectedSystemId || currentLocationId || knownPoints[0]?.system.system_id;
-  const schematicPoints = useMemo(() => schematicLayout(atlas.systems.filter(system => system.space === 'known')).points, [atlas.systems]);
+  const tacticalCenter = tactical.centerSystemId || selectedSystemId || currentLocationId || layouts.firstSystemId;
   const localLayout = useMemo(() => projection === 'radar' ? tacticalLayout(atlas.systems, graph, {mode: 'radar', centerSystemId: tacticalCenter, hops: tactical.hops || 3}) : null, [atlas.systems, graph, projection, tacticalCenter, tactical.hops]);
-  const allPoints = useMemo(() => space === 'known' ? localLayout?.points || (projection === 'schematic' ? schematicPoints : knownPoints) : discoveryPoints(atlas, intel, selectedSystemId, replay, tactical.feedsVisible !== false), [knownPoints, schematicPoints, projection, localLayout, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' && !replay ? clock : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null, tactical.feedsVisible]);
+  const allPoints = useMemo(() => space === 'known' ? localLayout?.points || layouts.get(projection === 'schematic' ? 'schematic' : 'physical') : discoveryPoints(atlas, intel, selectedSystemId, replay, tactical.feedsVisible !== false), [layouts, projection, localLayout, space, space === 'wormhole' ? intel : null, space === 'wormhole' ? selectedSystemId : null, space === 'wormhole' && !replay ? clock : null, space === 'wormhole' ? replay?.discoveredSystemIds : null, space === 'wormhole' ? replay?.allTravel : null, tactical.feedsVisible]);
   const geometryPoints = useMemo(() => allPoints.map(point => ({id: point.system.system_id, x: point.x, y: point.y})), [allPoints]);
   const geometryKey = useMemo(() => geometryRevision(geometryPoints), [geometryPoints]);
   const points = allPoints;
@@ -250,7 +249,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const overview = useMemo(() => overviewTransform(bounds), [bounds]);
   const overviewPath = useMemo(() => points.filter(point => point.x >= bounds.minX && point.x <= bounds.maxX && point.y >= bounds.minY && point.y <= bounds.maxY).map(point => `M${(point.x * overview.scale + overview.x).toFixed(1)},${(point.y * overview.scale + overview.y).toFixed(1)}h.1`).join(''), [points, overview, bounds]);
   const overviewRoute = useMemo(() => routeSystemIds.slice(1).map((id, index) => {const a = byId.get(routeSystemIds[index]), b = byId.get(id); return a && b ? `M${a.x * overview.scale + overview.x},${a.y * overview.scale + overview.y}L${b.x * overview.scale + overview.x},${b.y * overview.scale + overview.y}` : '';}).join(''), [routeSystemIds, byId, overview]);
-  const worldUnitsPerLightYear = useMemo(() => {const raw = pointBounds(knownPoints.map(point => ({x: point.system.map_x, y: point.system.map_y}))); return 1000 / Math.max(1, raw.maxX - raw.minX, raw.maxY - raw.minY);}, [knownPoints]);
+  const worldUnitsPerLightYear = layouts.worldUnitsPerLightYear;
   const regionPoints = useMemo(() => {
     const groups = new Map<number, {name: string; x: number; y: number; count: number}>();
     for (const point of points) {const id = point.system.region_id, group = groups.get(id) || {name: point.system.region_name, x: 0, y: 0, count: 0}; group.x += point.x; group.y += point.y; group.count++; groups.set(id, group);}
