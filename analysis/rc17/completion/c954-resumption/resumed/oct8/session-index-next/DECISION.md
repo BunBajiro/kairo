@@ -1,0 +1,11 @@
+# S3: retain the existing eligibility index and query
+
+Root decision, 8 October 2026: **retain S3 as implemented in the selected c954 continuation**. The six-shape write/storage ABBA and both actual 120-second cadence endpoints have completed, supplementing the earlier 39 semantic tests and twelve diagnostic workers. Independent review verified 239 artifact/hash bindings and recomputed 1,748 paired numeric comparisons without a blocker. No application change is needed for this decision.
+
+At 10,000 archived sessions per pilot and four pilots, summed collector work falls 392.302→170.610 ms and 383.156→163.621 ms across 41 actual ticks, about 57% in each pair. The small endpoint has mixed total work; its median tick cost increases 0.113/0.040 ms. Large-endpoint p95 is mixed, including a 4.98% adverse pair. All measured deadline, eligibility, cursor, provider and state contracts pass.
+
+The index has accepted costs. In the largest fixture, first populated open adds 12.042/14.512 ms; the 2,000-row end-update batch adds 3.481/2.162 ms. End-update batches are slower in both pairs at all six cardinalities. The equivalent checkpointed database grows by 1,478,656 bytes, from 6,303,744 to 7,782,400 bytes (+23.46%). Insert and checkpoint results remain mixed. These batch and fixture costs are not individual UI latency or whole-user-database estimates.
+
+The repeated large-history query benefit and durable output parity support retention with those bounded maintenance costs. This is not a universal speedup claim or a new numerical acceptance threshold. The four interior ordinary cadence shapes were not timed; the historical collector harness awaits pilots sequentially and does not measure Core's concurrent dispatch. Whole-application startup, idle, loaded behavior, full report/route contracts and final release acceptance remain separate gates.
+
+See `RESULTS-ORDINARY.md`, `INDEPENDENT-ORDINARY-REVIEW.md`, `ordinary-attempt1/completed.json`, `ordinary-attempt1/summary.json` and the adjacent raw recovery manifest. The exact-a7 ablation remains the measurement boundary; it must not be relabelled as a whole-source measurement of 70cd12f. S3 is closed as a component decision. PR #10 remains withdrawn, and this decision alone does not make clean RC17 ready.

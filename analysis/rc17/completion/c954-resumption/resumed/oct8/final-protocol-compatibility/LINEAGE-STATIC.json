@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only local canonical Git lineage; no source/build/runtime freeze or remote dispatch",
+  "candidateCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "selectedBase": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+  "excludedCommit": "508f2d450c7cc17cc464cf316b80748367adc9e2",
+  "recordedAt": "2026-10-08T12:05:32.161813+00:00",
+  "checks": [
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "status",
+        "--porcelain",
+        "--untracked-files=all"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "rev-parse",
+        "--is-shallow-repository"
+      ],
+      "exitCode": 0,
+      "stdout": "false\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "cat-file",
+        "-t",
+        "c954c0d808847f249df0659ed15fdce2e89f84c4"
+      ],
+      "exitCode": 0,
+      "stdout": "commit\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "cat-file",
+        "-t",
+        "508f2d450c7cc17cc464cf316b80748367adc9e2"
+      ],
+      "exitCode": 0,
+      "stdout": "commit\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "merge-base",
+        "--is-ancestor",
+        "c954c0d808847f249df0659ed15fdce2e89f84c4",
+        "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "merge-base",
+        "--is-ancestor",
+        "508f2d450c7cc17cc464cf316b80748367adc9e2",
+        "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "passed": true,
+  "runtimeExecuted": false,
+  "dispatchExecuted": false
+}
