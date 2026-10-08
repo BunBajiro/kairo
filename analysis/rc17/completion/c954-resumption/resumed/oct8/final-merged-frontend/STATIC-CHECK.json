@@ -35,8 +35,8 @@
   "harnessFiles": [
     {
       "path": "run.py",
-      "bytes": 13482,
-      "sha256": "7065bf877587e16696e015a81eec7c4371cd1ef1bcb62d1ca17d1afdc1f6d359"
+      "bytes": 13267,
+      "sha256": "9be19f0b3333bf26a6b0e5aa7af7ba18b7d5bbf038632c9f5ea3b37fe75d0031"
     },
     {
       "path": "assets-semantics.mjs",
@@ -87,10 +87,26 @@
       "path": "focus-browser.mjs",
       "bytes": 16475,
       "sha256": "c7b5d615653ec1965f2c435ae4fef19f6b310bc7f8603cb6da208f4ea873513e"
+    },
+    {
+      "path": "ownership.py",
+      "bytes": 3462,
+      "sha256": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027"
+    },
+    {
+      "path": "ownership-tests.py",
+      "bytes": 4934,
+      "sha256": "559b22bd6a4fbadd8ed226f425d1715cf9bba94f40a8ae289f5c7118c12de74c"
+    },
+    {
+      "path": "ownership-race-controls.py",
+      "bytes": 992,
+      "sha256": "7ef866a0137796f585bedcd1a0adbdd87073543feb0cc9ea1cf04032a67a8d45"
     }
   ],
   "notes": [
     "Node --check completed for each listed local module; imports were not executed.",
     "Runtime and final merged source freeze remain coordinator-owned."
-  ]
+  ],
+  "namespaceOwnershipValidation": "Initial14controls preserved; test failure cleanup correction rerun14/14 at ownership-validation/cleanup-revision2, plus race-controls.json1/1."
 }

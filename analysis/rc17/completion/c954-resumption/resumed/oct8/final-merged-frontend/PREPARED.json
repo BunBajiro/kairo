@@ -77,7 +77,7 @@
   "runtimeExecuted": false,
   "releaseReady": false,
   "harnesses": {
-    "run.py": "7065bf877587e16696e015a81eec7c4371cd1ef1bcb62d1ca17d1afdc1f6d359",
+    "run.py": "9be19f0b3333bf26a6b0e5aa7af7ba18b7d5bbf038632c9f5ea3b37fe75d0031",
     "assets-semantics.mjs": "38881f7501ab7ee14ef566b2723dd61b69bd47beb61b571a4d5f78e3acd40a3f",
     "names-protocol.mjs": "d74475946d6f7fdcf9d469a05782e98695947cfc7a46a838f58929e4975fe058",
     "names-races.mjs": "a8d0b1032838e9ef563d5fe5444eeb7d2f9d3e83c52c793a0cba92918d9c1350",
@@ -87,7 +87,10 @@
     "../frontend-clock/compiled-clock-trial.mjs": "def6341a3e7c2873878c6c3ac10f522171d312ee858817aa12ecf17bfa9ebe9a",
     "../frontend-clock/chrome-strict.mjs": "18f98095acdb692934114eb2f14836c9448a952893f1252b69707c80e2789611",
     "../../../../../harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
-    "focus-browser.mjs": "c7b5d615653ec1965f2c435ae4fef19f6b310bc7f8603cb6da208f4ea873513e"
+    "focus-browser.mjs": "c7b5d615653ec1965f2c435ae4fef19f6b310bc7f8603cb6da208f4ea873513e",
+    "ownership.py": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027",
+    "ownership-tests.py": "559b22bd6a4fbadd8ed226f425d1715cf9bba94f40a8ae289f5c7118c12de74c",
+    "ownership-race-controls.py": "7ef866a0137796f585bedcd1a0adbdd87073543feb0cc9ea1cf04032a67a8d45"
   },
   "chromeSha256": "7ddc6837ec0e0c9ff488cf8c8fa64d8eef71cc3fa7c79752c52367bddbfe94dd",
   "clockDragPositions": {
@@ -145,6 +148,7 @@
     "stderr": "",
     "note": "Names/M6 were being applied by coordinator between the original clean-de3 check and this F6-only check; source was not mutated by this agent."
   },
-  "revision": 5,
-  "wrapperFailureOwnership": "Initial atomic receipt before input reads; owned process group; SIGINT/SIGTERM drains descendants and finalizes log/raw hashes while holding shared lock. Unknown /proc group state retains lock until observation recovers and still fails cleanup."
+  "revision": 6,
+  "wrapperFailureOwnership": "Initial atomic receipt before input reads; owned process group; SIGINT/SIGTERM drains descendants and finalizes log/raw hashes while holding shared lock. Unknown /proc group state retains lock until observation recovers and still fails cleanup.",
+  "namespaceFix": "Local ESRCH authoritative; exact namespace inode/depth anchors host PGID; includes nested members, unsupported nested-only group fails closed."
 }

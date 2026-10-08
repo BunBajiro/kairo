@@ -1,6 +1,7 @@
 """Existing correctness fixtures on one frozen merged build; no build or performance matrix."""
 from pathlib import Path
 import argparse,datetime,fcntl,hashlib,json,os,signal,subprocess,sys,time
+from ownership import NamespaceCensus
 HERE=Path(__file__).resolve().parent
 ANALYSIS=HERE.parents[6]
 parser=argparse.ArgumentParser()
@@ -24,14 +25,11 @@ def handle_signal(signum,_frame):interrupted.append(signum)
 for signum in (signal.SIGINT,signal.SIGTERM):signal.signal(signum,handle_signal)
 def check_interruption():
  if interrupted:raise RuntimeError('Coordinator interrupted by signal '+str(interrupted[-1]))
+census=None
 def members(group):
- rows=[]
- for directory in Path('/proc').iterdir():
-  if not directory.name.isdigit():continue
-  try:fields=(directory/'stat').read_text().rsplit(')',1)[1].split()
-  except (FileNotFoundError,ProcessLookupError):continue
-  if int(fields[2])==group:rows.append({'pid':int(directory.name),'state':fields[0]})
- return sorted(rows,key=lambda row:row['pid'])
+ global census
+ if census is None:census=NamespaceCensus()
+ return census.members(group)
 def signal_group(child,signum,row):
  try:os.killpg(child.pid,signum);row.setdefault('forwardedSignals',[]).append({'signal':int(signum),'at':stamp()})
  except ProcessLookupError:pass

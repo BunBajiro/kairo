@@ -1,0 +1,11 @@
+# Narrow namespace ownership correction
+
+Attempt1 remains unchanged and blocked before browser execution. Revision6 changes only the external runner's `members()` implementation, delegating to `ownership.py`; application fixtures and all89 assertions are unchanged.
+
+The helper first checks the original local child group with signal0. ESRCH proves absence without consulting unrelated host IDs. For a live group, the runner's `/proc/self/status` namespace depth and PID namespace inode must agree with `getpid()`/`getpgrp()`. A matching process anchors its local NSpgid to the host PGID. The census then includes every member of that host group, including nested PID namespaces. Host IDs are used only for observation; actual signals retain the original local child-group ID.
+
+If a live group has only nested descendants and no trustworthy same-namespace anchor, observation fails closed. The existing cleanup owner keeps the lock and signals only the original local group until absence is established. Inaccessible, inconsistent or unsupported topology is never silently accepted as empty. A second local existence check handles group exit during census.
+
+Focused validation is saved under `ownership-validation/`. Initial14 controls pass, including actual ordinary exit, owned TERM interruption and a live descendant after its leader exits. Synthetic controls cover unrelated host numeric collisions, sibling namespace collisions, nested inclusion, nested-only fail-closed behavior, inconsistent sessions and zombies. `race-controls.json` adds the live-to-ESRCH/vanished-row case. Review strengthened the test harness's own failure cleanup to terminate every owned group and reap adopted children; the original receipt/script is preserved and the corrected14-control run passes at `cleanup-revision2/`, with no cleanup failures. No Kairo/browser runtime was used for these controls.
+
+Production runner SHA: `9be19f0b3333bf26a6b0e5aa7af7ba18b7d5bbf038632c9f5ea3b37fe75d0031`. Ownership helper SHA: `e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027`. PREPARED now binds the helper and both focused-control scripts alongside existing workers. A new attempt2 of the unchanged89-control gate requires coordinator approval; this correction alone is not application acceptance.
