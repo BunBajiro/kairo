@@ -53,3 +53,65 @@ test('resource versions isolate pilots, preserve global invalidation and reject 
     assert.deepEqual(eventResources({type:'note.created'}),['activity','notes']);
     assert.deepEqual(eventResources({type:'session.ended'}),['activity','sessions']);
 });
+
+
+test('snapshot name merges retain unchanged full/partial maps and copy changed names without dropping unrelated IDs', async () => {
+    const {mergeResourceNames} = await import('../../components/kairo/resource-state.mjs');
+    const before = Object.freeze({'0':'Zero','42':'Pilot','99':'Station'});
+    for (const incoming of [undefined,null,{}, {...before}, {'42':'Pilot'}]) assert.equal(mergeResourceNames(before,incoming),before);
+    const next = mergeResourceNames(before, Object.freeze({'42':'Renamed','100':'New'}));
+    assert.notEqual(next,before);assert.deepEqual(next,{'0':'Zero','42':'Renamed','99':'Station','100':'New'});assert.equal(before['42'],'Pilot');
+    const absentUndefined = mergeResourceNames(before, {'new':undefined});
+    assert.ok(Object.hasOwn(absentUndefined,'new'));assert.notEqual(absentUndefined,before);
+    const special = mergeResourceNames(before, JSON.parse('{"__proto__":"Name","constructor":"Constructor name"}'));
+    assert.equal(Object.getPrototypeOf(special),Object.prototype);assert.ok(Object.hasOwn(special,'__proto__'));assert.equal(special.__proto__,'Name');
+});
+
+test('snapshot name owner matches spread-and-retain semantics for valid flat maps across event sequences', async () => {
+    const {mergeResourceNames} = await import('../../components/kairo/resource-state.mjs');
+    let seed = 0x1726;
+    const random = size => {seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed % size;};
+    for (let sequence = 0; sequence < 64; sequence++) {
+        let previous = Object.freeze(Object.fromEntries(Array.from({length: 24}, (_, index) => [String(index + 1), `Pilot ${index}`])));
+        for (let event = 0; event < 32; event++) {
+            const incoming = event % 4 === 0 ? {...previous} : {};
+            const edits = random(12);
+            for (let edit = 0; edit < edits; edit++) {
+                const id = String(random(36) + 1);
+                incoming[id] = event % 3 ? (previous[id] || `New ${id}`) : `Renamed ${id} ${event}`;
+            }
+            const before = JSON.stringify(previous), received = JSON.stringify(incoming);
+            Object.freeze(incoming);
+            const expected = retainValue(previous, {...previous, ...incoming});
+            const actual = mergeResourceNames(previous, incoming);
+            assert.deepEqual(actual, expected);
+            assert.equal(actual === previous, expected === previous);
+            assert.equal(JSON.stringify(previous), before);
+            assert.equal(JSON.stringify(incoming), received);
+            previous = Object.freeze(actual);
+        }
+    }
+});
+
+test('snapshot name owner uses own enumerable keys and preserves spread prototype behavior', async () => {
+    const {mergeResourceNames} = await import('../../components/kairo/resource-state.mjs');
+    const previous = Object.freeze({'42':'Pilot'});
+    const inherited = Object.create({'42':'Inherited rename','99':'Inherited addition'});
+    Object.defineProperty(inherited, '100', {value:'Hidden name', enumerable:false});
+    assert.equal(mergeResourceNames(previous, inherited), previous);
+    inherited['43'] = 'New pilot';
+    assert.deepEqual(mergeResourceNames(previous, inherited), retainValue(previous, {...previous, ...inherited}));
+    const shadowed = Object.create({'42':'Pilot'});
+    const next = mergeResourceNames(shadowed, {'42':'Pilot'});
+    assert.notEqual(next, shadowed); assert.ok(Object.hasOwn(next, '42'));
+    assert.equal(Object.getPrototypeOf(next), Object.prototype);
+    const nullPrototype = Object.freeze(Object.assign(Object.create(null), {'42':'Pilot'}));
+    assert.equal(mergeResourceNames(previous, nullPrototype), previous);
+});
+
+test('unchanged snapshot names do not copy or enumerate the retained full map', async () => {
+    const {mergeResourceNames} = await import('../../components/kairo/resource-state.mjs');
+    const previous = new Proxy({'42':'Pilot','99':'Station'}, {ownKeys(){throw new Error('Unchanged retained names must not be copied or enumerated');}});
+    assert.equal(mergeResourceNames(previous, {'42':'Pilot','99':'Station'}), previous);
+    assert.equal(mergeResourceNames(previous, {'42':'Pilot'}), previous);
+});

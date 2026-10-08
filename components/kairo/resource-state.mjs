@@ -9,6 +9,16 @@ export function sameValue(left, right) {
     return keys.length === Object.keys(right).length && keys.every(key => Object.hasOwn(right, key) && sameValue(left[key], right[key]));
 }
 export function retainValue(previous, next) { return sameValue(previous, next) ? previous : next; }
+// Snapshot name payloads merge into a flat ID -> string map. Unchanged full
+// maps need no copy and no recursive equality traversal; partial maps retain
+// names omitted from that event. Copy only when an own key/value changes.
+export function mergeResourceNames(previous, incoming) {
+    if (!incoming) return previous;
+    for (const key of Object.keys(incoming)) {
+        if (!Object.hasOwn(previous, key) || !Object.is(previous[key], incoming[key])) return {...previous, ...incoming};
+    }
+    return previous;
+}
 export function retainSnapshot(previous, next) {
     if (!previous || !next) return next;
     const data = next.dataRevision !== undefined && next.dataRevision === previous.dataRevision ? previous.data : next.data;

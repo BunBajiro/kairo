@@ -11,7 +11,7 @@ import { routes, api, type Bootstrap, type ModuleState } from './model';
 import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
 import { Kairo } from './context';
 import {createScopedRefresh} from './scoped-refresh.mjs';
-import {retainValue, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
+import {retainValue, mergeResourceNames, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
 import { Choice, Panel, DataTable } from './ui';
 import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
 import { Connections, Modules } from './connections';
@@ -190,7 +190,7 @@ export default function Dashboard() {
             if (changeAffectsPilot(r, charRef.current)) {
                 snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1; ancillaryEvents.current.names++;
                 setData(previous => {const value = retainSnapshot(previous[r.key], r.snapshot); return value === previous[r.key] ? previous : {...previous,[r.key]:value};});
-                setNames((previous: any) => retainValue(previous, {...previous,...r.names}));
+                setNames((previous: any) => mergeResourceNames(previous, r.names));
                 if (goalSourceKeys.includes(r.key)) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:r.characterId,resources:['goalSources'],key:r.key}}));
             }
         });
