@@ -1,4 +1,6 @@
-# Kairo implementation notes
+# Kairo architecture and source ownership
+
+For adding features, start with [Internal API](INTERNAL-API.md). Exact routes and events live in [API reference](API-REFERENCE.md); current gates live in [Validation](VALIDATION.md). This page maps implementation owners without repeating the development workflow.
 
 ## Runtime boundaries
 
@@ -62,75 +64,6 @@ The local hot path never invokes AI. SQLite is the source of truth for local his
 | `components/kairo/` | Dashboard shell, operations views, local intelligence tools, Connections and Stream Studio |
 | `public/stream/` | Small independent renderer without the dashboard application or private API access |
 
-## Event contract
-
-Data updates publish `{type: 'data.<dataset>', characterId, payload: {current, previous}}`; fresh location/ship events also carry an internal receipt-time observation for Session ownership. Only fresh successful data emits these events. Modules publish semantic events through `ctx.publish()`; core persists them once when a deduplication key is supplied and fans them out to subscribers.
-
-A module observes data through the shared service rather than adding its own ESI client. Semantic events are deliberately separate from stream notifications. Saved toast templates may interpolate only event-specific allowlisted display fields in `server/projections.mjs`. Raw payloads and credentials never enter stream output. Location tokens are evaluated against the current OPSEC state, including delayed and active toasts. Literal existing templates remain valid.
-
-## Add a local module
-
-Add an `.mjs` file under `server/modules/` with a default export. It is discovered at process startup.
-
-```js
-export default {
-  id: 'system-counter',
-  name: 'System counter',
-  version: '1.0.0',
-  description: 'Counts observed system entries.',
-  scopes: [],
-  datasets: [],
-  page: { title: 'System counter' },
-  migrate(db) {
-    db.exec('CREATE TABLE system_counter(character_id INTEGER PRIMARY KEY, count INTEGER NOT NULL)');
-  },
-  register(ctx) {
-    return ctx.on('location.changed', event => {
-      ctx.db.prepare(`INSERT INTO system_counter VALUES(?,1)
-        ON CONFLICT(character_id) DO UPDATE SET count=count+1`).run(event.characterId);
-      // Optional ctx.publish({ type, characterId, summary, payload, dedupe }).
-    });
-  },
-  read({db, characterId}) {
-    const row = db.prepare('SELECT count FROM system_counter WHERE character_id=?').get(characterId);
-    return {
-      title: 'Observed system entries',
-      columns: [{key:'count', label:'Entries'}],
-      rows: [{count: row?.count || 0}],
-    };
-  },
-};
-```
-
-The registry versions module migrations, provides namespaced key/value helpers, tracks subscriptions and calls cleanup on disable/shutdown. Enabled module pages appear automatically under Extensions and are served through the private API. Module files are trusted local code: do not install code you do not trust.
-
-The example should add its own tables and page without editing Session travel or other unrelated modules. New built-in data collectors can be added to the dataset catalog using the shared request service. New bespoke visual widgets or new types of public stream projection require a deliberate UI/output extension; this release does not execute arbitrary module HTML in OBS.
-
-## API groups
-
-All dashboard API routes require a local session established by opening `/`. State-changing requests also require `X-Kairo-CSRF` from `/api/bootstrap` and the dashboard's origin.
-
-- `/api/bootstrap`, `/api/state?character=<id>`, `/api/events`
-- `/api/auth/start`, `/auth/eve/callback`, `/api/characters/<id>`
-- `/api/settings`, `/api/settings/polling`, `/api/modules`, `/api/sync`
-- `/api/timeline`, `/api/journey`, `/api/journey/enrich`, `/api/session`, `/api/sessions`, `/api/sessions/<id>`, `/api/export`
-- `/api/markets`, `/api/markets/hubs`, `/api/markets/defaults`, `/api/markets/discover`, `/api/markets/scan`, `/api/markets/cancel`, `/api/markets/quick`, `/api/markets/browse`, `/api/markets/item`, `/api/markets/report`, `/api/markets/type`
-- `/api/goals`, `/api/goals/sources`, `/api/goals/type`, `/api/notes`, item routes for update/delete
-- `/api/journey/connections/<to-visit-id>?character=<id>` for legacy-only visibility compatibility
-- `/api/universe/search`, `/api/universe/route`, `/api/places`, `/api/places/<kind>/<id>`
-- `/api/universe/jspace`, `/api/universe/jspace/summaries`, `/api/universe/jspace/search`, `/api/universe/jspace/maps/<id>`
-- `/api/stream`, `/api/stream/sources`, `/api/stream/preview`, `/api/stream/test`, `/api/opsec`
-- `/api/obs`, `/api/obs/targets`, `/api/obs/filters`, `/api/obs/reconnect`, `/api/obs/apply`
-- `/api/modules/<module-id>` for dynamically registered private module pages
-
-The stream origin implements only `GET /state`, `GET /events`, the renderer routes and its allowlisted renderer script and two stylesheets. POST/PUT/DELETE are rejected there. It does not receive dashboard sessions through an application bootstrap and does not implement the private routes.
-
-## Design choices
-
-The UI is a dense instrument workspace with rectangular surfaces, restrained accents and consistent studio/toast styling. ESI loading never blocks navigating to another module. Explicit waiting, missing-scope, disabled, error and stale states prevent absent data being confused with live zero values. Dashboard chart points come from real wallet journal entries.
-
-The frontend is statically exported and served by Node, avoiding a dependency install for the end user's runtime. Core, storage, OAuth and SSE use Node built-ins. Frontend source building retains the established lockfile/toolchain and optional scaffold files, but its Worker artifacts are not used by the local launcher.
-
 ## Current ownership and execution
 
 The optimisation/refactoring checkpoint covers Kairo's existing services as well as the Universe sprint. These are in-process boundaries over the existing SQLite store, shared ESI service and event bus; modules do not introduce independent collectors for data already owned by another service.
@@ -161,71 +94,12 @@ Core owns one bounded raw R2Z2 transport for Session and Universe. Only fixed cr
 
 Dashboard and OBS event streams use `sse.mjs`: each encoded frame is shared across the audience, written in bounded chunks and resumed on `drain` without interleaving event bytes. A single large snapshot can finish; bytes/frames queued behind it and stalled writes remain bounded. Heartbeats do not build up behind data. If an OBS transition engages protection while older traffic is blocked, that client is disconnected so its renderer fails closed. Stream close removes subscriptions/timers and awaits pending output within the stall deadline.
 
-## Version 0.2 storage and execution
+## Universe service contracts
 
-The transactional `core-v2` migration adds session start/end context and debrief text, a cached universe-coordinate table, and annotations keyed by `(kind, entity_id)`. Existing records and saved stream configurations remain intact. Session reports aggregate the entire occurrence-time window, paginate display events, and use event cursors to separate equal-timestamp boundaries. Legacy sessions have empty sample context. Reports may gain late events; metrics are not presented as a complete in-game audit.
+`createUniverse` composes private Maps, operations, feeds and navigation. Core's bounded `universe.tick()` and `universe.close()` own recurring work and shutdown. Source callbacks and accepted mutations use the existing private UI invalidation path. Disabled modules stop collection; already accepted work remains owned until it finishes.
 
-The stream configuration stores widget bindings privately. Only visual properties and the explicitly selected projection are sent to the stream origin. Per-character ESI bindings reject stale, disconnected and disabled data. Goal selections never silently fall back to a different goal or character.
+Operational state and records stay on the authenticated dashboard API; they are absent from the separate Stream listener and from historical replay. Pilot-scoped methods validate the selected connected character. Guest records have their own bounded manual workspace; guest selection does not authorize ESI access or private Maps.
 
-The OBS client uses Node's native WebSocket implementation against `127.0.0.1`, with v5 challenge authentication and correlated request timeouts. Its secret is stored through the existing vault. Automation remains opt-in. Commands run sequentially with a revision guard before each request; no previous state is restored between protection states. Already-sent OBS requests cannot be recalled, so browser-source covers remain an independent layer. Inventory and credentials are private API data. Collection changes pause outgoing requests; kicked sessions never auto-reconnect.
+Planning an itinerary does not command the EVE client. Waypoint delivery is an explicit mutation through the navigation owner. Public-feed imports preserve provenance, and link/infrastructure imports use previewed validation. Source-data freshness, pilot access and map revision checks remain service responsibilities.
 
-## Version 0.3 standings and presentation
-
-The OPSEC dataset catalog adds corporation and alliance contact scopes. Organization collectors wait for the profile and substitute its current owner ID into their route. Snapshots retain `ownerId`; the classifier checks it against the current profile. A changed membership clears the collection schedule for that dataset. Shared authenticated ESI calls still use the character's token and per-character cache isolation.
-
-The classifier accepts positive and negative entries from personal, corporation and alliance contacts, with explicit policy and own-alliance precedence. Missing scopes are reported; failed authorized sources are not mistaken for empty arrays. Special-space identification uses documented ID ranges and Pochven's region. Location collection retains identified Abyssal/Anoikis IDs when public system enrichment is unavailable.
-
-`obs.space-categories-v3` guards one-time action inheritance. New categories that were Unknown inherit its actions. High-Sec maps from prior Safe when allowed, otherwise from Unknown with old Safe actions retained for explicit reuse. Existing state lists and later intentionally empty lists are preserved.
-
-The dashboard editor and browser source share `public/stream/widgets.css`. The renderer reconciles nodes by widget ID and kind, preserving animation/progress state across data updates. OPSEC covers never animate opacity or arrival; ordinary widget/page transitions respect reduced-motion settings. Toast categories are derived from a server-side event allowlist, not untrusted payload fields. Stream assets are versioned in the HTML and served without caching to avoid stale renderer code after an upgrade.
-
-## Version 0.4 combat, connections and goals
-
-The additive `core-v4` transaction creates `combat_records`, `journey_hidden_links`, `goal_tracking` and `goal_progress_entries`. It leaves the original goals table shape intact for older modules and manual records. Goal/connection child rows use cascading foreign keys. Existing killmail timestamps are normalized to UTC ISO format for reliable report windows. The v4 export includes these new records.
-
-Combat uses ESI’s paginated character references plus the read-only public zKillboard character API. zKillboard calls use a separate credential-free client, trailing-slash paths, a descriptive user agent, compression, serialized spacing, persistent local caches of at least one hour and Retry-After cooldowns. Both current full-response and legacy hash-only references are supported. Each unseen ID/hash is resolved with the shared ESI client; only the victim or an explicit character attacker qualifies. `final_blow` is not a credit filter. Public ingestion pauses with the Combat module or a disconnected character. Public outages never discard existing combat records.
-
-The durable `(character_id,killmail_id)` ledger and matching semantic-event dedupe keys unify both feeds, without a rolling-snapshot limit on historical sessions. Collection verifies at most 100 unseen details per pass and resumes a backlog from cached references. Public pagination stops at 90 days or the documented 100-page limit; incomplete coverage remains explicit. Initial history emits no stream toasts. Occurrence timestamps assign late kills to archived sessions; kill windows are half-open at the end so an exact boundary does not double-credit adjacent sessions.
-
-In the legacy Journey implementation, connections were derived from consecutive visits for the same character, including equal-timestamp ID ordering. Hidden rows identify the exact from/to visit pair. Hiding never deletes visits or reconnects the surrounding points. Edits validate both ownership and adjacency on the server; the old map exposed line selection and a keyboard-accessible per-system link list. These APIs now apply only to retained legacy rows.
-
-Automatic goals are selected independently from manual goals through `goal_tracking`. Relevant successful snapshot updates, public combat arrivals and goal creation refresh progress. Unrelated telemetry does not repeatedly evaluate every goal. Skills may use fresh completed queue entries; wallet/assets read current values. Income and industry use stable record IDs; mining uses per-date/system/type high-water observations after an initial baseline. Per-record credits survive rolling-window expiry and restarts. Partial public coverage can still advance a goal from verified kills. Completion is latched once, sends the existing semantic completion event, and updates existing Studio projections. Refresh-only progress changes do not flood the timeline. Neither private source metadata nor accounting ledgers enter OBS output.
-
-## Version 0.5 market cache and broadcast consistency
-
-The additive `core-v5` migration introduces hubs, type names, durable job status, indexed order books/item summaries, regional histories and a disk staging table. Market records are keyed by hub/region and type, independently of the active pilot. Scan access has explicit character provenance; private structure calls still pass through the scoped character cache. Unauthenticated NPC orders/history never receive an alt’s token. Cached shared books survive character disconnection and hub removal. Export includes hub/basket configuration, not bulk market caches.
-
-Scans are user-triggered, one job at a time. An ESI-owned market lane spaces new provider reads at least 250ms apart; fresh cache hits and active shared requests skip that courtesy wait. It shares the four-slot ESI limiter, ETag handling, cooldowns and protection priority. Normal telemetry keeps its own collection path. No scan is put in the generic periodic dataset catalog. Completed histories inside their expiry window are reused directly. Long sequences of local history hits yield every 100 items. Browser polling reads compact status; books are never included in snapshot SSE or OBS output.
-
-All order pages are checked for valid rows, stable X-Pages and the separate 2,000-page/two-million-order limit. Orders are filtered to the chosen location, deduplicated by order ID and staged per job/hub. A single transaction promotes a complete book and SQL aggregates its metrics. Quick scans replace only the chosen types, including explicit zero supply; other cached items remain. Full scans retain previously known empty types so vanished listings can be inspected. Any failure before promotion preserves the previous book. ESI pages are cached observations, not an atomic in-game snapshot; the earliest observed/expiry times remain visible.
-
-Books commit before slow history enrichment. A Jita comparison failure cannot roll back an already completed local book; its separate dates and the failed job remain visible. Cancellation/restart clears only unpromoted staging. Histories update independently by region/type, with explicit missing coverage. Up to five unavailable history types can be skipped; other failures stop the job instead of flooding ESI. A history-only continuation skips fresh histories and does not re-download books. No automatic stale pruning occurs.
-
-History summaries retain their own UTC 30-day window, volume-weighted prices, zero-volume missing days and reporting coverage. Reports use indexed SQL joins/aggregates rather than materializing every historical series in React. Browsing returns at most 60 items, reports 40, and detail books 40 orders per request. Searches/sorts are parameterized or allowlisted. The report’s supply ratio uses regional demand; it never invents station-level sales or treats absent Jita prices as zero.
-
-Studio’s `goal` kind is a dedicated goal-binding template. The all-character picker saves the selected record’s exact owner; the projection continues to reject wrong-owner IDs. Shared widget styles now match toast typography, gradient and slim accent rail. Background alpha is applied once, blank/minimal fillers retain their adjustable flat surface, and OPSEC remains opaque without entrance transitions. The former Journey view used a bounded grid shortlist and searchable region directory; every containing layout permits children to shrink.
-
-## Version 0.5.1 category browser
-
-`server/data/market-categories.json` contains 2,108 CCP market groups and 19,786 type assignments from official SDE build 3494416. `scripts/import-market-categories.py` reproducibly extracts this compact catalog from `marketGroups.jsonl` and `types.jsonl`; the source URL/build are retained. No bulk SDE download occurs on the user's PC.
-
-`server/market-categories.mjs` builds shared in-memory ancestry and type indexes once, on the first default taxonomy operation. Importing Core does not load this dataset. `/api/markets/categories?hub=...` returns names, parents and counts from the existing local book. The existing browse endpoint accepts a category and applies its descendants through a bound JSON type list in SQLite, together with the existing search/supply filters and pagination. Unrecognized future types remain in Uncategorized and All items. No schema migration or market re-scan is required.
-
-The UI uses nested Radix Collapsible disclosures with separate selectable labels, item counts and breadcrumbs. Only expanded descendants mount. Scrolling is contained within the category panel, with a stacked layout on narrow screens.
-## Version 0.5.2 polling policy and cache reuse
-
-`server/polling.mjs` owns 35 recommendations, per-batch descriptions, discrete choices, validation and sample freshness helpers. `/api/settings/polling` returns the grouped schema and saved intervals. Its PUT validates the complete input before changing the `esi:polling` setting; omitted values use recommendations. Read requires a dashboard session and write requires CSRF. OBS cannot access either route. The existing Modules route becomes Settings, with Modules, ESI polling and Appearance tabs.
-
-Application deadlines are separate from HTTP expiry. Core retains `updatedAt` and `expiresAt`, and adds `refreshAt` for ordinary consumers. User changes recalculate deadlines from observations, not Save time. Warm startups restore these schedules. Skills can advance to known completions without postponing regular queue checks. Dock/login hints may refresh ships independently. Location retains a bounded 5–15-second setting and its strict age rule. All other evidence required by the selected protected pilot follows ESI expiry even with slower user preferences. The classifier ignores application freshness extensions.
-
-Cache keys normalize query ordering; validators and 304 cache policy are retained. Public names have per-ID cache entries and in-flight ID reservations, allowing different modules/batches to reuse one lookup. Resource errors use separate durable retry entries; they retain the last good body and dates. Known route-group cooldowns are persisted per identity, while unknown and global error limits remain conservative. The existing private health response includes request/cache/revalidation counters. Market collection remains manual and shared across alts. See [ESI-POLLING.md](ESI-POLLING.md) for the complete default matrix and operational behavior.
-
-## Market analysis and the 0.6.0 upgrade
-
-The core-v6 migration adds daily market history, archive receipts, history-source metadata and private import plans. It leaves the existing ten-column history summary and eight-column goals contracts intact. A separate `market-rebuild-v6` transaction runs once: it captures the old scan modes/access characters, invalidates legacy order/history books and their HTTP responses, and persists a fresh-scan queue. The queue processes Jita first, then previously scanned enabled hubs. A hidden Jita can remain hidden while its shared reference refreshes. New installations do not trigger this queue. Missing private structure access is explained without granting scopes or silently discarding the hub; failures/cancellation pause for an explicit resume. Other player data and module preferences survive.
-
-Order books retain staged, transactional promotion. Public daily archives use a fixed EVE Ref origin with no cookies/tokens, bounded response sizes, 30-second HTTP timeouts, a 45-second worker timeout and a 128 MB worker heap. The vendored MIT bzip2 decoder validates CRCs; the worker rejects truncated streams, malformed rows and date mismatches. Each validated date is committed atomically. Archive counts are checked against the manifest. Existing good dates survive download/decode failures. Histories can be corrected in place; a weekly recheck complements manifest count changes. Only the four explicit core station IDs use this source; other hubs retain ESI history even when they share a core region.
-
-Analysis makes no network calls. SQL groups cached Jita sell depth, local supply and regional history; character snapshots provide skills, standings and open-order exclusions. Requests share in-flight work and a 30-second result cache, subject to relevant dependency changes, current authorization and evidence expiry. Long candidate loops yield to the event loop. Recommendation payloads contain at most ten items per category; expanded histories and price levels are fetched only for a selected card. Source samples, assumptions and unavailable authorization remain explicit.
-
-Quotes and plan totals are recomputed server-side from validated recipes. A plan captures one consistent analysis context, packs whole items across shared trips and charges hauling once per combined trip. Saved snapshots preserve prices, fee assumptions and source times, while a new draft can be repriced. All settings, quotes and plans use the authenticated private API and existing write/CSRF guards; the OBS service exposes none of them. The private export includes import settings/plans, but excludes bulk market books and ESI credentials.
+The [API reference](API-REFERENCE.md#universe-maps-and-operations) lists exact operations, inputs and response owners. [Universe](UNIVERSE.md) describes their user workflows; [Universe data](UNIVERSE-DATA.md) and [routing](UNIVERSE-ROUTING-VALIDATION.md) document geometry and planning limits.

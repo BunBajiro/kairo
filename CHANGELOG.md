@@ -2,9 +2,15 @@
 
 Notable changes to Kairo, listed newest first. Completed changes for the next release are collected under **Unreleased**.
 
-## 0.8.0-rc.17 — Optimisation and refactoring review
+## Unreleased
 
-- Refactors shared work across Kairo, including existing services beyond the Universe sprint. This remains a review build awaiting in-app approval.
+### Changed
+
+- Consolidates current user/developer documentation, adds the internal API and HTTP/event guides, and removes superseded research/review notes from the application docs while preserving their originals in the analysis archive.
+
+## 0.8.0-rc.17 — Optimisation and refactoring development
+
+- Refactors shared work across Kairo, including existing services beyond the Universe sprint. Clean RC17 review remains withheld until the optimization and refactoring findings have evidence-backed closure.
 - Loads the Maps library through compact summaries and the opened map through selected detail. Request-scoped reads share canonical links and operational records; signature bindings use one edge pass, and overlapping browser refreshes are coalesced.
 - Prepares route evidence and graph/spatial indexes once per itinerary, reuses them across legs and validates relevant evidence and connections again before saving the result.
 - Retires the standalone Journey log, lifetime visit counters, footprint preset and visit overlay. Sessions owns new operation travel, preserving reports, combat and replay. Discovery, ordinary activity and OBS notifications remain independent; existing records and exports are retained without a reset.
@@ -164,7 +170,7 @@ This release candidate awaits human review. It is not merged into `main`.
 
 ### Verification
 
-- 155 behaviour tests, full before/after response comparisons and 250 deterministic combat-matching cases pass. Repeated comparisons against clean v0.7.2 demonstrate lower idle CPU, faster session reports and faster imports after unrelated writes; see [the implementation and verification notes](docs/OPTIMISATION-v0.7.3.md).
+- 155 behaviour tests, full before/after response comparisons and 250 deterministic combat-matching cases pass. Repeated comparisons against clean v0.7.2 demonstrate lower idle CPU, faster session reports and faster imports after unrelated writes; see [the implementation and verification notes](https://github.com/BunBajiro/kairo/blob/a7b1bf97b0073695926c443e52d523638e59e48d/docs/OPTIMISATION-v0.7.3.md).
 - Approved for release after the user tested 0.7.3-rc.1 and confirmed it runs well. Stable 0.7.3 promotes that reviewed implementation with version labels and release documentation updated.
 
 ## 0.7.2 — 2026-09-14

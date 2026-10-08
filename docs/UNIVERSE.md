@@ -70,7 +70,7 @@ Thera and Turnur can be toggled directly onto the chain as attributed public ove
 
 Map settings hold the scope and pilot roster alongside rename, description, duplication, deletion, native export and a Wanderer-compatible export. Wanderer’s portable format cannot carry all local history or trust state, so its export omits unconfirmed, inactive, expired and collapsed links and explains the omitted context. Import preview is read-only and reports supported contents. Kairo imports its own format and Wanderer version 1; imported observations retain their age and do not inherit trust or route access. A duplicate has independent layout, system records, scanner data, intel, infrastructure observations and connections. Changing or deleting the copy does not modify the source map.
 
-The [Wanderer integration matrix](WANDERER-INTEGRATION.md) documents feature coverage, Kairo improvements and remaining differences. This local workspace does not provide Wanderer's remote shared-map accounts, corporation/alliance ACLs, invitations, external map tokens or signed webhooks.
+This local workspace does not provide Wanderer's remote shared-map accounts, corporation/alliance ACLs, invitations, external map tokens or signed webhooks.
 
 ## Operational workspace
 
@@ -96,7 +96,7 @@ Navigation saves an ordered itinerary per pilot, with accessible reorder/remove 
 
 Paste an existing SMT Ansiblex list unchanged into the connection import. Kairo accepts comments, blank lines, repeated whitespace and lines such as `0 UALX-3 --> IL-YTR`. A zero means that the structure ID is unknown. Each line is directed; reciprocal entries merge while preserving each endpoint’s structure/access/owner metadata. Preview reports malformed or unknown systems before an atomic import. Lists export back to SMT text, and each list can be disabled independently. Importing or discovering a visible structure does not prove fuel, online state or access.
 
-The integration review and feature mapping are in [SMT integration](SMT-INTEGRATION.md); API research and attribution are in [the source audit](SMT-SOURCE-AUDIT.md) and [third-party notices](THIRD-PARTY-NOTICES.md).
+Source attribution and data licenses are retained in [third-party notices](THIRD-PARTY-NOTICES.md). Historical source comparisons are linked from the [documentation map](README.md#history-and-investigation).
 
 ## Power blocs and inferred coalitions
 
@@ -156,19 +156,16 @@ Views, pins and connection lists are scoped to the selected pilot, with a separa
 
 Existing visits, Sessions, notes and settings are retained. The standalone Journey page, lifetime visit counters, footprint preset and visit indicator are retired; legacy `#journey` links open Atlas. Older saved visit overlays restore with no indicator while preserving other view choices. Session reports/replay and the ordinary activity timeline remain available. Historical observation edges are never imported as routing connections. No reset is required.
 
+## Imports and platform limits
+
+Kairo is a local browser workspace. It does not provide hosted map collaboration, remote map-user administration, corporation/alliance role inheritance, invitations, external map tokens, public map-scoped event feeds or signed webhook/bot delivery. Private imports transfer data without authorizing outbound sharing.
+
+SMT-compatible infrastructure and connection data uses explicit preview/import/export. Kairo does not automatically watch SMT preferences, reproduce native docked overlays/global hotkeys/tray controls, or copy every presentation setting. Browser notifications depend on permission and browser support. Signature clipboard compatibility covers the verified English, German, French and Russian labels; selected signature deletion performs bounded individual mutations and reports partial failures.
+
+Log-derived location is an explicitly selected, short-lived observation; it does not override ESI or OPSEC. Public connections and nominal wormhole properties do not prove current mass, hull fit, access, docking or safety. Recorded passages are observations, not a remaining-mass meter.
+
 ## Implementation contract
 
-- Static: `GET /api/universe/static` returns versioned metadata, systems, regions, constellations and reciprocal gate pairs. Physical metre coordinates remain distinct from display projection coordinates. The response is cached with an ETag and gzip.
-- State: `GET /api/universe?character=ID` returns source metadata, sparse per-system overlays, pilot-specific links/lists/pins/views, calendar headers, `discoveredSystemIds` membership and the `operations`, `feeds` and `navigation` snapshots. Lifetime visit records are not part of this response.
-- Detail: `GET /api/universe/systems/ID?character=ID` loads one system's static detail and available state.
-- Maps: `GET /api/universe/jspace/summaries?character=ID` returns compact library metadata; `/api/universe/jspace/maps/MAP_ID?character=ID` loads one complete map. `/api/universe/jspace/search?character=ID&kind=systems&q=TEXT` (or `kind=notes`) searches owned maps without full operational projection. The existing `/api/universe/jspace?character=ID` full-state contract remains available.
-- Planning: `POST /api/universe/route` and `/api/universe/jump-plan` accept IDs and explicit travel preferences. Visual layers are never graph inputs. Dynamic evidence comes from the selected pilot on the server.
-- Operations: the `/api/universe/operations`, `/feeds` and `/navigation` route families provide source configuration, local intel, ordered itineraries, range comparison and explicit waypoint delivery. Signature and infrastructure imports have separate preview routes. The full paths and response boundaries are in [the operational integration contract](SMT-INTEGRATION-CONTRACT.md).
-- Records: `POST /api/universe/views`, `/links`, `/link-lists`, `/pins`; include an existing record ID to edit. `DELETE` the respective `/ID` path to remove a record. All use `?character=ID`.
-- Verification: `POST /api/universe/structures/verify` checks a supplied structure ID through that pilot's authorized ESI cache.
-- Politics: `GET/PUT /api/universe/politics/config` reads/saves module-wide bloc settings with revision checks. `GET /api/universe/politics` reads the cached assessment; `POST` requests reassessment of locally collected records. `GET /api/universe/politics/alliances?q=TEXT` searches known alliances; `POST /api/universe/politics/alliances/resolve` verifies a name or ID through ESI when needed. Every mutation requires the local session and CSRF protection.
-- Replay: `GET /api/sessions/SESSION_ID/replay?character=ID` provides a session-scoped snapshot of visits, event context and coverage. No external collection is triggered.
-- Export: the existing local history export includes Universe records and discovery membership. Browser-local Mapper preferences and display groups are separate.
-- Compatibility: cold legacy Journey APIs remain documented in [the architecture notes](ARCHITECTURE.md#current-ownership-and-execution); they do not provide the live Maps or Session recording service.
+Use [Internal API](INTERNAL-API.md) for service/refresh/lifecycle ownership and [API reference](API-REFERENCE.md#universe-maps-and-operations) for the complete HTTP and event contracts. [Architecture](ARCHITECTURE.md#current-ownership-and-execution) explains Session-owned movement and cold Journey compatibility. [Static data](UNIVERSE-DATA.md), [schematic geometry](SCHEMATIC-GEOMETRY.md) and [routing rules](UNIVERSE-ROUTING-VALIDATION.md) cover the technical inputs and limits.
 
-See [static data provenance and refresh](UNIVERSE-DATA.md) and [route validation and timing](UNIVERSE-ROUTING-VALIDATION.md). External specifications: [CCP map conventions](https://developers.eveonline.com/docs/guides/map-data/), [ESI API explorer](https://developers.eveonline.com/api-explorer), [Ansiblex announcement](https://www.eveonline.com/news/view/major-update-force-projection-revamped).
+Server behavior is implemented in `server/universe*.mjs`; the Maps UI starts in `components/kairo/jspace-workspace.tsx`. Service and HTTP tests cover private persistence, pilot/scope/revision checks, expiry, import preview/rollback, native round trips and separation from Stream output. Current execution evidence and remaining release gates live in [Validation](VALIDATION.md).
