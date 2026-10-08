@@ -1,0 +1,487 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-08T08:49:31.198Z",
+  "source": {
+    "commit": "22773cc7cb6e83ac51e412565ba65c101613536a",
+    "fingerprint": "f6534da06526042f9c78804716600d75e48fd2ff6366db591b5987109f9cdc78",
+    "dirty": false
+  },
+  "harnessSha256": "4e1f8dd0caa65184075b23fbfead0217857b27ead8d1f1126aa9f3772d1679df",
+  "mode": "diagnostic-counts",
+  "baseline": false,
+  "fixture": {
+    "pilots": 2,
+    "rowsPerLargeDataset": 10000,
+    "digest": "0c71f0a3f1a5d5c1ffdb576d1d04b2acfa5bdeaad9caffe820c4a3d3fd11c5c2"
+  },
+  "checks": [
+    {
+      "label": "numeric sort ascending",
+      "passed": true
+    },
+    {
+      "label": "numeric sort descending",
+      "passed": true
+    },
+    {
+      "label": "unrelated snapshot does not derive asset rows",
+      "passed": true
+    },
+    {
+      "label": "matching visible record",
+      "passed": true
+    },
+    {
+      "label": "filter survives unrelated data refresh",
+      "passed": true
+    },
+    {
+      "label": "clamped page stays clamped after growth",
+      "passed": true
+    },
+    {
+      "label": "relevant name rebuilds asset labels",
+      "passed": true
+    },
+    {
+      "label": "unrelated name does not rebuild assets",
+      "passed": true
+    },
+    {
+      "label": "expanded details survive unrelated refresh",
+      "passed": true
+    },
+    {
+      "label": "expanded fitting name closure uses latest names",
+      "passed": true
+    },
+    {
+      "label": "expanded fitting survives fresh fitting data",
+      "passed": true
+    },
+    {
+      "label": "inactive contract update preserves expanded fitting",
+      "passed": true
+    },
+    {
+      "label": "inactive contract snapshot is current on reveal",
+      "passed": true
+    },
+    {
+      "label": "active contract source updates",
+      "passed": true
+    },
+    {
+      "label": "inactive assets do not derive rows",
+      "passed": true
+    },
+    {
+      "label": "active tab sees latest source",
+      "passed": true
+    },
+    {
+      "label": "wallet balance does not rebuild journal/hidden rows",
+      "passed": true
+    },
+    {
+      "label": "industry mounts jobs without hidden mining derivation",
+      "passed": true
+    },
+    {
+      "label": "metadata-only state updates status and truncation with retained rows",
+      "passed": true
+    },
+    {
+      "label": "shared prices update asset row and total owner",
+      "passed": true
+    },
+    {
+      "label": "late state cannot overwrite newer snapshot names",
+      "passed": true
+    },
+    {
+      "label": "partial snapshot retains omitted visible names",
+      "passed": true
+    },
+    {
+      "label": "authoritative state removes omitted names",
+      "passed": true
+    },
+    {
+      "label": "pilot switch publishes selected-pilot rows",
+      "passed": true
+    },
+    {
+      "label": "late previous-pilot state cannot replace current Assetsview",
+      "passed": true
+    },
+    {
+      "label": "stale data remains visible",
+      "passed": true
+    },
+    {
+      "label": "disabled empty state renders",
+      "passed": true
+    },
+    {
+      "label": "missing scope prompts connection",
+      "passed": true
+    },
+    {
+      "label": "empty-state connection handler remains live",
+      "passed": true
+    },
+    {
+      "label": "zero-character transition renders connection empty state",
+      "passed": true
+    },
+    {
+      "label": "zero-character connection handler remains live",
+      "passed": true
+    }
+  ],
+  "samples": [],
+  "counts": [
+    {
+      "label": "assets-first-open",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 1,
+          "rows": 20000
+        },
+        "assets": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-sort-directions",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-unrelated-wallet-snapshot",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-search-and-page",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 10000,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-relevant-name",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 10000,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "assets-unrelated-name",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "inactive-assets-source-change",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-journal-open",
+      "map": {
+        "journal": {
+          "calls": 1,
+          "rows": 10000
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-unrelated-snapshot",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-transaction-first-use",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        },
+        "transactions": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "wallet-journal-return",
+      "map": {
+        "journal": {
+          "calls": 1,
+          "rows": 10000
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        },
+        "transactions": {
+          "calls": 0,
+          "rows": 0
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    },
+    {
+      "label": "industry-first-use",
+      "map": {
+        "journal": {
+          "calls": 0,
+          "rows": 0
+        },
+        "prices": {
+          "calls": 0,
+          "rows": 0
+        },
+        "assets": {
+          "calls": 0,
+          "rows": 0
+        },
+        "transactions": {
+          "calls": 0,
+          "rows": 0
+        },
+        "jobs": {
+          "calls": 1,
+          "rows": 10000
+        }
+      },
+      "searchRows": 0,
+      "numberFormat": 0,
+      "dateFormat": 0
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/timeline?limit=5&character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/goals?character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=42"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=43"
+    },
+    {
+      "method": "PUT",
+      "url": "http://127.0.0.1:18730/api/universe/jspace/tracking/active"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:18730/api/state?character=0"
+    }
+  ],
+  "complete": true,
+  "limitations": [
+    "Synthetic populated connected pilots; no real ESI traffic.",
+    "Diagnostic counters wrap Array.map/Object.values/Intl constructors by fixture row shape; they count operations, not React commits. Counter mode is never used for CPU comparisons.",
+    "Timing mode contains no row/formatter instrumentation. Compare fresh baseline/candidate browsers in ABBA order, same fixture/build configuration.",
+    "Renderer CDP task/script/style/layout duration excludes browser/GPU/worker CPU.",
+    "No browser virtualization or archive-history performance conclusion; archive belongs to its separate acceptance lane.",
+    "Names race supplement holds fetch delivery and invokes the actual recovery callback; it is correctness evidence only."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "coldOverviewCounts": {
+    "map": {
+      "journal": {
+        "calls": 1,
+        "rows": 80
+      }
+    },
+    "searchRows": 0,
+    "numberFormat": 2,
+    "dateFormat": 3
+  },
+  "sourceVerified": true,
+  "endedAt": "2026-10-08T08:49:42.385Z"
+}

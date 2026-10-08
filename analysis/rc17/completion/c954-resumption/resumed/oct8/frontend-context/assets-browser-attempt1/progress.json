@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-08T08:45:11.977Z",
+  "node": "v24.19.0",
+  "expectedCommit": "22773cc7cb6e83ac51e412565ba65c101613536a",
+  "complete": false,
+  "releaseReady": false,
+  "builds": [
+    {
+      "variant": "baseline",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-frontend-assets-base-227-oct8",
+      "startedAt": "2026-10-08T08:45:12.294Z",
+      "commands": [
+        {
+          "args": [
+            "npm",
+            "run",
+            "check:kairo"
+          ],
+          "exitCode": 0,
+          "log": "baseline-check-kairo.log"
+        },
+        {
+          "args": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "log": "baseline-build.log"
+        }
+      ],
+      "complete": true,
+      "fingerprint": "f6534da06526042f9c78804716600d75e48fd2ff6366db591b5987109f9cdc78",
+      "assets": 20,
+      "endedAt": "2026-10-08T08:45:28.910Z"
+    },
+    {
+      "variant": "candidate",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-frontend-assets-trial-227-oct8",
+      "startedAt": "2026-10-08T08:45:28.910Z",
+      "commands": [
+        {
+          "args": [
+            "npm",
+            "run",
+            "check:kairo"
+          ],
+          "exitCode": 0,
+          "log": "candidate-check-kairo.log"
+        },
+        {
+          "args": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "log": "candidate-build.log"
+        }
+      ],
+      "complete": true,
+      "fingerprint": "bb7b7b9aecbcee2fe15886e438c78a2e97733a7a8e8a3f35819439fb27a5d9d9",
+      "assets": 20,
+      "endedAt": "2026-10-08T08:45:45.726Z"
+    }
+  ],
+  "diagnostics": [],
+  "runs": [],
+  "harnesses": {
+    "run-browser.mjs": "220f902e7467d5c811c1d951fc915392f7430a2080124686de2a0f20e04abda9",
+    "browser-names.mjs": "43839a46401a7e3e6c61f947e6a0e7869868ea53f91cacf8fab20c1eac1ccb1e",
+    "browser-names-semantics.mjs": "c9fe70f2457fbbb9e318196222657f974c59f4f1c5391439e5c16ff1af9deec5"
+  }
+}

@@ -1,0 +1,32 @@
+✔ operation models retain rows across unrelated resources and names, and replace relevant pilot/name inputs (1.482318ms)
+✔ journal models do not depend on names and inactive model owners perform no derivation (0.358672ms)
+✔ all operation row labels and fallback semantics match original mappings (0.514857ms)
+✔ asset totals preserve unpriced, zero, duplicate price and location semantics without deriving hidden rows (0.286332ms)
+✔ table results preserve exact legacy search/sort order for mixed/null/nested values and stable ties (7.419581ms)
+✔ table normalization and ordering are bounded by inputs rather than page/render count (20.781424ms)
+✔ row identities survive filtering, sorting, pagination and a zero id; page clamps after shrink (0.428016ms)
+✔ wallet graph retains the bounded 80 balance entries and their reverse/date semantics (18.116891ms)
+✔ unchanged snapshot revisions retain large payload identity without reading rows (0.979228ms)
+✔ same timestamp cannot hide corrected data, coverage, source removal or a new process (0.232872ms)
+✔ unchanged names and Session rows retain references while edits invalidate (0.218129ms)
+✔ pilot and typed resource routing ignores unrelated state without dropping global recovery (0.159811ms)
+✔ every automatic Goal source and queue clock boundary invalidates independently of Sessions (0.481567ms)
+✔ resource versions isolate pilots, preserve global invalidation and reject older same-pilot responses (0.854099ms)
+✔ snapshot name merges retain unchanged full/partial maps and copy changed names without dropping unrelated IDs (0.485142ms)
+✔ snapshot name owner matches spread-and-retain semantics for valid flat maps across event sequences (34.194715ms)
+✔ snapshot name owner uses own enumerable keys and preserves spread prototype behavior (0.45666ms)
+✔ unchanged snapshot names do not copy or enumerate the retained full map (0.327434ms)
+✔ a burst keeps one active read and one follow-up instead of losing invalidation (3.618363ms)
+✔ busy owners retain changes, resume once and may explicitly refresh for conflict recovery (1.142485ms)
+✔ leaving a pilot/map scope prevents old publication and releases waiters (1.485903ms)
+✔ a failed read still drains a newer invalidation and does not overlap reads (0.363379ms)
+✔ a change during forced conflict recovery waits for the mutation without deadlocking it (0.784314ms)
+✔ UI snapshot revisions distinguish same-time writes, auth deletion and restart without altering stored snapshots (141.454316ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.459614

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-08T08:49:30.947423+00:00",
+  "complete": false,
+  "releaseReady": false,
+  "harnesses": {
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/frontend-context/run-browser-existing.py": "0be5432b5bce9535b7cd79a974faa3021321036c7ec601999d792266a85a5cf4",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/frontend-context/browser-names.mjs": "43839a46401a7e3e6c61f947e6a0e7869868ea53f91cacf8fab20c1eac1ccb1e",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/frontend-context/browser-names-semantics.mjs": "4e1f8dd0caa65184075b23fbfead0217857b27ead8d1f1126aa9f3772d1679df",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs": "5218cb1118ed7670640fee0746d349ee1bc55e8dd39fae295c03afe73bb710a7"
+  },
+  "priorFreshBuildReceiptSha256": "474a9127c3dd57e5891288a61bf1ffce187380ed7efb3feedbe9226b86c1a776",
+  "builds": [
+    {
+      "variant": "baseline",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-frontend-assets-base-227-oct8",
+      "startedAt": "2026-10-08T08:45:12.294Z",
+      "commands": [
+        {
+          "args": [
+            "npm",
+            "run",
+            "check:kairo"
+          ],
+          "exitCode": 0,
+          "log": "baseline-check-kairo.log"
+        },
+        {
+          "args": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "log": "baseline-build.log"
+        }
+      ],
+      "complete": true,
+      "fingerprint": "f6534da06526042f9c78804716600d75e48fd2ff6366db591b5987109f9cdc78",
+      "assets": 20,
+      "endedAt": "2026-10-08T08:45:28.910Z"
+    },
+    {
+      "variant": "candidate",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-frontend-assets-trial-227-oct8",
+      "startedAt": "2026-10-08T08:45:28.910Z",
+      "commands": [
+        {
+          "args": [
+            "npm",
+            "run",
+            "check:kairo"
+          ],
+          "exitCode": 0,
+          "log": "candidate-check-kairo.log"
+        },
+        {
+          "args": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "log": "candidate-build.log"
+        }
+      ],
+      "complete": true,
+      "fingerprint": "bb7b7b9aecbcee2fe15886e438c78a2e97733a7a8e8a3f35819439fb27a5d9d9",
+      "assets": 20,
+      "endedAt": "2026-10-08T08:45:45.726Z"
+    }
+  ],
+  "runs": [
+    {
+      "arm": "diagnostic",
+      "variant": "baseline",
+      "filename": "diagnostic-baseline.json",
+      "sha256": "1c4e36b65bc029d752067433bbad5dc21f7db8ca95a6560df32db3db6dc855c1",
+      "checks": 31,
+      "mode": "diagnostic-counts"
+    },
+    {
+      "arm": "diagnostic",
+      "variant": "candidate",
+      "filename": "diagnostic-candidate.json",
+      "sha256": "d600149ebc0c498a1eb0ce9e1500bb67aa0dc13de9403b9022c52750c2e0464a",
+      "checks": 31,
+      "mode": "diagnostic-counts"
+    },
+    {
+      "arm": "1",
+      "variant": "baseline",
+      "filename": "1-baseline.json",
+      "sha256": "23199ddef53dd119761fa1f4960b78a6ae2d7655bcd5074e26bfef4d0fd9b0a3",
+      "checks": 11,
+      "mode": "timing"
+    },
+    {
+      "arm": "2",
+      "variant": "candidate",
+      "filename": "2-candidate.json",
+      "sha256": "0d60bebee1ecbcd1e2a89a5bd9096ca3324147501497231ac312736735a675b4",
+      "checks": 11,
+      "mode": "timing"
+    },
+    {
+      "arm": "3",
+      "variant": "candidate",
+      "filename": "3-candidate.json",
+      "sha256": "1ac6ca3ab58e54598ae43438cc2e27bdc10d58c6afbecfeeffa8dd43e1a93bcf",
+      "checks": 11,
+      "mode": "timing"
+    },
+    {
+      "arm": "4",
+      "variant": "baseline",
+      "filename": "4-baseline.json",
+      "sha256": "3568e93c2e515b94256e4af5fad566cc1d445128f717b43e12d81fd1df5f2455",
+      "checks": 11,
+      "mode": "timing"
+    }
+  ]
+}

@@ -1,0 +1,972 @@
+{
+  "kind": "offline-saved-evidence-and-current-code-audit",
+  "currentSourceCommit": "22773cc7cb6e83ac51e412565ba65c101613536a",
+  "referenceSourceCommit": "9afa9a7197fa6b5a802e9efdaa322dedf2439150",
+  "savedDiagnosticBase": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+  "applicationExecuted": false,
+  "benchmarkRun": false,
+  "productionAcceptance": false,
+  "instrumentationReconstructedExactly": true,
+  "diagnosticMapSha256": "963be66f4124c9a729b53e3782dc28ab8f8994ae989ec786e0dfaff8ce13b882",
+  "currentMapSha256": "46939df2c8768c94c1c2d2069fbaa787dcca62b3a95dadfc641d6e000aaa0939",
+  "baselineMapSha256": "95e53c15d74e7045322c9e02eba423f5cde62935d80c0e23bdf0307be7a6a1a8",
+  "paintFunctionByteIdentical": true,
+  "paintFunctionSha256": "0094c3db64e7d13ec2d96183f603983b2f347a032ab1b5a5e6ea502923cf6eba",
+  "relevantUnchangedFiles": [
+    {
+      "path": "components/kairo/universe-map-math.mjs",
+      "sha256": "721d275328bc8646c67111b6f402ead806e73c6542c2205cc5792428b57c170b",
+      "sameAsSavedDiagnosticSource": true
+    },
+    {
+      "path": "components/kairo/universe-map-navigation.mjs",
+      "sha256": "b27aae75bd93e72d21cac2a72173bbc0e671f44324b6ceedba7be700ef8a1789",
+      "sameAsSavedDiagnosticSource": true
+    },
+    {
+      "path": "components/kairo/universe-map-operations.mjs",
+      "sha256": "f1ccdfffb666076119a524d21cb986e8789cffd78b1ca08e6a178da6548fd53e",
+      "sameAsSavedDiagnosticSource": true
+    },
+    {
+      "path": "components/kairo/universe-map-labels.mjs",
+      "sha256": "f369c82e1ae794855293005bc5240f620c4ca175da28ce4d437737476a58f27b",
+      "sameAsSavedDiagnosticSource": true
+    },
+    {
+      "path": "components/kairo/universe-map-portals.mjs",
+      "sha256": "6bc721166e21ec82fc3554ffa16c0f86a55c709eba3cbe1feea1fbb67d89b258",
+      "sameAsSavedDiagnosticSource": true
+    },
+    {
+      "path": "lib/universe-schematic-layout.mjs",
+      "sha256": "a9f63c1841746956088435c6117208a5fe07b2728ade4099e96a3bae1a537d28",
+      "sameAsSavedDiagnosticSource": true
+    },
+    {
+      "path": "server/data/universe.json.gz",
+      "sha256": "e1f186edc138aed25564456cd4150e8db8b3fbeeaf2defdff25cee0bae7c749a",
+      "sameAsSavedDiagnosticSource": true
+    }
+  ],
+  "evidence": [
+    {
+      "lane": "browser",
+      "resultSha256": "194e3555a6a72a8752c2ec1ab6661256f9877926ae7e77a51638b507716e5b81",
+      "sourceManifestSha256": "fbd1797f591f71be3e3a0ce81ed753809e275ce821a1ffe39da9de8cb5420d9f",
+      "buildReceiptSha256": "f9051bf911c98277adcd78d740142b4ef4d798c76e719c88f0b677ac3ea774fe",
+      "harnessesVerified": [
+        {
+          "path": "analysis/rc17/completion/atlas/draw-browser.mjs",
+          "sha256": "ca16df19acdb08c43afa0f271ed00a5b6d41687db21875d9148f25b83c1bdecb"
+        },
+        {
+          "path": "analysis/rc17/completion/atlas/instrument-draw.py",
+          "sha256": "b234cd47ad326aa6b3be9e6f323c7fa69cb32e5b82ce8572dc84071247b53945"
+        },
+        {
+          "path": "analysis/rc16/historical/tests/performance/chrome.mjs",
+          "sha256": "5218cb1118ed7670640fee0746d349ee1bc55e8dd39fae295c03afe73bb710a7"
+        },
+        {
+          "path": "analysis/rc17/completion/startup/fixture.mjs",
+          "sha256": "7b97cbc62837e6a11a44191410e9463ae3907c41a54c9b559591aed8017dfff6"
+        },
+        {
+          "path": "analysis/rc17/harness/source-manifest.mjs",
+          "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+        }
+      ],
+      "savedCompletionAndCleanupGuards": true,
+      "savedCompiledGuard": true,
+      "originalBuildLogAvailable": false,
+      "oldCompiledAssetsRehashedNow": false
+    },
+    {
+      "lane": "labels",
+      "resultSha256": "12b93cba0b0d7a783343778f69cabc049a9b055b972dfb6807f54783794eeedd",
+      "sourceManifestSha256": "fbd1797f591f71be3e3a0ce81ed753809e275ce821a1ffe39da9de8cb5420d9f",
+      "buildReceiptSha256": "f9051bf911c98277adcd78d740142b4ef4d798c76e719c88f0b677ac3ea774fe",
+      "harnessesVerified": [
+        {
+          "path": "analysis/rc17/completion/atlas/draw-browser-labels.mjs",
+          "sha256": "ce07cdce35deb11584a114c5651e7fce0107a3fceedfe489b84c008337c9fb10"
+        },
+        {
+          "path": "analysis/rc17/completion/atlas/instrument-draw.py",
+          "sha256": "b234cd47ad326aa6b3be9e6f323c7fa69cb32e5b82ce8572dc84071247b53945"
+        },
+        {
+          "path": "analysis/rc16/historical/tests/performance/chrome.mjs",
+          "sha256": "5218cb1118ed7670640fee0746d349ee1bc55e8dd39fae295c03afe73bb710a7"
+        },
+        {
+          "path": "analysis/rc17/completion/startup/fixture.mjs",
+          "sha256": "7b97cbc62837e6a11a44191410e9463ae3907c41a54c9b559591aed8017dfff6"
+        },
+        {
+          "path": "analysis/rc17/harness/source-manifest.mjs",
+          "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+        }
+      ],
+      "savedCompletionAndCleanupGuards": true,
+      "savedCompiledGuard": true,
+      "originalBuildLogAvailable": false,
+      "oldCompiledAssetsRehashedNow": false
+    }
+  ],
+  "phases": [
+    {
+      "name": "physical-overview-power_blocs",
+      "frames": 109,
+      "cameraBatches": 11,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 11,
+        "min": 0.24799999997019767,
+        "p50": 0.31199999995529654,
+        "p95": 0.76,
+        "max": 0.76
+      },
+      "selectionIndividualMs": {
+        "count": 275,
+        "min": 0.09999999962747097,
+        "p50": 0.30000000074505806,
+        "p95": 1.199999999254942,
+        "max": 2.5
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 109,
+          "min": 2.200000001117587,
+          "p50": 2.900000000372529,
+          "p95": 4.799999998882413,
+          "max": 8.099999999627471
+        },
+        "visibleMs": {
+          "count": 109,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.5
+        },
+        "gatesWithCanvasMs": {
+          "count": 109,
+          "min": 0.5,
+          "p50": 0.8000000007450581,
+          "p95": 1.599999999627471,
+          "max": 3.5
+        },
+        "systemsWithCanvasMs": {
+          "count": 109,
+          "min": 1.200000001117587,
+          "p50": 1.599999999627471,
+          "p95": 2.099999999627471,
+          "max": 2.800000000745058
+        },
+        "labelsWithCanvasMs": {
+          "count": 109,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 4
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        4903,
+        5485
+      ],
+      "scaleRange": [
+        0.4537026636174012,
+        0.8041255778952957
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "physical-overview-activity",
+      "frames": 101,
+      "cameraBatches": 11,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 11,
+        "min": 0.25200000002980233,
+        "p50": 0.2919999999552965,
+        "p95": 1.0160000000149012,
+        "max": 1.0160000000149012
+      },
+      "selectionIndividualMs": {
+        "count": 275,
+        "min": 0.09999999962747097,
+        "p50": 0.30000000074505806,
+        "p95": 1.199999999254942,
+        "max": 4.699999999254942
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 101,
+          "min": 2.799999998882413,
+          "p50": 3.399999998509884,
+          "p95": 6.400000000372529,
+          "max": 12.5
+        },
+        "visibleMs": {
+          "count": 101,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.19999999925494194,
+          "max": 0.2000000011175871
+        },
+        "gatesWithCanvasMs": {
+          "count": 101,
+          "min": 0.5,
+          "p50": 0.8999999985098839,
+          "p95": 1.5,
+          "max": 3.200000001117587
+        },
+        "systemsWithCanvasMs": {
+          "count": 101,
+          "min": 1.199999999254942,
+          "p50": 1.5,
+          "p95": 3.199999999254942,
+          "max": 7.900000000372529
+        },
+        "labelsWithCanvasMs": {
+          "count": 101,
+          "min": 0.3999999985098839,
+          "p50": 0.599999999627471,
+          "p95": 1,
+          "max": 3.5
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        4903,
+        5485
+      ],
+      "scaleRange": [
+        0.45397320550956244,
+        0.8029297206389562
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "physical-zoomed-power_blocs",
+      "frames": 130,
+      "cameraBatches": 13,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 13,
+        "min": 0.18799999997019767,
+        "p50": 0.31199999995529654,
+        "p95": 0.7439999999850988,
+        "max": 0.7439999999850988
+      },
+      "selectionIndividualMs": {
+        "count": 325,
+        "min": 0.09999999962747097,
+        "p50": 0.2999999988824129,
+        "p95": 0.900000000372529,
+        "max": 2.400000000372529
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 130,
+          "min": 1.199999999254942,
+          "p50": 1.800000000745058,
+          "p95": 2.600000001490116,
+          "max": 7.400000000372529
+        },
+        "visibleMs": {
+          "count": 130,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.6000000014901161
+        },
+        "gatesWithCanvasMs": {
+          "count": 130,
+          "min": 0.2999999988824129,
+          "p50": 0.599999999627471,
+          "p95": 0.8000000007450581,
+          "max": 3.5
+        },
+        "systemsWithCanvasMs": {
+          "count": 130,
+          "min": 0.19999999925494194,
+          "p50": 0.40000000037252903,
+          "p95": 0.8000000007450581,
+          "max": 2.099999999627471
+        },
+        "labelsWithCanvasMs": {
+          "count": 130,
+          "min": 0.3999999985098839,
+          "p50": 0.5,
+          "p95": 0.8000000007450581,
+          "max": 2.199999999254942
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        388,
+        1663
+      ],
+      "scaleRange": [
+        2.433683664387969,
+        4.315994392753482
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "physical-zoomed-activity",
+      "frames": 132,
+      "cameraBatches": 14,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 14,
+        "min": 0.22399999998509884,
+        "p50": 0.30799999997019767,
+        "p95": 0.9920000000298024,
+        "max": 0.9920000000298024
+      },
+      "selectionIndividualMs": {
+        "count": 350,
+        "min": 0.09999999962747097,
+        "p50": 0.30000000074505806,
+        "p95": 1.400000000372529,
+        "max": 3.400000000372529
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 132,
+          "min": 1.400000000372529,
+          "p50": 2.5,
+          "p95": 4.800000000745058,
+          "max": 6.400000000372529
+        },
+        "visibleMs": {
+          "count": 132,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 1.199999999254942
+        },
+        "gatesWithCanvasMs": {
+          "count": 132,
+          "min": 0.2999999988824129,
+          "p50": 0.599999999627471,
+          "p95": 1.800000000745058,
+          "max": 3.599999999627471
+        },
+        "systemsWithCanvasMs": {
+          "count": 132,
+          "min": 0.2999999988824129,
+          "p50": 0.6999999992549419,
+          "p95": 1.300000000745058,
+          "max": 2
+        },
+        "labelsWithCanvasMs": {
+          "count": 132,
+          "min": 0.40000000037252903,
+          "p50": 0.599999999627471,
+          "p95": 0.900000000372529,
+          "max": 3.799999998882413
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        1106,
+        3536
+      ],
+      "scaleRange": [
+        1.3925802713278241,
+        2.460447679538463
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "schematic-overview-power_blocs",
+      "frames": 109,
+      "cameraBatches": 11,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 11,
+        "min": 0.27600000001490116,
+        "p50": 0.30399999998509886,
+        "p95": 1.0040000000596045,
+        "max": 1.0040000000596045
+      },
+      "selectionIndividualMs": {
+        "count": 275,
+        "min": 0.09999999962747097,
+        "p50": 0.30000000074505806,
+        "p95": 1.400000000372529,
+        "max": 3.599999999627471
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 109,
+          "min": 2.199999999254942,
+          "p50": 2.599999999627471,
+          "p95": 4.599999999627471,
+          "max": 6.600000001490116
+        },
+        "visibleMs": {
+          "count": 109,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.5
+        },
+        "gatesWithCanvasMs": {
+          "count": 109,
+          "min": 0.5,
+          "p50": 0.7000000011175871,
+          "p95": 1.699999999254942,
+          "max": 2.800000000745058
+        },
+        "systemsWithCanvasMs": {
+          "count": 109,
+          "min": 1.099999999627471,
+          "p50": 1.400000000372529,
+          "p95": 2,
+          "max": 3.400000000372529
+        },
+        "labelsWithCanvasMs": {
+          "count": 109,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.30000000074505806
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        4699,
+        5485
+      ],
+      "scaleRange": [
+        0.45330455150038457,
+        0.8021340091524776
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "schematic-overview-activity",
+      "frames": 105,
+      "cameraBatches": 11,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 11,
+        "min": 0.2680000000447035,
+        "p50": 0.6879999998956918,
+        "p95": 0.8639999999105931,
+        "max": 0.8639999999105931
+      },
+      "selectionIndividualMs": {
+        "count": 275,
+        "min": 0.09999999962747097,
+        "p50": 0.5,
+        "p95": 1.300000000745058,
+        "max": 3
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 105,
+          "min": 2.699999999254942,
+          "p50": 3.099999999627471,
+          "p95": 6.900000000372529,
+          "max": 13.199999999254942
+        },
+        "visibleMs": {
+          "count": 105,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.30000000074505806
+        },
+        "gatesWithCanvasMs": {
+          "count": 105,
+          "min": 0.5,
+          "p50": 0.7999999988824129,
+          "p95": 1.699999999254942,
+          "max": 3
+        },
+        "systemsWithCanvasMs": {
+          "count": 105,
+          "min": 1,
+          "p50": 1.300000000745058,
+          "p95": 3.200000001117587,
+          "max": 7.799999998882413
+        },
+        "labelsWithCanvasMs": {
+          "count": 105,
+          "min": 0.3999999985098839,
+          "p50": 0.599999999627471,
+          "p95": 1,
+          "max": 2.700000001117587
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        4699,
+        5485
+      ],
+      "scaleRange": [
+        0.4543708049264209,
+        0.8019988595823413
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "schematic-zoomed-power_blocs",
+      "frames": 130,
+      "cameraBatches": 13,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 13,
+        "min": 0.24,
+        "p50": 0.3239999999850988,
+        "p95": 0.9159999999403954,
+        "max": 0.9159999999403954
+      },
+      "selectionIndividualMs": {
+        "count": 325,
+        "min": 0,
+        "p50": 0.30000000074505806,
+        "p95": 1,
+        "max": 3.400000000372529
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 130,
+          "min": 1,
+          "p50": 1.5,
+          "p95": 2.199999999254942,
+          "max": 4.800000000745058
+        },
+        "visibleMs": {
+          "count": 130,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.19999999925494194,
+          "max": 0.6000000014901161
+        },
+        "gatesWithCanvasMs": {
+          "count": 130,
+          "min": 0.2999999988824129,
+          "p50": 0.5,
+          "p95": 0.8000000007450581,
+          "max": 0.900000000372529
+        },
+        "systemsWithCanvasMs": {
+          "count": 130,
+          "min": 0.09999999962747097,
+          "p50": 0.2999999988824129,
+          "p95": 0.599999999627471,
+          "max": 2.5
+        },
+        "labelsWithCanvasMs": {
+          "count": 130,
+          "min": 0.2999999988824129,
+          "p50": 0.5,
+          "p95": 0.900000000372529,
+          "max": 3.599999999627471
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        352,
+        1220
+      ],
+      "scaleRange": [
+        2.437951985476457,
+        4.303169769872999
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "schematic-zoomed-activity",
+      "frames": 131,
+      "cameraBatches": 14,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 14,
+        "min": 0.19200000002980233,
+        "p50": 0.23600000001490115,
+        "p95": 0.816000000089407,
+        "max": 0.816000000089407
+      },
+      "selectionIndividualMs": {
+        "count": 350,
+        "min": 0.09999999962747097,
+        "p50": 0.2000000011175871,
+        "p95": 0.900000000372529,
+        "max": 2.400000000372529
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 131,
+          "min": 1.200000001117587,
+          "p50": 1.900000000372529,
+          "p95": 3.199999999254942,
+          "max": 4.299999998882413
+        },
+        "visibleMs": {
+          "count": 131,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.30000000074505806
+        },
+        "gatesWithCanvasMs": {
+          "count": 131,
+          "min": 0.2999999988824129,
+          "p50": 0.5,
+          "p95": 1.099999999627471,
+          "max": 1.5
+        },
+        "systemsWithCanvasMs": {
+          "count": 131,
+          "min": 0.19999999925494194,
+          "p50": 0.5,
+          "p95": 1.200000001117587,
+          "max": 1.800000000745058
+        },
+        "labelsWithCanvasMs": {
+          "count": 131,
+          "min": 0.2999999988824129,
+          "p50": 0.5,
+          "p95": 0.8000000007450581,
+          "max": 1.099999999627471
+        }
+      },
+      "systemLabelCandidatesRange": [
+        0,
+        0
+      ],
+      "visibleRange": [
+        691,
+        2793
+      ],
+      "scaleRange": [
+        1.393797920729885,
+        2.4580095758180707
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "physical-labels-power_blocs",
+      "frames": 133,
+      "cameraBatches": 14,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 14,
+        "min": 0.16799999997019768,
+        "p50": 0.19600000001490117,
+        "p95": 0.8839999999850988,
+        "max": 0.8839999999850988
+      },
+      "selectionIndividualMs": {
+        "count": 350,
+        "min": 0,
+        "p50": 0.2000000011175871,
+        "p95": 0.8000000007450581,
+        "max": 2.099999999627471
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 133,
+          "min": 1.099999999627471,
+          "p50": 1.599999999627471,
+          "p95": 3.400000000372529,
+          "max": 4.699999999254942
+        },
+        "visibleMs": {
+          "count": 133,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.19999999925494194,
+          "max": 0.5
+        },
+        "gatesWithCanvasMs": {
+          "count": 133,
+          "min": 0.5,
+          "p50": 0.6000000014901161,
+          "p95": 1.199999999254942,
+          "max": 2.5
+        },
+        "systemsWithCanvasMs": {
+          "count": 133,
+          "min": 0,
+          "p50": 0,
+          "p95": 0.10000000149011612,
+          "max": 0.2000000011175871
+        },
+        "labelsWithCanvasMs": {
+          "count": 133,
+          "min": 0.30000000074505806,
+          "p50": 0.6000000014901161,
+          "p95": 2.400000000372529,
+          "max": 3.800000000745058
+        }
+      },
+      "systemLabelCandidatesRange": [
+        6,
+        43
+      ],
+      "visibleRange": [
+        6,
+        43
+      ],
+      "scaleRange": [
+        13.035128848987826,
+        23.123264307669203
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "physical-labels-activity",
+      "frames": 130,
+      "cameraBatches": 13,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 13,
+        "min": 0.17600000001490115,
+        "p50": 0.19200000002980233,
+        "p95": 0.7680000000447035,
+        "max": 0.7680000000447035
+      },
+      "selectionIndividualMs": {
+        "count": 325,
+        "min": 0,
+        "p50": 0.2000000011175871,
+        "p95": 0.8000000007450581,
+        "max": 2.400000000372529
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 130,
+          "min": 1.299999998882413,
+          "p50": 2,
+          "p95": 3.5,
+          "max": 5.899999998509884
+        },
+        "visibleMs": {
+          "count": 130,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.19999999925494194,
+          "max": 0.40000000037252903
+        },
+        "gatesWithCanvasMs": {
+          "count": 130,
+          "min": 0.40000000037252903,
+          "p50": 0.599999999627471,
+          "p95": 1,
+          "max": 1.699999999254942
+        },
+        "systemsWithCanvasMs": {
+          "count": 130,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.2999999988824129
+        },
+        "labelsWithCanvasMs": {
+          "count": 130,
+          "min": 0.40000000037252903,
+          "p50": 0.900000000372529,
+          "p95": 2.199999999254942,
+          "max": 4.5
+        }
+      },
+      "systemLabelCandidatesRange": [
+        28,
+        139
+      ],
+      "visibleRange": [
+        28,
+        139
+      ],
+      "scaleRange": [
+        7.465429008098683,
+        13.208218158288012
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "schematic-labels-power_blocs",
+      "frames": 132,
+      "cameraBatches": 14,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 14,
+        "min": 0.18,
+        "p50": 0.21200000002980232,
+        "p95": 0.9760000000149012,
+        "max": 0.9760000000149012
+      },
+      "selectionIndividualMs": {
+        "count": 350,
+        "min": 0,
+        "p50": 0.2000000011175871,
+        "p95": 1.1000000014901161,
+        "max": 2.199999999254942
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 132,
+          "min": 1.299999998882413,
+          "p50": 1.699999999254942,
+          "p95": 2.400000000372529,
+          "max": 13
+        },
+        "visibleMs": {
+          "count": 132,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 2.200000001117587
+        },
+        "gatesWithCanvasMs": {
+          "count": 132,
+          "min": 0.40000000037252903,
+          "p50": 0.599999999627471,
+          "p95": 1,
+          "max": 9.899999998509884
+        },
+        "systemsWithCanvasMs": {
+          "count": 132,
+          "min": 0,
+          "p50": 0,
+          "p95": 0.10000000149011612,
+          "max": 0.2000000011175871
+        },
+        "labelsWithCanvasMs": {
+          "count": 132,
+          "min": 0.5,
+          "p50": 0.8000000007450581,
+          "p95": 1.200000001117587,
+          "max": 3.199999999254942
+        }
+      },
+      "systemLabelCandidatesRange": [
+        15,
+        56
+      ],
+      "visibleRange": [
+        15,
+        56
+      ],
+      "scaleRange": [
+        13.058065917321658,
+        23.13473723757324
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    },
+    {
+      "name": "schematic-labels-activity",
+      "frames": 130,
+      "cameraBatches": 13,
+      "samplesPerCamera": 25,
+      "selectionCameraMeanMs": {
+        "count": 13,
+        "min": 0.18799999997019767,
+        "p50": 0.21600000001490116,
+        "p95": 0.7800000000745058,
+        "max": 0.7800000000745058
+      },
+      "selectionIndividualMs": {
+        "count": 325,
+        "min": 0,
+        "p50": 0.2000000011175871,
+        "p95": 0.900000000372529,
+        "max": 2.600000001490116
+      },
+      "boundaryMs": {
+        "totalMs": {
+          "count": 130,
+          "min": 1.5,
+          "p50": 2.200000001117587,
+          "p95": 3.099999999627471,
+          "max": 3.800000000745058
+        },
+        "visibleMs": {
+          "count": 130,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.3999999985098839
+        },
+        "gatesWithCanvasMs": {
+          "count": 130,
+          "min": 0.40000000037252903,
+          "p50": 0.6000000014901161,
+          "p95": 1.299999998882413,
+          "max": 1.800000000745058
+        },
+        "systemsWithCanvasMs": {
+          "count": 130,
+          "min": 0,
+          "p50": 0.09999999962747097,
+          "p95": 0.2000000011175871,
+          "max": 0.30000000074505806
+        },
+        "labelsWithCanvasMs": {
+          "count": 130,
+          "min": 0.7999999988824129,
+          "p50": 1.199999999254942,
+          "p95": 1.700000001117587,
+          "max": 2.400000000372529
+        }
+      },
+      "systemLabelCandidatesRange": [
+        52,
+        153
+      ],
+      "visibleRange": [
+        52,
+        153
+      ],
+      "scaleRange": [
+        7.4588856082118715,
+        13.320311199262928
+      ],
+      "cameraCountsAndReconstructedOrderedHashParity": true
+    }
+  ],
+  "totals": {
+    "phases": 12,
+    "instrumentedFrames": 1472,
+    "cameraBatches": 152,
+    "selectionRepetitions": 3800
+  },
+  "limitations": [
+    "Historical compiled artifacts/build log are not present for fresh rehash; stored matching manifests/receipts and completion guards are verified.",
+    "Saved original browser counters verify selected counts, not point/gate order; this offline audit additionally reconstructs ordered hashes from exact unchanged source fixture/predicates.",
+    "Selection diagnostic repeats a helper with ID/edge-array allocations and excludes Canvas, React, workers and label collision work.",
+    "No spatial index implementation, ordinary A/B result, index build/update cost or retained-memory comparison is measured."
+  ]
+}
