@@ -1,0 +1,537 @@
+diff --git a/server/universe-jspace-summary-inputs.mjs b/server/universe-jspace-summary-inputs.mjs
+new file mode 100644
+index 0000000..450e4f2
+--- /dev/null
++++ b/server/universe-jspace-summary-inputs.mjs
+@@ -0,0 +1,111 @@
++// Optional private derivatives. Authoritative maps, links and time stay outside
++// this table; triggers invalidate every direct or service map-body replacement.
++const TABLE = 'universe_jspace_summary_inputs_v1';
++const INSERT = TABLE + '_insert', UPDATE = TABLE + '_update', DELETE = TABLE + '_delete';
++const FORMAT = 1;
++const own = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
++const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
++const optional = (value, key, check) => !own(value, key) || value[key] === null || check(value[key]);
++const text = value => typeof value === 'string';
++const contention = error => Number.isInteger(error.errcode) && [5, 6].includes(error.errcode & 255);
++function pick(value, keys) {
++    const result = {};
++    for (const key of keys) if (own(value, key)) result[key] = value[key];
++    return result;
++}
++
++// Input was already parsed by JavaScript. Unsupported legacy shapes use the
++// existing full path, including its errors; no SQL JSON interpretation occurs.
++export function compactJSpaceSummaryInput(map) {
++    if (!object(map) || own(map, 'archived_connections') ||
++        !['nodes', 'connections', 'comments', 'passages', 'activity'].every(key => Array.isArray(map[key])) ||
++        !optional(map, 'pilots', Array.isArray)) return null;
++    if (!map.nodes.every(row => object(row) && Number.isSafeInteger(row.system_id) &&
++        optional(row, 'locked', value => typeof value === 'boolean') &&
++        optional(row, 'disconnected_at', text) && optional(row, 'prune_grace_at', text))) return null;
++    if (!map.connections.every(row => object(row) && text(row.id) && text(row.kind) &&
++        Number.isSafeInteger(row.from_system_id) && Number.isSafeInteger(row.to_system_id) &&
++        optional(row, 'link_id', text) && !own(row, 'locked'))) return null;
++    if (!map.comments.every(row => object(row) && optional(row, 'connection_id', text)) ||
++        !map.passages.every(row => object(row) && text(row.connection_id)) ||
++        !map.activity.every(row => object(row) && optional(row, 'op', text))) return null;
++    return {
++        ...pick(map, ['id', 'name', 'description', 'kind', 'revision', 'created_at', 'updated_at', 'scope']),
++        nodes: map.nodes.map(row => pick(row, ['system_id', 'locked', 'disconnected_at', 'prune_grace_at'])),
++        connections: map.connections.map(row => pick(row, ['id', 'kind', 'link_id', 'from_system_id', 'to_system_id'])),
++        comments: map.comments.map(row => pick(row, ['connection_id'])),
++        passages: map.passages.map(row => pick(row, ['connection_id'])),
++        activity: map.activity.map(row => pick(row, ['op'])),
++        pilots: (map.pilots || []).map(() => null),
++    };
++}
++
++export function createJSpaceSummaryInputs(db) {
++    const installed = db.prepare(`SELECT count(*) AS n FROM sqlite_schema WHERE
++        (type='table' AND name=?) OR (type='trigger' AND name IN (?,?,?))`).get(TABLE, INSERT, UPDATE, DELETE).n === 4;
++    db.exec('SAVEPOINT kairo_jspace_summary_inputs_install');
++    try {
++        db.exec(`CREATE TABLE IF NOT EXISTS ${TABLE}(
++            generation INTEGER PRIMARY KEY AUTOINCREMENT,
++            character_id INTEGER NOT NULL,id TEXT NOT NULL,
++            state INTEGER NOT NULL DEFAULT 0 CHECK(state IN (0,1,2)),
++            format_version INTEGER,body TEXT,UNIQUE(character_id,id));
++        CREATE TRIGGER IF NOT EXISTS ${INSERT} AFTER INSERT ON universe_records WHEN NEW.kind='jspace_map' BEGIN
++            DELETE FROM ${TABLE} WHERE character_id=NEW.character_id AND id=NEW.id;
++            INSERT INTO ${TABLE}(character_id,id) VALUES(NEW.character_id,NEW.id);
++        END;
++        CREATE TRIGGER IF NOT EXISTS ${UPDATE} AFTER UPDATE OF character_id,kind,id,body ON universe_records
++        WHEN OLD.kind='jspace_map' OR NEW.kind='jspace_map' BEGIN
++            DELETE FROM ${TABLE} WHERE (OLD.kind='jspace_map' AND character_id=OLD.character_id AND id=OLD.id)
++                OR (NEW.kind='jspace_map' AND character_id=NEW.character_id AND id=NEW.id);
++            INSERT INTO ${TABLE}(character_id,id) SELECT NEW.character_id,NEW.id WHERE NEW.kind='jspace_map';
++        END;
++        CREATE TRIGGER IF NOT EXISTS ${DELETE} AFTER DELETE ON universe_records WHEN OLD.kind='jspace_map' BEGIN
++            DELETE FROM ${TABLE} WHERE character_id=OLD.character_id AND id=OLD.id;
++        END;`);
++        // A missing trigger may have allowed unseen writes. Drop derivatives,
++        // keeping the generation sequence; do not scan/backfill parent bodies.
++        if (!installed) db.exec(`DELETE FROM ${TABLE}`);
++        db.exec('RELEASE kairo_jspace_summary_inputs_install');
++    } catch (error) {
++        db.exec('ROLLBACK TO kairo_jspace_summary_inputs_install');
++        db.exec('RELEASE kairo_jspace_summary_inputs_install');
++        throw error;
++    }
++    const missing = db.prepare(`SELECT 1 FROM universe_records AS records LEFT JOIN ${TABLE} AS inputs
++        ON inputs.character_id=records.character_id AND inputs.id=records.id
++        WHERE records.character_id=? AND records.kind='jspace_map' AND inputs.generation IS NULL LIMIT 1`);
++    const seed = db.prepare(`INSERT INTO ${TABLE}(character_id,id)
++        SELECT records.character_id,records.id FROM universe_records AS records
++        WHERE records.character_id=? AND records.kind='jspace_map' AND NOT EXISTS
++            (SELECT 1 FROM ${TABLE} AS inputs WHERE inputs.character_id=records.character_id AND inputs.id=records.id)`);
++    const rows = db.prepare(`SELECT records.id AS record_id,CAST(inputs.generation AS TEXT) AS generation,
++        inputs.state=1 AND inputs.format_version=${FORMAT} AS compact,
++        inputs.generation IS NOT NULL AND (inputs.state=0 OR inputs.format_version IS NOT ${FORMAT}) AS needs_fill,
++        CASE WHEN inputs.state=1 AND inputs.format_version=${FORMAT} THEN inputs.body ELSE records.body END AS body
++        FROM universe_records AS records LEFT JOIN ${TABLE} AS inputs
++        ON inputs.character_id=records.character_id AND inputs.id=records.id
++        WHERE records.character_id=? AND records.kind='jspace_map'
++        ORDER BY records.updated_at DESC,records.id`);
++    const ready = db.prepare(`SELECT 1 FROM ${TABLE} WHERE character_id=? AND id=? AND state=1 AND format_version=?`);
++    const fill = db.prepare(`UPDATE ${TABLE} SET state=?,format_version=?,body=?
++        WHERE character_id=? AND id=? AND generation=? AND (state=0 OR format_version IS NOT ?)`);
++    return {
++        all(id) {
++            if (missing.get(id)) try { seed.run(id); } catch (error) { if (!contention(error)) throw error; }
++            return rows.all(id);
++        },
++        hasReady: (id, key) => !!ready.get(id, key, FORMAT),
++        fill(id, key, generation, compact) {
++            // One conditional statement: a changed/deleted generation cannot
++            // receive this snapshot. Only lock contention is a harmless miss;
++            // do not hide authoritative parse/cleanup or database failures.
++            try { return fill.run(compact ? 1 : 2, FORMAT, compact ? JSON.stringify(compact) : null,
++                id, key, generation, FORMAT).changes; }
++            catch (error) {
++                if (contention(error)) return 0;
++                throw error;
++            }
++        },
++    };
++}
+diff --git a/server/universe-jspace.mjs b/server/universe-jspace.mjs
+index 149da8b..b0cd134 100644
+--- a/server/universe-jspace.mjs
++++ b/server/universe-jspace.mjs
+@@ -1,4 +1,5 @@
+ import { randomUUID } from 'node:crypto';
++import { createJSpaceSummaryInputs, compactJSpaceSummaryInput } from './universe-jspace-summary-inputs.mjs';
+ import { getWormholeType } from './universe-wormholes.mjs';
+ import { createJSpaceTracking } from './universe-jspace-tracking.mjs';
+ import { validateJSpaceScope, hasJSpaceScope, matchesJSpaceScope } from './universe-jspace-scopes.mjs';
+@@ -58,6 +59,7 @@ export function createUniverseJSpace(store, auth, options) {
+     const gates = new Set(atlas.gates.flatMap(row => [`${row.from_system_id}:${row.to_system_id}`, `${row.to_system_id}:${row.from_system_id}`]));
+     const getRow = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?');
+     const getRows = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id');
++    const getSummaryRows = createJSpaceSummaryInputs(store.db);
+     const putRow = store.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at');
+     const deleteRow = store.db.prepare('DELETE FROM universe_records WHERE character_id=? AND kind=? AND id=?');
+     const read = (pilot, kind, id) => { const value = getRow.get(pilot, kind, String(id)); return value ? JSON.parse(value.body) : null; };
+@@ -129,9 +131,11 @@ export function createUniverseJSpace(store, auth, options) {
+         return value;
+     }
+     function editable(map) { if (map.kind === 'tracking_source') throw new Error('The live source map is read-only. Create an interactive map to edit it.'); }
+-    function ensureSource(id) {
++    function ensureSource(id, descriptorOnly = false) {
+         if (!id) return null;
+-        const key = 'tracking-source-' + id, existing = read(id, 'jspace_map', key);
++        const key = 'tracking-source-' + id;
++        if (descriptorOnly && getSummaryRows.hasReady(id, key)) return null;
++        const existing = read(id, 'jspace_map', key);
+         if (existing) return existing;
+         const map = { ...blank({ name: 'Live source' }), id: key, kind: 'tracking_source', pilots: [{ character_id: id, tracking: true }] };
+         write(id, 'jspace_map', map); tracking.syncMap(id, map); return map;
+@@ -455,11 +459,35 @@ export function createUniverseJSpace(store, auth, options) {
+             node_count: map.nodes.length, connection_count: map.connections.length, pilot_count: (map.pilots || []).length,
+             scope: map.scope || null, next_expiry_at: Number.isFinite(nextExpiry) ? new Date(nextExpiry).toISOString() : null };
+     }
++    function summaryUnchanged(map, canonical) {
++        if (own(map, 'archived_connections') || !map.connections.every(edge =>
++            !own(edge, 'locked') && (edge.kind === 'gate' || canonical.has(edge.link_id)))) return false;
++        const present = new Set(map.connections.map(edge => edge.id));
++        if (!map.passages.every(row => present.has(row.connection_id)) ||
++            !map.comments.every(row => !row.connection_id || present.has(row.connection_id)) ||
++            !Array.isArray(map.activity) || map.activity.some(row => /^(connection|passage)\./.test(row.op))) return false;
++        const connected = new Set(map.connections.flatMap(edge => [edge.from_system_id, edge.to_system_id]));
++        return map.nodes.every(row => {
++            if (connected.has(row.system_id)) return !row.disconnected_at;
++            if (!row.disconnected_at) return true;
++            const disconnected = Math.max(Date.parse(row.disconnected_at) || 0, Date.parse(row.prune_grace_at) || 0);
++            return row.disconnected_at === new Date(disconnected).toISOString() && (row.locked || now() < disconnected + PRUNE_DELAY_MS);
++        });
++    }
+     function summaries(characterId) {
+-        const id = pilot(characterId), context = libraryContext(id), maps = [];
++        const id = pilot(characterId), maps = [];
++        ensureSource(id, true);
++        const shared = projectionContext(id);
+         let source_map = null;
+-        for (const value of context.maps) {
+-            const canonical = context.shared.canonical(value), map = reconcileNodes(id, value, canonical), descriptor = summary(map, canonical);
++        for (const row of getSummaryRows.all(id)) {
++            const value = JSON.parse(row.body), canonical = shared.canonical(value);
++            // Capture this row's input before reconciliation mutates its object:
++            // legacy document IDs can write a different SQL key during cleanup.
++            const input = !row.compact && row.needs_fill ? compactJSpaceSummaryInput(value) : null;
++            const map = row.compact && summaryUnchanged(value, canonical) ? value :
++                reconcileNodes(id, row.compact ? loaded(id, row.record_id) : value, canonical);
++            if (!row.compact && row.needs_fill) getSummaryRows.fill(id, row.record_id, row.generation, input);
++            const descriptor = summary(map, canonical);
+             if (map.kind !== 'tracking_source') maps.push(descriptor);
+             else if (map.id === 'tracking-source-' + id) source_map = descriptor;
+         }
+diff --git a/tests/kairo/universe-jspace-reads.test.mjs b/tests/kairo/universe-jspace-reads.test.mjs
+index ef26e66..5599d68 100644
+--- a/tests/kairo/universe-jspace-reads.test.mjs
++++ b/tests/kairo/universe-jspace-reads.test.mjs
+@@ -317,3 +317,124 @@ test('projection roster ownership never retains changed access, location freshne
+     assert.throws(() => f.api.map(42, map.id), /connected pilot/);
+     assert.throws(() => f.api.command(42, map.id, { revision: map.revision, op: 'map.update', name: 'Rejected stale author' }), /connected pilot/);
+ });
++
++test('summary inputs omit wide retained text without changing storage or losing direct replacements', async t => {
++    const f = await fixture(t), created = f.create('Wide map');
++    f.api.summaries(42); // Establish the independently required source descriptor before counting no-op writes.
++    const get = f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?");
++    const put = f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?");
++    const map = JSON.parse(get.get(created.id).body), edge = map.connections[0];
++    map.comments[0].body = 'Retained comment '.repeat(200);
++    map.passages = [{ id: 'valid-passage', connection_id: edge.id, notes: 'Retained passage '.repeat(100), occurred_at: new Date(AT).toISOString() }];
++    map.observations = [{ id: 'observation', system_id: W, body: 'Retained observation '.repeat(200) }];
++    map.archived_nodes = [{ system_id: 31999999, description: 'Retained archive '.repeat(200) }];
++    map.nodes[0].description = 'Retained node '.repeat(200);
++    map.connections[0].notes = 'Retained connection '.repeat(100);
++    map.connections[0].custom = { arbitrary: 'Retained custom '.repeat(100) };
++    const body = JSON.stringify(map); put.run(body, map.id);
++    const cold = f.api.summaries(42);
++    assert.equal(cold.maps.find(row => row.id === map.id).connection_count, 2);
++    assert.equal(get.get(map.id).body, body);
++    const before = f.store.db.prepare('SELECT total_changes() AS n').get().n;
++    const read = f.read(() => f.api.summaries(42));
++    const row = read.value.maps.find(row => row.id === map.id);
++    assert.equal(row.name, 'Wide map'); assert.equal(row.node_count, 3); assert.equal(row.connection_count, 2);
++    assert.equal(get.get(map.id).body, body);
++    assert.equal(f.store.db.prepare('SELECT total_changes() AS n').get().n, before);
++    const transferred = read.queries.flatMap(query => query.rows).filter(row => typeof row.body === 'string').map(row => row.body);
++    assert.ok(transferred.every(body => !body.includes('Retained ')), 'Summary must not transfer retained wide payload text from SQLite');
++    assert.ok(transferred.reduce((sum, body) => sum + body.length, 0) < body.length / 2);
++    map.name = 'Immediate replacement'; map.revision += 5; map.scope = { systems: [W] }; put.run(JSON.stringify(map), map.id);
++    const next = f.api.summaries(42).maps.find(row => row.id === map.id);
++    assert.equal(next.name, map.name); assert.equal(next.revision, map.revision); assert.deepEqual(next.scope, map.scope);
++    assert.equal(f.api.map(42, map.id).comments[0].body, map.comments[0].body);
++});
++
++test('summary-first legacy cleanup loads the complete document before persisting', async t => {
++    const f = await fixture(t), created = f.create('Legacy map');
++    const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(created.id).body);
++    const map = get(); map.connections[0].locked = false; map.archived_connections = []; delete map.activity;
++    map.nodes[0].description = 'Keep node details'; map.archived_nodes = [{ system_id: 31999999, description: 'Keep archive' }];
++    map.passages = [{ id: 'valid', connection_id: map.connections[0].id, notes: 'Keep valid passage' }, { id: 'dangling', connection_id: 'gone', notes: 'Remove dangling passage' }];
++    map.comments.push({ id: 'dangling', connection_id: 'gone', body: 'Remove dangling comment' });
++    f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(map), map.id);
++    f.api.summaries(42);
++    const saved = get();
++    assert.equal(saved.nodes[0].description, 'Keep node details'); assert.deepEqual(saved.archived_nodes, map.archived_nodes);
++    assert.deepEqual(saved.passages, [map.passages[0]]); assert.deepEqual(saved.comments, map.comments.slice(0, 2));
++    assert.ok(!Object.hasOwn(saved.connections[0], 'locked')); assert.ok(!Object.hasOwn(saved, 'archived_connections')); assert.deepEqual(saved.activity, []);
++});
++
++test('summary-first normalization and due pruning preserve complete archived nodes', async t => {
++    const f = await fixture(t), created = f.create('Pruning map');
++    const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(created.id).body);
++    const save = map => f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(map), map.id);
++    const map = get(); map.connections = []; map.comments = []; map.nodes[0].disconnected_at = '2026-09-25T18:30:00+01:00';
++    map.nodes[0].prune_grace_at = new Date(AT - 30 * 60000).toISOString(); map.nodes[0].description = 'Must survive archiving';
++    map.nodes[1].disconnected_at = new Date(AT - 30 * 60000).toISOString(); map.nodes[1].prune_grace_at = map.nodes[0].prune_grace_at; map.nodes[1].locked = true;
++    map.nodes[2].disconnected_at = new Date(AT - 60000).toISOString(); map.nodes[2].prune_grace_at = map.nodes[2].disconnected_at;
++    save(map); const row = f.api.summaries(42).maps.find(row => row.id === map.id), saved = get();
++    assert.equal(row.node_count, 2); assert.equal(row.revision, map.revision + 1);
++    assert.equal(saved.archived_nodes.find(row => row.system_id === W).description, 'Must survive archiving');
++    assert.ok(saved.nodes.some(row => row.system_id === X)); assert.ok(saved.nodes.some(row => row.system_id === Y));
++    assert.equal(saved.comments.length, 0); assert.ok(saved.activity.some(row => row.op === 'nodes.prune'));
++});
++
++for (const text of ['plain primitive', '{"connection_id":"placeholder"}']) test('summary-first primitive passage preserves JS cleanup: ' + text, async t => {
++    const f = await fixture(t), created = f.create('Legacy primitive');
++    const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(created.id).body);
++    const map = get(); map.passages = [text.replace('placeholder', map.connections[0].id)];
++    map.comments.push('plain primitive'); map.nodes.push('plain primitive');
++    f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(map), map.id);
++    const row = f.api.summaries(42).maps.find(row => row.id === map.id);
++    assert.equal(row.node_count, map.nodes.length); assert.deepEqual(get().passages, []);
++    assert.equal(get().comments.at(-1), 'plain primitive'); assert.equal(get().nodes.at(-1), 'plain primitive');
++});
++
++for (const body of ['false', '0', 'null', '""']) test('summary-first recreates a falsy stored source: ' + body, async t => {
++    const f = await fixture(t); f.create('Regular map'); f.api.summaries(42);
++    f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id='tracking-source-42'").run(body);
++    const result = f.api.summaries(42);
++    assert.equal(result.source_map.id, 'tracking-source-42');
++    assert.equal(result.source_map.kind, 'tracking_source');
++    assert.equal(result.maps.length, 1);
++    const stored = JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id='tracking-source-42'").get().body);
++    assert.deepEqual(stored.pilots, [{ character_id: 42, tracking: true }]);
++});
++
++for (const fullFallback of [false, true]) test('summary cleanup follows the stored row after a direct key move: fallback=' + fullFallback, async t => {
++    const f = await fixture(t), created = f.create('Moved SQL row'); f.api.summaries(42);
++    const read = key => f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(key)?.body;
++    const original = JSON.parse(read(created.id)); original.connections[0].locked = false;
++    if (fullFallback) original.comments.push('Preserve primitive comment');
++    const body = JSON.stringify(original), movedKey = 'sql-row-key-differs-from-document-id';
++    f.store.db.prepare("UPDATE universe_records SET id=?,body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(movedKey, body, created.id);
++    const result = f.api.summaries(42);
++    assert.equal(result.maps.length, 1); assert.equal(result.maps[0].id, created.id);
++    assert.equal(read(movedKey), body, 'Existing reconciliation writes by document identity; the original moved row remains untouched');
++    const saved = JSON.parse(read(created.id));
++    assert.ok(!Object.hasOwn(saved.connections[0], 'locked'));
++    assert.equal(saved.nodes[0].description, original.nodes[0].description);
++    if (fullFallback) assert.equal(saved.comments.at(-1), 'Preserve primitive comment');
++});
++
++for (const warmBeforeCleanup of [false, true]) test('lazy publication and compact cleanup preserve actual moved-row authority: warm=' + warmBeforeCleanup, async t => {
++    const f = await fixture(t), created = f.create('Moved row with notes'); f.api.summaries(42);
++    const get = key => f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(key)?.body;
++    const value = JSON.parse(get(created.id)), gone = value.connections[0], survivor = value.connections[1];
++    survivor.notes = 'Arbitrary survivor notes'; survivor.custom = { deep: ['Preserve arbitrary fields'] };
++    value.customTop = { retain: true }; value.nodes[0].description = 'Original node description';
++    const body = JSON.stringify(value), moved = 'moved-key-not-document-id';
++    f.store.db.prepare("UPDATE universe_records SET id=?,body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(moved, body, created.id);
++    if (warmBeforeCleanup) f.api.summaries(42);
++    f.store.db.prepare("DELETE FROM universe_records WHERE character_id=42 AND kind='link' AND id=?").run(gone.link_id);
++    const result = f.api.summaries(42);
++    assert.equal(result.maps.length, 1); assert.equal(result.maps[0].connection_count, 1);
++    assert.equal(get(moved), body, 'Baseline reconciliation writes by document id, leaving moved authority unchanged');
++    const saved = JSON.parse(get(created.id));
++    assert.deepEqual(saved.connections.find(row => row.id === survivor.id), survivor);
++    assert.deepEqual(saved.customTop, value.customTop); assert.equal(saved.nodes[0].description, value.nodes[0].description);
++    const metadata = JSON.parse(f.store.db.prepare('SELECT body FROM universe_jspace_summary_inputs_v1 WHERE character_id=42 AND id=?').get(moved).body);
++    assert.equal(metadata.connections.length, 2, 'Metadata must describe the unchanged moved row, not the post-cleanup object written at another key');
++    assert.ok(metadata.connections.every(row => !Object.hasOwn(row, 'notes') && !Object.hasOwn(row, 'custom')));
++});
+diff --git a/tests/kairo/universe-jspace-summary-inputs.test.mjs b/tests/kairo/universe-jspace-summary-inputs.test.mjs
+new file mode 100644
+index 0000000..8716257
+--- /dev/null
++++ b/tests/kairo/universe-jspace-summary-inputs.test.mjs
+@@ -0,0 +1,214 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { DatabaseSync } from 'node:sqlite';
++import { mkdtempSync, rmSync } from 'node:fs';
++import { tmpdir } from 'node:os';
++import { join } from 'node:path';
++import { createJSpaceSummaryInputs, compactJSpaceSummaryInput } from '../../server/universe-jspace-summary-inputs.mjs';
++
++const TABLE = 'universe_jspace_summary_inputs_v1';
++const AT = '2026-10-08T12:00:00.000Z';
++function map(id = 'map-a', name = id) {
++    return { id, name, description: 'Map description', revision: 1, created_at: AT, updated_at: AT,
++        nodes: [{ system_id: 31000001, locked: true, description: 'Keep full node' }, { system_id: 31000002, locked: false }],
++        connections: [{ id: 'edge-a', link_id: 'link-a', kind: 'wormhole', from_system_id: 31000001, to_system_id: 31000002 }],
++        comments: [{ connection_id: 'edge-a', body: 'Keep full comment' }],
++        passages: [{ connection_id: 'edge-a', notes: 'Keep full passage' }],
++        observations: [{ body: 'Keep full observation' }], archived_nodes: [], pings: [], activity: [], pilots: [{ character_id: 42 }] };
++}
++function fixture(t, install = true) {
++    const dir = mkdtempSync(join(tmpdir(), 'kairo-jspace-summary-inputs-')), path = join(dir, 'test.sqlite'), handles = [];
++    const open = () => { const db = new DatabaseSync(path); db.exec('PRAGMA busy_timeout=0'); handles.push(db); return db; };
++    const db = open();
++    db.exec(`PRAGMA journal_mode=WAL;
++        CREATE TABLE universe_records(character_id INTEGER NOT NULL,kind TEXT NOT NULL,id TEXT NOT NULL,
++            body TEXT NOT NULL,updated_at TEXT NOT NULL,PRIMARY KEY(character_id,kind,id));`);
++    t.after(() => { for (const handle of handles) try { handle.close(); } catch {} rmSync(dir, { recursive: true, force: true }); });
++    const put = (value, owner = 42, kind = 'jspace_map') => db.prepare(`INSERT INTO universe_records VALUES(?,?,?,?,?)
++        ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at`)
++        .run(owner, kind, value.id, JSON.stringify(value), value.updated_at || AT);
++    const raw = (id, owner = 42) => db.prepare("SELECT body FROM universe_records WHERE character_id=? AND kind='jspace_map' AND id=?").get(owner, id)?.body;
++    const side = (id, owner = 42) => db.prepare(`SELECT body,state,format_version,CAST(generation AS TEXT) AS token FROM ${TABLE} WHERE character_id=? AND id=?`).get(owner, id);
++    return { db, open, put, raw, side, inputs: install ? createJSpaceSummaryInputs(db) : null };
++}
++const parsed = (inputs, owner = 42) => inputs.all(owner).map(row => JSON.parse(row.body));
++
++function warm(f, owner = 42) {
++    for (const row of f.inputs.all(owner)) if (row.needs_fill)
++        f.inputs.fill(owner, row.record_id, row.generation, compactJSpaceSummaryInput(JSON.parse(row.body)));
++    return f.inputs.all(owner);
++}
++const changes = db => db.prepare('SELECT total_changes() AS n').get().n;
++
++test('installation does not backfill; first read derives once and steady/reopen reads do not write', t => {
++    const f = fixture(t, false), value = map(); f.put(value); const original = f.raw(value.id);
++    f.inputs = createJSpaceSummaryInputs(f.db);
++    assert.equal(f.db.prepare(`SELECT count(*) AS n FROM ${TABLE}`).get().n, 0);
++    assert.equal(f.raw(value.id), original);
++    const first = f.inputs.all(42)[0]; assert.equal(first.body, original); assert.equal(first.compact, 0);
++    assert.equal(f.inputs.fill(42, first.record_id, first.generation, compactJSpaceSummaryInput(JSON.parse(first.body))), 1);
++    const next = f.inputs.all(42)[0]; assert.equal(next.compact, 1); assert.equal(next.needs_fill, 0);
++    assert.ok(!next.body.includes('Keep full')); assert.equal(f.raw(value.id), original);
++    const before = changes(f.db); assert.deepEqual(f.inputs.all(42), [next]);
++    createJSpaceSummaryInputs(f.db); assert.equal(changes(f.db), before);
++    f.db.close(); const reopened = f.open(), inputs = createJSpaceSummaryInputs(reopened);
++    assert.deepEqual(inputs.all(42), [next]); assert.equal(changes(reopened), 0);
++});
++
++test('builder drops arbitrary connection payload and preserves required absence/null/boolean behavior', () => {
++    const value = map(); value.connections[0].notes = 'Large '.repeat(1000);
++    value.connections[0].custom = { nested: ['Large '.repeat(1000)] };
++    const input = compactJSpaceSummaryInput(value);
++    assert.deepEqual(input.connections, [{ id: 'edge-a', kind: 'wormhole', link_id: 'link-a', from_system_id: 31000001, to_system_id: 31000002 }]);
++    assert.equal(input.nodes[0].locked, true); assert.equal(input.nodes[1].locked, false);
++    assert.ok(!Object.hasOwn(input.nodes[0], 'disconnected_at'));
++    delete value.connections[0].link_id;
++    assert.ok(!Object.hasOwn(compactJSpaceSummaryInput(value).connections[0], 'link_id'));
++    value.connections[0].link_id = null;
++    assert.equal(compactJSpaceSummaryInput(value).connections[0].link_id, null);
++    for (const locked of [false, true, null, 0, '']) {
++        value.connections[0].locked = locked;
++        assert.equal(compactJSpaceSummaryInput(value), null, 'Any own locked value requires full cleanup');
++    }
++});
++
++test('unsupported legacy input receives one fallback marker; malformed JSON remains unparsed source', t => {
++    const f = fixture(t), value = map(); value.passages = ['{"connection_id":"edge-a"}']; f.put(value);
++    warm(f); assert.equal(f.side(value.id).state, 2); const before = changes(f.db);
++    assert.equal(f.inputs.all(42)[0].body, f.raw(value.id)); assert.equal(f.inputs.all(42)[0].needs_fill, 0);
++    warm(f); assert.equal(changes(f.db), before);
++    f.db.prepare("UPDATE universe_records SET body='not JSON' WHERE kind='jspace_map'").run();
++    const row = f.inputs.all(42)[0]; assert.equal(row.body, 'not JSON');
++    assert.throws(() => compactJSpaceSummaryInput(JSON.parse(row.body))); assert.equal(f.side(value.id).state, 0);
++});
++
++test('duplicate JSON keys use the already-decoded JavaScript value without rewriting authority', t => {
++    const f = fixture(t), value = map(); const body = JSON.stringify(value).replace('"name":"map-a"', '"name":"Earlier","name":"Later"');
++    f.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?)').run(42, 'jspace_map', value.id, body, AT);
++    warm(f); assert.equal(parsed(f.inputs)[0].name, 'Later'); assert.equal(f.raw(value.id), body);
++});
++
++test('same revision replacement invalidates immediately and parent ordering remains authoritative', t => {
++    const f = fixture(t), a = map('map-a'), b = map('map-b'); f.put(a); f.put(b); warm(f);
++    const old = f.side(a.id).token; f.put({ ...a, name: 'Changed at same revision' });
++    assert.notEqual(f.side(a.id).token, old); assert.equal(f.side(a.id).state, 0);
++    assert.equal(parsed(f.inputs)[0].name, 'Changed at same revision'); warm(f);
++    const token = f.side(b.id).token;
++    f.db.prepare("UPDATE universe_records SET updated_at=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run('2026-10-09T00:00:00Z', b.id);
++    assert.deepEqual(parsed(f.inputs).map(row => row.id), [b.id, a.id]); assert.equal(f.side(b.id).token, token);
++});
++
++test('stale fill is rejected across a second-handle update and delete/reinsert at the same key', t => {
++    const f = fixture(t), value = map(); f.put(value);
++    const first = f.inputs.all(42)[0], writer = f.open();
++    writer.prepare("UPDATE universe_records SET body=? WHERE kind='jspace_map'").run(JSON.stringify({ ...value, name: 'Other writer' }));
++    assert.equal(f.inputs.fill(42, first.record_id, first.generation, compactJSpaceSummaryInput(JSON.parse(first.body))), 0);
++    const second = f.inputs.all(42)[0]; assert.equal(JSON.parse(second.body).name, 'Other writer');
++    writer.prepare("DELETE FROM universe_records WHERE kind='jspace_map'").run();
++    writer.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?)').run(42, 'jspace_map', value.id, JSON.stringify(value), AT);
++    assert.notEqual(f.inputs.all(42)[0].generation, second.generation);
++    assert.equal(f.inputs.fill(42, second.record_id, second.generation, compactJSpaceSummaryInput(JSON.parse(second.body))), 0);
++    assert.equal(f.side(value.id).state, 0);
++});
++
++test('generations beyond 2^53 stay exact through invalidation and guarded publication', t => {
++    const f = fixture(t), value = map(); f.put(value);
++    f.db.prepare('UPDATE sqlite_sequence SET seq=? WHERE name=?').run('9007199254740992', TABLE);
++    f.put({ ...value, name: 'Large generation' });
++    const first = f.inputs.all(42)[0]; assert.equal(first.generation, '9007199254740993');
++    f.put(value); const second = f.inputs.all(42)[0]; assert.equal(second.generation, '9007199254740994');
++    assert.equal(f.inputs.fill(42, first.record_id, first.generation, compactJSpaceSummaryInput(JSON.parse(first.body))), 0);
++    assert.equal(f.inputs.fill(42, second.record_id, second.generation, compactJSpaceSummaryInput(JSON.parse(second.body))), 1);
++});
++
++test('owner/key/kind moves and replace collisions invalidate both identities', t => {
++    const f = fixture(t), a = map('map-a'), b = map('map-b'); f.put(a); f.put(b, 43); warm(f); warm(f, 43);
++    f.db.prepare("UPDATE OR REPLACE universe_records SET character_id=43,id=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(b.id, a.id);
++    assert.equal(f.side(a.id), undefined); const moved = f.inputs.all(43)[0];
++    assert.equal(moved.record_id, b.id); assert.equal(JSON.parse(moved.body).id, a.id); assert.equal(moved.compact, 0);
++    f.put({ ...b, name: 'Other kind' }, 43, 'view');
++    f.db.prepare("UPDATE OR REPLACE universe_records SET kind='view' WHERE character_id=43 AND kind='jspace_map'").run();
++    assert.equal(f.side(b.id, 43), undefined);
++    f.put(b, 43);
++    f.db.prepare("UPDATE OR REPLACE universe_records SET kind='jspace_map' WHERE character_id=43 AND kind='view'").run();
++    assert.equal(parsed(f.inputs, 43)[0].id, a.id);
++    f.db.prepare('INSERT OR REPLACE INTO universe_records VALUES(?,?,?,?,?)').run(43, 'jspace_map', b.id, JSON.stringify(b), AT);
++    assert.equal(parsed(f.inputs, 43)[0].id, b.id); assert.equal(f.side(b.id, 43).state, 0);
++});
++
++test('parent transaction and nested savepoint roll back authoritative and derivative changes together', t => {
++    const f = fixture(t), value = map(); f.put(value); warm(f);
++    const original = f.side(value.id), body = f.raw(value.id);
++    f.db.exec('BEGIN IMMEDIATE'); f.put({ ...value, name: 'Outer' }); warm(f); const outer = f.side(value.id);
++    f.db.exec('SAVEPOINT caller'); f.put({ ...value, name: 'Inner' }); warm(f);
++    f.db.exec('ROLLBACK TO caller; RELEASE caller'); assert.deepEqual(f.side(value.id), outer);
++    f.db.exec('ROLLBACK'); assert.deepEqual(f.side(value.id), original); assert.equal(f.raw(value.id), body);
++    f.db.prepare('INSERT OR IGNORE INTO universe_records VALUES(?,?,?,?,?)').run(42, 'jspace_map', value.id, JSON.stringify(value), AT);
++    assert.deepEqual(f.side(value.id), original);
++});
++
++test('format mismatch and missing-trigger repair invalidate metadata without parent backfill', t => {
++    const f = fixture(t), value = map(); f.put(value); warm(f);
++    f.db.prepare(`UPDATE ${TABLE} SET format_version=999,body='{"name":"stale"}'`).run();
++    assert.equal(f.inputs.all(42)[0].body, f.raw(value.id)); warm(f); assert.equal(f.side(value.id).format_version, 1);
++    f.db.exec(`DROP TRIGGER ${TABLE}_update`); f.put({ ...value, name: 'Unobserved write' });
++    assert.equal(JSON.parse(f.side(value.id).body).name, value.name);
++    f.inputs = createJSpaceSummaryInputs(f.db); assert.equal(f.side(value.id), undefined);
++    assert.equal(parsed(f.inputs)[0].name, 'Unobserved write'); assert.equal(f.side(value.id).state, 0);
++});
++
++test('installation rolls back inside an outer transaction and after an injected installer failure', t => {
++    const f = fixture(t, false), value = map(); f.put(value); const body = f.raw(value.id);
++    f.db.exec('BEGIN'); createJSpaceSummaryInputs(f.db); f.db.exec('ROLLBACK');
++    assert.equal(f.db.prepare("SELECT count(*) AS n FROM sqlite_schema WHERE name LIKE 'universe_jspace_summary_inputs_v1%'").get().n, 0);
++    const db = { prepare: f.db.prepare.bind(f.db), exec(sql) { const result = f.db.exec(sql);
++        if (sql === `DELETE FROM ${TABLE}`) throw new Error('injected installer failure'); return result; } };
++    assert.throws(() => createJSpaceSummaryInputs(db), /injected installer failure/);
++    assert.equal(f.raw(value.id), body);
++    assert.equal(f.db.prepare("SELECT count(*) AS n FROM sqlite_schema WHERE name LIKE 'universe_jspace_summary_inputs_v1%'").get().n, 0);
++});
++
++test('optional fill lock contention leaves authority and dirty metadata untouched', t => {
++    const f = fixture(t), value = map(); f.put(value); const row = f.inputs.all(42)[0], before = f.raw(value.id);
++    const writer = f.open(); writer.exec('BEGIN IMMEDIATE');
++    try { assert.equal(f.inputs.fill(42, row.record_id, row.generation, compactJSpaceSummaryInput(JSON.parse(row.body))), 0); }
++    finally { writer.exec('ROLLBACK'); }
++    assert.equal(f.raw(value.id), before); assert.equal(f.side(value.id).state, 0);
++});
++
++test('invalidation failure aborts the parent statement rather than committing stale metadata', t => {
++    const f = fixture(t), value = map(); f.put(value); warm(f); const body = f.raw(value.id), metadata = f.side(value.id);
++    f.db.exec(`CREATE TRIGGER reject_derivative BEFORE INSERT ON ${TABLE} BEGIN SELECT RAISE(ABORT,'injected invalidation failure'); END`);
++    assert.throws(() => f.put({ ...value, name: 'Must not commit' }), /injected invalidation failure/);
++    assert.equal(f.raw(value.id), body); assert.deepEqual(f.side(value.id), metadata);
++});
++
++test('a stale caller read transaction may skip publication without rolling back caller state', t => {
++    const f = fixture(t), value = map(); f.put(value); f.inputs.all(42);
++    f.db.exec('BEGIN'); const row = f.inputs.all(42)[0];
++    const writer = f.open(); writer.prepare("UPDATE universe_records SET body=? WHERE kind='jspace_map'")
++        .run(JSON.stringify({ ...value, name: 'Committed elsewhere' }));
++    assert.equal(f.inputs.fill(42, row.record_id, row.generation, compactJSpaceSummaryInput(JSON.parse(row.body))), 0);
++    assert.equal(JSON.parse(f.raw(value.id)).name, value.name, 'Caller still owns its original read snapshot');
++    f.db.exec('ROLLBACK');
++    assert.equal(parsed(f.inputs)[0].name, 'Committed elsewhere'); assert.equal(f.side(value.id).state, 0);
++});
++
++test('first-read metadata seeding can be skipped under a concurrent writer without failing authority reads', t => {
++    const f = fixture(t, false), value = map(); f.put(value); f.inputs = createJSpaceSummaryInputs(f.db);
++    const writer = f.open(); writer.exec('BEGIN IMMEDIATE');
++    try {
++        const row = f.inputs.all(42)[0]; assert.deepEqual(JSON.parse(row.body), value);
++        assert.equal(row.generation, null); assert.equal(row.needs_fill, 0); assert.equal(f.side(value.id), undefined);
++    } finally { writer.exec('ROLLBACK'); }
++    assert.equal(f.inputs.all(42)[0].needs_fill, 1);
++});
++
++test('first-read seeding preserves a stale caller snapshot after a concurrent direct write', t => {
++    const f = fixture(t, false), value = map(); f.put(value); f.inputs = createJSpaceSummaryInputs(f.db);
++    f.db.exec('BEGIN'); f.raw(value.id);
++    const writer = f.open(); writer.prepare("UPDATE universe_records SET body=? WHERE kind='jspace_map'")
++        .run(JSON.stringify({ ...value, name: 'New committed body' }));
++    const row = f.inputs.all(42)[0]; assert.deepEqual(JSON.parse(row.body), value); assert.equal(row.needs_fill, 0);
++    f.db.exec('ROLLBACK'); assert.equal(parsed(f.inputs)[0].name, 'New committed body');
++});

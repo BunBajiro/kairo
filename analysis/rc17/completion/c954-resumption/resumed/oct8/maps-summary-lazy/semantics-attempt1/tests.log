@@ -1,0 +1,50 @@
+✔ selected reads remain scoped and full reads share canonical links and signature records (180.704209ms)
+ℹ {"selectedLinkBodiesBeforeOtherMaps":2,"selectedLinkBodiesAfterOtherMaps":2,"fullEightMapsLinkBodies":16,"fullEightMapsSignatureBodies":24,"fullQueries":73,"summaryQueries":10}
+✔ indexed expiry sees canonical updates immediately, including collapsed unknown lifetimes and dated timezone offsets (67.56447ms)
+✔ summary and search reads reconcile expiry and pruning without stale revisions or a cross-request cache (72.232442ms)
+✔ library search retains shared result semantics and keeps sources and other pilots private (58.073046ms)
+✔ unchanged map reads preserve stored notes, passage references, revision and database writes (45.745601ms)
+✔ summary reconciliation still normalizes locked false (43.136857ms)
+✔ summary reconciliation still normalizes empty archive (32.622439ms)
+✔ summary reconciliation still normalizes missing activity (36.306515ms)
+✔ summary reconciliation still normalizes stale references (25.804561ms)
+✔ summary reconciliation still normalizes connection activity (28.462594ms)
+✔ selected and full projections keep real Auth roster reads bounded as maps and tracked pilots increase (169.732399ms)
+✔ projection roster ownership never retains changed access, location freshness or mutations across reads (45.471251ms)
+✔ summary inputs omit wide retained text without changing storage or losing direct replacements (39.843851ms)
+✔ summary-first legacy cleanup loads the complete document before persisting (32.621628ms)
+✔ summary-first normalization and due pruning preserve complete archived nodes (37.80634ms)
+✔ summary-first primitive passage preserves JS cleanup: plain primitive (37.007293ms)
+✔ summary-first primitive passage preserves JS cleanup: {"connection_id":"placeholder"} (32.989138ms)
+✔ summary-first recreates a falsy stored source: false (37.631921ms)
+✔ summary-first recreates a falsy stored source: 0 (25.145492ms)
+✔ summary-first recreates a falsy stored source: null (29.65215ms)
+✔ summary-first recreates a falsy stored source: "" (31.437806ms)
+✔ summary cleanup follows the stored row after a direct key move: fallback=false (27.282447ms)
+✔ summary cleanup follows the stored row after a direct key move: fallback=true (22.541981ms)
+✔ lazy publication and compact cleanup preserve actual moved-row authority: warm=false (26.497657ms)
+✔ lazy publication and compact cleanup preserve actual moved-row authority: warm=true (23.851367ms)
+✔ installation does not backfill; first read derives once and steady/reopen reads do not write (5.94869ms)
+✔ builder drops arbitrary connection payload and preserves required absence/null/boolean behavior (0.376167ms)
+✔ unsupported legacy input receives one fallback marker; malformed JSON remains unparsed source (1.991185ms)
+✔ duplicate JSON keys use the already-decoded JavaScript value without rewriting authority (1.847819ms)
+✔ same revision replacement invalidates immediately and parent ordering remains authoritative (2.148334ms)
+✔ stale fill is rejected across a second-handle update and delete/reinsert at the same key (1.945467ms)
+✔ generations beyond 2^53 stay exact through invalidation and guarded publication (2.396007ms)
+✔ owner/key/kind moves and replace collisions invalidate both identities (2.618759ms)
+✔ parent transaction and nested savepoint roll back authoritative and derivative changes together (2.643991ms)
+✔ format mismatch and missing-trigger repair invalidate metadata without parent backfill (2.063716ms)
+✔ installation rolls back inside an outer transaction and after an injected installer failure (2.147683ms)
+✔ optional fill lock contention leaves authority and dirty metadata untouched (1.601178ms)
+✔ invalidation failure aborts the parent statement rather than committing stale metadata (1.445021ms)
+✔ a stale caller read transaction may skip publication without rolling back caller state (1.643441ms)
+✔ first-read metadata seeding can be skipped under a concurrent writer without failing authority reads (1.368636ms)
+✔ first-read seeding preserves a stale caller snapshot after a concurrent direct write (1.671173ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 41
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1503.348658

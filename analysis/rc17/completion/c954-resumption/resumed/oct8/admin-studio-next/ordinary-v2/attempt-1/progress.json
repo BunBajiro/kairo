@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 2,
+  "kind": "admin-studio-ordinary-v2",
+  "startedAt": "2026-10-08T10:34:26.839Z",
+  "complete": false,
+  "releaseReady": false,
+  "node": "v24.19.0",
+  "sourceCommit": "a7b1bf97b0073695926c443e52d523638e59e48d",
+  "sourceTree": "13cb643c5a3a06414e3ef1a9605c4f919666515f",
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "buildsReused": {
+    "baseline": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-admin-studio-baseline-a7b-oct8",
+      "manifest": "../attempt-1/baseline-source.json",
+      "manifestSha256": "0c749346b53f627c61990612524b3b045ff01cfa4573ac6b6d7660ccfcc3af7e",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "buildReceipt": "../attempt-1/baseline-build-receipt.json",
+      "buildReceiptSha256": "dd426e187c35a231fd66f8504bd9668392ddc509a5bd3b0de4ccc3f5b31f2d18"
+    },
+    "candidate": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-admin-studio-candidate-a7b-oct8",
+      "manifest": "../attempt-1/candidate-source.json",
+      "manifestSha256": "6643c34e894328f0bac74df9a00f98ffe2c1f1b0961e37a50b8d33ddd3b18bdf",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "buildReceipt": "../attempt-1/candidate-build-receipt.json",
+      "buildReceiptSha256": "be4b06fcc328763601d07b4fcc7a3968f27cc11c7be5ea2621cd3c38ca7991ff"
+    }
+  },
+  "runs": [
+    {
+      "variant": "baseline",
+      "mode": "ordinary",
+      "filename": "1-baseline.json",
+      "sha256": "6f783e67bc6f095b592742f957cc28ac42607b9c0e9a27e4dc6de494de04ca03",
+      "checks": 5,
+      "phaseCount": 12
+    },
+    {
+      "variant": "candidate",
+      "mode": "ordinary",
+      "filename": "2-candidate.json",
+      "sha256": "54c2430f475174562b6db7a2f5167642f549dd6f10e4344fa9e46dbf71e12266",
+      "checks": 5,
+      "phaseCount": 12
+    },
+    {
+      "variant": "candidate",
+      "mode": "ordinary",
+      "filename": "3-candidate.json",
+      "sha256": "4a2ba5f08efa7b91d48c4a4a2f79ff3efb23c7d29ec7dd2224057d169ddfa7ec",
+      "checks": 5,
+      "phaseCount": 12
+    },
+    {
+      "variant": "baseline",
+      "mode": "ordinary",
+      "filename": "4-baseline.json",
+      "sha256": "39bc11dcf04eca34bdefda58dfed0adc13cd32fb3a2f50d5345ae817b1520f34",
+      "checks": 5,
+      "phaseCount": 12
+    }
+  ],
+  "nativeRecovery": [
+    {
+      "variant": "candidate",
+      "mode": "native-recovery",
+      "filename": "5-candidate-native-recovery.json",
+      "sha256": "b2f88d0164051146814a0ecc9869c6375059e963a679de9f9cdf562844300934",
+      "checks": 5,
+      "phaseCount": 2
+    }
+  ],
+  "guards": [
+    {
+      "label": "initial",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "initial",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "before-1-baseline.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "before-1-baseline.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "after-1-baseline.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "after-1-baseline.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "before-2-candidate.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "before-2-candidate.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "after-2-candidate.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "after-2-candidate.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "before-3-candidate.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "before-3-candidate.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "after-3-candidate.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "after-3-candidate.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "before-4-baseline.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "before-4-baseline.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "after-4-baseline.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "after-4-baseline.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "before-5-candidate-native-recovery.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "before-5-candidate-native-recovery.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    },
+    {
+      "label": "after-5-candidate-native-recovery.json",
+      "variant": "baseline",
+      "fingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "verified": true
+    },
+    {
+      "label": "after-5-candidate-native-recovery.json",
+      "variant": "candidate",
+      "fingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "verified": true
+    }
+  ],
+  "harnesses": {
+    "run.mjs": "17f96590d503b00cd11a11879343bae0df28e97f045f9d0fb6dfc3ce12b14253",
+    "populated-cost.mjs": "97e04222853b69b222b4ec195b4aaabb0c4f0e7650df95b06ebb9b4868972546",
+    "chrome-strict.mjs": "18f98095acdb692934114eb2f14836c9448a952893f1252b69707c80e2789611",
+    "PLAN.md": "ee31ef664991004a36e373412b844d29ab629d537265ba07158efbe2b31eb024",
+    "../../../../../../harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "../PREPARATION.json": "a306629a15386bd97566302385a385589f5a5f8ac27d76c384425ad377c7b985",
+    "../legacy-admin-studio-ablation.patch": "a3db2272401cbdbd32a3d57d40c81eb2b9d5eb5eaff29c1db2b3a8bf021ab792",
+    "../pointer-diagnostic-v1/RESULTS.json": "ff9147d0a61d7743681e4f997f59206cbf7223084a521feb2a1e49664bdfd46a",
+    "../pointer-diagnostic-v1/RESULTS.md": "3190b7658317b1b600f08669d69371e77d37bd2900e726d65b057da3eac3b857",
+    "../pointer-diagnostic-v1/attempt-1/completed.json": "375e656624b4aaeff877b3277c417db14df3c88ce0ccaa511b4dcd1a7b245c30"
+  }
+}

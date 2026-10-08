@@ -1,0 +1,36 @@
+{
+  "base": "9afa9a7197fa6b5a802e9efdaa322dedf2439150",
+  "root": "/workspace/scratch/a2f3334402fc/kairo-m9-lazy-9afa-isolated",
+  "command": [
+    "flock",
+    "-x",
+    "/tmp/kairo-performance.lock",
+    "flock",
+    "-x",
+    "/tmp/kairo-rc16-benchmark.lock",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "tests/kairo/universe-jspace-reads.test.mjs",
+    "tests/kairo/universe-jspace-summary-inputs.test.mjs"
+  ],
+  "startedAt": "2026-10-08T10:21:59.649733+00:00",
+  "performanceAcceptance": false,
+  "runnerSha256": "eba80ca17a4002e8d60c144b260080955c06ae5084d342944bb2abc38409a445",
+  "proposalPatchSha256": "85b33d1deaf3a21214d0d38b4457cc64a2b55bc6b415670ad98f4ca10305ca9a",
+  "sourceFiles": 484,
+  "node": "v24.19.0",
+  "executionComplete": true,
+  "passed": true,
+  "exitCode": 0,
+  "logSha256": "ccfce47443f7a5024275d656e24f1e0ef2c24e3e0dda8b683abc80e5320fcab5",
+  "sourceStable": true,
+  "counts": {
+    "tests": 41,
+    "pass": 41,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "endedAt": "2026-10-08T10:22:01.277408+00:00"
+}

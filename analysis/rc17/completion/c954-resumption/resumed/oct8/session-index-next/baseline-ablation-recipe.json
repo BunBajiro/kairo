@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "status": "declarative recipe only; not applied",
+  "baseCommit": "c9d04ef62cb8a18292b309a2452fcab851185a7d",
+  "boundary": [
+    "server/store.mjs",
+    "server/session-combat.mjs"
+  ],
+  "purpose": "Restore only S3 old eligibility query/access path; retain unrelated source including R1.",
+  "replacements": [
+    {
+      "path": "server/session-combat.mjs",
+      "expectedSourceSha256": "77e8e4675e1db643b6b4f072bd7e20ecd375d5b677b5bf992be78960ee2758ab",
+      "find": "export const SESSION_COMBAT_RECENT_SQL=`SELECT id FROM (\n    SELECT id,started,1 AS is_open,rowid AS sequence FROM sessions WHERE character_id=? AND ended IS NULL\n    UNION ALL\n    SELECT id,started,0 AS is_open,rowid AS sequence FROM sessions WHERE character_id=? AND ended>?\n) ORDER BY is_open DESC,started DESC,sequence`;",
+      "replace": "export const SESSION_COMBAT_RECENT_SQL=`SELECT id FROM sessions WHERE character_id=? AND (ended IS NULL OR ended>?) ORDER BY ended IS NULL DESC,started DESC`;"
+    },
+    {
+      "path": "server/session-combat.mjs",
+      "find": "const rows=store.db.prepare(SESSION_COMBAT_RECENT_SQL).all(id,id,iso(now()-DAY));",
+      "replace": "const rows=store.db.prepare(SESSION_COMBAT_RECENT_SQL).all(id,iso(now()-DAY));"
+    },
+    {
+      "path": "server/store.mjs",
+      "expectedSourceSha256": "67fa4dd354f4a196e7356235ee566339b16cc62f87fcba39acc7be774f663a16",
+      "find": "    if (!db.prepare(\"SELECT id FROM migrations WHERE id='session-combat-eligibility-v080'\").get()) {\n        db.exec(`BEGIN IMMEDIATE;\n            CREATE INDEX idx_sessions_character_ended ON sessions(character_id,ended);\n            INSERT INTO migrations VALUES('session-combat-eligibility-v080',datetime('now')); COMMIT;`);\n    }\n",
+      "replace": ""
+    }
+  ],
+  "postconditions": [
+    "Each find string matches exactly once in its declared base source.",
+    "All files except the two declared paths remain exact committed source.",
+    "Baseline database has no idx_sessions_character_ended and no session-combat-eligibility-v080 migration row.",
+    "Candidate SQL/index/migration are exact committed source.",
+    "Old-query oracle may pin idx_sessions_character_started for tie checks; ordinary baseline uses original unhinted SQL and its observed pre-index plan."
+  ]
+}

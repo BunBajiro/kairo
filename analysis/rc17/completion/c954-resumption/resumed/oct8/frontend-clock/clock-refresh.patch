@@ -1,0 +1,124 @@
+diff --git a/components/kairo/jspace-clock.d.mts b/components/kairo/jspace-clock.d.mts
+index 996b796..bb7b238 100644
+--- a/components/kairo/jspace-clock.d.mts
++++ b/components/kairo/jspace-clock.d.mts
+@@ -1 +1 @@
+-export function createJSpaceClock(options:{onTick:(now:number)=>void;readNow?:()=>number;isVisible?:()=>boolean;setRepeating?:typeof setInterval;clearRepeating?:typeof clearInterval;setDeadline?:typeof setTimeout;clearDeadline?:typeof clearTimeout}):{refresh:(records?:{expires_at?:string|null}[])=>void;visible:()=>void;close:()=>void};
++export function createJSpaceClock(options:{onTick:(now:number)=>void;readNow?:()=>number;isVisible?:()=>boolean;setRepeating?:typeof setInterval;clearRepeating?:typeof clearInterval;setDeadline?:typeof setTimeout;clearDeadline?:typeof clearTimeout}):{refresh:(records?:{expires_at?:string|null}[],renderedAt?:number)=>void;visible:()=>void;close:()=>void};
+diff --git a/components/kairo/jspace-clock.mjs b/components/kairo/jspace-clock.mjs
+index 2a3f261..0e0ebfe 100644
+--- a/components/kairo/jspace-clock.mjs
++++ b/components/kairo/jspace-clock.mjs
+@@ -1,17 +1,25 @@
+ /** Wall-clock freshness survives frequent data refreshes and never requires an animation loop. */
+ export function createJSpaceClock({onTick,readNow=Date.now,isVisible=()=>true,setRepeating=setInterval,clearRepeating=clearInterval,setDeadline=setTimeout,clearDeadline=clearTimeout}) {
+   let records=[],deadline=null,closed=false;
+-  function scheduleExpiry(instant) {
++  function scheduleExpiry(instant,renderedAt=instant) {
+     if(deadline!==null){clearDeadline(deadline);deadline=null;}
+     if(closed||!isVisible())return;
+-    const future=records.map(row=>Date.parse(row?.expires_at||'')).filter(value=>Number.isFinite(value)&&value>instant);
++    // A deadline crossed between rendering and this effect still needs a tick.
++    const future=records.map(row=>Date.parse(row?.expires_at||'')).filter(value=>Number.isFinite(value)&&value>renderedAt);
+     if(future.length)deadline=setDeadline(publish,Math.max(1,Math.min(...future)-instant+10));
+   }
+   function publish(){if(closed||!isVisible())return;const instant=readNow();onTick(instant);scheduleExpiry(instant);}
+   // This cadence is created once. Incoming snapshots cannot postpone it.
+   const interval=setRepeating(publish,30000);
+   return {
+-    refresh(nextRecords=[]){records=nextRecords;publish();},
++    // A caller that already rendered the current time only needs deadline ownership.
++    refresh(nextRecords=[],renderedAt){
++      records=nextRecords;
++      if(!Number.isFinite(renderedAt))return publish();
++      const instant=readNow();
++      // A wall-clock correction after rendering must also become visible immediately.
++      if(instant<renderedAt)publish();else scheduleExpiry(instant,renderedAt);
++    },
+     visible(){publish();},
+     close(){closed=true;clearRepeating(interval);if(deadline!==null)clearDeadline(deadline);deadline=null;},
+   };
+diff --git a/components/kairo/jspace-workspace.tsx b/components/kairo/jspace-workspace.tsx
+index a834e52..a655ea1 100644
+--- a/components/kairo/jspace-workspace.tsx
++++ b/components/kairo/jspace-workspace.tsx
+@@ -44,7 +44,7 @@ export function JSpaceSheet({title, subtitle, children, onClose, modal = false}:
+ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem, onOpenNotebook, onOpenIntel, onRouteToSystem, onShowKnownSpace, onChanged, onMapChange, externalPanelOpen, externalPanelTool, renderSystemTool, onDismissExternalPanel, onRefresh, requestedSystemId, routeSystemIds, routeEdges}: JSpaceWorkspaceProps) {
+   const {boot}=useKairo();
+   const [state, setState] = useState<WorkspaceState | null>(null), [selectedMap,setSelectedMap]=useState<JSpaceWorkspaceMap|null>(null), [mapId, setMapId] = useState(''), [selectedSystemId, setSelectedSystemId] = useState<number | null>(null), [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
+-  const [panel, setPanel] = useState<Panel>(null), [mutationBusy, setBusy] = useState(false), [loading, setLoading] = useState(true), [error, setError] = useState(''), [notice, setNotice] = useState(''), [fitRequest, setFitRequest] = useState(0), [now, setNow] = useState(Date.now());
++  const [panel, setPanel] = useState<Panel>(null), [mutationBusy, setBusy] = useState(false), [loading, setLoading] = useState(true), [error, setError] = useState(''), [notice, setNotice] = useState(''), [fitRequest, setFitRequest] = useState(0), [clockNow, setNow] = useState(Date.now());
+   const [publicSources, setPublicSources] = useState<Record<string,boolean>>({thera:false,turnur:false});
+   const [layoutPendingCount, setPendingLayouts] = useState(0), [connecting, setConnecting] = useState(false);
+   const layoutScope = useRef(createLayoutSaveScope('')), mutationScope = useRef({pilot:character});
+@@ -63,6 +63,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
+   const selectedMapRef=useRef(mapId);selectedMapRef.current=mapId;
+   const maps=state?.maps||[];
+   const map = state?.character_id===character&&selectedMap?.id===mapId?selectedMap:null; mapRef.current = map;
++  // Consume fresh data and wall time together; the clock effect only arms deadlines.
++  const now=useMemo(()=>Date.now(),[clockNow,map,state?.maps,intel?.feeds]);
+   const readOnly=map?.read_only===true,canWrite=hasPilot&&!readOnly;
+   useEffect(()=>{onMapChange?.(map?.id||'');},[map?.id,onMapChange]);
+   const layoutScopeKey = character + ':' + (map?.id || ''), pendingLayouts = layoutScope.current.key === layoutScopeKey ? layoutPendingCount : 0;
+@@ -116,8 +118,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
+     return()=>{clock.close();freshnessClock.current=null;owner.removeEventListener('visibilitychange',visible);};
+   },[]);
+   useEffect(() => {
+-    freshnessClock.current?.refresh([...(map?.connections||[]),...(!map?(state?.maps||[]).map(value=>({expires_at:value.next_expiry_at})):[]),...(map?.pings||[]),...(intel?.feeds?.connections||[]),...Object.values(intel?.feeds?.sources||{})]);
+-  },[map?.connections,map?.pings,state?.maps,intel?.feeds]);
++    freshnessClock.current?.refresh([...(map?.connections||[]),...(!map?(state?.maps||[]).map(value=>({expires_at:value.next_expiry_at})):[]),...(map?.pings||[]),...(intel?.feeds?.connections||[]),...Object.values(intel?.feeds?.sources||{})],now);
++  },[map?.connections,map?.pings,state?.maps,intel?.feeds,now]);
+   useEffect(() => {
+     const ended = map?map.connections.filter(connection=>connectionHasEnded(connection,now)).map(connection=>map.id+':'+connection.id+':'+connection.expires_at):(state?.maps||[]).filter(value=>value.next_expiry_at&&Date.parse(value.next_expiry_at)<=now).map(value=>value.id+':'+value.next_expiry_at);
+     if (!ended.length) {expiryRefresh.current='';return;}
+diff --git a/tests/kairo/jspace-clock.test.mjs b/tests/kairo/jspace-clock.test.mjs
+index d556ec2..2fb1071 100644
+--- a/tests/kairo/jspace-clock.test.mjs
++++ b/tests/kairo/jspace-clock.test.mjs
+@@ -7,7 +7,7 @@ function fixture(){
+  const schedule=(fn,delay,period=0)=>{timers.set(++id,{fn,at:now+delay,period});return id;};
+  const clock=createJSpaceClock({onTick:value=>ticks.push(value),readNow:()=>now,isVisible:()=>visible,setRepeating:(fn,delay)=>schedule(fn,delay,delay),clearRepeating:key=>timers.delete(key),setDeadline:(fn,delay)=>schedule(fn,delay),clearDeadline:key=>timers.delete(key)});
+  function advance(amount){const target=now+amount;while(true){const next=[...timers].filter(([,timer])=>timer.at<=target).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;now=next[1].at;timers.delete(next[0]);if(next[1].period)timers.set(next[0],{...next[1],at:now+next[1].period});next[1].fn();}now=target;}
+- return {clock,ticks,timers,advance,now:()=>now,hide:()=>{visible=false;},show:()=>{visible=true;clock.visible();}};
++ return {clock,ticks,timers,advance,now:()=>now,setWallTime:value=>{now=value;},hide:()=>{visible=false;},show:()=>{visible=true;clock.visible();}};
+ }
+ test('continuous scene refreshes publish current time without postponing the independent age cadence',()=>{
+  const f=fixture(),start=f.now();f.clock.refresh([]);
+@@ -22,3 +22,37 @@ test('report expiry retains its absolute deadline across frequent updates and vi
+  f.hide();const count=f.ticks.length;f.advance(90000);f.clock.refresh([{expires_at:new Date(f.now()-1000).toISOString()}]);assert.equal(f.ticks.length,count);
+  f.show();assert.equal(f.ticks.at(-1),f.now());f.clock.close();assert.equal(f.timers.size,0);
+ });
++test('a snapshot that already rendered current time does not publish a redundant tick or postpone age cadence',()=>{
++ const f=fixture(),start=f.now();f.clock.refresh([],f.now());assert.deepEqual(f.ticks,[]);
++ f.advance(10000);f.clock.refresh([],f.now());f.advance(10000);f.clock.refresh([],f.now());assert.deepEqual(f.ticks,[]);
++ f.advance(10000);assert.deepEqual(f.ticks,[start+30000]);f.clock.close();assert.equal(f.timers.size,0);
++});
++test('rendered refreshes keep absolute deadlines and retire records already consumed at render time',()=>{
++ const f=fixture(),start=f.now(),report={expires_at:new Date(start+45000).toISOString()};f.clock.refresh([report],f.now());
++ f.advance(40000);f.clock.refresh([report],f.now());f.advance(5009);assert.equal(f.ticks.at(-1),start+30000);
++ f.advance(1);assert.equal(f.ticks.at(-1),start+45010);
++ f.clock.refresh([report],f.now());assert.equal([...f.timers.values()].filter(timer=>!timer.period).length,0);f.clock.close();
++});
++test('an expiry crossing the render-to-effect gap triggers an immediate freshness tick',()=>{
++ const f=fixture(),start=f.now(),renderedAt=f.now(),report={expires_at:new Date(start+5).toISOString()};
++ f.advance(20);f.clock.refresh([report],renderedAt);assert.deepEqual(f.ticks,[]);
++ f.advance(1);assert.deepEqual(f.ticks,[start+21]);assert.equal([...f.timers.values()].filter(timer=>!timer.period).length,0);f.clock.close();
++});
++test('the latest complete record set replaces old deadlines even without a tick',()=>{
++ const f=fixture(),start=f.now();f.clock.refresh([{expires_at:new Date(start+20000).toISOString()}],f.now());
++ f.advance(1000);f.clock.refresh([{expires_at:new Date(start+5000).toISOString()}],f.now());
++ f.advance(4010);assert.deepEqual(f.ticks,[start+5010]);
++ f.clock.refresh([],f.now());f.advance(20000);assert.equal(f.ticks.length,1);f.clock.close();
++});
++test('rendered refreshes while hidden clear deadlines and visibility publishes actual wall time',()=>{
++ const f=fixture(),start=f.now(),report={expires_at:new Date(start+45000).toISOString()};f.clock.refresh([report],f.now());f.hide();
++ f.clock.refresh([report],f.now());assert.equal([...f.timers.values()].filter(timer=>!timer.period).length,0);
++ f.advance(90000);assert.deepEqual(f.ticks,[]);f.show();assert.deepEqual(f.ticks,[start+90000]);
++ f.clock.close();f.clock.refresh([report],f.now());f.clock.visible();assert.equal(f.timers.size,0);assert.equal(f.ticks.length,1);
++});
++test('legacy or invalid rendered times still publish immediately and wall-clock rollback remains observable',()=>{
++ const f=fixture(),start=f.now();f.clock.refresh([],NaN);f.advance(1000);f.clock.refresh([],Infinity);
++ f.setWallTime(start-1000);f.clock.refresh([]);assert.deepEqual(f.ticks,[start,start+1000,start-1000]);
++ f.clock.refresh([{expires_at:new Date(start+1000).toISOString()}],start+2000);assert.equal(f.ticks.at(-1),start-1000,'a rollback after rendering is published immediately');
++ f.advance(2010);assert.equal(f.ticks.at(-1),start+1010);f.clock.close();
++});

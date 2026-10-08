@@ -79,12 +79,79 @@
         }
       ],
       "failure": "Error: Chrome timed out: Runtime.evaluate\n    at Timeout._onTimeout (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs:14:73)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)"
+    },
+    {
+      "attempt": "attempt3",
+      "rawSha256": "2d45f30bcf37845ae5bff5dea1b700d3125f0f336a914d787d1dea58bac58eae",
+      "progressSha256": "ed0cbe9bb1c5a24fe79f57d0068419da67e920706e47b92e809de39e4e868355",
+      "logSha256": "88161d78a4ed0b510bfec166f610a94147e9b49b00d1f22a76f86dda68a8b535",
+      "retainedWorkerSha256": "d1d463561fd9754421f58309cea74b8e9b410b392f0897b60a8695c5d3b45f3d",
+      "retainedRunnerSha256": "99a550ab11546d8ecd6522f3b90808d53945efb5b82a7676a731fd1a05206651",
+      "sourceManifestSha256": "d3b7b4b8eb67f8249fee59ba4181ab2967b7d49fc0331d46b71aad435ff89670",
+      "sourceFingerprint": "2c72fd451304d300e05a57d9b4eecc8bd906233c65c9478ad353e4578a474872",
+      "inRunSourceEndGuardCompleted": false,
+      "postFailurePresentSourceAndBuildFilesVerified": 507,
+      "cleanupVerified": true,
+      "complete": false,
+      "completedChecks": [
+        {
+          "name": "exact ordered loaded prefix 30",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/0 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/1 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/2 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "complete DOM text lookup reaches visible keyboard target 30",
+          "passed": true
+        },
+        {
+          "name": "archive has no application search control 30",
+          "passed": true
+        },
+        {
+          "name": "oldest report selected 30/0",
+          "passed": true
+        },
+        {
+          "name": "complete three-visit timed loop in oldest report 30/0",
+          "passed": true
+        },
+        {
+          "name": "archive refresh preserves expanded report 30/0",
+          "passed": true
+        },
+        {
+          "name": "report event pagination preserves timestamp ties 30/0",
+          "passed": true
+        },
+        {
+          "name": "report loads exact successive event offsets 30/0",
+          "passed": true
+        },
+        {
+          "name": "archive publication preserves fully loaded report history 30/0",
+          "passed": true
+        }
+      ],
+      "failure": "Error: Browser condition failed: document.activeElement?.matches('.session-card')&&document.activeElement.querySelector('strong')?.textContent===\"Refreshed 30 2\"\n    at Object.waitFor (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs:18:121)\n    at async file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/session-archive-f6/browser-cardinality.mjs:103:4",
+      "finding": "F6-focus-return",
+      "activeElementTag": "BODY"
     }
   ],
   "findProbeSha256": "0d3d5b2d92aecaf9ca61fe411d4a25de82f4744cfec1ff165d04e37d952383d5",
   "findProbeHarnessSha256": "61bf1caaaf8d2b0bd0cd05393aa13ecda410100571b1fa831f7b29bc5554f1f8",
   "keyboardControlStatus": "Verified: original CDP Enter sequence produces no keypress or click; Enter text or explicit char produces exactly one trusted click.",
-  "postFailureSourceVerificationScope": "Present frozen source/build files match each saved pre-run manifest. This post-failure verification does not convert either incomplete run into acceptance.",
+  "postFailureSourceVerificationScope": "Present frozen source/build files match each saved pre-run manifest. This post-failure verification does not convert any incomplete run into acceptance.",
   "keyboardProbeSha256": "54fab30ff5cd9e2b6c2afbcc9b416630c9745c58a2f049cc171142ad0fcc08a8",
   "keyboardProbeHarnessSha256": "d67cc0ebd1b5d6642c6e00dffb9e0893b491fa183952cf03697c044d7f6acfaa"
 }

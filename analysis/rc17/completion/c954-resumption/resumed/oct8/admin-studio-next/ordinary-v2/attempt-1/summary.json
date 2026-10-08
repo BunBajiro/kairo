@@ -1,0 +1,1203 @@
+{
+  "schemaVersion": 2,
+  "releaseReady": false,
+  "receiptSha256": "9c11eff8a50af29062245263facfc62a618056aaea1f0e1e7001adaf61df5f2d",
+  "sourceCommit": "a7b1bf97b0073695926c443e52d523638e59e48d",
+  "fixture": {
+    "elements": 32,
+    "clocks": 4,
+    "wallet": 4,
+    "static": 24,
+    "dragSteps": 40,
+    "drags": 3,
+    "hubs": 12,
+    "itemsPerHub": 240,
+    "quickTypes": 60,
+    "jobs": 8,
+    "obsActionsPerState": 24,
+    "observed": {
+      "hubs": 12,
+      "items": 2880,
+      "quickTypes": 60,
+      "jobs": 8,
+      "obsStates": 10,
+      "obsTotalActions": 240,
+      "marketsJsonBytes": 16315,
+      "obsJsonBytes": 36221,
+      "obsStatusJsonBytes": 126
+    }
+  },
+  "finalOutput": {
+    "left": "40px",
+    "top": "155px",
+    "count": 32,
+    "bound": "3,009 ISK",
+    "staticText": "Static 8"
+  },
+  "phases": [
+    {
+      "label": "studio-first-use",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 465.478865,
+          "taskMs": 289.319,
+          "scriptMs": 134.526,
+          "layoutMs": 57.233,
+          "recalcMs": 20.852,
+          "heapBefore": 458268,
+          "heapAfter": 7738980,
+          "counterReset": false,
+          "requests": {
+            "GET /api/bootstrap": 1,
+            "GET /api/state": 1,
+            "PUT /api/universe/jspace/tracking/active": 1,
+            "GET /api/events": 1,
+            "GET /api/stream/sources": 1,
+            "POST /api/stream/preview": 1
+          },
+          "encodedRequestBytes": 27858,
+          "requestsWithKnownEncodedBytes": 5
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 430.26226700000007,
+          "taskMs": 252.249,
+          "scriptMs": 109.14999999999999,
+          "layoutMs": 54.376,
+          "recalcMs": 16.364,
+          "heapBefore": 458268,
+          "heapAfter": 7896692,
+          "counterReset": false,
+          "requests": {
+            "GET /api/bootstrap": 1,
+            "GET /api/state": 1,
+            "PUT /api/universe/jspace/tracking/active": 1,
+            "GET /api/events": 1,
+            "GET /api/stream/sources": 1,
+            "POST /api/stream/preview": 1
+          },
+          "encodedRequestBytes": 27416,
+          "requestsWithKnownEncodedBytes": 5
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 426.916102,
+          "taskMs": 247.708,
+          "scriptMs": 114.995,
+          "layoutMs": 51.551,
+          "recalcMs": 16.44,
+          "heapBefore": 458268,
+          "heapAfter": 7857528,
+          "counterReset": false,
+          "requests": {
+            "GET /api/bootstrap": 1,
+            "GET /api/state": 1,
+            "PUT /api/universe/jspace/tracking/active": 1,
+            "GET /api/events": 1,
+            "GET /api/stream/sources": 1,
+            "POST /api/stream/preview": 1
+          },
+          "encodedRequestBytes": 27416,
+          "requestsWithKnownEncodedBytes": 5
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 416.81374500000004,
+          "taskMs": 227.031,
+          "scriptMs": 100.356,
+          "layoutMs": 54.343,
+          "recalcMs": 15.263,
+          "heapBefore": 458268,
+          "heapAfter": 7755696,
+          "counterReset": false,
+          "requests": {
+            "GET /api/bootstrap": 1,
+            "GET /api/state": 1,
+            "PUT /api/universe/jspace/tracking/active": 1,
+            "GET /api/events": 1,
+            "GET /api/stream/sources": 1,
+            "POST /api/stream/preview": 1
+          },
+          "encodedRequestBytes": 27858,
+          "requestsWithKnownEncodedBytes": 5
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 441.146305,
+          "taskMs": 258.175,
+          "scriptMs": 117.441,
+          "layoutMs": 55.788,
+          "recalcMs": 18.0575
+        },
+        "candidate": {
+          "windowMs": 428.58918450000004,
+          "taskMs": 249.9785,
+          "scriptMs": 112.07249999999999,
+          "layoutMs": 52.963499999999996,
+          "recalcMs": 16.402
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -12.55712049999994,
+        "taskMs": -8.196500000000015,
+        "scriptMs": -5.368500000000012,
+        "layoutMs": -2.8245000000000005,
+        "recalcMs": -1.6555
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "studio-idle-native-6s",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6002.85078,
+          "taskMs": 58.02400000000002,
+          "scriptMs": 29.931999999999988,
+          "layoutMs": 3.1120000000000037,
+          "recalcMs": 0,
+          "heapBefore": 8146276,
+          "heapAfter": 8536632,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.920969999999,
+          "taskMs": 35.27600000000003,
+          "scriptMs": 12.782000000000002,
+          "layoutMs": 3.355999999999998,
+          "recalcMs": 0,
+          "heapBefore": 7901848,
+          "heapAfter": 8761504,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6001.765692999999,
+          "taskMs": 44.78399999999999,
+          "scriptMs": 14.15699999999999,
+          "layoutMs": 2.9710000000000014,
+          "recalcMs": 0,
+          "heapBefore": 7862684,
+          "heapAfter": 8724616,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6003.197028,
+          "taskMs": 48.288000000000025,
+          "scriptMs": 24.08600000000001,
+          "layoutMs": 3.396000000000003,
+          "recalcMs": 0,
+          "heapBefore": 8163036,
+          "heapAfter": 8539604,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 6003.023904,
+          "taskMs": 53.15600000000002,
+          "scriptMs": 27.009,
+          "layoutMs": 3.254000000000003,
+          "recalcMs": 0.0
+        },
+        "candidate": {
+          "windowMs": 6002.343331499999,
+          "taskMs": 40.030000000000015,
+          "scriptMs": 13.469499999999996,
+          "layoutMs": 3.1635,
+          "recalcMs": 0.0
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -0.6805725000003804,
+        "taskMs": -13.126000000000005,
+        "scriptMs": -13.539500000000004,
+        "layoutMs": -0.09050000000000313,
+        "recalcMs": 0.0
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "studio-three-drags",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 4128.349019,
+          "taskMs": 948.639,
+          "scriptMs": 577.1170000000001,
+          "layoutMs": 31.955000000000005,
+          "recalcMs": 32.12,
+          "heapBefore": 8536632,
+          "heapAfter": 10995952,
+          "counterReset": false,
+          "requests": {
+            "POST /api/stream/preview": 3
+          },
+          "encodedRequestBytes": 4017,
+          "requestsWithKnownEncodedBytes": 3
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 4108.031948,
+          "taskMs": 854.6420000000002,
+          "scriptMs": 519.427,
+          "layoutMs": 30.482999999999997,
+          "recalcMs": 21.642000000000007,
+          "heapBefore": 8761504,
+          "heapAfter": 12432728,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 4133.981637999999,
+          "taskMs": 1050.565,
+          "scriptMs": 641.884,
+          "layoutMs": 31.112999999999996,
+          "recalcMs": 25.417,
+          "heapBefore": 8724616,
+          "heapAfter": 10616132,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 4125.270441,
+          "taskMs": 845.9409999999999,
+          "scriptMs": 511.82099999999997,
+          "layoutMs": 29.379999999999995,
+          "recalcMs": 21.482,
+          "heapBefore": 8539604,
+          "heapAfter": 11018508,
+          "counterReset": false,
+          "requests": {
+            "POST /api/stream/preview": 3
+          },
+          "encodedRequestBytes": 4017,
+          "requestsWithKnownEncodedBytes": 3
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 4126.80973,
+          "taskMs": 897.29,
+          "scriptMs": 544.469,
+          "layoutMs": 30.6675,
+          "recalcMs": 26.801
+        },
+        "candidate": {
+          "windowMs": 4121.006793,
+          "taskMs": 952.6035000000002,
+          "scriptMs": 580.6555000000001,
+          "layoutMs": 30.797999999999995,
+          "recalcMs": 23.529500000000006
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -5.802937000000384,
+        "taskMs": 55.313500000000204,
+        "scriptMs": 36.186500000000024,
+        "layoutMs": 0.1304999999999943,
+        "recalcMs": -3.2714999999999925
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "studio-ten-source-updates",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 4019.679178999999,
+          "taskMs": 181.21900000000002,
+          "scriptMs": 123.95499999999993,
+          "layoutMs": 6.038999999999989,
+          "recalcMs": 0,
+          "heapBefore": 10995952,
+          "heapAfter": 11497324,
+          "counterReset": false,
+          "requests": {
+            "POST /api/stream/preview": 10
+          },
+          "encodedRequestBytes": 13390,
+          "requestsWithKnownEncodedBytes": 10
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 4017.498196999999,
+          "taskMs": 165.65500000000011,
+          "scriptMs": 109.72499999999997,
+          "layoutMs": 5.934000000000009,
+          "recalcMs": 0,
+          "heapBefore": 12432728,
+          "heapAfter": 14996716,
+          "counterReset": false,
+          "requests": {
+            "POST /api/stream/preview": 10
+          },
+          "encodedRequestBytes": 8970,
+          "requestsWithKnownEncodedBytes": 10
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 4016.0461459999988,
+          "taskMs": 202.21399999999988,
+          "scriptMs": 128.64699999999996,
+          "layoutMs": 6.887000000000004,
+          "recalcMs": 0,
+          "heapBefore": 10616132,
+          "heapAfter": 13511408,
+          "counterReset": false,
+          "requests": {
+            "POST /api/stream/preview": 10
+          },
+          "encodedRequestBytes": 8970,
+          "requestsWithKnownEncodedBytes": 10
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 4016.9370500000005,
+          "taskMs": 178.5270000000001,
+          "scriptMs": 125.67800000000007,
+          "layoutMs": 5.983000000000002,
+          "recalcMs": 0,
+          "heapBefore": 11018508,
+          "heapAfter": 8625528,
+          "counterReset": false,
+          "requests": {
+            "POST /api/stream/preview": 10
+          },
+          "encodedRequestBytes": 13390,
+          "requestsWithKnownEncodedBytes": 10
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 4018.3081144999996,
+          "taskMs": 179.87300000000005,
+          "scriptMs": 124.81649999999999,
+          "layoutMs": 6.010999999999996,
+          "recalcMs": 0.0
+        },
+        "candidate": {
+          "windowMs": 4016.772171499999,
+          "taskMs": 183.9345,
+          "scriptMs": 119.18599999999996,
+          "layoutMs": 6.410500000000006,
+          "recalcMs": 0.0
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -1.5359430000007706,
+        "taskMs": 4.061499999999967,
+        "scriptMs": -5.630500000000026,
+        "layoutMs": 0.3995000000000104,
+        "recalcMs": 0.0
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "markets-first-route",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 776.2145070000006,
+          "taskMs": 107.58800000000002,
+          "scriptMs": 43.16900000000001,
+          "layoutMs": 13.038000000000007,
+          "recalcMs": 18.588999999999995,
+          "heapBefore": 11497324,
+          "heapAfter": 15511548,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1,
+            "GET /api/markets/categories": 2
+          },
+          "encodedRequestBytes": 280526,
+          "requestsWithKnownEncodedBytes": 3
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 781.7741170000008,
+          "taskMs": 107.9159999999999,
+          "scriptMs": 46.499000000000066,
+          "layoutMs": 12.217999999999993,
+          "recalcMs": 15.623999999999999,
+          "heapBefore": 14996716,
+          "heapAfter": 10868648,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1,
+            "GET /api/markets/categories": 2
+          },
+          "encodedRequestBytes": 280526,
+          "requestsWithKnownEncodedBytes": 3
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 782.4988040000007,
+          "taskMs": 113.72700000000013,
+          "scriptMs": 42.74400000000001,
+          "layoutMs": 9.599999999999998,
+          "recalcMs": 15.266999999999996,
+          "heapBefore": 13511408,
+          "heapAfter": 7475676,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1,
+            "GET /api/markets/categories": 2
+          },
+          "encodedRequestBytes": 280526,
+          "requestsWithKnownEncodedBytes": 3
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 762.4040780000014,
+          "taskMs": 101.59899999999999,
+          "scriptMs": 40.15899999999994,
+          "layoutMs": 9.249999999999995,
+          "recalcMs": 15.961999999999996,
+          "heapBefore": 8625528,
+          "heapAfter": 7421316,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1,
+            "GET /api/markets/categories": 2
+          },
+          "encodedRequestBytes": 280526,
+          "requestsWithKnownEncodedBytes": 3
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 769.309292500001,
+          "taskMs": 104.5935,
+          "scriptMs": 41.66399999999997,
+          "layoutMs": 11.144000000000002,
+          "recalcMs": 17.275499999999994
+        },
+        "candidate": {
+          "windowMs": 782.1364605000008,
+          "taskMs": 110.82150000000001,
+          "scriptMs": 44.62150000000004,
+          "layoutMs": 10.908999999999995,
+          "recalcMs": 15.445499999999997
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": 12.827167999999801,
+        "taskMs": 6.228000000000009,
+        "scriptMs": 2.957500000000067,
+        "layoutMs": -0.23500000000000654,
+        "recalcMs": -1.8299999999999965
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "markets-idle-native-6s",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6002.58828,
+          "taskMs": 15.84399999999997,
+          "scriptMs": 6.74600000000003,
+          "layoutMs": 1.3409999999999949,
+          "recalcMs": 0,
+          "heapBefore": 15514340,
+          "heapAfter": 16220328,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1
+          },
+          "encodedRequestBytes": 16936,
+          "requestsWithKnownEncodedBytes": 1
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.7687350000015,
+          "taskMs": 12.197000000000013,
+          "scriptMs": 3.7209999999999743,
+          "layoutMs": 1.1760000000000104,
+          "recalcMs": 0,
+          "heapBefore": 10871668,
+          "heapAfter": 10881224,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6001.7669959999985,
+          "taskMs": 10.837999999999903,
+          "scriptMs": 2.2320000000000118,
+          "layoutMs": 1.1000000000000036,
+          "recalcMs": 0,
+          "heapBefore": 7478468,
+          "heapAfter": 7494704,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6003.061457000003,
+          "taskMs": 15.27999999999996,
+          "scriptMs": 6.620999999999988,
+          "layoutMs": 1.0610000000000064,
+          "recalcMs": 0,
+          "heapBefore": 7424108,
+          "heapAfter": 8183476,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1
+          },
+          "encodedRequestBytes": 16936,
+          "requestsWithKnownEncodedBytes": 1
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 6002.824868500002,
+          "taskMs": 15.561999999999966,
+          "scriptMs": 6.683500000000009,
+          "layoutMs": 1.2010000000000005,
+          "recalcMs": 0.0
+        },
+        "candidate": {
+          "windowMs": 6002.2678655,
+          "taskMs": 11.51749999999996,
+          "scriptMs": 2.976499999999993,
+          "layoutMs": 1.138000000000007,
+          "recalcMs": 0.0
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -0.5570030000017141,
+        "taskMs": -4.044500000000006,
+        "scriptMs": -3.7070000000000163,
+        "layoutMs": -0.0629999999999935,
+        "recalcMs": 0.0
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "markets-running-native-6s",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6002.485279999997,
+          "taskMs": 16.7250000000001,
+          "scriptMs": 5.636999999999892,
+          "layoutMs": 1.1750000000000094,
+          "recalcMs": 0.38300000000000833,
+          "heapBefore": 17686500,
+          "heapAfter": 18365796,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1
+          },
+          "encodedRequestBytes": 16742,
+          "requestsWithKnownEncodedBytes": 1
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.518257,
+          "taskMs": 26.84299999999995,
+          "scriptMs": 15.245999999999981,
+          "layoutMs": 1.1220000000000119,
+          "recalcMs": 0,
+          "heapBefore": 17757404,
+          "heapAfter": 19656924,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 3
+          },
+          "encodedRequestBytes": 50226,
+          "requestsWithKnownEncodedBytes": 3
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.533223999999,
+          "taskMs": 34.29299999999991,
+          "scriptMs": 20.147999999999833,
+          "layoutMs": 1.244999999999996,
+          "recalcMs": 0,
+          "heapBefore": 17713208,
+          "heapAfter": 19612892,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 3
+          },
+          "encodedRequestBytes": 50226,
+          "requestsWithKnownEncodedBytes": 3
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6002.1573260000005,
+          "taskMs": 15.125000000000055,
+          "scriptMs": 5.574000000000079,
+          "layoutMs": 1.0710000000000024,
+          "recalcMs": 0,
+          "heapBefore": 17676024,
+          "heapAfter": 18354228,
+          "counterReset": false,
+          "requests": {
+            "GET /api/markets": 1
+          },
+          "encodedRequestBytes": 16742,
+          "requestsWithKnownEncodedBytes": 1
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 6002.321302999999,
+          "taskMs": 15.925000000000079,
+          "scriptMs": 5.605499999999985,
+          "layoutMs": 1.123000000000006,
+          "recalcMs": 0.19150000000000417
+        },
+        "candidate": {
+          "windowMs": 6002.525740499999,
+          "taskMs": 30.567999999999927,
+          "scriptMs": 17.696999999999907,
+          "layoutMs": 1.183500000000004,
+          "recalcMs": 0.0
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": 0.20443750000049477,
+        "taskMs": 14.642999999999848,
+        "scriptMs": 12.091499999999922,
+        "layoutMs": 0.060499999999998,
+        "recalcMs": -0.19150000000000417
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "obs-populated-route",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 838.0114229999999,
+          "taskMs": 184.2039999999998,
+          "scriptMs": 124.95499999999993,
+          "layoutMs": 4.262999999999989,
+          "recalcMs": 10.874999999999996,
+          "heapBefore": 18365796,
+          "heapAfter": 18973932,
+          "counterReset": false,
+          "requests": {
+            "GET /api/obs": 1,
+            "GET /api/state": 1
+          },
+          "encodedRequestBytes": 43143,
+          "requestsWithKnownEncodedBytes": 2
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 818.3295820000021,
+          "taskMs": 168.85800000000017,
+          "scriptMs": 117.37399999999998,
+          "layoutMs": 3.027999999999989,
+          "recalcMs": 11.161999999999992,
+          "heapBefore": 19656924,
+          "heapAfter": 19045252,
+          "counterReset": false,
+          "requests": {
+            "GET /api/obs": 1,
+            "GET /api/state": 1
+          },
+          "encodedRequestBytes": 43143,
+          "requestsWithKnownEncodedBytes": 2
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 849.7954479999971,
+          "taskMs": 184.17799999999994,
+          "scriptMs": 120.49600000000015,
+          "layoutMs": 3.354999999999997,
+          "recalcMs": 22.836999999999996,
+          "heapBefore": 19612892,
+          "heapAfter": 19034632,
+          "counterReset": false,
+          "requests": {
+            "GET /api/obs": 1,
+            "GET /api/state": 1
+          },
+          "encodedRequestBytes": 43143,
+          "requestsWithKnownEncodedBytes": 2
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 833.0876949999983,
+          "taskMs": 224.31100000000015,
+          "scriptMs": 125.91000000000008,
+          "layoutMs": 3.9659999999999975,
+          "recalcMs": 13.383999999999993,
+          "heapBefore": 18354228,
+          "heapAfter": 14277436,
+          "counterReset": false,
+          "requests": {
+            "GET /api/obs": 1,
+            "GET /api/state": 1
+          },
+          "encodedRequestBytes": 43143,
+          "requestsWithKnownEncodedBytes": 2
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 835.5495589999991,
+          "taskMs": 204.2575,
+          "scriptMs": 125.4325,
+          "layoutMs": 4.114499999999993,
+          "recalcMs": 12.129499999999995
+        },
+        "candidate": {
+          "windowMs": 834.0625149999996,
+          "taskMs": 176.51800000000006,
+          "scriptMs": 118.93500000000006,
+          "layoutMs": 3.191499999999993,
+          "recalcMs": 16.999499999999994
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -1.4870439999995142,
+        "taskMs": -27.739499999999936,
+        "scriptMs": -6.497499999999945,
+        "layoutMs": -0.9230000000000005,
+        "recalcMs": 4.869999999999999
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "obs-idle-native-6s",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6002.584581999996,
+          "taskMs": 61.22800000000028,
+          "scriptMs": 45.90400000000017,
+          "layoutMs": 1.1150000000000049,
+          "recalcMs": 0,
+          "heapBefore": 18974744,
+          "heapAfter": 28009380,
+          "counterReset": false,
+          "requests": {
+            "GET /api/obs": 2
+          },
+          "encodedRequestBytes": 73684,
+          "requestsWithKnownEncodedBytes": 2
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6003.278192999998,
+          "taskMs": 13.649000000000022,
+          "scriptMs": 1.8530000000001046,
+          "layoutMs": 1.3279999999999959,
+          "recalcMs": 0,
+          "heapBefore": 19046064,
+          "heapAfter": 19053408,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.222611000001,
+          "taskMs": 14.445999999999959,
+          "scriptMs": 3.190999999999944,
+          "layoutMs": 1.2059999999999986,
+          "recalcMs": 0,
+          "heapBefore": 19035444,
+          "heapAfter": 19042692,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6016.1556789999995,
+          "taskMs": 74.53899999999992,
+          "scriptMs": 60.6049999999998,
+          "layoutMs": 1.1369999999999991,
+          "recalcMs": 0,
+          "heapBefore": 14278248,
+          "heapAfter": 18326536,
+          "counterReset": false,
+          "requests": {
+            "GET /api/obs": 2
+          },
+          "encodedRequestBytes": 73684,
+          "requestsWithKnownEncodedBytes": 2
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 6009.370130499998,
+          "taskMs": 67.8835000000001,
+          "scriptMs": 53.25449999999998,
+          "layoutMs": 1.126000000000002,
+          "recalcMs": 0.0
+        },
+        "candidate": {
+          "windowMs": 6002.750402,
+          "taskMs": 14.04749999999999,
+          "scriptMs": 2.5220000000000242,
+          "layoutMs": 1.2669999999999972,
+          "recalcMs": 0.0
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -6.619728499998018,
+        "taskMs": -53.836000000000105,
+        "scriptMs": -50.73249999999995,
+        "layoutMs": 0.14099999999999513,
+        "recalcMs": 0.0
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "source-first-use",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 63.164731000004394,
+          "taskMs": 19.025,
+          "scriptMs": 2.8739999999999997,
+          "layoutMs": 4.632,
+          "recalcMs": 1.9780000000000002,
+          "heapBefore": 458268,
+          "heapAfter": 1043560,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 65.47712600000523,
+          "taskMs": 26.289,
+          "scriptMs": 2.9250000000000003,
+          "layoutMs": 8.234,
+          "recalcMs": 2.9090000000000003,
+          "heapBefore": 458268,
+          "heapAfter": 1051276,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 64.52527299999929,
+          "taskMs": 21.101000000000003,
+          "scriptMs": 2.392,
+          "layoutMs": 5.257000000000001,
+          "recalcMs": 2.816,
+          "heapBefore": 458268,
+          "heapAfter": 1051276,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 60.521845999996,
+          "taskMs": 17.188,
+          "scriptMs": 2.627,
+          "layoutMs": 4.675000000000001,
+          "recalcMs": 1.935,
+          "heapBefore": 458268,
+          "heapAfter": 1043560,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 61.8432885000002,
+          "taskMs": 18.106499999999997,
+          "scriptMs": 2.7504999999999997,
+          "layoutMs": 4.6535,
+          "recalcMs": 1.9565000000000001
+        },
+        "candidate": {
+          "windowMs": 65.00119950000226,
+          "taskMs": 23.695,
+          "scriptMs": 2.6585,
+          "layoutMs": 6.7455,
+          "recalcMs": 2.8625
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": 3.157911000002059,
+        "taskMs": 5.588500000000003,
+        "scriptMs": -0.09199999999999964,
+        "layoutMs": 2.0919999999999996,
+        "recalcMs": 0.9059999999999997
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "source-idle-native-6s",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6001.9970170000015,
+          "taskMs": 11.898000000000001,
+          "scriptMs": 2.994,
+          "layoutMs": 1.404,
+          "recalcMs": 0.25099999999999995,
+          "heapBefore": 1048128,
+          "heapAfter": 1077228,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.152243000004,
+          "taskMs": 11.695999999999998,
+          "scriptMs": 2.5820000000000003,
+          "layoutMs": 0.9589999999999997,
+          "recalcMs": 0.4330000000000002,
+          "heapBefore": 1055476,
+          "heapAfter": 1080452,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 6002.210339999998,
+          "taskMs": 14.814,
+          "scriptMs": 3.9979999999999998,
+          "layoutMs": 1.7800000000000002,
+          "recalcMs": 0.2649999999999996,
+          "heapBefore": 1055476,
+          "heapAfter": 1080452,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 6001.979800000001,
+          "taskMs": 12.756000000000004,
+          "scriptMs": 3.987,
+          "layoutMs": 1.0280000000000002,
+          "recalcMs": 0.2959999999999998,
+          "heapBefore": 1048128,
+          "heapAfter": 1077228,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 6001.988408500001,
+          "taskMs": 12.327000000000002,
+          "scriptMs": 3.4905,
+          "layoutMs": 1.2160000000000002,
+          "recalcMs": 0.27349999999999985
+        },
+        "candidate": {
+          "windowMs": 6002.181291500001,
+          "taskMs": 13.254999999999999,
+          "scriptMs": 3.29,
+          "layoutMs": 1.3695,
+          "recalcMs": 0.3489999999999999
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": 0.1928829999997106,
+        "taskMs": 0.9279999999999973,
+        "scriptMs": -0.2004999999999999,
+        "layoutMs": 0.15349999999999975,
+        "recalcMs": 0.07550000000000007
+      },
+      "counterComparisonValid": true
+    },
+    {
+      "label": "source-ten-binding-updates",
+      "observations": [
+        {
+          "file": "1-baseline.json",
+          "variant": "baseline",
+          "windowMs": 1016.4695480000009,
+          "taskMs": 20.237,
+          "scriptMs": 8.1,
+          "layoutMs": 1.719,
+          "recalcMs": 1.944,
+          "heapBefore": 1077228,
+          "heapAfter": 1334880,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "2-candidate.json",
+          "variant": "candidate",
+          "windowMs": 1016.8396920000014,
+          "taskMs": 19.733999999999995,
+          "scriptMs": 8.073,
+          "layoutMs": 1.7800000000000002,
+          "recalcMs": 2.006,
+          "heapBefore": 1080452,
+          "heapAfter": 1353688,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "3-candidate.json",
+          "variant": "candidate",
+          "windowMs": 1016.7632169999997,
+          "taskMs": 22.006999999999998,
+          "scriptMs": 8.435,
+          "layoutMs": 1.9220000000000002,
+          "recalcMs": 2.28,
+          "heapBefore": 1080452,
+          "heapAfter": 1353688,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        },
+        {
+          "file": "4-baseline.json",
+          "variant": "baseline",
+          "windowMs": 1019.5431319999989,
+          "taskMs": 22.774999999999995,
+          "scriptMs": 9.246999999999998,
+          "layoutMs": 1.7619999999999996,
+          "recalcMs": 2.02,
+          "heapBefore": 1077228,
+          "heapAfter": 1334880,
+          "counterReset": false,
+          "requests": {},
+          "encodedRequestBytes": 0,
+          "requestsWithKnownEncodedBytes": 0
+        }
+      ],
+      "medians": {
+        "baseline": {
+          "windowMs": 1018.0063399999999,
+          "taskMs": 21.505999999999997,
+          "scriptMs": 8.673499999999999,
+          "layoutMs": 1.7405,
+          "recalcMs": 1.982
+        },
+        "candidate": {
+          "windowMs": 1016.8014545000005,
+          "taskMs": 20.870499999999996,
+          "scriptMs": 8.254000000000001,
+          "layoutMs": 1.8510000000000002,
+          "recalcMs": 2.143
+        }
+      },
+      "candidateMinusBaseline": {
+        "windowMs": -1.2048854999993637,
+        "taskMs": -0.6355000000000004,
+        "scriptMs": -0.41949999999999754,
+        "layoutMs": 0.11050000000000026,
+        "recalcMs": 0.1609999999999998
+      },
+      "counterComparisonValid": true
+    }
+  ],
+  "nativeRecovery": [
+    {
+      "variant": "candidate",
+      "mode": "native-recovery",
+      "filename": "5-candidate-native-recovery.json",
+      "sha256": "b2f88d0164051146814a0ecc9869c6375059e963a679de9f9cdf562844300934",
+      "checks": 5,
+      "phaseCount": 2
+    }
+  ],
+  "limits": [
+    "Two fresh process observations per variant; descriptive medians, no significance claim.",
+    "Fixed-wait route/update windows are not interaction latency; ordinary renderer counters exclude whole-browser/GPU/OBS CPU.",
+    "Heap endpoints are uncollected observations, not retained memory. Counter resets invalidate counter comparisons, while original values remain visible.",
+    "Geometry/bound/static output equality is verified here; prior diagnostic freshness/recovery controls retain their exact source boundaries."
+  ]
+}

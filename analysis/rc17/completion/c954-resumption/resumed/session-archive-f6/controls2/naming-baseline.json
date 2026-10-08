@@ -1,0 +1,96 @@
+{
+  "complete": true,
+  "mode": "naming-baseline",
+  "sourceFingerprint": "2c72fd451304d300e05a57d9b4eecc8bd906233c65c9478ad353e4578a474872",
+  "harnessSha256": "8dd52dc0a09c38961249eee745b922f8d36a249cb037208a6f30f8db0c2b9b59",
+  "checks": [
+    {
+      "name": "Name this session Escape opens from its current trusted Enter",
+      "passed": true
+    },
+    {
+      "name": "Name this session Escape closes with its opener still connected",
+      "passed": true
+    },
+    {
+      "name": "Name this session Close opens from its current trusted Enter",
+      "passed": true
+    },
+    {
+      "name": "Name this session Close closes with its opener still connected",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "mockedDiscovery": [],
+  "adjacentFindings": [
+    {
+      "id": "F6-naming-dialog-focus-return",
+      "status": "open",
+      "name": "Name this session Escape",
+      "observation": {
+        "sameOpener": false,
+        "openerConnected": true,
+        "activeTag": "BODY"
+      }
+    },
+    {
+      "id": "F6-naming-dialog-focus-return",
+      "status": "open",
+      "name": "Name this session Close",
+      "observation": {
+        "sameOpener": false,
+        "openerConnected": true,
+        "activeTag": "BODY"
+      }
+    }
+  ],
+  "namingControls": [
+    {
+      "name": "Name this session Escape",
+      "sameOpener": false,
+      "openerConnected": true,
+      "activeTag": "BODY"
+    },
+    {
+      "name": "Name this session Close",
+      "sameOpener": false,
+      "openerConnected": true,
+      "activeTag": "BODY"
+    }
+  ],
+  "startedAt": "2026-10-08T10:48:44.124Z",
+  "limits": [
+    "Focused synthetic compiled correctness fixture; no performance claim or native Find acceptance.",
+    "Native Enter/Escape and actual application close controls; navigation and roster teardown use actual hash/HTTP/SSE paths. Synthetic disconnect receives an injected empty discovery response; no external request is sent."
+  ],
+  "durableDataSha256": "8ff04931b009cf7d3b1646060f19c6785c6149edfcab02d1fd4afe8e863b806a",
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "phase": "complete",
+  "sourceVerified": true,
+  "reportFocusAcceptance": false,
+  "namingFocusAcceptance": false,
+  "cleanup": [
+    {
+      "stage": "browser",
+      "passed": true
+    },
+    {
+      "stage": "application",
+      "passed": true
+    },
+    {
+      "stage": "temporary fixture",
+      "passed": true
+    }
+  ],
+  "cleanupVerified": true,
+  "endedAt": "2026-10-08T10:48:45.679Z"
+}

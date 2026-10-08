@@ -1,0 +1,6264 @@
+{
+  "sourceCommit": "a7b1bf97b0073695926c443e52d523638e59e48d",
+  "sourceFingerprints": {
+    "baseline": "c808ecec80bc74985d2389d0760c72adc63ccc9ef79f54b26c9c3dc6db5e2fdf",
+    "candidate": "5d60c5ab816985f56815533ec899e282c807baf73c36c7c51ae726e313cd05fc"
+  },
+  "ordinary": [
+    {
+      "case": "repeat-small",
+      "sample": "replay-prepare",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            230.24300000000008,
+            278.08200000000005,
+            236.86200000000002,
+            275.5040000000001
+          ],
+          "baselineMean": 252.8735000000001,
+          "candidateMean": 257.47200000000004,
+          "delta": 4.5984999999999445,
+          "percent": 1.8184981818972545,
+          "pairs": [
+            {
+              "baseline": 230.24300000000008,
+              "candidate": 278.08200000000005,
+              "delta": 47.83899999999997,
+              "percent": 20.77761321733993
+            },
+            {
+              "baseline": 275.5040000000001,
+              "candidate": 236.86200000000002,
+              "delta": -38.64200000000005,
+              "percent": -14.02593065799409
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            81.22200000000002,
+            99.69499999999998,
+            97.48000000000002,
+            103.81299999999999
+          ],
+          "baselineMean": 92.51750000000001,
+          "candidateMean": 98.5875,
+          "delta": 6.069999999999993,
+          "percent": 6.56092090685545,
+          "pairs": [
+            {
+              "baseline": 81.22200000000002,
+              "candidate": 99.69499999999998,
+              "delta": 18.472999999999956,
+              "percent": 22.743837876437368
+            },
+            {
+              "baseline": 103.81299999999999,
+              "candidate": 97.48000000000002,
+              "delta": -6.33299999999997,
+              "percent": -6.100392051091841
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            12.382000000000005,
+            15.720999999999998,
+            12.438000000000004,
+            11.671000000000001
+          ],
+          "baselineMean": 12.026500000000002,
+          "candidateMean": 14.079500000000001,
+          "delta": 2.052999999999999,
+          "percent": 17.070635679541013,
+          "pairs": [
+            {
+              "baseline": 12.382000000000005,
+              "candidate": 15.720999999999998,
+              "delta": 3.3389999999999933,
+              "percent": 26.96656436763036
+            },
+            {
+              "baseline": 11.671000000000001,
+              "candidate": 12.438000000000004,
+              "delta": 0.767000000000003,
+              "percent": 6.571844743381061
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            23.731999999999996,
+            30.479999999999993,
+            22.165000000000003,
+            22.830000000000002
+          ],
+          "baselineMean": 23.281,
+          "candidateMean": 26.322499999999998,
+          "delta": 3.041499999999999,
+          "percent": 13.064301361625352,
+          "pairs": [
+            {
+              "baseline": 23.731999999999996,
+              "candidate": 30.479999999999993,
+              "delta": 6.7479999999999976,
+              "percent": 28.43418169560088
+            },
+            {
+              "baseline": 22.830000000000002,
+              "candidate": 22.165000000000003,
+              "delta": -0.6649999999999991,
+              "percent": -2.9128339903635503
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            14,
+            13,
+            12,
+            13
+          ],
+          "baselineMean": 13.5,
+          "candidateMean": 12.5,
+          "delta": -1.0,
+          "percent": -7.4074074074074066,
+          "pairs": [
+            {
+              "baseline": 14,
+              "candidate": 13,
+              "delta": -1,
+              "percent": -7.14285714285714
+            },
+            {
+              "baseline": 13,
+              "candidate": 12,
+              "delta": -1,
+              "percent": -7.692307692307687
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            36,
+            35,
+            35,
+            35
+          ],
+          "baselineMean": 35.5,
+          "candidateMean": 35,
+          "delta": -0.5,
+          "percent": -1.4084507042253502,
+          "pairs": [
+            {
+              "baseline": 36,
+              "candidate": 35,
+              "delta": -1,
+              "percent": -2.777777777777779
+            },
+            {
+              "baseline": 35,
+              "candidate": 35,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            22453784,
+            17703056,
+            30470668,
+            21165828
+          ],
+          "baselineMean": 21809806,
+          "candidateMean": 24086862,
+          "delta": 2277056,
+          "percent": 10.44051469325311,
+          "pairs": [
+            {
+              "baseline": 22453784,
+              "candidate": 17703056,
+              "delta": -4750728,
+              "percent": -21.157805740003553
+            },
+            {
+              "baseline": 21165828,
+              "candidate": 30470668,
+              "delta": 9304840,
+              "percent": 43.96161586496876
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            67506176,
+            74366976,
+            64761856,
+            45486080
+          ],
+          "baselineMean": 56496128,
+          "candidateMean": 69564416,
+          "delta": 13068288,
+          "percent": 23.13129848473863,
+          "pairs": [
+            {
+              "baseline": 67506176,
+              "candidate": 74366976,
+              "delta": 6860800,
+              "percent": 10.163218251319694
+            },
+            {
+              "baseline": 45486080,
+              "candidate": 64761856,
+              "delta": 19275776,
+              "percent": 42.377307519135535
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            846,
+            844,
+            929,
+            844
+          ],
+          "baselineMean": 845,
+          "candidateMean": 886.5,
+          "delta": 41.5,
+          "percent": 4.911242603550292,
+          "pairs": [
+            {
+              "baseline": 846,
+              "candidate": 844,
+              "delta": -2,
+              "percent": -0.23640661938534313
+            },
+            {
+              "baseline": 844,
+              "candidate": 929,
+              "delta": 85,
+              "percent": 10.071090047393373
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            4,
+            4,
+            3,
+            4
+          ],
+          "baselineMean": 4,
+          "candidateMean": 3.5,
+          "delta": -0.5,
+          "percent": -12.5,
+          "pairs": [
+            {
+              "baseline": 4,
+              "candidate": 4,
+              "delta": 0,
+              "percent": 0.0
+            },
+            {
+              "baseline": 4,
+              "candidate": 3,
+              "delta": -1,
+              "percent": -25.0
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            900.2833100000007,
+            928.3897870000001,
+            917.8345840000002,
+            923.00029
+          ],
+          "baselineMean": 911.6418000000003,
+          "candidateMean": 923.1121855000001,
+          "delta": 11.470385499999793,
+          "percent": 1.2582118876075965,
+          "pairs": [
+            {
+              "baseline": 900.2833100000007,
+              "candidate": 928.3897870000001,
+              "delta": 28.10647699999936,
+              "percent": 3.121959130842855
+            },
+            {
+              "baseline": 923.00029,
+              "candidate": 917.8345840000002,
+              "delta": -5.165705999999773,
+              "percent": -0.5596646128897542
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 655,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 900.2833100000007,
+          "taskMs": 230.24300000000008,
+          "scriptMs": 81.22200000000002,
+          "layoutMs": 12.382000000000005,
+          "recalcMs": 23.731999999999996,
+          "layouts": 14,
+          "recalcs": 36,
+          "heapUsed": 22453784,
+          "heapTotal": 67506176,
+          "domNodes": 846,
+          "canvasDraws": 4,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "356.28",
+              "at": 10799.492623,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 13.369000000238884,
+              "totalMs": 25.352999999086023,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "356.29",
+              "at": 10799.493018,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 12.756000000081258,
+              "totalMs": 9.287000000767875,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "356.30",
+              "at": 10799.506416,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 57.436999999481486,
+              "totalMs": 19.347999999808962,
+              "encodedBytes": 640329
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 655,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 928.3897870000001,
+          "taskMs": 278.08200000000005,
+          "scriptMs": 99.69499999999998,
+          "layoutMs": 15.720999999999998,
+          "recalcMs": 30.479999999999993,
+          "layouts": 13,
+          "recalcs": 35,
+          "heapUsed": 17703056,
+          "heapTotal": 74366976,
+          "domNodes": 844,
+          "canvasDraws": 4,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "470.28",
+              "at": 10824.792643,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 13.264999999591964,
+              "totalMs": 34.376999999949476,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "470.29",
+              "at": 10824.793298,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 12.306999999054824,
+              "totalMs": 10.554999998930725,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "470.30",
+              "at": 10824.80641,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 33.00699999999779,
+              "totalMs": 21.24100000037288,
+              "encodedBytes": 640329
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 655,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 917.8345840000002,
+          "taskMs": 236.86200000000002,
+          "scriptMs": 97.48000000000002,
+          "layoutMs": 12.438000000000004,
+          "recalcMs": 22.165000000000003,
+          "layouts": 12,
+          "recalcs": 35,
+          "heapUsed": 30470668,
+          "heapTotal": 64761856,
+          "domNodes": 929,
+          "canvasDraws": 3,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "585.28",
+              "at": 10850.037973,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 11.66699999885168,
+              "totalMs": 32.42299999874376,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "585.29",
+              "at": 10850.038369,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 10.675999999875785,
+              "totalMs": 14.14900000054331,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "585.30",
+              "at": 10850.043836,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 41.52499999872816,
+              "totalMs": 24.83799999936309,
+              "encodedBytes": 640329
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 655,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 923.00029,
+          "taskMs": 275.5040000000001,
+          "scriptMs": 103.81299999999999,
+          "layoutMs": 11.671000000000001,
+          "recalcMs": 22.830000000000002,
+          "layouts": 13,
+          "recalcs": 35,
+          "heapUsed": 21165828,
+          "heapTotal": 45486080,
+          "domNodes": 844,
+          "canvasDraws": 4,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "697.28",
+              "at": 10875.235795,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 26.893000000200118,
+              "totalMs": 49.93899999863061,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "697.29",
+              "at": 10875.236332,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 25.996000000304775,
+              "totalMs": 19.330999999510823,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "697.30",
+              "at": 10875.242965,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 47.39500000141561,
+              "totalMs": 33.47399999984191,
+              "encodedBytes": 640329
+            }
+          ]
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "repeat-small",
+      "sample": "replay-playback-start-60x",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            1547.4599999999998,
+            1573.2110000000002,
+            1567.8480000000002,
+            1518.7930000000001
+          ],
+          "baselineMean": 1533.1264999999999,
+          "candidateMean": 1570.5295,
+          "delta": 37.40300000000025,
+          "percent": 2.439655175225286,
+          "pairs": [
+            {
+              "baseline": 1547.4599999999998,
+              "candidate": 1573.2110000000002,
+              "delta": 25.75100000000043,
+              "percent": 1.6640817856358403
+            },
+            {
+              "baseline": 1518.7930000000001,
+              "candidate": 1567.8480000000002,
+              "delta": 49.055000000000064,
+              "percent": 3.2298674012851025
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            548.3159999999999,
+            580.921,
+            577.7410000000001,
+            552.9199999999998
+          ],
+          "baselineMean": 550.6179999999999,
+          "candidateMean": 579.3310000000001,
+          "delta": 28.713000000000193,
+          "percent": 5.214686043681871,
+          "pairs": [
+            {
+              "baseline": 548.3159999999999,
+              "candidate": 580.921,
+              "delta": 32.60500000000013,
+              "percent": 5.946388578848727
+            },
+            {
+              "baseline": 552.9199999999998,
+              "candidate": 577.7410000000001,
+              "delta": 24.821000000000254,
+              "percent": 4.489076177385565
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            34.766000000000005,
+            42.478,
+            40.939,
+            37.56999999999999
+          ],
+          "baselineMean": 36.168,
+          "candidateMean": 41.7085,
+          "delta": 5.5405000000000015,
+          "percent": 15.318790090687905,
+          "pairs": [
+            {
+              "baseline": 34.766000000000005,
+              "candidate": 42.478,
+              "delta": 7.711999999999996,
+              "percent": 22.182592187769657
+            },
+            {
+              "baseline": 37.56999999999999,
+              "candidate": 40.939,
+              "delta": 3.369000000000007,
+              "percent": 8.967261112589853
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            96.35,
+            109.896,
+            107.97899999999998,
+            102.79599999999999
+          ],
+          "baselineMean": 99.573,
+          "candidateMean": 108.9375,
+          "delta": 9.364500000000007,
+          "percent": 9.40465788918683,
+          "pairs": [
+            {
+              "baseline": 96.35,
+              "candidate": 109.896,
+              "delta": 13.546000000000006,
+              "percent": 14.059159314997416
+            },
+            {
+              "baseline": 102.79599999999999,
+              "candidate": 107.97899999999998,
+              "delta": 5.182999999999993,
+              "percent": 5.0420249815167795
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            283,
+            279,
+            284,
+            284
+          ],
+          "baselineMean": 283.5,
+          "candidateMean": 281.5,
+          "delta": -2.0,
+          "percent": -0.7054673721340388,
+          "pairs": [
+            {
+              "baseline": 283,
+              "candidate": 279,
+              "delta": -4,
+              "percent": -1.4134275618374548
+            },
+            {
+              "baseline": 284,
+              "candidate": 284,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            403,
+            406,
+            405,
+            404
+          ],
+          "baselineMean": 403.5,
+          "candidateMean": 405.5,
+          "delta": 2.0,
+          "percent": 0.4956629491945419,
+          "pairs": [
+            {
+              "baseline": 403,
+              "candidate": 406,
+              "delta": 3,
+              "percent": 0.7444168734491274
+            },
+            {
+              "baseline": 404,
+              "candidate": 405,
+              "delta": 1,
+              "percent": 0.24752475247524774
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            37636324,
+            28973352,
+            42465900,
+            43678192
+          ],
+          "baselineMean": 40657258,
+          "candidateMean": 35719626,
+          "delta": -4937632,
+          "percent": -12.14452779870202,
+          "pairs": [
+            {
+              "baseline": 37636324,
+              "candidate": 28973352,
+              "delta": -8662972,
+              "percent": -23.01758269484554
+            },
+            {
+              "baseline": 43678192,
+              "candidate": 42465900,
+              "delta": -1212292,
+              "percent": -2.7755086565854237
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            78299136,
+            89309184,
+            89214976,
+            80920576
+          ],
+          "baselineMean": 79609856,
+          "candidateMean": 89262080,
+          "delta": 9652224,
+          "percent": 12.124408314467994,
+          "pairs": [
+            {
+              "baseline": 78299136,
+              "candidate": 89309184,
+              "delta": 11010048,
+              "percent": 14.0615191462649
+            },
+            {
+              "baseline": 80920576,
+              "candidate": 89214976,
+              "delta": 8294400,
+              "percent": 10.250050617533923
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            893,
+            1040,
+            1125,
+            947
+          ],
+          "baselineMean": 920,
+          "candidateMean": 1082.5,
+          "delta": 162.5,
+          "percent": 17.663043478260864,
+          "pairs": [
+            {
+              "baseline": 893,
+              "candidate": 1040,
+              "delta": 147,
+              "percent": 16.461366181410963
+            },
+            {
+              "baseline": 947,
+              "candidate": 1125,
+              "delta": 178,
+              "percent": 18.796198521647312
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            236,
+            238,
+            238,
+            236
+          ],
+          "baselineMean": 236,
+          "candidateMean": 238,
+          "delta": 2,
+          "percent": 0.8474576271186418,
+          "pairs": [
+            {
+              "baseline": 236,
+              "candidate": 238,
+              "delta": 2,
+              "percent": 0.8474576271186418
+            },
+            {
+              "baseline": 236,
+              "candidate": 238,
+              "delta": 2,
+              "percent": 0.8474576271186418
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            6053.985486999999,
+            6074.2784440000005,
+            6053.099257999999,
+            6057.2851040000005
+          ],
+          "baselineMean": 6055.6352955,
+          "candidateMean": 6063.688851,
+          "delta": 8.053555499999675,
+          "percent": 0.1329927432384137,
+          "pairs": [
+            {
+              "baseline": 6053.985486999999,
+              "candidate": 6074.2784440000005,
+              "delta": 20.29295700000148,
+              "percent": 0.3351999611425738
+            },
+            {
+              "baseline": 6057.2851040000005,
+              "candidate": 6053.099257999999,
+              "delta": -4.18584600000122,
+              "percent": -0.06910432525681909
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 668,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6053.985486999999,
+          "taskMs": 1547.4599999999998,
+          "scriptMs": 548.3159999999999,
+          "layoutMs": 34.766000000000005,
+          "recalcMs": 96.35,
+          "layouts": 283,
+          "recalcs": 403,
+          "heapUsed": 37636324,
+          "heapTotal": 78299136,
+          "domNodes": 893,
+          "canvasDraws": 236,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 668,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6074.2784440000005,
+          "taskMs": 1573.2110000000002,
+          "scriptMs": 580.921,
+          "layoutMs": 42.478,
+          "recalcMs": 109.896,
+          "layouts": 279,
+          "recalcs": 406,
+          "heapUsed": 28973352,
+          "heapTotal": 89309184,
+          "domNodes": 1040,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 668,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6053.099257999999,
+          "taskMs": 1567.8480000000002,
+          "scriptMs": 577.7410000000001,
+          "layoutMs": 40.939,
+          "recalcMs": 107.97899999999998,
+          "layouts": 284,
+          "recalcs": 405,
+          "heapUsed": 42465900,
+          "heapTotal": 89214976,
+          "domNodes": 1125,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 16.800000000000182,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 668,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6057.2851040000005,
+          "taskMs": 1518.7930000000001,
+          "scriptMs": 552.9199999999998,
+          "layoutMs": 37.56999999999999,
+          "recalcMs": 102.79599999999999,
+          "layouts": 284,
+          "recalcs": 404,
+          "heapUsed": 43678192,
+          "heapTotal": 80920576,
+          "domNodes": 947,
+          "canvasDraws": 236,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 33.30000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "repeat-small",
+      "sample": "replay-playback-middle-60x",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            2056.1520000000005,
+            2296.413,
+            2191.7219999999993,
+            2320.6760000000004
+          ],
+          "baselineMean": 2188.4140000000007,
+          "candidateMean": 2244.0674999999997,
+          "delta": 55.653499999998985,
+          "percent": 2.543097421237439,
+          "pairs": [
+            {
+              "baseline": 2056.1520000000005,
+              "candidate": 2296.413,
+              "delta": 240.2609999999995,
+              "percent": 11.684982433205304
+            },
+            {
+              "baseline": 2320.6760000000004,
+              "candidate": 2191.7219999999993,
+              "delta": -128.9540000000011,
+              "percent": -5.556742949037307
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            574.9519999999999,
+            563.9350000000001,
+            592.3009999999999,
+            578.481
+          ],
+          "baselineMean": 576.7165,
+          "candidateMean": 578.1179999999999,
+          "delta": 1.4014999999999418,
+          "percent": 0.24301368176564697,
+          "pairs": [
+            {
+              "baseline": 574.9519999999999,
+              "candidate": 563.9350000000001,
+              "delta": -11.016999999999825,
+              "percent": -1.9161599577007915
+            },
+            {
+              "baseline": 578.481,
+              "candidate": 592.3009999999999,
+              "delta": 13.819999999999936,
+              "percent": 2.389015369562686
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            38.55199999999998,
+            36.944,
+            36.789000000000016,
+            36.06500000000001
+          ],
+          "baselineMean": 37.308499999999995,
+          "candidateMean": 36.86650000000001,
+          "delta": -0.44199999999998596,
+          "percent": -1.1847166195370629,
+          "pairs": [
+            {
+              "baseline": 38.55199999999998,
+              "candidate": 36.944,
+              "delta": -1.6079999999999757,
+              "percent": -4.170989831915273
+            },
+            {
+              "baseline": 36.06500000000001,
+              "candidate": 36.789000000000016,
+              "delta": 0.7240000000000038,
+              "percent": 2.007486482739518
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            110.56799999999997,
+            122.79499999999999,
+            114.85600000000001,
+            110.55199999999998
+          ],
+          "baselineMean": 110.55999999999997,
+          "candidateMean": 118.8255,
+          "delta": 8.265500000000031,
+          "percent": 7.476031114327086,
+          "pairs": [
+            {
+              "baseline": 110.56799999999997,
+              "candidate": 122.79499999999999,
+              "delta": 12.227000000000018,
+              "percent": 11.058353230591145
+            },
+            {
+              "baseline": 110.55199999999998,
+              "candidate": 114.85600000000001,
+              "delta": 4.3040000000000305,
+              "percent": 3.893190534770996
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            283,
+            276,
+            282,
+            277
+          ],
+          "baselineMean": 280,
+          "candidateMean": 279,
+          "delta": -1,
+          "percent": -0.3571428571428559,
+          "pairs": [
+            {
+              "baseline": 283,
+              "candidate": 276,
+              "delta": -7,
+              "percent": -2.473498233215543
+            },
+            {
+              "baseline": 277,
+              "candidate": 282,
+              "delta": 5,
+              "percent": 1.8050541516245522
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            404,
+            402,
+            403,
+            398
+          ],
+          "baselineMean": 401,
+          "candidateMean": 402.5,
+          "delta": 1.5,
+          "percent": 0.37406483790523026,
+          "pairs": [
+            {
+              "baseline": 404,
+              "candidate": 402,
+              "delta": -2,
+              "percent": -0.4950495049504955
+            },
+            {
+              "baseline": 398,
+              "candidate": 403,
+              "delta": 5,
+              "percent": 1.2562814070351758
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            27772996,
+            45136244,
+            24289492,
+            43208104
+          ],
+          "baselineMean": 35490550,
+          "candidateMean": 34712868,
+          "delta": -777682,
+          "percent": -2.1912368221963296,
+          "pairs": [
+            {
+              "baseline": 27772996,
+              "candidate": 45136244,
+              "delta": 17363248,
+              "percent": 62.51845497691355
+            },
+            {
+              "baseline": 43208104,
+              "candidate": 24289492,
+              "delta": -18918612,
+              "percent": -43.78486961612572
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            85901312,
+            90882048,
+            76988416,
+            80134144
+          ],
+          "baselineMean": 83017728,
+          "candidateMean": 83935232,
+          "delta": 917504,
+          "percent": 1.10519044799684,
+          "pairs": [
+            {
+              "baseline": 85901312,
+              "candidate": 90882048,
+              "delta": 4980736,
+              "percent": 5.798207133320621
+            },
+            {
+              "baseline": 80134144,
+              "candidate": 76988416,
+              "delta": -3145728,
+              "percent": -3.925577591494578
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            1000,
+            1393,
+            1000,
+            1000
+          ],
+          "baselineMean": 1000,
+          "candidateMean": 1196.5,
+          "delta": 196.5,
+          "percent": 19.64999999999999,
+          "pairs": [
+            {
+              "baseline": 1000,
+              "candidate": 1393,
+              "delta": 393,
+              "percent": 39.300000000000004
+            },
+            {
+              "baseline": 1000,
+              "candidate": 1000,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            237,
+            236,
+            237,
+            232
+          ],
+          "baselineMean": 234.5,
+          "candidateMean": 236.5,
+          "delta": 2.0,
+          "percent": 0.8528784648187626,
+          "pairs": [
+            {
+              "baseline": 237,
+              "candidate": 236,
+              "delta": -1,
+              "percent": -0.42194092827003704
+            },
+            {
+              "baseline": 232,
+              "candidate": 237,
+              "delta": 5,
+              "percent": 2.155172413793105
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            6063.141557999999,
+            6069.934479999998,
+            6068.487346000002,
+            6075.922196999998
+          ],
+          "baselineMean": 6069.531877499999,
+          "candidateMean": 6069.210913,
+          "delta": -0.3209644999988086,
+          "percent": -0.0052881261104920085,
+          "pairs": [
+            {
+              "baseline": 6063.141557999999,
+              "candidate": 6069.934479999998,
+              "delta": 6.792921999998725,
+              "percent": 0.11203634180427802
+            },
+            {
+              "baseline": 6075.922196999998,
+              "candidate": 6068.487346000002,
+              "delta": -7.434850999996343,
+              "percent": -0.12236580323011781
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 732,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6063.141557999999,
+          "taskMs": 2056.1520000000005,
+          "scriptMs": 574.9519999999999,
+          "layoutMs": 38.55199999999998,
+          "recalcMs": 110.56799999999997,
+          "layouts": 283,
+          "recalcs": 404,
+          "heapUsed": 27772996,
+          "heapTotal": 85901312,
+          "domNodes": 1000,
+          "canvasDraws": 237,
+          "longTasks": [],
+          "raf": {
+            "count": 362,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 732,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6069.934479999998,
+          "taskMs": 2296.413,
+          "scriptMs": 563.9350000000001,
+          "layoutMs": 36.944,
+          "recalcMs": 122.79499999999999,
+          "layouts": 276,
+          "recalcs": 402,
+          "heapUsed": 45136244,
+          "heapTotal": 90882048,
+          "domNodes": 1393,
+          "canvasDraws": 236,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 732,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6068.487346000002,
+          "taskMs": 2191.7219999999993,
+          "scriptMs": 592.3009999999999,
+          "layoutMs": 36.789000000000016,
+          "recalcMs": 114.85600000000001,
+          "layouts": 282,
+          "recalcs": 403,
+          "heapUsed": 24289492,
+          "heapTotal": 76988416,
+          "domNodes": 1000,
+          "canvasDraws": 237,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 732,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6075.922196999998,
+          "taskMs": 2320.6760000000004,
+          "scriptMs": 578.481,
+          "layoutMs": 36.06500000000001,
+          "recalcMs": 110.55199999999998,
+          "layouts": 277,
+          "recalcs": 398,
+          "heapUsed": 43208104,
+          "heapTotal": 80134144,
+          "domNodes": 1000,
+          "canvasDraws": 232,
+          "longTasks": [
+            {
+              "start": 16132,
+              "duration": 54
+            }
+          ],
+          "raf": {
+            "count": 356,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 66.60000000000036,
+            "over33ms": 1
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "repeat-cap",
+      "sample": "replay-prepare",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            286.08600000000007,
+            286.087,
+            332.9,
+            244.23300000000003
+          ],
+          "baselineMean": 265.15950000000004,
+          "candidateMean": 309.4935,
+          "delta": 44.333999999999946,
+          "percent": 16.719747925305306,
+          "pairs": [
+            {
+              "baseline": 286.08600000000007,
+              "candidate": 286.087,
+              "delta": 0.0009999999999195097,
+              "percent": 0.00034954524161801004
+            },
+            {
+              "baseline": 244.23300000000003,
+              "candidate": 332.9,
+              "delta": 88.66699999999994,
+              "percent": 36.304266827169116
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            111.32199999999997,
+            102.852,
+            113.02999999999996,
+            97.58
+          ],
+          "baselineMean": 104.451,
+          "candidateMean": 107.94099999999997,
+          "delta": 3.4899999999999807,
+          "percent": 3.3412796430862146,
+          "pairs": [
+            {
+              "baseline": 111.32199999999997,
+              "candidate": 102.852,
+              "delta": -8.46999999999997,
+              "percent": -7.6085589551031845
+            },
+            {
+              "baseline": 97.58,
+              "candidate": 113.02999999999996,
+              "delta": 15.44999999999996,
+              "percent": 15.833162533305956
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            10.830000000000005,
+            11.212,
+            14.821000000000002,
+            10.395999999999988
+          ],
+          "baselineMean": 10.612999999999996,
+          "candidateMean": 13.0165,
+          "delta": 2.4035000000000046,
+          "percent": 22.646753980966782,
+          "pairs": [
+            {
+              "baseline": 10.830000000000005,
+              "candidate": 11.212,
+              "delta": 0.38199999999999434,
+              "percent": 3.5272391505077882
+            },
+            {
+              "baseline": 10.395999999999988,
+              "candidate": 14.821000000000002,
+              "delta": 4.425000000000013,
+              "percent": 42.56444786456346
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            22.061999999999998,
+            25.048000000000002,
+            28.826000000000004,
+            22.921000000000003
+          ],
+          "baselineMean": 22.491500000000002,
+          "candidateMean": 26.937000000000005,
+          "delta": 4.445500000000003,
+          "percent": 19.76524464797813,
+          "pairs": [
+            {
+              "baseline": 22.061999999999998,
+              "candidate": 25.048000000000002,
+              "delta": 2.986000000000004,
+              "percent": 13.534584353186485
+            },
+            {
+              "baseline": 22.921000000000003,
+              "candidate": 28.826000000000004,
+              "delta": 5.905000000000001,
+              "percent": 25.76240129139218
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            13,
+            15,
+            15,
+            14
+          ],
+          "baselineMean": 13.5,
+          "candidateMean": 15,
+          "delta": 1.5,
+          "percent": 11.111111111111116,
+          "pairs": [
+            {
+              "baseline": 13,
+              "candidate": 15,
+              "delta": 2,
+              "percent": 15.384615384615374
+            },
+            {
+              "baseline": 14,
+              "candidate": 15,
+              "delta": 1,
+              "percent": 7.14285714285714
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            29,
+            33,
+            33,
+            33
+          ],
+          "baselineMean": 31,
+          "candidateMean": 33,
+          "delta": 2,
+          "percent": 6.451612903225801,
+          "pairs": [
+            {
+              "baseline": 29,
+              "candidate": 33,
+              "delta": 4,
+              "percent": 13.793103448275868
+            },
+            {
+              "baseline": 33,
+              "candidate": 33,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            37734104,
+            25203308,
+            24885596,
+            35687012
+          ],
+          "baselineMean": 36710558,
+          "candidateMean": 25044452,
+          "delta": -11666106,
+          "percent": -31.778612572437602,
+          "pairs": [
+            {
+              "baseline": 37734104,
+              "candidate": 25203308,
+              "delta": -12530796,
+              "percent": -33.20814507746096
+            },
+            {
+              "baseline": 35687012,
+              "candidate": 24885596,
+              "delta": -10801416,
+              "percent": -30.26707867837184
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            68141056,
+            70914048,
+            72749056,
+            60801024
+          ],
+          "baselineMean": 64471040,
+          "candidateMean": 71831552,
+          "delta": 7360512,
+          "percent": 11.416772554002552,
+          "pairs": [
+            {
+              "baseline": 68141056,
+              "candidate": 70914048,
+              "delta": 2772992,
+              "percent": 4.069487857658083
+            },
+            {
+              "baseline": 60801024,
+              "candidate": 72749056,
+              "delta": 11948032,
+              "percent": 19.651037456211263
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            952,
+            864,
+            864,
+            957
+          ],
+          "baselineMean": 954.5,
+          "candidateMean": 864,
+          "delta": -90.5,
+          "percent": -9.481403876375062,
+          "pairs": [
+            {
+              "baseline": 952,
+              "candidate": 864,
+              "delta": -88,
+              "percent": -9.243697478991598
+            },
+            {
+              "baseline": 957,
+              "candidate": 864,
+              "delta": -93,
+              "percent": -9.717868338557988
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            5,
+            5,
+            5,
+            4
+          ],
+          "baselineMean": 4.5,
+          "candidateMean": 5,
+          "delta": 0.5,
+          "percent": 11.111111111111116,
+          "pairs": [
+            {
+              "baseline": 5,
+              "candidate": 5,
+              "delta": 0,
+              "percent": 0.0
+            },
+            {
+              "baseline": 4,
+              "candidate": 5,
+              "delta": 1,
+              "percent": 25.0
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            890.3795550000004,
+            872.8856619999997,
+            890.9750880000001,
+            862.8341490000003
+          ],
+          "baselineMean": 876.6068520000003,
+          "candidateMean": 881.9303749999999,
+          "delta": 5.323522999999568,
+          "percent": 0.6072874045935039,
+          "pairs": [
+            {
+              "baseline": 890.3795550000004,
+              "candidate": 872.8856619999997,
+              "delta": -17.493893000000753,
+              "percent": -1.964768047712051
+            },
+            {
+              "baseline": 862.8341490000003,
+              "candidate": 890.9750880000001,
+              "delta": 28.14093899999989,
+              "percent": 3.261454015538723
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 890.3795550000004,
+          "taskMs": 286.08600000000007,
+          "scriptMs": 111.32199999999997,
+          "layoutMs": 10.830000000000005,
+          "recalcMs": 22.061999999999998,
+          "layouts": 13,
+          "recalcs": 29,
+          "heapUsed": 37734104,
+          "heapTotal": 68141056,
+          "domNodes": 952,
+          "canvasDraws": 5,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "810.28",
+              "at": 10900.706973,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 11.035999999876367,
+              "totalMs": 26.378000000477186,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "810.29",
+              "at": 10900.707341,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 10.38700000026438,
+              "totalMs": 11.005000000295695,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "810.30",
+              "at": 10900.718515,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 127.52799999907438,
+              "totalMs": 155.74299999934738,
+              "encodedBytes": 3986528
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 872.8856619999997,
+          "taskMs": 286.087,
+          "scriptMs": 102.852,
+          "layoutMs": 11.212,
+          "recalcMs": 25.048000000000002,
+          "layouts": 15,
+          "recalcs": 33,
+          "heapUsed": 25203308,
+          "heapTotal": 70914048,
+          "domNodes": 864,
+          "canvasDraws": 5,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "923.28",
+              "at": 10926.16385,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 10.100999999849591,
+              "totalMs": 25.00799999870651,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "923.29",
+              "at": 10926.16428,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 8.669999999256106,
+              "totalMs": 11.201999999684631,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "923.30",
+              "at": 10926.169156,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 118.58600000050501,
+              "totalMs": 142.0639999996638,
+              "encodedBytes": 3986528
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 890.9750880000001,
+          "taskMs": 332.9,
+          "scriptMs": 113.02999999999996,
+          "layoutMs": 14.821000000000002,
+          "recalcMs": 28.826000000000004,
+          "layouts": 15,
+          "recalcs": 33,
+          "heapUsed": 24885596,
+          "heapTotal": 72749056,
+          "domNodes": 864,
+          "canvasDraws": 5,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "1043.28",
+              "at": 10951.831975,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 11.459000001195818,
+              "totalMs": 24.13900000101421,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "1043.29",
+              "at": 10951.83238,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 9.527000000161934,
+              "totalMs": 11.51899999968009,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "1043.30",
+              "at": 10951.83792,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 125.35200000093027,
+              "totalMs": 156.62999999949534,
+              "encodedBytes": 3986528
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 862.8341490000003,
+          "taskMs": 244.23300000000003,
+          "scriptMs": 97.58,
+          "layoutMs": 10.395999999999988,
+          "recalcMs": 22.921000000000003,
+          "layouts": 14,
+          "recalcs": 33,
+          "heapUsed": 35687012,
+          "heapTotal": 60801024,
+          "domNodes": 957,
+          "canvasDraws": 4,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "1160.28",
+              "at": 10977.55623,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 9.461999999984982,
+              "totalMs": 23.74500000041735,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "1160.29",
+              "at": 10977.556632,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 7.825000000593718,
+              "totalMs": 9.713999999803491,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "1160.30",
+              "at": 10977.563886,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 95.84999999970023,
+              "totalMs": 99.10800000034214,
+              "encodedBytes": 3986528
+            }
+          ]
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "repeat-cap",
+      "sample": "replay-playback-start-60x",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            1964.5639999999999,
+            1940.008,
+            2007.196,
+            1963.638
+          ],
+          "baselineMean": 1964.1009999999999,
+          "candidateMean": 1973.6019999999999,
+          "delta": 9.500999999999976,
+          "percent": 0.48373276119710873,
+          "pairs": [
+            {
+              "baseline": 1964.5639999999999,
+              "candidate": 1940.008,
+              "delta": -24.555999999999813,
+              "percent": -1.2499465530265153
+            },
+            {
+              "baseline": 1963.638,
+              "candidate": 2007.196,
+              "delta": 43.55799999999999,
+              "percent": 2.218229632956792
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            626.6429999999999,
+            604.409,
+            605.372,
+            621.747
+          ],
+          "baselineMean": 624.1949999999999,
+          "candidateMean": 604.8905,
+          "delta": -19.304499999999962,
+          "percent": -3.0927034019817445,
+          "pairs": [
+            {
+              "baseline": 626.6429999999999,
+              "candidate": 604.409,
+              "delta": -22.233999999999924,
+              "percent": -3.548112721278296
+            },
+            {
+              "baseline": 621.747,
+              "candidate": 605.372,
+              "delta": -16.375,
+              "percent": -2.633707922997619
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            44.84400000000001,
+            46.88600000000001,
+            47.35300000000001,
+            47.441999999999986
+          ],
+          "baselineMean": 46.143,
+          "candidateMean": 47.11950000000001,
+          "delta": 0.9765000000000086,
+          "percent": 2.1162473181197683,
+          "pairs": [
+            {
+              "baseline": 44.84400000000001,
+              "candidate": 46.88600000000001,
+              "delta": 2.0420000000000016,
+              "percent": 4.553563464454546
+            },
+            {
+              "baseline": 47.441999999999986,
+              "candidate": 47.35300000000001,
+              "delta": -0.08899999999997732,
+              "percent": -0.18759748745832416
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            329.60699999999997,
+            337.798,
+            339.49999999999994,
+            323.02000000000004
+          ],
+          "baselineMean": 326.3135,
+          "candidateMean": 338.649,
+          "delta": 12.335500000000025,
+          "percent": 3.780260393762447,
+          "pairs": [
+            {
+              "baseline": 329.60699999999997,
+              "candidate": 337.798,
+              "delta": 8.191000000000031,
+              "percent": 2.48508071733915
+            },
+            {
+              "baseline": 323.02000000000004,
+              "candidate": 339.49999999999994,
+              "delta": 16.479999999999905,
+              "percent": 5.101851278558578
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            282,
+            275,
+            284,
+            284
+          ],
+          "baselineMean": 283,
+          "candidateMean": 279.5,
+          "delta": -3.5,
+          "percent": -1.2367491166077715,
+          "pairs": [
+            {
+              "baseline": 282,
+              "candidate": 275,
+              "delta": -7,
+              "percent": -2.4822695035460973
+            },
+            {
+              "baseline": 284,
+              "candidate": 284,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            404,
+            402,
+            405,
+            404
+          ],
+          "baselineMean": 404,
+          "candidateMean": 403.5,
+          "delta": -0.5,
+          "percent": -0.12376237623762387,
+          "pairs": [
+            {
+              "baseline": 404,
+              "candidate": 402,
+              "delta": -2,
+              "percent": -0.4950495049504955
+            },
+            {
+              "baseline": 404,
+              "candidate": 405,
+              "delta": 1,
+              "percent": 0.24752475247524774
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            33209744,
+            47536560,
+            49170896,
+            25807620
+          ],
+          "baselineMean": 29508682,
+          "candidateMean": 48353728,
+          "delta": 18845046,
+          "percent": 63.8627167421439,
+          "pairs": [
+            {
+              "baseline": 33209744,
+              "candidate": 47536560,
+              "delta": 14326816,
+              "percent": 43.140398793799804
+            },
+            {
+              "baseline": 25807620,
+              "candidate": 49170896,
+              "delta": 23363276,
+              "percent": 90.52859581782435
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            78823424,
+            93765632,
+            93503488,
+            80658432
+          ],
+          "baselineMean": 79740928,
+          "candidateMean": 93634560,
+          "delta": 13893632,
+          "percent": 17.423464146291344,
+          "pairs": [
+            {
+              "baseline": 78823424,
+              "candidate": 93765632,
+              "delta": 14942208,
+              "percent": 18.95655788817294
+            },
+            {
+              "baseline": 80658432,
+              "candidate": 93503488,
+              "delta": 12845056,
+              "percent": 15.925248832013006
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            1118,
+            1742,
+            1763,
+            1055
+          ],
+          "baselineMean": 1086.5,
+          "candidateMean": 1752.5,
+          "delta": 666.0,
+          "percent": 61.297745052922224,
+          "pairs": [
+            {
+              "baseline": 1118,
+              "candidate": 1742,
+              "delta": 624,
+              "percent": 55.81395348837211
+            },
+            {
+              "baseline": 1055,
+              "candidate": 1763,
+              "delta": 708,
+              "percent": 67.1090047393365
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            236,
+            235,
+            238,
+            238
+          ],
+          "baselineMean": 237,
+          "candidateMean": 236.5,
+          "delta": -0.5,
+          "percent": -0.21097046413501852,
+          "pairs": [
+            {
+              "baseline": 236,
+              "candidate": 235,
+              "delta": -1,
+              "percent": -0.4237288135593209
+            },
+            {
+              "baseline": 238,
+              "candidate": 238,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            6070.629215,
+            6062.618227000001,
+            6083.007989000001,
+            6064.801431
+          ],
+          "baselineMean": 6067.715323,
+          "candidateMean": 6072.813108,
+          "delta": 5.097784999999931,
+          "percent": 0.08401490064433581,
+          "pairs": [
+            {
+              "baseline": 6070.629215,
+              "candidate": 6062.618227000001,
+              "delta": -8.010987999999088,
+              "percent": -0.13196305879140668
+            },
+            {
+              "baseline": 6064.801431,
+              "candidate": 6083.007989000001,
+              "delta": 18.20655800000077,
+              "percent": 0.3002003974431622
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6070.629215,
+          "taskMs": 1964.5639999999999,
+          "scriptMs": 626.6429999999999,
+          "layoutMs": 44.84400000000001,
+          "recalcMs": 329.60699999999997,
+          "layouts": 282,
+          "recalcs": 404,
+          "heapUsed": 33209744,
+          "heapTotal": 78823424,
+          "domNodes": 1118,
+          "canvasDraws": 236,
+          "longTasks": [],
+          "raf": {
+            "count": 362,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6062.618227000001,
+          "taskMs": 1940.008,
+          "scriptMs": 604.409,
+          "layoutMs": 46.88600000000001,
+          "recalcMs": 337.798,
+          "layouts": 275,
+          "recalcs": 402,
+          "heapUsed": 47536560,
+          "heapTotal": 93765632,
+          "domNodes": 1742,
+          "canvasDraws": 235,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6083.007989000001,
+          "taskMs": 2007.196,
+          "scriptMs": 605.372,
+          "layoutMs": 47.35300000000001,
+          "recalcMs": 339.49999999999994,
+          "layouts": 284,
+          "recalcs": 405,
+          "heapUsed": 49170896,
+          "heapTotal": 93503488,
+          "domNodes": 1763,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 362,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 49.899999999999636,
+            "over33ms": 1
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6064.801431,
+          "taskMs": 1963.638,
+          "scriptMs": 621.747,
+          "layoutMs": 47.441999999999986,
+          "recalcMs": 323.02000000000004,
+          "layouts": 284,
+          "recalcs": 404,
+          "heapUsed": 25807620,
+          "heapTotal": 80658432,
+          "domNodes": 1055,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 364,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "repeat-cap",
+      "sample": "replay-playback-middle-60x",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            2576.1589999999997,
+            2415.638,
+            2458.678,
+            2355.0000000000005
+          ],
+          "baselineMean": 2465.5795,
+          "candidateMean": 2437.158,
+          "delta": -28.421499999999924,
+          "percent": -1.1527310313863337,
+          "pairs": [
+            {
+              "baseline": 2576.1589999999997,
+              "candidate": 2415.638,
+              "delta": -160.52099999999973,
+              "percent": -6.2310206784596645
+            },
+            {
+              "baseline": 2355.0000000000005,
+              "candidate": 2458.678,
+              "delta": 103.67799999999943,
+              "percent": 4.40246284501058
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            638.15,
+            582.261,
+            552.8340000000001,
+            591.9970000000001
+          ],
+          "baselineMean": 615.0735,
+          "candidateMean": 567.5475,
+          "delta": -47.525999999999954,
+          "percent": -7.72688142148864,
+          "pairs": [
+            {
+              "baseline": 638.15,
+              "candidate": 582.261,
+              "delta": -55.88900000000001,
+              "percent": -8.757972263574398
+            },
+            {
+              "baseline": 591.9970000000001,
+              "candidate": 552.8340000000001,
+              "delta": -39.16300000000001,
+              "percent": -6.61540514563419
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            43.91399999999998,
+            39.869000000000014,
+            47.140000000000015,
+            43.73800000000003
+          ],
+          "baselineMean": 43.82600000000001,
+          "candidateMean": 43.504500000000014,
+          "delta": -0.32149999999999324,
+          "percent": -0.7335828047277726,
+          "pairs": [
+            {
+              "baseline": 43.91399999999998,
+              "candidate": 39.869000000000014,
+              "delta": -4.044999999999966,
+              "percent": -9.211185498929652
+            },
+            {
+              "baseline": 43.73800000000003,
+              "candidate": 47.140000000000015,
+              "delta": 3.401999999999987,
+              "percent": 7.778133430883871
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            324.983,
+            325.849,
+            329.76000000000005,
+            306.766
+          ],
+          "baselineMean": 315.8745,
+          "candidateMean": 327.8045,
+          "delta": 11.930000000000007,
+          "percent": 3.776816425510776,
+          "pairs": [
+            {
+              "baseline": 324.983,
+              "candidate": 325.849,
+              "delta": 0.8659999999999854,
+              "percent": 0.2664754771787958
+            },
+            {
+              "baseline": 306.766,
+              "candidate": 329.76000000000005,
+              "delta": 22.994000000000028,
+              "percent": 7.495615550615131
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            281,
+            283,
+            282,
+            278
+          ],
+          "baselineMean": 279.5,
+          "candidateMean": 282.5,
+          "delta": 3.0,
+          "percent": 1.073345259391778,
+          "pairs": [
+            {
+              "baseline": 281,
+              "candidate": 283,
+              "delta": 2,
+              "percent": 0.7117437722419906
+            },
+            {
+              "baseline": 278,
+              "candidate": 282,
+              "delta": 4,
+              "percent": 1.4388489208633004
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            406,
+            403,
+            404,
+            405
+          ],
+          "baselineMean": 405.5,
+          "candidateMean": 403.5,
+          "delta": -2.0,
+          "percent": -0.4932182490752113,
+          "pairs": [
+            {
+              "baseline": 406,
+              "candidate": 403,
+              "delta": -3,
+              "percent": -0.7389162561576401
+            },
+            {
+              "baseline": 405,
+              "candidate": 404,
+              "delta": -1,
+              "percent": -0.24691358024691024
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            29305308,
+            72220572,
+            51215348,
+            28216520
+          ],
+          "baselineMean": 28760914,
+          "candidateMean": 61717960,
+          "delta": 32957046,
+          "percent": 114.58970323404883,
+          "pairs": [
+            {
+              "baseline": 29305308,
+              "candidate": 72220572,
+              "delta": 42915264,
+              "percent": 146.44194833236352
+            },
+            {
+              "baseline": 28216520,
+              "candidate": 51215348,
+              "delta": 22998828,
+              "percent": 81.50837877952348
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            79347712,
+            104251392,
+            99794944,
+            79085568
+          ],
+          "baselineMean": 79216640,
+          "candidateMean": 102023168,
+          "delta": 22806528,
+          "percent": 28.790072388831444,
+          "pairs": [
+            {
+              "baseline": 79347712,
+              "candidate": 104251392,
+              "delta": 24903680,
+              "percent": 31.385504852364242
+            },
+            {
+              "baseline": 79085568,
+              "candidate": 99794944,
+              "delta": 20709376,
+              "percent": 26.18603687590637
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            1076,
+            2083,
+            1868,
+            1270
+          ],
+          "baselineMean": 1173,
+          "candidateMean": 1975.5,
+          "delta": 802.5,
+          "percent": 68.41432225063939,
+          "pairs": [
+            {
+              "baseline": 1076,
+              "candidate": 2083,
+              "delta": 1007,
+              "percent": 93.58736059479553
+            },
+            {
+              "baseline": 1270,
+              "candidate": 1868,
+              "delta": 598,
+              "percent": 47.08661417322835
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            239,
+            238,
+            236,
+            239
+          ],
+          "baselineMean": 239,
+          "candidateMean": 237,
+          "delta": -2,
+          "percent": -0.8368200836820106,
+          "pairs": [
+            {
+              "baseline": 239,
+              "candidate": 238,
+              "delta": -1,
+              "percent": -0.4184100418409997
+            },
+            {
+              "baseline": 239,
+              "candidate": 236,
+              "delta": -3,
+              "percent": -1.2552301255230103
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            6078.375489000002,
+            6066.218544000001,
+            6060.254626999998,
+            6087.039597000001
+          ],
+          "baselineMean": 6082.707543000001,
+          "candidateMean": 6063.2365855,
+          "delta": -19.470957500001532,
+          "percent": -0.32010346317584704,
+          "pairs": [
+            {
+              "baseline": 6078.375489000002,
+              "candidate": 6066.218544000001,
+              "delta": -12.156945000000633,
+              "percent": -0.20000319200419447
+            },
+            {
+              "baseline": 6087.039597000001,
+              "candidate": 6060.254626999998,
+              "delta": -26.78497000000243,
+              "percent": -0.44003278725512907
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6078.375489000002,
+          "taskMs": 2576.1589999999997,
+          "scriptMs": 638.15,
+          "layoutMs": 43.91399999999998,
+          "recalcMs": 324.983,
+          "layouts": 281,
+          "recalcs": 406,
+          "heapUsed": 29305308,
+          "heapTotal": 79347712,
+          "domNodes": 1076,
+          "canvasDraws": 239,
+          "longTasks": [],
+          "raf": {
+            "count": 364,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6066.218544000001,
+          "taskMs": 2415.638,
+          "scriptMs": 582.261,
+          "layoutMs": 39.869000000000014,
+          "recalcMs": 325.849,
+          "layouts": 283,
+          "recalcs": 403,
+          "heapUsed": 72220572,
+          "heapTotal": 104251392,
+          "domNodes": 2083,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6060.254626999998,
+          "taskMs": 2458.678,
+          "scriptMs": 552.8340000000001,
+          "layoutMs": 47.140000000000015,
+          "recalcMs": 329.76000000000005,
+          "layouts": 282,
+          "recalcs": 404,
+          "heapUsed": 51215348,
+          "heapTotal": 99794944,
+          "domNodes": 1868,
+          "canvasDraws": 236,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6087.039597000001,
+          "taskMs": 2355.0000000000005,
+          "scriptMs": 591.9970000000001,
+          "layoutMs": 43.73800000000003,
+          "recalcMs": 306.766,
+          "layouts": 278,
+          "recalcs": 405,
+          "heapUsed": 28216520,
+          "heapTotal": 79085568,
+          "domNodes": 1270,
+          "canvasDraws": 239,
+          "longTasks": [],
+          "raf": {
+            "count": 365,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Maurasi",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "distinct-cap",
+      "sample": "replay-prepare",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            265.389,
+            281.686,
+            242.87300000000002,
+            293.62600000000003
+          ],
+          "baselineMean": 279.50750000000005,
+          "candidateMean": 262.2795,
+          "delta": -17.228000000000065,
+          "percent": -6.163698648515714,
+          "pairs": [
+            {
+              "baseline": 265.389,
+              "candidate": 281.686,
+              "delta": 16.29699999999997,
+              "percent": 6.140797094076977
+            },
+            {
+              "baseline": 293.62600000000003,
+              "candidate": 242.87300000000002,
+              "delta": -50.753000000000014,
+              "percent": -17.28491346134198
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            95.40300000000002,
+            107.626,
+            87.34399999999998,
+            115.47999999999998
+          ],
+          "baselineMean": 105.44149999999999,
+          "candidateMean": 97.48499999999999,
+          "delta": -7.9565000000000055,
+          "percent": -7.545890375231767,
+          "pairs": [
+            {
+              "baseline": 95.40300000000002,
+              "candidate": 107.626,
+              "delta": 12.222999999999985,
+              "percent": 12.811966080731185
+            },
+            {
+              "baseline": 115.47999999999998,
+              "candidate": 87.34399999999998,
+              "delta": -28.135999999999996,
+              "percent": -24.364392102528576
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            10.50899999999999,
+            11.976,
+            11.092000000000004,
+            11.463000000000001
+          ],
+          "baselineMean": 10.985999999999995,
+          "candidateMean": 11.534000000000002,
+          "delta": 0.5480000000000071,
+          "percent": 4.98816675769167,
+          "pairs": [
+            {
+              "baseline": 10.50899999999999,
+              "candidate": 11.976,
+              "delta": 1.4670000000000112,
+              "percent": 13.95946331715685
+            },
+            {
+              "baseline": 11.463000000000001,
+              "candidate": 11.092000000000004,
+              "delta": -0.3709999999999969,
+              "percent": -3.236500043618573
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            20.523,
+            25.514999999999997,
+            22.674,
+            23.310999999999993
+          ],
+          "baselineMean": 21.916999999999994,
+          "candidateMean": 24.094499999999996,
+          "delta": 2.177500000000002,
+          "percent": 9.93521011087286,
+          "pairs": [
+            {
+              "baseline": 20.523,
+              "candidate": 25.514999999999997,
+              "delta": 4.991999999999997,
+              "percent": 24.32392925010962
+            },
+            {
+              "baseline": 23.310999999999993,
+              "candidate": 22.674,
+              "delta": -0.6369999999999933,
+              "percent": -2.732615503410385
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            13,
+            12,
+            14,
+            15
+          ],
+          "baselineMean": 14,
+          "candidateMean": 13,
+          "delta": -1,
+          "percent": -7.14285714285714,
+          "pairs": [
+            {
+              "baseline": 13,
+              "candidate": 12,
+              "delta": -1,
+              "percent": -7.692307692307687
+            },
+            {
+              "baseline": 15,
+              "candidate": 14,
+              "delta": -1,
+              "percent": -6.666666666666665
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            29,
+            29,
+            35,
+            34
+          ],
+          "baselineMean": 31.5,
+          "candidateMean": 32,
+          "delta": 0.5,
+          "percent": 1.5873015873015817,
+          "pairs": [
+            {
+              "baseline": 29,
+              "candidate": 29,
+              "delta": 0,
+              "percent": 0.0
+            },
+            {
+              "baseline": 34,
+              "candidate": 35,
+              "delta": 1,
+              "percent": 2.941176470588225
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            25759428,
+            37704280,
+            34315060,
+            25410580
+          ],
+          "baselineMean": 25585004,
+          "candidateMean": 36009670,
+          "delta": 10424666,
+          "percent": 40.7452193480212,
+          "pairs": [
+            {
+              "baseline": 25759428,
+              "candidate": 37704280,
+              "delta": 11944852,
+              "percent": 46.37079674284692
+            },
+            {
+              "baseline": 25410580,
+              "candidate": 34315060,
+              "delta": 8904480,
+              "percent": 35.042411467979086
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            72224768,
+            66306048,
+            67354624,
+            74059776
+          ],
+          "baselineMean": 73142272,
+          "candidateMean": 66830336,
+          "delta": -6311936,
+          "percent": -8.629669037352294,
+          "pairs": [
+            {
+              "baseline": 72224768,
+              "candidate": 66306048,
+              "delta": -5918720,
+              "percent": -8.194861906652296
+            },
+            {
+              "baseline": 74059776,
+              "candidate": 67354624,
+              "delta": -6705152,
+              "percent": -9.053702781925777
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            911,
+            952,
+            957,
+            864
+          ],
+          "baselineMean": 887.5,
+          "candidateMean": 954.5,
+          "delta": 67.0,
+          "percent": 7.549295774647891,
+          "pairs": [
+            {
+              "baseline": 911,
+              "candidate": 952,
+              "delta": 41,
+              "percent": 4.500548847420416
+            },
+            {
+              "baseline": 864,
+              "candidate": 957,
+              "delta": 93,
+              "percent": 10.763888888888884
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            5,
+            4,
+            4,
+            5
+          ],
+          "baselineMean": 5,
+          "candidateMean": 4,
+          "delta": -1,
+          "percent": -19.999999999999996,
+          "pairs": [
+            {
+              "baseline": 5,
+              "candidate": 4,
+              "delta": -1,
+              "percent": -19.999999999999996
+            },
+            {
+              "baseline": 5,
+              "candidate": 4,
+              "delta": -1,
+              "percent": -19.999999999999996
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            867.6989130000002,
+            905.0006880000001,
+            871.0985420000006,
+            901.8441080000002
+          ],
+          "baselineMean": 884.7715105000002,
+          "candidateMean": 888.0496150000004,
+          "delta": 3.278104500000154,
+          "percent": 0.370502944669604,
+          "pairs": [
+            {
+              "baseline": 867.6989130000002,
+              "candidate": 905.0006880000001,
+              "delta": 37.30177499999991,
+              "percent": 4.298930705241055
+            },
+            {
+              "baseline": 901.8441080000002,
+              "candidate": 871.0985420000006,
+              "delta": -30.7455659999996,
+              "percent": -3.409188542372732
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 867.6989130000002,
+          "taskMs": 265.389,
+          "scriptMs": 95.40300000000002,
+          "layoutMs": 10.50899999999999,
+          "recalcMs": 20.523,
+          "layouts": 13,
+          "recalcs": 29,
+          "heapUsed": 25759428,
+          "heapTotal": 72224768,
+          "domNodes": 911,
+          "canvasDraws": 5,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "1275.28",
+              "at": 11003.029119,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 12.447999999494641,
+              "totalMs": 36.8609999986802,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "1275.29",
+              "at": 11003.02947,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 11.350000000675209,
+              "totalMs": 12.717999999949825,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "1275.30",
+              "at": 11003.034607,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 117.82099999982165,
+              "totalMs": 142.2870000005787,
+              "encodedBytes": 4590246
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 905.0006880000001,
+          "taskMs": 281.686,
+          "scriptMs": 107.626,
+          "layoutMs": 11.976,
+          "recalcMs": 25.514999999999997,
+          "layouts": 12,
+          "recalcs": 29,
+          "heapUsed": 37704280,
+          "heapTotal": 66306048,
+          "domNodes": 952,
+          "canvasDraws": 4,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "1389.28",
+              "at": 11028.451192,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 11.20699999955832,
+              "totalMs": 25.482999999439926,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "1389.29",
+              "at": 11028.45207,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 10.512000000744592,
+              "totalMs": 10.156000000279164,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "1389.30",
+              "at": 11028.462967,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 138.6450000009063,
+              "totalMs": 165.5769999997574,
+              "encodedBytes": 4590246
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 871.0985420000006,
+          "taskMs": 242.87300000000002,
+          "scriptMs": 87.34399999999998,
+          "layoutMs": 11.092000000000004,
+          "recalcMs": 22.674,
+          "layouts": 14,
+          "recalcs": 35,
+          "heapUsed": 34315060,
+          "heapTotal": 67354624,
+          "domNodes": 957,
+          "canvasDraws": 4,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "1505.28",
+              "at": 11053.824842,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 15.058000000863103,
+              "totalMs": 34.643000000869506,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "1505.29",
+              "at": 11053.825235,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 13.98200000039651,
+              "totalMs": 16.31199999974342,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "1505.30",
+              "at": 11053.830023,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 122.22800000017742,
+              "totalMs": 147.39399999962188,
+              "encodedBytes": 4590246
+            }
+          ]
+        },
+        {
+          "name": "replay-prepare",
+          "visits": 1000,
+          "warmAtlas": true,
+          "includes": "Overview to Atlas navigation, replay API/parse, readiness and two fixed 350ms settles; 100ms readiness polling",
+          "domElementCount": 675,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 901.8441080000002,
+          "taskMs": 293.62600000000003,
+          "scriptMs": 115.47999999999998,
+          "layoutMs": 11.463000000000001,
+          "recalcMs": 23.310999999999993,
+          "layouts": 15,
+          "recalcs": 34,
+          "heapUsed": 25410580,
+          "heapTotal": 74059776,
+          "domNodes": 864,
+          "canvasDraws": 5,
+          "longTasks": [],
+          "raf": null,
+          "requests": [
+            {
+              "requestId": "1620.28",
+              "at": 11079.280374,
+              "url": "/api/universe/static?v=3503375%3A3494416%3A3494416",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 13.27800000035495,
+              "totalMs": 25.808000000324682,
+              "encodedBytes": 696
+            },
+            {
+              "requestId": "1620.29",
+              "at": 11079.280745,
+              "url": "/api/universe?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 12.720000000626897,
+              "totalMs": 9.375999999974738,
+              "encodedBytes": 544081
+            },
+            {
+              "requestId": "1620.30",
+              "at": 11079.294146,
+              "url": "/api/sessions/followup-replay-1000/replay?character=42",
+              "method": "GET",
+              "status": 200,
+              "responseHeadersMs": 140.6200000001263,
+              "totalMs": 148.67600000070524,
+              "encodedBytes": 4590246
+            }
+          ]
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "distinct-cap",
+      "sample": "replay-playback-start-60x",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            1960.821,
+            1901.16,
+            1720.6760000000002,
+            1946.1029999999998
+          ],
+          "baselineMean": 1953.462,
+          "candidateMean": 1810.9180000000001,
+          "delta": -142.54399999999987,
+          "percent": -7.296993747510827,
+          "pairs": [
+            {
+              "baseline": 1960.821,
+              "candidate": 1901.16,
+              "delta": -59.66099999999983,
+              "percent": -3.042654071942308
+            },
+            {
+              "baseline": 1946.1029999999998,
+              "candidate": 1720.6760000000002,
+              "delta": -225.42699999999968,
+              "percent": -11.583508169916989
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            602.471,
+            569.6910000000001,
+            531.098,
+            600.4410000000001
+          ],
+          "baselineMean": 601.4560000000001,
+          "candidateMean": 550.3945000000001,
+          "delta": -51.061500000000024,
+          "percent": -8.489648453087174,
+          "pairs": [
+            {
+              "baseline": 602.471,
+              "candidate": 569.6910000000001,
+              "delta": -32.77999999999986,
+              "percent": -5.440925787299278
+            },
+            {
+              "baseline": 600.4410000000001,
+              "candidate": 531.098,
+              "delta": -69.34300000000019,
+              "percent": -11.548678388051481
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            47.815999999999995,
+            48.25900000000001,
+            44.993,
+            49.96600000000001
+          ],
+          "baselineMean": 48.891000000000005,
+          "candidateMean": 46.626000000000005,
+          "delta": -2.2650000000000006,
+          "percent": -4.6327544946922705,
+          "pairs": [
+            {
+              "baseline": 47.815999999999995,
+              "candidate": 48.25900000000001,
+              "delta": 0.44300000000001205,
+              "percent": 0.9264681278233544
+            },
+            {
+              "baseline": 49.96600000000001,
+              "candidate": 44.993,
+              "delta": -4.973000000000006,
+              "percent": -9.952767882159874
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            331.989,
+            326.966,
+            304.85200000000003,
+            325.88800000000003
+          ],
+          "baselineMean": 328.9385,
+          "candidateMean": 315.909,
+          "delta": -13.029499999999985,
+          "percent": -3.9610747905763466,
+          "pairs": [
+            {
+              "baseline": 331.989,
+              "candidate": 326.966,
+              "delta": -5.022999999999968,
+              "percent": -1.5130019368111536
+            },
+            {
+              "baseline": 325.88800000000003,
+              "candidate": 304.85200000000003,
+              "delta": -21.036,
+              "percent": -6.454978397486255
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            277,
+            283,
+            283,
+            277
+          ],
+          "baselineMean": 277,
+          "candidateMean": 283,
+          "delta": 6,
+          "percent": 2.166064981949467,
+          "pairs": [
+            {
+              "baseline": 277,
+              "candidate": 283,
+              "delta": 6,
+              "percent": 2.166064981949467
+            },
+            {
+              "baseline": 277,
+              "candidate": 283,
+              "delta": 6,
+              "percent": 2.166064981949467
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            404,
+            406,
+            405,
+            405
+          ],
+          "baselineMean": 404.5,
+          "candidateMean": 405.5,
+          "delta": 1.0,
+          "percent": 0.24721878862794533,
+          "pairs": [
+            {
+              "baseline": 404,
+              "candidate": 406,
+              "delta": 2,
+              "percent": 0.4950495049504955
+            },
+            {
+              "baseline": 405,
+              "candidate": 405,
+              "delta": 0,
+              "percent": 0.0
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            40726976,
+            32412568,
+            51102772,
+            39557508
+          ],
+          "baselineMean": 40142242,
+          "candidateMean": 41757670,
+          "delta": 1615428,
+          "percent": 4.024259531891627,
+          "pairs": [
+            {
+              "baseline": 40726976,
+              "candidate": 32412568,
+              "delta": -8314408,
+              "percent": -20.41498980921147
+            },
+            {
+              "baseline": 39557508,
+              "candidate": 51102772,
+              "delta": 11545264,
+              "percent": 29.18602455948438
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            79347712,
+            78823424,
+            93089792,
+            82493440
+          ],
+          "baselineMean": 80920576,
+          "candidateMean": 85956608,
+          "delta": 5036032,
+          "percent": 6.223425794695281,
+          "pairs": [
+            {
+              "baseline": 79347712,
+              "candidate": 78823424,
+              "delta": -524288,
+              "percent": -0.6607474705760841
+            },
+            {
+              "baseline": 82493440,
+              "candidate": 93089792,
+              "delta": 10596352,
+              "percent": 12.845084409136053
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            1826,
+            1118,
+            2386,
+            1181
+          ],
+          "baselineMean": 1503.5,
+          "candidateMean": 1752,
+          "delta": 248.5,
+          "percent": 16.52810109743932,
+          "pairs": [
+            {
+              "baseline": 1826,
+              "candidate": 1118,
+              "delta": -708,
+              "percent": -38.77327491785323
+            },
+            {
+              "baseline": 1181,
+              "candidate": 2386,
+              "delta": 1205,
+              "percent": 102.03217612193059
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            238,
+            238,
+            237,
+            238
+          ],
+          "baselineMean": 238,
+          "candidateMean": 237.5,
+          "delta": -0.5,
+          "percent": -0.21008403361344463,
+          "pairs": [
+            {
+              "baseline": 238,
+              "candidate": 238,
+              "delta": 0,
+              "percent": 0.0
+            },
+            {
+              "baseline": 238,
+              "candidate": 237,
+              "delta": -1,
+              "percent": -0.42016806722688926
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            6067.4278429999995,
+            6055.687365000001,
+            6051.780427000001,
+            6067.503806
+          ],
+          "baselineMean": 6067.465824499999,
+          "candidateMean": 6053.733896000001,
+          "delta": -13.731928499998503,
+          "percent": -0.22632065671552848,
+          "pairs": [
+            {
+              "baseline": 6067.4278429999995,
+              "candidate": 6055.687365000001,
+              "delta": -11.740477999998802,
+              "percent": -0.19350008444753986
+            },
+            {
+              "baseline": 6067.503806,
+              "candidate": 6051.780427000001,
+              "delta": -15.723378999999113,
+              "percent": -0.2591408180815713
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6067.4278429999995,
+          "taskMs": 1960.821,
+          "scriptMs": 602.471,
+          "layoutMs": 47.815999999999995,
+          "recalcMs": 331.989,
+          "layouts": 277,
+          "recalcs": 404,
+          "heapUsed": 40726976,
+          "heapTotal": 79347712,
+          "domNodes": 1826,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Yuzier",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6055.687365000001,
+          "taskMs": 1901.16,
+          "scriptMs": 569.6910000000001,
+          "layoutMs": 48.25900000000001,
+          "recalcMs": 326.966,
+          "layouts": 283,
+          "recalcs": 406,
+          "heapUsed": 32412568,
+          "heapTotal": 78823424,
+          "domNodes": 1118,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Yuzier",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6051.780427000001,
+          "taskMs": 1720.6760000000002,
+          "scriptMs": 531.098,
+          "layoutMs": 44.993,
+          "recalcMs": 304.85200000000003,
+          "layouts": 283,
+          "recalcs": 405,
+          "heapUsed": 51102772,
+          "heapTotal": 93089792,
+          "domNodes": 2386,
+          "canvasDraws": 237,
+          "longTasks": [],
+          "raf": {
+            "count": 362,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Yuzier",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "visits": 1000,
+          "speed": 60,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6067.503806,
+          "taskMs": 1946.1029999999998,
+          "scriptMs": 600.4410000000001,
+          "layoutMs": 49.96600000000001,
+          "recalcMs": 325.88800000000003,
+          "layouts": 277,
+          "recalcs": 405,
+          "heapUsed": 39557508,
+          "heapTotal": 82493440,
+          "domNodes": 1181,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 364,
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 16.80000000000109,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 360000,
+            "duration": 60000000,
+            "location": "Yuzier",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    },
+    {
+      "case": "distinct-cap",
+      "sample": "replay-playback-middle-60x",
+      "metrics": {
+        "taskMs": {
+          "valuesABBA": [
+            2444.0209999999997,
+            2083.393,
+            2317.22,
+            2428.5019999999995
+          ],
+          "baselineMean": 2436.2614999999996,
+          "candidateMean": 2200.3064999999997,
+          "delta": -235.95499999999993,
+          "percent": -9.685126165643542,
+          "pairs": [
+            {
+              "baseline": 2444.0209999999997,
+              "candidate": 2083.393,
+              "delta": -360.6279999999997,
+              "percent": -14.755519694798025
+            },
+            {
+              "baseline": 2428.5019999999995,
+              "candidate": 2317.22,
+              "delta": -111.2819999999997,
+              "percent": -4.5823310007568345
+            }
+          ]
+        },
+        "scriptMs": {
+          "valuesABBA": [
+            557.6780000000001,
+            480.97300000000007,
+            540.967,
+            559.6620000000001
+          ],
+          "baselineMean": 558.6700000000001,
+          "candidateMean": 510.97,
+          "delta": -47.700000000000045,
+          "percent": -8.538135213990373,
+          "pairs": [
+            {
+              "baseline": 557.6780000000001,
+              "candidate": 480.97300000000007,
+              "delta": -76.70500000000004,
+              "percent": -13.754352870294328
+            },
+            {
+              "baseline": 559.6620000000001,
+              "candidate": 540.967,
+              "delta": -18.695000000000164,
+              "percent": -3.3404090325947045
+            }
+          ]
+        },
+        "layoutMs": {
+          "valuesABBA": [
+            47.292,
+            40.14599999999999,
+            40.76099999999999,
+            46.477999999999994
+          ],
+          "baselineMean": 46.885,
+          "candidateMean": 40.45349999999999,
+          "delta": -6.431500000000007,
+          "percent": -13.71760691052577,
+          "pairs": [
+            {
+              "baseline": 47.292,
+              "candidate": 40.14599999999999,
+              "delta": -7.146000000000015,
+              "percent": -15.110378076630326
+            },
+            {
+              "baseline": 46.477999999999994,
+              "candidate": 40.76099999999999,
+              "delta": -5.717000000000006,
+              "percent": -12.300443220448399
+            }
+          ]
+        },
+        "recalcMs": {
+          "valuesABBA": [
+            344.5,
+            293.209,
+            309.43699999999995,
+            335.713
+          ],
+          "baselineMean": 340.1065,
+          "candidateMean": 301.323,
+          "delta": -38.783500000000004,
+          "percent": -11.403339836198366,
+          "pairs": [
+            {
+              "baseline": 344.5,
+              "candidate": 293.209,
+              "delta": -51.291,
+              "percent": -14.88853410740203
+            },
+            {
+              "baseline": 335.713,
+              "candidate": 309.43699999999995,
+              "delta": -26.276000000000067,
+              "percent": -7.8269235924733565
+            }
+          ]
+        },
+        "layouts": {
+          "valuesABBA": [
+            286,
+            283,
+            275,
+            282
+          ],
+          "baselineMean": 284,
+          "candidateMean": 279,
+          "delta": -5,
+          "percent": -1.7605633802816878,
+          "pairs": [
+            {
+              "baseline": 286,
+              "candidate": 283,
+              "delta": -3,
+              "percent": -1.0489510489510523
+            },
+            {
+              "baseline": 282,
+              "candidate": 275,
+              "delta": -7,
+              "percent": -2.4822695035460973
+            }
+          ]
+        },
+        "recalcs": {
+          "valuesABBA": [
+            406,
+            405,
+            403,
+            402
+          ],
+          "baselineMean": 404,
+          "candidateMean": 404,
+          "delta": 0,
+          "percent": 0.0,
+          "pairs": [
+            {
+              "baseline": 406,
+              "candidate": 405,
+              "delta": -1,
+              "percent": -0.24630541871921707
+            },
+            {
+              "baseline": 402,
+              "candidate": 403,
+              "delta": 1,
+              "percent": 0.24875621890547706
+            }
+          ]
+        },
+        "heapUsed": {
+          "valuesABBA": [
+            37131052,
+            37148712,
+            41441936,
+            35897924
+          ],
+          "baselineMean": 36514488,
+          "candidateMean": 39295324,
+          "delta": 2780836,
+          "percent": 7.615705853523136,
+          "pairs": [
+            {
+              "baseline": 37131052,
+              "candidate": 37148712,
+              "delta": 17660,
+              "percent": 0.047561270281271106
+            },
+            {
+              "baseline": 35897924,
+              "candidate": 41441936,
+              "delta": 5544012,
+              "percent": 15.443823436697901
+            }
+          ]
+        },
+        "heapTotal": {
+          "valuesABBA": [
+            79609856,
+            78561280,
+            79609856,
+            85377024
+          ],
+          "baselineMean": 82493440,
+          "candidateMean": 79085568,
+          "delta": -3407872,
+          "percent": -4.131082423038734,
+          "pairs": [
+            {
+              "baseline": 79609856,
+              "candidate": 78561280,
+              "delta": -1048576,
+              "percent": -1.3171434451533237
+            },
+            {
+              "baseline": 85377024,
+              "candidate": 79609856,
+              "delta": -5767168,
+              "percent": -6.754941469967379
+            }
+          ]
+        },
+        "domNodes": {
+          "valuesABBA": [
+            1249,
+            1847,
+            1375,
+            1202
+          ],
+          "baselineMean": 1225.5,
+          "candidateMean": 1611,
+          "delta": 385.5,
+          "percent": 31.45654834761322,
+          "pairs": [
+            {
+              "baseline": 1249,
+              "candidate": 1847,
+              "delta": 598,
+              "percent": 47.8783026421137
+            },
+            {
+              "baseline": 1202,
+              "candidate": 1375,
+              "delta": 173,
+              "percent": 14.392678868552423
+            }
+          ]
+        },
+        "canvasDraws": {
+          "valuesABBA": [
+            238,
+            238,
+            236,
+            237
+          ],
+          "baselineMean": 237.5,
+          "candidateMean": 237,
+          "delta": -0.5,
+          "percent": -0.21052631578947212,
+          "pairs": [
+            {
+              "baseline": 238,
+              "candidate": 238,
+              "delta": 0,
+              "percent": 0.0
+            },
+            {
+              "baseline": 237,
+              "candidate": 236,
+              "delta": -1,
+              "percent": -0.42194092827003704
+            }
+          ]
+        },
+        "windowMs": {
+          "valuesABBA": [
+            6078.275417999999,
+            6067.204938000001,
+            6062.894740999998,
+            6066.232936999999
+          ],
+          "baselineMean": 6072.254177499999,
+          "candidateMean": 6065.0498394999995,
+          "delta": -7.204337999999552,
+          "percent": -0.11864355129754811,
+          "pairs": [
+            {
+              "baseline": 6078.275417999999,
+              "candidate": 6067.204938000001,
+              "delta": -11.070479999998497,
+              "percent": -0.18213192457872118
+            },
+            {
+              "baseline": 6066.232936999999,
+              "candidate": 6062.894740999998,
+              "delta": -3.3381960000006075,
+              "percent": -0.05502914303933126
+            }
+          ]
+        }
+      },
+      "rawSamples": [
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6078.275417999999,
+          "taskMs": 2444.0209999999997,
+          "scriptMs": 557.6780000000001,
+          "layoutMs": 47.292,
+          "recalcMs": 344.5,
+          "layouts": 286,
+          "recalcs": 406,
+          "heapUsed": 37131052,
+          "heapTotal": 79609856,
+          "domNodes": 1249,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 363,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 33.30000000000291,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Q0J-RH",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6067.204938000001,
+          "taskMs": 2083.393,
+          "scriptMs": 480.97300000000007,
+          "layoutMs": 40.14599999999999,
+          "recalcMs": 293.209,
+          "layouts": 283,
+          "recalcs": 405,
+          "heapUsed": 37148712,
+          "heapTotal": 78561280,
+          "domNodes": 1847,
+          "canvasDraws": 238,
+          "longTasks": [],
+          "raf": {
+            "count": 364,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 16.80000000000291,
+            "over33ms": 0
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Q0J-RH",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6062.894740999998,
+          "taskMs": 2317.22,
+          "scriptMs": 540.967,
+          "layoutMs": 40.76099999999999,
+          "recalcMs": 309.43699999999995,
+          "layouts": 275,
+          "recalcs": 403,
+          "heapUsed": 41441936,
+          "heapTotal": 79609856,
+          "domNodes": 1375,
+          "canvasDraws": 236,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 33.400000000001455,
+            "over33ms": 1
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Q0J-RH",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "visits": 1000,
+          "speed": 60,
+          "startElapsed": 30000000,
+          "domElementCount": 752,
+          "mapNodes": 0,
+          "camera": null,
+          "windowMs": 6066.232936999999,
+          "taskMs": 2428.5019999999995,
+          "scriptMs": 559.6620000000001,
+          "layoutMs": 46.477999999999994,
+          "recalcMs": 335.713,
+          "layouts": 282,
+          "recalcs": 402,
+          "heapUsed": 35897924,
+          "heapTotal": 85377024,
+          "domNodes": 1202,
+          "canvasDraws": 237,
+          "longTasks": [],
+          "raf": {
+            "count": 361,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 50,
+            "over33ms": 1
+          },
+          "requests": [],
+          "replayState": {
+            "playing": false,
+            "elapsed": 30360000,
+            "duration": 60000000,
+            "location": "Q0J-RH",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        }
+      ],
+      "repeatedMaterialTaskRegression": false
+    }
+  ],
+  "retention": {
+    "baseline": {
+      "rows": [
+        {
+          "label": "warmed-atlas-before-replay",
+          "completedCycles": 0,
+          "heapUsed": 6440860,
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        },
+        {
+          "label": "before-navigation-warmup",
+          "completedCycles": 0,
+          "heapUsed": 7163012,
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        },
+        {
+          "label": "warmed-baseline",
+          "completedCycles": 0,
+          "heapUsed": 8999836,
+          "dom": {
+            "documents": 1,
+            "nodes": 583,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        },
+        {
+          "label": "after-batch-1",
+          "completedCycles": 2,
+          "heapUsed": 9562144,
+          "dom": {
+            "documents": 1,
+            "nodes": 583,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        }
+      ],
+      "lastBatchHeapDelta": 562308,
+      "ownership": [
+        {
+          "label": "after-replay-1000",
+          "requests": [],
+          "staleUniverseRequests": 0
+        },
+        {
+          "label": "after-cycle-warmup-0",
+          "requests": [],
+          "staleUniverseRequests": 0
+        },
+        {
+          "label": "after-cycle-1",
+          "requests": [],
+          "staleUniverseRequests": 0
+        },
+        {
+          "label": "after-cycle-2",
+          "requests": [],
+          "staleUniverseRequests": 0
+        }
+      ]
+    },
+    "candidate": {
+      "rows": [
+        {
+          "label": "warmed-atlas-before-replay",
+          "completedCycles": 0,
+          "heapUsed": 6447608,
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        },
+        {
+          "label": "before-navigation-warmup",
+          "completedCycles": 0,
+          "heapUsed": 7147424,
+          "dom": {
+            "documents": 1,
+            "nodes": 577,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        },
+        {
+          "label": "warmed-baseline",
+          "completedCycles": 0,
+          "heapUsed": 9005664,
+          "dom": {
+            "documents": 1,
+            "nodes": 583,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        },
+        {
+          "label": "after-batch-1",
+          "completedCycles": 2,
+          "heapUsed": 9562536,
+          "dom": {
+            "documents": 1,
+            "nodes": 583,
+            "jsEventListeners": 613
+          },
+          "overview": {
+            "pilot": "42",
+            "elements": 432,
+            "canvases": 0,
+            "mapNodes": 0,
+            "replayControls": 0
+          },
+          "windowListeners": {
+            "popstate:true": 1,
+            "popstate:false": 2,
+            "pagehide:false": 1,
+            "pageshow:false": 1,
+            "keydown:false": 2,
+            "hashchange:false": 1,
+            "kairo:workspace-traverse:false": 1
+          },
+          "documentListeners": {
+            "abort:true": 1,
+            "auxclick:true": 1,
+            "beforetoggle:true": 1,
+            "cancel:true": 1,
+            "canplay:true": 1,
+            "canplaythrough:true": 1,
+            "click:true": 1,
+            "close:true": 1,
+            "contextmenu:true": 1,
+            "copy:true": 1,
+            "cut:true": 1,
+            "drag:true": 1,
+            "dragend:true": 1,
+            "dragenter:true": 1,
+            "dragexit:true": 1,
+            "dragleave:true": 1,
+            "dragover:true": 1,
+            "dragstart:true": 1,
+            "drop:true": 1,
+            "durationchange:true": 1,
+            "emptied:true": 1,
+            "encrypted:true": 1,
+            "ended:true": 1,
+            "error:true": 1,
+            "gotpointercapture:true": 1,
+            "input:true": 1,
+            "invalid:true": 1,
+            "keydown:true": 1,
+            "keypress:true": 1,
+            "keyup:true": 1,
+            "load:true": 1,
+            "loadeddata:true": 1,
+            "loadedmetadata:true": 1,
+            "loadstart:true": 1,
+            "lostpointercapture:true": 1,
+            "mousedown:true": 1,
+            "mousemove:true": 1,
+            "mouseout:true": 1,
+            "mouseover:true": 1,
+            "mouseup:true": 1,
+            "paste:true": 1,
+            "pause:true": 1,
+            "play:true": 1,
+            "playing:true": 1,
+            "pointercancel:true": 1,
+            "pointerdown:true": 1,
+            "pointermove:true": 1,
+            "pointerout:true": 1,
+            "pointerover:true": 1,
+            "pointerup:true": 1,
+            "progress:true": 1,
+            "ratechange:true": 1,
+            "reset:true": 1,
+            "resize:true": 1,
+            "seeked:true": 1,
+            "seeking:true": 1,
+            "stalled:true": 1,
+            "submit:true": 1,
+            "suspend:true": 1,
+            "timeupdate:true": 1,
+            "touchcancel:true": 1,
+            "touchend:true": 1,
+            "touchstart:true": 1,
+            "volumechange:true": 1,
+            "scroll:true": 1,
+            "toggle:true": 1,
+            "touchmove:true": 1,
+            "waiting:true": 1,
+            "wheel:true": 1,
+            "scrollend:true": 1,
+            "animationend:true": 1,
+            "animationiteration:true": 1,
+            "animationstart:true": 1,
+            "dblclick:true": 1,
+            "focusin:true": 1,
+            "focusout:true": 1,
+            "transitionrun:true": 1,
+            "transitionstart:true": 1,
+            "transitioncancel:true": 1,
+            "transitionend:true": 1,
+            "change:true": 1,
+            "compositionend:true": 1,
+            "textInput:true": 1,
+            "compositionstart:true": 1,
+            "compositionupdate:true": 1,
+            "auxclick:false": 1,
+            "click:false": 1,
+            "contextmenu:false": 1,
+            "copy:false": 1,
+            "cut:false": 1,
+            "drag:false": 1,
+            "dragend:false": 1,
+            "dragenter:false": 1,
+            "dragexit:false": 1,
+            "dragleave:false": 1,
+            "dragover:false": 1,
+            "dragstart:false": 1,
+            "drop:false": 1,
+            "gotpointercapture:false": 1,
+            "input:false": 1,
+            "keydown:false": 2,
+            "keypress:false": 1,
+            "keyup:false": 1,
+            "lostpointercapture:false": 1,
+            "mousedown:false": 1,
+            "mousemove:false": 1,
+            "mouseout:false": 1,
+            "mouseover:false": 1,
+            "mouseup:false": 1,
+            "paste:false": 1,
+            "pointercancel:false": 1,
+            "pointerdown:false": 1,
+            "pointermove:false": 1,
+            "pointerout:false": 1,
+            "pointerover:false": 1,
+            "pointerup:false": 1,
+            "reset:false": 1,
+            "submit:false": 1,
+            "touchcancel:false": 1,
+            "touchend:false": 1,
+            "touchstart:false": 1,
+            "touchmove:false": 1,
+            "wheel:false": 1,
+            "animationend:false": 1,
+            "animationiteration:false": 1,
+            "animationstart:false": 1,
+            "dblclick:false": 1,
+            "focusin:false": 1,
+            "focusout:false": 1,
+            "transitionrun:false": 1,
+            "transitionstart:false": 1,
+            "transitioncancel:false": 1,
+            "transitionend:false": 1,
+            "change:false": 1,
+            "compositionend:false": 1,
+            "textInput:false": 1,
+            "compositionstart:false": 1,
+            "compositionupdate:false": 1
+          },
+          "targets": [
+            {
+              "type": "page",
+              "url": "/"
+            },
+            {
+              "type": "page",
+              "url": "about:blank"
+            }
+          ]
+        }
+      ],
+      "lastBatchHeapDelta": 556872,
+      "ownership": [
+        {
+          "label": "after-replay-1000",
+          "requests": [],
+          "staleUniverseRequests": 0
+        },
+        {
+          "label": "after-cycle-warmup-0",
+          "requests": [],
+          "staleUniverseRequests": 0
+        },
+        {
+          "label": "after-cycle-1",
+          "requests": [],
+          "staleUniverseRequests": 0
+        },
+        {
+          "label": "after-cycle-2",
+          "requests": [],
+          "staleUniverseRequests": 0
+        }
+      ]
+    }
+  },
+  "profiles": [
+    {
+      "arm": "baseline",
+      "path": "distinct-cap-profile-baseline.json.replay-playback-start-60x.cpuprofile",
+      "sha256": "fda708bd9878264b1e20e67abfbd5e0714398d8bdfd3a33eda47cd3e1d3ca3b3",
+      "pageAsset": "page-BTmfd6YM.js",
+      "pageAssetSha256": "c125274524496c46b54c47a9671bb058c761f33eddc78c55584ce1d9e9dd1d41",
+      "ranges": {
+        "replayHook": {
+          "start": 1033730,
+          "end": 1037459,
+          "excerpt": "function q8(e){let[t,n]=(0,f.useState)(null),[r,i]=(0,f.useState)(null),[a,o]=(0,f.useState)(!1),[s,c]=(0,f.useState)(``),[l,u]=(0,f.useState)(0),[d,p]=(0,f.useState)(0),[m,h]=(0,f"
+        },
+        "replayControls": {
+          "start": 1037459,
+          "end": 1045733,
+          "excerpt": "function J8({replay:e}){if(!e.active)return null;let{data:t,currentVisit:n,playing:r,timeline:i}=e,a=Math.max(0,Number(t?.durationMs)||0),o=a?e.elapsedMs/a*100:0,s=i.events.filter("
+        }
+      },
+      "exclusiveMs": {
+        "(program)": 1153.6249999999998,
+        "(idle)": 4229.89500000001,
+        "framework": 112.05299999999997,
+        "replayHook": 31.207000000000004,
+        "otherPage": 396.2440000000002,
+        "nativeOrOther": 169.60799999999998,
+        "replayControls": 7.688,
+        "(garbage collector)": 11.174
+      },
+      "inclusiveMs": {
+        "(program)": 1153.6249999999998,
+        "nativeOrOther": 6111.494000000045,
+        "(idle)": 4229.89500000001,
+        "otherPage": 583.8930000000008,
+        "framework": 202.54199999999997,
+        "replayHook": 33.383,
+        "replayControls": 11.348,
+        "(garbage collector)": 11.174
+      },
+      "canvasDrawCallbackExclusiveMs": 295.723,
+      "canvasCallsite": [
+        {
+          "lineNumber": 77,
+          "columnNumber": 246036,
+          "excerpt": "()=>{if(z().hidden)return;let r=D.current?.getContext(`2d`);if(!r)return;let{width:l,height:u,dpr:f}=k.current,v=O.current,b=e=>({x:e.x*v.scale+v.x,y:e.y*v.scale+v.y}),x=[],S=(e,t,n,r=11,i=1,a,o)=>{(a?Math.max(t,a.x)<0||Math.min(t,a.x)>l||Math.max(n,a.y)<0||Math.min(n,a.y)>u:t<-r||n<-r||t>l+r||n>u+r)||x.push({symbol:e,x:t,y:n,radius:r,priority:i,segment:a,systemIds:o})};r.setTransform(f,0,0,f,0,0),r.clearRect(0,0,l,u),r.textAlign=`left`,r.textBaseline=`alphabetic`;let C=(e,t,n,i,a,o=1,s)=>{let c=E4(s||T4(t,n,r.measureText(e),i),{width:l,height:u})*o;return c<=0?!1:(r.save(),r.globalAlpha=c,r.lineJoin=`round`,r.lineCap=`round`,r.miterLimit=1.5,r.lineWidth=2.5,r.setLineDash([]),r.shadowBlur=0,r.strokeStyle=`#07111bde`,r.strokeText(e,t,n),r.fillStyle=a,r.fillText(e,t,n),r.restore(),!0)},w=J2("
+        }
+      ],
+      "topSelfSamples": [
+        {
+          "asset": "",
+          "function": "(idle)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 4229.89500000001
+        },
+        {
+          "asset": "",
+          "function": "(program)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 1153.6249999999998
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "j.current",
+          "lineNumber": 77,
+          "columnNumber": 246036,
+          "ms": 295.723
+        },
+        {
+          "asset": "",
+          "function": "measureText",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 92.46099999999996
+        },
+        {
+          "asset": "",
+          "function": "fillRect",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 19.505000000000003
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "o",
+          "lineNumber": 77,
+          "columnNumber": 235110,
+          "ms": 14.678000000000003
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 77,
+          "columnNumber": 248968,
+          "ms": 14.234000000000002
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 78,
+          "columnNumber": 74319,
+          "ms": 12.497000000000002
+        },
+        {
+          "asset": "",
+          "function": "(garbage collector)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 11.174
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "Mu",
+          "lineNumber": 7,
+          "columnNumber": 115511,
+          "ms": 8.658
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 0,
+          "columnNumber": 1290,
+          "ms": 7.9750000000000005
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "q8",
+          "lineNumber": 78,
+          "columnNumber": 71583,
+          "ms": 7.837000000000001
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "Fd",
+          "lineNumber": 8,
+          "columnNumber": 7845,
+          "ms": 7.492000000000001
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 77,
+          "columnNumber": 232220,
+          "ms": 6.836
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "J8",
+          "lineNumber": 78,
+          "columnNumber": 75312,
+          "ms": 6.593
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "path": "distinct-cap-profile-baseline.json.replay-playback-middle-60x.cpuprofile",
+      "sha256": "7ba0453840bfbeb28dcde9e6bdd862402b7721cc883182241a3c37b638dbfd25",
+      "pageAsset": "page-BTmfd6YM.js",
+      "pageAssetSha256": "c125274524496c46b54c47a9671bb058c761f33eddc78c55584ce1d9e9dd1d41",
+      "ranges": {
+        "replayHook": {
+          "start": 1033730,
+          "end": 1037459,
+          "excerpt": "function q8(e){let[t,n]=(0,f.useState)(null),[r,i]=(0,f.useState)(null),[a,o]=(0,f.useState)(!1),[s,c]=(0,f.useState)(``),[l,u]=(0,f.useState)(0),[d,p]=(0,f.useState)(0),[m,h]=(0,f"
+        },
+        "replayControls": {
+          "start": 1037459,
+          "end": 1045733,
+          "excerpt": "function J8({replay:e}){if(!e.active)return null;let{data:t,currentVisit:n,playing:r,timeline:i}=e,a=Math.max(0,Number(t?.durationMs)||0),o=a?e.elapsedMs/a*100:0,s=i.events.filter("
+        }
+      },
+      "exclusiveMs": {
+        "(program)": 1772.4160000000013,
+        "framework": 130.21699999999996,
+        "(idle)": 3578.6730000000075,
+        "otherPage": 389.0960000000001,
+        "nativeOrOther": 185.82900000000004,
+        "replayHook": 39.84700000000001,
+        "replayControls": 14.744000000000002,
+        "(garbage collector)": 27.027
+      },
+      "inclusiveMs": {
+        "(program)": 1772.4160000000013,
+        "nativeOrOther": 6137.849000000004,
+        "framework": 248.8829999999999,
+        "(idle)": 3578.6730000000075,
+        "otherPage": 598.8789999999999,
+        "replayControls": 16.892,
+        "replayHook": 42.02799999999999,
+        "(garbage collector)": 27.027
+      },
+      "canvasDrawCallbackExclusiveMs": 286.01500000000016,
+      "canvasCallsite": [
+        {
+          "lineNumber": 77,
+          "columnNumber": 246036,
+          "excerpt": "()=>{if(z().hidden)return;let r=D.current?.getContext(`2d`);if(!r)return;let{width:l,height:u,dpr:f}=k.current,v=O.current,b=e=>({x:e.x*v.scale+v.x,y:e.y*v.scale+v.y}),x=[],S=(e,t,n,r=11,i=1,a,o)=>{(a?Math.max(t,a.x)<0||Math.min(t,a.x)>l||Math.max(n,a.y)<0||Math.min(n,a.y)>u:t<-r||n<-r||t>l+r||n>u+r)||x.push({symbol:e,x:t,y:n,radius:r,priority:i,segment:a,systemIds:o})};r.setTransform(f,0,0,f,0,0),r.clearRect(0,0,l,u),r.textAlign=`left`,r.textBaseline=`alphabetic`;let C=(e,t,n,i,a,o=1,s)=>{let c=E4(s||T4(t,n,r.measureText(e),i),{width:l,height:u})*o;return c<=0?!1:(r.save(),r.globalAlpha=c,r.lineJoin=`round`,r.lineCap=`round`,r.miterLimit=1.5,r.lineWidth=2.5,r.setLineDash([]),r.shadowBlur=0,r.strokeStyle=`#07111bde`,r.strokeText(e,t,n),r.fillStyle=a,r.fillText(e,t,n),r.restore(),!0)},w=J2("
+        }
+      ],
+      "topSelfSamples": [
+        {
+          "asset": "",
+          "function": "(idle)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 3578.6730000000075
+        },
+        {
+          "asset": "",
+          "function": "(program)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 1772.4160000000013
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "j.current",
+          "lineNumber": 77,
+          "columnNumber": 246036,
+          "ms": 286.01500000000016
+        },
+        {
+          "asset": "",
+          "function": "measureText",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 97.30299999999998
+        },
+        {
+          "asset": "",
+          "function": "(garbage collector)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 27.027
+        },
+        {
+          "asset": "",
+          "function": "fill",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 20.803
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "$",
+          "lineNumber": 8,
+          "columnNumber": 70,
+          "ms": 15.591000000000001
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "q8",
+          "lineNumber": 78,
+          "columnNumber": 71583,
+          "ms": 14.186
+        },
+        {
+          "asset": "",
+          "function": "setAttribute",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 13.051
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "v3",
+          "lineNumber": 77,
+          "columnNumber": 225262,
+          "ms": 12.104
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 77,
+          "columnNumber": 248968,
+          "ms": 12.071000000000002
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 0,
+          "columnNumber": 1290,
+          "ms": 10.007
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "Mu",
+          "lineNumber": 7,
+          "columnNumber": 115511,
+          "ms": 8.751
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "j7",
+          "lineNumber": 86,
+          "columnNumber": 48478,
+          "ms": 8.616999999999999
+        },
+        {
+          "asset": "page-BTmfd6YM.js",
+          "function": "",
+          "lineNumber": 78,
+          "columnNumber": 74319,
+          "ms": 7.849
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "path": "distinct-cap-profile-candidate.json.replay-playback-start-60x.cpuprofile",
+      "sha256": "a42b7038b25e20f5a33901ae37d64e7fa3278ac818638c51824a1ba266a072e4",
+      "pageAsset": "page-C6Mir2r8.js",
+      "pageAssetSha256": "df9aab03643361d4cd326cfea684a15e76b2e8b23b3556cdf807b9c2525378be",
+      "ranges": {
+        "replayHook": {
+          "start": 1035722,
+          "end": 1038758,
+          "excerpt": "function q8(e){let[t,n]=(0,f.useState)(null),[r,i]=(0,f.useState)(null),[a,o]=(0,f.useState)(!1),[s,c]=(0,f.useState)(``),[l,u]=(0,f.useState)(0),[d,p]=(0,f.useState)(0),[m,h]=(0,f"
+        },
+        "replayControls": {
+          "start": 1038758,
+          "end": 1046903,
+          "excerpt": "function J8({replay:e}){if(!e.active)return null;let{data:t,currentVisit:n,playing:r,timeline:i}=e,a=Math.max(0,Number(t?.durationMs)||0),o=a?e.elapsedMs/a*100:0,s=i.ticks,c=i.star"
+        }
+      },
+      "exclusiveMs": {
+        "(program)": 1185.4990000000007,
+        "(idle)": 4184.052000000008,
+        "framework": 100.18599999999995,
+        "nativeOrOther": 213.374,
+        "otherPage": 392.60600000000017,
+        "replayHook": 2.1580000000000004,
+        "replayControls": 14.081,
+        "(garbage collector)": 13.168
+      },
+      "inclusiveMs": {
+        "(program)": 1185.4990000000007,
+        "nativeOrOther": 6105.124000000007,
+        "(idle)": 4184.052000000008,
+        "framework": 195.46399999999994,
+        "otherPage": 569.5489999999999,
+        "replayHook": 6.543000000000001,
+        "replayControls": 15.176000000000002,
+        "(garbage collector)": 13.168
+      },
+      "canvasDrawCallbackExclusiveMs": 288.0590000000002,
+      "canvasCallsite": [
+        {
+          "lineNumber": 77,
+          "columnNumber": 246038,
+          "excerpt": "()=>{if(z().hidden)return;let r=D.current?.getContext(`2d`);if(!r)return;let{width:l,height:u,dpr:f}=k.current,v=O.current,b=e=>({x:e.x*v.scale+v.x,y:e.y*v.scale+v.y}),x=[],S=(e,t,n,r=11,i=1,a,o)=>{(a?Math.max(t,a.x)<0||Math.min(t,a.x)>l||Math.max(n,a.y)<0||Math.min(n,a.y)>u:t<-r||n<-r||t>l+r||n>u+r)||x.push({symbol:e,x:t,y:n,radius:r,priority:i,segment:a,systemIds:o})};r.setTransform(f,0,0,f,0,0),r.clearRect(0,0,l,u),r.textAlign=`left`,r.textBaseline=`alphabetic`;let C=(e,t,n,i,a,o=1,s)=>{let c=C4(s||S4(t,n,r.measureText(e),i),{width:l,height:u})*o;return c<=0?!1:(r.save(),r.globalAlpha=c,r.lineJoin=`round`,r.lineCap=`round`,r.miterLimit=1.5,r.lineWidth=2.5,r.setLineDash([]),r.shadowBlur=0,r.strokeStyle=`#07111bde`,r.strokeText(e,t,n),r.fillStyle=a,r.fillText(e,t,n),r.restore(),!0)},w=G2("
+        }
+      ],
+      "topSelfSamples": [
+        {
+          "asset": "",
+          "function": "(idle)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 4184.052000000008
+        },
+        {
+          "asset": "",
+          "function": "(program)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 1185.4990000000007
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "j.current",
+          "lineNumber": 77,
+          "columnNumber": 246038,
+          "ms": 288.0590000000002
+        },
+        {
+          "asset": "",
+          "function": "measureText",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 99.79999999999998
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "o",
+          "lineNumber": 77,
+          "columnNumber": 235112,
+          "ms": 23.993999999999996
+        },
+        {
+          "asset": "",
+          "function": "fillRect",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 20.313
+        },
+        {
+          "asset": "",
+          "function": "setAttribute",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 16.228
+        },
+        {
+          "asset": "",
+          "function": "set value",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 14.634000000000002
+        },
+        {
+          "asset": "",
+          "function": "(garbage collector)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 13.168
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "",
+          "lineNumber": 0,
+          "columnNumber": 757,
+          "ms": 11.053999999999998
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "J8",
+          "lineNumber": 78,
+          "columnNumber": 76608,
+          "ms": 9.791
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "pp",
+          "lineNumber": 8,
+          "columnNumber": 29053,
+          "ms": 9.67
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "h3",
+          "lineNumber": 77,
+          "columnNumber": 225264,
+          "ms": 9.285
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "Fd",
+          "lineNumber": 8,
+          "columnNumber": 7845,
+          "ms": 8.656
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "Mu",
+          "lineNumber": 7,
+          "columnNumber": 115511,
+          "ms": 7.743999999999999
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "path": "distinct-cap-profile-candidate.json.replay-playback-middle-60x.cpuprofile",
+      "sha256": "cbc05d5defc13ecc5140dce3530d65e026bf8f66cc52fa9a9dd17a23029a8954",
+      "pageAsset": "page-C6Mir2r8.js",
+      "pageAssetSha256": "df9aab03643361d4cd326cfea684a15e76b2e8b23b3556cdf807b9c2525378be",
+      "ranges": {
+        "replayHook": {
+          "start": 1035722,
+          "end": 1038758,
+          "excerpt": "function q8(e){let[t,n]=(0,f.useState)(null),[r,i]=(0,f.useState)(null),[a,o]=(0,f.useState)(!1),[s,c]=(0,f.useState)(``),[l,u]=(0,f.useState)(0),[d,p]=(0,f.useState)(0),[m,h]=(0,f"
+        },
+        "replayControls": {
+          "start": 1038758,
+          "end": 1046903,
+          "excerpt": "function J8({replay:e}){if(!e.active)return null;let{data:t,currentVisit:n,playing:r,timeline:i}=e,a=Math.max(0,Number(t?.durationMs)||0),o=a?e.elapsedMs/a*100:0,s=i.ticks,c=i.star"
+        }
+      },
+      "exclusiveMs": {
+        "(program)": 1641.7929999999983,
+        "(idle)": 3866.8320000000112,
+        "replayHook": 4.372999999999999,
+        "framework": 106.52499999999999,
+        "otherPage": 341.1480000000002,
+        "nativeOrOther": 166.0829999999999,
+        "(garbage collector)": 11.929,
+        "replayControls": 11.001
+      },
+      "inclusiveMs": {
+        "(program)": 1641.7929999999983,
+        "nativeOrOther": 6149.684000000028,
+        "(idle)": 3866.8320000000112,
+        "replayHook": 6.541,
+        "framework": 190.364,
+        "otherPage": 479.0510000000004,
+        "(garbage collector)": 11.929,
+        "replayControls": 13.174999999999999
+      },
+      "canvasDrawCallbackExclusiveMs": 262.4700000000001,
+      "canvasCallsite": [
+        {
+          "lineNumber": 77,
+          "columnNumber": 246038,
+          "excerpt": "()=>{if(z().hidden)return;let r=D.current?.getContext(`2d`);if(!r)return;let{width:l,height:u,dpr:f}=k.current,v=O.current,b=e=>({x:e.x*v.scale+v.x,y:e.y*v.scale+v.y}),x=[],S=(e,t,n,r=11,i=1,a,o)=>{(a?Math.max(t,a.x)<0||Math.min(t,a.x)>l||Math.max(n,a.y)<0||Math.min(n,a.y)>u:t<-r||n<-r||t>l+r||n>u+r)||x.push({symbol:e,x:t,y:n,radius:r,priority:i,segment:a,systemIds:o})};r.setTransform(f,0,0,f,0,0),r.clearRect(0,0,l,u),r.textAlign=`left`,r.textBaseline=`alphabetic`;let C=(e,t,n,i,a,o=1,s)=>{let c=C4(s||S4(t,n,r.measureText(e),i),{width:l,height:u})*o;return c<=0?!1:(r.save(),r.globalAlpha=c,r.lineJoin=`round`,r.lineCap=`round`,r.miterLimit=1.5,r.lineWidth=2.5,r.setLineDash([]),r.shadowBlur=0,r.strokeStyle=`#07111bde`,r.strokeText(e,t,n),r.fillStyle=a,r.fillText(e,t,n),r.restore(),!0)},w=G2("
+        }
+      ],
+      "topSelfSamples": [
+        {
+          "asset": "",
+          "function": "(idle)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 3866.8320000000112
+        },
+        {
+          "asset": "",
+          "function": "(program)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 1641.7929999999983
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "j.current",
+          "lineNumber": 77,
+          "columnNumber": 246038,
+          "ms": 262.4700000000001
+        },
+        {
+          "asset": "",
+          "function": "measureText",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 82.73899999999996
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "",
+          "lineNumber": 77,
+          "columnNumber": 248970,
+          "ms": 15.738999999999999
+        },
+        {
+          "asset": "",
+          "function": "removeChild",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 14.257
+        },
+        {
+          "asset": "",
+          "function": "(garbage collector)",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 11.929
+        },
+        {
+          "asset": "",
+          "function": "fill",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 11.868
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "h3",
+          "lineNumber": 77,
+          "columnNumber": 225264,
+          "ms": 10.859
+        },
+        {
+          "asset": "",
+          "function": "setAttribute",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 8.802000000000001
+        },
+        {
+          "asset": "",
+          "function": "requestAnimationFrame",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "ms": 8.378
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "Qc",
+          "lineNumber": 7,
+          "columnNumber": 92989,
+          "ms": 7.864000000000001
+        },
+        {
+          "asset": "framework-CXnKph_e.js",
+          "function": "h",
+          "lineNumber": 7,
+          "columnNumber": 40398,
+          "ms": 7.862
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "J8",
+          "lineNumber": 78,
+          "columnNumber": 76608,
+          "ms": 7.717
+        },
+        {
+          "asset": "page-C6Mir2r8.js",
+          "function": "",
+          "lineNumber": 0,
+          "columnNumber": 1290,
+          "ms": 7.578
+        }
+      ]
+    }
+  ],
+  "controls": {
+    "workers": 16,
+    "renderedParityChecks": 240,
+    "allSourceAndCleanupVerified": true
+  },
+  "limits": [
+    "Two fresh-process ordinary measurements per arm; nearest AB and BA pairs are retained, not a population estimate.",
+    "Timed preparation contains navigation, API, parsing and fixed settles, not isolated index construction.",
+    "Instrumented CPU and forced-GC retention workers are separate from ordinary measurements.",
+    "Retention is one warmed two-cycle batch per arm, not a leak-slope proof.",
+    "Rendered oracle checks labels/time/event ordering/ticks/control targets, not pixel/trail rendering."
+  ],
+  "repeatedMaterialTaskRegressions": []
+}
