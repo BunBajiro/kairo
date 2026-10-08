@@ -347,7 +347,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             return results;
         });
     }
-    function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements));}
+    function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements.filter(element=>element.visible)));}
     function refreshPolitics() {
         if (!store.get('module:universe', true)) return;
         try { universe.refreshPolitics(); } catch (error) { console.warn('Universe relationship refresh deferred:', error.message); }
