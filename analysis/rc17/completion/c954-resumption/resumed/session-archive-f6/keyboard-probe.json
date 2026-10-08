@@ -1,0 +1,171 @@
+{
+  "complete": true,
+  "chrome": {
+    "protocolVersion": "1.3",
+    "product": "HeadlessChrome/138.0.7204.0",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/138.0.7204.0 Safari/537.36",
+    "jsVersion": "13.8.258"
+  },
+  "harnessSha256": "d67cc0ebd1b5d6642c6e00dffb9e0893b491fa183952cf03697c044d7f6acfaa",
+  "cases": [
+    {
+      "name": "original-without-text",
+      "input": [
+        {
+          "type": "keyDown",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13
+        },
+        {
+          "type": "keyUp",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13
+        }
+      ],
+      "clicks": 0,
+      "events": [
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 0,
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "keyup",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 0,
+          "trusted": true,
+          "defaultPrevented": false
+        }
+      ],
+      "hasFocus": true,
+      "focusedButton": true
+    },
+    {
+      "name": "keydown-with-enter-text",
+      "input": [
+        {
+          "type": "keyDown",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13,
+          "text": "\r",
+          "unmodifiedText": "\r"
+        },
+        {
+          "type": "keyUp",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13
+        }
+      ],
+      "clicks": 1,
+      "events": [
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 0,
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "keypress",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 13,
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "keyup",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 0,
+          "trusted": true,
+          "defaultPrevented": false
+        }
+      ],
+      "hasFocus": true,
+      "focusedButton": true
+    },
+    {
+      "name": "explicit-character-event",
+      "input": [
+        {
+          "type": "rawKeyDown",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13
+        },
+        {
+          "type": "char",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13,
+          "text": "\r",
+          "unmodifiedText": "\r"
+        },
+        {
+          "type": "keyUp",
+          "key": "Enter",
+          "code": "Enter",
+          "windowsVirtualKeyCode": 13
+        }
+      ],
+      "clicks": 1,
+      "events": [
+        {
+          "type": "keydown",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 0,
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "keypress",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 13,
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "click",
+          "trusted": true,
+          "defaultPrevented": false
+        },
+        {
+          "type": "keyup",
+          "key": "Enter",
+          "code": "Enter",
+          "keyCode": 13,
+          "charCode": 0,
+          "trusted": true,
+          "defaultPrevented": false
+        }
+      ],
+      "hasFocus": true,
+      "focusedButton": true
+    }
+  ]
+}

@@ -1,0 +1,1814 @@
+{
+  "schema": 1,
+  "mode": "ordinary-timing",
+  "node": "v24.19.0",
+  "fixtureNow": 1791363600000,
+  "source": {
+    "commit": "22773cc7cb6e83ac51e412565ba65c101613536a",
+    "fingerprint": "73ed55a79bc788aa2da10b3ff3870615bb9ebcb73daad4f150bc18bba721ea5c",
+    "dirty": true
+  },
+  "harnessSha256": "c153dd6fe18481c45271151497bcb9e558d4a303dcb8a84603014e0bad1cc676",
+  "cases": [
+    {
+      "namesCount": 100,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 2751,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.6943279999999845,
+          "p95Ms": 6.4815360000000055,
+          "maxMs": 6.4815360000000055,
+          "sumMs": 14.298255999999924
+        },
+        "cpu": {
+          "user": 32628,
+          "system": 8204
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.6295299999999884,
+          "p95Ms": 0.8032329999999774,
+          "maxMs": 0.8032329999999774,
+          "sumMs": 4.935220999999956
+        },
+        "cpu": {
+          "user": 5499,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.7193359999999984,
+          "p95Ms": 1.2587910000000306,
+          "maxMs": 1.2587910000000306,
+          "sumMs": 6.2058830000000285
+        },
+        "cpu": {
+          "user": 9630,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.0006809999999859428,
+          "p95Ms": 0.10499900000002071,
+          "maxMs": 0.10499900000002071,
+          "sumMs": 0.18625099999991335
+        },
+        "cpu": {
+          "user": 237,
+          "system": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 6260,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.14864400000004707,
+          "p95Ms": 0.39238299999999526,
+          "maxMs": 0.39238299999999526,
+          "sumMs": 2.19055800000001
+        }
+      },
+      "finalNamesSha256": "cc461c83686fc21e2dbbea3d5014d19c2c0d6cb5ca5ae76e6f29993dad49c8a8"
+    },
+    {
+      "namesCount": 100,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 2751,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ],
+        "timing": {
+          "n": 1,
+          "medianMs": 0.17206899999996494,
+          "p95Ms": 0.17206899999996494,
+          "maxMs": 0.17206899999996494,
+          "sumMs": 0.17206899999996494
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.691744999999969,
+          "p95Ms": 1.412793000000022,
+          "maxMs": 1.412793000000022,
+          "sumMs": 9.788069999999948
+        },
+        "cpu": {
+          "user": 9576,
+          "system": 928
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          147340
+        ],
+        "writesPerClient": [
+          48
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "d0190a1d59e2ed0b507edcdf451ce346ba0bceb7811b78fb7e6b82d0c1d54838"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 1.01927900000004,
+          "p95Ms": 1.3564369999999712,
+          "maxMs": 1.3564369999999712,
+          "sumMs": 8.221099999999979
+        },
+        "cpu": {
+          "user": 10698,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          98440
+        ],
+        "writesPerClient": [
+          32
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "eecd5b47f87f8679ea15ba11fd32a6d63eb33da90e65e3c4cfde02d91be6454b"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.9383270000000152,
+          "p95Ms": 1.4076160000000186,
+          "maxMs": 1.4076160000000186,
+          "sumMs": 7.5411770000000615
+        },
+        "cpu": {
+          "user": 8204,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          100040
+        ],
+        "writesPerClient": [
+          32
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.013441000000000258,
+          "p95Ms": 0.15242000000000644,
+          "maxMs": 0.15242000000000644,
+          "sumMs": 0.3374050000001034
+        },
+        "cpu": {
+          "user": 410,
+          "system": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 6260,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.18315699999999424,
+          "p95Ms": 0.41155700000001616,
+          "maxMs": 0.41155700000001616,
+          "sumMs": 2.3285039999998958
+        }
+      },
+      "finalNamesSha256": "cc461c83686fc21e2dbbea3d5014d19c2c0d6cb5ca5ae76e6f29993dad49c8a8"
+    },
+    {
+      "namesCount": 100,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 2751,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "timing": {
+          "n": 3,
+          "medianMs": 0.011056999999993877,
+          "p95Ms": 0.020451000000036856,
+          "maxMs": 0.020451000000036856,
+          "sumMs": 0.0341420000000312
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.5969010000000026,
+          "p95Ms": 1.1215540000000033,
+          "maxMs": 1.1215540000000033,
+          "sumMs": 7.552603999999974
+        },
+        "cpu": {
+          "user": 8142,
+          "system": 2
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          147340,
+          147340,
+          147340
+        ],
+        "writesPerClient": [
+          48,
+          48,
+          48
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "d0190a1d59e2ed0b507edcdf451ce346ba0bceb7811b78fb7e6b82d0c1d54838",
+          "d0190a1d59e2ed0b507edcdf451ce346ba0bceb7811b78fb7e6b82d0c1d54838",
+          "d0190a1d59e2ed0b507edcdf451ce346ba0bceb7811b78fb7e6b82d0c1d54838"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12281,
+          12281,
+          12281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.7401869999999917,
+          "p95Ms": 0.9562139999999886,
+          "maxMs": 0.9562139999999886,
+          "sumMs": 5.85886400000004
+        },
+        "cpu": {
+          "user": 2874,
+          "system": 3014
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          98440,
+          98440,
+          98440
+        ],
+        "writesPerClient": [
+          32,
+          32,
+          32
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "eecd5b47f87f8679ea15ba11fd32a6d63eb33da90e65e3c4cfde02d91be6454b",
+          "eecd5b47f87f8679ea15ba11fd32a6d63eb33da90e65e3c4cfde02d91be6454b",
+          "eecd5b47f87f8679ea15ba11fd32a6d63eb33da90e65e3c4cfde02d91be6454b"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12473,
+          12473,
+          12473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.9049160000000143,
+          "p95Ms": 1.044986999999992,
+          "maxMs": 1.044986999999992,
+          "sumMs": 7.326140000000123
+        },
+        "cpu": {
+          "user": 8727,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          100040,
+          100040,
+          100040
+        ],
+        "writesPerClient": [
+          32,
+          32,
+          32
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.0074109999999905085,
+          "p95Ms": 0.057506999999986874,
+          "maxMs": 0.057506999999986874,
+          "sumMs": 0.10397699999998622
+        },
+        "cpu": {
+          "user": 112,
+          "system": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 6260,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.13615600000002814,
+          "p95Ms": 0.17381199999999808,
+          "maxMs": 0.17381199999999808,
+          "sumMs": 1.6826019999999744
+        }
+      },
+      "finalNamesSha256": "cc461c83686fc21e2dbbea3d5014d19c2c0d6cb5ca5ae76e6f29993dad49c8a8"
+    },
+    {
+      "namesCount": 1000,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 27501,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.5709319999999707,
+          "p95Ms": 0.7953410000000076,
+          "maxMs": 0.7953410000000076,
+          "sumMs": 6.68918999999994
+        },
+        "cpu": {
+          "user": 8129,
+          "system": 0
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.7515249999999014,
+          "p95Ms": 1.1506070000000364,
+          "maxMs": 1.1506070000000364,
+          "sumMs": 6.537078999999721
+        },
+        "cpu": {
+          "user": 6567,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 1.6163400000000365,
+          "p95Ms": 1.935190999999918,
+          "maxMs": 1.935190999999918,
+          "sumMs": 13.10970299999974
+        },
+        "cpu": {
+          "user": 16482,
+          "system": 575
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.00029000000006362825,
+          "p95Ms": 0.006809999999973115,
+          "maxMs": 0.006809999999973115,
+          "sumMs": 0.010055000000079417
+        },
+        "cpu": {
+          "user": 29,
+          "system": 10
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 31010,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.23933099999999286,
+          "p95Ms": 0.5853329999999914,
+          "maxMs": 0.5853329999999914,
+          "sumMs": 3.5076149999998734
+        }
+      },
+      "finalNamesSha256": "13db56472dd424054503d6d9432df97acf6554c4c39696583e9d878e1dd37c87"
+    },
+    {
+      "namesCount": 1000,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 27501,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ],
+        "timing": {
+          "n": 1,
+          "medianMs": 0.024456999999983964,
+          "p95Ms": 0.024456999999983964,
+          "maxMs": 0.024456999999983964,
+          "sumMs": 0.024456999999983964
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 1.0655590000000075,
+          "p95Ms": 1.569609000000014,
+          "maxMs": 1.569609000000014,
+          "sumMs": 13.134727999999996
+        },
+        "cpu": {
+          "user": 15748,
+          "system": 0
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          1335340
+        ],
+        "writesPerClient": [
+          48
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "38b5334125f65c9ca9b2777e28d3f59b8121a7ee2b2bba5a7a6b174c22fdb5ed"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 1.2684249999999793,
+          "p95Ms": 1.6072060000000192,
+          "maxMs": 1.6072060000000192,
+          "sumMs": 10.071344000000067
+        },
+        "cpu": {
+          "user": 11398,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          890440
+        ],
+        "writesPerClient": [
+          32
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "5f2160af4709c5682f6427693e30cda748862c44f47ea4d0851632e2130765f7"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 1.8798480000000382,
+          "p95Ms": 2.1181779999999435,
+          "maxMs": 2.1181779999999435,
+          "sumMs": 15.519521000000054
+        },
+        "cpu": {
+          "user": 15780,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          892040
+        ],
+        "writesPerClient": [
+          32
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.0018629999999575375,
+          "p95Ms": 0.04649000000006254,
+          "maxMs": 0.04649000000006254,
+          "sumMs": 0.06199200000003202
+        },
+        "cpu": {
+          "user": 68,
+          "system": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 31010,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.2171970000000556,
+          "p95Ms": 0.4970909999999549,
+          "maxMs": 0.4970909999999549,
+          "sumMs": 2.927119000000289
+        }
+      },
+      "finalNamesSha256": "13db56472dd424054503d6d9432df97acf6554c4c39696583e9d878e1dd37c87"
+    },
+    {
+      "namesCount": 1000,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 27501,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "timing": {
+          "n": 3,
+          "medianMs": 0.004255999999941196,
+          "p95Ms": 0.01921900000002097,
+          "maxMs": 0.01921900000002097,
+          "sumMs": 0.024967999999944368
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.9626039999999421,
+          "p95Ms": 1.4116810000000442,
+          "maxMs": 1.4116810000000442,
+          "sumMs": 12.285667000000217
+        },
+        "cpu": {
+          "user": 5278,
+          "system": 7500
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          1335340,
+          1335340,
+          1335340
+        ],
+        "writesPerClient": [
+          48,
+          48,
+          48
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "38b5334125f65c9ca9b2777e28d3f59b8121a7ee2b2bba5a7a6b174c22fdb5ed",
+          "38b5334125f65c9ca9b2777e28d3f59b8121a7ee2b2bba5a7a6b174c22fdb5ed",
+          "38b5334125f65c9ca9b2777e28d3f59b8121a7ee2b2bba5a7a6b174c22fdb5ed"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111281,
+          111281,
+          111281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 1.0555540000000292,
+          "p95Ms": 1.2272429999999304,
+          "maxMs": 1.2272429999999304,
+          "sumMs": 8.718743000000018
+        },
+        "cpu": {
+          "user": 5234,
+          "system": 3562
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          890440,
+          890440,
+          890440
+        ],
+        "writesPerClient": [
+          32,
+          32,
+          32
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "5f2160af4709c5682f6427693e30cda748862c44f47ea4d0851632e2130765f7",
+          "5f2160af4709c5682f6427693e30cda748862c44f47ea4d0851632e2130765f7",
+          "5f2160af4709c5682f6427693e30cda748862c44f47ea4d0851632e2130765f7"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111473,
+          111473,
+          111473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 2.1748340000000326,
+          "p95Ms": 2.5312619999999697,
+          "maxMs": 2.5312619999999697,
+          "sumMs": 16.914960000000065
+        },
+        "cpu": {
+          "user": 17273,
+          "system": 0
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          892040,
+          892040,
+          892040
+        ],
+        "writesPerClient": [
+          32,
+          32,
+          32
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.0065100000000484215,
+          "p95Ms": 0.07071699999994507,
+          "maxMs": 0.07071699999994507,
+          "sumMs": 0.16497800000001916
+        },
+        "cpu": {
+          "user": 174,
+          "system": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 31010,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.22625199999993129,
+          "p95Ms": 0.33039899999994304,
+          "maxMs": 0.33039899999994304,
+          "sumMs": 2.8483439999996563
+        }
+      },
+      "finalNamesSha256": "13db56472dd424054503d6d9432df97acf6554c4c39696583e9d878e1dd37c87"
+    },
+    {
+      "namesCount": 10000,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 275001,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.42618400000003476,
+          "p95Ms": 0.5121930000000248,
+          "maxMs": 0.5121930000000248,
+          "sumMs": 5.064679000000183
+        },
+        "cpu": {
+          "user": 5101,
+          "system": 0
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 2.7408980000000156,
+          "p95Ms": 2.917063999999982,
+          "maxMs": 2.917063999999982,
+          "sumMs": 21.606661000000145
+        },
+        "cpu": {
+          "user": 19645,
+          "system": 2864
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 18.514653000000067,
+          "p95Ms": 49.34749499999998,
+          "maxMs": 49.34749499999998,
+          "sumMs": 176.58260899999993
+        },
+        "cpu": {
+          "user": 153832,
+          "system": 22799
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.00022999999998774,
+          "p95Ms": 0.005628999999998996,
+          "maxMs": 0.005628999999998996,
+          "sumMs": 0.007421999999905893
+        },
+        "cpu": {
+          "user": 10,
+          "system": 3
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 278510,
+        "timing": {
+          "n": 12,
+          "medianMs": 2.1249390000000403,
+          "p95Ms": 2.623952000000031,
+          "maxMs": 2.623952000000031,
+          "sumMs": 25.922198000000094
+        }
+      },
+      "finalNamesSha256": "1943d90c9be94e4c253217e09d80fea6f8112fd3ab3034433ddd042cb150796c"
+    },
+    {
+      "namesCount": 10000,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 275001,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ],
+        "timing": {
+          "n": 1,
+          "medianMs": 0.025438000000121974,
+          "p95Ms": 0.025438000000121974,
+          "maxMs": 0.025438000000121974,
+          "sumMs": 0.025438000000121974
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 9.683539999999994,
+          "p95Ms": 10.469025999999985,
+          "maxMs": 10.469025999999985,
+          "sumMs": 116.8188199999995
+        },
+        "cpu": {
+          "user": 98685,
+          "system": 18982
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          13215340
+        ],
+        "writesPerClient": [
+          240
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "fac4614ca6413bcb5985b0897e2cbe1271a647f16e5e98cae35281f1f29155d5"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 12.137715000000071,
+          "p95Ms": 13.016282000000047,
+          "maxMs": 13.016282000000047,
+          "sumMs": 97.40367600000036
+        },
+        "cpu": {
+          "user": 78595,
+          "system": 19656
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          8810440
+        ],
+        "writesPerClient": [
+          160
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "43263e4fbc4b18326b9d5221995dab16d8b22be2e447881362951e0b4dc3afa8"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 26.869867000000113,
+          "p95Ms": 28.286145000000033,
+          "maxMs": 28.286145000000033,
+          "sumMs": 215.8325460000001
+        },
+        "cpu": {
+          "user": 196379,
+          "system": 19292
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          8812040
+        ],
+        "writesPerClient": [
+          160
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.0019230000000334257,
+          "p95Ms": 0.07598400000006222,
+          "maxMs": 0.07598400000006222,
+          "sumMs": 0.09132599999998092
+        },
+        "cpu": {
+          "user": 80,
+          "system": 19
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 278510,
+        "timing": {
+          "n": 12,
+          "medianMs": 2.1718590000000404,
+          "p95Ms": 2.61200400000007,
+          "maxMs": 2.61200400000007,
+          "sumMs": 26.711150000000544
+        }
+      },
+      "finalNamesSha256": "1943d90c9be94e4c253217e09d80fea6f8112fd3ab3034433ddd042cb150796c"
+    },
+    {
+      "namesCount": 10000,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 275001,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "timing": {
+          "n": 3,
+          "medianMs": 0.002724000000171145,
+          "p95Ms": 0.026018999999905645,
+          "maxMs": 0.026018999999905645,
+          "sumMs": 0.03018500000007407
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 9.332260000000133,
+          "p95Ms": 18.233447999999953,
+          "maxMs": 18.233447999999953,
+          "sumMs": 122.30870199999981
+        },
+        "cpu": {
+          "user": 122786,
+          "system": 13711
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          13215340,
+          13215340,
+          13215340
+        ],
+        "writesPerClient": [
+          240,
+          240,
+          240
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "fac4614ca6413bcb5985b0897e2cbe1271a647f16e5e98cae35281f1f29155d5",
+          "fac4614ca6413bcb5985b0897e2cbe1271a647f16e5e98cae35281f1f29155d5",
+          "fac4614ca6413bcb5985b0897e2cbe1271a647f16e5e98cae35281f1f29155d5"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101281,
+          1101281,
+          1101281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 11.98520499999995,
+          "p95Ms": 18.20572100000004,
+          "maxMs": 18.20572100000004,
+          "sumMs": 102.06352699999957
+        },
+        "cpu": {
+          "user": 91608,
+          "system": 11598
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          8810440,
+          8810440,
+          8810440
+        ],
+        "writesPerClient": [
+          160,
+          160,
+          160
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "43263e4fbc4b18326b9d5221995dab16d8b22be2e447881362951e0b4dc3afa8",
+          "43263e4fbc4b18326b9d5221995dab16d8b22be2e447881362951e0b4dc3afa8",
+          "43263e4fbc4b18326b9d5221995dab16d8b22be2e447881362951e0b4dc3afa8"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101473,
+          1101473,
+          1101473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 27.55910800000038,
+          "p95Ms": 32.92595600000004,
+          "maxMs": 32.92595600000004,
+          "sumMs": 225.5354100000004
+        },
+        "cpu": {
+          "user": 215311,
+          "system": 10797
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          8812040,
+          8812040,
+          8812040
+        ],
+        "writesPerClient": [
+          160,
+          160,
+          160
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.004425999999966734,
+          "p95Ms": 0.07058599999982107,
+          "maxMs": 0.07058599999982107,
+          "sumMs": 0.10377499999958673
+        },
+        "cpu": {
+          "user": 96,
+          "system": 17
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 278510,
+        "timing": {
+          "n": 12,
+          "medianMs": 2.115813999999773,
+          "p95Ms": 2.4005339999998796,
+          "maxMs": 2.4005339999998796,
+          "sumMs": 25.82122500000014
+        }
+      },
+      "finalNamesSha256": "1943d90c9be94e4c253217e09d80fea6f8112fd3ab3034433ddd042cb150796c"
+    },
+    {
+      "namesCount": 20000,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 550001,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 0.3854519999999866,
+          "p95Ms": 0.590581999999813,
+          "maxMs": 0.590581999999813,
+          "sumMs": 4.75516000000016
+        },
+        "cpu": {
+          "user": 4708,
+          "system": 82
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 4.771492999999737,
+          "p95Ms": 5.921198999999888,
+          "maxMs": 5.921198999999888,
+          "sumMs": 39.41467599999896
+        },
+        "cpu": {
+          "user": 31860,
+          "system": 7587
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 36.86778099999992,
+          "p95Ms": 46.951546000000235,
+          "maxMs": 46.951546000000235,
+          "sumMs": 303.521925
+        },
+        "cpu": {
+          "user": 280780,
+          "system": 28272
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.00022099999978308915,
+          "p95Ms": 0.004457000000002154,
+          "maxMs": 0.004457000000002154,
+          "sumMs": 0.006239999999706924
+        },
+        "cpu": {
+          "user": 9,
+          "system": 2
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 553510,
+        "timing": {
+          "n": 12,
+          "medianMs": 4.864924999999857,
+          "p95Ms": 6.842090000000098,
+          "maxMs": 6.842090000000098,
+          "sumMs": 62.1807589999994
+        }
+      },
+      "finalNamesSha256": "f3cc8f5c9ef2abb86eb0f83ae77815fec075820f7db85e388bc59d855fc3c202"
+    },
+    {
+      "namesCount": 20000,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 550001,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ],
+        "timing": {
+          "n": 1,
+          "medianMs": 0.03857800000014322,
+          "p95Ms": 0.03857800000014322,
+          "maxMs": 0.03857800000014322,
+          "sumMs": 0.03857800000014322
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 19.870520000000397,
+          "p95Ms": 32.46587499999987,
+          "maxMs": 32.46587499999987,
+          "sumMs": 261.32172200000014
+        },
+        "cpu": {
+          "user": 239489,
+          "system": 31725
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          26415340
+        ],
+        "writesPerClient": [
+          432
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "1d6faef6e36522db38168d7ba46e8f44287bbb82048b7fc7ccd3eed24b925bc5"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 28.776434999999765,
+          "p95Ms": 36.293544999999995,
+          "maxMs": 36.293544999999995,
+          "sumMs": 234.28704699999935
+        },
+        "cpu": {
+          "user": 212098,
+          "system": 26666
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          17610440
+        ],
+        "writesPerClient": [
+          288
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "8524420389eeafb0bec15f0dc2df310c9f8e4a77a67d829d70cf18ed2e5229a2"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 79.02212899999995,
+          "p95Ms": 88.33284600000025,
+          "maxMs": 88.33284600000025,
+          "sumMs": 604.9084259999986
+        },
+        "cpu": {
+          "user": 556665,
+          "system": 49052
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          17612040
+        ],
+        "writesPerClient": [
+          288
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.002043000000412576,
+          "p95Ms": 0.05362100000002101,
+          "maxMs": 0.05362100000002101,
+          "sumMs": 0.08982500000001892
+        },
+        "cpu": {
+          "user": 85,
+          "system": 13
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 553510,
+        "timing": {
+          "n": 12,
+          "medianMs": 4.979849000000286,
+          "p95Ms": 6.397097000000031,
+          "maxMs": 6.397097000000031,
+          "sumMs": 60.53908799999954
+        }
+      },
+      "finalNamesSha256": "f3cc8f5c9ef2abb86eb0f83ae77815fec075820f7db85e388bc59d855fc3c202"
+    },
+    {
+      "namesCount": 20000,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 550001,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "timing": {
+          "n": 3,
+          "medianMs": 0.0028640000000450527,
+          "p95Ms": 0.03597399999944173,
+          "maxMs": 0.03597399999944173,
+          "sumMs": 0.040430999999443884
+        }
+      },
+      "unchanged": {
+        "repetitions": 12,
+        "timing": {
+          "n": 12,
+          "medianMs": 20.06639599999926,
+          "p95Ms": 29.469702000000325,
+          "maxMs": 29.469702000000325,
+          "sumMs": 249.53952399999798
+        },
+        "cpu": {
+          "user": 247508,
+          "system": 19851
+        },
+        "providerCalls": 48,
+        "bytesPerClient": [
+          26415340,
+          26415340,
+          26415340
+        ],
+        "writesPerClient": [
+          432,
+          432,
+          432
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "1d6faef6e36522db38168d7ba46e8f44287bbb82048b7fc7ccd3eed24b925bc5",
+          "1d6faef6e36522db38168d7ba46e8f44287bbb82048b7fc7ccd3eed24b925bc5",
+          "1d6faef6e36522db38168d7ba46e8f44287bbb82048b7fc7ccd3eed24b925bc5"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201281,
+          2201281,
+          2201281
+        ]
+      },
+      "oneChange": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 24.370764000000236,
+          "p95Ms": 27.162207999999737,
+          "maxMs": 27.162207999999737,
+          "sumMs": 198.28926799999954
+        },
+        "cpu": {
+          "user": 187540,
+          "system": 11363
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          17610440,
+          17610440,
+          17610440
+        ],
+        "writesPerClient": [
+          288,
+          288,
+          288
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "8524420389eeafb0bec15f0dc2df310c9f8e4a77a67d829d70cf18ed2e5229a2",
+          "8524420389eeafb0bec15f0dc2df310c9f8e4a77a67d829d70cf18ed2e5229a2",
+          "8524420389eeafb0bec15f0dc2df310c9f8e4a77a67d829d70cf18ed2e5229a2"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201473,
+          2201473,
+          2201473
+        ]
+      },
+      "batchEight": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 56.04878000000008,
+          "p95Ms": 59.34795100000065,
+          "maxMs": 59.34795100000065,
+          "sumMs": 451.31551200000104
+        },
+        "cpu": {
+          "user": 399309,
+          "system": 56928
+        },
+        "providerCalls": 32,
+        "bytesPerClient": [
+          17612040,
+          17612040,
+          17612040
+        ],
+        "writesPerClient": [
+          288,
+          288,
+          288
+        ]
+      },
+      "reconnect": {
+        "repetitions": 8,
+        "timing": {
+          "n": 8,
+          "medianMs": 0.00429699999949662,
+          "p95Ms": 0.055583999999726075,
+          "maxMs": 0.055583999999726075,
+          "sumMs": 0.08627000000069529
+        },
+        "cpu": {
+          "user": 83,
+          "system": 11
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 553510,
+        "timing": {
+          "n": 12,
+          "medianMs": 4.4969389999996565,
+          "p95Ms": 4.647415999999794,
+          "maxMs": 4.647415999999794,
+          "sumMs": 53.38569799999732
+        }
+      },
+      "finalNamesSha256": "f3cc8f5c9ef2abb86eb0f83ae77815fec075820f7db85e388bc59d855fc3c202"
+    }
+  ],
+  "limits": [
+    "Synthetic local SQLite, two pilots and immediate Wallet ESI responses; no external service or private pilot data.",
+    "Production Core, Store and SSE queue/encoding run unchanged. Consuming in-memory sinks exclude TCP and browser parsing/render costs.",
+    "Directory sizes 100/1000/10000/20000 and audiences 0/1/3 are declared controlled cardinalities, not typical-user claims.",
+    "Ordinary timing uses no stringify wrapper or frame retention. Counters and domain checks are separate, untimed operations.",
+    "Initial and reconnect candidate bootstrap adds a full map beyond /state. Both that cost and changed-map costs are reported.",
+    "Full-state serialization measures the actual Core snapshot and names fields, not HTTP routing/health/session overhead.",
+    "Domain comparison removes only intentional names wire envelope differences and random process epoch prefixes, preserving directory values, snapshot metadata and revision counters.",
+    "These baseline/candidate roots omit the later Assets boundary; final combined browser acceptance must include it."
+  ],
+  "sourceVerified": true,
+  "complete": true
+}

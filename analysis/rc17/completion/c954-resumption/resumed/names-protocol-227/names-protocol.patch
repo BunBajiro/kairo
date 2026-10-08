@@ -1,0 +1,546 @@
+diff --git a/components/kairo/dashboard.tsx b/components/kairo/dashboard.tsx
+--- a/components/kairo/dashboard.tsx
++++ b/components/kairo/dashboard.tsx
+@@ -11,7 +11,8 @@
+ import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
+ import { Kairo } from './context';
+ import {createScopedRefresh} from './scoped-refresh.mjs';
+-import {retainValue, mergeResourceNames, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
++import {createNameDirectoryState} from './name-directory-state.mjs';
++import {retainValue, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
+ import { Choice, Panel, DataTable } from './ui';
+ import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
+ import { Connections, Modules } from './connections';
+@@ -48,6 +49,7 @@
+     const [page, setPage] = useState('overview'), [boot, setBoot] = useState<Bootstrap | null>(null), [data, setData] = useState<Record<string, ModuleState>>({}), [names, setNames] = useState<any>({}), [character, setCharacterState] = useState(0), [sessions, setSessions] = useState<any[]>([]), [opsec, setOpsec] = useState<any>({ state: 'unknown' }), [err, setErr] = useState(''), [refreshing, setRefreshing] = useState(false), [search, setSearch] = useState(false), [connected, setConnected] = useState(false);
+     const [datasetConnection, setDatasetConnection] = useState<DatasetConnectionState>({ phase: 'idle', build: null, message: '' });
+     const datasetConnectionRef = useRef<ReturnType<typeof createDatasetConnection> | null>(null);
++    const [namesOwner] = useState(createNameDirectoryState);
+     const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null);
+     const snapshotEvents = useRef<Record<string,number>>({}), resourceEvents = useRef<Record<string,number>>({}), ancillaryEvents = useRef({names:0,opsec:0}), stateError = useRef<unknown>(null);
+     const stateOwner = useRef<ReturnType<typeof createScopedRefresh> | null>(null);
+@@ -71,13 +73,13 @@
+         resourceRef.current = merged; setResourceRevisions(merged);
+         if (notify) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:charRef.current,resources:changed}}));
+     }, []);
+-    const publishState = useCallback(({state, observed, resources, ancillary}: any) => {
++    const publishState = useCallback(({state, observed, resources, ancillary, namesObserved}: any) => {
+         setData(previous => {const next = {...state.data}; for (const key of Object.keys(snapshotEvents.current)) if (snapshotEvents.current[key] !== observed[key]) next[key] = previous[key]; return retainSnapshots(previous, next);});
+-        if (ancillary.names === ancillaryEvents.current.names) setNames((previous: any) => retainValue(previous, state.names));
++        if (ancillary.names === ancillaryEvents.current.names) { const next = namesOwner.fromState(state, namesObserved); if (next) setNames(next); }
+         if (ancillary.opsec === ancillaryEvents.current.opsec) setOpsec((previous: any) => retainValue(previous, state.opsec));
+         setSessions(previous => retainValue(previous, state.sessions));
+         applyResourceRevisions(state.resourceRevisions, Object.keys(state.resourceRevisions || {}).filter(key => resources[key] === resourceEvents.current[key])); setGoalClock(Date.now()); setStateReady(true); stateHasPublished.current = true; setErr('');
+-    }, [applyResourceRevisions]);
++    }, [applyResourceRevisions, namesOwner]);
+     const refresh = useCallback(async () => {await stateOwner.current?.request(); if (stateError.current) throw stateError.current;}, []);
+     const reload = useCallback(async () => {
+         const result = await api('/bootstrap'), prior = bootRef.current?.characters;
+@@ -134,12 +136,12 @@
+     useEffect(() => {
+         if (!boot) return;
+         const requested = character;
+-        const owner = createScopedRefresh({read: async () => {const observed = {...snapshotEvents.current}, resources = {...resourceEvents.current}, ancillary = {...ancillaryEvents.current}; const state = await api('/state?character=' + requested); return {state,observed,resources,ancillary};},
++        const owner = createScopedRefresh({read: async () => {const observed = {...snapshotEvents.current}, resources = {...resourceEvents.current}, ancillary = {...ancillaryEvents.current}, namesObserved = namesOwner.capture(); const state = await api('/state?character=' + requested); return {state,observed,resources,ancillary,namesObserved};},
+             publish: value => {if (requested === charRef.current) {stateError.current = null; publishState(value);}},
+             onError: (error: any) => {if (requested === charRef.current) {stateError.current = error; if (!stateHasPublished.current) setErr(error.message); else toast.error(error.message);}}});
+         stateOwner.current = owner; void owner.request();
+         return () => {owner.close(); if (stateOwner.current === owner) stateOwner.current = null;};
+-    }, [character, !!boot, publishState]);
++    }, [character, !!boot, publishState, namesOwner]);
+     useEffect(() => {
+         if (!boot) return;
+         const recoveryKey = 'kairo-dataset-recovery-notices';
+@@ -171,26 +173,32 @@
+         let timer: ReturnType<typeof setTimeout> | null = null, reloadRoster = false;
+         let hasConnected = false;
+         events.onopen = () => {
++            const namesInvalidated = namesOwner.connect(); if (namesInvalidated) ancillaryEvents.current.names++;
+             setConnected(true); connection.connect();
+             window.dispatchEvent(new CustomEvent('kairo:events-connected'));
+             if (hasConnected) {
+                 setRecoveryRevision(value => value + 1); void reload().then(refresh).catch(() => {});
+                 window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{resources:['recovery']}}));
+             }
++            else if (namesInvalidated) void refresh().catch(() => {});
+             hasConnected = true;
+         };
+-        events.onerror = () => { setConnected(false); connection.disconnect(); };
++        events.onerror = () => { if (namesOwner.disconnect()) ancillaryEvents.current.names++; setConnected(false); connection.disconnect(); };
+         events.addEventListener('dataset-restarting', e => connection.restarting(JSON.parse(e.data)));
+         events.addEventListener('dataset-restart-cancelled', e => connection.cancelled(JSON.parse(e.data)));
+         events.addEventListener('dataset-revision', e => { void connection.revision(JSON.parse(e.data)); });
+         events.addEventListener('datasets', e => window.dispatchEvent(new CustomEvent('datasets-changed', { detail: JSON.parse(e.data) })));
++        events.addEventListener('names', e => {
++            const next = namesOwner.fromEvent(JSON.parse(e.data)); ancillaryEvents.current.names++;
++            if (next) setNames(next);
++        });
+         events.addEventListener('snapshot', e => {
+             const r = JSON.parse(e.data);
+             window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{characterId:r.characterId,key:r.key,resource:'snapshot'}}));
+             if (changeAffectsPilot(r, charRef.current)) {
+-                snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1; ancillaryEvents.current.names++;
++                snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1;
+                 setData(previous => {const value = retainSnapshot(previous[r.key], r.snapshot); return value === previous[r.key] ? previous : {...previous,[r.key]:value};});
+-                setNames((previous: any) => mergeResourceNames(previous, r.names));
++                if (r.names !== undefined) { ancillaryEvents.current.names++; const next = namesOwner.fromLegacySnapshot(r.names); if (next) setNames(next); }
+                 if (goalSourceKeys.includes(r.key)) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:r.characterId,resources:['goalSources'],key:r.key}}));
+             }
+         });
+@@ -209,7 +217,7 @@
+         });
+         const poll = setInterval(() => refresh().catch(() => {}), 30000);
+         return () => { connection.dispose(); datasetConnectionRef.current = null; events.close(); if (timer) clearTimeout(timer); clearInterval(poll); };
+-    }, [!!boot, refresh, reload, applyResourceRevisions]);
++    }, [!!boot, refresh, reload, applyResourceRevisions, namesOwner]);
+     async function retryDatasetConnection() {
+         const connection = datasetConnectionRef.current;
+         if (!connection) return;
+diff --git a/components/kairo/name-directory-state.mjs b/components/kairo/name-directory-state.mjs
+new file mode 100644
+--- /dev/null
++++ b/components/kairo/name-directory-state.mjs
+@@ -0,0 +1,70 @@
++import {mergeResourceNames, retainValue} from './resource-state.mjs';
++
++// One dashboard owns the latest authoritative directory. HTTP reads capture an
++// event/connection fence; a later names event or reconnect makes that read stale.
++// The first names event on a connection establishes its process epoch. Counters
++// are ordered only within that epoch, never across process restart/reset.
++export function createNameDirectoryState() {
++    let current = null, connection = 0, events = 0, awaitingBootstrap = true, legacy = false, opened = false, disconnected = false;
++    function packet(value) {
++        const revision = value?.namesRevision, names = value?.names;
++        if (typeof revision !== 'string' || !names || typeof names !== 'object' || Array.isArray(names)) return null;
++        const split = revision.lastIndexOf(':'), epoch = revision.slice(0, split), version = Number(revision.slice(split + 1));
++        if (split < 1 || !Number.isSafeInteger(version) || version < 0 || String(version) !== revision.slice(split + 1)) return null;
++        return {revision, epoch, version, names};
++    }
++    function install(next) {
++        if (!legacy && current?.revision === next.revision) return null;
++        current = next; legacy = false; return next.names;
++    }
++    return {
++        connect() {
++            // The first open adds no newer names evidence. Keep an initial
++            // legacy HTTP read valid until a names event actually arrives.
++            const invalidate = opened || disconnected;
++            if (invalidate) { connection++; events++; }
++            opened = true; disconnected = false; awaitingBootstrap = true;
++            return invalidate;
++        },
++        disconnect() {
++            if (disconnected) return false;
++            disconnected = true; connection++; events++; awaitingBootstrap = true;
++            return true;
++        },
++        capture: () => ({connection, events}),
++        fromState(value, observed) {
++            if (!observed || observed.connection !== connection || observed.events !== events) return null;
++            // Unversioned full HTTP state remains authoritative for older
++            // servers and declared external fixtures. The same read fence applies.
++            if (value?.namesRevision === undefined) {
++                const names = value?.names;
++                if (!names || typeof names !== 'object' || Array.isArray(names)) return null;
++                const previous = current?.names || {}, next = retainValue(previous, names);
++                current = {...current, names: next}; legacy = true;
++                return next === previous ? null : next;
++            }
++            const next = packet(value); if (!next) return null;
++            if (current?.epoch) {
++                if (next.epoch !== current.epoch && !awaitingBootstrap) return null;
++                if (next.epoch === current.epoch && next.version < current.version) return null;
++            }
++            return install(next);
++        },
++        fromEvent(value) {
++            if (disconnected) return null;
++            const next = packet(value); if (!next) return null;
++            if (!awaitingBootstrap && current?.epoch && next.epoch !== current.epoch) return null;
++            awaitingBootstrap = false; events++;
++            if (current?.epoch === next.epoch && next.version < current.version) return null;
++            return install(next);
++        },
++        fromLegacySnapshot(names) {
++            if (!names || typeof names !== 'object' || Array.isArray(names)) return null;
++            events++; legacy = true;
++            const previous = current?.names || {}, next = mergeResourceNames(previous, names);
++            current = {...current, names: next};
++            return next === previous ? null : next;
++        },
++        revision: () => legacy ? undefined : current?.revision,
++    };
++}
+diff --git a/server/core.mjs b/server/core.mjs
+--- a/server/core.mjs
++++ b/server/core.mjs
+@@ -1,3 +1,4 @@
++import {randomUUID} from 'node:crypto';
+ import { createUniverse } from './universe.mjs';
+ import { enrichAssetLocations } from './asset-locations.mjs';
+ import { mapEnrichment } from './enrichment.mjs';
+@@ -28,13 +29,39 @@
+     let stopped = false, closing, quiesceFailures;
+     let universe, stopUniverseHistory, registry, stream, obs, goals, markets, combat, sessionCombat, publicFeedTransport, ticker, heartbeat;
+     const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
++    const namesEpoch = randomUUID(), deliveredNames = new WeakMap();
++    let namesVersion = 0;
++    const namesRevision = () => `${namesEpoch}:${namesVersion}`;
++    const namesSnapshot = () => ({names: namesMap, namesRevision: namesRevision()});
+     const protectionKeys = new Set(['location', 'fw', 'sovereignty', 'profile', 'contacts', 'corporation_contacts', 'alliance_contacts']);
+     const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
+     let polling = pollingValues(store.get('esi:polling', {}));
+     const protection = createProtectionTracker();
+     const uiVersions = createUIResourceVersions(), combatVersions = new Map();
++    function sendNames(clients = uiClients) {
++        const revision = namesRevision(); let frame;
++        for (const client of clients) {
++            if (deliveredNames.get(client) === revision) continue;
++            frame ??= sseEvent('names', {names: namesMap, namesRevision: revision});
++            if (writeSSE(client, frame)) deliveredNames.set(client, revision);
++            else uiClients.delete(client);
++        }
++    }
++    function connectUI(client) {
++        if (stopped) { client.end(); return false; }
++        if (uiClients.has(client)) return true;
++        uiClients.add(client); client.once('close', () => uiClients.delete(client));
++        sendNames([client]); return uiClients.has(client);
++    }
+     function send(type, data) {
+         if (!uiClients.size) return;
++        // Directory delivery is global to each UI connection, independent of
++        // the pilot-specific snapshots that a dashboard chooses to consume.
++        if (type === 'snapshot') {
++            sendNames();
++            if (!uiClients.size) return;
++            data = {...data, namesRevision: namesRevision()};
++        }
+         const frame = sseEvent(type, data);
+         for (const client of uiClients) if (!writeSSE(client, frame)) uiClients.delete(client);
+     }
+@@ -66,7 +93,7 @@
+         combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
+             combatVersions.set(id, (combatVersions.get(id) || 0) + 1);
+             goals.refresh(id,'killmails');updateBindings();
+-            send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
++            send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id)});
+         }});
+         sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>changed({characterId:id,resources:['sessionReport']})});
+     } catch (error) { return rollback(error); }
+@@ -81,7 +108,7 @@
+                 namesMap[id] = name; changed = true;
+             }
+         }
+-        if (changed) store.set('names', namesMap);
++        if (changed) { namesVersion++; store.set('names', namesMap); }
+     }
+     async function resolveNames(data, priority = false) { const ids = []; function walk(x) { if (Array.isArray(x)) {
+         x.forEach(walk);
+@@ -267,7 +294,7 @@
+             }
+             nextRun.set(key, Date.parse(retryAt));
+         }
+-        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):uiSnapshot(id, d.key), names: namesMap });
++        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):uiSnapshot(id, d.key) });
+     }
+     function retryDeadline(dataset, retryAt) {
+         return Math.max(Date.now() + (dataset.key === 'location' ? 3000 : 60000), Date.parse(retryAt) || 0);
+@@ -415,7 +442,7 @@
+         refreshOPSEC();updateBindings();
+         if (!options.noSync) refreshPolitics();
+     } catch (error) { return rollback(error); }
+-    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
++    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, connectUI, namesSnapshot, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
+             store.set('module:' + id, value);
+         }
+         else
+diff --git a/server/index.mjs b/server/index.mjs
+--- a/server/index.mjs
++++ b/server/index.mjs
+@@ -136,13 +136,12 @@
+         }
+         if (path === '/state' && read) {
+             const id = checkedChar(url);
+-            return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id), resourceRevisions:core.resourceRevisions(id) });
++            return json(res, 200, { data: core.snapshots(id), ...core.namesSnapshot(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id), resourceRevisions:core.resourceRevisions(id) });
+         }
+         if (path === '/events' && read) {
+             if (applyingDataset) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Applying a dataset update.'});}
+             res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store', 'Connection': 'keep-alive' });
+-            core.uiClients.add(res);
+-            res.on('close', () => core.uiClients.delete(res));
++            core.connectUI(res);
+             writeSSE(res, sseConnected);
+             writeSSE(res, sseEvent('dataset-revision', {revision: datasetRevision, recovery: datasetRecovery}));
+             writeSSE(res, sseEvent('datasets', datasetStatus()));
+diff --git a/tests/kairo/core-name-directory.test.mjs b/tests/kairo/core-name-directory.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/tests/kairo/core-name-directory.test.mjs
+@@ -0,0 +1,128 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {mkdtemp, rm} from 'node:fs/promises';
++import {join} from 'node:path';
++import {tmpdir} from 'node:os';
++import {EventEmitter} from 'node:events';
++import {setImmediate as turn} from 'node:timers/promises';
++import {openStore} from '../../server/store.mjs';
++import {createCore} from '../../server/core.mjs';
++import {catalog, allScopes} from '../../server/modules/catalog.mjs';
++import {startKairo} from '../../server/index.mjs';
++import {createNameDirectoryState} from '../../components/kairo/name-directory-state.mjs';
++
++function consumer({blockFirst = false, fail = false} = {}) {
++    const client = new EventEmitter(); client.frames = [];
++    client.write = chunk => { if (fail) throw new Error('Consumer disconnected'); client.frames.push(chunk); if (blockFirst) { blockFirst = false; return false; } return true; };
++    client.end = () => { client.writableEnded = true; client.emit('finish'); };
++    client.destroy = () => { client.destroyed = true; client.emit('close'); };
++    client.packets = () => Buffer.concat(client.frames).toString().split('\n\n').filter(frame => frame.startsWith('event:')).map(frame => ({type: frame.split('\n')[0].slice(7), data: JSON.parse(frame.slice(frame.indexOf('\ndata: ') + 7))}));
++    client.clear = () => { client.frames = []; };
++    return client;
++}
++async function fixture(t, options = {}) {
++    const directory = await mkdtemp(join(tmpdir(), 'kairo-name-directory-')), store = openStore(directory);
++    store.set('names', {4200000: 'Original'});
++    for (const module of catalog) store.set('module:' + module.id, module.id === 'wallet');
++    const auth = {characters: () => [42, 43].map(id => ({id, scopes: allScopes}))};
++    const sample = data => ({data, headers: {}, updatedAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 60000).toISOString()});
++    const esi = {health: () => ({}), names: async () => ({}), request: async path => { await options.wait?.(); return sample(path.endsWith('/wallet') ? 123 : []); }}; esi.paged = esi.request;
++    let core = await createCore(store, auth, esi, directory, {noSync: true}); core.quiesce();
++    t.after(async () => { options.release?.(); await core.close(); store.close(); await rm(directory, {recursive: true, force: true}); });
++    return {get core() { return core; }, store, async restart() { await core.close(); core = await createCore(store, auth, esi, directory, {noSync: true}); core.quiesce(); }};
++}
++
++test('each UI bootstraps globally; unchanged snapshots omit names and changed names reach both pilot audiences', async t => {
++    const {core} = await fixture(t), clients = [consumer(), consumer()];
++    const receivers = clients.map(() => { const owner = createNameDirectoryState(); owner.connect(); return owner; });
++    for (const [index, client] of clients.entries()) {
++        assert.equal(core.connectUI(client), true); const initial = client.packets(); assert.equal(initial.length, 1); assert.equal(initial[0].type, 'names');
++        receivers[index].fromEvent(initial[0].data); client.clear();
++    }
++    await core.requestSync(42);
++    for (const client of clients) {
++        const packets = client.packets(); assert.equal(packets.filter(packet => packet.type === 'names').length, 0);
++        const snapshots = packets.filter(packet => packet.type === 'snapshot'); assert.equal(snapshots.length, 4);
++        assert.ok(snapshots.every(packet => !('names' in packet.data) && packet.data.namesRevision === core.namesSnapshot().namesRevision)); client.clear();
++    }
++    core.rememberNames({4200000: 'Renamed', 4300000: 'Added for other pilot'});
++    await core.requestSync(43);
++    for (const [index, client] of clients.entries()) {
++        const packets = client.packets(); assert.equal(packets[0].type, 'names'); assert.equal(packets.filter(packet => packet.type === 'names').length, 1);
++        const directory = receivers[index].fromEvent(packets[0].data); assert.deepEqual(directory, {4200000: 'Renamed', 4300000: 'Added for other pilot'});
++        // Both dashboards process this global event, including the one ignoring pilot43 snapshots.
++        assert.ok(packets.filter(packet => packet.type === 'snapshot').every(packet => packet.data.characterId === 43));
++    }
++});
++
++test('batching waits for a publication boundary and a new bootstrap cannot mark older clients current', async t => {
++    const {core} = await fixture(t), older = consumer(); core.connectUI(older); older.clear();
++    const originalRevision = core.namesSnapshot().namesRevision;
++    core.rememberNames({4200000: 'Original', 0: 'Invalid', 2: '', 3: null}); assert.equal(core.namesSnapshot().namesRevision, originalRevision);
++    for (let id = 1; id <= 8; id++) core.rememberNames({[4300000 + id]: 'Resolved ' + id});
++    assert.equal(older.packets().length, 0, 'Individual name resolution does not broadcast the full map');
++    const newer = consumer(); core.connectUI(newer); assert.equal(newer.packets().length, 1); newer.clear();
++    await core.requestSync(42);
++    assert.equal(older.packets().filter(packet => packet.type === 'names').length, 1);
++    assert.equal(newer.packets().filter(packet => packet.type === 'names').length, 0);
++    assert.deepEqual(older.packets()[0].data, core.namesSnapshot());
++});
++
++test('zero clients encode no directories and reconnect bootstraps all changes since disconnect', async t => {
++    const {core} = await fixture(t); let encodes = 0;
++    const stringify = JSON.stringify; JSON.stringify = function(value, ...rest) { if (value?.names && value?.namesRevision) encodes++; return stringify(value, ...rest); };
++    try { core.rememberNames({4300000: 'Offline change'}); await core.requestSync(42); assert.equal(encodes, 0); }
++    finally { JSON.stringify = stringify; }
++    const first = consumer(); core.connectUI(first); assert.deepEqual(first.packets()[0].data.names, core.names());
++    first.emit('close'); assert.equal(core.uiClients.size, 0); core.rememberNames({4300000: 'Later change'}); await core.requestSync(43);
++    const reconnected = consumer(); core.connectUI(reconnected); assert.deepEqual(reconnected.packets()[0].data, core.namesSnapshot());
++});
++
++test('names and snapshots retain SSE order through backpressure; failed clients cannot suppress healthy delivery', async t => {
++    const {core} = await fixture(t), blocked = consumer({blockFirst: true}), failed = consumer({fail: true}), healthy = consumer();
++    core.connectUI(blocked); assert.equal(core.connectUI(failed), false); assert.equal(core.uiClients.has(failed), false); core.connectUI(healthy); healthy.clear();
++    core.rememberNames({4200000: 'Changed behind queued bootstrap'}); await core.requestSync(42);
++    assert.equal(blocked.packets().length, 1); blocked.emit('drain');
++    const packets = blocked.packets(); assert.deepEqual(packets.slice(0, 2).map(packet => packet.type), ['names', 'names']);
++    assert.equal(packets[1].data.names[4200000], 'Changed behind queued bootstrap'); assert.equal(packets.filter(packet => packet.type === 'snapshot').length, 4);
++    assert.equal(healthy.packets()[0].type, 'names'); assert.equal(core.uiClients.size, 2);
++});
++
++test('Core close drains accepted snapshot publication with its directory and rejects a new UI connection', async t => {
++    const gate = Promise.withResolvers(); let entered = false;
++    const {core} = await fixture(t, {wait: () => { entered = true; return gate.promise; }, release: () => gate.resolve()});
++    const client = consumer(); core.connectUI(client); client.clear(); const work = core.sync(42);
++    for (let count = 0; count < 10 && !entered; count++) await turn(); assert.equal(entered, true);
++    const closing = core.close(), late = consumer(); assert.equal(core.connectUI(late), false); assert.equal(late.writableEnded, true);
++    core.rememberNames({4200000: 'Accepted during close'}); gate.resolve(); await Promise.all([work, closing]);
++    const packets = client.packets(); assert.equal(packets[0].type, 'names'); assert.equal(packets[0].data.names[4200000], 'Accepted during close');
++    assert.ok(packets.some(packet => packet.type === 'snapshot')); assert.equal(client.writableEnded, true); assert.equal(core.uiClients.size, 0);
++});
++
++test('real state and events HTTP routes expose the same authoritative process-qualified directory', async t => {
++    const directory = await mkdtemp(join(tmpdir(), 'kairo-http-names-'));
++    const app = await startKairo({port: 19890, streamPort: 19891, dataDir: directory, noSync: true, fetcher: async () => assert.fail('No external request permitted')});
++    const controller = new AbortController();
++    t.after(async () => { controller.abort(); await app.close(); await rm(directory, {recursive: true, force: true}); });
++    app.core.rememberNames({4200000: 'HTTP current name'});
++    const page = await fetch(app.origin), cookie = page.headers.get('set-cookie').split(';')[0]; await page.text();
++    const state = await (await fetch(app.origin + '/api/state?character=0', {headers: {cookie}})).json();
++    assert.deepEqual(state.names, {4200000: 'HTTP current name'}); assert.match(state.namesRevision, /^[0-9a-f-]+:1$/);
++    const events = await fetch(app.origin + '/api/events', {headers: {cookie}, signal: controller.signal}), reader = events.body.getReader();
++    let body = '', named;
++    while (!named) {
++        const chunk = await reader.read(); assert.equal(chunk.done, false); body += Buffer.from(chunk.value).toString();
++        const frame = body.split('\n\n').find(value => value.startsWith('event: names\n'));
++        if (frame) named = JSON.parse(frame.slice(frame.indexOf('\ndata: ') + 7));
++    }
++    assert.deepEqual(named, {names: state.names, namesRevision: state.namesRevision}); await reader.cancel(); controller.abort();
++});
++
++test('a new Core epoch bootstraps an authoritative empty/reset directory even when its counter is lower', async t => {
++    const f = await fixture(t), owner = createNameDirectoryState(); owner.connect();
++    f.core.rememberNames({4300000: 'Before reset'}); const before = f.core.namesSnapshot(); owner.fromEvent(before);
++    const oldRead = owner.capture(); await f.core.close(); f.store.set('names', {}); await f.restart();
++    const after = f.core.namesSnapshot(); assert.notEqual(after.namesRevision.split(':')[0], before.namesRevision.split(':')[0]); assert.match(after.namesRevision, /:0$/); assert.deepEqual(after.names, {});
++    const client = consumer(); f.core.connectUI(client); owner.connect();
++    assert.deepEqual(owner.fromEvent(client.packets()[0].data), {}); assert.equal(owner.fromState(before, oldRead), null);
++});
+diff --git a/tests/kairo/name-directory-state.test.mjs b/tests/kairo/name-directory-state.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/tests/kairo/name-directory-state.test.mjs
+@@ -0,0 +1,132 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {createNameDirectoryState} from '../../components/kairo/name-directory-state.mjs';
++const packet = (epoch, version, names) => ({names, namesRevision: epoch + ':' + version});
++
++test('HTTP can bootstrap names; unchanged revisions retain identity without inspecting names', () => {
++    const state = createNameDirectoryState(), names = {42: 'Pilot'};
++    assert.strictEqual(state.fromState(packet('first', 0, names), state.capture()), names);
++    const unobserved = new Proxy({}, {ownKeys() { assert.fail('Unchanged directory must not be scanned'); }});
++    assert.equal(state.fromState(packet('first', 0, unobserved), state.capture()), null);
++    state.connect(); assert.equal(state.fromEvent(packet('first', 0, unobserved)), null);
++});
++
++test('global events accept rename/add and do not depend on a selected pilot', () => {
++    const state = createNameDirectoryState(); state.connect();
++    const initial = {42: 'Main', 43: 'Alt'}, changed = {42: 'Renamed main', 43: 'Alt', 44: 'New pilot'};
++    assert.strictEqual(state.fromEvent(packet('process', 0, initial)), initial);
++    assert.strictEqual(state.fromEvent(packet('process', 1, changed)), changed);
++    assert.equal(state.fromEvent(packet('process', 0, initial)), null);
++    assert.equal(state.revision(), 'process:1');
++});
++
++test('a newer names event fences out a late full state response', () => {
++    const state = createNameDirectoryState(); state.connect(); state.fromEvent(packet('process', 0, {42: 'Old'}));
++    const observed = state.capture(), current = {42: 'New'};
++    state.fromEvent(packet('process', 1, current));
++    assert.equal(state.fromState(packet('process', 0, {42: 'Old'}), observed), null);
++    assert.equal(state.fromState(packet('process', 0, {42: 'Old'}), state.capture()), null);
++    assert.equal(state.revision(), 'process:1');
++});
++
++test('newer HTTP state cannot be overwritten by an older same-process bootstrap packet', () => {
++    const state = createNameDirectoryState(); state.connect();
++    state.fromState(packet('process', 3, {42: 'New'}), state.capture());
++    assert.equal(state.fromEvent(packet('process', 2, {42: 'Old'})), null);
++    assert.equal(state.revision(), 'process:3');
++});
++
++test('reconnect and process reset replace the full map and reject late old-process state', () => {
++    const state = createNameDirectoryState(); state.connect(); state.fromEvent(packet('old', 999, {42: 'Old'}));
++    const oldRead = state.capture(); state.connect(); const reconnectRead = state.capture();
++    const empty = {}; assert.strictEqual(state.fromEvent(packet('new', 0, empty)), empty);
++    assert.equal(state.fromState(packet('old', 1000, {42: 'Wrong'}), oldRead), null);
++    assert.equal(state.fromState(packet('old', 1000, {42: 'Wrong'}), reconnectRead), null);
++    assert.equal(state.fromState(packet('old', 1000, {42: 'Wrong'}), state.capture()), null);
++    assert.equal(state.fromEvent(packet('old', 1000, {42: 'Wrong'})), null);
++    assert.equal(state.revision(), 'new:0');
++    const reset = {43: 'Only new pilot'}; assert.strictEqual(state.fromEvent(packet('new', 1, reset)), reset);
++    assert.equal(Object.hasOwn(reset, 42), false);
++});
++
++test('same-process reconnect can recover a missed changed directory without replaying deltas', () => {
++    const state = createNameDirectoryState(); state.connect(); state.fromEvent(packet('process', 1, {42: 'Old'}));
++    const oldRead = state.capture(); state.connect();
++    const current = {42: 'Current', 43: 'Added while disconnected'};
++    assert.strictEqual(state.fromEvent(packet('process', 8, current)), current);
++    assert.equal(state.fromState(packet('process', 2, {42: 'Stale'}), oldRead), null);
++});
++
++test('invalid envelopes cannot replace a valid directory', () => {
++    const state = createNameDirectoryState(); state.connect(); state.fromEvent(packet('process', 0, {}));
++    for (const value of [{}, {names: {}, namesRevision: 'plain'}, {names: {}, namesRevision: 'x:01'}, {names: {}, namesRevision: 'x:-1'}, {names: {}, namesRevision: 'x:Infinity'}, {names: [], namesRevision: 'x:1'}, {names: null, namesRevision: 'x:1'}]) {
++        assert.equal(state.fromEvent(value), null); assert.equal(state.fromState(value, state.capture()), null);
++    }
++    assert.equal(state.revision(), 'process:0');
++});
++
++test('unversioned snapshot fallback merges partial maps, retains unchanged identity and fences late HTTP', () => {
++    const state = createNameDirectoryState(), first = {42: 'Main', 43: 'Alt'};
++    assert.deepEqual(state.fromState({names: first}, state.capture()), first);
++    const beforeEvent = state.capture();
++    assert.deepEqual(state.fromLegacySnapshot({42: 'Updated'}), {42: 'Updated', 43: 'Alt'});
++    assert.equal(state.fromLegacySnapshot({42: 'Updated', 43: 'Alt'}), null);
++    assert.equal(state.fromState({names: first}, beforeEvent), null);
++    assert.equal(state.revision(), undefined);
++});
++
++test('unversioned full state retains reset/removal semantics and versioned authority recovers after fallback', () => {
++    const state = createNameDirectoryState(); state.connect(); state.fromEvent(packet('process', 4, {42: 'Original', 43: 'Retained'}));
++    assert.deepEqual(state.fromLegacySnapshot({42: 'Legacy update'}), {42: 'Legacy update', 43: 'Retained'});
++    assert.equal(state.revision(), undefined);
++    assert.equal(state.fromEvent(packet('process', 3, {42: 'Stale versioned packet'})), null);
++    const authoritative = {42: 'Authoritative', 43: 'Retained'};
++    assert.strictEqual(state.fromEvent(packet('process', 4, authoritative)), authoritative);
++    assert.equal(state.revision(), 'process:4');
++    assert.deepEqual(state.fromState({names: {}}, state.capture()), {});
++    assert.equal(state.revision(), undefined);
++    assert.strictEqual(state.fromState(packet('process', 4, authoritative), state.capture()), authoritative);
++});
++
++
++test('first EventSource open does not strand a delayed initial legacy HTTP directory', () => {
++    const state = createNameDirectoryState(), observed = state.capture();
++    assert.equal(state.connect(), false);
++    assert.deepEqual(state.fromState({names: {42: 'Initial legacy pilot'}}, observed), {42: 'Initial legacy pilot'});
++    assert.equal(state.revision(), undefined);
++});
++
++test('disconnect fences old HTTP but permits fresh authoritative reset while SSE is unavailable', () => {
++    const state = createNameDirectoryState(); state.connect(); state.fromEvent(packet('old', 50, {42: 'Before restart'}));
++    const oldRead = state.capture(); assert.equal(state.disconnect(), true); assert.equal(state.disconnect(), false);
++    assert.equal(state.fromState(packet('old', 51, {42: 'Late old read'}), oldRead), null);
++    assert.equal(state.fromEvent(packet('old', 52, {42: 'Event from disconnected stream'})), null);
++    assert.deepEqual(state.fromState(packet('new', 0, {}), state.capture()), {});
++    const outageRead = state.capture(); assert.equal(state.connect(), true);
++    assert.equal(state.fromEvent(packet('new', 0, {})), null);
++    assert.equal(state.fromState(packet('old', 999, {42: 'Late outage read'}), outageRead), null);
++    assert.equal(state.revision(), 'new:0');
++});
++
++test('first successful open after an initial connection error signals legacy HTTP recovery', () => {
++    const state = createNameDirectoryState(), oldRead = state.capture();
++    assert.equal(state.disconnect(), true); assert.equal(state.connect(), true);
++    assert.equal(state.fromState({names: {42: 'Discarded initial read'}}, oldRead), null);
++    assert.deepEqual(state.fromState({names: {42: 'Fresh recovery read'}}, state.capture()), {42: 'Fresh recovery read'});
++});
++
++test('legacy owner merges own keys safely and authoritative JSON keys cannot alter prototypes', () => {
++    const state = createNameDirectoryState(), first = {42: 'Own pilot'};
++    state.fromState({names: first}, state.capture());
++    assert.equal(state.fromLegacySnapshot(Object.create({42: 'Inherited replacement', 43: 'Inherited addition'})), null);
++    const special = JSON.parse('{"__proto__":"A name","constructor":"Another name","43":"Own addition"}');
++    const merged = state.fromLegacySnapshot(special);
++    assert.equal(Object.getPrototypeOf(merged), Object.prototype);
++    assert.equal(Object.hasOwn(merged, '__proto__'), true);
++    assert.equal(merged.__proto__, 'A name'); assert.equal(merged.constructor, 'Another name');
++    assert.equal(merged[42], 'Own pilot'); assert.equal(merged[43], 'Own addition');
++    state.connect();
++    assert.strictEqual(state.fromEvent(packet('authoritative', 0, special)), special);
++    assert.equal(Object.getPrototypeOf(special), Object.prototype);
++    assert.equal(Object.hasOwn({}, '43'), false);
++});

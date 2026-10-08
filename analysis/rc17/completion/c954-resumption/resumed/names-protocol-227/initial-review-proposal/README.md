@@ -1,0 +1,1 @@
+Initial unexecuted proposal preserved before correcting the independent reviewer findings described in ../PLAN.md. No test, build, or timing result exists for this proposal. The active files at parent level will be regenerated from the corrected candidate before runtime.

@@ -1,0 +1,90 @@
+{
+  "complete": true,
+  "performanceAcceptance": false,
+  "attempts": [
+    {
+      "attempt": "attempt1",
+      "rawSha256": "5bbe7eceeb56a24695aa0680b27adfd9df4e71d96cef1dedfd84f971b009eec5",
+      "progressSha256": "8888987c6e9f0768e1951264afa6fdfdae9e0882b66e88673c2cb4485161c5aa",
+      "logSha256": "de28f03856c8d186f31e9d56e7209c5121ee3baddadb768047630f672f0f0590",
+      "retainedWorkerSha256": "e21e036a7672ea4e52dac5c46eb65206ffb8bd087dee9493a89265fd57220e12",
+      "retainedRunnerSha256": "99a550ab11546d8ecd6522f3b90808d53945efb5b82a7676a731fd1a05206651",
+      "sourceManifestSha256": "d3b7b4b8eb67f8249fee59ba4181ab2967b7d49fc0331d46b71aad435ff89670",
+      "sourceFingerprint": "2c72fd451304d300e05a57d9b4eecc8bd906233c65c9478ad353e4578a474872",
+      "inRunSourceEndGuardCompleted": false,
+      "postFailurePresentSourceAndBuildFilesVerified": 507,
+      "cleanupVerified": true,
+      "complete": false,
+      "completedChecks": [
+        {
+          "name": "exact ordered loaded prefix 30",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/0 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/1 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/2 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "browser find reaches oldest loaded label 30",
+          "passed": false
+        }
+      ],
+      "failure": "AssertionError [ERR_ASSERTION]: browser find reaches oldest loaded label 30\n    at check (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/session-archive-f6/browser-cardinality.mjs:42:79)\n    at file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/session-archive-f6/browser-cardinality.mjs:77:3"
+    },
+    {
+      "attempt": "attempt2",
+      "rawSha256": "174e99e54b5feacbd9bb398ce98499a8ac6417f3ce3e854a774b3e0543eb8697",
+      "progressSha256": "275d1061de6be6895260bb4972e31c5a912f1d895f704c3c0bc915e9a411965c",
+      "logSha256": "bd6c99d63caf61bdabd01966a9a21d54e6c09dfd3ee88ff95e808b411c0aa1f5",
+      "retainedWorkerSha256": "d2df96ba49e1a0369ab74af8a417d9ed26ff55f03b402e071f152c72b7b1554e",
+      "retainedRunnerSha256": "99a550ab11546d8ecd6522f3b90808d53945efb5b82a7676a731fd1a05206651",
+      "sourceManifestSha256": "d3b7b4b8eb67f8249fee59ba4181ab2967b7d49fc0331d46b71aad435ff89670",
+      "sourceFingerprint": "2c72fd451304d300e05a57d9b4eecc8bd906233c65c9478ad353e4578a474872",
+      "inRunSourceEndGuardCompleted": false,
+      "postFailurePresentSourceAndBuildFilesVerified": 507,
+      "cleanupVerified": true,
+      "complete": false,
+      "completedChecks": [
+        {
+          "name": "exact ordered loaded prefix 30",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/0 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/1 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "refresh 30/2 reads complete loaded prefix",
+          "passed": true
+        },
+        {
+          "name": "complete DOM text lookup reaches visible keyboard target 30",
+          "passed": true
+        },
+        {
+          "name": "archive has no application search control 30",
+          "passed": true
+        }
+      ],
+      "failure": "Error: Chrome timed out: Runtime.evaluate\n    at Timeout._onTimeout (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc16/historical/tests/performance/chrome.mjs:14:73)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)"
+    }
+  ],
+  "findProbeSha256": "0d3d5b2d92aecaf9ca61fe411d4a25de82f4744cfec1ff165d04e37d952383d5",
+  "findProbeHarnessSha256": "61bf1caaaf8d2b0bd0cd05393aa13ecda410100571b1fa831f7b29bc5554f1f8",
+  "keyboardControlStatus": "Verified: original CDP Enter sequence produces no keypress or click; Enter text or explicit char produces exactly one trusted click.",
+  "postFailureSourceVerificationScope": "Present frozen source/build files match each saved pre-run manifest. This post-failure verification does not convert either incomplete run into acceptance.",
+  "keyboardProbeSha256": "54fab30ff5cd9e2b6c2afbcc9b416630c9745c58a2f049cc171142ad0fcc08a8",
+  "keyboardProbeHarnessSha256": "d67cc0ebd1b5d6642c6e00dffb9e0893b491fa183952cf03697c044d7f6acfaa"
+}

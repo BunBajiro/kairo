@@ -1,0 +1,105 @@
+# M9 next option: invalidate cheaply, derive compact inputs in JavaScript on demand
+
+**Design only; no implementation or runtime grant.** The eager SQL projection remains rejected as-is. Preserve the first read, persistence, and dense-confirmation evidence, including adverse observations and the retained-log integrity gap. This proposal does not close M9.
+
+## Why this is a separate option
+
+The eager trial spends SQL JSON-validation/projection work on every map write and every initial stored document. Narrowing its connection projection can address the measured dense-note storage amplification, but cannot remove full-document SQL work from ordinary writes. The earlier SQL-on-read trial already demonstrated poor ordinary-case costs. The next option should derive from the full object already produced by JavaScript `JSON.parse`, not repeat SQL JSON projection on a miss.
+
+| Choice | Changed map write | First summary / read after write | Steady summary | Main remaining cost |
+|---|---|---|---|---|
+| Narrower eager SQL projection | Decode/validate/project body and persist derivative inside the write | Compact input available immediately | Compact read, no derivative write | Every mutation still pays projection; startup still backfills bodies |
+| Lazy JavaScript derivative | Cheap transactional invalidation only | Read and parse authority, derive small input, persist once | Compact read, no derivative write | First-read work and write-lock acquisition; extra read-after-write work can erase the gain |
+| Existing 9afa path | Existing authoritative writes | Full parse and reconciliation | Full parse and reconciliation | Repeated wide-body transfer/parse |
+
+Narrow eager projection would be a useful causal/storage ablation, not the preferred adoption candidate: wide-1 API node-save almost doubled, and dense-note write+summary regressed even at 1:1. Lazy derivation changes when work happens and removes native JSON projection, but must be measured end-to-end before any benefit is asserted.
+
+## Source paths and actual response flow
+
+The reference for this analysis is clean `9afa9a7197fa6b5a802e9efdaa322dedf2439150`, not the currently combined continuation checkout.
+
+- `server/universe-jspace.mjs`: `summaries` currently obtains `libraryContext`, which ensures the source map, runs `projectionContext`/canonical expiry, then parses all map bodies and runs `reconcileNodes`/`summary`. `forgetMapConnections` and `reconcileNodes` own authoritative cleanup. `write`, tracking's `writeMap`, `command`, `create`, `importMap`, `remove` and undo all eventually mutate `universe_records`; direct SQL can bypass those functions.
+- `server/universe.mjs`: creates the original five-column table/indexes before JSpace construction. Link expiry and connection-forgetting can rewrite map documents before summary rows are read. The derivative must never cache canonical links, access decisions, current time or next-expiry results.
+- `server/index.mjs`: `/universe/jspace/summaries` is separate. Command/create/duplicate/import return projected full maps; delete returns a deletion result. They do **not** directly return a server summary-list response.
+- `command` and `create` finish tracking/scope updates, notify `onChange`, then return `project(id, loaded(...))`. `importMap` returns `project(id, map)`; `project` without a shared context runs canonical reads and reloads authority before reconciliation/enrichment. Reusing an earlier pre-tracking/pre-expiry map is therefore unsafe.
+- `components/kairo/jspace-workspace.tsx`: `acceptMap` creates a local descriptor from the full mutation response. However, `server/core.mjs` emits an `universe` event on change; `components/kairo/dashboard.tsx` forwards it to `kairo:universe-changed`; the workspace queues a refresh, resumes it after mutation/layout work, and `readWorkspace` requests summaries followed by selected detail. Connection/node removal also explicitly reloads. A 60-second refresh and expiry refresh exist. Thus mutation plus immediate summary/detail is a real workload even though the mutation response itself is a full map. It must not be represented as write-only or steady-summary-only work.
+
+## Private derivative schema and invalidation ownership
+
+Own this helper inside JSpace, after `universe_records` exists and before reads/timers use it. Do not modify that table's columns or its implicit five-value INSERT compatibility. Do not use application map revision, timestamp, `data_version`, or a retained JavaScript object as the cache lifetime authority.
+
+A tractable schema is a private ordinary rowid table containing:
+
+- `generation INTEGER PRIMARY KEY AUTOINCREMENT`;
+- `character_id`, authoritative SQL `record_id`, with a unique pair;
+- `state` (`dirty`, `ready`, `fallback`), `format_version`, and nullable compact JSON `body`.
+
+Generation is an opaque database-issued token, not a user-visible map revision. Return it as text (or use an explicitly BigInt-safe binding) so values beyond JavaScript's exact integer range cannot alias. AUTOINCREMENT avoids a delete/reinsert ABA problem that a per-key counter reset to one would have. A random 128-bit token would be simpler and cheaper but substitutes probabilistic uniqueness; a global counter adds a shared update. The proposed deterministic row generation has its own `sqlite_sequence` page/write cost and must be counted. This choice is provisional until a small write-cost measurement; do not assume invalidation is free.
+
+Builtin-only AFTER INSERT/UPDATE/DELETE triggers invalidate within the authoritative SQL transaction. On a relevant write, delete old/new owner/key entries as appropriate, then insert a fresh dirty entry for the new map identity. Use the earlier reviewed old/new collision handling so `INSERT OR REPLACE`, cross-kind moves and owner/key collisions work without enabling recursive triggers. For a deletion, delete its entry. Changes solely to `updated_at` need no body invalidation because ordering comes from the parent table; explicit `body=body` writes can conservatively invalidate.
+
+If trigger invalidation fails, the authoritative statement must fail atomically rather than commit with a stale derivative. Never catch such an error and retry the authoritative mutation with invalidation disabled. This is a remaining coupling/cost of the design, including low-space conditions.
+
+Installation uses a savepoint and creates only schema/triggers. **No scan/parse or metadata backfill of existing map bodies at startup.** There is no migration cleanup for either unshipped prototype table: derive the new trial from a clean baseline and clean fixture databases. Shipping future schema changes is a separate concern, not a reason to add cleanup for rejected experiments.
+
+## First-read sequence and safe publication
+
+1. Preserve pilot authorization, source recreation (including falsy legacy bodies), and canonical expiry order. Do not claim an arbitrary dirty row proves a valid source map exists. A current ready entry may carry an explicit parsed-truthy proof; otherwise use the existing full source read.
+2. Probe for this pilot's existing map keys missing a metadata row. Only when a row is missing, insert dirty entries using `INSERT ... SELECT character_id,id ... WHERE kind='jspace_map' AND NOT EXISTS (...)`. This scans keys, not bodies, and happens lazily for the requested pilot. A normal steady read performs no INSERT/UPDATE/DELETE. The extra missing-entry probe is an explicit steady read cost to measure.
+3. Read parent identity/order, metadata generation/state/version and either a valid compact body or the full authoritative body in **one joined SELECT**. This avoids separately fetching a generation that might describe a different document. A concurrent map insertion already gets a dirty token through the trigger. A concurrent deletion/key move is reflected by this final parent-row SELECT. Keep `ORDER BY records.updated_at DESC, records.id`.
+4. On a miss, parse the full body exactly as the baseline does and retain it only within this request. Build compact input from that object in JavaScript. Unsupported input uses the full object in the current response and may publish a versioned `fallback` marker. That marker avoids rewriting the same negative result on every unchanged read, while continuing to load/parse the authoritative body each time.
+5. Publish with a conditional update scoped to `(character_id, SQL record_id, generation, dirty/invalid-format state)`. If another writer changed/deleted/moved the row, its trigger replaced/removed the generation; the update affects zero rows. Do not publish stale compact data, retry a mutation, or treat this ordinary publication race as an authority error. No awaited work or retained map reference is added.
+6. A ready compact row still runs exact cleanup predicates against fresh canonical links/time. If cleanup is needed, load the complete authority by the **actual SQL row key**, then use existing reconciliation. A full fallback row uses its already-parsed full object directly. Never pass a compact input into an authoritative write. Keep the earlier key-move regression coverage, including the baseline's unusual document-id write behavior.
+7. If reconciliation writes a map, its trigger creates a new generation. Do not fill the new generation using an old snapshot merely because `map.revision` looks equal. The smallest safe miss-only variant leaves it dirty for the next read. An optimization that fills the post-cleanup row must bind the exact written object and new generation explicitly and requires a separate test; preserving zero unchanged steady writes is still mandatory.
+
+The key-seeding and final SELECT are intentionally separate: the final SELECT establishes the row/body/token observation. Publication is guarded by the token, so correctness does not require holding a write transaction across the whole summary projection or serializing all readers. Concurrent versioned fills may compete harmlessly. Existing authoritative cleanup remains governed by the current service transaction behavior; this proposal does not claim to make unrelated canonical/map reads one global snapshot.
+
+## Compact fields and exact legacy semantics
+
+Prefer a pure builder with a narrow supported-shape guard. It reads an object already parsed by JavaScript, so duplicate JSON object keys have the same last-key result as the baseline; there is no need for the expensive SQL `json_tree` duplicate-key traversal. Do not normalize or persist the authoritative body.
+
+| Input group | Necessary information | Excluded payload |
+|---|---|---|
+| Descriptor | Exact `id`, `name`, `description`, `kind`, `revision`, creation/update timestamps, `scope`, and pilot-count input | Other top-level operational/history data |
+| Nodes | Exact `system_id`, `locked`, `disconnected_at`, `prune_grace_at` and required field presence/type behavior | Notes, descriptions, positions, tags, observations |
+| Connections | Exact `id`, `kind`, `link_id`, both endpoint IDs and **own-property presence of `locked`** | `notes`, labels, arbitrary nested/custom fields and all unrelated connection payload |
+| References | Passage/comment `connection_id` inputs and activity `op` inputs | Passage mass/history, comment text/authors, activity descriptions |
+| Cleanup sentinels | Own-property presence of `archived_connections`; valid/invalid activity-array behavior | Archived connection bodies and unrelated archive payload |
+
+`own(edge,'locked')` is a cleanup condition even for `false`, `null`, zero or an empty string. Never replace absence with a present `locked: null/false`. For the first narrow implementation, any own connection `locked` property may conservatively force full fallback; the existing cleanup removes it and a later generation can compact. Likewise preserve map-level `archived_connections` presence, or use full fallback whenever it exists. Both choices avoid inventing placeholder semantics.
+
+Guard missing-versus-null `link_id`, integer-versus-string endpoint identity, primitive/null array elements, unusual activity values and pilot-count inputs. A primitive string that happens to contain valid JSON must remain a primitive. If preserving an unusual shape would require coercion or interpretation, mark fallback and use the existing full path. The fallback must preserve existing exceptions as well as successful results; do not catch baseline JSON parse/property-access errors and return a plausible descriptor instead.
+
+For normal object connections, create new objects with only cleanup-required fields, retaining relevant presence/types. Unknown fields/notes are not copied into the derivative, but remain in the original document. Cleanup after expiry/pruning must reload the original and preserve all surviving notes/custom fields. Test this with large arbitrary nested fields on surviving and removed edges, not only known `notes` strings. Use explicit own-property copies rather than unsafe object merging for names such as `__proto__`.
+
+A stored fallback marker is not proof that a body is truthy or that source recreation can be skipped. There must be no regression of the earlier false/null source-map cases. Array lengths, field absence and descriptor serialization order must match the old `summary` output exactly.
+
+## Reusing already-decoded response data
+
+There is a real opportunity in `project`: after canonical expiry/reload and `reconcileNodes`, but **before** it adds projected connection/node/pilot/operation fields, a full authoritative object is already available. A request-scoped helper could derive and serialize compact input there, avoiding a second full parse solely to prepare a later summary. It must receive the true SQL row key and the token observed with that exact body, and conditionally fill only a dirty/version-mismatched entry. Never cache the enriched response or blindly use `value.id` as the row key.
+
+This is not free: extraction, compact serialization, token checks and metadata writes then become part of mutation/selected-map response time. Current `project` callers sometimes reload after an earlier object was passed, and reconciliation can itself write. Carrying a key/token through those paths broadens the change and touches the already-sensitive dense selected endpoint. Do not add a global/memoized map or prefill from a pre-tracking command result.
+
+Recommended staging: review the miss-only helper first, then compare a separately frozen response-fill variant only if an explicit read-after-write measurement shows a repeated parse matters. If implementing a response-fill hook, reuse the exact freshly decoded object at the above boundary; do not read/parse it again merely to populate the cache. Measure command response, subsequent summary and subsequent selected detail separately and as a combined ordinary sequence. Both variants retain the same authoritative output/store checks.
+
+## Format changes, failure handling and ownership
+
+Format compatibility belongs to the compact-input builder/decoder and cleanup predicates, not to the map's revision or an arbitrary build/git hash. Every ready/fallback row carries an explicit format version. A reader only trusts its own supported version; mismatches take the full path and are refilled lazily. Invalidation triggers remain format-neutral and always mark dirty. Future builder/field/predicate changes that alter compact meaning must bump this version. Multiple app versions can overwrite each other's optional derivative and cause misses, but must not decode an unsupported version or alter authority.
+
+Schema layout version and compact format version are separate. Future shipped schema migration must install/repair triggers atomically and discard incompatible **derivatives only**. If a missing trigger allowed unobserved writes, installation must invalidate all existing ready/fallback entries before trusting them; it need not parse bodies or rebuild them. Keep generation monotonic for the surviving table. Unsupported concurrent manual DROP/edit of private cache/schema tables is not a supported mutation API; ordinary direct DML on `universe_records` is supported and tested.
+
+The helper owns metadata errors. A zero-row conditional fill is harmless. A builder's unsupported-shape result is fallback. Optional cache publication must never write authority or retry an authoritative operation. A savepoint can isolate publication failure inside an existing transaction, but SQLite errors that abort an outer transaction cannot be silently swallowed; determine the exact error handling with injected-failure tests. Do not broadly catch malformed authoritative JSON, disk/corruption errors, or required cleanup failures. A fail-open path is acceptable only when it can prove the authoritative state and caller transaction remain intact and bypass the derivative for that response.
+
+Deleting a map or all of a pilot's universe records deletes metadata through the same triggers. The current Auth disconnect removes character/snapshot/cache rows but does not delete private universe documents; keep authorization checks before metadata access, and do not invent a new data-retention policy. Do not export the derivative through existing universe record export/backup APIs. A whole SQLite backup may include it, but it remains discardable, versioned and untrusted without current format/trigger ownership.
+
+## Smallest review/test/measurement gate
+
+1. Start from a new clean 9afa isolated root; do not mutate the rejected eager checkout. First change only one helper, `summaries` integration and focused tests. Keep selected/full reconciliation inline initially so the previous extracted-helper timing hypothesis is not mixed into the new option. No browser/API schema changes or broad DB rewrite.
+2. Test pure builder parity plus arbitrary connection notes/custom fields, all relevant absence/null/boolean cases, primitive/JSON-looking strings, source falsy recreation, duplicate keys after JavaScript parsing and full fallback errors. Test unchanged summary output/store/zero writes after the first fill.
+3. Test direct SQL insert/update/same-revision replacement/delete, owner/key/kind moves, OR REPLACE collisions, SQL key differing from document id, rollback and reopen. Test outer transaction/savepoint failure and generation beyond 2^53. A two-handle interleaving must invalidate between joined read and conditional fill, including delete/reinsert at the same key; the stale fill must affect zero rows. Do not use only API mutations as evidence.
+4. Test canonical expiry, disconnected-node deadline/prune, locked-own cleanup, undo, import and tracking writes before first read and after a warm cache. Assert no compact body is ever stored as authority, all surviving unknown fields remain byte/semantically equivalent, and format mismatch or missing-trigger repair cannot reuse stale data.
+5. Small first performance screen before a full matrix: plain-1/24, wide-1/24, dense-notes-1/8, primitive fallback and wide source. Separate unchanged cold populated construction (zero body backfill), first summary, second/steady summary, changed SQL write alone, write+first-summary 1:1, burst writes then one summary, real node/comment API response, API+immediate-summary+selected-detail, bulk expiry, and import. Include repeated fallback reads and unsupported shapes. Record authoritative/derivative changes, full-transfer/parse counts, compact serialized bytes, checkpointed pages/WAL snapshots and ordinary memory observations.
+6. Report each phase and the combined sequence. For one invalidating write followed by R reads, compare actual `write + first-read + (R-1) steady-read` costs; show R=0,1,2,10 without claiming any is production frequency. First-read cost includes derivation, compact serialization, metadata allocation/write and lock acquisition; metadata is not prewarmed off-clock. Responses that prefill must pay that work inside their API timing. Dormant pilots must incur no body backfill.
+7. Only if that screen resolves the existing write/storage problems, proceed to the unchanged full read/selected/dense matrices plus the full persistence gate and matched real-data/cadence work required by root. Retain all adverse/failed attempts. Improved logger lifecycle must be frozen independently and cannot retroactively alter the completed eager evidence.
+
+The proposal is narrow enough for an isolated prototype after review, but generation/write overhead, first-read publication, optional-failure behavior and the mutation-response hook are concrete open design/performance questions. Authoring this plan is not implementation/adoption authorization.

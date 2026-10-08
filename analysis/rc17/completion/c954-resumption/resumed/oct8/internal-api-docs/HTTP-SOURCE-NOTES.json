@@ -1,0 +1,711 @@
+{
+  "auditedAt": "2026-10-08T09:55:29.739766+00:00",
+  "sourceCommit": "a7b1bf97b0073695926c443e52d523638e59e48d",
+  "sourceTree": "13cb643c5a3a06414e3ef1a9605c4f919666515f",
+  "draftFinalDestination": "docs/API-REFERENCE.md",
+  "draftSha256": "c3ee3379b0fe20f08d2ff40c1cd13694a61c5c172fd8afc61ac456022924bdfd",
+  "readOnlySourceAudit": true,
+  "runtimeExecutedForDocumentation": false,
+  "sourceFiles": [
+    {
+      "path": "server/index.mjs",
+      "bytes": 52263,
+      "sha256": "2b237d3260540a335b392139bdb27e5eed5fd781e1b355f3accd82a651de5936",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/core.mjs",
+      "bytes": 28835,
+      "sha256": "d8c16c5eddf836299a401ccacb5ab315905ec68653e802dc61c7ede0582c4510",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/sse.mjs",
+      "bytes": 4680,
+      "sha256": "662a58f152b9614a82e446b6dc2de4192332978f98c5f050c0045613694a12e7",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/stream.mjs",
+      "bytes": 7364,
+      "sha256": "788229cba6a4566d80cde249ca75242229fc0c322f63bceadd28a6c821260380",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/projections.mjs",
+      "bytes": 9659,
+      "sha256": "6a0562b2dd1741b51cfdb840860b5e4cf6f6c946842f6d6549632d4e78d073dc",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/ui-resources.mjs",
+      "bytes": 1342,
+      "sha256": "cc04a93f99f7725873e57e977ea7425f8e50c8d69c86772dbded159bc87b043d",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/auth.mjs",
+      "bytes": 9606,
+      "sha256": "c38e2fdb6164fbf2dbf793fd745e54e75b5e012ef3f0d3322afef57fc7cccecf",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/registry.mjs",
+      "bytes": 3682,
+      "sha256": "a43f2f09ce12d65395d1874f39a268731121d7081261b6e8e46fbe84879067dd",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/modules/catalog.mjs",
+      "bytes": 5373,
+      "sha256": "b33f3de11a770e6cfdfa8948128a0c6c800a355bc1851c63703954e17892b40a",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/modules/milestones.mjs",
+      "bytes": 2248,
+      "sha256": "c61a5056f0d1d9a1277466e5c6bf0338db0d5e68777bc85ad219a1fd69978df1",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/markets.mjs",
+      "bytes": 29804,
+      "sha256": "e0a8099eb80112c8eae19aed4f3cbd3683acd3980d02fd7c45945a80a106fcbb",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/imports.mjs",
+      "bytes": 17090,
+      "sha256": "2cf32e8187a1573477705ad49cbe75daa8e3858749d7010b46134f00e372f5dc",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/history.mjs",
+      "bytes": 6125,
+      "sha256": "74c4bc0fcbdbd4d9d9d9be4fc15c5e4ccc63cce8c8ca37df3344004e272520e1",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/session-replay.mjs",
+      "bytes": 8936,
+      "sha256": "59a3dccf81ea80f23935733b1c68018788ac53582acfe9f2049b81802f37708c",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "server/universe.mjs",
+      "bytes": 70067,
+      "sha256": "81732780f6d7af9e0b8e61b1b1fbdf6c28d59312239cdf0c475a7a6fe8f1d732",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "components/kairo/dashboard.tsx",
+      "bytes": 28774,
+      "sha256": "f353c43d896e60d832ad8205cb3f02104d7f2a89b20639e6403916061ead34c8",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "components/kairo/model.ts",
+      "bytes": 2994,
+      "sha256": "74be1682a3a6331807003012a8581177f025618ffcbf046f07d215a0dce4cac4",
+      "workingCopyMatchesPinned": true
+    },
+    {
+      "path": "public/stream/render.js",
+      "bytes": 8477,
+      "sha256": "2125e463b7170b448a5c1dfb0386e83466b0b02782b621094ac4dfe0d682c886",
+      "workingCopyMatchesPinned": true
+    }
+  ],
+  "dispatcherConditionExcerpts": [
+    {
+      "line": 97,
+      "source": "if(owner && store.get('module:universe',true)) await core.resolveNames({alliance_id:owner.alliance_id,corporation_id:owner.corporation_id,faction_id:owner.faction_id});"
+    },
+    {
+      "line": 126,
+      "source": "if (path === '/bootstrap' && read)"
+    },
+    {
+      "line": 128,
+      "source": "if (path === '/datasets' && read) return json(res, 200, datasetStatus());"
+    },
+    {
+      "line": 129,
+      "source": "if (path === '/datasets/check' && req.method === 'POST') {"
+    },
+    {
+      "line": 133,
+      "source": "if (path === '/datasets/install' && req.method === 'POST') {"
+    },
+    {
+      "line": 137,
+      "source": "if (path === '/state' && read) {"
+    },
+    {
+      "line": 141,
+      "source": "if (path === '/events' && read) {"
+    },
+    {
+      "line": 151,
+      "source": "if (path === '/sync' && req.method === 'POST') {"
+    },
+    {
+      "line": 160,
+      "source": "if(path==='/markets'&&read)return json(res,200,core.markets.overview());"
+    },
+    {
+      "line": 161,
+      "source": "if(path==='/markets/hubs'&&req.method==='POST')return json(res,200,await core.markets.addHub(await body(req)));"
+    },
+    {
+      "line": 162,
+      "source": "if(path==='/markets/defaults'&&req.method==='POST')return json(res,200,core.markets.restoreDefaults());"
+    },
+    {
+      "line": 163,
+      "source": "if(/^\\/markets\\/hubs\\/\\d+$/.test(path)&&req.method==='DELETE')return json(res,200,core.markets.removeHub(Number(path.split('/')[3])));"
+    },
+    {
+      "line": 164,
+      "source": "if(path==='/markets/discover'&&req.method==='POST')return json(res,200,await core.markets.discover(await body(req)));"
+    },
+    {
+      "line": 165,
+      "source": "if(path==='/markets/quick'&&req.method==='PUT')return json(res,200,await core.markets.quickChange(await body(req)));"
+    },
+    {
+      "line": 166,
+      "source": "if(path==='/markets/scan'&&req.method==='POST')return json(res,202,core.markets.start(await body(req)));"
+    },
+    {
+      "line": 167,
+      "source": "if(path==='/markets/upgrade'&&req.method==='POST')return json(res,200,core.markets.resumeUpgrade(true));"
+    },
+    {
+      "line": 168,
+      "source": "if(path==='/markets/cancel'&&req.method==='POST')return json(res,200,core.markets.cancel());"
+    },
+    {
+      "line": 169,
+      "source": "if(path==='/markets/categories'&&read)return json(res,200,core.markets.categories(Number(url.searchParams.get('hub'))));"
+    },
+    {
+      "line": 170,
+      "source": "if(path==='/markets/browse'&&read)return json(res,200,core.markets.browse(Number(url.searchParams.get('hub')),Object.fromEntries(url.searchParams)));"
+    },
+    {
+      "line": 171,
+      "source": "if(path==='/markets/item'&&read)return json(res,200,core.markets.detail(Number(url.searchParams.get('hub')),Number(url.searchParams.get('type')),Object.fromEntries(url.searchParams)));"
+    },
+    {
+      "line": 172,
+      "source": "if(path==='/markets/report'&&read)return json(res,200,core.markets.report(Number(url.searchParams.get('hub')),Object.fromEntries(url.searchParams)));"
+    },
+    {
+      "line": 173,
+      "source": "if(path==='/markets/type'&&req.method==='POST')return json(res,200,await core.markets.enrichType((await body(req)).typeId));"
+    },
+    {
+      "line": 174,
+      "source": "if(path==='/markets/imports'&&read)return json(res,200,core.markets.imports.state(Number(url.searchParams.get('hub'))));"
+    },
+    {
+      "line": 175,
+      "source": "if(path==='/markets/imports/settings'&&req.method==='PUT'){const b=await body(req);return json(res,200,core.markets.imports.saveSettings(b.hubId,b.settings));}"
+    },
+    {
+      "line": 176,
+      "source": "if(path==='/markets/imports/refresh'&&req.method==='POST')return json(res,200,await core.markets.imports.refresh((await body(req)).hubId));"
+    },
+    {
+      "line": 177,
+      "source": "if(path==='/markets/imports/analyse'&&read)return json(res,200,await core.markets.imports.analyse(Number(url.searchParams.get('hub'))));"
+    },
+    {
+      "line": 178,
+      "source": "if(path==='/markets/imports/item'&&read)return json(res,200,await core.markets.imports.detail(Number(url.searchParams.get('hub')),Number(url.searchParams.get('type'))));"
+    },
+    {
+      "line": 179,
+      "source": "if(path==='/markets/imports/quote'&&req.method==='POST'){const b=await body(req);return json(res,200,await core.markets.imports.quote(b.hubId,b));}"
+    },
+    {
+      "line": 180,
+      "source": "if(path==='/markets/imports/plan-quote'&&req.method==='POST'){const b=await body(req);return json(res,200,await core.markets.imports.planQuote(b.hubId,b));}"
+    },
+    {
+      "line": 181,
+      "source": "if(path==='/markets/imports/plans'&&read)return json(res,200,core.markets.imports.getPlan(Number(url.searchParams.get('hub')),url.searchParams.get('id')));"
+    },
+    {
+      "line": 182,
+      "source": "if(path==='/markets/imports/plans'&&req.method==='POST'){const b=await body(req);return json(res,200,await core.markets.imports.savePlan(b.hubId,b));}"
+    },
+    {
+      "line": 183,
+      "source": "if(path==='/markets/imports/plans'&&req.method==='DELETE'){const b=await body(req);return json(res,200,core.markets.imports.removePlan(b.hubId,b.id));}"
+    },
+    {
+      "line": 184,
+      "source": "if (path === '/settings/polling' && read) return json(res, 200, core.pollingSettings());"
+    },
+    {
+      "line": 185,
+      "source": "if (path === '/settings/polling' && req.method === 'PUT') return json(res, 200, core.savePolling((await body(req)).intervals));"
+    },
+    {
+      "line": 186,
+      "source": "if (path === '/settings' && req.method === 'PUT') {"
+    },
+    {
+      "line": 199,
+      "source": "if (path === '/auth/start' && req.method === 'POST') {"
+    },
+    {
+      "line": 205,
+      "source": "if (path.startsWith('/characters/') && req.method === 'DELETE') {"
+    },
+    {
+      "line": 211,
+      "source": "if (path === '/modules' && req.method === 'PUT') {"
+    },
+    {
+      "line": 218,
+      "source": "if (path === '/stream' && read)"
+    },
+    {
+      "line": 220,
+      "source": "if(path==='/stream'&&req.method==='PUT'){const c=sanitizeConfig(await body(req));return json(res,200,core.stream.save(c,bindingProjections(store,auth,c.elements)));}"
+    },
+    {
+      "line": 221,
+      "source": "if(path==='/stream/sources'&&read)return json(res,200,{goals:store.db.prepare('SELECT id,character_id,title,progress,target,done FROM goals ORDER BY done,title').all(),contexts:toastContexts});"
+    },
+    {
+      "line": 222,
+      "source": "if(path==='/stream/preview'&&req.method==='POST'){const c=sanitizeConfig(await body(req));return json(res,200,bindingProjections(store,auth,c.elements));}"
+    },
+    {
+      "line": 223,
+      "source": "if(path==='/obs'&&read)return json(res,200,{config:core.obs.config(),status:core.obs.status()});"
+    },
+    {
+      "line": 224,
+      "source": "if(path==='/obs/status'&&read)return json(res,200,core.obs.status());"
+    },
+    {
+      "line": 225,
+      "source": "if(path==='/obs'&&req.method==='PUT')return json(res,200,{status:await core.obs.save(await body(req)),config:core.obs.config()});"
+    },
+    {
+      "line": 226,
+      "source": "if(path==='/obs/targets'&&read)return json(res,200,await core.obs.inventory());"
+    },
+    {
+      "line": 227,
+      "source": "if(path==='/obs/filters'&&read)return json(res,200,await core.obs.filters(url.searchParams.get('source')));"
+    },
+    {
+      "line": 228,
+      "source": "if(path==='/obs/reconnect'&&req.method==='POST')return json(res,200,await core.obs.reconnect());"
+    },
+    {
+      "line": 229,
+      "source": "if(path==='/obs/apply'&&req.method==='POST')return json(res,200,await core.obs.reapply());"
+    },
+    {
+      "line": 230,
+      "source": "if (path === '/stream/test' && req.method === 'POST') {"
+    },
+    {
+      "line": 235,
+      "source": "if (path === '/opsec' && req.method === 'PUT') {"
+    },
+    {
+      "line": 246,
+      "source": "if (path === '/timeline' && read) {"
+    },
+    {
+      "line": 255,
+      "source": "if(path==='/journey'&&read)return json(res,200,journeyData(store,checkedChar(url)));"
+    },
+    {
+      "line": 256,
+      "source": "if(/^\\/journey\\/connections\\/\\d+$/.test(path)&&req.method==='PUT')return json(res,200,setJourneyConnection(store,checkedChar(url),Number(path.split('/')[3]),(await body(req)).hidden));"
+    },
+    {
+      "line": 257,
+      "source": "if(path==='/journey/enrich'&&req.method==='POST'){const missing=journeyData(store,checkedChar(url)).systems.filter(s=>s.x===null||!s.region_id).slice(0,25),results=[];for(const s of missing){try{await getSystem(store,esi,s.system_id);results.push({id:s.system_id,ok:true});}catch{results.push({id:s.system_id,ok:false});}}return json(res,200,{results});}"
+    },
+    {
+      "line": 258,
+      "source": "if(path==='/places'&&read)return json(res,200,store.db.prepare('SELECT * FROM place_notes ORDER BY updated DESC').all().map(n=>({...n,tags:JSON.parse(n.tags)})));"
+    },
+    {
+      "line": 259,
+      "source": "if(path.startsWith('/places/')){const [,,kind,key]=path.split('/'),id=Number(key);if(!['system','constellation','region'].includes(kind)||!Number.isSafeInteger(id)||id<1)throw new Error('Invalid place.');"
+    },
+    {
+      "line": 264,
+      "source": "if(path==='/goals/sources'&&read)return json(res,200,goalSourceOptions(store,auth,checkedChar(url)));"
+    },
+    {
+      "line": 265,
+      "source": "if(path==='/goals/type'&&req.method==='POST'){"
+    },
+    {
+      "line": 268,
+      "source": "if (path === '/goals' && read)"
+    },
+    {
+      "line": 270,
+      "source": "if (path === '/goals' && req.method === 'POST') {"
+    },
+    {
+      "line": 275,
+      "source": "if (path.startsWith('/goals/') && req.method === 'PUT') {"
+    },
+    {
+      "line": 294,
+      "source": "if(path.startsWith('/goals/') && req.method === 'DELETE') {"
+    },
+    {
+      "line": 302,
+      "source": "if (path === '/notes' && read)"
+    },
+    {
+      "line": 304,
+      "source": "if (path === '/notes' && req.method === 'POST') {"
+    },
+    {
+      "line": 314,
+      "source": "if (path.startsWith('/notes/') && req.method === 'DELETE') {"
+    },
+    {
+      "line": 321,
+      "source": "if(path==='/session'&&req.method==='POST'){const characterId=checkedChar(url),r=changeSession(store,core.publish,characterId,await body(req));core.updateBindings();if(!options.noSync)core.sessionCombat.sessionChanged(r.id,characterId).catch(()=>{});return json(res,200,r);}"
+    },
+    {
+      "line": 322,
+      "source": "if(path==='/sessions'&&read){const offset=Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))),rows=store.db.prepare('SELECT id,character_id,label,started,ended FROM sessions WHERE character_id=? ORDER BY started DESC,id DESC LIMIT 31 OFFSET ?').all(checkedChar(url),offset);return json(res,200,{items:rows.slice(0,30),more:rows.length>30});}"
+    },
+    {
+      "line": 323,
+      "source": "if(/^\\/sessions\\/[^/]+\\/replay$/.test(path) && read) return json(res,200,sessionReplay(store,decodeURIComponent(path.split('/')[2]),checkedChar(url)));"
+    },
+    {
+      "line": 324,
+      "source": "if(path.startsWith('/sessions/')){const id=path.split('/')[2],characterId=checkedChar(url);if(read){const report=sessionReport(store,id,characterId,Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))));if(!options.noSync)core.sessionCombat.sync(id,characterId).catch(()=>{});const coverage=store.get('session:combat:'+id,null);if(coverage&&store.get('module:combat',true))report.allianceCombat.coverage=coverage;return json(res,200,report);}"
+    },
+    {
+      "line": 326,
+      "source": "if (path === '/universe/static' && read) {"
+    },
+    {
+      "line": 337,
+      "source": "if (path === '/universe' && read) return json(res, 200, core.universe.state(checkedChar(url)));"
+    },
+    {
+      "line": 338,
+      "source": "if (path === '/universe/jspace' && read) return json(res, 200, core.universe.jspace.state(checkedChar(url)));"
+    },
+    {
+      "line": 339,
+      "source": "if (path === '/universe/jspace/summaries' && read) return json(res, 200, core.universe.jspace.summaries(checkedChar(url)));"
+    },
+    {
+      "line": 340,
+      "source": "if (path === '/universe/jspace/search' && read) return json(res, 200, core.universe.jspace.search(checkedChar(url), {kind:url.searchParams.get('kind') || undefined,q:url.searchParams.get('q')}));"
+    },
+    {
+      "line": 341,
+      "source": "if (path === '/universe/jspace/tracking/active' && req.method === 'PUT') return json(res, 200, core.universe.jspace.setActivePilot((await body(req)).character_id));"
+    },
+    {
+      "line": 342,
+      "source": "if (path === '/universe/jspace/scope-options' && read) return json(res, 200, core.universe.scopeOptions(checkedChar(url)));"
+    },
+    {
+      "line": 343,
+      "source": "if (path === '/universe/jspace/owners/search' && read) return json(res, 200, await core.universe.searchOwners(checkedChar(url), {kind:url.searchParams.get('kind'),q:url.searchParams.get('q')}));"
+    },
+    {
+      "line": 344,
+      "source": "if (path === '/universe/jspace/destinations' && req.method === 'POST') return json(res, 200, core.universe.jspaceDestinations(checkedChar(url), await body(req)));"
+    },
+    {
+      "line": 345,
+      "source": "if (path === '/universe/jspace/maps' && req.method === 'POST') return json(res, 200, core.universe.jspace.create(checkedChar(url), await body(req)));"
+    },
+    {
+      "line": 346,
+      "source": "if (path === '/universe/jspace/import/preview' && req.method === 'POST') return json(res, 200, core.universe.jspace.previewImport(checkedChar(url), await body(req, 4_100_000)));"
+    },
+    {
+      "line": 347,
+      "source": "if (path === '/universe/jspace/import' && req.method === 'POST') return json(res, 200, core.universe.jspace.importMap(checkedChar(url), await body(req, 4_100_000)));"
+    },
+    {
+      "line": 348,
+      "source": "if (/^\\/universe\\/jspace\\/maps\\/[^/]+\\/commands$/.test(path) && req.method === 'POST') return json(res, 200, core.universe.jspace.command(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));"
+    },
+    {
+      "line": 349,
+      "source": "if (/^\\/universe\\/jspace\\/maps\\/[^/]+\\/duplicate$/.test(path) && req.method === 'POST') return json(res, 200, core.universe.jspace.duplicate(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));"
+    },
+    {
+      "line": 350,
+      "source": "if (/^\\/universe\\/jspace\\/maps\\/[^/]+\\/export$/.test(path) && read) {"
+    },
+    {
+      "line": 354,
+      "source": "if (/^\\/universe\\/jspace\\/maps\\/[^/]+$/.test(path) && read) return json(res, 200, core.universe.jspace.map(checkedChar(url), decodeURIComponent(path.split('/')[4])));"
+    },
+    {
+      "line": 355,
+      "source": "if (/^\\/universe\\/jspace\\/maps\\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res, 200, core.universe.jspace.remove(checkedChar(url), decodeURIComponent(path.split('/')[4]), await body(req)));"
+    },
+    {
+      "line": 356,
+      "source": "if (path === '/universe/operations' && read) return json(res,200,core.universe.operations.state(checkedChar(url),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 357,
+      "source": "if (path === '/universe/operations/config' && read) return json(res,200,core.universe.operations.config(checkedChar(url)));"
+    },
+    {
+      "line": 358,
+      "source": "if (path === '/universe/operations/config' && req.method === 'PUT') return json(res,200,core.universe.operations.saveConfig(checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 359,
+      "source": "if (path === '/universe/log-directories' && read) return json(res,200,await core.universe.operations.defaultLogDirectories());"
+    },
+    {
+      "line": 360,
+      "source": "if (path === '/universe/intel' && req.method === 'POST') return json(res,200,core.universe.operations.ingestIntel(checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 361,
+      "source": "if (/^\\/universe\\/intel\\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.operations.removeIntel(checkedChar(url),decodeURIComponent(path.split('/')[3]),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 362,
+      "source": "if (/^\\/universe\\/alerts\\/[^/]+\\/ack$/.test(path) && req.method === 'POST') return json(res,200,core.universe.operations.acknowledge(checkedChar(url),decodeURIComponent(path.split('/')[3]),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 363,
+      "source": "if (path === '/universe/signatures/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewSignatures(checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 364,
+      "source": "if (path === '/universe/signatures/import' && req.method === 'POST') return json(res,200,core.universe.operations.importSignatures(checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 365,
+      "source": "if (path === '/universe/signatures/restore' && req.method === 'POST') return json(res,200,core.universe.operations.restoreSignature(checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 366,
+      "source": "if (path === '/universe/upgrades/preview' && req.method === 'POST') return json(res,200,core.universe.operations.previewUpgrades(checkedChar(url),await body(req,1_000_000)));"
+    },
+    {
+      "line": 367,
+      "source": "if (path === '/universe/upgrades/import' && req.method === 'POST') return json(res,200,core.universe.operations.importUpgrades(checkedChar(url),await body(req,1_000_000)));"
+    },
+    {
+      "line": 368,
+      "source": "if (path === '/universe/upgrades/export' && read) {"
+    },
+    {
+      "line": 373,
+      "source": "for (const [collection,save,remove] of [['signatures','saveSignature','removeSignature'],['upgrades','saveUpgrade','removeUpgrade']]) {"
+    },
+    {
+      "line": 374,
+      "source": "if (path === '/universe/'+collection && req.method === 'POST') return json(res,200,core.universe.operations[save](checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 375,
+      "source": "if (path.startsWith('/universe/'+collection+'/') && req.method === 'DELETE') return json(res,200,core.universe.operations[remove](checkedChar(url),decodeURIComponent(path.split('/')[3]),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 377,
+      "source": "if (path === '/universe/operations/refresh' && req.method === 'POST') return json(res,200,await core.universe.operations.refresh(checkedChar(url),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 378,
+      "source": "if (path === '/universe/feeds' && read) return json(res,200,core.universe.feeds.state());"
+    },
+    {
+      "line": 379,
+      "source": "if (path === '/universe/feeds/config' && read) return json(res,200,core.universe.feeds.config());"
+    },
+    {
+      "line": 380,
+      "source": "if (path === '/universe/feeds/config' && req.method === 'PUT') return json(res,200,core.universe.feeds.saveConfig(await body(req)));"
+    },
+    {
+      "line": 381,
+      "source": "if (path === '/universe/feeds/refresh' && req.method === 'POST') return json(res,200,await core.universe.feeds.refresh(await body(req)));"
+    },
+    {
+      "line": 382,
+      "source": "if (path === '/universe/feeds/import' && req.method === 'POST') return json(res,200,core.universe.feeds.importData(await body(req)));"
+    },
+    {
+      "line": 383,
+      "source": "if (path === '/universe/feeds/storms' && req.method === 'PUT') { const input=await body(req); return json(res,200,core.universe.feeds.saveStorms(Array.isArray(input)?input:input.items)); }"
+    },
+    {
+      "line": 384,
+      "source": "if (path === '/universe/navigation' && read) return json(res,200,core.universe.navigation.state(checkedChar(url),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 385,
+      "source": "if (path === '/universe/navigation/itinerary' && req.method === 'PUT') return json(res,200,core.universe.navigation.saveItinerary(checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 386,
+      "source": "if (path === '/universe/navigation/itinerary' && req.method === 'DELETE') return json(res,200,core.universe.navigation.clearItinerary(checkedChar(url),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 387,
+      "source": "if (/^\\/universe\\/navigation\\/stops\\/[^/]+$/.test(path) && req.method === 'DELETE') return json(res,200,core.universe.navigation.removeStop(checkedChar(url),decodeURIComponent(path.split('/')[4]),url.searchParams.get('map_id')));"
+    },
+    {
+      "line": 388,
+      "source": "for (const [action,method] of [['reorder','reorderStops'],['plan','plan'],['waypoints','sendWaypoints'],['bridges','discoverBridges'],['reachability','reachability']]) {"
+    },
+    {
+      "line": 389,
+      "source": "if (path === '/universe/navigation/'+action && req.method === 'POST') return json(res,200,await core.universe.navigation[method](checkedChar(url),await body(req)));"
+    },
+    {
+      "line": 391,
+      "source": "if (path === '/universe/links/preview' && req.method === 'POST') return json(res,200,core.universe.previewLinks(checkedChar(url),await body(req,2_000_000)));"
+    },
+    {
+      "line": 392,
+      "source": "if (/^\\/universe\\/link-lists\\/[^/]+\\/export$/.test(path) && read) {"
+    },
+    {
+      "line": 397,
+      "source": "if (path === '/universe/politics/config' && read) return json(res, 200, core.universe.politicsConfig());"
+    },
+    {
+      "line": 398,
+      "source": "if (path === '/universe/politics/config' && req.method === 'PUT') {"
+    },
+    {
+      "line": 403,
+      "source": "if (path === '/universe/politics' && read) return json(res, 200, core.universe.politicsState());"
+    },
+    {
+      "line": 404,
+      "source": "if (path === '/universe/politics' && req.method === 'POST') {"
+    },
+    {
+      "line": 408,
+      "source": "if (path === '/universe/politics/alliances' && read) return json(res, 200, { items: core.universe.politicsAlliances(String(url.searchParams.get('q') || '').slice(0, 150)) });"
+    },
+    {
+      "line": 409,
+      "source": "if (path === '/universe/politics/alliances/resolve' && req.method === 'POST') {"
+    },
+    {
+      "line": 427,
+      "source": "if (/^\\/universe\\/systems\\/\\d+$/.test(path) && read) return json(res, 200, await universeDetail(checkedChar(url), Number(path.split('/')[3])));"
+    },
+    {
+      "line": 428,
+      "source": "if (path === '/universe/search' && req.method === 'POST') {"
+    },
+    {
+      "line": 434,
+      "source": "if (path === '/universe/route' && req.method === 'POST') return json(res, 200, core.universe.route(checkedChar(url), await body(req)));"
+    },
+    {
+      "line": 435,
+      "source": "if (path === '/universe/jump-plan' && req.method === 'POST') return json(res, 200, core.universe.jump(checkedChar(url), await body(req)));"
+    },
+    {
+      "line": 436,
+      "source": "if (path === '/universe/links/prune-expired' && req.method === 'POST') return json(res,200,core.universe.pruneExpired(checkedChar(url)));"
+    },
+    {
+      "line": 437,
+      "source": "if (path === '/universe/structures/verify' && req.method === 'POST') return json(res, 200, await core.universe.verifyStructure(checkedChar(url), (await body(req)).structureId));"
+    },
+    {
+      "line": 438,
+      "source": "for (const [collection, save, remove] of [['views', 'saveView', 'deleteView'], ['links', 'saveLink', 'deleteLink'], ['link-lists', 'saveLinkList', 'deleteLinkList'], ['pins', 'savePin', 'deletePin']]) {"
+    },
+    {
+      "line": 439,
+      "source": "if (path === '/universe/' + collection && req.method === 'POST') return json(res, 200, core.universe[save](checkedChar(url), await body(req, collection==='link-lists'?2_000_000:150000)));"
+    },
+    {
+      "line": 440,
+      "source": "if (path.startsWith('/universe/' + collection + '/') && req.method === 'DELETE') return json(res, 200, core.universe[remove](checkedChar(url), decodeURIComponent(path.split('/')[3])));"
+    },
+    {
+      "line": 442,
+      "source": "if (path === '/export' && read) {"
+    },
+    {
+      "line": 446,
+      "source": "if (path.startsWith('/modules/') && read) {"
+    },
+    {
+      "line": 455,
+      "source": "async function staticFile(res, pathname, base) { const raw = decodeURIComponent(pathname); if (raw.includes('\\0') || raw.includes('\\\\'))"
+    },
+    {
+      "line": 456,
+      "source": "return json(res, 400, { error: 'Invalid path.' }); const file = resolve(base, '.' + raw); if (!file.startsWith(base + sep) && file !== base)"
+    },
+    {
+      "line": 475,
+      "source": "if (req.headers.host === `localhost:${port}` && req.method === 'GET' && !url.pathname.startsWith('/api/')) { res.writeHead(302, { Location: origin + url.pathname + url.search }); return res.end(); }"
+    },
+    {
+      "line": 476,
+      "source": "if (url.pathname === '/auth/eve/callback') {"
+    },
+    {
+      "line": 496,
+      "source": "if (url.pathname.startsWith('/api/')) {"
+    },
+    {
+      "line": 502,
+      "source": "if (url.pathname.startsWith('/stream')) {"
+    },
+    {
+      "line": 508,
+      "source": "if (url.pathname === '/' && !session(req))"
+    },
+    {
+      "line": 531,
+      "source": "if (url.pathname === '/state')"
+    },
+    {
+      "line": 533,
+      "source": "if (url.pathname === '/events') {"
+    },
+    {
+      "line": 537,
+      "source": "if (url.pathname === '/' || url.pathname.startsWith('/stream'))"
+    },
+    {
+      "line": 539,
+      "source": "if (['/render.js', '/render.css', '/widgets.css'].includes(url.pathname))"
+    }
+  ],
+  "coverageNotes": [
+    "Every explicit API route family and each loop-generated action/collection is enumerated in the draft. Raw conditions retain the exact source-order regex/prefix distinctions.",
+    "Inputs delegated as domain bodies remain owned by named service validators; this is a dispatcher and event reference, not a complete generated JSON schema.",
+    "Private snapshot names payload is full-map at a7; no names delta protocol is adopted by this document.",
+    "No application docs or source modified; relative links are written for final docs/API-REFERENCE.md."
+  ]
+}

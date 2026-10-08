@@ -1,0 +1,1434 @@
+{
+  "schema": 1,
+  "mode": "untimed-counters",
+  "node": "v24.19.0",
+  "fixtureNow": 1791363600000,
+  "source": {
+    "commit": "22773cc7cb6e83ac51e412565ba65c101613536a",
+    "fingerprint": "73ed55a79bc788aa2da10b3ff3870615bb9ebcb73daad4f150bc18bba721ea5c",
+    "dirty": true
+  },
+  "harnessSha256": "c153dd6fe18481c45271151497bcb9e558d4a303dcb8a84603014e0bad1cc676",
+  "cases": [
+    {
+      "namesCount": 100,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 2751,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 6248
+      },
+      "finalNamesSha256": "ca3825397ea88213c1dc512ac1064e2bb6a418b41a99c1294404474fc312de21"
+    },
+    {
+      "namesCount": 100,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 2751,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 22008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          24554
+        ],
+        "writesPerClient": [
+          8
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "26bde876214d514cc894b604f3b93af3e5217f21b9049c179535ca55694ac2eb"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 22056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          24602
+        ],
+        "writesPerClient": [
+          8
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "2b596e21efa832345017229cdfc4c6efe9d49c0535db364a9575fcbd75e24f86"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 22392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          24938
+        ],
+        "writesPerClient": [
+          8
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 6248
+      },
+      "finalNamesSha256": "ca3825397ea88213c1dc512ac1064e2bb6a418b41a99c1294404474fc312de21"
+    },
+    {
+      "namesCount": 100,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 2751,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 22008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          24554,
+          24554,
+          24554
+        ],
+        "writesPerClient": [
+          8,
+          8,
+          8
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "26bde876214d514cc894b604f3b93af3e5217f21b9049c179535ca55694ac2eb",
+          "26bde876214d514cc894b604f3b93af3e5217f21b9049c179535ca55694ac2eb",
+          "26bde876214d514cc894b604f3b93af3e5217f21b9049c179535ca55694ac2eb"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12277,
+          12277,
+          12277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 22056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          24602,
+          24602,
+          24602
+        ],
+        "writesPerClient": [
+          8,
+          8,
+          8
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "2b596e21efa832345017229cdfc4c6efe9d49c0535db364a9575fcbd75e24f86",
+          "2b596e21efa832345017229cdfc4c6efe9d49c0535db364a9575fcbd75e24f86",
+          "2b596e21efa832345017229cdfc4c6efe9d49c0535db364a9575fcbd75e24f86"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          12469,
+          12469,
+          12469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 22392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          24938,
+          24938,
+          24938
+        ],
+        "writesPerClient": [
+          8,
+          8,
+          8
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 6248
+      },
+      "finalNamesSha256": "ca3825397ea88213c1dc512ac1064e2bb6a418b41a99c1294404474fc312de21"
+    },
+    {
+      "namesCount": 1000,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 27501,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 30998
+      },
+      "finalNamesSha256": "f0a064a197c6a21253c62bcba4bbce57a58ce81be2e8f7f74d93f7803da346c8"
+    },
+    {
+      "namesCount": 1000,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 27501,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 220008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          222554
+        ],
+        "writesPerClient": [
+          8
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "7f9ebef7c0a2ea7f0e26a08e6daa9cd92c017c25a3d641cbe181cfa18bfdff9b"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 220056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          222602
+        ],
+        "writesPerClient": [
+          8
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "5284f65877ac279f2f32f0d1af6cddec09866c0268185f439fb2a753d72cdfcd"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 220392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          222938
+        ],
+        "writesPerClient": [
+          8
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 30998
+      },
+      "finalNamesSha256": "f0a064a197c6a21253c62bcba4bbce57a58ce81be2e8f7f74d93f7803da346c8"
+    },
+    {
+      "namesCount": 1000,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 27501,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 220008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          222554,
+          222554,
+          222554
+        ],
+        "writesPerClient": [
+          8,
+          8,
+          8
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "7f9ebef7c0a2ea7f0e26a08e6daa9cd92c017c25a3d641cbe181cfa18bfdff9b",
+          "7f9ebef7c0a2ea7f0e26a08e6daa9cd92c017c25a3d641cbe181cfa18bfdff9b",
+          "7f9ebef7c0a2ea7f0e26a08e6daa9cd92c017c25a3d641cbe181cfa18bfdff9b"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111277,
+          111277,
+          111277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 220056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          222602,
+          222602,
+          222602
+        ],
+        "writesPerClient": [
+          8,
+          8,
+          8
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "5284f65877ac279f2f32f0d1af6cddec09866c0268185f439fb2a753d72cdfcd",
+          "5284f65877ac279f2f32f0d1af6cddec09866c0268185f439fb2a753d72cdfcd",
+          "5284f65877ac279f2f32f0d1af6cddec09866c0268185f439fb2a753d72cdfcd"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          111469,
+          111469,
+          111469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 220392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          222938,
+          222938,
+          222938
+        ],
+        "writesPerClient": [
+          8,
+          8,
+          8
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 30998
+      },
+      "finalNamesSha256": "f0a064a197c6a21253c62bcba4bbce57a58ce81be2e8f7f74d93f7803da346c8"
+    },
+    {
+      "namesCount": 10000,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 275001,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 278498
+      },
+      "finalNamesSha256": "4d244fb3631223a1099bcd07a120a3760979c31d4a64bd67bc5828f16ef09a26"
+    },
+    {
+      "namesCount": 10000,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 275001,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 2200008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          2202554
+        ],
+        "writesPerClient": [
+          40
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "fab2bb589d807d6c57d7e6a011f253dd89b83a0066e700d2a2ee80bcd4ff42b3"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 2200056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          2202602
+        ],
+        "writesPerClient": [
+          40
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "f0a9ebcfb0452024fa7ad631e5c6df9e0ee11c5d094ce633b8e745943b90adb3"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 2200392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          2202938
+        ],
+        "writesPerClient": [
+          40
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 278498
+      },
+      "finalNamesSha256": "4d244fb3631223a1099bcd07a120a3760979c31d4a64bd67bc5828f16ef09a26"
+    },
+    {
+      "namesCount": 10000,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 275001,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 2200008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          2202554,
+          2202554,
+          2202554
+        ],
+        "writesPerClient": [
+          40,
+          40,
+          40
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "fab2bb589d807d6c57d7e6a011f253dd89b83a0066e700d2a2ee80bcd4ff42b3",
+          "fab2bb589d807d6c57d7e6a011f253dd89b83a0066e700d2a2ee80bcd4ff42b3",
+          "fab2bb589d807d6c57d7e6a011f253dd89b83a0066e700d2a2ee80bcd4ff42b3"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101277,
+          1101277,
+          1101277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 2200056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          2202602,
+          2202602,
+          2202602
+        ],
+        "writesPerClient": [
+          40,
+          40,
+          40
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "f0a9ebcfb0452024fa7ad631e5c6df9e0ee11c5d094ce633b8e745943b90adb3",
+          "f0a9ebcfb0452024fa7ad631e5c6df9e0ee11c5d094ce633b8e745943b90adb3",
+          "f0a9ebcfb0452024fa7ad631e5c6df9e0ee11c5d094ce633b8e745943b90adb3"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          1101469,
+          1101469,
+          1101469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 2200392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          2202938,
+          2202938,
+          2202938
+        ],
+        "writesPerClient": [
+          40,
+          40,
+          40
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 278498
+      },
+      "finalNamesSha256": "4d244fb3631223a1099bcd07a120a3760979c31d4a64bd67bc5828f16ef09a26"
+    },
+    {
+      "namesCount": 20000,
+      "clients": 0,
+      "protocol": false,
+      "namesJsonBytes": 550001,
+      "firstConnect": {
+        "clients": 0,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": []
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [],
+        "packetsPerClient": [],
+        "bytesPerClient": []
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [],
+        "writesPerClient": []
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [],
+        "writesPerClient": [],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 553498
+      },
+      "finalNamesSha256": "b5b6509c69c6be80ebfa68b96ef74d2bf32e25ee1a1d4679cdfa28f46f059acf"
+    },
+    {
+      "namesCount": 20000,
+      "clients": 1,
+      "protocol": false,
+      "namesJsonBytes": 550001,
+      "firstConnect": {
+        "clients": 1,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 4400008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          4402554
+        ],
+        "writesPerClient": [
+          72
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "35efbbb8c1dfaeea5b611434411ff9001aea4996c6e64e43e8214d6d24e267bf"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 4400056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          4402602
+        ],
+        "writesPerClient": [
+          72
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "d338db37f29c443b70eb2b7ed2f42662d519f348481cf0d518a841a00c5197b0"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 4400392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          4402938
+        ],
+        "writesPerClient": [
+          72
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0
+        ],
+        "writesPerClient": [
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 553498
+      },
+      "finalNamesSha256": "b5b6509c69c6be80ebfa68b96ef74d2bf32e25ee1a1d4679cdfa28f46f059acf"
+    },
+    {
+      "namesCount": 20000,
+      "clients": 3,
+      "protocol": false,
+      "namesJsonBytes": 550001,
+      "firstConnect": {
+        "clients": 3,
+        "sampling": "One initial observation per configured client (1 or 3), correlated within this process; not an independent performance distribution.",
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ]
+      },
+      "unchanged": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 4400008
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          4402554,
+          4402554,
+          4402554
+        ],
+        "writesPerClient": [
+          72,
+          72,
+          72
+        ]
+      },
+      "unchangedDelivery": {
+        "perClientDomainSha256": [
+          "35efbbb8c1dfaeea5b611434411ff9001aea4996c6e64e43e8214d6d24e267bf",
+          "35efbbb8c1dfaeea5b611434411ff9001aea4996c6e64e43e8214d6d24e267bf",
+          "35efbbb8c1dfaeea5b611434411ff9001aea4996c6e64e43e8214d6d24e267bf"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201277,
+          2201277,
+          2201277
+        ]
+      },
+      "oneChange": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 4400056
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          4402602,
+          4402602,
+          4402602
+        ],
+        "writesPerClient": [
+          72,
+          72,
+          72
+        ]
+      },
+      "batchDelivery": {
+        "perClientDomainSha256": [
+          "d338db37f29c443b70eb2b7ed2f42662d519f348481cf0d518a841a00c5197b0",
+          "d338db37f29c443b70eb2b7ed2f42662d519f348481cf0d518a841a00c5197b0",
+          "d338db37f29c443b70eb2b7ed2f42662d519f348481cf0d518a841a00c5197b0"
+        ],
+        "packetsPerClient": [
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ],
+          [
+            "snapshot",
+            "snapshot",
+            "snapshot",
+            "snapshot"
+          ]
+        ],
+        "bytesPerClient": [
+          2201469,
+          2201469,
+          2201469
+        ]
+      },
+      "batchEight": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 8,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 8,
+          "namesJsonBytes": 4400392
+        },
+        "providerCalls": 8,
+        "bytesPerClient": [
+          4402938,
+          4402938,
+          4402938
+        ],
+        "writesPerClient": [
+          72,
+          72,
+          72
+        ]
+      },
+      "reconnect": {
+        "repetitions": 2,
+        "counts": {
+          "snapshotEncodes": 0,
+          "namesEncodes": 0,
+          "embeddedNamesEncodes": 0,
+          "namesJsonBytes": 0
+        },
+        "providerCalls": 0,
+        "bytesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "writesPerClient": [
+          0,
+          0,
+          0
+        ],
+        "byteAccounting": "Final reconnect per-client bytes; each repetition reconnects the entire declared audience."
+      },
+      "stateComponent": {
+        "bytes": 553498
+      },
+      "finalNamesSha256": "b5b6509c69c6be80ebfa68b96ef74d2bf32e25ee1a1d4679cdfa28f46f059acf"
+    }
+  ],
+  "limits": [
+    "Synthetic local SQLite, two pilots and immediate Wallet ESI responses; no external service or private pilot data.",
+    "Production Core, Store and SSE queue/encoding run unchanged. Consuming in-memory sinks exclude TCP and browser parsing/render costs.",
+    "Directory sizes 100/1000/10000/20000 and audiences 0/1/3 are declared controlled cardinalities, not typical-user claims.",
+    "Ordinary timing uses no stringify wrapper or frame retention. Counters and domain checks are separate, untimed operations.",
+    "Initial and reconnect candidate bootstrap adds a full map beyond /state. Both that cost and changed-map costs are reported.",
+    "Full-state serialization measures the actual Core snapshot and names fields, not HTTP routing/health/session overhead.",
+    "Domain comparison removes only intentional names wire envelope differences and random process epoch prefixes, preserving directory values, snapshot metadata and revision counters.",
+    "These baseline/candidate roots omit the later Assets boundary; final combined browser acceptance must include it."
+  ],
+  "sourceVerified": true,
+  "complete": true
+}

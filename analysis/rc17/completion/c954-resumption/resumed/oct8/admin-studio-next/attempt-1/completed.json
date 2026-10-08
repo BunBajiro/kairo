@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-08T09:48:36.107Z",
+  "node": "v24.19.0",
+  "expectedCommit": "a7b1bf97b0073695926c443e52d523638e59e48d",
+  "sourceTree": "13cb643c5a3a06414e3ef1a9605c4f919666515f",
+  "complete": false,
+  "releaseReady": false,
+  "harnesses": {
+    "run.mjs": "7d0440d6abdaceef0926cef556b3eb7ae93cfe62c4b975868b13167cda375476",
+    "populated-cost-next.mjs": "24b1351092b3b423d1225af8ad08c41fed9ba03aa85ae2d47edbcb8617d38546",
+    "PREPARATION.json": "a306629a15386bd97566302385a385589f5a5f8ac27d76c384425ad377c7b985",
+    "PLAN.md": "863b660cb9143b05ff320e8697042a4a31587c373bc41e12621479cdcbdde8c0",
+    "legacy-admin-studio-ablation.patch": "a3db2272401cbdbd32a3d57d40c81eb2b9d5eb5eaff29c1db2b3a8bf021ab792",
+    "../../../../../harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "../../../../../../rc16/historical/tests/performance/chrome.mjs": "5218cb1118ed7670640fee0746d349ee1bc55e8dd39fae295c03afe73bb710a7",
+    "../../../../studio-stream/populated-cost.mjs": "7ba3035c0e15074a7df0d5bf680e98406c66c403eb773bf782cbaf9856c01995",
+    "../../../../frontend-models/legacy-ui-ablation.patch": "3d839f8c21ad01e0bd7cb80eee41f0e794ca141f99082acddeea054d95cd1b5e"
+  },
+  "builds": [
+    {
+      "variant": "baseline",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-admin-studio-baseline-a7b-oct8",
+      "startedAt": "2026-10-08T09:48:36.903Z",
+      "complete": true,
+      "commands": [
+        {
+          "args": [
+            "npm",
+            "run",
+            "check:kairo"
+          ],
+          "exitCode": 0,
+          "filename": "baseline-check-kairo.log",
+          "sha256": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+        },
+        {
+          "args": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "filename": "baseline-build.log",
+          "sha256": "18407eeabb473b552e19c3e94ac2f9dcfa00d0f92a6edf229e04633ff8111e12"
+        }
+      ],
+      "completedAt": "2026-10-08T09:48:57.231Z",
+      "sourceFingerprint": "7f5b08d3a8712e1784311aee7f89003178994da21fe4dcfc17d6d954dd5078c9",
+      "assets": 20,
+      "exitCode": 0,
+      "buildCommand": "npm run build",
+      "buildLog": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/admin-studio-next/attempt-1/baseline-build.log",
+      "logSha256": "18407eeabb473b552e19c3e94ac2f9dcfa00d0f92a6edf229e04633ff8111e12"
+    },
+    {
+      "variant": "candidate",
+      "root": "/workspace/scratch/a2f3334402fc/kairo-admin-studio-candidate-a7b-oct8",
+      "startedAt": "2026-10-08T09:48:57.232Z",
+      "complete": true,
+      "commands": [
+        {
+          "args": [
+            "npm",
+            "run",
+            "check:kairo"
+          ],
+          "exitCode": 0,
+          "filename": "candidate-check-kairo.log",
+          "sha256": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+        },
+        {
+          "args": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "filename": "candidate-build.log",
+          "sha256": "5c8486bc58e0c7852f9b0e500a259c06b89549b3be216e714c7e55f36b261f05"
+        }
+      ],
+      "completedAt": "2026-10-08T09:49:14.941Z",
+      "sourceFingerprint": "d05f895e352deeb193eb513b38b5bcb14d2d21a52d679d4c38a5bf967cc6e7f6",
+      "assets": 20,
+      "exitCode": 0,
+      "buildCommand": "npm run build",
+      "buildLog": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/admin-studio-next/attempt-1/candidate-build.log",
+      "logSha256": "5c8486bc58e0c7852f9b0e500a259c06b89549b3be216e714c7e55f36b261f05"
+    }
+  ],
+  "runs": [
+    {
+      "variant": "baseline",
+      "mode": "ordinary",
+      "filename": "1-baseline.json",
+      "sha256": "b0ff7c6fdd1506a3b3b158dc4aa07fac32dd62f882f09c15ae2d7d8599d9b807",
+      "checks": 5,
+      "phaseCount": 12
+    }
+  ],
+  "nativeRecovery": [],
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "chrome": {
+    "path": "/tmp/kairo-chrome-runtime/chromium",
+    "sha256": "7ddc6837ec0e0c9ff488cf8c8fa64d8eef71cc3fa7c79752c52367bddbfe94dd"
+  },
+  "failure": "Error: Exit 1: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/admin-studio-next/populated-cost-next.mjs /workspace/scratch/a2f3334402fc/kairo-admin-studio-candidate-a7b-oct8 /workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/admin-studio-next/attempt-1/2-candidate.json /workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/admin-studio-next/attempt-1/candidate-source.json ordinary\n    at ChildProcess.<anonymous> (file:///workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/admin-studio-next/run.mjs:29:104)",
+  "endedAt": "2026-10-08T09:50:13.415Z"
+}
