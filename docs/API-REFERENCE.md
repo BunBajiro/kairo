@@ -30,8 +30,8 @@ Outside `/api`: `/auth/eve/callback` consumes session-bound OAuth `state` and `c
 | Method/path | Inputs | Output / owner |
 |---|---|---|
 | GET `/bootstrap` | Session | `{csrf,configured,clientId,characters,modules,settings,stream,streamOrigin,version,datasetRevision,datasetRecovery,vault,localOnly,pages}` assembled by index/Core/registry. No OAuth tokens returned. |
-| GET `/state` | C | `{data,names,health,opsec,sessions,resourceRevisions}`. Core snapshot map; latest 20 selected-pilot session rows ordered by start; full private name map. |
-| GET `/events` | Session | Dashboard SSE described below; initial dataset revision/status frames. |
+| GET `/state` | C | `{data,names,namesRevision,health,opsec,sessions,resourceRevisions}`. Core snapshot map; latest 20 selected-pilot session rows ordered by start; authoritative full private name map with its process-qualified revision. |
+| GET `/events` | Session | Dashboard SSE described below; initial global names bootstrap, connected comment and dataset revision/status frames. |
 | POST `/sync` | `{character?}` |202 `{ok:true}`; validate connected nonzero pilot, queue that pilot and global 0 through `core.requestSync`. Not a synchronous completion report. |
 | GET `/datasets` | — | Dataset service status plus `managedRestart`. |
 | POST `/datasets/check` | No parsed body |202 current status; starts `datasets.check({install:false})` asynchronously. Observe status/events for completion. |
@@ -238,16 +238,17 @@ Array indices above are those of `path.split('/')`, whose segment 0 is empty. Ex
 
 ## Dashboard SSE and client invalidation
 
-`GET /api/events` is one private local EventSource feed for the dashboard session. Server broadcasts are not narrowed to the currently selected pilot; client owners filter global 0/selected-pilot signals and Studio can still observe bindings from other pilots. Frames have `event: <type>` and one JSON `data:` line; there are no SSE event IDs, Last-Event-ID replay cursor or persisted delivery acknowledgments. Reconnect must recover authoritative reads.
+`GET /api/events` is one private local EventSource feed for the dashboard session. Server broadcasts are not narrowed to the currently selected pilot; client owners filter applicable global 0/selected-pilot data signals, while the `names` event is always global and must be processed independently of pilot selection. Studio can still observe bindings from other pilots. Frames have `event: <type>` and one JSON `data:` line; there are no SSE event IDs, Last-Event-ID replay cursor or persisted delivery acknowledgments. Reconnect must recover authoritative reads.
 
 | SSE event | Payload / ownership |
 |---|---|
-| Initial comment `: connected` | Transport comment, not an application event named connected. Dashboard uses native EventSource open for `kairo:events-connected`. |
+| `names` | `{names,namesRevision}`: authoritative full private ID-to-string directory, sent on every connection and before a later snapshot when that connection has not received the current revision. This is global, with no `characterId`; replacements may remove entries or be empty. |
+| Initial comment `: connected` | Sent after the names bootstrap. Transport comment, not an application event named connected. Dashboard uses native EventSource open for `kairo:events-connected`. |
 | `dataset-revision` | `{revision,recovery}` immediately on connection. Dataset generation/restart reconciliation. |
 | `datasets` | Dataset status +`managedRestart`; sent on connect and service status changes. |
 | `dataset-restarting` | `{build,startedAt}` before managed activation. |
 | `dataset-restart-cancelled` | `{message}` when activation callback fails; old dataset remains active. |
-| `snapshot` | `{characterId,key,snapshot,names}` from Core dataset/combat owners. `names` is the full current private map. Snapshot includes status/data/metadata and private `dataRevision`; unchanged data identity does not imply unchanged status/expiry. |
+| `snapshot` | `{characterId,key,snapshot,namesRevision}` from Core dataset/combat owners. No names body; any required global names event is ordered first. Snapshot includes status/data/metadata and private `dataRevision`; unchanged data identity does not imply unchanged status/expiry. |
 | `changed` | `{...detail,resourceRevisions}`; detail can include characterId, type, module, resources. Semantic publishes and explicit invalidations use it. Missing/nonspecific resources mean recovery, not permission to drop invalidation. |
 | `universe` | `{characterId}` with 0 global; Universe owner says to refresh relevant mounted state. |
 | `obs` | Full OBS status, not configuration/password; immediate UI status updates. |
@@ -258,7 +259,11 @@ Array indices above are those of `path.split('/')`, whose segment 0 is empty. Ex
 
 Dashboard translates these into local DOM events (`kairo:source-changed`, `kairo:resource-changed`, `kairo:universe-changed`, `kairo:obs-status`, `kairo:events-connected`, `datasets-changed`). Those are **in-process UI notifications**, not extra server routes or SSE names. `core.publish` also emits an in-process semantic bus event after durable deduplicated history insertion; bus `data.<key>` events and semantic event payloads are not automatically sent as raw SSE. Follow the architecture guide when adding a collector or mutation.
 
-Currently, `mergeResourceNames` avoids rebuilding unchanged frontend name maps, but server snapshot delivery still sends the complete name map.
+Core advances `namesRevision` only for accepted name changes. It batches directory publication at snapshot boundaries, encodes each needed directory once for that audience and tracks delivery separately per connection. A newly bootstrapped connection does not mark older clients current. With no UI clients it performs no names/snapshot encoding; persistence and future bootstrap still apply. This is a full-map-on-change protocol, not a per-key delta stream or replay log. Initial HTTP state and the connection bootstrap can both contain the full directory.
+
+Dashboard's `name-directory-state.mjs` owns revision equality, within-process counter order, process-epoch changes and delayed-HTTP fences. Equal versioned identity preserves its prior map without scanning keys. A changed authoritative full map replaces the directory, including reset/removal. A disconnect invalidates outstanding names reads and permits fresh HTTP recovery while SSE is down; reconnect's bootstrap establishes the current process epoch. Keep the separate snapshot/resource/pilot/dataset fences intact. The revision in a snapshot is metadata, not a delivery acknowledgment or an instruction to fetch every resource.
+
+For declared legacy inputs, the frontend also accepts a full unversioned `/state.names` replacement and unversioned snapshot `names` merges that preserve omitted keys. Such input disables revision-only reuse until authoritative versioned state recovers it. Current server snapshots omit `names`; this fallback does not change their wire shape or make new global names events pilot-scoped.
 
 ## Read-only browser-source API
 

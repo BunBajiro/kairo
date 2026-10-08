@@ -19,7 +19,7 @@ flowchart TD
   Projection --> Stream["Read-only Stream renderer"]
 ```
 
-For example, Core requests a due Wallet dataset through the shared ESI service. It retains the sample and its dates, sends a private snapshot update, and emits a fresh-data event for interested services. A semantic milestone can be persisted through `core.publish`; that publication also changes relevant UI resource tokens. The dashboard updates the matching pilot's snapshot, while resource owners refresh only the affected lists. Stream output is separately projected from approved fields.
+For example, Core requests a due Wallet dataset through the shared ESI service. It retains the sample and its dates, sends any changed global name directory needed by connected dashboards before the private snapshot update, and emits a fresh-data event for interested services. A semantic milestone can be persisted through `core.publish`; that publication also changes relevant UI resource tokens. The dashboard updates the matching pilot's snapshot, while resource owners refresh only the affected lists. Stream output is separately projected from approved fields.
 
 An HTTP response is a view of one operation's result. An event can tell the UI that a view needs refreshing. Neither replaces SQLite history, and a missed UI event must remain recoverable by a current read or reconnect.
 
@@ -43,7 +43,9 @@ These are internal alpha interfaces, not a separately versioned public SDK. Chan
 | Operation | Contract for callers |
 | --- | --- |
 | `snapshots(characterId)` | Current dataset read models, including global datasets and explicit disabled/waiting states. By default an expired ready sample is projected as stale. |
-| `names()` / `rememberNames(values)` | Read the current directory; add validated positive-ID/nonempty-string entries through the owner. Do not mutate the returned shared map directly. |
+| `names()` / `rememberNames(values)` | Read the current directory; persist validated positive-ID/nonempty-string changes through the owner. A real change advances the names revision, but individual calls do not broadcast. Do not mutate the returned shared map directly. |
+| `namesSnapshot()` | Read `{names,namesRevision}` for response encoding. The map is shared, not a detached copy; serialize through the current owner and do not mutate it. |
+| `connectUI(response)` | Admit a private UI SSE response, bootstrap its full current name directory and remove it on close. New connections are rejected after Core stops admission. Use this owner instead of adding responses directly to `uiClients`. |
 | `resolveNames(data, priority?)` | Resolve supported ID fields through the shared ESI service and remember returned names. This can await external work; the caller must own that promise. |
 | `requestSync(characterId)` | Request dataset work using the existing admission/deadline owners. It is not a snapshot delivery acknowledgment or a barrier for every independently running service. |
 | `publish(event)` | Synchronous deduplicated history insertion followed by semantic dispatch and resource invalidation. Returned listener promises are owned by the bus; publication itself does not await all listener work. |
@@ -86,19 +88,24 @@ The common dataset view is `ModuleState`: `status`, `data`, and applicable obser
 | `refreshAt` | Application refresh deadline where present | Derive from the observation/policy; saving a preference must not make old evidence fresh. |
 | `retryAt` | Earliest retry after failure | Keep last-good data and its dates visible where the service supports that. |
 | Snapshot `dataRevision` | Private process-qualified identity for the data body | Treat it as opaque. Equal data identity permits retaining the previous body reference, not ignoring changed status/error/metadata. |
+| `namesRevision` | Process-qualified identity for the global private names directory | Let `name-directory-state.mjs` own equality, within-epoch ordering and reconnect/reset handling. It is not a timestamp, per-pilot token or durable history ID. |
 | `resourceRevisions` | Process-qualified invalidation tokens for `activity`, `goals`, `notes`, `sessions`, `goalSources` | Refresh the relevant resource. These are not stored-history IDs or map edit revisions. |
 | Map/entity revision | Domain-specific optimistic concurrency state | Use its service's command/conflict contract. Do not substitute a UI token. |
 | Dataset revision | Active static-data generation | Use the managed restart/rebootstrap path; avoid mixing results from old and new generations. |
 
 [`resource-state.mjs`](../components/kairo/resource-state.mjs) retains unchanged snapshot data and small metadata identities. The Assets view passes complete relevant snapshots to a memoized boundary so metadata-only changes still render. Stable identity is an optimization contract, not permission to mutate a shared object in place.
 
-Names delivery: `/state` supplies the authoritative complete ID-to-string directory; snapshot events carry names which the dashboard merges while preserving omitted names. `mergeResourceNames` avoids copying when incoming own keys/values are unchanged.
+Names have one Core owner and one dashboard owner. `/state` supplies the complete authoritative `{names,namesRevision}` pair. Each private `/events` connection also receives a global `names` event with that pair. Before a later snapshot publication, Core sends a full directory only to connections whose delivered revision is behind; the following snapshot carries `namesRevision` and omits the name body. Several `rememberNames` calls before that boundary are batched. Zero clients cause no UI directory encoding; a later connection still receives the full current map. Bootstrap adds a full-map event alongside the initial HTTP read.
+
+[`name-directory-state.mjs`](../components/kairo/name-directory-state.mjs) processes global names independently of the selected pilot. It retains the map identity when a revision is unchanged, replaces changed authoritative maps including empty/reset/removal cases, and compares counters only within a process epoch. Captured connection/event fences prevent an older HTTP read from replacing a newer directory. Disconnect fences pending reads while allowing fresh HTTP recovery; reconnect establishes the new process epoch through its bootstrap. Keep the existing snapshot, resource, pilot and dataset fences alongside this names owner.
+
+The dashboard deliberately accepts legacy unversioned inputs: full HTTP names replace the directory, while snapshot names merge through `mergeResourceNames` and retain omitted keys. Legacy input disables revision-only reuse until authoritative versioned state recovers it. This is frontend compatibility behavior; current Core snapshot envelopes use the separate names event. Do not turn authoritative full maps into deltas or filter global names events by the selected pilot.
 
 ## Three kinds of event
 
 1. **Fresh dataset observation:** Core emits `data.<dataset>` on the in-process bus with `characterId` and `{current, previous}` payload. Location/ship observations can carry receipt-time Session ownership captured before awaited enrichment. These are service inputs, not automatic timeline rows or Stream notifications.
 2. **Persisted semantic event:** `core.publish({type, characterId, module, summary, payload, at?, dedupe?})` inserts an event, using the supplied deduplication key when present. Only a newly inserted event is emitted and invalidates relevant UI resources. Modules receive `ctx.publish`, which supplies their module identity. Use stable domain identities in deduplication keys; include pilot ownership where needed.
-3. **UI invalidation/status:** `changed`, `snapshot`, Universe/OBS and dataset events notify browser owners. `eventResources` always includes activity and adds Goals/notes/Sessions for their semantic event families. An explicit `core.changed({characterId, resources})` can invalidate read models without manufacturing a new timeline event.
+3. **UI invalidation/status:** `names`, `changed`, `snapshot`, Universe/OBS and dataset events notify browser owners. The private `names` event carries the complete global directory; snapshot data still follows pilot ownership. `eventResources` always includes activity and adds Goals/notes/Sessions for their semantic event families. An explicit `core.changed({characterId, resources})` can invalidate read models without manufacturing a new timeline event.
 
 Do not use semantic events for every repeated unchanged projection. For example, Goal progress updates need current read models, while completion is a latched domain event. A missed display notification cannot be used as evidence that a durable operation never happened.
 
@@ -106,7 +113,7 @@ The bus owns promises returned by listeners and catches failures into its health
 
 ## Browser refresh ownership
 
-[`dashboard.tsx`](../components/kairo/dashboard.tsx) owns the selected-pilot state and main EventSource. It fences delayed HTTP responses against later snapshot/resource events and pilot or dataset changes. Use its Context and established custom invalidations; avoid creating an EventSource for every page.
+[`dashboard.tsx`](../components/kairo/dashboard.tsx) owns the selected-pilot state and main EventSource. It fences delayed HTTP responses against later names/snapshot/resource events and pilot, connection or dataset changes. A clean first EventSource open alone does not invalidate a pending initial names read; a later names event does. After an initial connection error, the first successful open requests recovery through the existing scoped refresh owner. Use its Context and established custom invalidations; avoid creating an EventSource for every page.
 
 For an independently read resource, [`useResourceRefresh`](../components/kairo/use-resource-refresh.ts) wraps [`createScopedRefresh`](../components/kairo/scoped-refresh.mjs). One owner permits one active read and one retained invalidation. An invalidation while busy means one follow-up, not one queued request per event. Scope changes close the prior owner so old results cannot publish into the new pilot's page.
 
@@ -123,6 +130,8 @@ useResourceRefresh(
 This is a pattern with application-specific `readResource`, not an existing endpoint. Choose a scope containing every identity that owns the result. A Maps scope needs both pilot and selected map. The callback must read current arguments, and a write accepted for an old scope may still complete server-side even though its returned view must not replace the current scope.
 
 Refresh tokens are dependencies, not a universal cache key. Map revision alone cannot describe clock deadlines, tracked pilots, operational labels or access changes. Complete snapshot metadata also matters. Use an explicit small memoized view boundary where measurements justify it; do not add a global mutable cache solely to avoid a render.
+
+The Maps workspace consumes current wall time with each new complete map/summary/feed publication. `createJSpaceClock.refresh(records, renderedAt)` then owns expiry scheduling without publishing another identical-data render. Its independent 30-second cadence, visibility refresh and render-to-effect deadline checks keep time-dependent state fresh; a wall-clock rollback publishes immediately. Callers that omit `renderedAt` retain the immediate-refresh behavior. Do not replace this owner with revision-only memoization or reset its cadence on each snapshot.
 
 ### Worked path: editing an archived Session
 

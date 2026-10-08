@@ -136,13 +136,12 @@ export async function startKairo(options = {}) {
         }
         if (path === '/state' && read) {
             const id = checkedChar(url);
-            return json(res, 200, { data: core.snapshots(id), names: core.names(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id), resourceRevisions:core.resourceRevisions(id) });
+            return json(res, 200, { data: core.snapshots(id), ...core.namesSnapshot(), health: core.health(), opsec: core.stream.getOPSEC(), sessions: store.db.prepare('SELECT * FROM sessions WHERE character_id=? ORDER BY started DESC LIMIT 20').all(id), resourceRevisions:core.resourceRevisions(id) });
         }
         if (path === '/events' && read) {
             if (applyingDataset) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Applying a dataset update.'});}
             res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store', 'Connection': 'keep-alive' });
-            core.uiClients.add(res);
-            res.on('close', () => core.uiClients.delete(res));
+            core.connectUI(res);
             writeSSE(res, sseConnected);
             writeSSE(res, sseEvent('dataset-revision', {revision: datasetRevision, recovery: datasetRecovery}));
             writeSSE(res, sseEvent('datasets', datasetStatus()));

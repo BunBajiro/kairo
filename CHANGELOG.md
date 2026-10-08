@@ -7,6 +7,13 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 ### Changed
 
 - Consolidates current user/developer documentation, adds the internal API and HTTP/event guides, and removes superseded research/review notes from the application docs while preserving their originals in the analysis archive.
+- Sends the dashboard name directory on connection and when it changes, with revision and reconnect guards, instead of repeating it in every dataset event.
+- Avoids a redundant Maps clock render after data refresh while preserving expiry deadlines, visibility refresh and clock corrections.
+- Reuses unchanged Session archive cards while retaining all loaded history, current duration labels and keyboard focus.
+
+### Fixed
+
+- Returns keyboard focus to the opening Session button after dismissing a report or cancelling the naming dialog, while respecting pilot changes and navigation.
 
 ## 0.8.0-rc.17 — Optimisation and refactoring development
 

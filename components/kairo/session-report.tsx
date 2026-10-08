@@ -55,9 +55,10 @@ function RouteVisits({route}:{route:any[]}){
  return <><ol className="session-route-list">{route.slice(0,limit).map((v,i)=><li key={v.id}><span className="session-route-index">{String(i+1).padStart(2,'0')}</span><details><summary><span><strong>{v.name}</strong><small>{v.regionName||'Region not recorded'}</small></span><span className="session-visit-time">{duration(v.seconds)}</span>{v.combatActive&&<span className="session-buffer-badge">±10m combat window</span>}<ChevronDown size={14}/></summary><div className="session-visit-detail"><p>Entry: {stamp(v.entered)}{v.clipped?' · session start':''}<br/>Exit: {v.active?'In progress · latest report':stamp(v.exited)}</p><p>{v.combatActive?'Alliance combat occurred during this visit, so its alliance kill/loss window extends ten minutes before entry and after exit.':'This visit remains in your route. No alliance combat has been found during the visit, so no extra combat window applies.'}</p>{v.security!==undefined&&v.security!==null&&<p>Security: {v.security.toFixed(2)}</p>}{v.inferred&&<p>Starting location inferred from the last saved visit.</p>}</div></details></li>)}</ol>{route.length>limit&&<Button variant="outline" onClick={()=>setLimit(n=>n+40)}>Show more visits ({route.length-limit})</Button>}</>;
 }
 
-export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;onSaved:()=>void}){
+export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onClose:()=>void;onSaved:()=>void;onRestoreFocus:()=>void}){
  const {boot,character,navigate}=useKairo();
  const summaryId=useId();
+ const restoreOnDismiss=useRef(false);
  const [report,setReport]=useState<any>(null),[name,setName]=useState(''),[notes,setNotes]=useState(''),[busy,setBusy]=useState(false),[refreshing,setRefreshing]=useState(false),[loadingMore,setLoadingMore]=useState(false),[error,setError]=useState('');
  const generation=useRef(0),reportRef=useRef<any>(null),requestVersion=useRef(0),requestingMore=useRef(false);
  const url='/sessions/'+encodeURIComponent(id)+'?character='+character;
@@ -100,7 +101,7 @@ export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;o
  const activity=report?mostActiveSystem(report):null;
  const phase=report?.collection?.phase,feed=report?.liveFeed;
  const collectionLabel=phase==='static'?'Session archived · zKill checks finished':alliance?.coverage.status==='disabled'?'Combat collection paused':phase==='live'?'Live session · zKill checks every 2 minutes':'Session ended · delayed zKill checks';
- return <Dialog open={!!id} onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="session-report-dialog session-v2"><DialogHeader><p className="eyebrow">KAIRO / FLIGHT RECORD</p><DialogTitle>Session overview</DialogTitle><DialogDescription>{report?pilot+' · '+stamp(report.session.started)+' → '+(report.session.ended?stamp(report.session.ended):'In progress'):'Loading your session…'}</DialogDescription></DialogHeader>
+ return <Dialog open={!!id} onOpenChange={open=>{if(!open){restoreOnDismiss.current=true;onClose();}}}><DialogContent onCloseAutoFocus={event=>{event.preventDefault();if(restoreOnDismiss.current)onRestoreFocus();}} className="session-report-dialog session-v2"><DialogHeader><p className="eyebrow">KAIRO / FLIGHT RECORD</p><DialogTitle>Session overview</DialogTitle><DialogDescription>{report?pilot+' · '+stamp(report.session.started)+' → '+(report.session.ended?stamp(report.session.ended):'In progress'):'Loading your session…'}</DialogDescription></DialogHeader>
   {error&&<p role="alert" className="inline-error">{error}</p>}
   {report&&<div className="stack">
    <div className="flex justify-end"><Button variant="outline" onClick={()=>{sessionStorage.setItem('kairo-universe-replay',JSON.stringify({sessionId:id,characterId:character}));onClose();navigate('universe');}}><MapPin size={15}/> Show on Map</Button></div>

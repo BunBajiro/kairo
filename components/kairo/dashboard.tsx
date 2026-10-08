@@ -11,7 +11,8 @@ import { routes, api, type Bootstrap, type ModuleState } from './model';
 import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
 import { Kairo } from './context';
 import {createScopedRefresh} from './scoped-refresh.mjs';
-import {retainValue, mergeResourceNames, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
+import {createNameDirectoryState} from './name-directory-state.mjs';
+import {retainValue, retainSnapshot, retainSnapshots, changeAffectsPilot, changeNeedsState, goalInputRevision, mergeResourceRevisions, goalSourceKeys} from './resource-state.mjs';
 import { Choice, Panel, DataTable } from './ui';
 import { Overview, CharacterPage, WalletPage, AssetsPage, IndustryPage } from './operations';
 import { Connections, Modules } from './connections';
@@ -48,6 +49,7 @@ export default function Dashboard() {
     const [page, setPage] = useState('overview'), [boot, setBoot] = useState<Bootstrap | null>(null), [data, setData] = useState<Record<string, ModuleState>>({}), [names, setNames] = useState<any>({}), [character, setCharacterState] = useState(0), [sessions, setSessions] = useState<any[]>([]), [opsec, setOpsec] = useState<any>({ state: 'unknown' }), [err, setErr] = useState(''), [refreshing, setRefreshing] = useState(false), [search, setSearch] = useState(false), [connected, setConnected] = useState(false);
     const [datasetConnection, setDatasetConnection] = useState<DatasetConnectionState>({ phase: 'idle', build: null, message: '' });
     const datasetConnectionRef = useRef<ReturnType<typeof createDatasetConnection> | null>(null);
+    const [namesOwner] = useState(createNameDirectoryState);
     const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null);
     const snapshotEvents = useRef<Record<string,number>>({}), resourceEvents = useRef<Record<string,number>>({}), ancillaryEvents = useRef({names:0,opsec:0}), stateError = useRef<unknown>(null);
     const stateOwner = useRef<ReturnType<typeof createScopedRefresh> | null>(null);
@@ -71,13 +73,13 @@ export default function Dashboard() {
         resourceRef.current = merged; setResourceRevisions(merged);
         if (notify) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:charRef.current,resources:changed}}));
     }, []);
-    const publishState = useCallback(({state, observed, resources, ancillary}: any) => {
+    const publishState = useCallback(({state, observed, resources, ancillary, namesObserved}: any) => {
         setData(previous => {const next = {...state.data}; for (const key of Object.keys(snapshotEvents.current)) if (snapshotEvents.current[key] !== observed[key]) next[key] = previous[key]; return retainSnapshots(previous, next);});
-        if (ancillary.names === ancillaryEvents.current.names) setNames((previous: any) => retainValue(previous, state.names));
+        if (ancillary.names === ancillaryEvents.current.names) { const next = namesOwner.fromState(state, namesObserved); if (next) setNames(next); }
         if (ancillary.opsec === ancillaryEvents.current.opsec) setOpsec((previous: any) => retainValue(previous, state.opsec));
         setSessions(previous => retainValue(previous, state.sessions));
         applyResourceRevisions(state.resourceRevisions, Object.keys(state.resourceRevisions || {}).filter(key => resources[key] === resourceEvents.current[key])); setGoalClock(Date.now()); setStateReady(true); stateHasPublished.current = true; setErr('');
-    }, [applyResourceRevisions]);
+    }, [applyResourceRevisions, namesOwner]);
     const refresh = useCallback(async () => {await stateOwner.current?.request(); if (stateError.current) throw stateError.current;}, []);
     const reload = useCallback(async () => {
         const result = await api('/bootstrap'), prior = bootRef.current?.characters;
@@ -134,12 +136,12 @@ export default function Dashboard() {
     useEffect(() => {
         if (!boot) return;
         const requested = character;
-        const owner = createScopedRefresh({read: async () => {const observed = {...snapshotEvents.current}, resources = {...resourceEvents.current}, ancillary = {...ancillaryEvents.current}; const state = await api('/state?character=' + requested); return {state,observed,resources,ancillary};},
+        const owner = createScopedRefresh({read: async () => {const observed = {...snapshotEvents.current}, resources = {...resourceEvents.current}, ancillary = {...ancillaryEvents.current}, namesObserved = namesOwner.capture(); const state = await api('/state?character=' + requested); return {state,observed,resources,ancillary,namesObserved};},
             publish: value => {if (requested === charRef.current) {stateError.current = null; publishState(value);}},
             onError: (error: any) => {if (requested === charRef.current) {stateError.current = error; if (!stateHasPublished.current) setErr(error.message); else toast.error(error.message);}}});
         stateOwner.current = owner; void owner.request();
         return () => {owner.close(); if (stateOwner.current === owner) stateOwner.current = null;};
-    }, [character, !!boot, publishState]);
+    }, [character, !!boot, publishState, namesOwner]);
     useEffect(() => {
         if (!boot) return;
         const recoveryKey = 'kairo-dataset-recovery-notices';
@@ -171,26 +173,32 @@ export default function Dashboard() {
         let timer: ReturnType<typeof setTimeout> | null = null, reloadRoster = false;
         let hasConnected = false;
         events.onopen = () => {
+            const namesInvalidated = namesOwner.connect(); if (namesInvalidated) ancillaryEvents.current.names++;
             setConnected(true); connection.connect();
             window.dispatchEvent(new CustomEvent('kairo:events-connected'));
             if (hasConnected) {
                 setRecoveryRevision(value => value + 1); void reload().then(refresh).catch(() => {});
                 window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{resources:['recovery']}}));
             }
+            else if (namesInvalidated) void refresh().catch(() => {});
             hasConnected = true;
         };
-        events.onerror = () => { setConnected(false); connection.disconnect(); };
+        events.onerror = () => { if (namesOwner.disconnect()) ancillaryEvents.current.names++; setConnected(false); connection.disconnect(); };
         events.addEventListener('dataset-restarting', e => connection.restarting(JSON.parse(e.data)));
         events.addEventListener('dataset-restart-cancelled', e => connection.cancelled(JSON.parse(e.data)));
         events.addEventListener('dataset-revision', e => { void connection.revision(JSON.parse(e.data)); });
         events.addEventListener('datasets', e => window.dispatchEvent(new CustomEvent('datasets-changed', { detail: JSON.parse(e.data) })));
+        events.addEventListener('names', e => {
+            const next = namesOwner.fromEvent(JSON.parse(e.data)); ancillaryEvents.current.names++;
+            if (next) setNames(next);
+        });
         events.addEventListener('snapshot', e => {
             const r = JSON.parse(e.data);
             window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{characterId:r.characterId,key:r.key,resource:'snapshot'}}));
             if (changeAffectsPilot(r, charRef.current)) {
-                snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1; ancillaryEvents.current.names++;
+                snapshotEvents.current[r.key] = (snapshotEvents.current[r.key] || 0) + 1;
                 setData(previous => {const value = retainSnapshot(previous[r.key], r.snapshot); return value === previous[r.key] ? previous : {...previous,[r.key]:value};});
-                setNames((previous: any) => mergeResourceNames(previous, r.names));
+                if (r.names !== undefined) { ancillaryEvents.current.names++; const next = namesOwner.fromLegacySnapshot(r.names); if (next) setNames(next); }
                 if (goalSourceKeys.includes(r.key)) window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{characterId:r.characterId,resources:['goalSources'],key:r.key}}));
             }
         });
@@ -209,7 +217,7 @@ export default function Dashboard() {
         });
         const poll = setInterval(() => refresh().catch(() => {}), 30000);
         return () => { connection.dispose(); datasetConnectionRef.current = null; events.close(); if (timer) clearTimeout(timer); clearInterval(poll); };
-    }, [!!boot, refresh, reload, applyResourceRevisions]);
+    }, [!!boot, refresh, reload, applyResourceRevisions, namesOwner]);
     async function retryDatasetConnection() {
         const connection = datasetConnectionRef.current;
         if (!connection) return;

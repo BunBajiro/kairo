@@ -44,7 +44,7 @@ export function JSpaceSheet({title, subtitle, children, onClose, modal = false}:
 export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem, onOpenNotebook, onOpenIntel, onRouteToSystem, onShowKnownSpace, onChanged, onMapChange, externalPanelOpen, externalPanelTool, renderSystemTool, onDismissExternalPanel, onRefresh, requestedSystemId, routeSystemIds, routeEdges}: JSpaceWorkspaceProps) {
   const {boot}=useKairo();
   const [state, setState] = useState<WorkspaceState | null>(null), [selectedMap,setSelectedMap]=useState<JSpaceWorkspaceMap|null>(null), [mapId, setMapId] = useState(''), [selectedSystemId, setSelectedSystemId] = useState<number | null>(null), [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
-  const [panel, setPanel] = useState<Panel>(null), [mutationBusy, setBusy] = useState(false), [loading, setLoading] = useState(true), [error, setError] = useState(''), [notice, setNotice] = useState(''), [fitRequest, setFitRequest] = useState(0), [now, setNow] = useState(Date.now());
+  const [panel, setPanel] = useState<Panel>(null), [mutationBusy, setBusy] = useState(false), [loading, setLoading] = useState(true), [error, setError] = useState(''), [notice, setNotice] = useState(''), [fitRequest, setFitRequest] = useState(0), [clockNow, setNow] = useState(Date.now());
   const [publicSources, setPublicSources] = useState<Record<string,boolean>>({thera:false,turnur:false});
   const [layoutPendingCount, setPendingLayouts] = useState(0), [connecting, setConnecting] = useState(false);
   const layoutScope = useRef(createLayoutSaveScope('')), mutationScope = useRef({pilot:character});
@@ -63,6 +63,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   const selectedMapRef=useRef(mapId);selectedMapRef.current=mapId;
   const maps=state?.maps||[];
   const map = state?.character_id===character&&selectedMap?.id===mapId?selectedMap:null; mapRef.current = map;
+  // Consume fresh data and wall time together; the clock effect only arms deadlines.
+  const now=useMemo(()=>Date.now(),[clockNow,map,state?.maps,intel?.feeds]);
   const readOnly=map?.read_only===true,canWrite=hasPilot&&!readOnly;
   useEffect(()=>{onMapChange?.(map?.id||'');},[map?.id,onMapChange]);
   const layoutScopeKey = character + ':' + (map?.id || ''), pendingLayouts = layoutScope.current.key === layoutScopeKey ? layoutPendingCount : 0;
@@ -116,8 +118,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
     return()=>{clock.close();freshnessClock.current=null;owner.removeEventListener('visibilitychange',visible);};
   },[]);
   useEffect(() => {
-    freshnessClock.current?.refresh([...(map?.connections||[]),...(!map?(state?.maps||[]).map(value=>({expires_at:value.next_expiry_at})):[]),...(map?.pings||[]),...(intel?.feeds?.connections||[]),...Object.values(intel?.feeds?.sources||{})]);
-  },[map?.connections,map?.pings,state?.maps,intel?.feeds]);
+    freshnessClock.current?.refresh([...(map?.connections||[]),...(!map?(state?.maps||[]).map(value=>({expires_at:value.next_expiry_at})):[]),...(map?.pings||[]),...(intel?.feeds?.connections||[]),...Object.values(intel?.feeds?.sources||{})],now);
+  },[map?.connections,map?.pings,state?.maps,intel?.feeds,now]);
   useEffect(() => {
     const ended = map?map.connections.filter(connection=>connectionHasEnded(connection,now)).map(connection=>map.id+':'+connection.id+':'+connection.expires_at):(state?.maps||[]).filter(value=>value.next_expiry_at&&Date.parse(value.next_expiry_at)<=now).map(value=>value.id+':'+value.next_expiry_at);
     if (!ended.length) {expiryRefresh.current='';return;}

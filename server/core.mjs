@@ -1,3 +1,4 @@
+import {randomUUID} from 'node:crypto';
 import { createUniverse } from './universe.mjs';
 import { enrichAssetLocations } from './asset-locations.mjs';
 import { mapEnrichment } from './enrichment.mjs';
@@ -28,13 +29,39 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     let stopped = false, closing, quiesceFailures;
     let universe, stopUniverseHistory, registry, stream, obs, goals, markets, combat, sessionCombat, publicFeedTransport, ticker, heartbeat;
     const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
+    const namesEpoch = randomUUID(), deliveredNames = new WeakMap();
+    let namesVersion = 0;
+    const namesRevision = () => `${namesEpoch}:${namesVersion}`;
+    const namesSnapshot = () => ({names: namesMap, namesRevision: namesRevision()});
     const protectionKeys = new Set(['location', 'fw', 'sovereignty', 'profile', 'contacts', 'corporation_contacts', 'alliance_contacts']);
     const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
     let polling = pollingValues(store.get('esi:polling', {}));
     const protection = createProtectionTracker();
     const uiVersions = createUIResourceVersions(), combatVersions = new Map();
+    function sendNames(clients = uiClients) {
+        const revision = namesRevision(); let frame;
+        for (const client of clients) {
+            if (deliveredNames.get(client) === revision) continue;
+            frame ??= sseEvent('names', {names: namesMap, namesRevision: revision});
+            if (writeSSE(client, frame)) deliveredNames.set(client, revision);
+            else uiClients.delete(client);
+        }
+    }
+    function connectUI(client) {
+        if (stopped) { client.end(); return false; }
+        if (uiClients.has(client)) return true;
+        uiClients.add(client); client.once('close', () => uiClients.delete(client));
+        sendNames([client]); return uiClients.has(client);
+    }
     function send(type, data) {
         if (!uiClients.size) return;
+        // Directory delivery is global to each UI connection, independent of
+        // the pilot-specific snapshots that a dashboard chooses to consume.
+        if (type === 'snapshot') {
+            sendNames();
+            if (!uiClients.size) return;
+            data = {...data, namesRevision: namesRevision()};
+        }
         const frame = sseEvent(type, data);
         for (const client of uiClients) if (!writeSSE(client, frame)) uiClients.delete(client);
     }
@@ -66,7 +93,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
             combatVersions.set(id, (combatVersions.get(id) || 0) + 1);
             goals.refresh(id,'killmails');updateBindings();
-            send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
+            send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id)});
         }});
         sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>changed({characterId:id,resources:['sessionReport']})});
     } catch (error) { return rollback(error); }
@@ -81,7 +108,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 namesMap[id] = name; changed = true;
             }
         }
-        if (changed) store.set('names', namesMap);
+        if (changed) { namesVersion++; store.set('names', namesMap); }
     }
     async function resolveNames(data, priority = false) { const ids = []; function walk(x) { if (Array.isArray(x)) {
         x.forEach(walk);
@@ -267,7 +294,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             }
             nextRun.set(key, Date.parse(retryAt));
         }
-        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):uiSnapshot(id, d.key), names: namesMap });
+        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):uiSnapshot(id, d.key) });
     }
     function retryDeadline(dataset, retryAt) {
         return Math.max(Date.now() + (dataset.key === 'location' ? 3000 : 60000), Date.parse(retryAt) || 0);
@@ -415,7 +442,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         refreshOPSEC();updateBindings();
         if (!options.noSync) refreshPolitics();
     } catch (error) { return rollback(error); }
-    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
+    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, connectUI, namesSnapshot, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
         }
         else
