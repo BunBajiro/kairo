@@ -1,5 +1,7 @@
 # RC17 completion trace — 7 October 2026
 
+> **Historical audit:** live task status is now the [current issue ledger](c954-resumption/resumed/CURRENT-ISSUES.md). Retain these original source-bound findings as traceability; do not reopen completed investigations from the old status labels.
+
 **Current source selection and updated trace:** [continue from c954 / test build #54](c954-resumption/README.md). The user excludes parallel-process build #55 / 508. The tables below retain their original a27 boundary and are superseded only where the new trace supplies source-bound evidence.
 
 Later implementation work is banked in the [current work checkpoint](WORK-CHECKPOINT-20261007.md). This audit retains its original a27 source boundary; newer tests and trials do not retroactively change its historical evidence.

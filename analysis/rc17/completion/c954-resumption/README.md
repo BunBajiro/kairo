@@ -1,5 +1,7 @@
 # RC17 continuation from build #54
 
+> **Live task status:** the [current issue ledger](resumed/CURRENT-ISSUES.md) owns closed decisions and remaining work. The four traces preserve the c954 audit boundary; the [checkpoint](resumed/CURRENT-CHECKPOINT.md) pins newer source and evidence.
+
 The verified pause checkpoint is `801829695f5f5956b1fac137c2e4e77b54c4dfb7`. **The user resumed work later on 7 October.** Start with the [recovery handoff](PAUSE-HANDOFF.md), then the newer records under `resumed/`. PR #10 remains withdrawn.
 
 The user explicitly selected **Kairo test build #54**, commit `c954c0d808847f249df0659ed15fdce2e89f84c4`, and instructed this process to disregard **build #55**, commit `508f2d450c7cc17cc464cf316b80748367adc9e2`, created by a parallel ChatGPT process. This instruction supersedes the source selection and adoption claims in the earlier live checkpoint.

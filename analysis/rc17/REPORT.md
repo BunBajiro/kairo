@@ -1,5 +1,7 @@
 # Kairo 8.0 optimisation and refactoring whitepaper
 
+> **Live status (8 October):** use the [current issue ledger](completion/c954-resumption/resumed/CURRENT-ISSUES.md) for closed component decisions and remaining release gates. The dated whitepaper and audit statements below retain their original evidence boundaries; they are not a second live task list.
+
 > **Completion audit, 7 October 2026: optimisation/refactoring is incomplete; PR #10 remains withdrawn.** The historical checkpoint below does not certify the current completion source. The [full finding trace](completion/TRACEABILITY.md) maps the report and all linked recommendations to current code, evidence, changes and closure gates, including frontend and updater items omitted from the earlier short open list. Historical observations and failed runs retain their original identities.
 
 **Internal instrumented RC17 checkpoint · updated 3 October 2026 · evidence ready for review**

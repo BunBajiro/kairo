@@ -1,0 +1,75 @@
+{
+  "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "complete": true,
+  "steps": [
+    {
+      "name": "prebuild",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "capture",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/integration-next/checkpoint-attempt1/prebuild-source.json",
+        "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+      ],
+      "exitCode": 0,
+      "logSha256": "e9698d98ec5a9caec3ff4b65876407899e150d4a6a55066598c65673a3c8d012"
+    },
+    {
+      "name": "types",
+      "command": [
+        "npm",
+        "run",
+        "check:kairo"
+      ],
+      "exitCode": 0,
+      "logSha256": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "logSha256": "e53208fbc10f40eb3cf0ab70f1c93dfdeb054507b2c1dff4c234dfd6df48b5ea"
+    },
+    {
+      "name": "built",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "capture",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/integration-next/checkpoint-attempt1/built-source.json",
+        "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+      ],
+      "exitCode": 0,
+      "logSha256": "f6b2317ad085f0fa4e0752827c6d4152f0d29bc9b598f325ff9ad83591679788"
+    },
+    {
+      "name": "full-tests",
+      "command": [
+        "npm",
+        "run",
+        "test:kairo"
+      ],
+      "exitCode": 0,
+      "logSha256": "b84ad0a337f6f3a97820f33a83d35870a9fa19748ce6a8b4cb520a2032f114d9"
+    },
+    {
+      "name": "final-source",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/integration-next/checkpoint-attempt1/built-source.json"
+      ],
+      "exitCode": 0,
+      "logSha256": "311d2d34cc0cd2b651beeaac2ed154ce32e5aab484aa699b0aae43b5d2e70f75"
+    }
+  ],
+  "scope": "Combined checkpoint correctness; not final comparison acceptance",
+  "sourceVerified": true
+}

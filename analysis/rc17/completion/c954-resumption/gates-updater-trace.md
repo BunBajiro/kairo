@@ -1,5 +1,7 @@
 # c954 resumption: original gates G1–G12 and updater U1–U3
 
+> **Historical c954 audit:** use the [current issue ledger](resumed/CURRENT-ISSUES.md) for live status. The original pending labels below do not reopen evidence-backed decisions recorded there.
+
 Later source-bound work: [U2b rollback correction at f010726](resumed/updater-rollback.md), with 93 focused tests and a 951-test integrated type/build gate. The audit below retains its original c954 source boundary; remaining loaded-worker/final comparison gates are not closed by this correctness checkpoint.
 
 Source-selection authority: [resumption README](README.md). Read-only source/evidence audit, 7 October 2026. This fragment is tied to **build #54, `c954c0d808847f249df0659ed15fdce2e89f84c4`**, tree `87c20772b3843504a467c3e7f6de05f9018b3b6c`. The user explicitly excluded parallel-process build #55, `508f2d450c7cc17cc464cf316b80748367adc9e2`. At inspection the shared implementation checkout's HEAD was #55, so production references below were read using `git show c954c0d:<path>` / `git grep ... c954c0d`. No application files, branches or evidence were modified; no build, test or benchmark was run for this audit. PR #10 remains withdrawn.

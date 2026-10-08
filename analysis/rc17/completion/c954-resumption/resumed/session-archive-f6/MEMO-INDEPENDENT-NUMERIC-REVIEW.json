@@ -1,0 +1,1888 @@
+{
+  "reviewType": "Independent read-only recomputation; no application runtime",
+  "recommendation": "Adopt narrow card memo; final merged wiring required",
+  "receiptSha256": "6c983c82e3fe3518079beaed2045d34a20a318ccccfb25bc3ed59deb64574d74",
+  "summarySha256": "ea4bb2a4d298e97fbf3fc86cdf3a02e8e8cc3ba43510b49e66f1654988fa5bda",
+  "verifiedInputs": [
+    {
+      "path": "memo-screen1/pair/completed.json",
+      "sha256": "6ec31b8a6df1b6f993873aecbb751259c83f81f33a9704605e94503998083c24"
+    },
+    {
+      "path": "memo-pairs23/completed.json",
+      "sha256": "16c9a46fb04eb4bf1383fb9dc2da42cb3ee87f83bc5d24980900d87aa35f2709"
+    },
+    {
+      "path": "memo-screen1/pair/1-baseline.json",
+      "sha256": "59c30cabda66e53303c08d7b85d2315edb3cab6819684194c35bc1ad0943535b"
+    },
+    {
+      "path": "memo-screen1/pair/1-candidate.json",
+      "sha256": "5696dfc59c47a5dfbeb916aada97f52db66c300dc176683c045c627a0a66814c"
+    },
+    {
+      "path": "memo-pairs23/2-candidate.json",
+      "sha256": "c67f26121937319820631565f167a7089a66843f0db4c1a7616a4414c5253084"
+    },
+    {
+      "path": "memo-pairs23/2-baseline.json",
+      "sha256": "ada905abc9da70af9c56e57cc61aeecd069278e7599653921ed7b85e1db0c09c"
+    },
+    {
+      "path": "memo-pairs23/3-baseline.json",
+      "sha256": "a9c77db02428e0e8ddb0343ae301d022cdb80bf76a1416050d9cbce42a1eaf26"
+    },
+    {
+      "path": "memo-pairs23/3-candidate.json",
+      "sha256": "da510545204ffa846e2ef155ac5e9c6eed6f53065b71f93c09b4b14f1742e1b3"
+    }
+  ],
+  "checks": 486,
+  "metrics": [
+    {
+      "scope": 30,
+      "metric": "refreshElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 51.40000000037253,
+          "candidate": 47,
+          "delta": -4.400000000372529,
+          "percent": -8.56031128470941
+        },
+        {
+          "pair": 2,
+          "baseline": 49.59999999962747,
+          "candidate": 47,
+          "delta": -2.599999999627471,
+          "percent": -5.241935483159277
+        },
+        {
+          "pair": 3,
+          "baseline": 54.600000001490116,
+          "candidate": 46.899999998509884,
+          "delta": -7.700000002980232,
+          "percent": -14.102564107637527
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "refreshTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 24.038999999999977,
+          "candidate": 15.293000000000001,
+          "delta": -8.745999999999976,
+          "percent": -36.382545030991245
+        },
+        {
+          "pair": 2,
+          "baseline": 15.699999999999992,
+          "candidate": 11.923000000000016,
+          "delta": -3.776999999999976,
+          "percent": -24.057324840764196
+        },
+        {
+          "pair": 3,
+          "baseline": 18.162999999999986,
+          "candidate": 12.813999999999993,
+          "delta": -5.348999999999993,
+          "percent": -29.449980730055593
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "refreshScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 11.269000000000002,
+          "candidate": 7.536000000000001,
+          "delta": -3.7330000000000005,
+          "percent": -33.12627562339161
+        },
+        {
+          "pair": 2,
+          "baseline": 10.322000000000012,
+          "candidate": 6.927000000000002,
+          "delta": -3.3950000000000093,
+          "percent": -32.89091261383458
+        },
+        {
+          "pair": 3,
+          "baseline": 10.20399999999999,
+          "candidate": 7.140000000000008,
+          "delta": -3.0639999999999823,
+          "percent": -30.027440219521615
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "refreshStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 1.0119999999999991,
+          "candidate": 0.5690000000000001,
+          "delta": -0.44299999999999906,
+          "percent": -43.7747035573122
+        },
+        {
+          "pair": 2,
+          "baseline": 0.6950000000000012,
+          "candidate": 0.4860000000000003,
+          "delta": -0.20900000000000085,
+          "percent": -30.07194244604324
+        },
+        {
+          "pair": 3,
+          "baseline": 0.793000000000002,
+          "candidate": 0.3130000000000008,
+          "delta": -0.48000000000000126,
+          "percent": -60.5296343001261
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "reportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 84.69999999925494,
+          "candidate": 77.00000000093132,
+          "delta": -7.699999998323619,
+          "percent": -9.090909089009857
+        },
+        {
+          "pair": 2,
+          "baseline": 88.75,
+          "candidate": 85.25,
+          "delta": -3.5,
+          "percent": -3.9436619718309807
+        },
+        {
+          "pair": 3,
+          "baseline": 97.29999999981374,
+          "candidate": 78.5,
+          "delta": -18.799999999813735,
+          "percent": -19.32168550858142
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "reportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 64.05099999999997,
+          "candidate": 48.50550000000003,
+          "delta": -15.54549999999994,
+          "percent": -24.270503192768178
+        },
+        {
+          "pair": 2,
+          "baseline": 57.47850000000005,
+          "candidate": 53.9425,
+          "delta": -3.536000000000044,
+          "percent": -6.15186548013612
+        },
+        {
+          "pair": 3,
+          "baseline": 68.636,
+          "candidate": 58.74949999999998,
+          "delta": -9.886500000000012,
+          "percent": -14.40424849932982
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "reportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 15.21450000000002,
+          "candidate": 12.561500000000004,
+          "delta": -2.6530000000000165,
+          "percent": -17.437313089487084
+        },
+        {
+          "pair": 2,
+          "baseline": 13.396999999999993,
+          "candidate": 12.983499999999996,
+          "delta": -0.4134999999999973,
+          "percent": -3.086511905650502
+        },
+        {
+          "pair": 3,
+          "baseline": 15.732499999999995,
+          "candidate": 13.853500000000004,
+          "delta": -1.8789999999999907,
+          "percent": -11.9434292070554
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "reportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 15.957999999999998,
+          "candidate": 9.186499999999999,
+          "delta": -6.7715,
+          "percent": -42.43326231357313
+        },
+        {
+          "pair": 2,
+          "baseline": 10.5275,
+          "candidate": 10.561500000000002,
+          "delta": 0.03400000000000247,
+          "percent": 0.32296366658752795
+        },
+        {
+          "pair": 3,
+          "baseline": 10.877499999999994,
+          "candidate": 10.124999999999998,
+          "delta": -0.752499999999996,
+          "percent": -6.91794989657547
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "scrollTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 49.84699999999997,
+          "candidate": 27.113000000000024,
+          "delta": -22.73399999999995,
+          "percent": -45.6075591309406
+        },
+        {
+          "pair": 2,
+          "baseline": 37.24700000000003,
+          "candidate": 36.96099999999996,
+          "delta": -0.2860000000000653,
+          "percent": -0.7678470749323818
+        },
+        {
+          "pair": 3,
+          "baseline": 32.998000000000026,
+          "candidate": 31.440000000000023,
+          "delta": -1.5580000000000034,
+          "percent": -4.721498272622593
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "scrollFrameP95Ms",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 17.40000000037253,
+          "candidate": 17.09999999962747,
+          "delta": -0.30000000074505806,
+          "percent": -1.7241379352795128
+        },
+        {
+          "pair": 2,
+          "baseline": 17.199999999254942,
+          "candidate": 17,
+          "delta": -0.19999999925494194,
+          "percent": -1.1627906933930565
+        },
+        {
+          "pair": 3,
+          "baseline": 17.09999999962747,
+          "candidate": 17.199999999254942,
+          "delta": 0.09999999962747097,
+          "percent": 0.5847953194716426
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "firstReportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 98.29999999888241,
+          "candidate": 82.60000000149012,
+          "delta": -15.699999997392297,
+          "percent": -15.971515765585753
+        },
+        {
+          "pair": 2,
+          "baseline": 82.5,
+          "candidate": 98,
+          "delta": 15.5,
+          "percent": 18.787878787878796
+        },
+        {
+          "pair": 3,
+          "baseline": 78.40000000037253,
+          "candidate": 79.5,
+          "delta": 1.099999999627471,
+          "percent": 1.4030612240079732
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "firstReportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 89.85999999999994,
+          "candidate": 65.88300000000002,
+          "delta": -23.97699999999992,
+          "percent": -26.682617404851918
+        },
+        {
+          "pair": 2,
+          "baseline": 64.411,
+          "candidate": 77.63600000000004,
+          "delta": 13.225000000000037,
+          "percent": 20.532207231684097
+        },
+        {
+          "pair": 3,
+          "baseline": 77.09499999999997,
+          "candidate": 84.55200000000002,
+          "delta": 7.4570000000000505,
+          "percent": 9.672482002723992
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "firstReportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 23.326000000000015,
+          "candidate": 17.983,
+          "delta": -5.343000000000014,
+          "percent": -22.905770384978187
+        },
+        {
+          "pair": 2,
+          "baseline": 17.587999999999994,
+          "candidate": 19.411000000000012,
+          "delta": 1.8230000000000182,
+          "percent": 10.365021605640322
+        },
+        {
+          "pair": 3,
+          "baseline": 21.053999999999988,
+          "candidate": 20.451999999999998,
+          "delta": -0.6019999999999897,
+          "percent": -2.8593141445805603
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "firstReportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 23.039,
+          "candidate": 10.199999999999998,
+          "delta": -12.839000000000004,
+          "percent": -55.727245106124414
+        },
+        {
+          "pair": 2,
+          "baseline": 9.790000000000001,
+          "candidate": 12.863,
+          "delta": 3.0729999999999986,
+          "percent": 31.38917262512766
+        },
+        {
+          "pair": 3,
+          "baseline": 11.289,
+          "candidate": 11.756999999999996,
+          "delta": 0.4679999999999964,
+          "percent": 4.145628487908559
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "secondReportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 71.09999999962747,
+          "candidate": 71.40000000037253,
+          "delta": 0.30000000074505806,
+          "percent": 0.4219409293201526
+        },
+        {
+          "pair": 2,
+          "baseline": 95,
+          "candidate": 72.5,
+          "delta": -22.5,
+          "percent": -23.684210526315784
+        },
+        {
+          "pair": 3,
+          "baseline": 116.19999999925494,
+          "candidate": 77.5,
+          "delta": -38.69999999925494,
+          "percent": -33.304647159641206
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "secondReportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 38.242,
+          "candidate": 31.128000000000043,
+          "delta": -7.113999999999955,
+          "percent": -18.60258354688551
+        },
+        {
+          "pair": 2,
+          "baseline": 50.54600000000009,
+          "candidate": 30.24899999999997,
+          "delta": -20.29700000000012,
+          "percent": -40.1555019190442
+        },
+        {
+          "pair": 3,
+          "baseline": 60.177000000000035,
+          "candidate": 32.946999999999946,
+          "delta": -27.23000000000009,
+          "percent": -45.24984628678743
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "secondReportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 7.103000000000026,
+          "candidate": 7.140000000000008,
+          "delta": 0.03699999999998127,
+          "percent": 0.5209066591578271
+        },
+        {
+          "pair": 2,
+          "baseline": 9.205999999999992,
+          "candidate": 6.555999999999979,
+          "delta": -2.6500000000000137,
+          "percent": -28.785574625244582
+        },
+        {
+          "pair": 3,
+          "baseline": 10.411000000000003,
+          "candidate": 7.255000000000011,
+          "delta": -3.1559999999999917,
+          "percent": -30.31409086543071
+        }
+      ]
+    },
+    {
+      "scope": 30,
+      "metric": "secondReportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 8.876999999999995,
+          "candidate": 8.173,
+          "delta": -0.7039999999999953,
+          "percent": -7.930607187112715
+        },
+        {
+          "pair": 2,
+          "baseline": 11.264999999999997,
+          "candidate": 8.260000000000003,
+          "delta": -3.0049999999999937,
+          "percent": -26.675543719485084
+        },
+        {
+          "pair": 3,
+          "baseline": 10.465999999999989,
+          "candidate": 8.493,
+          "delta": -1.9729999999999883,
+          "percent": -18.85151920504482
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "refreshElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 100.90000000037253,
+          "candidate": 95.09999999962747,
+          "delta": -5.800000000745058,
+          "percent": -5.748265610231562
+        },
+        {
+          "pair": 2,
+          "baseline": 120.29999999888241,
+          "candidate": 88.69999999925494,
+          "delta": -31.59999999962747,
+          "percent": -26.26766417283544
+        },
+        {
+          "pair": 3,
+          "baseline": 130.2000000011176,
+          "candidate": 96.59999999962747,
+          "delta": -33.600000001490116,
+          "percent": -25.806451613826198
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "refreshTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 97.82000000000002,
+          "candidate": 72.581,
+          "delta": -25.23900000000002,
+          "percent": -25.80147209159682
+        },
+        {
+          "pair": 2,
+          "baseline": 88.12500000000001,
+          "candidate": 77.35499999999985,
+          "delta": -10.770000000000167,
+          "percent": -12.221276595744868
+        },
+        {
+          "pair": 3,
+          "baseline": 97.60999999999997,
+          "candidate": 65.71199999999999,
+          "delta": -31.897999999999982,
+          "percent": -32.679028788034
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "refreshScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 29.30299999999997,
+          "candidate": 5.689,
+          "delta": -23.61399999999997,
+          "percent": -80.5856055693956
+        },
+        {
+          "pair": 2,
+          "baseline": 31.367000000000033,
+          "candidate": 6.232000000000015,
+          "delta": -25.13500000000002,
+          "percent": -80.13198584499631
+        },
+        {
+          "pair": 3,
+          "baseline": 31.64800000000001,
+          "candidate": 6.8030000000000035,
+          "delta": -24.845000000000006,
+          "percent": -78.50417087967644
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "refreshStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 0.9009999999999851,
+          "candidate": 0.8309999999999984,
+          "delta": -0.06999999999998674,
+          "percent": -7.769145394005317
+        },
+        {
+          "pair": 2,
+          "baseline": 1.0330000000000061,
+          "candidate": 0.9820000000000106,
+          "delta": -0.05099999999999549,
+          "percent": -4.9370764762822095
+        },
+        {
+          "pair": 3,
+          "baseline": 1.2300000000000089,
+          "candidate": 0.9869999999999879,
+          "delta": -0.24300000000002098,
+          "percent": -19.75609756097717
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "reportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 117.75,
+          "candidate": 119.40000000037253,
+          "delta": 1.650000000372529,
+          "percent": 1.4012738856666873
+        },
+        {
+          "pair": 2,
+          "baseline": 149.69999999925494,
+          "candidate": 120.5,
+          "delta": -29.199999999254942,
+          "percent": -19.505678022311468
+        },
+        {
+          "pair": 3,
+          "baseline": 108.09999999962747,
+          "candidate": 129.59999999962747,
+          "delta": 21.5,
+          "percent": 19.888991674444114
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "reportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 122.14999999999998,
+          "candidate": 122.79449999999991,
+          "delta": 0.6444999999999368,
+          "percent": 0.5276299631600034
+        },
+        {
+          "pair": 2,
+          "baseline": 157.42200000000017,
+          "candidate": 119.28499999999985,
+          "delta": -38.13700000000031,
+          "percent": -24.225965875163745
+        },
+        {
+          "pair": 3,
+          "baseline": 126.31900000000007,
+          "candidate": 137.50799999999995,
+          "delta": 11.18899999999988,
+          "percent": 8.857733199281093
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "reportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 15.864999999999963,
+          "candidate": 9.074500000000013,
+          "delta": -6.79049999999995,
+          "percent": -42.801764891269876
+        },
+        {
+          "pair": 2,
+          "baseline": 21.513000000000005,
+          "candidate": 8.967000000000002,
+          "delta": -12.546000000000003,
+          "percent": -58.318226188816055
+        },
+        {
+          "pair": 3,
+          "baseline": 17.359000000000016,
+          "candidate": 11.182000000000025,
+          "delta": -6.176999999999991,
+          "percent": -35.5838469957946
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "reportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 24.956000000000003,
+          "candidate": 28.84550000000001,
+          "delta": 3.8895000000000053,
+          "percent": 15.585430357429097
+        },
+        {
+          "pair": 2,
+          "baseline": 29.082499999999996,
+          "candidate": 25.55699999999998,
+          "delta": -3.525500000000015,
+          "percent": -12.122410384251747
+        },
+        {
+          "pair": 3,
+          "baseline": 27.45900000000001,
+          "candidate": 28.645000000000017,
+          "delta": 1.186000000000007,
+          "percent": 4.319166757711512
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "scrollTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 144.46499999999983,
+          "candidate": 140.71600000000007,
+          "delta": -3.748999999999768,
+          "percent": -2.5950922368738305
+        },
+        {
+          "pair": 2,
+          "baseline": 184.9780000000001,
+          "candidate": 164.77800000000008,
+          "delta": -20.200000000000017,
+          "percent": -10.92021753938307
+        },
+        {
+          "pair": 3,
+          "baseline": 210.08300000000003,
+          "candidate": 178.89900000000014,
+          "delta": -31.183999999999884,
+          "percent": -14.843657030792535
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "scrollFrameP95Ms",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 17.200000001117587,
+          "candidate": 17,
+          "delta": -0.2000000011175871,
+          "percent": -1.1627907040964613
+        },
+        {
+          "pair": 2,
+          "baseline": 18.59999999962747,
+          "candidate": 17.199999999254942,
+          "delta": -1.400000000372529,
+          "percent": -7.526881722583701
+        },
+        {
+          "pair": 3,
+          "baseline": 19.200000001117587,
+          "candidate": 18.09999999962747,
+          "delta": -1.1000000014901161,
+          "percent": -5.729166674094211
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "firstReportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 115.59999999962747,
+          "candidate": 102.5,
+          "delta": -13.099999999627471,
+          "percent": -11.332179930510112
+        },
+        {
+          "pair": 2,
+          "baseline": 145.09999999962747,
+          "candidate": 115.40000000037253,
+          "delta": -29.699999999254942,
+          "percent": -20.46864231518346
+        },
+        {
+          "pair": 3,
+          "baseline": 98.59999999962747,
+          "candidate": 120.59999999962747,
+          "delta": 22.0,
+          "percent": 22.312373225236428
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "firstReportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 97.36100000000025,
+          "candidate": 103.9859999999999,
+          "delta": 6.624999999999659,
+          "percent": 6.804572672835785
+        },
+        {
+          "pair": 2,
+          "baseline": 129.64900000000011,
+          "candidate": 96.50599999999976,
+          "delta": -33.143000000000356,
+          "percent": -25.563637205069323
+        },
+        {
+          "pair": 3,
+          "baseline": 107.50500000000018,
+          "candidate": 104.0890000000001,
+          "delta": -3.416000000000082,
+          "percent": -3.177526626668603
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "firstReportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 16.348999999999947,
+          "candidate": 9.575,
+          "delta": -6.773999999999948,
+          "percent": -41.433726833445284
+        },
+        {
+          "pair": 2,
+          "baseline": 26.348999999999954,
+          "candidate": 9.08500000000001,
+          "delta": -17.263999999999946,
+          "percent": -65.520513112452
+        },
+        {
+          "pair": 3,
+          "baseline": 17.082000000000043,
+          "candidate": 10.505000000000042,
+          "delta": -6.577000000000002,
+          "percent": -38.50251726964047
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "firstReportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 24.104999999999986,
+          "candidate": 30.300999999999995,
+          "delta": 6.196000000000009,
+          "percent": 25.70421074465883
+        },
+        {
+          "pair": 2,
+          "baseline": 31.601000000000017,
+          "candidate": 26.43300000000001,
+          "delta": -5.168000000000006,
+          "percent": -16.353912850859164
+        },
+        {
+          "pair": 3,
+          "baseline": 29.086000000000002,
+          "candidate": 29.118000000000006,
+          "delta": 0.03200000000000358,
+          "percent": 0.1100185656329522
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "secondReportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 119.90000000037253,
+          "candidate": 136.30000000074506,
+          "delta": 16.40000000037253,
+          "percent": 13.678065054480037
+        },
+        {
+          "pair": 2,
+          "baseline": 154.2999999988824,
+          "candidate": 125.59999999962747,
+          "delta": -28.699999999254942,
+          "percent": -18.60012961727986
+        },
+        {
+          "pair": 3,
+          "baseline": 117.59999999962747,
+          "candidate": 138.59999999962747,
+          "delta": 21.0,
+          "percent": 17.857142857199413
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "secondReportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 146.9389999999997,
+          "candidate": 141.60299999999992,
+          "delta": -5.335999999999785,
+          "percent": -3.631438896412653
+        },
+        {
+          "pair": 2,
+          "baseline": 185.19500000000022,
+          "candidate": 142.06399999999996,
+          "delta": -43.131000000000256,
+          "percent": -23.289505656200326
+        },
+        {
+          "pair": 3,
+          "baseline": 145.13299999999995,
+          "candidate": 170.92699999999982,
+          "delta": 25.79399999999987,
+          "percent": 17.772663694679956
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "secondReportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 15.380999999999979,
+          "candidate": 8.574000000000026,
+          "delta": -6.806999999999952,
+          "percent": -44.255900136531835
+        },
+        {
+          "pair": 2,
+          "baseline": 16.677000000000053,
+          "candidate": 8.848999999999997,
+          "delta": -7.828000000000056,
+          "percent": -46.938897883312535
+        },
+        {
+          "pair": 3,
+          "baseline": 17.635999999999985,
+          "candidate": 11.859000000000009,
+          "delta": -5.776999999999976,
+          "percent": -32.75686096620538
+        }
+      ]
+    },
+    {
+      "scope": 300,
+      "metric": "secondReportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 25.807000000000023,
+          "candidate": 27.390000000000025,
+          "delta": 1.583000000000002,
+          "percent": 6.133994652613639
+        },
+        {
+          "pair": 2,
+          "baseline": 26.563999999999975,
+          "candidate": 24.680999999999955,
+          "delta": -1.8830000000000204,
+          "percent": -7.088540882397309
+        },
+        {
+          "pair": 3,
+          "baseline": 25.832000000000022,
+          "candidate": 28.17200000000003,
+          "delta": 2.340000000000007,
+          "percent": 9.058532053267276
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "refreshElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 563.2999999988824,
+          "candidate": 430.3999999985099,
+          "delta": -132.90000000037253,
+          "percent": -23.593112018575567
+        },
+        {
+          "pair": 2,
+          "baseline": 589,
+          "candidate": 500.2000000011176,
+          "delta": -88.79999999888241,
+          "percent": -15.076400678927405
+        },
+        {
+          "pair": 3,
+          "baseline": 705,
+          "candidate": 503.7000000011176,
+          "delta": -201.2999999988824,
+          "percent": -28.55319148920318
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "refreshTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 475.6210000000003,
+          "candidate": 343.4950000000008,
+          "delta": -132.12599999999952,
+          "percent": -27.779681721370466
+        },
+        {
+          "pair": 2,
+          "baseline": 503.1169999999996,
+          "candidate": 404.49100000000016,
+          "delta": -98.62599999999946,
+          "percent": -19.60299492960873
+        },
+        {
+          "pair": 3,
+          "baseline": 603.3089999999994,
+          "candidate": 403.12199999999973,
+          "delta": -200.18699999999967,
+          "percent": -33.18150400541015
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "refreshScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 135.923,
+          "candidate": 11.193000000000008,
+          "delta": -124.72999999999999,
+          "percent": -91.76519058584638
+        },
+        {
+          "pair": 2,
+          "baseline": 140.8400000000003,
+          "candidate": 12.108999999999925,
+          "delta": -128.73100000000036,
+          "percent": -91.40230048281745
+        },
+        {
+          "pair": 3,
+          "baseline": 141.2490000000002,
+          "candidate": 12.558000000000069,
+          "delta": -128.69100000000012,
+          "percent": -91.10931758808908
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "refreshStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 0,
+          "candidate": 0,
+          "delta": 0,
+          "percent": null
+        },
+        {
+          "pair": 2,
+          "baseline": 0,
+          "candidate": 0,
+          "delta": 0,
+          "percent": null
+        },
+        {
+          "pair": 3,
+          "baseline": 0,
+          "candidate": 0,
+          "delta": 0,
+          "percent": null
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "reportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 424.70000000018626,
+          "candidate": 364.8999999994412,
+          "delta": -59.80000000074506,
+          "percent": -14.080527431297106
+        },
+        {
+          "pair": 2,
+          "baseline": 406.3999999994412,
+          "candidate": 356.80000000074506,
+          "delta": -49.59999999869615,
+          "percent": -12.204724409144774
+        },
+        {
+          "pair": 3,
+          "baseline": 428.34999999962747,
+          "candidate": 378.09999999869615,
+          "delta": -50.25000000093132,
+          "percent": -11.731061048435866
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "reportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 423.8599999999977,
+          "candidate": 368.37700000000063,
+          "delta": -55.48299999999705,
+          "percent": -13.08993535601315
+        },
+        {
+          "pair": 2,
+          "baseline": 398.2744999999994,
+          "candidate": 353.66200000000174,
+          "delta": -44.61249999999768,
+          "percent": -11.201445234379237
+        },
+        {
+          "pair": 3,
+          "baseline": 408.1480000000006,
+          "candidate": 390.1580000000013,
+          "delta": -17.98999999999927,
+          "percent": -4.407714848535149
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "reportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 58.30200000000008,
+          "candidate": 20.908000000000037,
+          "delta": -37.39400000000004,
+          "percent": -64.13845151109737
+        },
+        {
+          "pair": 2,
+          "baseline": 53.28949999999955,
+          "candidate": 16.610499999999973,
+          "delta": -36.678999999999576,
+          "percent": -68.82969440508897
+        },
+        {
+          "pair": 3,
+          "baseline": 61.92050000000005,
+          "candidate": 17.052999999999983,
+          "delta": -44.867500000000064,
+          "percent": -72.45984770794814
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "reportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 114.6529999999999,
+          "candidate": 104.36299999999977,
+          "delta": -10.290000000000134,
+          "percent": -8.974906892972834
+        },
+        {
+          "pair": 2,
+          "baseline": 94.77500000000006,
+          "candidate": 96.54399999999997,
+          "delta": 1.768999999999906,
+          "percent": 1.8665259825902503
+        },
+        {
+          "pair": 3,
+          "baseline": 100.82950000000012,
+          "candidate": 104.13349999999988,
+          "delta": 3.3039999999997605,
+          "percent": 3.276818788152025
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "scrollTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 1220.8049999999985,
+          "candidate": 1240.796999999997,
+          "delta": 19.991999999998598,
+          "percent": 1.6376079717890013
+        },
+        {
+          "pair": 2,
+          "baseline": 1306.0469999999996,
+          "candidate": 1298.093999999999,
+          "delta": -7.953000000000657,
+          "percent": -0.6089367381113098
+        },
+        {
+          "pair": 3,
+          "baseline": 1319.5180000000023,
+          "candidate": 1238.3759999999988,
+          "delta": -81.14200000000346,
+          "percent": -6.149366662675559
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "scrollFrameP95Ms",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 19.399999998509884,
+          "candidate": 19.09999999962747,
+          "delta": -0.2999999988824129,
+          "percent": -1.5463917469353383
+        },
+        {
+          "pair": 2,
+          "baseline": 25,
+          "candidate": 17.40000000037253,
+          "delta": -7.599999999627471,
+          "percent": -30.399999998509884
+        },
+        {
+          "pair": 3,
+          "baseline": 23.300000000745058,
+          "candidate": 17,
+          "delta": -6.300000000745058,
+          "percent": -27.03862661177513
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "firstReportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 462.90000000037253,
+          "candidate": 350.5,
+          "delta": -112.40000000037253,
+          "percent": -24.281702311575305
+        },
+        {
+          "pair": 2,
+          "baseline": 413.3999999985099,
+          "candidate": 345.6000000014901,
+          "delta": -67.79999999701977,
+          "percent": -16.400580550862152
+        },
+        {
+          "pair": 3,
+          "baseline": 412.69999999925494,
+          "candidate": 388.7999999988824,
+          "delta": -23.90000000037253,
+          "percent": -5.791131572671593
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "firstReportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 450.64800000000105,
+          "candidate": 340.8680000000004,
+          "delta": -109.78000000000065,
+          "percent": -24.36047646943965
+        },
+        {
+          "pair": 2,
+          "baseline": 398.45600000000303,
+          "candidate": 334.2130000000019,
+          "delta": -64.24300000000113,
+          "percent": -16.122984721023315
+        },
+        {
+          "pair": 3,
+          "baseline": 402.38800000000197,
+          "candidate": 392.91000000000054,
+          "delta": -9.47800000000143,
+          "percent": -2.3554380349318005
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "firstReportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 67.61300000000014,
+          "candidate": 16.840999999999994,
+          "delta": -50.77200000000015,
+          "percent": -75.09206809341404
+        },
+        {
+          "pair": 2,
+          "baseline": 56.95799999999984,
+          "candidate": 13.943999999999956,
+          "delta": -43.01399999999988,
+          "percent": -75.51880332876857
+        },
+        {
+          "pair": 3,
+          "baseline": 63.36900000000023,
+          "candidate": 15.77700000000004,
+          "delta": -47.59200000000018,
+          "percent": -75.10296832836248
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "firstReportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 129.32100000000003,
+          "candidate": 98.87199999999963,
+          "delta": -30.449000000000396,
+          "percent": -23.545286535056476
+        },
+        {
+          "pair": 2,
+          "baseline": 93.94200000000019,
+          "candidate": 94.2590000000001,
+          "delta": 0.3169999999999078,
+          "percent": 0.3374422516019493
+        },
+        {
+          "pair": 3,
+          "baseline": 96.23399999999992,
+          "candidate": 103.0359999999999,
+          "delta": 6.801999999999978,
+          "percent": 7.068187958517758
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "secondReportOpenElapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 386.5,
+          "candidate": 379.2999999988824,
+          "delta": -7.200000001117587,
+          "percent": -1.8628719278441341
+        },
+        {
+          "pair": 2,
+          "baseline": 399.40000000037253,
+          "candidate": 368,
+          "delta": -31.40000000037253,
+          "percent": -7.8617926891194845
+        },
+        {
+          "pair": 3,
+          "baseline": 444,
+          "candidate": 367.3999999985099,
+          "delta": -76.60000000149012,
+          "percent": -17.252252252587862
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "secondReportOpenTaskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 397.0719999999943,
+          "candidate": 395.8860000000009,
+          "delta": -1.1859999999934416,
+          "percent": -0.29868638433167005
+        },
+        {
+          "pair": 2,
+          "baseline": 398.0929999999958,
+          "candidate": 373.1110000000015,
+          "delta": -24.981999999994287,
+          "percent": -6.275418055578608
+        },
+        {
+          "pair": 3,
+          "baseline": 413.9079999999993,
+          "candidate": 387.4060000000021,
+          "delta": -26.501999999997167,
+          "percent": -6.4028721358362795
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "secondReportOpenScriptMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 48.99100000000001,
+          "candidate": 24.97500000000008,
+          "delta": -24.015999999999927,
+          "percent": -49.02124880079999
+        },
+        {
+          "pair": 2,
+          "baseline": 49.62099999999925,
+          "candidate": 19.276999999999987,
+          "delta": -30.343999999999262,
+          "percent": -61.15152858668653
+        },
+        {
+          "pair": 3,
+          "baseline": 60.47199999999986,
+          "candidate": 18.32899999999993,
+          "delta": -42.14299999999993,
+          "percent": -69.69010451117877
+        }
+      ]
+    },
+    {
+      "scope": 1500,
+      "metric": "secondReportOpenStyleMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 99.98499999999977,
+          "candidate": 109.8539999999999,
+          "delta": 9.869000000000128,
+          "percent": 9.87048057208597
+        },
+        {
+          "pair": 2,
+          "baseline": 95.60799999999992,
+          "candidate": 98.82899999999984,
+          "delta": 3.2209999999999184,
+          "percent": 3.368964940172292
+        },
+        {
+          "pair": 3,
+          "baseline": 105.42500000000032,
+          "candidate": 105.23099999999985,
+          "delta": -0.19400000000047157,
+          "percent": -0.1840170737495539
+        }
+      ]
+    },
+    {
+      "scope": "append60",
+      "metric": "elapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 50.09999999962747,
+          "candidate": 50.09999999962747,
+          "delta": 0.0,
+          "percent": 0.0
+        },
+        {
+          "pair": 2,
+          "baseline": 50,
+          "candidate": 50.09999999962747,
+          "delta": 0.09999999962747097,
+          "percent": 0.1999999992549517
+        },
+        {
+          "pair": 3,
+          "baseline": 50.29999999888241,
+          "candidate": 50,
+          "delta": -0.2999999988824129,
+          "percent": -0.5964214689643699
+        }
+      ]
+    },
+    {
+      "scope": "append60",
+      "metric": "taskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 24.513000000000005,
+          "candidate": 20.487000000000034,
+          "delta": -4.025999999999971,
+          "percent": -16.423938318443156
+        },
+        {
+          "pair": 2,
+          "baseline": 30.46300000000002,
+          "candidate": 21.532999999999912,
+          "delta": -8.930000000000106,
+          "percent": -29.314250073860425
+        },
+        {
+          "pair": 3,
+          "baseline": 43.66000000000003,
+          "candidate": 22.406000000000038,
+          "delta": -21.253999999999994,
+          "percent": -48.68071461291795
+        }
+      ]
+    },
+    {
+      "scope": "append300",
+      "metric": "elapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 93.5,
+          "candidate": 90.10000000149012,
+          "delta": -3.399999998509884,
+          "percent": -3.6363636347699346
+        },
+        {
+          "pair": 2,
+          "baseline": 107,
+          "candidate": 95.29999999888241,
+          "delta": -11.700000001117587,
+          "percent": -10.93457944029681
+        },
+        {
+          "pair": 3,
+          "baseline": 118.69999999925494,
+          "candidate": 94.40000000037253,
+          "delta": -24.299999998882413,
+          "percent": -20.471777589751426
+        }
+      ]
+    },
+    {
+      "scope": "append300",
+      "metric": "taskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 101.45999999999988,
+          "candidate": 89.66399999999996,
+          "delta": -11.795999999999921,
+          "percent": -11.626256652868062
+        },
+        {
+          "pair": 2,
+          "baseline": 116.06800000000005,
+          "candidate": 86.98000000000006,
+          "delta": -29.087999999999994,
+          "percent": -25.061171037667563
+        },
+        {
+          "pair": 3,
+          "baseline": 125.04000000000003,
+          "candidate": 87.58699999999986,
+          "delta": -37.45300000000017,
+          "percent": -29.952815099168394
+        }
+      ]
+    },
+    {
+      "scope": "append1500",
+      "metric": "elapsedMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 827.9000000003725,
+          "candidate": 701.0999999996275,
+          "delta": -126.80000000074506,
+          "percent": -15.315859403392684
+        },
+        {
+          "pair": 2,
+          "baseline": 800.2000000011176,
+          "candidate": 733.7999999988824,
+          "delta": -66.40000000223517,
+          "percent": -8.297925518888082
+        },
+        {
+          "pair": 3,
+          "baseline": 850.6999999992549,
+          "candidate": 717.1999999992549,
+          "delta": -133.5,
+          "percent": -15.69295873987504
+        }
+      ]
+    },
+    {
+      "scope": "append1500",
+      "metric": "taskMs",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 835.8899999999992,
+          "candidate": 688.206000000001,
+          "delta": -147.68399999999815,
+          "percent": -17.667874959623674
+        },
+        {
+          "pair": 2,
+          "baseline": 793.9509999999998,
+          "candidate": 729.768,
+          "delta": -64.18299999999977,
+          "percent": -8.084000146104708
+        },
+        {
+          "pair": 3,
+          "baseline": 849.3129999999986,
+          "candidate": 711.3029999999974,
+          "delta": -138.01000000000124,
+          "percent": -16.24960409177788
+        }
+      ]
+    },
+    {
+      "scope": "mounted",
+      "metric": "collectedJsHeapMiB",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 19.255859375,
+          "candidate": 13.960517883300781,
+          "delta": -5.295341491699219,
+          "percent": -27.499896984988336
+        },
+        {
+          "pair": 2,
+          "baseline": 19.19318389892578,
+          "candidate": 13.982994079589844,
+          "delta": -5.2101898193359375,
+          "percent": -27.14604229696119
+        },
+        {
+          "pair": 3,
+          "baseline": 19.163135528564453,
+          "candidate": 13.98150634765625,
+          "delta": -5.181629180908203,
+          "percent": -27.039568619574272
+        }
+      ]
+    },
+    {
+      "scope": "mounted",
+      "metric": "domNodes",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 31850,
+          "candidate": 31850,
+          "delta": 0,
+          "percent": 0.0
+        },
+        {
+          "pair": 2,
+          "baseline": 31850,
+          "candidate": 31850,
+          "delta": 0,
+          "percent": 0.0
+        },
+        {
+          "pair": 3,
+          "baseline": 31850,
+          "candidate": 31850,
+          "delta": 0,
+          "percent": 0.0
+        }
+      ]
+    },
+    {
+      "scope": "unmounted",
+      "metric": "collectedJsHeapMiB",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 5.927577972412109,
+          "candidate": 5.928768157958984,
+          "delta": 0.001190185546875,
+          "percent": 0.020078783483135076
+        },
+        {
+          "pair": 2,
+          "baseline": 6.432674407958984,
+          "candidate": 5.955463409423828,
+          "delta": -0.47721099853515625,
+          "percent": -7.418547376573503
+        },
+        {
+          "pair": 3,
+          "baseline": 5.920680999755859,
+          "candidate": 5.948204040527344,
+          "delta": 0.027523040771484375,
+          "percent": 0.46486275434565183
+        }
+      ]
+    },
+    {
+      "scope": "unmounted",
+      "metric": "domNodes",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 584,
+          "candidate": 584,
+          "delta": 0,
+          "percent": 0.0
+        },
+        {
+          "pair": 2,
+          "baseline": 587,
+          "candidate": 584,
+          "delta": -3,
+          "percent": -0.5110732538330498
+        },
+        {
+          "pair": 3,
+          "baseline": 584,
+          "candidate": 582,
+          "delta": -2,
+          "percent": -0.3424657534246589
+        }
+      ]
+    },
+    {
+      "scope": "remounted",
+      "metric": "collectedJsHeapMiB",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 6.060535430908203,
+          "candidate": 6.071094512939453,
+          "delta": 0.01055908203125,
+          "percent": 0.1742268839383332
+        },
+        {
+          "pair": 2,
+          "baseline": 6.083805084228516,
+          "candidate": 6.107067108154297,
+          "delta": 0.02326202392578125,
+          "percent": 0.3823597831246195
+        },
+        {
+          "pair": 3,
+          "baseline": 6.19293212890625,
+          "candidate": 6.099864959716797,
+          "delta": -0.09306716918945312,
+          "percent": -1.502796530823436
+        }
+      ]
+    },
+    {
+      "scope": "remounted",
+      "metric": "domNodes",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 982,
+          "candidate": 982,
+          "delta": 0,
+          "percent": 0.0
+        },
+        {
+          "pair": 2,
+          "baseline": 984,
+          "candidate": 984,
+          "delta": 0,
+          "percent": 0.0
+        },
+        {
+          "pair": 3,
+          "baseline": 984,
+          "candidate": 984,
+          "delta": 0,
+          "percent": 0.0
+        }
+      ]
+    },
+    {
+      "scope": "unmountedAgain",
+      "metric": "collectedJsHeapMiB",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 5.961978912353516,
+          "candidate": 5.952415466308594,
+          "delta": -0.009563446044921875,
+          "percent": -0.1604072437275117
+        },
+        {
+          "pair": 2,
+          "baseline": 5.965797424316406,
+          "candidate": 5.985134124755859,
+          "delta": 0.019336700439453125,
+          "percent": 0.3241259979870792
+        },
+        {
+          "pair": 3,
+          "baseline": 5.947887420654297,
+          "candidate": 5.981990814208984,
+          "delta": 0.0341033935546875,
+          "percent": 0.5733698562663037
+        }
+      ]
+    },
+    {
+      "scope": "unmountedAgain",
+      "metric": "domNodes",
+      "paired": [
+        {
+          "pair": 1,
+          "baseline": 582,
+          "candidate": 584,
+          "delta": 2,
+          "percent": 0.3436426116838476
+        },
+        {
+          "pair": 2,
+          "baseline": 584,
+          "candidate": 582,
+          "delta": -2,
+          "percent": -0.3424657534246589
+        },
+        {
+          "pair": 3,
+          "baseline": 584,
+          "candidate": 584,
+          "delta": 0,
+          "percent": 0.0
+        }
+      ]
+    }
+  ],
+  "noPredeclaredNumericRegressionThreshold": true,
+  "pairedPresentationParity": true,
+  "numericMetricsVerified": 68,
+  "limits": [
+    "No new numeric regression threshold introduced.",
+    "Historical cleanup flags prove close promises completed, not independently actual Chromium exit.",
+    "Native Find capability is not accepted by this runtime; full loaded DOM and checked text reachability are retained.",
+    "Forced GC samples are bounded retention observations, not leak proof."
+  ]
+}

@@ -1,5 +1,7 @@
 # Maps and Atlas audit at the user-selected c954 checkpoint
 
+> **Historical c954 audit:** use the [current issue ledger](resumed/CURRENT-ISSUES.md) for live status. The original pending labels below do not reopen evidence-backed decisions recorded there.
+
 Audited 7 October 2026, after the user selected test build **#54**, source
 `c954c0d808847f249df0659ed15fdce2e89f84c4`. Test build #55/source
 `508f2d450c7cc17cc464cf316b80748367adc9e2` is excluded. This audit does not

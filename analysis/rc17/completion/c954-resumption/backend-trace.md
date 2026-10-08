@@ -1,5 +1,7 @@
 # Backend resumption trace pinned to Kairo test build #54
 
+> **Historical c954 audit:** use the [current issue ledger](resumed/CURRENT-ISSUES.md) for live status. The original pending labels below do not reopen evidence-backed decisions recorded there.
+
 Audit date: 7 October 2026. The selected application is **`c954c0d808847f249df0659ed15fdce2e89f84c4`**. Build #55 / `508f2d450c7cc17cc464cf316b80748367adc9e2` is excluded at the user's instruction. **PR #10 remains withdrawn; this document is a work trace, not acceptance or a clean RC17 declaration.**
 
 This was a read-only audit of application Git objects, source-bound manifests and saved evidence. No application source, existing evidence, tests or GitHub state was changed. Application paths and line numbers below were read with `git show c954c0d:<path>` because `kairo-rc17-completion` currently points to the excluded 508 commit. Evidence paths are relative to `analysis/rc17/completion/` unless stated otherwise. The local analysis HEAD inspected was `84534435a7af74af0d15214c77c90e74aacf1c2d`, with additional working files present.

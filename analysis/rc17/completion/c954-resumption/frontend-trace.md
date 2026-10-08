@@ -1,5 +1,7 @@
 # Frontend findings at the approved c954 source boundary
 
+> **Historical c954 audit:** use the [current issue ledger](resumed/CURRENT-ISSUES.md) for live status. The original pending labels below do not reopen evidence-backed decisions recorded there.
+
 Later source-bound work: [native F5 timer correction at 9331b19](resumed/admin/README.md). The tables below retain their exact c954 audit boundary; this later correction does not retroactively change that source or close remaining performance gates.
 
 7 October 2026. Read-only source/evidence audit. **Use test build #54, commit `c954c0d808847f249df0659ed15fdce2e89f84c4`; disregard build #55 / `508f2d450c7cc17cc464cf316b80748367adc9e2`. PR #10 remains withdrawn.** This is a trace of remaining work, not a clean-RC17 acceptance certificate.

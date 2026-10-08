@@ -1,5 +1,7 @@
 # Internal instrumented RC17 checkpoint
 
+> Start continuation work from the [current issue ledger](completion/c954-resumption/resumed/CURRENT-ISSUES.md) and [checkpoint](completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md). Closed investigations are not re-queued by historical pending statements below. Final source/build acceptance remains separate.
+
 This directory belongs to the internal analysis branch. The candidate application
 is built in a separate checkout based on canonical RC16. The current deliverable
 is an **internal optimised RC17 bundle with these harnesses**, reports, evidence

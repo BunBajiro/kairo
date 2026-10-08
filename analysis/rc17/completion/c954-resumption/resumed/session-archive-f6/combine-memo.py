@@ -1,0 +1,8 @@
+from pathlib import Path
+import json,hashlib,datetime,subprocess
+here=Path(__file__).resolve().parent;inputs=[here/'memo-screen1/pair/completed.json',here/'memo-pairs23/completed.json'];out=here/'memo-combined';out.mkdir(exist_ok=False)
+sha=lambda b:hashlib.sha256(b).hexdigest();data=[json.loads(p.read_text()) for p in inputs];assert all(d['complete'] for d in data);assert data[0]['sourceFingerprints']==data[1]['sourceFingerprints'];assert data[0]['sourceDifferences']==data[1]['sourceDifferences']==['components/kairo/intelligence.tsx'];assert data[0]['harnesses']['browser-cardinality-memo.mjs']==data[1]['harnesses']['browser-cardinality-memo.mjs']
+runs=[r for d in data for r in d['runs']];assert sorted((r['pair'],r['arm']) for r in runs)==[(i,a) for i in [1,2,3] for a in ['baseline','candidate']]
+for row in runs:assert sha(Path(row['file']).read_bytes())==row['sha256']
+combined={'complete':True,'adoption':False,'productionAcceptance':False,'pairs':3,'sourceFingerprints':data[0]['sourceFingerprints'],'sourceDifferences':data[0]['sourceDifferences'],'workerSha256':data[0]['harnesses']['browser-cardinality-memo.mjs'],'inputCompletions':[{'file':str(p),'sha256':sha(p.read_bytes()),'runnerSha256':d['harnesses']['run-memo-pairs.mjs']} for p,d in zip(inputs,data)],'runs':runs,'pairedParity':[r for d in data for r in d['pairedParity']],'createdAt':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+(out/'completed.json').write_text(json.dumps(combined,indent=2)+'\n');(out/'combine-memo.py').write_bytes(Path(__file__).read_bytes());(out/'summarize-memo.py').write_bytes((here/'summarize-memo.py').read_bytes());subprocess.run(['python',str(here/'summarize-memo.py'),str(out)],check=True)

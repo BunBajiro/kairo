@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "revision": 2,
+  "preparedAt": "2026-10-08T11:19:15.465939+00:00",
+  "status": "Two static review corrections applied; awaiting narrow independent recheck",
+  "candidateCommit": null,
+  "runtimeExecuted": false,
+  "syntaxExecuted": false,
+  "sourceFreezePerformed": false,
+  "ciDispatched": false,
+  "sourceBoundary": {
+    "baseline": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+    "selectedAncestor": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "excludedAncestor": "508f2d450c7cc17cc464cf316b80748367adc9e2"
+  },
+  "defaultChildCounts": {
+    "startup": 24,
+    "contracts": 2,
+    "database": 4
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 10273,
+      "sha256": "53d197fbe724779fc4f58609046d28b3fb6052a063bf5904f1f111c17672c99e"
+    },
+    {
+      "path": "config.example.json",
+      "bytes": 459,
+      "sha256": "ad90da59f9d71c1607ade95e9b98e08a10a14ac6a157e4d39e1e763e3e25f6ac"
+    },
+    {
+      "path": "contracts-worker.mjs",
+      "bytes": 18809,
+      "sha256": "2f82cb523d00cbe27fae4442fadd350901f3c695b57dcf8880454b3bb384686c"
+    },
+    {
+      "path": "reference/rc16/history.mjs",
+      "bytes": 6582,
+      "sha256": "916eb713392de0058e2760e306077fbce37b8fd0565a88464ceb3bd773470e3d"
+    },
+    {
+      "path": "reference/rc16/provenance.json",
+      "bytes": 978,
+      "sha256": "872083718a2e01dcd7a84739344738a5bd8ec97e80d62374960d63efaaf443a0"
+    },
+    {
+      "path": "reference/rc16/session-details.mjs",
+      "bytes": 12954,
+      "sha256": "00bbd11f3533ad423b16a2ae83e9abd0d1ce3cce4d23c3913b869caabdd79ef7"
+    },
+    {
+      "path": "reference/rc16/session-policy.mjs",
+      "bytes": 398,
+      "sha256": "e3b28f8a397a841ea2f896c1ca00607aafc6ca765dc9eecd4c8af396148e7b0c"
+    },
+    {
+      "path": "run.mjs",
+      "bytes": 38790,
+      "sha256": "087386d717b2b4f9544bff064d535325b029a2db89431182fb689a4eed53b9c2"
+    }
+  ],
+  "changes": [
+    "Finalize substantial receipt and artifact inventory while both runtime locks remain held; separate linked lock-release receipt afterward.",
+    "Expose pair and per-cycle both-pair adverse flags; name all-pairs flag explicitly."
+  ]
+}
