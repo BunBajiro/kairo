@@ -1,0 +1,3 @@
+# 8 October evidence recovery
+
+From the parent resumed directory, run `tar -xzf oct8/maps-enrichment-raw.tar.gz`. The adjacent manifest lists every original path, byte length and SHA256. All original local outputs are retained unchanged. This bank includes the rejected compact-SQL Maps trial and the accepted-for-integration bounded enrichment trial; neither was integrated at this checkpoint. Source remains9afa; GitHub build59 passed. Frontendnames browser adverse follow-up is ongoing separately. Four older historical gzip files remain absent locally as documented in recovery/; their original GitHub entries are preserved.

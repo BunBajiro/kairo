@@ -1,0 +1,7 @@
+# M9 compact summary-input trial from 9afa
+
+This isolated two-file trial changes only summary reads and extracts the existing no-op connection predicate for reuse. SQLite projects compact node/reference data from each current stored body; JavaScript still checks canonical references and exact pruning deadlines. Any normalization or cleanup falls back to the full current body before any write. No persisted metadata, schema migration, or retained map cache. Selected/full reads remain unchanged.
+
+Independent review caught non-object array element conversion; SQL now falls back for those arrays, and two regression tests cover both text and JSON-looking primitive passages. JSON arrow values preserve boolean scalar types. The first semantic attempt failed because source creation added its required write; the second establishes source existence before counting no-op writes. Both logs retained;21focusedtests pass.
+
+Next: unchanged existing27case summary/full/selected and21case Maps ABBA, complete output/parity and mutation controls using exact9afa and declared2filecandidate. SQL work and process memory remain additional measurements; fewer JavaScript parse characters alone do not close the finding. In particular, connection notes/pilots/activity still transfer in this first trial and require explicit dense and cleanup-heavy consideration. No claim that SQL parses once without execution-plan evidence. No adoption or cleanRC17 claim.

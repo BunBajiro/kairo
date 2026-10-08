@@ -1,0 +1,174 @@
+diff --git a/server/universe-jspace.mjs b/server/universe-jspace.mjs
+index 149da8b..77c7d36 100644
+--- a/server/universe-jspace.mjs
++++ b/server/universe-jspace.mjs
+@@ -58,6 +58,24 @@ export function createUniverseJSpace(store, auth, options) {
+     const gates = new Set(atlas.gates.flatMap(row => [`${row.from_system_id}:${row.to_system_id}`, `${row.to_system_id}:${row.from_system_id}`]));
+     const getRow = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? AND id=?');
+     const getRows = store.db.prepare('SELECT body FROM universe_records WHERE character_id=? AND kind=? ORDER BY updated_at DESC,id');
++    const hasRow = store.db.prepare('SELECT 1 FROM universe_records WHERE character_id=? AND kind=? AND id=?');
++    // Project each stored document inside SQLite, then transfer only the
++    // descriptor and reconciliation inputs. This is not a retained map cache.
++    const getSummaryRows = store.db.prepare(`SELECT (
++        SELECT CASE WHEN json_type(doc,'$.nodes')='array' AND json_type(doc,'$.connections')='array'
++            AND json_type(doc,'$.comments')='array' AND json_type(doc,'$.passages')='array'
++            AND NOT EXISTS (SELECT 1 FROM json_each(doc,'$.nodes') WHERE type <> 'object')
++            AND NOT EXISTS (SELECT 1 FROM json_each(doc,'$.comments') WHERE type <> 'object')
++            AND NOT EXISTS (SELECT 1 FROM json_each(doc,'$.passages') WHERE type <> 'object') THEN
++            json_set(jsonb_remove(doc,'$.nodes','$.comments','$.passages','$.archived_nodes','$.observations','$.pings'),
++                '$.nodes', (SELECT json_group_array(json_object('system_id',value -> '$.system_id',
++                    'locked',value -> '$.locked','disconnected_at',value -> '$.disconnected_at',
++                    'prune_grace_at',value -> '$.prune_grace_at')) FROM json_each(doc,'$.nodes')),
++                '$.comments', (SELECT json_group_array(json_object('connection_id',value -> '$.connection_id')) FROM json_each(doc,'$.comments')),
++                '$.passages', (SELECT json_group_array(json_object('connection_id',value -> '$.connection_id')) FROM json_each(doc,'$.passages')))
++            ELSE json(doc) END
++        FROM (SELECT jsonb(records.body) AS doc LIMIT -1)
++    ) AS body FROM universe_records AS records WHERE character_id=? AND kind='jspace_map' ORDER BY updated_at DESC,id`);
+     const putRow = store.db.prepare('INSERT INTO universe_records VALUES(?,?,?,?,?) ON CONFLICT(character_id,kind,id) DO UPDATE SET body=excluded.body,updated_at=excluded.updated_at');
+     const deleteRow = store.db.prepare('DELETE FROM universe_records WHERE character_id=? AND kind=? AND id=?');
+     const read = (pilot, kind, id) => { const value = getRow.get(pilot, kind, String(id)); return value ? JSON.parse(value.body) : null; };
+@@ -129,9 +147,11 @@ export function createUniverseJSpace(store, auth, options) {
+         return value;
+     }
+     function editable(map) { if (map.kind === 'tracking_source') throw new Error('The live source map is read-only. Create an interactive map to edit it.'); }
+-    function ensureSource(id) {
++    function ensureSource(id, descriptorOnly = false) {
+         if (!id) return null;
+-        const key = 'tracking-source-' + id, existing = read(id, 'jspace_map', key);
++        const key = 'tracking-source-' + id;
++        if (descriptorOnly && hasRow.get(id, 'jspace_map', key)) return null;
++        const existing = read(id, 'jspace_map', key);
+         if (existing) return existing;
+         const map = { ...blank({ name: 'Live source' }), id: key, kind: 'tracking_source', pilots: [{ character_id: id, tracking: true }] };
+         write(id, 'jspace_map', map); tracking.syncMap(id, map); return map;
+@@ -214,15 +234,15 @@ export function createUniverseJSpace(store, auth, options) {
+     }
+     // Only systems have an archive. A departed connection has no notes, passages,
+     // activity entries or undo snapshot that can bring it back.
++    function connectionsUnchanged(map, canonical) {
++        if (own(map, 'archived_connections') || !map.connections.every(edge =>
++            !own(edge, 'locked') && (!canonical || edge.kind === 'gate' || canonical.has(edge.link_id)))) return false;
++        const present = new Set(map.connections.map(edge => edge.id));
++        return map.passages.every(row => present.has(row.connection_id)) && map.comments.every(row => !row.connection_id || present.has(row.connection_id)) &&
++            Array.isArray(map.activity) && !map.activity.some(row => /^(connection|passage)\./.test(row.op));
++    }
+     function forgetMapConnections(map, removed, canonical = null) {
+-        // Common reads only need topology/reference checks. Avoid serializing all
+-        // notes and passages twice when reconciliation cannot change the map.
+-        if (!removed.length && !own(map, 'archived_connections') && map.connections.every(edge =>
+-            !own(edge, 'locked') && (!canonical || edge.kind === 'gate' || canonical.has(edge.link_id)))) {
+-            const present = new Set(map.connections.map(edge => edge.id));
+-            if (map.passages.every(row => present.has(row.connection_id)) && map.comments.every(row => !row.connection_id || present.has(row.connection_id)) &&
+-                Array.isArray(map.activity) && !map.activity.some(row => /^(connection|passage)\./.test(row.op))) return false;
+-        }
++        if (!removed.length && connectionsUnchanged(map, canonical)) return false;
+         const before = JSON.stringify(map), ended = new Map(removed.map(link => [link.id, link.ended_at || link.expires_at || iso()]));
+         const dead = map.connections.filter(edge => ended.has(edge.link_id) || canonical && edge.kind !== 'gate' && !canonical.has(edge.link_id));
+         markDetached(map, dead, ended);
+@@ -455,11 +475,27 @@ export function createUniverseJSpace(store, auth, options) {
+             node_count: map.nodes.length, connection_count: map.connections.length, pilot_count: (map.pilots || []).length,
+             scope: map.scope || null, next_expiry_at: Number.isFinite(nextExpiry) ? new Date(nextExpiry).toISOString() : null };
+     }
++    function summaryUnchanged(map, canonical) {
++        if (!connectionsUnchanged(map, canonical)) return false;
++        const connected = new Set(map.connections.flatMap(edge => [edge.from_system_id, edge.to_system_id]));
++        return map.nodes.every(row => {
++            if (connected.has(row.system_id)) return !row.disconnected_at;
++            if (!row.disconnected_at) return true;
++            const disconnected = Math.max(Date.parse(row.disconnected_at) || 0, Date.parse(row.prune_grace_at) || 0);
++            return row.disconnected_at === new Date(disconnected).toISOString() && (row.locked || now() < disconnected + PRUNE_DELAY_MS);
++        });
++    }
+     function summaries(characterId) {
+-        const id = pilot(characterId), context = libraryContext(id), maps = [];
++        const id = pilot(characterId), maps = [];
++        ensureSource(id, true);
++        const shared = projectionContext(id);
+         let source_map = null;
+-        for (const value of context.maps) {
+-            const canonical = context.shared.canonical(value), map = reconcileNodes(id, value, canonical), descriptor = summary(map, canonical);
++        // Canonical expiry runs first. Read the full document only if preserving
++        // cleanup/normalization requires a write; never persist a compact input.
++        for (const row of getSummaryRows.all(id)) {
++            const value = JSON.parse(row.body), canonical = shared.canonical(value);
++            const map = summaryUnchanged(value, canonical) ? value : reconcileNodes(id, loaded(id, value.id), canonical);
++            const descriptor = summary(map, canonical);
+             if (map.kind !== 'tracking_source') maps.push(descriptor);
+             else if (map.id === 'tracking-source-' + id) source_map = descriptor;
+         }
+diff --git a/tests/kairo/universe-jspace-reads.test.mjs b/tests/kairo/universe-jspace-reads.test.mjs
+index ef26e66..90ff779 100644
+--- a/tests/kairo/universe-jspace-reads.test.mjs
++++ b/tests/kairo/universe-jspace-reads.test.mjs
+@@ -317,3 +317,71 @@ test('projection roster ownership never retains changed access, location freshne
+     assert.throws(() => f.api.map(42, map.id), /connected pilot/);
+     assert.throws(() => f.api.command(42, map.id, { revision: map.revision, op: 'map.update', name: 'Rejected stale author' }), /connected pilot/);
+ });
++
++test('summary inputs omit wide retained text without changing storage or losing direct replacements', async t => {
++    const f = await fixture(t), created = f.create('Wide map');
++    f.api.summaries(42); // Establish the independently required source descriptor before counting no-op writes.
++    const get = f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?");
++    const put = f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?");
++    const map = JSON.parse(get.get(created.id).body), edge = map.connections[0];
++    map.comments[0].body = 'Retained comment '.repeat(200);
++    map.passages = [{ id: 'valid-passage', connection_id: edge.id, notes: 'Retained passage '.repeat(100), occurred_at: new Date(AT).toISOString() }];
++    map.observations = [{ id: 'observation', system_id: W, body: 'Retained observation '.repeat(200) }];
++    map.archived_nodes = [{ system_id: 31999999, description: 'Retained archive '.repeat(200) }];
++    map.nodes[0].description = 'Retained node '.repeat(200);
++    const body = JSON.stringify(map); put.run(body, map.id);
++    const before = f.store.db.prepare('SELECT total_changes() AS n').get().n;
++    const read = f.read(() => f.api.summaries(42));
++    const row = read.value.maps.find(row => row.id === map.id);
++    assert.equal(row.name, 'Wide map'); assert.equal(row.node_count, 3); assert.equal(row.connection_count, 2);
++    assert.equal(get.get(map.id).body, body);
++    assert.equal(f.store.db.prepare('SELECT total_changes() AS n').get().n, before);
++    const transferred = read.queries.flatMap(query => query.rows).filter(row => typeof row.body === 'string').map(row => row.body);
++    assert.ok(transferred.every(body => !body.includes('Retained ')), 'Summary must not transfer retained wide payload text from SQLite');
++    assert.ok(transferred.reduce((sum, body) => sum + body.length, 0) < body.length / 2);
++    map.name = 'Immediate replacement'; map.revision += 5; map.scope = { systems: [W] }; put.run(JSON.stringify(map), map.id);
++    const next = f.api.summaries(42).maps.find(row => row.id === map.id);
++    assert.equal(next.name, map.name); assert.equal(next.revision, map.revision); assert.deepEqual(next.scope, map.scope);
++    assert.equal(f.api.map(42, map.id).comments[0].body, map.comments[0].body);
++});
++
++test('summary-first legacy cleanup loads the complete document before persisting', async t => {
++    const f = await fixture(t), created = f.create('Legacy map');
++    const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(created.id).body);
++    const map = get(); map.connections[0].locked = false; map.archived_connections = []; delete map.activity;
++    map.nodes[0].description = 'Keep node details'; map.archived_nodes = [{ system_id: 31999999, description: 'Keep archive' }];
++    map.passages = [{ id: 'valid', connection_id: map.connections[0].id, notes: 'Keep valid passage' }, { id: 'dangling', connection_id: 'gone', notes: 'Remove dangling passage' }];
++    map.comments.push({ id: 'dangling', connection_id: 'gone', body: 'Remove dangling comment' });
++    f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(map), map.id);
++    f.api.summaries(42);
++    const saved = get();
++    assert.equal(saved.nodes[0].description, 'Keep node details'); assert.deepEqual(saved.archived_nodes, map.archived_nodes);
++    assert.deepEqual(saved.passages, [map.passages[0]]); assert.deepEqual(saved.comments, map.comments.slice(0, 2));
++    assert.ok(!Object.hasOwn(saved.connections[0], 'locked')); assert.ok(!Object.hasOwn(saved, 'archived_connections')); assert.deepEqual(saved.activity, []);
++});
++
++test('summary-first normalization and due pruning preserve complete archived nodes', async t => {
++    const f = await fixture(t), created = f.create('Pruning map');
++    const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(created.id).body);
++    const save = map => f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(map), map.id);
++    const map = get(); map.connections = []; map.comments = []; map.nodes[0].disconnected_at = '2026-09-25T18:30:00+01:00';
++    map.nodes[0].prune_grace_at = new Date(AT - 30 * 60000).toISOString(); map.nodes[0].description = 'Must survive archiving';
++    map.nodes[1].disconnected_at = new Date(AT - 30 * 60000).toISOString(); map.nodes[1].prune_grace_at = map.nodes[0].prune_grace_at; map.nodes[1].locked = true;
++    map.nodes[2].disconnected_at = new Date(AT - 60000).toISOString(); map.nodes[2].prune_grace_at = map.nodes[2].disconnected_at;
++    save(map); const row = f.api.summaries(42).maps.find(row => row.id === map.id), saved = get();
++    assert.equal(row.node_count, 2); assert.equal(row.revision, map.revision + 1);
++    assert.equal(saved.archived_nodes.find(row => row.system_id === W).description, 'Must survive archiving');
++    assert.ok(saved.nodes.some(row => row.system_id === X)); assert.ok(saved.nodes.some(row => row.system_id === Y));
++    assert.equal(saved.comments.length, 0); assert.ok(saved.activity.some(row => row.op === 'nodes.prune'));
++});
++
++for (const text of ['plain primitive', '{"connection_id":"placeholder"}']) test('summary-first primitive passage preserves JS cleanup: ' + text, async t => {
++    const f = await fixture(t), created = f.create('Legacy primitive');
++    const get = () => JSON.parse(f.store.db.prepare("SELECT body FROM universe_records WHERE character_id=42 AND kind='jspace_map' AND id=?").get(created.id).body);
++    const map = get(); map.passages = [text.replace('placeholder', map.connections[0].id)];
++    map.comments.push('plain primitive'); map.nodes.push('plain primitive');
++    f.store.db.prepare("UPDATE universe_records SET body=? WHERE character_id=42 AND kind='jspace_map' AND id=?").run(JSON.stringify(map), map.id);
++    const row = f.api.summaries(42).maps.find(row => row.id === map.id);
++    assert.equal(row.node_count, map.nodes.length); assert.deepEqual(get().passages, []);
++    assert.equal(get().comments.at(-1), 'plain primitive'); assert.equal(get().nodes.at(-1), 'plain primitive');
++});

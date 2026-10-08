@@ -1,0 +1,30 @@
+✔ deleting a connection forgets its evidence and undo copies immediately, preserving systems and an independent duplicated map (66.197785ms)
+✔ expiry removes J-J, J-K and K-J connections at their exact deadline while system locks and grace remain separate (24.203731ms)
+✔ legacy archived connections are forgotten on restart and import without losing system records or reviving their signatures (22.748785ms)
+✔ scanner observations with the same system and code belong to their selected map and cannot be deleted by another map (14.564339ms)
+✔ selected reads remain scoped and full reads share canonical links and signature records (121.872522ms)
+ℹ {"selectedLinkBodiesBeforeOtherMaps":2,"selectedLinkBodiesAfterOtherMaps":2,"fullEightMapsLinkBodies":16,"fullEightMapsSignatureBodies":24,"fullQueries":73,"summaryQueries":8}
+✔ indexed expiry sees canonical updates immediately, including collapsed unknown lifetimes and dated timezone offsets (32.928432ms)
+✔ summary and search reads reconcile expiry and pruning without stale revisions or a cross-request cache (33.405433ms)
+✔ library search retains shared result semantics and keeps sources and other pilots private (44.277415ms)
+✔ unchanged map reads preserve stored notes, passage references, revision and database writes (21.588072ms)
+✔ summary reconciliation still normalizes locked false (20.038758ms)
+✔ summary reconciliation still normalizes empty archive (22.239565ms)
+✔ summary reconciliation still normalizes missing activity (18.575674ms)
+✔ summary reconciliation still normalizes stale references (18.960654ms)
+✔ summary reconciliation still normalizes connection activity (21.959112ms)
+✔ selected and full projections keep real Auth roster reads bounded as maps and tracked pilots increase (119.9899ms)
+✔ projection roster ownership never retains changed access, location freshness or mutations across reads (27.371863ms)
+✔ summary inputs omit wide retained text without changing storage or losing direct replacements (19.438827ms)
+✔ summary-first legacy cleanup loads the complete document before persisting (17.870249ms)
+✔ summary-first normalization and due pruning preserve complete archived nodes (19.354821ms)
+✔ summary-first primitive passage preserves JS cleanup: plain primitive (19.563014ms)
+✔ summary-first primitive passage preserves JS cleanup: {"connection_id":"placeholder"} (20.192875ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 915.319879
