@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "985a6c17d466d01f1f098a1704de68f6eae5f6e6",
+  "finding": "conditional-retained-goal-credit-SUM",
+  "disposition": "retain-existing-SUM-no-production-change",
+  "basis": "four-fresh-process-absolute-cost-and-current-SQLite-plan/cadence",
+  "independentReview": "passed with two reporting clarifications applied",
+  "historicalTimingPooled": false,
+  "historicalLedgerHashesMatch": true,
+  "runtimeLocksReleased": true,
+  "releaseReady": false,
+  "resultsSha256": "e6b89b79247268e862016d34e8b9749fc18be66acd6af594db5d7215f24f5b91",
+  "completedReceiptSha256": "e1cf608eb8d67b3de85d0006dff0a6857734c6546d2012dc98a46ad6ab32396e",
+  "limits": [
+    "One active income goal; 50 records in repeated-identical-snapshot phase and 60 records in changed phase; 100000 retained rows is stress.",
+    "Synchronous cost grows with retained rows and can add across simultaneous active goals.",
+    "Manual/creation/forced refresh can exceed default polling cadence.",
+    "No new aggregate or index candidate measured; current-source no-change decision.",
+    "Zero database writes applies to identical snapshot metadata; newer timestamps can update goal_tracking."
+  ],
+  "reviewer": "goals_decision_review",
+  "narrowConditionalFindingClosed": true
+}

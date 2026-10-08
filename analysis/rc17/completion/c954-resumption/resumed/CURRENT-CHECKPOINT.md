@@ -1,13 +1,33 @@
-# Current continuation checkpoint — 7 October 2026
+# Current continuation checkpoint — 8 October 2026
 
-Application source: `9afa9a7197fa6b5a802e9efdaa322dedf2439150`, tree `0cd88b89299bd940b2f29d686bf535dc58e6fd00`, branch `refactor/rc17-c954-continuation-v0.8.0`, draft PR #11.
+Application source: `22773cc7cb6e83ac51e412565ba65c101613536a`, tree `fb4db42e42f4a4c23c7006c7d262fd8763efa134`, branch `refactor/rc17-c954-continuation-v0.8.0`, internal draft PR #11. The selected original base remains c954/build #54. Excluded 508/build #55 is not integrated.
 
-Selected base remains c954/build #54. Excluded 508/build #55 is not an ancestor. Timer receiver and updater rollback fixes remain included. The reviewed five-file M9 proposal is now integrated without additional changes: response-local Auth roster and no-op connection reconciliation guard. Exact-source isolated performance evidence is banked at 67b8a79; it is not relabeled as combined performance evidence.
+Changes since 9afa: bounded four-worker asset/planet metadata enrichment and unchanged-snapshot names merging (`985a6c1`), then deferred unused Atlas layout derivation (`22773cc`). Earlier timer receiver, durable updater rollback and response-local Maps roster/no-op connection reconciliation fixes remain.
 
-Combined validation: 961/961 tests and type check passed with all tracked source hashes unchanged. Raw logs and receipt: maps-m9/integrated-attempt1. Runner: maps-m9/verify-integrated.py. No new local build or combined performance run is claimed. CI test build may be inspected for this source SHA.
+Validation: 985a passed 972/972 tests, types and a fresh build. The first attempt had 971 passes and one HTTP 404 because the restored workspace lacked built index.html. Attempt 1 is preserved; types/build/full tests passed in attempt 2. The Atlas integration passed 60 affected tests, types, a fresh build, 12 paired Atlas snapshots, two radar labels and compiled 1,000-system/10,000-event schematic replay with pilot and lifecycle checks. Canonical 227 source/build bytes match the tested combined manifest: 487 source files, 20 client assets, fingerprint `2c72fd451304d300e05a57d9b4eecc8bd906233c65c9478ad353e4578a474872`. No full 978-test suite or final performance acceptance is claimed here.
 
-F7 formatter retain decision is closed within its measured component scope. M9 remains open: wide summaries still parse 85,714,734 map characters in the diagnostic case. Next investigate a narrow summary metadata/reconciliation path, preserving expiry, canonical changes, import/undo and retained documents; avoid a broad persistence rewrite. Keep both mixed adverse Maps service rows in integrated acceptance.
+## Bounded decisions
 
-All remaining work in the four c954 source traces is still required except the specifically recorded bounded decisions. Populated frontend, Atlas decision, enrichment integration decision, Session replay/archive, index cadence, state/idle/startup and final local/independent CI gates remain open. Final combined build and extracted package verification remain required.
+- Retain F7 formatter reuse (earlier decision).
+- Adopt bounded enrichment, retaining all tiny-case and CPU adverse observations.
+- Adopt the F3 names owner, retaining the measured first Assets open tradeoff.
+- Adopt the bounded M7 lazy Atlas owner, retaining first-switch and mixed browser costs.
+- Retain the existing Goals SUM after four fresh absolute-cost runs and independent review. Preserve the approximately 11 ms single-goal stress cost and unmeasured many-goal burst limit.
 
-PR #10 stays withdrawn/draft at 9a01826d863602c5738b89c90644933d2f30ddc2. No clean RC17, merge, main update or release. Raw Maps/formatter recovery: follow MAPS-FORMATTERS-BANK.md. Earlier large raw recovery: ../BANKED-RAW.md. Resume from this file before older status prose.
+These decisions do not close full F3 Context/name-payload work or final combined acceptance.
+
+## Rejected Maps experiment and active work
+
+The M9 compact SQL read-time projection is rejected. Its complete 1,128-sample matrix preserves outputs but repeatedly regresses ordinary summaries; the 24-wide-map case gains only about 6% despite much less JavaScript parsing. The application excludes that trial. Evidence is under `oct8/maps-summary`.
+
+A separate write-time metadata prototype is under `oct8/maps-summary-next`. It passed 33 focused tests after independent review corrections; performance, startup/backfill, write and storage gates remain pending. It is not adopted.
+
+Active next work: a narrow Assets render boundary, saved-hidden binding evaluation and names-payload costs, and the isolated Maps metadata trial. Other open items in the four c954 traces remain: M6 scene work, F6 archive/table cardinality, populated admin/Studio, Session replay ordinary performance, index cadence/write cost, startup/state/idle acceptance and final frozen local/independent CI/package gates. Successful normal CI does not close those findings.
+
+## Recovery and review restriction
+
+Source and current analysis were restored from GitHub after the workspace reverted. Four large older historical gzip blobs remain absent locally; their exact remote entries are preserved with skip-worktree. Use `git write-tree --missing-ok` in this analysis checkout until restored. Details: `oct8/recovery/`.
+
+Current raw recovery instructions: `oct8/RAW-RECOVERY.md`, `oct8/FRONTEND-RAW-RECOVERY.md`, and the later integration/Atlas archive instructions. Earlier c954 raw recovery remains `../BANKED-RAW.md`.
+
+PR #10 remains withdrawn/draft at `9a01826d863602c5738b89c90644933d2f30ddc2`. No clean RC17 review, merge, main update or release until required closure. Start here before older status prose.

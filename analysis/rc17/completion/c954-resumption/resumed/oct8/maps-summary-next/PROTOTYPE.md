@@ -1,0 +1,15 @@
+# Isolated prototype and review status
+
+The four-file prototype is staged only in `kairo-m9-summary-write-9afa-isolated`, from clean `9afa9a7197fa6b5a802e9efdaa322dedf2439150`. `prototype.patch` and `prototype-files.json` are recovery artifacts. **The first focused semantic run passed 33/33 tests. Performance gates are pending and the prototype is not adopted.**
+
+Two independent read-only reviewers assessed the prototype: `review_write_inputs` covered trigger/transaction/install semantics; `review_enrichment_oct8` covered fallback compatibility and test coverage. Both identified the same row-identity issue in the earlier SQL-on-read fallback: a stored document's `id` need not equal its SQL row key after a raw key change. The prototype now returns the actual key and a compact marker, reloads compact values by that key, and passes already-full fallback values directly into existing reconciliation. It deliberately preserves baseline document-identity write behavior. Two summary-first tests cover compact and full-fallback key moves.
+
+The trigger reviewer found no additional concrete defect and requested more coverage. Added tests cover owner/key and cross-kind REPLACE collisions, repair after a missing trigger permits unobserved writes, and injected backfill failure **after** the backfill SQL executes. The original documents remain unchanged after failed installation in the focused tests.
+
+The root granted the exclusive runtime slot for focused semantics. `semantics-attempt1/` preserves the source manifest, original log and receipt: exit 0; 33 pass; zero fail/cancel/skip; all 484 source files and Git status unchanged. Log SHA-256 is `3e8689fb47aac13a53fbc7c9c73051c28cb860f0e7ce008218e7bb1653102c24`. Node emitted its spec reporter, so the first receipt's TAP count parser returned an empty object. `counts-from-original-log.json` derives the counts from that same hashed log without a rerun. The runner now supports either reporter. No latency claim follows from this correctness run.
+
+The prototype also guards duplicate object keys and malformed projected field types, preserves boolean values, and uses a non-null compact-input existence check to preserve recreation of falsy source documents. Each guard is a potential additional write cost and must be measured. No one-decode claim is made.
+
+For the later performance harness, the previous mutation runner's equality check on total `databaseChanges` is not directly applicable: maintenance of the derivative intentionally adds writes. Preserve exact authoritative output/document parity, separately count authoritative and derivative writes, report total write amplification, and retain the requirement of zero writes during unchanged steady summary reads.
+
+Read gains alone cannot authorize integration. Follow PLAN.md for semantic, ordinary ABBA, write/backfill/startup and storage/memory gates. Do not reuse or relabel the rejected SQL-on-read timings as this prototype's results.

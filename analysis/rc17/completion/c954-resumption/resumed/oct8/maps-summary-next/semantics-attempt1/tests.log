@@ -1,0 +1,42 @@
+✔ selected reads remain scoped and full reads share canonical links and signature records (166.814976ms)
+ℹ {"selectedLinkBodiesBeforeOtherMaps":2,"selectedLinkBodiesAfterOtherMaps":2,"fullEightMapsLinkBodies":16,"fullEightMapsSignatureBodies":24,"fullQueries":73,"summaryQueries":8}
+✔ indexed expiry sees canonical updates immediately, including collapsed unknown lifetimes and dated timezone offsets (41.088976ms)
+✔ summary and search reads reconcile expiry and pruning without stale revisions or a cross-request cache (49.248445ms)
+✔ library search retains shared result semantics and keeps sources and other pilots private (46.756773ms)
+✔ unchanged map reads preserve stored notes, passage references, revision and database writes (27.604418ms)
+✔ summary reconciliation still normalizes locked false (24.43045ms)
+✔ summary reconciliation still normalizes empty archive (27.604928ms)
+✔ summary reconciliation still normalizes missing activity (26.268651ms)
+✔ summary reconciliation still normalizes stale references (26.755786ms)
+✔ summary reconciliation still normalizes connection activity (25.503254ms)
+✔ selected and full projections keep real Auth roster reads bounded as maps and tracked pilots increase (157.322474ms)
+✔ projection roster ownership never retains changed access, location freshness or mutations across reads (33.61438ms)
+✔ summary inputs omit wide retained text without changing storage or losing direct replacements (28.266397ms)
+✔ summary-first legacy cleanup loads the complete document before persisting (24.341881ms)
+✔ summary-first normalization and due pruning preserve complete archived nodes (24.313278ms)
+✔ summary-first primitive passage preserves JS cleanup: plain primitive (23.331435ms)
+✔ summary-first primitive passage preserves JS cleanup: {"connection_id":"placeholder"} (24.270854ms)
+✔ summary-first recreates a falsy stored source: false (24.820474ms)
+✔ summary-first recreates a falsy stored source: 0 (23.251815ms)
+✔ summary-first recreates a falsy stored source: null (21.844661ms)
+✔ summary-first recreates a falsy stored source: "" (29.031146ms)
+✔ summary cleanup follows the stored row after a direct key move: fallback=false (24.670848ms)
+✔ summary cleanup follows the stored row after a direct key move: fallback=true (26.22863ms)
+✔ summary derivatives backfill without changing documents and reopen without another backfill (5.467705ms)
+✔ direct replacement ignores reused revision/timestamp and updated_at-only writes reorder current rows (2.535729ms)
+✔ insert/replace, update/replace, owner/kind moves and delete/recreation leave no stale derivative (4.036995ms)
+✔ parent rollback, savepoint rollback, ignored conflict and failed statement preserve derivative visibility (2.836793ms)
+✔ replace collisions across owners, keys and kinds remove both affected derivatives (3.268826ms)
+✔ missing-trigger repair rebuilds derivatives after unobserved parent writes (2.730622ms)
+✔ persistent triggers observe a direct writer on another connection without function registration (3.23945ms)
+✔ installation composes with and rolls back inside a caller transaction (1.547656ms)
+✔ failed backfill rolls back new objects without touching the authoritative map (2.544001ms)
+✔ malformed, primitive, duplicate-key and unsupported legacy values preserve exact source fallback (4.059719ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1144.658404
