@@ -1,8 +1,10 @@
 # Current continuation checkpoint — 8 October 2026
 
-Application source: `22773cc7cb6e83ac51e412565ba65c101613536a`, tree `fb4db42e42f4a4c23c7006c7d262fd8763efa134`, branch `refactor/rc17-c954-continuation-v0.8.0`, internal draft PR #11. The selected original base remains c954/build #54. Excluded 508/build #55 is not integrated.
+Application source: `c9d04ef62cb8a18292b309a2452fcab851185a7d`, tree `b9391516a836820b0565c1d2061d4c6e9cc07fe7`, branch `refactor/rc17-c954-continuation-v0.8.0`, internal draft PR #11. The selected original base remains c954/build #54. Excluded 508/build #55 is not integrated.
 
 Changes since 9afa: bounded four-worker asset/planet metadata enrichment and unchanged-snapshot names merging (`985a6c1`), then deferred unused Atlas layout derivation (`22773cc`). Earlier timer receiver, durable updater rollback and response-local Maps roster/no-op connection reconciliation fixes remain.
+
+The current `c9d04ef` adds the saved-hidden Stream filter and three regression tests. All 29 affected tests pass on combined 227 plus this change. Isolated evidence has 72 counter cases/10 controls per variant and four ordinary ABBA arms. Source changes are byte-identical to the reviewed proposal. Both adverse visible tail rows and the one extra post-save version/frame transition are preserved in `bindings-names-985/RESULTS.md`; final combined acceptance remains required. Normal CI builds #60 (985a) and #61 (227) succeeded.
 
 Validation: 985a passed 972/972 tests, types and a fresh build. The first attempt had 971 passes and one HTTP 404 because the restored workspace lacked built index.html. Attempt 1 is preserved; types/build/full tests passed in attempt 2. The Atlas integration passed 60 affected tests, types, a fresh build, 12 paired Atlas snapshots, two radar labels and compiled 1,000-system/10,000-event schematic replay with pilot and lifecycle checks. Canonical 227 source/build bytes match the tested combined manifest: 487 source files, 20 client assets, fingerprint `2c72fd451304d300e05a57d9b4eecc8bd906233c65c9478ad353e4578a474872`. No full 978-test suite or final performance acceptance is claimed here.
 
@@ -13,6 +15,7 @@ Validation: 985a passed 972/972 tests, types and a fresh build. The first attemp
 - Adopt the F3 names owner, retaining the measured first Assets open tradeoff.
 - Adopt the bounded M7 lazy Atlas owner, retaining first-switch and mixed browser costs.
 - Retain the existing Goals SUM after four fresh absolute-cost runs and independent review. Preserve the approximately 11 ms single-goal stress cost and unmeasured many-goal burst limit.
+- Adopt the saved-hidden binding filter. Visible widgets, preview/save freshness and independent OPSEC publication remain verified; names wire cost remains open.
 
 These decisions do not close full F3 Context/name-payload work or final combined acceptance.
 
@@ -20,9 +23,9 @@ These decisions do not close full F3 Context/name-payload work or final combined
 
 The M9 compact SQL read-time projection is rejected. Its complete 1,128-sample matrix preserves outputs but repeatedly regresses ordinary summaries; the 24-wide-map case gains only about 6% despite much less JavaScript parsing. The application excludes that trial. Evidence is under `oct8/maps-summary`.
 
-A separate write-time metadata prototype is under `oct8/maps-summary-next`. It passed 33 focused tests after independent review corrections; performance, startup/backfill, write and storage gates remain pending. It is not adopted.
+A separate write-time metadata prototype is under `oct8/maps-summary-next`. It passed 33 focused tests after independent review corrections and its first complete read matrix. Large summaries improve substantially, but a dense selected-map service case repeatedly regressed. Predeclared dense confirmation plus startup/backfill, write and storage gates are running. It is not adopted.
 
-Active next work: a narrow Assets render boundary, saved-hidden binding evaluation and names-payload costs, and the isolated Maps metadata trial. Other open items in the four c954 traces remain: M6 scene work, F6 archive/table cardinality, populated admin/Studio, Session replay ordinary performance, index cadence/write cost, startup/state/idle acceptance and final frozen local/independent CI/package gates. Successful normal CI does not close those findings.
+Active next work: integration of the measured narrow Assets render boundary, a separate names protocol trial, and the isolated Maps metadata trial. Other open items in the four c954 traces remain: M6 scene work, F6 archive/table cardinality, populated admin/Studio, Session replay ordinary performance, index cadence/write cost, startup/state/idle acceptance and final frozen local/independent CI/package gates. Successful normal CI does not close those findings.
 
 ## Recovery and review restriction
 
