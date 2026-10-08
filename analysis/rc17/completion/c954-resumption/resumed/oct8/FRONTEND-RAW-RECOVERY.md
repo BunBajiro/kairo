@@ -1,0 +1,1 @@
+From this oct8 directory, run `tar -xzf frontend-names-raw.tar.gz`. The adjacent manifest pins every original raw path, byte length and SHA256. Original local results are unchanged. Both ordinary ABBA cycles, coverage diagnostic, semantic/build receipts and adverse rows remain preserved. See frontend-names/RESULTS.md.
