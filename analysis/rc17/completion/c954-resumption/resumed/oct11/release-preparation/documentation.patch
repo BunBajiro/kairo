@@ -1,0 +1,87 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 088e7d2..d725774 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -15,9 +15,9 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
+ 
+ - Returns keyboard focus to the opening Session button after dismissing a report or cancelling the naming dialog, while respecting pilot changes and navigation.
+ 
+-## 0.8.0-rc.17 — Optimisation and refactoring development
++## 0.8.0-rc.17 — Optimisation and refactoring
+ 
+-- Refactors shared work across Kairo, including existing services beyond the Universe sprint. Clean RC17 review remains withheld until the optimization and refactoring findings have evidence-backed closure.
++- Refactors shared work across Kairo, including existing services beyond the Universe sprint. The [performance review](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/PERFORMANCE-REVIEW-0.8.0.md) records accepted changes, retained first-use and ongoing costs, and the evidence limits. See [Validation](docs/VALIDATION.md) for release acceptance and the designated review build.
+ - Loads the Maps library through compact summaries and the opened map through selected detail. Request-scoped reads share canonical links and operational records; signature bindings use one edge pass, and overlapping browser refreshes are coalesced.
+ - Prepares route evidence and graph/spatial indexes once per itinerary, reuses them across legs and validates relevant evidence and connections again before saving the result.
+ - Retires the standalone Journey log, lifetime visit counters, footprint preset and visit overlay. Sessions owns new operation travel, preserving reports, combat and replay. Discovery, ordinary activity and OBS notifications remain independent; existing records and exports are retained without a reset.
+@@ -159,8 +159,6 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
+ 
+ This release candidate awaits human review. It is not merged into `main`.
+ 
+-## Unreleased
+-
+ ## 0.7.3 — 2026-09-18
+ 
+ ### Changed
+diff --git a/README.md b/README.md
+index c8fb4eb..3f669a5 100644
+--- a/README.md
++++ b/README.md
+@@ -2,7 +2,7 @@
+ 
+ A local EVE Online workspace for pilot data, Markets, Sessions, maps and a separate transparent OBS output. Windows is the primary platform. No cloud deployment or AI service is required.
+ 
+-**0.8.0 development: RC17 optimization and refactoring are still under validation. A clean RC17 review build has not been approved.** See the [validation status](docs/VALIDATION.md) before using an internal test artifact.
++**0.8.0-rc.17 · Optimisation and refactoring candidate.** See the [validation and review record](docs/VALIDATION.md) for the exact designated build and acceptance status. Internal test artifacts do not by themselves establish readiness for user review.
+ 
+ ## Install and run
+ 
+diff --git a/docs/README.md b/docs/README.md
+index a532f40..94768ff 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -1,6 +1,6 @@
+ # Documentation map
+ 
+-These are the maintained entry points for the current application. Historical release claims do not establish that the current RC17 candidate is ready; check [Validation](VALIDATION.md).
++These are the maintained user and developer entry points. See [Validation](VALIDATION.md) for the exact candidate and review status.
+ 
+ ## Users
+ 
+@@ -27,4 +27,4 @@ Source code and its behavioral tests define implemented behavior. These guides e
+ 
+ ## History and investigation
+ 
+-[CHANGELOG.md](../CHANGELOG.md) owns release history. Superseded release-review notes, source audits and feature comparisons are preserved in Git history and the separate [documentation archive](https://github.com/BunBajiro/kairo/tree/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/oct8/documentation-prune). They are not current instructions or acceptance evidence for a newer source tree. RC17 measurements and open findings are tracked in the [analysis checkpoint](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).
++[CHANGELOG.md](../CHANGELOG.md) owns release history. Superseded release-review notes, source audits and feature comparisons are preserved in Git history and the separate [documentation archive](https://github.com/BunBajiro/kairo/tree/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/oct8/documentation-prune). They are not current instructions or acceptance evidence for a newer source tree. RC17 measurements, decisions and release acceptance are tracked in the [analysis checkpoint](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).
+diff --git a/docs/VALIDATION.md b/docs/VALIDATION.md
+index ee520ef..c23edef 100644
+--- a/docs/VALIDATION.md
++++ b/docs/VALIDATION.md
+@@ -1,6 +1,6 @@
+ # Validation and release readiness
+ 
+-**RC17 remains internal work in progress. PR #10 is withdrawn; a clean 0.8.0 review candidate is not yet available.** The [analysis checkpoint](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) records accepted changes, rejected experiments, remaining findings and exact source/evidence boundaries. Do not infer final acceptance from an older test count or a successful ordinary test-build workflow.
++**Use the exact build designated in the [current acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).** It records the application commit, completed gates, verified package/download and remaining review requirements. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
+ 
+ ## Reproduce source checks
+ 
+@@ -25,13 +25,15 @@ Build before tests that require compiled `dist` entrypoints. Dependencies and th
+ | Stream/OBS | Projection, protection, bindings, renderer recovery, native timing and actual user OBS review |
+ | Dataset or packaging | Fault/restart/rollback tests, fresh package extraction and checks against the extracted runtime |
+ 
+-The full contract suite is `tests/kairo/*.test.mjs`. Browser and packaging gates are defined in [test-build.yml](../.github/workflows/test-build.yml) and the referenced scripts. Keep synthetic fixture results separate from real EVE/OBS/Windows checks.
++The full contract suite is `tests/kairo/*.test.mjs`. Browser and packaging gates are defined in [test-build.yml](https://github.com/BunBajiro/kairo/blob/70cd12f9a4d014e7e2cf931b9681c4bdc7f18789/.github/workflows/test-build.yml) and the referenced scripts. Keep synthetic fixture results separate from real EVE/OBS/Windows checks.
+ 
+ ## What is verified at this checkpoint
+ 
+-Application code checkpoint `a7b1bf97b0073695926c443e52d523638e59e48d` passed [test build #63](https://github.com/BunBajiro/kairo/actions/runs/37753808235): types, fresh build, selected compiled Session/Universe/replay/dataset checks, extraction and packaged-runtime checks. The analysis record contains the narrower source-bound optimization gates that led to it. This is not a claim that a full current optimization matrix or final combined suite has passed.
++Measured application source `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789` passed **1,004 runtime tests, type checks and a fresh build**, plus **89 compiled integration controls**. [Test build #65](https://github.com/BunBajiro/kairo/actions/runs/37768942689) separately verified its ordinary feature-build/package checks. All **46 refactoring and optimisation component decisions** have supported fix, retention or rejection dispositions in the [single issue ledger](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-ISSUES.md).
+ 
+-Remaining closure includes source-bound component decisions, combined correctness/performance, startup/state/idle/retention and independent CI/package acceptance. Documentation changes do not close runtime findings. Final acceptance must name the exact source commit, built assets, harness/fixtures and retained failures/adverse results.
++The final local historical/current comparisons, startup and full-contract/database adapters, completion UI, configured first binding and real-archive updater collections have independent reviews. The [three-version performance report](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/PERFORMANCE-REVIEW-0.8.0.md) retains improvements, adverse results, first-use trade-offs and limits. The 0.7.3/RC16 and RC16/current groups are separately matched; their percentages are not combined into an inferred 0.7.3/current result.
++
++The [current acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) owns the independent comparison/UI/updater Actions results and the exact extracted package. Documentation-only preparation after source70 must record the changed files and unchanged runtime/build inputs there; it does not relabel earlier measurements as having run on a later commit. A passing ordinary build or documentation update alone does not close release acceptance.
+ 
+ ## Performance evidence rules
+ 
