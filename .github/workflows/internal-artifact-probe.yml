@@ -1,0 +1,44 @@
+name: Internal artifact availability check
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths: ['.github/workflows/internal-artifact-probe.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-kairo-artifact-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Create a small availability receipt
+        env:
+          PROBE_DIRECTORY: ${{ runner.temp }}/kairo-artifact-probe
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          out = Path(os.environ['PROBE_DIRECTORY'])
+          out.mkdir()
+          payload = {'purpose': 'Artifact upload availability only; no Kairo performance or release acceptance', 'repository': os.environ['GITHUB_REPOSITORY'], 'commit': os.environ['GITHUB_SHA'], 'runId': os.environ['GITHUB_RUN_ID'], 'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'], 'probe': '2026-10-11-evening'}
+          data = (json.dumps(payload, sort_keys=True, indent=2) + '\n').encode()
+          (out / 'receipt.json').write_bytes(data)
+          print(json.dumps({'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest(), 'payload': payload}))
+          PY
+      - name: Upload the small receipt
+        id: upload
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kairo-artifact-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kairo-artifact-probe/receipt.json
+          if-no-files-found: error
+          retention-days: 1
