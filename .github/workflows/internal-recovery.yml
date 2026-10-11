@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: internal-kairo-recovery-export
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
-          persist-credentials: false
+          persist-credentials: true
       - name: Export recoverable Git objects and references
         env:
           EXPORT_DIRECTORY: ${{ runner.temp }}/kairo-recovery
@@ -52,10 +52,18 @@ jobs:
           }
           (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
           PY
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: internal-kairo-recovery
-          path: ${{ runner.temp }}/kairo-recovery/
-          if-no-files-found: error
-          retention-days: 7
-          compression-level: 0
+      - name: Publish private recovery bundle on a new recovery-only branch
+        env:
+          EXPORT_DIRECTORY: ${{ runner.temp }}/kairo-recovery
+          EXPORT_BRANCH: recovery/rc17-workspace-20261011
+        run: |
+          set -euo pipefail
+          existing="$(git ls-remote --heads origin "refs/heads/$EXPORT_BRANCH")"
+          test -z "$existing"
+          git checkout --orphan "$EXPORT_BRANCH"
+          git rm -r --quiet --force -- .
+          cp "$EXPORT_DIRECTORY/repository.bundle" repository.bundle
+          cp "$EXPORT_DIRECTORY/manifest.json" manifest.json
+          git add -- repository.bundle manifest.json
+          git -c user.name='Kairo Recovery' -c user.email='recovery@users.noreply.github.com' commit -m 'Private Git checkpoint recovery bundle; no release'
+          git push origin "HEAD:refs/heads/$EXPORT_BRANCH"
