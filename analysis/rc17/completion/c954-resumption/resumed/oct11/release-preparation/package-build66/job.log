@@ -1,0 +1,1477 @@
+﻿2026-10-11T21:40:26.4727260Z Current runner version: '2.337.0'
+2026-10-11T21:40:26.4754159Z ##[group]Runner Image Provisioner
+2026-10-11T21:40:26.4755091Z Hosted Compute Agent
+2026-10-11T21:40:26.4755751Z Version: 20261002.596
+2026-10-11T21:40:26.4756518Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-11T21:40:26.4757268Z Build Date: 2026-10-02T22:28:27Z
+2026-10-11T21:40:26.4758053Z Worker ID: {f55d60e6-e090-4a3e-9e2b-ef36dca0840d}
+2026-10-11T21:40:26.4758776Z Region: westus
+2026-10-11T21:40:26.4759358Z Cloud: Azure
+2026-10-11T21:40:26.4759928Z ##[endgroup]
+2026-10-11T21:40:26.4761588Z ##[group]Operating System
+2026-10-11T21:40:26.4762528Z Ubuntu
+2026-10-11T21:40:26.4763083Z 24.04.5
+2026-10-11T21:40:26.4763586Z LTS
+2026-10-11T21:40:26.4764225Z ##[endgroup]
+2026-10-11T21:40:26.4764815Z ##[group]Runner Image
+2026-10-11T21:40:26.4765491Z Image: ubuntu-24.04
+2026-10-11T21:40:26.4766084Z Version: 20261004.327.1
+2026-10-11T21:40:26.4767417Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-11T21:40:26.4769033Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-11T21:40:26.4770086Z ##[endgroup]
+2026-10-11T21:40:26.4771216Z ##[group]GITHUB_TOKEN Permissions
+2026-10-11T21:40:26.4773693Z Contents: read
+2026-10-11T21:40:26.4774352Z Metadata: read
+2026-10-11T21:40:26.4774914Z ##[endgroup]
+2026-10-11T21:40:26.4777189Z Secret source: Actions
+2026-10-11T21:40:26.4778163Z Cache mode: write
+2026-10-11T21:40:26.4778989Z Prepare workflow directory
+2026-10-11T21:40:26.5133880Z Prepare all required actions
+2026-10-11T21:40:26.5185728Z Getting action download info
+2026-10-11T21:40:26.8943643Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-11T21:40:26.9840177Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-10-11T21:40:27.0637596Z Download action repository 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-10-11T21:40:27.2675282Z Complete job name: Build and verify downloadable ZIP
+2026-10-11T21:40:27.3530608Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-11T21:40:27.3531673Z with:
+2026-10-11T21:40:27.3532117Z   persist-credentials: false
+2026-10-11T21:40:27.3533168Z   repository: BunBajiro/kairo
+2026-10-11T21:40:27.3537241Z   token: ***
+2026-10-11T21:40:27.3537677Z   ssh-strict: true
+2026-10-11T21:40:27.3538117Z   ssh-user: git
+2026-10-11T21:40:27.3538531Z   clean: true
+2026-10-11T21:40:27.3538979Z   sparse-checkout-cone-mode: true
+2026-10-11T21:40:27.3539509Z   fetch-depth: 1
+2026-10-11T21:40:27.3539934Z   fetch-tags: false
+2026-10-11T21:40:27.3540378Z   show-progress: true
+2026-10-11T21:40:27.3540838Z   lfs: false
+2026-10-11T21:40:27.3541253Z   submodules: false
+2026-10-11T21:40:27.3541712Z   set-safe-directory: true
+2026-10-11T21:40:27.3542392Z   allow-unsafe-pr-checkout: false
+2026-10-11T21:40:27.3543268Z ##[endgroup]
+2026-10-11T21:40:27.4622012Z Syncing repository: BunBajiro/kairo
+2026-10-11T21:40:27.4625021Z ##[group]Getting Git version info
+2026-10-11T21:40:27.4626155Z Working directory is '/home/runner/work/kairo/kairo'
+2026-10-11T21:40:27.4627203Z [command]/usr/bin/git version
+2026-10-11T21:40:27.4729717Z git version 2.55.0
+2026-10-11T21:40:27.4757690Z ##[endgroup]
+2026-10-11T21:40:27.4769322Z Temporarily overriding HOME='/home/runner/work/_temp/f5c644ea-539e-4af9-a4d0-854b085ab042' before making global git config changes
+2026-10-11T21:40:27.4771761Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-11T21:40:27.4776420Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo
+2026-10-11T21:40:27.4830366Z Deleting the contents of '/home/runner/work/kairo/kairo'
+2026-10-11T21:40:27.4835050Z ##[group]Determining repository object format
+2026-10-11T21:40:27.4837250Z ##[endgroup]
+2026-10-11T21:40:27.4839283Z ##[group]Initializing the repository
+2026-10-11T21:40:27.4843412Z [command]/usr/bin/git init /home/runner/work/kairo/kairo
+2026-10-11T21:40:27.4948524Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-11T21:40:27.5048025Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-11T21:40:27.5050563Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-11T21:40:27.5051890Z hint: call:
+2026-10-11T21:40:27.5052865Z hint:
+2026-10-11T21:40:27.5053972Z hint: 	git config --global init.defaultBranch <name>
+2026-10-11T21:40:27.5055228Z hint:
+2026-10-11T21:40:27.5056612Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-11T21:40:27.5058748Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-11T21:40:27.5060087Z hint:
+2026-10-11T21:40:27.5060893Z hint: 	git branch -m <name>
+2026-10-11T21:40:27.5061726Z hint:
+2026-10-11T21:40:27.5063186Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-11T21:40:27.5064881Z Initialized empty Git repository in /home/runner/work/kairo/kairo/.git/
+2026-10-11T21:40:27.5069865Z [command]/usr/bin/git remote add origin https://github.com/BunBajiro/kairo
+2026-10-11T21:40:27.5073747Z ##[endgroup]
+2026-10-11T21:40:27.5074709Z ##[group]Disabling automatic garbage collection
+2026-10-11T21:40:27.5075387Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-11T21:40:27.5107286Z ##[endgroup]
+2026-10-11T21:40:27.5108425Z ##[group]Setting up auth
+2026-10-11T21:40:27.5109290Z Removing SSH command configuration
+2026-10-11T21:40:27.5116427Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-11T21:40:27.5155773Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-11T21:40:27.5608028Z Removing HTTP extra header
+2026-10-11T21:40:27.5611745Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-11T21:40:27.5655952Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-11T21:40:27.5908806Z Removing includeIf entries pointing to credentials config files
+2026-10-11T21:40:27.5915823Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-11T21:40:27.5969356Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-11T21:40:27.6237458Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-11T21:40:27.6280718Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/.git.path /home/runner/work/_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:27.6317287Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/kairo/kairo/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:27.6357771Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:27.6398720Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:27.6433691Z ##[endgroup]
+2026-10-11T21:40:27.6435084Z ##[group]Fetching the repository
+2026-10-11T21:40:27.6442787Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0149e86638aa7bef279f24a6425504345ae1179f:refs/remotes/origin/refactor/rc17-c954-continuation-v0.8.0
+2026-10-11T21:40:29.3755883Z From https://github.com/BunBajiro/kairo
+2026-10-11T21:40:29.3758375Z  * [new ref]         0149e86638aa7bef279f24a6425504345ae1179f -> origin/refactor/rc17-c954-continuation-v0.8.0
+2026-10-11T21:40:29.3767270Z [command]/usr/bin/git branch --list --remote origin/refactor/rc17-c954-continuation-v0.8.0
+2026-10-11T21:40:29.3810232Z   origin/refactor/rc17-c954-continuation-v0.8.0
+2026-10-11T21:40:29.3815995Z [command]/usr/bin/git rev-parse refs/remotes/origin/refactor/rc17-c954-continuation-v0.8.0
+2026-10-11T21:40:29.3846139Z 0149e86638aa7bef279f24a6425504345ae1179f
+2026-10-11T21:40:29.3851229Z ##[endgroup]
+2026-10-11T21:40:29.3852726Z ##[group]Determining the checkout info
+2026-10-11T21:40:29.3854187Z ##[endgroup]
+2026-10-11T21:40:29.3856746Z [command]/usr/bin/git sparse-checkout disable
+2026-10-11T21:40:29.3912808Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-11T21:40:29.3950249Z ##[group]Checking out the ref
+2026-10-11T21:40:29.3956402Z [command]/usr/bin/git checkout --progress --force -B refactor/rc17-c954-continuation-v0.8.0 refs/remotes/origin/refactor/rc17-c954-continuation-v0.8.0
+2026-10-11T21:40:29.5390905Z Switched to a new branch 'refactor/rc17-c954-continuation-v0.8.0'
+2026-10-11T21:40:29.5399001Z branch 'refactor/rc17-c954-continuation-v0.8.0' set up to track 'origin/refactor/rc17-c954-continuation-v0.8.0'.
+2026-10-11T21:40:29.5423395Z ##[endgroup]
+2026-10-11T21:40:29.5477238Z [command]/usr/bin/git log -1 --format=%H
+2026-10-11T21:40:29.5516341Z 0149e86638aa7bef279f24a6425504345ae1179f
+2026-10-11T21:40:29.5544938Z ##[group]Removing auth
+2026-10-11T21:40:29.5545824Z Removing SSH command configuration
+2026-10-11T21:40:29.5547078Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-11T21:40:29.5576930Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-11T21:40:29.5854337Z Removing HTTP extra header
+2026-10-11T21:40:29.5864909Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-11T21:40:29.5916182Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-11T21:40:29.6241225Z Removing includeIf entries pointing to credentials config files
+2026-10-11T21:40:29.6244513Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-11T21:40:29.6279679Z includeif.gitdir:/home/runner/work/kairo/kairo/.git.path
+2026-10-11T21:40:29.6281659Z includeif.gitdir:/home/runner/work/kairo/kairo/.git/worktrees/*.path
+2026-10-11T21:40:29.6284340Z includeif.gitdir:/github/workspace/.git.path
+2026-10-11T21:40:29.6285900Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-11T21:40:29.6291950Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/.git.path
+2026-10-11T21:40:29.6320186Z /home/runner/work/_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:29.6333367Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-b21920bd\-2924\-4b66\-88cb\-92c2aafb2eeb\.config
+2026-10-11T21:40:29.6374674Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/kairo/kairo/.git/worktrees/*.path
+2026-10-11T21:40:29.6409383Z /home/runner/work/_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:29.6419272Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/kairo/kairo/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-b21920bd\-2924\-4b66\-88cb\-92c2aafb2eeb\.config
+2026-10-11T21:40:29.6468033Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-11T21:40:29.6525114Z /github/runner_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:29.6543462Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-b21920bd\-2924\-4b66\-88cb\-92c2aafb2eeb\.config
+2026-10-11T21:40:29.6601843Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-11T21:40:29.6631081Z /github/runner_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config
+2026-10-11T21:40:29.6639936Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-b21920bd\-2924\-4b66\-88cb\-92c2aafb2eeb\.config
+2026-10-11T21:40:29.6681214Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-11T21:40:29.6916717Z Removing credentials config '/home/runner/work/_temp/git-credentials-b21920bd-2924-4b66-88cb-92c2aafb2eeb.config'
+2026-10-11T21:40:29.6925399Z ##[endgroup]
+2026-10-11T21:40:29.7259956Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+2026-10-11T21:40:29.7261167Z with:
+2026-10-11T21:40:29.7261632Z   node-version: 24
+2026-10-11T21:40:29.7262164Z   cache: npm
+2026-10-11T21:40:29.7262866Z   check-latest: false
+2026-10-11T21:40:29.7272804Z   token: ***
+2026-10-11T21:40:29.7273383Z   package-manager-cache: true
+2026-10-11T21:40:29.7274054Z ##[endgroup]
+2026-10-11T21:40:29.8644652Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-11T21:40:29.8647705Z ##[group]Environment details
+2026-10-11T21:40:30.2564480Z node: v24.21.0
+2026-10-11T21:40:30.2565945Z npm: 11.19.0
+2026-10-11T21:40:30.2567156Z yarn: 1.22.22
+2026-10-11T21:40:30.2569310Z ##[endgroup]
+2026-10-11T21:40:30.2585813Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+2026-10-11T21:40:30.3836154Z /home/runner/work/kairo/kairo/.sites-runtime/npm-cache
+2026-10-11T21:40:30.6710658Z Cache hit for: node-cache-Linux-x64-npm-9ebf7ba24ce4271ffeeb5024ac6cfe49ad3b6177b7dc9633cb2962026fc756b8
+2026-10-11T21:40:31.9818263Z Received 0 of 215188675 (0.0%), 0.0 MBs/sec
+2026-10-11T21:40:32.9883482Z Received 100663296 of 215188675 (46.8%), 48.0 MBs/sec
+2026-10-11T21:40:33.9835705Z Received 130023424 of 215188675 (60.4%), 41.3 MBs/sec
+2026-10-11T21:40:34.9873496Z Received 201326592 of 215188675 (93.6%), 48.0 MBs/sec
+2026-10-11T21:40:35.0942462Z Received 215188675 of 215188675 (100.0%), 49.9 MBs/sec
+2026-10-11T21:40:35.0944122Z Cache Size: ~205 MB (215188675 B)
+2026-10-11T21:40:35.0989769Z [command]/usr/bin/tar -xf /home/runner/work/_temp/a7b22634-631f-4a69-aabb-a62de0f9fda4/cache.tzst -P -C /home/runner/work/kairo/kairo --use-compress-program unzstd
+2026-10-11T21:40:35.5198123Z Cache restored successfully
+2026-10-11T21:40:35.5297434Z Cache restored from key: node-cache-Linux-x64-npm-9ebf7ba24ce4271ffeeb5024ac6cfe49ad3b6177b7dc9633cb2962026fc756b8
+2026-10-11T21:40:35.5731242Z ##[group]Run npm run install:ci
+2026-10-11T21:40:35.5731660Z [36;1mnpm run install:ci[0m
+2026-10-11T21:40:36.0212703Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:40:36.0213039Z ##[endgroup]
+2026-10-11T21:40:36.1365227Z 
+2026-10-11T21:40:36.1372171Z > kairo-capsuleer-operations@0.8.0-rc.17 install:ci
+2026-10-11T21:40:36.1373442Z > bash scripts/install-ci.sh
+2026-10-11T21:40:36.1373671Z 
+2026-10-11T21:40:36.1544511Z /usr/bin/flock
+2026-10-11T21:40:36.1545047Z /usr/bin/timeout
+2026-10-11T21:40:36.1545502Z /usr/bin/curl
+2026-10-11T21:40:36.1546565Z /usr/bin/sha256sum
+2026-10-11T21:40:36.1547263Z [sites] validating writable install environment
+2026-10-11T21:40:36.2816283Z [sites] environment passed: HOME=/home/runner/work/kairo/kairo/.sites-runtime/home, cache=/home/runner/work/kairo/kairo/.sites-runtime/npm-cache
+2026-10-11T21:40:36.7117014Z [sites] downloading the complete locked vinext tarball
+2026-10-11T21:40:36.7800992Z [sites] verifying locked vinext tarball integrity
+2026-10-11T21:40:36.8212715Z [sites] network and integrity preflight passed
+2026-10-11T21:40:36.8213526Z [sites] running exactly one bounded npm ci
+2026-10-11T21:40:41.9284747Z npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+2026-10-11T21:40:42.1070981Z npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+2026-10-11T21:40:54.3378779Z 
+2026-10-11T21:40:54.3379484Z added 673 packages in 17s
+2026-10-11T21:40:54.3396138Z npm warn install-scripts 7 packages have install scripts not yet covered by allowScripts:
+2026-10-11T21:40:54.3397227Z npm warn install-scripts   esbuild@0.18.20 (postinstall: node install.js)
+2026-10-11T21:40:54.3397935Z npm warn install-scripts   esbuild@0.25.12 (postinstall: node install.js)
+2026-10-11T21:40:54.3398593Z npm warn install-scripts   esbuild@0.28.0 (postinstall: node install.js)
+2026-10-11T21:40:54.3399320Z npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-10-11T21:40:54.3400278Z npm warn install-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-10-11T21:40:54.3401084Z npm warn install-scripts   workerd@1.20260515.1 (postinstall: node install.js)
+2026-10-11T21:40:54.3401742Z npm warn install-scripts   esbuild@0.27.3 (postinstall: node install.js)
+2026-10-11T21:40:54.3402548Z npm warn install-scripts
+2026-10-11T21:40:54.3403307Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-11T21:40:54.5001751Z [sites] npm ci passed and vinext is available
+2026-10-11T21:40:54.5119150Z ##[group]Run npm run check:kairo
+2026-10-11T21:40:54.5119478Z [36;1mnpm run check:kairo[0m
+2026-10-11T21:40:54.5184774Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:40:54.5185062Z ##[endgroup]
+2026-10-11T21:40:54.6333223Z 
+2026-10-11T21:40:54.6334062Z > kairo-capsuleer-operations@0.8.0-rc.17 check:kairo
+2026-10-11T21:40:54.6334590Z > tsc -p tsconfig.kairo.json --noEmit
+2026-10-11T21:40:54.6334856Z 
+2026-10-11T21:41:05.2272599Z ##[group]Run npm run build
+2026-10-11T21:41:05.2272924Z [36;1mnpm run build[0m
+2026-10-11T21:41:05.2336385Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:41:05.2336657Z ##[endgroup]
+2026-10-11T21:41:05.3440751Z 
+2026-10-11T21:41:05.3441323Z > kairo-capsuleer-operations@0.8.0-rc.17 build
+2026-10-11T21:41:05.3441867Z > bash scripts/build-verified.sh
+2026-10-11T21:41:05.3442089Z 
+2026-10-11T21:41:05.3606640Z /usr/bin/timeout
+2026-10-11T21:41:05.3607142Z Running bounded vinext build...
+2026-10-11T21:41:05.6990401Z 
+2026-10-11T21:41:05.6991044Z   vinext build  (Vite 8.0.13)
+2026-10-11T21:41:05.6991524Z 
+2026-10-11T21:41:07.4243318Z [34m[1/5] analyze client references...[39m
+2026-10-11T21:41:07.4636804Z [2K
+2026-10-11T21:41:08.1490503Z transforming...✓ 132 modules transformed.
+2026-10-11T21:41:08.1769176Z rendering chunks...
+2026-10-11T21:41:08.1850229Z [32m✓ built in 758ms[39m
+2026-10-11T21:41:08.1913361Z [34m[2/5] analyze server references...[39m
+2026-10-11T21:41:08.2115341Z [2K
+2026-10-11T21:41:09.6517182Z transforming...✓ 886 modules transformed.
+2026-10-11T21:41:09.6773760Z rendering chunks...
+2026-10-11T21:41:09.6830501Z [32m✓ built in 1.49s[39m
+2026-10-11T21:41:09.6882211Z [34m[3/5] build rsc environment...[39m
+2026-10-11T21:41:09.7043503Z [2K
+2026-10-11T21:41:10.0474492Z transforming...✓ 138 modules transformed.
+2026-10-11T21:41:10.1335227Z rendering chunks...
+2026-10-11T21:41:10.1695746Z computing gzip size...
+2026-10-11T21:41:10.1837435Z [32m✓ built in 494ms[39m
+2026-10-11T21:41:10.1884480Z [34m[4/5] build client environment...[39m
+2026-10-11T21:41:10.2048555Z [2K
+2026-10-11T21:41:12.3148082Z transforming...✓ 2663 modules transformed.
+2026-10-11T21:41:12.4905835Z rendering chunks...
+2026-10-11T21:41:12.7659243Z computing gzip size...
+2026-10-11T21:41:12.7874608Z [33m[plugin builtin:vite-reporter] 
+2026-10-11T21:41:12.7875539Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-10-11T21:41:12.7876852Z - Using dynamic import() to code-split the application
+2026-10-11T21:41:12.7878382Z - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+2026-10-11T21:41:12.7880081Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+2026-10-11T21:41:12.7898977Z [32m✓ built in 2.60s[39m
+2026-10-11T21:41:12.7967806Z [34m[5/5] build ssr environment...[39m
+2026-10-11T21:41:12.8121349Z [2K
+2026-10-11T21:41:14.1750521Z transforming...✓ 897 modules transformed.
+2026-10-11T21:41:14.3279517Z rendering chunks...
+2026-10-11T21:41:14.5605527Z computing gzip size...
+2026-10-11T21:41:14.6083802Z [32m✓ built in 1.81s[39m
+2026-10-11T21:41:14.6141759Z [0m  Pre-rendering all routes (output: 'export')...
+2026-10-11T21:41:14.6561461Z [vinext] Production server for prerendering running at http://127.0.0.1:38867
+2026-10-11T21:41:14.8381735Z   Prerendered 2 routes (0 skipped).
+2026-10-11T21:41:14.8393589Z [0m
+2026-10-11T21:41:14.8394308Z   Route (app)
+2026-10-11T21:41:14.8418660Z   ─ ○ /
+2026-10-11T21:41:14.8440714Z 
+2026-10-11T21:41:14.8441932Z   ○ Static
+2026-10-11T21:41:14.8442146Z 
+2026-10-11T21:41:14.8442993Z   ○ Routes marked static were confirmed by speculative prerender (attempted render
+2026-10-11T21:41:14.8443860Z     succeeded without dynamic API usage).
+2026-10-11T21:41:14.8444775Z 
+2026-10-11T21:41:14.8445574Z   Build complete. Run `vinext start` to start the production server.
+2026-10-11T21:41:14.8446078Z 
+2026-10-11T21:41:14.9428504Z ##[group]Run node tests/session-ui.mjs
+2026-10-11T21:41:14.9428859Z [36;1mnode tests/session-ui.mjs[0m
+2026-10-11T21:41:14.9492822Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:41:14.9493121Z env:
+2026-10-11T21:41:14.9493416Z   KAIRO_BROWSER_OUTPUT: /home/runner/work/_temp/kairo-session-ui
+2026-10-11T21:41:14.9493778Z ##[endgroup]
+2026-10-11T21:41:21.9360756Z {"ok":true,"cards":9,"visits":4,"bufferedVisits":3,"timelineEvents":135,"mobileWidth":390,"layoutChecks":["populated desktop","expanded route","populated 1024","populated 820","legacy 1600","legacy 1024","legacy 820"],"screenshots":"/home/runner/work/_temp/kairo-session-ui"}
+2026-10-11T21:41:24.9601228Z ##[group]Run node tests/universe-ui.mjs
+2026-10-11T21:41:24.9601592Z [36;1mnode tests/universe-ui.mjs[0m
+2026-10-11T21:41:24.9663951Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:41:24.9664209Z env:
+2026-10-11T21:41:24.9664501Z   KAIRO_BROWSER_OUTPUT: /home/runner/work/_temp/kairo-universe-ui
+2026-10-11T21:41:24.9664875Z ##[endgroup]
+2026-10-11T21:46:36.5996133Z {"ok":true,"checks":["Known space bounded minimum zoom","K-Space restores system, layer and camera across workspace changes; browser Back/Forward keeps the page, sidebar and URL aligned","Atlas offers direct 3D/2D switching, remembers it across Maps and reload, and retains schematic geometry through region selection and zoom","Desktop public atlas puts the map within the first400px","Independent K-Space and J-Space navigation under Universe with legacy deep-link compatibility","Public atlas desktop","Default immersive map, stable collapsible dock and overlay controls desktop","Finite smooth zoom/focus, reduced motion and simulated hidden-page cancellation","Anchored wheel, real touch pinch and finite drag inertia with reduced-motion override","Clickable and keyboard overview navigation with projected K-space scale","Public search, pointer pan/wheel zoom, presets and saved view create/load/delete","Viewport names fade at their glyph bounds and retain matching rounded outlines","Territory redraw uses vector borders without scaled bitmap influence or system glow","Pilot standings, unavailable ESI, private view/pin and discovery isolation without lifetime Journey aggregates","Dedicated Universe settings groups bridges, pins, power blocs and operational sources while preserving unfinished forms across tabs","Power bloc settings desktop","Power bloc settings 390","Territory redraw uses vector borders without scaled bitmap influence or system glow","Power bloc create/name/colour, explicit membership move to independent, save/reopen, source labels and per-alliance fallback","Actual territory hover/click, spotlight, complete framing, regional shares and physical frontier inspection","Unified system, region and territory keyboard search, scope reset and repeat territory frame","Clearing a route rejects delayed older snapshots and the next jump itinerary contains only its new destination","Gate and jump itineraries, ordered private waypoints, explicit scope-gated EVE send and exact XYZ range intersection","Manual Ansiblex add/toggle/delete and CSV bridge-list import/toggle/delete","Unchanged user SMT list imports eleven reciprocal pairs and round-trips all twenty-two unknown-ID directions","Pinned portal map 390","Thera and Turnur entrances are visible and explorable on the map with attributed hover details and honest stale/expired states","Pinned map explanations support keyboard dismissal, mobile layout and entrance route drafts without changing saved itineraries","Pilot and fleet symbols explain their meaning through actual map mouseover and dismiss pinned details when their layer is hidden","Operational notebook 390","Private intel, alert acknowledgement, expired history, authorized pilots/fleet and source-aware public observations","Scanner review/import, partial-versus-complete scans, private infrastructure and responsive notebook","Physical, schematic and exact two-hop local radar projections retain honest distance semantics","Private tactical popup keeps the same map/camera, receives hidden-parent SSE updates and restores without claiming always-on-top","Discovered J-space bounded minimum zoom","Map-owned wormhole confirmation, lifetime editing, immediate expiry removal and preserved system knowledge","J-space keeps system search and discovery context while hiding region navigation, grouping and internal geography","J-Space opens a user-map landing, the source is reachable only through settings, and every creation form collects name, description, pilots and optional scope without a tracking opt-in","The live source is read-only, its creation form builds an independent map with the selected roster, and system/region scope anchors save and clear through visible controls","Map pilots are explicit, default to tracking when added and can be paused, resumed or removed without changing another map","J-Space uses the remaining window height and sidebar collapse returns more than200 pixels to the map","Card movement follows real pointer input within two frames, stays optimistic during a delayed save and persists a second gesture in order","Compact connection workspace 390","Mobile fit keeps visible overview names and connection ports inside the viewport without overlapping neighboring labels","Compact readable cards expose pointer and keyboard ports, preserve the pending visual and create only unconfirmed observations; canceled, self and empty drops leave the map unchanged","Permanent chain search frames existing systems without duplicate writes; one-click status, role and condition changes record lifetime presets and retain unconfirmed route trust","Right-click lifetime and mass changes persist lifetime, mass and ship size with separate line colors; system menus have one System details destination plus distinct map, zKillboard and K-Space actions","Connection deletion forgets canonical edges immediately; system and group Undo restores cards without reviving deleted connections","Alliance and corporation name search show logos, support keyboard selection and fill the correct EVE ID without manual entry","One persistent System/Scanner/Reports/Notes/Navigate/Intel menu keeps the selected system; assigned wormhole ownership appears on its card","J225111 C4/C1/C3 reference cards, symbol explanations, persisted group drag/lock/keyboard layout, undo and reduced-motion pan/zoom","Quick condition updates preserve a confirmed connection’s exact expiry and existing routing permissions","Scanner navigation to a system outside the private chain keeps the requested tool open without adding a map card","A delayed partial-scan preview cannot import after the user leaves the Scanner tool","A card opens the visible J-Space scanner in one click; partial updates preserve absent signatures while complete scans retain explicit missing-signature review","Canonical scanner updates, bookmark text and deletion restore preserve observation age and attach to the exact connection","Two-sided connection conditions use canonical links, explicit route access, unchanged itineraries and an honest passage ledger","Field notes retain trusted pilot attribution, portraits and compact deletion; contextual text/author search can open another system’s notes within the map","Structures and timers have separate forms, lists and map badges; new observation time defaults to current UTC and editing preserves its original timestamp","Reviewed D-scan structure imports, EVE-time timers, expiring local rallies and contextual notes persist without inventing access or power state","Positive structure, timer, signature and note counts fit inside system cards and open their detail tabs; zero-count metrics and redundant connection link icons stay hidden","Wanderer v1 migration preserves positions and context without reviving historical links or overwriting current scans","J-Space chain mobile","Map rename/export/import preserves context with unconfirmed copied links; pilot isolation and workspace restoration work on desktop and mobile","Private lifetime expiry removes its line, closes connection details and forgets data and notes without a refresh, while retaining system cards","Nearest-exit discovery excludes unconfirmed or unsuitable passages, respects vessel limits and copies an evidenced one-jump route without changing EVE navigation","Thera reports show current observation age, expire during repeated workspace refreshes, and support explicit adoption without granting route access","Closing the planner and choosing a different map destination invalidates prior route results and Send actions, including after navigation remount","Region and constellation previews stay provisional, drag and nudge as one group, cancel without writes, then atomically place individual nodes and real internal stargates","Stargates and Ansiblex have distinct permanent visuals and editors without wormhole conditions; keyboard creation from top to bottom tabs preserves both anchors on one continuous curve","Pilot-attributed notes show portraits and EVE-relative times, filter within a system, and landing searches open the exact map instance with system details or matching notes","Atlas 1600","Desktop pilot atlas puts the map within the first400px","Atlas 1024","Atlas 820","Atlas 390","Default immersive map, stable collapsible dock and overlay controls mobile","Layers 390","Connections 390","Session replay desktop","Session replay 390","Session Show on Map, timeline/play/pause, smooth follow, manual pan, event popup and clean exit","Historical mixed-space replay renders J-Space with both K-Space boundaries, supports next/rewind/scrub and recorded event markers, and leaves every live map and connection untouched","Known-space replay paints dated current sovereignty while a separate pilot-location indicator preserves captured historical ownership and labels legacy visits as not recorded"],"metrics":{"windowMs":3003,"canvasDraws":0,"taskMs":5.385,"layoutMs":0.44,"layouts":3},"screenshots":"/home/runner/work/_temp/kairo-universe-ui"}
+2026-10-11T21:46:39.6275428Z ##[group]Run node tests/datasets-ui.mjs
+2026-10-11T21:46:39.6275779Z [36;1mnode tests/datasets-ui.mjs[0m
+2026-10-11T21:46:39.6338225Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:46:39.6338511Z env:
+2026-10-11T21:46:39.6338822Z   KAIRO_BROWSER_OUTPUT: /home/runner/work/_temp/kairo-datasets-ui
+2026-10-11T21:46:39.6339176Z ##[endgroup]
+2026-10-11T21:46:50.6856055Z {"ok":true,"checks":15,"details":["installed official and supplemental versions","release and installation dates","SSE status without panel polling","manual check offers explicit installation","offline check preserves installed data","worker progress and action deduplication","390px mobile readability","reduced motion","planned restart has update presentation","old revision cannot announce update success","actual SSE reconnect preserves mounted form and draft","rollback has a readable recovery notice","recovery notice is dismissible","ordinary disconnect remains distinct","ordinary reconnect preserves drafts too"],"screenshots":"/home/runner/work/_temp/kairo-datasets-ui"}
+2026-10-11T21:46:53.7120977Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-11T21:46:53.7121408Z with:
+2026-10-11T21:46:53.7121629Z   name: datasets-interface-check
+2026-10-11T21:46:53.7121923Z   path: /home/runner/work/_temp/kairo-datasets-ui/
+2026-10-11T21:46:53.7122505Z   if-no-files-found: warn
+2026-10-11T21:46:53.7122883Z   retention-days: 30
+2026-10-11T21:46:53.7123103Z   compression-level: 6
+2026-10-11T21:46:53.7123320Z   overwrite: false
+2026-10-11T21:46:53.7123532Z   include-hidden-files: false
+2026-10-11T21:46:53.7123764Z   archive: true
+2026-10-11T21:46:53.7123963Z ##[endgroup]
+2026-10-11T21:46:53.8607928Z With the provided path, there will be 7 files uploaded
+2026-10-11T21:46:53.8623107Z Artifact name is valid!
+2026-10-11T21:46:53.8623651Z Root directory input is valid!
+2026-10-11T21:46:54.2438784Z Uploading artifact: datasets-interface-check.zip
+2026-10-11T21:46:54.2482001Z Beginning upload of artifact content to blob storage
+2026-10-11T21:46:55.0332569Z Uploaded bytes 1213652
+2026-10-11T21:46:55.1069521Z Finished uploading artifact content to blob storage!
+2026-10-11T21:46:55.1070760Z SHA256 digest of uploaded artifact is 3b832733ad6a877c7f73d2862d5b74b0bfd8855411e0da07f9b86fc3dfb10277
+2026-10-11T21:46:55.1071834Z Finalizing artifact upload
+2026-10-11T21:46:55.5334468Z Artifact datasets-interface-check successfully finalized. Artifact ID 11716246999
+2026-10-11T21:46:55.5336593Z Artifact datasets-interface-check has been successfully uploaded! Final size is 1213652 bytes. Artifact ID is 11716246999
+2026-10-11T21:46:55.5339386Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/38177333462/artifacts/11716246999
+2026-10-11T21:46:55.5488578Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-11T21:46:55.5489001Z with:
+2026-10-11T21:46:55.5489213Z   name: universe-interface-check
+2026-10-11T21:46:55.5489522Z   path: /home/runner/work/_temp/kairo-universe-ui/
+2026-10-11T21:46:55.5489846Z   if-no-files-found: warn
+2026-10-11T21:46:55.5490086Z   retention-days: 30
+2026-10-11T21:46:55.5490306Z   compression-level: 6
+2026-10-11T21:46:55.5490525Z   overwrite: false
+2026-10-11T21:46:55.5490745Z   include-hidden-files: false
+2026-10-11T21:46:55.5490987Z   archive: true
+2026-10-11T21:46:55.5491188Z ##[endgroup]
+2026-10-11T21:46:55.7074736Z With the provided path, there will be 79 files uploaded
+2026-10-11T21:46:55.7081176Z Artifact name is valid!
+2026-10-11T21:46:55.7081723Z Root directory input is valid!
+2026-10-11T21:46:56.1113995Z Uploading artifact: universe-interface-check.zip
+2026-10-11T21:46:56.1157478Z Beginning upload of artifact content to blob storage
+2026-10-11T21:46:57.3956045Z Uploaded bytes 8388608
+2026-10-11T21:46:57.5861347Z Uploaded bytes 16777216
+2026-10-11T21:46:57.8818158Z Uploaded bytes 25165824
+2026-10-11T21:46:58.2263120Z Uploaded bytes 33554432
+2026-10-11T21:46:58.5596236Z Uploaded bytes 40704500
+2026-10-11T21:46:58.6295633Z Finished uploading artifact content to blob storage!
+2026-10-11T21:46:58.6298970Z SHA256 digest of uploaded artifact is ed4692760704b939b43575cdf8a60c2962137d5a581ad4451a8a6f295ad8c3af
+2026-10-11T21:46:58.6300983Z Finalizing artifact upload
+2026-10-11T21:46:59.0412858Z Artifact universe-interface-check successfully finalized. Artifact ID 11716705832
+2026-10-11T21:46:59.0414563Z Artifact universe-interface-check has been successfully uploaded! Final size is 40704500 bytes. Artifact ID is 11716705832
+2026-10-11T21:46:59.0418994Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/38177333462/artifacts/11716705832
+2026-10-11T21:46:59.0586212Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-11T21:46:59.0586818Z with:
+2026-10-11T21:46:59.0587076Z   name: session-interface-check
+2026-10-11T21:46:59.0587400Z   path: /home/runner/work/_temp/kairo-session-ui/
+2026-10-11T21:46:59.0587722Z   if-no-files-found: warn
+2026-10-11T21:46:59.0587968Z   retention-days: 30
+2026-10-11T21:46:59.0588199Z   compression-level: 6
+2026-10-11T21:46:59.0588422Z   overwrite: false
+2026-10-11T21:46:59.0588653Z   include-hidden-files: false
+2026-10-11T21:46:59.0588901Z   archive: true
+2026-10-11T21:46:59.0589117Z ##[endgroup]
+2026-10-11T21:46:59.2363930Z With the provided path, there will be 10 files uploaded
+2026-10-11T21:46:59.2412115Z Artifact name is valid!
+2026-10-11T21:46:59.2423352Z Root directory input is valid!
+2026-10-11T21:46:59.5983631Z Uploading artifact: session-interface-check.zip
+2026-10-11T21:46:59.6052828Z Beginning upload of artifact content to blob storage
+2026-10-11T21:47:00.4917133Z Uploaded bytes 1959896
+2026-10-11T21:47:00.5653822Z Finished uploading artifact content to blob storage!
+2026-10-11T21:47:00.5654654Z SHA256 digest of uploaded artifact is 049a5f61c4eae8a2bca11dd4cce83a94c6fae14381fc2fbb87b0d6cc8873e1db
+2026-10-11T21:47:00.5655220Z Finalizing artifact upload
+2026-10-11T21:47:00.9785486Z Artifact session-interface-check successfully finalized. Artifact ID 11716431364
+2026-10-11T21:47:00.9787166Z Artifact session-interface-check has been successfully uploaded! Final size is 1959896 bytes. Artifact ID is 11716431364
+2026-10-11T21:47:00.9789739Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/38177333462/artifacts/11716431364
+2026-10-11T21:47:00.9924983Z ##[group]Run python3 scripts/package-release.py "$RUNNER_TEMP/Kairo-test-build.zip"
+2026-10-11T21:47:00.9925626Z [36;1mpython3 scripts/package-release.py "$RUNNER_TEMP/Kairo-test-build.zip"[0m
+2026-10-11T21:47:00.9988277Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:47:00.9988550Z ##[endgroup]
+2026-10-11T21:47:02.2210910Z {"file": "/home/runner/work/_temp/Kairo-test-build.zip", "version": "0.8.0-rc.17", "bytes": 25938696, "files": 504}
+2026-10-11T21:47:02.2308128Z ##[group]Run python3 -m zipfile -e "$RUNNER_TEMP/Kairo-test-build.zip" "$RUNNER_TEMP/kairo-package-check"
+2026-10-11T21:47:02.2308951Z [36;1mpython3 -m zipfile -e "$RUNNER_TEMP/Kairo-test-build.zip" "$RUNNER_TEMP/kairo-package-check"[0m
+2026-10-11T21:47:02.2371916Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:47:02.2372445Z ##[endgroup]
+2026-10-11T21:47:02.4720296Z ##[group]Run npm run test:kairo
+2026-10-11T21:47:02.4720641Z [36;1mnpm run test:kairo[0m
+2026-10-11T21:47:02.4783502Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:47:02.4783796Z ##[endgroup]
+2026-10-11T21:47:02.5794517Z 
+2026-10-11T21:47:02.5795667Z > kairo-capsuleer-operations@0.8.0-rc.17 test:kairo
+2026-10-11T21:47:02.5796360Z > node --test tests/kairo/*.test.mjs
+2026-10-11T21:47:02.5796601Z 
+2026-10-11T21:47:02.7344475Z ✔ default administrative timers keep the Window receiver when scheduling, rearming and closing (5.758665ms)
+2026-10-11T21:47:02.7387908Z ✔ Markets uses one completed-read timer: 5 idle reads per visible 120s, none while hidden, immediate resume (3.757528ms)
+2026-10-11T21:47:02.7418257Z ✔ Markets running jobs refresh at 2s then return to idle on complete, cancelled or failed (4.395647ms)
+2026-10-11T21:47:02.7434641Z ✔ slow administrative reads never overlap and retain only one newer forced invalidation (1.161283ms)
+2026-10-11T21:47:02.7461594Z ✔ failed administrative read retains old view and recovers; disposal rejects late publication (2.257805ms)
+2026-10-11T21:47:02.7484366Z ✔ OBS stream status wins over a delayed recovery read and dirty configuration survives recovery (0.607872ms)
+2026-10-11T21:47:02.7504634Z ✔ OBS saving preserves edits made during PUT and a newer stream status; clean save permits future config recovery (0.679626ms)
+2026-10-11T21:47:02.7534095Z ✔ OBS full reads are initial/reconnect only; idle/focus use status and hidden reconnect waits without losing dirty config (0.903453ms)
+2026-10-11T21:47:02.7536293Z ✔ OBS failed initial config read retries config rather than getting stuck on status-only reads (0.858118ms)
+2026-10-11T21:47:02.7538826Z ✔ Goals eight source updates read eight progress resources and no additional notes or hidden metadata (0.985986ms)
+2026-10-11T21:47:02.7540734Z ✔ Goals note/source events are pilot scoped, hidden invalidations resume, and old pilot reads cannot publish (1.04701ms)
+2026-10-11T21:47:02.7580273Z ✔ containment preserves shared parents, missing roots, duplicate IDs and first repeated cycle IDs (1.974578ms)
+2026-10-11T21:47:02.7594062Z ✔ a long shared containment chain is read in linear work without recursion (45.061372ms)
+2026-10-11T21:47:02.7595914Z ✔ enrichment retains public name fallback and structure permission/pilot scope (1.961433ms)
+2026-10-11T21:47:02.8696343Z ✔ two cold pilots share discovery and JWKS while their refresh POSTs stay separate (90.808505ms)
+2026-10-11T21:47:02.9040882Z ✔ public flights and caches belong to one Auth instance (34.799784ms)
+2026-10-11T21:47:02.9537873Z ✔ one-hour expiration refreshes both public domains once for concurrent pilots (49.028526ms)
+2026-10-11T21:47:02.9937533Z ✔ concurrent unknown signing keys share the rotation fetch and still verify signatures (40.347403ms)
+2026-10-11T21:47:03.0291099Z ✔ an unknown key on a cold cache permits exactly one shared rotation retry (35.330249ms)
+2026-10-11T21:47:03.0853107Z ✔ a failed rotation keeps trusted warm keys usable and permits the next rotation attempt (55.721956ms)
+2026-10-11T21:47:03.1189196Z ▶ discovery failures are shared but never poison the next attempt
+2026-10-11T21:47:03.1193208Z   ✔ HTTP (33.269704ms)
+2026-10-11T21:47:03.1515491Z   ✔ JSON (31.466265ms)
+2026-10-11T21:47:03.1894193Z   ✔ endpoint origin (38.628279ms)
+2026-10-11T21:47:03.2220374Z   ✔ transport (31.873679ms)
+2026-10-11T21:47:03.2225398Z ✔ discovery failures are shared but never poison the next attempt (136.905032ms)
+2026-10-11T21:47:03.2558840Z ▶ JWKS failures are shared, are not cached, and permit a later refresh
+2026-10-11T21:47:03.2563365Z   ✔ HTTP (31.834599ms)
+2026-10-11T21:47:03.2909092Z   ✔ JSON (35.454353ms)
+2026-10-11T21:47:03.3234164Z   ✔ malformed keys (33.329806ms)
+2026-10-11T21:47:03.3650143Z   ✔ transport (41.409982ms)
+2026-10-11T21:47:03.3662564Z ✔ JWKS failures are shared, are not cached, and permit a later refresh (143.197236ms)
+2026-10-11T21:47:03.4000707Z ✔ a public request timeout reaches all waiters and its flight clears for retry (34.591754ms)
+2026-10-11T21:47:03.4435084Z ✔ one pilot failing a token refresh does not cancel or mark another pilot for reauthorization (41.870675ms)
+2026-10-11T21:47:03.5145499Z ✔ aged transport cleanup has upgrade grace, bounded batches, restart cursor and durable-data exclusions (240.176956ms)
+2026-10-11T21:47:03.5164772Z ✔ recent use, complete validators and last-good data survive expiry and active retry deadlines (30.375803ms)
+2026-10-11T21:47:03.5166941Z ✔ ESI keeps stale body and validators offline with retry state across recreation (32.591848ms)
+2026-10-11T21:47:03.5168920Z ✔ completed job retention keeps visible history, active work and resume settings (183.253252ms)
+2026-10-11T21:47:03.5170726Z ✔ failed maintenance rolls back deletion and cursor together (29.235067ms)
+2026-10-11T21:47:03.5173019Z ✔ terminal cleanup seeks its partial index past a large unrelated nonterminal backlog (114.268102ms)
+2026-10-11T21:47:03.5175319Z ✔ ESI and Combat share one maintenance cursor while public cooldown and used last-good pages survive (60.212871ms)
+2026-10-11T21:47:03.5285837Z ✔ identical valued references are write-free and missing events repair without requeueing politics (48.819029ms)
+2026-10-11T21:47:03.5288304Z ✔ corrected valuations update once while ESI provenance and semantic identity stay intact (38.500292ms)
+2026-10-11T21:47:03.5290224Z ✔ disabled inference records one replay marker and identical combat remains write-free (36.628709ms)
+2026-10-11T21:47:03.5292192Z ✔ an identical 200-reference page is write-free; missing-event repair and a corrected valuation stay isolated (234.371324ms)
+2026-10-11T21:47:03.5680045Z ✔ PKCE uses an unpredictable verifier and an S256 challenge (2.907515ms)
+2026-10-11T21:47:03.5708396Z ✔ EVE claims reject wrong audience, issuer, expiry and identity (0.879719ms)
+2026-10-11T21:47:03.5710184Z ✔ vault persistence is authenticated and never writes a plaintext token (39.467735ms)
+2026-10-11T21:47:03.5711742Z ✔ SSO state is session-bound and single-use; validated tokens refresh and rotate (114.362331ms)
+2026-10-11T21:47:03.5713559Z ✔ ESI deduplicates concurrent requests and respects Cache-Control (45.193186ms)
+2026-10-11T21:47:03.6017906Z ✔ ESI 304 extends freshness, and a failed update retains stale data (33.635264ms)
+2026-10-11T21:47:03.6352985Z ✔ ESI collects every X-Pages page and isolates character cache entries (33.351684ms)
+2026-10-11T21:47:03.6704297Z ✔ ESI rate limiting stops repeated requests for the cooldown (30.713299ms)
+2026-10-11T21:47:03.6707598Z ✔ OPSEC fails closed on missing, stale or unclassified data and manual always wins (1.044876ms)
+2026-10-11T21:47:03.6709526Z ✔ OPSEC classifies FW before sovereignty; blue and hostile both remain covered (0.477399ms)
+2026-10-11T21:47:03.6711434Z ✔ stream defaults are empty; normalization only admits explicit output fields (1.060113ms)
+2026-10-11T21:47:03.7028373Z ✔ stream toasts use only approved copy, obey enabled flags and cooldowns (33.555264ms)
+2026-10-11T21:47:03.7388769Z ✔ module registry accepts independent migrations, events, a page and disable lifecycle (34.845626ms)
+2026-10-11T21:47:03.7403310Z ✔ local host checks and constant-time CSRF comparison reject unexpected inputs (0.30059ms)
+2026-10-11T21:47:04.1309529Z ✔ HTTP isolation: private data needs a session; stream cannot reach admin; writes need CSRF (391.352953ms)
+2026-10-11T21:47:04.3423541Z ✔ full local pipeline: OAuth callback leads to scoped ESI, private discovery, and sanitized stream state (213.012965ms)
+2026-10-11T21:47:04.3719425Z ✔ Core rolls back Universe expiry when the awaited Registry import fails (59.049193ms)
+2026-10-11T21:47:04.3721531Z ✔ failed Registry activation drains accepted asynchronous events and closes the bus (44.222692ms)
+2026-10-11T21:47:04.3724308Z ✔ Registry activation keeps its original error when an earlier module cleanup also fails (41.337011ms)
+2026-10-11T21:47:04.3726137Z ✔ a later constructor failure closes Registry and the already-created OBS interval (76.014542ms)
+2026-10-11T21:47:04.3728436Z ✔ initial projection rollback awaits module cleanup and preserves the primary error if cleanup fails (57.201213ms)
+2026-10-11T21:47:04.3731307Z ✔ Core startup rollback waits for an OBS client that was still connecting to close (47.196599ms)
+2026-10-11T21:47:04.3733219Z ✔ a stalled OBS peer reports bounded cleanup failure without masking the startup fault (77.096284ms)
+2026-10-11T21:47:04.3734902Z ✔ OBS close owns synchronous callback failures and shares the same rejected cleanup promise (23.140514ms)
+2026-10-11T21:47:04.3736744Z ✔ Universe does not arm cached feed expiry before later schema initialization succeeds (27.772817ms)
+2026-10-11T21:47:04.3738485Z ✔ Universe releases an armed feed timer if its final local expiry lookup fails (65.562952ms)
+2026-10-11T21:47:04.3739872Z ✔ OBS reads its startup configuration before allocating its interval (36.255277ms)
+2026-10-11T21:47:04.3741441Z ✔ Core skips source reads for hidden saved bindings without retaining them in broadcast output (293.185697ms)
+2026-10-11T21:47:04.3743408Z ✔ hidden preview and show/save project fresh values, names, exact expiry and pilot ownership (106.874333ms)
+2026-10-11T21:47:04.3745054Z ✔ visible bindings stay fresh with no clients and OPSEC publication remains independent (99.802905ms)
+2026-10-11T21:47:04.6215725Z ✔ cached protection batches retain current output without one projection per cached dataset (332.047504ms)
+2026-10-11T21:47:04.7077959Z ✔ protection batches revoke unavailable scope and disabled modules despite future schedules (86.214996ms)
+2026-10-11T21:47:04.7927842Z ✔ awaiting a cached protection batch still expires jump continuity during retry backoff (86.385838ms)
+2026-10-11T21:47:04.8814348Z ✔ a changed location updates protection before a slow peer dataset completes (89.05835ms)
+2026-10-11T21:47:04.9611845Z ✔ each UI bootstraps globally; unchanged snapshots omit names and changed names reach both pilot audiences (286.739827ms)
+2026-10-11T21:47:04.9616992Z ✔ batching waits for a publication boundary and a new bootstrap cannot mark older clients current (87.848854ms)
+2026-10-11T21:47:04.9627371Z ✔ zero clients encode no directories and reconnect bootstraps all changes since disconnect (84.2926ms)
+2026-10-11T21:47:04.9629814Z ✔ names and snapshots retain SSE order through backpressure; failed clients cannot suppress healthy delivery (86.77453ms)
+2026-10-11T21:47:04.9632000Z ✔ Core close drains accepted snapshot publication with its directory and rejects a new UI connection (81.422308ms)
+2026-10-11T21:47:05.1953913Z ✔ real state and events HTTP routes expose the same authoritative process-qualified directory (232.759244ms)
+2026-10-11T21:47:05.3021463Z ✔ a new Core epoch bootstraps an authoritative empty/reset directory even when its counter is lower (108.810591ms)
+2026-10-11T21:47:05.3398844Z ✔ scheduling metadata stays current across writes, deletion and rollback without exposing payloads (26.559394ms)
+2026-10-11T21:47:05.3400381Z ✔ protection projects only its evidence and still responds immediately to disabled modules (254.637278ms)
+2026-10-11T21:47:05.3401925Z ✔ cached routine datasets do not repeatedly load protection pilot identity (76.920494ms)
+2026-10-11T21:47:05.3404689Z ✔ Sessions keep pilot travel and hull history with Universe disabled and stop when Pilot is disabled (104.025617ms)
+2026-10-11T21:47:05.3406378Z ✔ a planned restart waits for the complete target generation, not merely an open connection (2.971624ms)
+2026-10-11T21:47:05.3407364Z ✔ a same-build restart must actually disconnect before it can complete (0.314806ms)
+2026-10-11T21:47:05.3408951Z ✔ ordinary reconnect refreshes a changed revision once even when the restart announcement was missed (0.351766ms)
+2026-10-11T21:47:05.3409938Z ✔ ordinary reconnect restores missed data once even when the dataset revision is unchanged (0.49939ms)
+2026-10-11T21:47:05.3410777Z ✔ a cancelled restart invalidates in-flight refresh and never presents success (0.506072ms)
+2026-10-11T21:47:05.3411596Z ✔ a newer restart supersedes stale asynchronous refresh without discarding its notice (0.502346ms)
+2026-10-11T21:47:05.3413058Z ✔ disconnect during refresh invalidates it and the next connection retries the same revision (0.48322ms)
+2026-10-11T21:47:05.3413951Z ✔ rollback is an amber notice shown once per session, never an update success (0.418459ms)
+2026-10-11T21:47:05.3414750Z ✔ a delayed restart stops the spinner and can be retried without accepting stale data (0.482929ms)
+2026-10-11T21:47:05.3415550Z ✔ disposing an unmounted workspace prevents stale updates and clears its deadline (0.629212ms)
+2026-10-11T21:47:05.3416395Z ✔ a workspace refresh failure after an unannounced update remains actionable and retryable (0.505512ms)
+2026-10-11T21:47:05.5580014Z ▶ Dataset HTTP workflow preserves the local session through safe staged updates
+2026-10-11T21:47:05.5604380Z   ✔ inventory is authenticated, manual writes require CSRF, and noSync makes no external request (18.64292ms)
+2026-10-11T21:47:05.6388365Z   ✔ concurrent manual checks return immediately and share one cache-aware request (83.436212ms)
+2026-10-11T21:47:05.6781171Z   ✔ failed metadata checks retain installed datasets and can recover (39.585995ms)
+2026-10-11T21:47:06.3795248Z   ✔ installation is single-flight, reports phases over SSE, and stages a coherent generation (702.180965ms)
+2026-10-11T21:47:06.3846275Z   ✔ manual staging removes downloaded archives and temporary build debris (4.117909ms)
+2026-10-11T21:47:06.4336584Z   ✔ cancelled activation clears the restart gate and new SSE clients receive the current revision (45.111143ms)
+2026-10-11T21:47:06.4954691Z   ✔ graceful replacement preserves the cookie, CSRF token and persisted workspace settings (64.649714ms)
+2026-10-11T21:47:06.5014513Z ✔ Dataset HTTP workflow preserves the local session through safe staged updates (1351.056214ms)
+2026-10-11T21:47:06.5304462Z ✔ inventory distinguishes installed official builds from pinned supplemental datasets (54.771463ms)
+2026-10-11T21:47:06.5307694Z ✔ a metadata-only check neither downloads nor installs; explicit install reuses cache (93.985508ms)
+2026-10-11T21:47:06.5314847Z ✔ concurrent manual and automatic requests share one metadata request and one install (52.152469ms)
+2026-10-11T21:47:06.5342829Z ✔ startup and recurring checks use one hourly deadline timer, no interval loop (24.816979ms)
+2026-10-11T21:47:06.5344425Z ✔ automatic=false disables scheduled requests but leaves manual checks available (25.026981ms)
+2026-10-11T21:47:06.5345856Z ✔ cache validators persist across runs and 304 reuses the advertised build (48.259501ms)
+2026-10-11T21:47:06.5347416Z ✔ five-minute minimum cache applies to manual checks and never downloads equal or older builds (24.831188ms)
+2026-10-11T21:47:06.5348881Z ✔ Retry-After and exponential backoff prevent retry storms even without cached metadata (20.645561ms)
+2026-10-11T21:47:06.5349803Z ✔ a corrupt generated dataset leaves the active data and has no archive or staging debris (55.60049ms)
+2026-10-11T21:47:06.5350617Z ✔ partial downloads and oversized archive responses never reach the builder (71.932362ms)
+2026-10-11T21:47:06.5351404Z ✔ close waits for cancelled building to stop before removing temporary files (26.953684ms)
+2026-10-11T21:47:06.5352560Z ✔ activation selects verified pending generation, commits atomically, and retires old files (47.737927ms)
+2026-10-11T21:47:06.5354151Z ✔ invalid pending checksums fall back to active and clean the rejected generation (38.818575ms)
+2026-10-11T21:47:06.5355536Z ✔ rollback retains previous data and suppresses failed automatic updates until manual retry (78.950244ms)
+2026-10-11T21:47:06.5356938Z ✔ datasets older than the newer bundled baseline cannot override a new Kairo release (22.573901ms)
+2026-10-11T21:47:06.5358278Z ✔ activation refusal clears ready state and permits manual retry without deadlock (38.673095ms)
+2026-10-11T21:47:06.5359711Z ✔ one official build can catch older bundled components up without downgrading Universe (29.818554ms)
+2026-10-11T21:47:06.5361107Z ✔ failed conversion is suppressed for automatic checks and may be retried manually (39.726337ms)
+2026-10-11T21:47:06.5363268Z Kairo dataset activation status could not be saved: EISDIR: illegal operation on a directory, read
+2026-10-11T21:47:06.5364343Z ✔ successful pointer publication is not rolled back when post-commit bookkeeping fails (26.794422ms)
+2026-10-11T21:47:06.5367431Z ✔ insufficient preparation space leaves the active generation and never downloads (50.749376ms)
+2026-10-11T21:47:06.5368814Z ✔ failed temporary cleanup is visible, durable across restart and retried on check (63.306685ms)
+2026-10-11T21:47:06.5370137Z ✔ retirement failure never rolls back a committed generation and persists an actionable warning (28.475804ms)
+2026-10-11T21:47:06.5371751Z ✔ new runtime refreshes post-ready retirement warnings at activation (14.666444ms)
+2026-10-11T21:47:06.5374733Z ✔ unreadable advisory cleanup status never blocks valid runtime readiness (26.991066ms)
+2026-10-11T21:47:06.5376072Z ✔ locked redundant pending pointer cannot prevent restart on valid active data (27.36722ms)
+2026-10-11T21:47:06.5377349Z ✔ rollback rejects a locked failed generation across repeated starts while preserving valid active data (44.251544ms)
+2026-10-11T21:47:06.5378948Z ✔ a fresh UUID can retry the same build without clearing an older locked generation rejection (36.430376ms)
+2026-10-11T21:47:06.5380522Z ✔ unrelated pointer errors and malformed marker contents cannot clear a rejected generation (39.836401ms)
+2026-10-11T21:47:06.5381474Z ✔ failed rejection recording is explicit and does not delete pointers or claim restored data (17.634763ms)
+2026-10-11T21:47:06.5383060Z ✔ an unreadable pending generation does not block independently verified active data (21.420856ms)
+2026-10-11T21:47:06.5387412Z ✔ activation refusal publishes cleanup warnings immediately without claiming the old runtime restarted (40.578559ms)
+2026-10-11T21:47:06.5388481Z ✔ activation refusal exposes rollback metadata failure instead of overwriting it with the initial error (25.927507ms)
+2026-10-11T21:47:06.5389419Z ✔ partial recursive cleanup cannot erase rejection while the failed payload remains valid (52.235436ms)
+2026-10-11T21:47:06.5390920Z Kairo dataset cleanup status could not be saved: EISDIR: illegal operation on a directory, rename '/tmp/kairo-datasets-9dT7j5/datasets/cleanup.json.92429f90-e6b5-461d-80e9-0e94a9660fae.tmp' -> '/tmp/kairo-datasets-9dT7j5/datasets/cleanup.json'
+2026-10-11T21:47:06.5392481Z ✔ activation refusal retains the live cleanup warning when warning persistence also fails (38.259391ms)
+2026-10-11T21:47:06.5393375Z ✔ enrichment bounds accepted workers and preserves input order across reversed completions (6.81912ms)
+2026-10-11T21:47:06.5394309Z ✔ unexpected worker rejection stops further admission and drains accepted siblings before failing (2.776841ms)
+2026-10-11T21:47:06.5395247Z ✔ asset enrichment retains denied, rate-limited and aborted rows and rechecks newly learned names (2.503844ms)
+2026-10-11T21:47:06.5396228Z ✔ two enrichment pools retain global ESI capacity, priority, coalescing, warm cache and private pilot keys (118.024108ms)
+2026-10-11T21:47:06.5397206Z ✔ real ESI cooldown stops later enrichment requests while retaining successful accepted siblings (40.414431ms)
+2026-10-11T21:47:06.5398059Z ✔ Core drains all accepted assets enrichment and nested publication before close (258.116017ms)
+2026-10-11T21:47:06.5399247Z ✔ Core drains all accepted planets enrichment and nested publication before close (65.425769ms)
+2026-10-11T21:47:06.5400081Z ✔ commands accept 204 and repeated identical calls are neither cached nor coalesced (62.581796ms)
+2026-10-11T21:47:06.5400872Z ✔ command rate limits stop subsequent requests and never return previous success (25.338637ms)
+2026-10-11T21:47:06.5403035Z ✔ explicit 401 refreshes once, transport failure is uncertain and is not replayed (20.646655ms)
+2026-10-11T21:47:06.5404215Z ✔ mutation rejects read methods and invalid paths before transmitting (22.558183ms)
+2026-10-11T21:47:07.1891794Z ✔ routine polling reduces ship and slow dataset calls while location, OPSEC and one-minute queue checks continue (865.896358ms)
+2026-10-11T21:47:07.4322504Z ✔ warm restart, module toggles and cache reads do not reset observation times or repeat routine work (242.402621ms)
+2026-10-11T21:47:07.6097790Z ✔ one-minute queue checks detect edits and cancellation regardless of the predicted finish time (177.815744ms)
+2026-10-11T21:47:07.9825006Z ✔ known completions bring trained-skill refresh forward without stopping regular queue polling or goal updates (371.003139ms)
+2026-10-11T21:47:08.1650032Z ✔ docking refreshes the ship promptly and broadcasts the new hull without accelerating ordinary location ticks (184.069269ms)
+2026-10-11T21:47:08.1962594Z ✔ public names coalesce overlapping batches, persist per ID, and never borrow private character access (31.269587ms)
+2026-10-11T21:47:08.2241845Z ✔ equivalent query order shares a cache; 304 uses validators and retains its cache policy (27.151624ms)
+2026-10-11T21:47:08.2561909Z ✔ resource retry backoff survives restart, retains stale observations and recovers without repeated failures (31.965938ms)
+2026-10-11T21:47:08.2872612Z ✔ market rate buckets survive restart without blocking unrelated protection or another character (31.286336ms)
+2026-10-11T21:47:08.3161065Z ✔ transient location failures retry quickly while unavailable static resources back off (26.547834ms)
+2026-10-11T21:47:08.3978528Z ✔ market scans reuse names learned elsewhere and fresh books across alts without background ESI calls (83.80573ms)
+2026-10-11T21:47:09.1179080Z ✔ custom polling persists, changes real request cadence and keeps protection evidence current (719.804385ms)
+2026-10-11T21:47:09.2843743Z ✔ polling updates validate every batch atomically and cannot make failed snapshots or disabled modules ready (165.309641ms)
+2026-10-11T21:47:09.5286297Z ✔ polling preferences require a local session and CSRF, survive restart and are absent from OBS (244.997795ms)
+2026-10-11T21:47:09.5873098Z ✔ courtesy spacing applies to transport misses while warm reads and priority work bypass the wait (83.124575ms)
+2026-10-11T21:47:09.5894227Z ✔ queued paced callers serialize true misses and recheck the cache before spending another wait (34.119073ms)
+2026-10-11T21:47:09.5896175Z ✔ cancelling a paced admission cannot cancel or poison another consumer of the same path (32.72499ms)
+2026-10-11T21:47:09.5897934Z ✔ a paced reader joins an independent in-flight request after its wait without duplicating transport (29.430802ms)
+2026-10-11T21:47:09.5899463Z ✔ ESI close drains already accepted paced work and rejects new paced callers (28.285229ms)
+2026-10-11T21:47:09.5900924Z ✔ reads and commands share headers and persist changed route policy only once (75.423021ms)
+2026-10-11T21:47:09.5902440Z ▶ read and command rate policies agree on Retry-After, global floors, and pilot isolation
+2026-10-11T21:47:09.5903179Z   ✔ read 420 90 (31.772546ms)
+2026-10-11T21:47:09.5903803Z   ✔ read 420 Wed, 30 Sep 2026 00:01:30 GMT (30.781678ms)
+2026-10-11T21:47:09.5904389Z   ✔ read 429 90 (36.007726ms)
+2026-10-11T21:47:09.5904984Z   ✔ read 429 Wed, 30 Sep 2026 00:01:30 GMT (34.13604ms)
+2026-10-11T21:47:09.5905601Z   ✔ command 420 90 (27.177907ms)
+2026-10-11T21:47:09.5906242Z   ✔ command 420 Wed, 30 Sep 2026 00:01:30 GMT (27.747595ms)
+2026-10-11T21:47:09.5906888Z   ✔ command 429 90 (31.046931ms)
+2026-10-11T21:47:09.5907525Z   ✔ command 429 Wed, 30 Sep 2026 00:01:30 GMT (34.299549ms)
+2026-10-11T21:47:09.5908745Z ✔ read and command rate policies agree on Retry-After, global floors, and pilot isolation (255.883979ms)
+2026-10-11T21:47:09.5910367Z ✔ a rate bucket learned from one path blocks the same group across read and command after restart (34.858678ms)
+2026-10-11T21:47:09.5912027Z ▶ low error budget blocks every pilot for reads and commands without retrying a send
+2026-10-11T21:47:09.5913529Z   ✔ read (27.129186ms)
+2026-10-11T21:47:09.5914171Z   ✔ command (32.930625ms)
+2026-10-11T21:47:09.5915368Z ✔ low error budget blocks every pilot for reads and commands without retrying a send (60.862365ms)
+2026-10-11T21:47:09.5917192Z ▶ both read and command paths refresh once on explicit 401 and stop after the second rejection
+2026-10-11T21:47:09.5918591Z   ✔ read (25.019443ms)
+2026-10-11T21:47:09.5919173Z   ✔ command (25.610048ms)
+2026-10-11T21:47:09.5920400Z ✔ both read and command paths refresh once on explicit 401 and stop after the second rejection (51.425305ms)
+2026-10-11T21:47:09.5922574Z ✔ close drains a failed accepted command without replaying an uncertain success-body failure (27.540338ms)
+2026-10-11T21:47:09.5924341Z ✔ close drains accepted paged and name reads through their cache writes and rejects new admission (27.608408ms)
+2026-10-11T21:47:09.5926261Z ✔ one shared four-slot queue prioritizes accepted commands and close drains queued work (23.925098ms)
+2026-10-11T21:47:09.5927935Z ✔ v0.1 database migrates once without losing existing sessions, goals or stream copy (40.633103ms)
+2026-10-11T21:47:09.5929619Z ✔ selected goal projects approved fields live, and never switches to another character or deleted goal (57.118732ms)
+2026-10-11T21:47:09.5931065Z ✔ ESI bindings reject stale, disabled and disconnected character data (29.518647ms)
+2026-10-11T21:47:09.5932924Z ✔ context toasts whitelist tokens, obey character filters and redact at delivery and later state changes (96.492859ms)
+2026-10-11T21:47:09.5934630Z ✔ named sessions capture wallet and SP samples, diverse events, late combat, character and time boundaries (66.997216ms)
+2026-10-11T21:47:09.5936120Z ✔ session reports paginate events but keep totals across the entire session (101.306648ms)
+2026-10-11T21:47:09.5937719Z ✔ place notes keep system, constellation and region identities separate and enrich the visual travel ledger (27.618988ms)
+2026-10-11T21:47:09.5939652Z ✔ OBS authenticates over a real local websocket, hides/mutes before shows and scenes, and keeps its password out of config (89.41128ms)
+2026-10-11T21:47:09.5941913Z ✔ OBS abandons obsolete reveals during a state change and never runs a scene switch after a failed hide (88.595493ms)
+2026-10-11T21:47:09.5943970Z ✔ OBS refuses stale source identities or a different collection, and an OBS kick does not auto-reconnect (150.696475ms)
+2026-10-11T21:47:09.5945608Z ✔ OBS reconnects to the latest protection state and rejects a wrong password (122.26409ms)
+2026-10-11T21:47:09.5947167Z ✔ HTTP feature APIs preserve data after restart and remain inaccessible to browser sources (419.953389ms)
+2026-10-11T21:47:09.5948898Z ✔ operation models retain rows across unrelated resources and names, and replace relevant pilot/name inputs (2.503383ms)
+2026-10-11T21:47:09.5950615Z ✔ journal models do not depend on names and inactive model owners perform no derivation (1.435583ms)
+2026-10-11T21:47:09.5952064Z ✔ all operation row labels and fallback semantics match original mappings (1.008488ms)
+2026-10-11T21:47:09.5954006Z ✔ asset totals preserve unpriced, zero, duplicate price and location semantics without deriving hidden rows (0.42937ms)
+2026-10-11T21:47:09.5956167Z ✔ table results preserve exact legacy search/sort order for mixed/null/nested values and stable ties (10.648552ms)
+2026-10-11T21:47:09.5958019Z ✔ table normalization and ordering are bounded by inputs rather than page/render count (28.385689ms)
+2026-10-11T21:47:09.5959622Z ✔ row identities survive filtering, sorting, pagination and a zero id; page clamps after shrink (0.59065ms)
+2026-10-11T21:47:09.5961201Z ✔ wallet graph retains the bounded 80 balance entries and their reverse/date semantics (40.232907ms)
+2026-10-11T21:47:09.5962981Z ✔ reused number formatter preserves fixed decimal/compact, negative and invalid-value outputs (22.256521ms)
+2026-10-11T21:47:09.5964560Z ✔ reused EVE stamp preserves UTC, daylight boundaries, empty and invalid dates exactly (7.644747ms)
+2026-10-11T21:47:09.5966243Z ✔ formatters are lazy and construct at most one instance per fixed format across a 10000-row fixture (65.784949ms)
+2026-10-11T21:47:09.5967944Z ✔ many item goals share one source read and one quantity pass; lists join tracking and read names once (72.195592ms)
+2026-10-11T21:47:09.5969710Z ✔ source options reuse type-choice samples for availability and observe changes on the next call (33.916213ms)
+2026-10-11T21:47:09.5971773Z ✔ unchanged credit ledgers and tracking status perform no writes, while unavailable sources retain progress (36.704499ms)
+2026-10-11T21:47:09.5973895Z ✔ accounting failures roll back ledger, progress, baseline and status before any completion is published (36.099872ms)
+2026-10-11T21:47:09.5975640Z ✔ savepoints preserve caller-owned rollback and reentrant creation without duplicate completion (26.056218ms)
+2026-10-11T21:47:09.5977487Z ✔ prepared journal and combat inputs retain distinct creation cutoffs, pilot isolation and source filters (29.798977ms)
+2026-10-11T21:47:09.5979218Z ✔ type lookup hands successful names to the supplied application owner exactly once (23.204336ms)
+2026-10-11T21:47:09.5981030Z ✔ history writes bound the working set while preserving calendar results, row order and source fields (44.049968ms)
+2026-10-11T21:47:09.5982918Z ✔ failed history/source batches roll back together and compose with an outer transaction (30.717409ms)
+2026-10-11T21:47:09.5984594Z ✔ upgrading compacts the saved window once without resetting player data or the daily archive (57.174563ms)
+2026-10-11T21:47:09.5986380Z ✔ a failed cache upgrade leaves the old data and migration state intact and can be retried (48.834921ms)
+2026-10-11T21:47:09.5987896Z ✔ archive projection resumes between bounded batches and retains older daily rows (149.885988ms)
+2026-10-11T21:47:09.5989622Z ✔ successful archive corrections replace days and invalidate a removed type without erasing older archives (70.276602ms)
+2026-10-11T21:47:09.5991554Z ✔ one Imports operation reuses its roster while each new operation observes current access (54.587612ms)
+2026-10-11T21:47:09.6607215Z ✔ calendar history windows deduplicate days, exclude today and never inflate missing-day volume (13.896632ms)
+2026-10-11T21:47:09.6619729Z ✔ trading fees use active character skills, unmodified standings, structure rates and seller-only taxes (0.943627ms)
+2026-10-11T21:47:09.6621785Z ✔ depth-weighted purchases, valid EVE ticks and minimum/relisting fees produce exact net returns (1.059904ms)
+2026-10-11T21:47:09.6623934Z ✔ cargo packing counts indivisible hulls and shares unused space between plan lines (0.6068ms)
+2026-10-11T21:47:09.6625630Z ✔ activity thresholds use the assumed local share and prefer shorter active windows by type (2.007626ms)
+2026-10-11T21:47:09.6627382Z ✔ recommendations respect real depth, budget, margin, cargo and price-correction objectives (3.588083ms)
+2026-10-11T21:47:09.6628861Z ✔ ranking rewards fewer trips for an otherwise identical import (1.306523ms)
+2026-10-11T21:47:09.6630518Z ✔ real market ancestry groups drones, rigs and subsystems with equipment, using packaged hull volume (18.369234ms)
+2026-10-11T21:47:09.6632619Z ✔ analysis stays offline, returns at most ten per category and excludes all connected alts’ local sales (123.560599ms)
+2026-10-11T21:47:09.6634405Z ✔ own Jita orders and expired depth are excluded; missing trading scopes never become zero fees (50.498447ms)
+2026-10-11T21:47:09.6636123Z ✔ fee refresh resolves NPC faction from CCP static data and only requests required trader datasets (36.794958ms)
+2026-10-11T21:47:09.6637992Z ✔ saved plans recompute values server-side, combine hauling costs and survive restart without changing other data (52.998094ms)
+2026-10-11T21:47:09.6639777Z ✔ settings reject invalid capacities, impossible fee inputs and unknown fields atomically (33.127366ms)
+2026-10-11T21:47:09.6641472Z ✔ buying character defaults to the seller for old settings and remains independent per destination (33.815227ms)
+2026-10-11T21:47:09.6643737Z ✔ a separate buyer needs only orders and cannot change seller fees, capital or immediate purchase costs (46.200461ms)
+2026-10-11T21:47:09.6645578Z ✔ missing, unauthorized or disconnected buyers block analysis while older usable orders remain explicit (44.085918ms)
+2026-10-11T21:47:09.6647394Z ✔ saved plans retain both traders after settings change and restart, and legacy plans remain readable (46.440327ms)
+2026-10-11T21:47:09.6649304Z ✔ trader refresh covers the buyer once without requesting buyer skills or standings (38.963506ms)
+2026-10-11T21:47:09.6650928Z ✔ EVE Ref decoder validates CRC/truncation and retains only the four core market regions (189.111644ms)
+2026-10-11T21:47:09.6652771Z ✔ EVE Ref bulk history imports changed days once, shares all four regions and resumes from disk (205.152349ms)
+2026-10-11T21:47:09.6654288Z ✔ archive cancellation and rate limits preserve old data and enforce cooldown (40.870085ms)
+2026-10-11T21:47:09.6655713Z ✔ only the four built-in hubs use EVE Ref; custom hubs retain the ESI history path (222.515069ms)
+2026-10-11T21:47:09.7064598Z ✔ Jita comparisons use the lowest sell prices and update reminders wait a full day (45.563901ms)
+2026-10-11T21:47:09.7668335Z ✔ upgrade invalidates legacy market responses once and queues fresh scans while preserving player data (60.177365ms)
+2026-10-11T21:47:09.7942468Z ✔ upgrade refresh explains missing structure access without exposing or silently dropping the pending hub (27.799854ms)
+2026-10-11T21:47:10.1594678Z ✔ import endpoints and saved plans require private sessions and CSRF and never appear on the OBS service (364.252396ms)
+2026-10-11T21:47:10.2931919Z ✔ import cache ignores unrelated writes but follows books, profiles, plans and access changes (135.097384ms)
+2026-10-11T21:47:10.3678351Z ✔ import revisions cannot reuse rolled-back data and observe other database connections (74.31967ms)
+2026-10-11T21:47:10.4096687Z ✔ import cache expires at freshness and order deadlines before its thirty-second ceiling (40.770862ms)
+2026-10-11T21:47:10.9026770Z ✔ import single-flight retries when a book changes during a yielded calculation (494.13407ms)
+2026-10-11T21:47:10.9334996Z ✔ camera keeps world, viewport, controls and overview in the same coordinate system (2.226006ms)
+2026-10-11T21:47:10.9336996Z ✔ camera paints only its supplied surface and tolerates a collapsed overview (0.446772ms)
+2026-10-11T21:47:10.9338969Z ✔ zoom output updates character data without replacing the owned text node on animation frames (0.519267ms)
+2026-10-11T21:47:10.9341058Z ✔ continuous scene refreshes publish current time without postponing the independent age cadence (1.907312ms)
+2026-10-11T21:47:10.9343333Z ✔ report expiry retains its absolute deadline across frequent updates and visibility resumes immediately (0.863699ms)
+2026-10-11T21:47:10.9355306Z ✔ a snapshot that already rendered current time does not publish a redundant tick or postpone age cadence (2.963871ms)
+2026-10-11T21:47:10.9370863Z ✔ rendered refreshes keep absolute deadlines and retire records already consumed at render time (0.432746ms)
+2026-10-11T21:47:10.9385086Z ✔ an expiry crossing the render-to-effect gap triggers an immediate freshness tick (0.404453ms)
+2026-10-11T21:47:10.9394097Z ✔ the latest complete record set replaces old deadlines even without a tick (0.324935ms)
+2026-10-11T21:47:10.9395980Z ✔ rendered refreshes while hidden clear deadlines and visibility publishes actual wall time (1.382786ms)
+2026-10-11T21:47:10.9398228Z ✔ legacy or invalid rendered times still publish immediately and wall-clock rollback remains observable (0.382071ms)
+2026-10-11T21:47:10.9400238Z ✔ observed lifetime is a qualitative band independent of exact expiry and mass (3.301048ms)
+2026-10-11T21:47:10.9402514Z ✔ lifetime observation establishes a conservative bound without renewing an earlier expiry (0.422476ms)
+2026-10-11T21:47:10.9404322Z ✔ ordinary edits and clearing a band preserve prior lifetime evidence (0.460157ms)
+2026-10-11T21:47:10.9406026Z ✔ complete legacy editor records do not turn echoed band fields into fresh observations (0.30585ms)
+2026-10-11T21:47:10.9407911Z ✔ mapper presets preserve fractional hours and H freight / XL capital semantics (0.470537ms)
+2026-10-11T21:47:10.9409902Z ✔ creation requires a nonempty connected roster and tracks precisely the chosen pilots by default (84.930271ms)
+2026-10-11T21:47:10.9411958Z ✔ explicit source creation honors the selected pilots and scope while preserving live connection ages (62.756543ms)
+2026-10-11T21:47:10.9414719Z ✔ chain framing includes full cards at negative coordinates and disconnected discoveries (2.500237ms)
+2026-10-11T21:47:10.9416746Z ✔ zoom preserves the pointer world position and cannot zoom into unlimited empty space (0.258261ms)
+2026-10-11T21:47:10.9418565Z ✔ connection curves terminate on card sides and distinguish parallel observations (0.454797ms)
+2026-10-11T21:47:10.9420545Z ✔ traces use explicit recorded connections and stop at expired, collapsed or removed nodes (1.250649ms)
+2026-10-11T21:47:10.9422736Z ✔ panning retains recoverable map content and contextual overlays remain bounded (0.307613ms)
+2026-10-11T21:47:10.9424676Z ✔ overview labels retain the selected system and avoid neighbouring text collisions (0.568147ms)
+2026-10-11T21:47:10.9426688Z ✔ public and private connection captions avoid intervening cards and narrow endpoint gaps (1.712339ms)
+2026-10-11T21:47:10.9428702Z ✔ drag previews preserve group offsets using initial zoom and latest pending positions (0.404213ms)
+2026-10-11T21:47:10.9430773Z ✔ connection handles snap to private targets and reject self, empty space and public reports (0.815769ms)
+2026-10-11T21:47:10.9433132Z ✔ mobile Fit frames whole cards and their attached handles without a second label envelope (0.602512ms)
+2026-10-11T21:47:10.9435411Z ✔ four cardinal tabs preserve exact selected endpoints in a single continuous curve (2.296497ms)
+2026-10-11T21:47:10.9437145Z ✔ a large staged region can be framed with its full node and tab envelope (0.236019ms)
+2026-10-11T21:47:10.9438972Z ✔ permanent map traces retain gates and follow Ansiblex direction without wormhole conditions (0.505832ms)
+2026-10-11T21:47:10.9441239Z ✔ independent display sizes frame actual cards and retain scaled ports and hit targets (0.893233ms)
+2026-10-11T21:47:10.9443494Z ✔ scaled cards remain caption obstacles and scaled overview labels use their visual centres (0.694454ms)
+2026-10-11T21:47:10.9445602Z ✔ note time switches from elapsed minutes to explicit EVE time at one hour, independent of browser timezone (3.39368ms)
+2026-10-11T21:47:10.9447693Z ✔ missing or invalid note authors never become the active pilot or a portrait of an invalid entity (1.312705ms)
+2026-10-11T21:47:10.9449658Z ✔ map note search combines text, author and system names without exposing source maps or departed connection notes (9.468494ms)
+2026-10-11T21:47:10.9452002Z ✔ native map export/import and duplication preserve isolated operational records without config or live telemetry (83.906706ms)
+2026-10-11T21:47:10.9454638Z ✔ native map operational validation is atomic and older exports without the records remain compatible (56.131983ms)
+2026-10-11T21:47:10.9457522Z ✔ deleting a connection forgets its evidence and undo copies immediately, preserving systems and an independent duplicated map (173.450925ms)
+2026-10-11T21:47:10.9460363Z ✔ expiry removes J-J, J-K and K-J connections at their exact deadline while system locks and grace remain separate (76.98116ms)
+2026-10-11T21:47:10.9464237Z ✔ legacy archived connections are forgotten on restart and import without losing system records or reviving their signatures (75.879271ms)
+2026-10-11T21:47:10.9468653Z ✔ scanner observations with the same system and code belong to their selected map and cannot be deleted by another map (53.066731ms)
+2026-10-11T21:47:10.9471325Z ✔ empty scope is global and populated scope normalises IDs without mutating input (4.041477ms)
+2026-10-11T21:47:10.9473714Z ✔ scope validation rejects unknown systems, J-Space organisational areas and unconfigured or inferred blocs (2.715398ms)
+2026-10-11T21:47:10.9475893Z ✔ all scope groups combine by OR and geography remains independent of sovereignty freshness (0.696698ms)
+2026-10-11T21:47:10.9478101Z ✔ ownership matches only verified current sovereignty, never faction ownership or J-Space assigned dominion (0.737092ms)
+2026-10-11T21:47:10.9481957Z ✔ configured bloc membership updates dynamically and never falls back to inferred coalitions (0.560865ms)
+2026-10-11T21:47:10.9484463Z ✔ scope options expose K-Space areas, named cached owners and only configured power blocs (13.433719ms)
+2026-10-11T21:47:10.9492893Z ✔ adding a map pilot enables tracking and seeds only the current fresh J-Space location (40.907683ms)
+2026-10-11T21:47:10.9495140Z ✔ normal nonoverlapping ESI cache windows populate entry, internal and exit connections without renewing a known hole (34.507902ms)
+2026-10-11T21:47:10.9497478Z ✔ pause and resume establish a new baseline and removing even a disconnected pilot unsubscribes the map (28.046171ms)
+2026-10-11T21:47:10.9499736Z ✔ one dispatcher fans out to subscribed maps with independent data and per-pilot baselines (38.370214ms)
+2026-10-11T21:47:10.9501830Z ✔ stale, future, out-of-order, missed and docked samples cannot invent connections (28.72395ms)
+2026-10-11T21:47:10.9503939Z ✔ K-Space legs, known gates and recent pod losses never create wormholes (38.992953ms)
+2026-10-11T21:47:10.9506104Z ✔ selected authorised chat-log samples can track without ESI scope and source changes cannot bridge travel (29.877261ms)
+2026-10-11T21:47:10.9508354Z ✔ optional passages are recorded only against one already trusted connection and stay map-local (46.737268ms)
+2026-10-11T21:47:10.9510642Z ✔ a later matching exit backfills the whole live source chain while retaining independent IDs and original expiry (36.376317ms)
+2026-10-11T21:47:10.9513460Z ✔ scope population skips expired source edges and unrelated components and never removes existing annotations on scope edits (53.122415ms)
+2026-10-11T21:47:10.9516087Z ✔ the lightweight source follows only the active pilot while explicit interactive rosters keep tracking their pilots (54.604232ms)
+2026-10-11T21:47:10.9518946Z ✔ explicit global-map creation can copy live source topology without source notes or passage data (67.810533ms)
+2026-10-11T21:47:10.9520974Z ✔ a source update visits only that pilot's subscribed scoped maps and reads its graph once (62.711754ms)
+2026-10-11T21:47:10.9523286Z ✔ stationary samples do not resurrect a source system after pruning but new movement rediscovers it (54.594024ms)
+2026-10-11T21:47:10.9525553Z ✔ old source topology cannot revive deleted connections or removed cards, but a new observed traversal can rediscover them (37.477104ms)
+2026-10-11T21:47:10.9527824Z ✔ an earlier expiry in an interactive map is not renewed by its still-live source copy (36.773693ms)
+2026-10-11T21:47:10.9529972Z ✔ a source connection that vanishes during copying leaves no new orphan cards or false copy count (35.961927ms)
+2026-10-11T21:47:10.9531901Z ✔ a component blocked by map capacity remains eligible when space becomes available (41.295904ms)
+2026-10-11T21:47:10.9534275Z ✔ drawn connections use mapper defaults without granting route access; later condition edits preserve expiry (2.703515ms)
+2026-10-11T21:47:10.9536370Z ✔ consecutive drag saves wait for the accepted revision without dropping the later position (0.739878ms)
+2026-10-11T21:47:10.9538664Z ✔ switching pilot or map cancels old queued drags while a failed old response cannot cancel the new workspace (1.133251ms)
+2026-10-11T21:47:10.9541352Z ✔ a rejected revision cancels later gestures in that layout scope until a new gesture is made (0.430612ms)
+2026-10-11T21:47:10.9544085Z ✔ editing connection conditions preserves exact expiry and never sends a renewing duration (0.45088ms)
+2026-10-11T21:47:10.9546510Z ✔ explicit UTC expiry wins without a competing default duration and fresh unknown connections stay unconfirmed (0.287977ms)
+2026-10-11T21:47:10.9548687Z ✔ three-line structure timers preserve UTC and do not invent type, ownership or power (1.946636ms)
+2026-10-11T21:47:10.9550839Z ✔ Dscan preview recognizes numeric structure types without inventing powered state or translating private names (0.544584ms)
+2026-10-11T21:47:10.9553392Z ✔ unrecognized scans and oversized clipboard content cannot produce a misleading empty import (1.061557ms)
+2026-10-11T21:47:10.9555492Z ✔ public chain reports are explicit, ephemeral and cannot become trusted route edges (2.231736ms)
+2026-10-11T21:47:10.9557768Z ✔ private connection lifetime ends at the exact boundary while unknown lifetimes and system cards remain (1.823862ms)
+2026-10-11T21:47:10.9560024Z ✔ structures remain structures with optional schedules and never inflate standalone timer counts (1.397082ms)
+2026-10-11T21:47:10.9561771Z ✔ bus keeps immediate delivery and drains awaited nested events to a fixed point (6.576147ms)
+2026-10-11T21:47:10.9563902Z ✔ listener failures are visible, bounded and do not discard other listeners (2.048385ms)
+2026-10-11T21:47:10.9565813Z ✔ Core keeps milestone subscribers until deferred names and nested writes finish (248.836594ms)
+2026-10-11T21:47:10.9567704Z ✔ Core finishes accepted killmail enrichment before closing its Combat dependency (91.252622ms)
+2026-10-11T21:47:10.9569390Z ✔ a new listener failure during Core drain is reported after owned work settles (65.006215ms)
+2026-10-11T21:47:10.9571036Z ✔ Registry owns asynchronous cleanup, unsubscribes once and reports cleanup failure (30.726476ms)
+2026-10-11T21:47:10.9573018Z ✔ HTTP quiescence retains an accepted connected write and closes storage last (193.615466ms)
+2026-10-11T21:47:10.9574767Z ✔ HTTP quiescence retains an accepted disconnected write and closes storage last (136.092519ms)
+2026-10-11T21:47:10.9576773Z ✔ landing searches only visible user map instances, retaining independent aliases and map context (17.404444ms)
+2026-10-11T21:47:10.9579108Z ✔ placement catalog exposes known-space groups and exact membership without organizational wormhole regions (0.888656ms)
+2026-10-11T21:47:10.9581372Z ✔ default display and disabled focus preserve every canonical card, coordinate and connection (3.994346ms)
+2026-10-11T21:47:10.9584357Z ✔ display preferences are bounded, duplicate-safe and do not mutate saved input (16.256116ms)
+2026-10-11T21:47:10.9592592Z ✔ collapse hides interior members but retains entry, exit, parent, active route and selected cards (1.977131ms)
+2026-10-11T21:47:10.9594671Z ✔ custom ownership overrides geographic groups and same-kind overlap follows saved order (0.88508ms)
+2026-10-11T21:47:10.9597194Z ✔ cross-group endpoints stay real and stale memberships or absent endpoints add no fake cards or edges (0.644692ms)
+2026-10-11T21:47:10.9599353Z ✔ known and wormhole scales are independent; focused and protected context retains full detail (0.639642ms)
+2026-10-11T21:47:10.9601042Z ✔ large supported maps remain bounded and source objects can be frozen (5.35334ms)
+2026-10-11T21:47:10.9603412Z ✔ group preview preserves official angles, stages absent nodes and deduplicates internal gates without mutating map (2.838274ms)
+2026-10-11T21:47:10.9605713Z ✔ permanent editor payloads never send WH conditions or alter a shared bridge access decision (0.644241ms)
+2026-10-11T21:47:10.9607465Z ✔ mapper preferences are opt-in, finite, bounded and pilot scoped (1.932713ms)
+2026-10-11T21:47:10.9609176Z ✔ settled focus retains near-edge members without admitting outer context (0.59509ms)
+2026-10-11T21:47:11.0635709Z ✔ region placement is one revision-checked atomic operation deriving only real intragroup gates and configured bridges (80.929023ms)
+2026-10-11T21:47:11.1077345Z ✔ constellation placement includes exactly its members and cannot authorise a fake gate (43.484108ms)
+2026-10-11T21:47:11.1791645Z ✔ manual Ansiblex is private permanent evidence with explicit access and cannot leak to other maps or Atlas routes (71.486124ms)
+2026-10-11T21:47:11.2436316Z ✔ configured bridge references retain global access, survive local deletion and disappear when source config is removed (62.999902ms)
+2026-10-11T21:47:11.2876547Z ✔ notes derive author from connected pilot, preserve provenance on import, and never invent a pilot for legacy notes (45.074457ms)
+2026-10-11T21:47:11.3435351Z ✔ reimporting configured bridges preserves unchanged map references and prunes only removed pairs (55.631627ms)
+2026-10-11T21:47:11.3945007Z ✔ deleting a map removes every private permanent link but retains shared configured bridges (50.305344ms)
+2026-10-11T21:47:11.4033694Z ✔ market taxonomy includes descendants once, isolates sibling categories and keeps unknown items visible (3.073931ms)
+2026-10-11T21:47:11.4035863Z ✔ existing cached books browse real EVE categories offline, combined with search and supply filters (90.986726ms)
+2026-10-11T21:47:11.4037818Z ✔ a decoded archive is delivered only after worker exit and ignores later aborts (8.208934ms)
+2026-10-11T21:47:11.4039475Z ▶ decoder errors and cancellation reject only after exit, including an already aborted signal
+2026-10-11T21:47:11.4040528Z   ✔ message (3.033886ms)
+2026-10-11T21:47:11.4041280Z   ✔ error (3.362741ms)
+2026-10-11T21:47:11.4041826Z   ✔ abort (1.092316ms)
+2026-10-11T21:47:11.4042688Z   ✔ already-aborted (1.388749ms)
+2026-10-11T21:47:11.4044019Z ✔ decoder errors and cancellation reject only after exit, including an already aborted signal (10.985342ms)
+2026-10-11T21:47:11.4048708Z ✔ decoder timeout requests termination once and awaits exit (2.555524ms)
+2026-10-11T21:47:11.4050026Z ✔ an unexpected exit rejects without requesting termination again (0.732296ms)
+2026-10-11T21:47:11.4051651Z ✔ real Market scans skip courtesy waits on ESI cache hits and retain the book when cancelled during pacing (114.109611ms)
+2026-10-11T21:47:11.4264920Z ✔ quick scans paginate, isolate station orders, aggregate buy/sell and share alt scans with Jita comparisons (83.604639ms)
+2026-10-11T21:47:11.4266974Z ✔ failed or stale page updates never overwrite a complete previous book (52.583547ms)
+2026-10-11T21:47:11.4268625Z ✔ quick refresh clears sold-out items without deleting full-scan coverage (47.512467ms)
+2026-10-11T21:47:11.9852997Z ✔ full books exceed the old 250-page helper limit and browse in bounded pages (560.233148ms)
+2026-10-11T21:47:12.0293548Z ✔ pagination changes, unreasonable counts and malformed orders leave no partial success (44.002911ms)
+2026-10-11T21:47:12.0894767Z ✔ one scan at a time, cancellation and restart retain durable completed books (58.872318ms)
+2026-10-11T21:47:12.1334819Z ✔ history failure keeps the newly completed book and reports explicit missing coverage (43.780347ms)
+2026-10-11T21:47:12.1364063Z ✔ history statistics use completed UTC calendar days, volume weights and honest coverage (0.535969ms)
+2026-10-11T21:47:12.2048867Z ✔ structure scans require an authorized alt, read all pages even for quick mode and retain shared cache after disconnect (67.431836ms)
+2026-10-11T21:47:12.2596489Z ✔ hub resolution uses ESI identity, validates structure scope, and removing a hub keeps its cache (56.51117ms)
+2026-10-11T21:47:12.3116748Z ✔ dedicated goal templates retain explicit owner selection and project any selected local or alt goal (52.784849ms)
+2026-10-11T21:47:12.7325789Z ✔ market HTTP endpoints require a dashboard session and CSRF and are absent from OBS (420.390512ms)
+2026-10-11T21:47:12.7880306Z ✔ continuing history reuses complete books and fresh histories without repeated network calls (56.756574ms)
+2026-10-11T21:47:12.8130674Z ✔ HTTP can bootstrap names; unchanged revisions retain identity without inspecting names (3.023648ms)
+2026-10-11T21:47:12.8133130Z ✔ global events accept rename/add and do not depend on a selected pilot (0.287045ms)
+2026-10-11T21:47:12.8134867Z ✔ a newer names event fences out a late full state response (0.390989ms)
+2026-10-11T21:47:12.8136433Z ✔ newer HTTP state cannot be overwritten by an older same-process bootstrap packet (0.256148ms)
+2026-10-11T21:47:12.8138248Z ✔ reconnect and process reset replace the full map and reject late old-process state (0.367585ms)
+2026-10-11T21:47:12.8140137Z ✔ same-process reconnect can recover a missed changed directory without replaying deltas (0.22002ms)
+2026-10-11T21:47:12.8141955Z ✔ invalid envelopes cannot replace a valid directory (0.324986ms)
+2026-10-11T21:47:12.8144371Z ✔ unversioned snapshot fallback merges partial maps, retains unchanged identity and fences late HTTP (1.267964ms)
+2026-10-11T21:47:12.8146491Z ✔ unversioned full state retains reset/removal semantics and versioned authority recovers after fallback (0.553614ms)
+2026-10-11T21:47:12.8148541Z ✔ first EventSource open does not strand a delayed initial legacy HTTP directory (0.322151ms)
+2026-10-11T21:47:12.8150778Z ✔ disconnect fences old HTTP but permits fresh authoritative reset while SSE is unavailable (0.245277ms)
+2026-10-11T21:47:12.8152868Z ✔ first successful open after an initial connection error signals legacy HTTP recovery (0.229608ms)
+2026-10-11T21:47:12.8155413Z ✔ legacy owner merges own keys safely and authoritative JSON keys cannot alter prototypes (0.256659ms)
+2026-10-11T21:47:12.8157142Z ✔ participation includes assisted and zero-damage EWAR kills, not fleet affiliation alone (2.228706ms)
+2026-10-11T21:47:12.8159062Z ✔ combat ingestion drains an unseen backlog beyond 50, deduplicates sources and retains history (199.589474ms)
+2026-10-11T21:47:12.8161159Z ✔ public participation reads are cached, send no EVE credentials and preserve records on rate limits (42.266948ms)
+2026-10-11T21:47:12.8183814Z ✔ late assisted kills repair archived reports without historic toasts or duplicate counts (37.011543ms)
+2026-10-11T21:47:12.8185963Z ✔ hiding a filament connection is reversible, character-scoped and never bridges neighbouring visits (31.917103ms)
+2026-10-11T21:47:12.8187908Z ✔ wallet goals follow fresh data, pause on stale snapshots and complete once without regressing (48.314718ms)
+2026-10-11T21:47:12.8189751Z ✔ skills include fresh completed queue entries and type lookup validates real skill categories (31.513856ms)
+2026-10-11T21:47:12.8191749Z ✔ asset goals sum owned quantities and reject stale, truncated, disabled and unauthorized sources (36.898197ms)
+2026-10-11T21:47:12.8194221Z ✔ mining baselines survive restarts and rolling ledgers without double-counting daily totals (31.463869ms)
+2026-10-11T21:47:12.8196502Z ✔ income and manufacturing goals retain credited records as source windows roll forward (36.249997ms)
+2026-10-11T21:47:12.8198408Z ✔ combat goals count only verified participation since creation and preserve manual legacy goals (34.496011ms)
+2026-10-11T21:47:12.8200389Z ✔ normal core collection pages ESI killmails and updates automatic goals and linked stream widgets (307.831051ms)
+2026-10-11T21:47:12.8202524Z ✔ HTTP goal and connection edits enforce CSRF and character identity and stay off OBS routes (194.789237ms)
+2026-10-11T21:47:12.8208023Z ✔ cache expiry does not flip protection during revalidation; old or invalid observations still fail closed (2.589367ms)
+2026-10-11T21:47:12.8210006Z ✔ brief jump gaps retain covered protection without transition events, then classify the destination (33.523859ms)
+2026-10-11T21:47:12.8212057Z ✔ jump continuity cannot extend its deadline, carry revealed High-Sec, or mask access and policy changes (1.127722ms)
+2026-10-11T21:47:12.8214392Z ✔ core reads refreshable protection evidence separately from stale UI snapshots and does not spam history (251.116336ms)
+2026-10-11T21:47:12.8216381Z ✔ location refresh proceeds during a slow collector and shares in-flight work with the main sync (98.366183ms)
+2026-10-11T21:47:12.8218352Z ✔ ESI prioritizes protection requests within its concurrency cap and preserves access-denied status (44.990936ms)
+2026-10-11T21:47:12.8220342Z ✔ ESI resumes protection requests after cooldown instead of retaining a rejected in-flight promise (31.215916ms)
+2026-10-11T21:47:12.8222697Z ✔ activity API returns five newest entries, pages equal timestamps without gaps, and searches all history (172.443566ms)
+2026-10-11T21:47:13.2061334Z ✔ overlapping requests share decoded bytes and receive independent Responses with original headers (41.493604ms)
+2026-10-11T21:47:13.2063525Z ✔ one consumer timeout does not cancel another consumer; final cancellation aborts upstream (6.134289ms)
+2026-10-11T21:47:13.2065278Z ✔ streaming 2 MiB and 4 MiB limits remain independent, including Content-Length policy (17.963459ms)
+2026-10-11T21:47:13.2067041Z ✔ oversized and interrupted response bodies cancel their reader and never become cached packets (9.603934ms)
+2026-10-11T21:47:13.2068747Z ✔ provider failure statuses and transport errors are shared only while in flight and retry freshly (8.466614ms)
+2026-10-11T21:47:13.2070688Z ✔ cache entry, byte and age limits are bounded; a fresh sequence pointer invalidates reused packets (4.996726ms)
+2026-10-11T21:47:13.2071915Z ✔ fetcher identities, unrelated providers and request credentials never share responses (2.111286ms)
+2026-10-11T21:47:13.2073943Z ✔ one provider budget paces different URLs; queued cancellation makes no network request (3.362479ms)
+2026-10-11T21:47:13.2075705Z ✔ same-key cancellation and retry cannot bypass the accepted task bound behind a blocked request (5.043121ms)
+2026-10-11T21:47:13.2077773Z ✔ actual Session and Universe consumers share raw successes but preserve independent acknowledgement and disable policy (131.222988ms)
+2026-10-11T21:47:13.2079674Z ▶ disabling either actual consumer leaves the other pending consumer and cursor independent
+2026-10-11T21:47:13.2080890Z   ✔ Universe (7.678393ms)
+2026-10-11T21:47:13.2081454Z   ✔ Session (115.018118ms)
+2026-10-11T21:47:13.2083094Z ✔ disabling either actual consumer leaves the other pending consumer and cursor independent (123.899685ms)
+2026-10-11T21:47:13.2084862Z ✔ transport close is idempotent, drains active work and rejects queued/new admission (0.949039ms)
+2026-10-11T21:47:13.2086597Z ✔ real Core wiring shares optional public transport and retains verified Session ingestion (481.795118ms)
+2026-10-11T21:47:13.2194945Z ✔ unchanged snapshot revisions retain large payload identity without reading rows (2.055582ms)
+2026-10-11T21:47:13.2200829Z ✔ same timestamp cannot hide corrected data, coverage, source removal or a new process (0.359651ms)
+2026-10-11T21:47:13.2202683Z ✔ unchanged names and Session rows retain references while edits invalidate (0.358608ms)
+2026-10-11T21:47:13.2205053Z ✔ pilot and typed resource routing ignores unrelated state without dropping global recovery (0.299087ms)
+2026-10-11T21:47:13.2206963Z ✔ every automatic Goal source and queue clock boundary invalidates independently of Sessions (0.75078ms)
+2026-10-11T21:47:13.2208993Z ✔ resource versions isolate pilots, preserve global invalidation and reject older same-pilot responses (1.605624ms)
+2026-10-11T21:47:13.2211033Z ✔ snapshot name merges retain unchanged full/partial maps and copy changed names without dropping unrelated IDs (0.743085ms)
+2026-10-11T21:47:13.2213431Z ✔ snapshot name owner matches spread-and-retain semantics for valid flat maps across event sequences (53.750707ms)
+2026-10-11T21:47:13.2215300Z ✔ snapshot name owner uses own enumerable keys and preserves spread prototype behavior (0.78879ms)
+2026-10-11T21:47:13.2216996Z ✔ unchanged snapshot names do not copy or enumerate the retained full map (0.613754ms)
+2026-10-11T21:47:13.2218651Z ✔ child activates updater only after parent commit and exports sessions after drain (7.48245ms)
+2026-10-11T21:47:13.2220304Z ✔ child restores update UI on cancellation and shuts down if parent disappears (2.570563ms)
+2026-10-11T21:47:13.2221940Z ✔ a stuck accepted-work drain reaches the child deadline without a successful handoff (2.674306ms)
+2026-10-11T21:47:13.2223699Z ✔ runtime lease excludes a second owner and is reusable after close (3.436096ms)
+2026-10-11T21:47:13.2224984Z ✔ different data directories have independent runtime leases (1.376637ms)
+2026-10-11T21:47:13.2226381Z ✔ SQLite releases the runtime lease when a process is killed (39.952172ms)
+2026-10-11T21:47:13.7944271Z ✔ second supervisor is rejected before inspecting or cleaning datasets (5.793092ms)
+2026-10-11T21:47:13.7946446Z ✔ update drains old core before new generation, preserves sessions privately and opens one browser (8.686695ms)
+2026-10-11T21:47:13.7973690Z ✔ failed pending startup rolls back once and reports the failed build (2.398141ms)
+2026-10-11T21:47:13.8000744Z ✔ failed preparation cancels the update notice while current core keeps running (2.563219ms)
+2026-10-11T21:47:13.8031727Z ✔ startup timeout terminates bad generation before rollback and releases lease on close (16.428245ms)
+2026-10-11T21:47:13.8033594Z ✔ unexpected active core exit fails clearly without a restart loop (1.953602ms)
+2026-10-11T21:47:13.8035278Z ✔ IPC failure after commit preserves the newly published generation (2.158304ms)
+2026-10-11T21:47:13.8036850Z ✔ real core replacement keeps the browser cookie, CSRF token and saved settings (887.875384ms)
+2026-10-11T21:47:13.8059685Z ✔ a burst keeps one active read and one follow-up instead of losing invalidation (5.659361ms)
+2026-10-11T21:47:13.8061317Z ✔ busy owners retain changes, resume once and may explicitly refresh for conflict recovery (1.511027ms)
+2026-10-11T21:47:13.8063087Z ✔ leaving a pilot/map scope prevents old publication and releases waiters (0.98121ms)
+2026-10-11T21:47:13.8064704Z ✔ a failed read still drains a newer invalidation and does not overlap reads (0.79387ms)
+2026-10-11T21:47:13.8066377Z ✔ a change during forced conflict recovery waits for the mutation without deadlocking it (1.509674ms)
+2026-10-11T21:47:13.8300903Z ✔ SDE builder converts every system across multiple spool buckets without losing bodies (808.940032ms)
+2026-10-11T21:47:13.8566397Z ✔ SDE archive rejects CRC corruption before publishing a generation (22.650627ms)
+2026-10-11T21:47:13.9193230Z ✔ SDE conversion rejects missing references, missing members and mismatched builds (66.464781ms)
+2026-10-11T21:47:13.9264106Z ✔ SDE archive refuses traversal names and truncated archives (4.264299ms)
+2026-10-11T21:47:14.0356312Z ✔ SDE conversion cancellation removes spool and partial output without publishing (111.577268ms)
+2026-10-11T21:47:14.1652070Z ✔ SDE conversion fails closed if a spool loses bytes between writing and reading (129.723485ms)
+2026-10-11T21:47:14.3794359Z ✔ SDE worker reports progress and validated manifest, and serializes failures (212.802179ms)
+2026-10-11T21:47:14.4607530Z ✔ SDE builder bounds total spool, per-bucket bytes and output before publication (80.453346ms)
+2026-10-11T21:47:14.4645449Z ✔ SDE builder refuses insufficient free space before creating a spool (5.637678ms)
+2026-10-11T21:47:14.5057080Z ✔ SDE builder checks free space again before writing and preserves disk-full cause (41.230475ms)
+2026-10-11T21:47:14.5298183Z ✔ slow writes finish and close their handle before cancellation removes the spool (24.253285ms)
+2026-10-11T21:47:14.5349131Z ✔ external-memory budget is separate from V8 old generation and cleanup retains primary error (4.645624ms)
+2026-10-11T21:47:14.6163028Z ✔ write and handle-close dual failures preserve the original disk-full error (75.968745ms)
+2026-10-11T21:47:14.6441833Z ✔ stalled conversion terminates once and rejects only after actual worker exit (2.144608ms)
+2026-10-11T21:47:14.6444349Z ✔ meaningful progress renews idle deadline but cannot renew total conversion budget (0.316991ms)
+2026-10-11T21:47:14.6446246Z ✔ cancellation waits for exit and clears both watchdogs (0.453185ms)
+2026-10-11T21:47:14.6447921Z ✔ worker resource error code survives serialization and normal exit (0.382714ms)
+2026-10-11T21:47:14.6449635Z ✔ watchdog stops a real blocked worker thread before reporting failure (245.907276ms)
+2026-10-11T21:47:14.6451605Z ✔ same-pilot invalidations supersede an old archive read with one retained follow-up (6.514435ms)
+2026-10-11T21:47:14.6454249Z ✔ refresh during load-more retains the request and the loaded prefix without duplicates (0.870393ms)
+2026-10-11T21:47:14.6471034Z ✔ refresh preserves loaded pages, updates renamed older rows and retains tail more flag (0.480606ms)
+2026-10-11T21:47:14.6475309Z ✔ unmount/pilot switch releases waiters and blocks late publication/errors (4.591827ms)
+2026-10-11T21:47:14.6477911Z ✔ failed page leaves retained history and supports explicit retry (0.741783ms)
+2026-10-11T21:47:14.6479544Z ✔ linear ID merge preserves order and refreshed head wins duplicate rows (0.225942ms)
+2026-10-11T21:47:14.6481318Z ✔ failed required head refresh pauses a queued tail until successful retry (0.655913ms)
+2026-10-11T21:47:14.6484216Z ✔ recent combat ranges preserve all eligible IDs/order, exact cutoff and end writes with bounded plans (268.593806ms)
+2026-10-11T21:47:14.6486348Z ✔ report and replay share exact event boundaries while preserving their distinct presentation (257.899124ms)
+2026-10-11T21:47:14.6488594Z ✔ same-timestamp adjacent sessions keep delayed owned observations in their original session (35.610936ms)
+2026-10-11T21:47:14.6490565Z ✔ replay snapshot fences new rows without report construction; live report can subsequently include them (28.179454ms)
+2026-10-11T21:47:14.6492198Z ✔ legacy and aliased event windows retain bounded per-pilot index selection (28.405746ms)
+2026-10-11T21:47:14.6494550Z ✔ collection stays live regardless of age and becomes static exactly 24 hours after ending (2.677542ms)
+2026-10-11T21:47:14.6496482Z ✔ one live feed shares a durable cursor, checks every two minutes, and observes the 404 minimum wait (36.265399ms)
+2026-10-11T21:47:14.6498597Z ✔ a deferred live check does not construct targets or change state, including forced cooldown checks (1.400671ms)
+2026-10-11T21:47:14.6500297Z ✔ due and forced checks share one pending target build and closed checks never rebuild (1.242606ms)
+2026-10-11T21:47:14.6501862Z ✔ a due live check reads current pilot eligibility instead of retaining old targets (42.425846ms)
+2026-10-11T21:47:14.6503810Z ✔ ending the last live session during a request discards the packet and stops further feed requests (1.335129ms)
+2026-10-11T21:47:14.6505528Z ✔ failed verification and HTTP cooldowns retain the cursor, including across forced checks (2.401958ms)
+2026-10-11T21:47:14.6507085Z ✔ a session ending during request spacing cannot start another feed request (11.526608ms)
+2026-10-11T21:47:14.6508681Z ✔ an expired live cursor restarts from the current pointer instead of looping on expired packets (1.355988ms)
+2026-10-11T21:47:14.6510322Z ✔ feed work is bounded and rejects malformed or oversized packets without advancing (5.884723ms)
+2026-10-11T21:47:14.6512033Z ✔ closing a live collector aborts its in-flight request without recording an error or advancing (0.828615ms)
+2026-10-11T21:47:14.6514278Z ✔ live packets verify only relevant records, preserve full personal/alliance totals and stop on end (49.359249ms)
+2026-10-11T21:47:14.6516322Z ✔ the feed continues for another live pilot but ignores ended sessions and paused combat (25.927408ms)
+2026-10-11T21:47:14.6518373Z ✔ ending triggers pending history checks while retaining the source cache and the 24-hour cutoff (40.257036ms)
+2026-10-11T21:47:14.6520431Z ✔ every recent ended session is eligible for delayed history checks, not just the newest eight (48.180696ms)
+2026-10-11T21:47:14.6522840Z ✔ history reaching the archive deadline in flight does not verify or retain further records (21.179876ms)
+2026-10-11T21:47:14.6524917Z ✔ replay ownership backdrop preserves owner colours without admitting live operational context (2.852849ms)
+2026-10-11T21:47:14.6527130Z ✔ replay labels missing or stale sovereignty without inventing historical ownership (0.499611ms)
+2026-10-11T21:47:14.6530603Z ✔ the replay location owner label uses only the captured visit, with an explicit legacy gap (0.451873ms)
+2026-10-11T21:47:14.6533839Z ✔ indexed replay preserves current/recent/next/previous rules across equal times, gaps, overlaps and arbitrary seeks (8.004903ms)
+2026-10-11T21:47:14.6536545Z ✔ a fixed snapshot retains discovered geography and reuses unchanged trail/travel boundaries while rewinding correctly (0.571415ms)
+2026-10-11T21:47:14.6539429Z ✔ near-cap activity and large geography remain equivalent across playback and backwards jumps (113.698916ms)
+2026-10-11T21:47:14.6541253Z ✔ empty data and overlapping legacy coverage preserve honest gaps (0.511964ms)
+2026-10-11T21:47:14.6614397Z ✔ replay retains repeated systems and same-system observations without inventing intermediate travel (228.910121ms)
+2026-10-11T21:47:14.7110834Z ✔ a stationary session replays one start position with no fabricated movement or long-dwell gap (53.763261ms)
+2026-10-11T21:47:14.7421856Z ✔ event membership exactly matches report start/end cursor semantics, including delayed kills (30.459736ms)
+2026-10-11T21:47:14.7641519Z ✔ explicit and owned combat locations outrank context, while unknown locations stay unplaced (22.819722ms)
+2026-10-11T21:47:14.7965141Z ✔ missing history is preserved as a gap; legacy prior observations are explicitly inferred (31.991727ms)
+2026-10-11T21:47:15.2041382Z ✔ replay includes more than one report page and clearly bounds huge event histories without truncating visits (408.026741ms)
+2026-10-11T21:47:15.2423866Z ✔ replay suppresses routine location and protection events while preserving movement and source reports (38.298947ms)
+2026-10-11T21:47:15.3016228Z ✔ routine events cannot crowd meaningful activity out of the cap or inflate incomplete coverage (58.555835ms)
+2026-10-11T21:47:15.3319719Z ✔ live replay snapshots its end once, performs no writes and enforces pilot ownership (30.243437ms)
+2026-10-11T21:47:15.4320422Z ✔ recorded J-Space movement replays after restart and live connection removal without restoring map entities (99.00865ms)
+2026-10-11T21:47:15.4326309Z ✔ replay schematic includes each J-Space entrance and exit then returns to physical K-Space, including rewinds (0.616619ms)
+2026-10-11T21:47:15.4329486Z ✔ repeated entrance or exit observations cannot switch replay projection during a stationary visit (0.277237ms)
+2026-10-11T21:47:15.4643422Z ✔ session highlight counts unique personal/alliance killmails and favours combat over time at home (4.077021ms)
+2026-10-11T21:47:15.4645450Z ✔ quiet session highlight totals return visits and labels time instead of implying combat (3.023536ms)
+2026-10-11T21:47:15.4647046Z ✔ equal combat counts use observed time, then a stable system tie-break (0.379788ms)
+2026-10-11T21:47:15.4648454Z ✔ missing location observations do not invent activity or discard a located killmail (0.337689ms)
+2026-10-11T21:47:15.5910089Z ✔ upgrade and repeated reopen preserve legacy evidence, IDs, annotations and membership without backfill duplication (50.957369ms)
+2026-10-11T21:47:15.5914780Z ✔ fresh observations discover outside sessions, retain activity, and obey Pilot independently of Universe (29.633256ms)
+2026-10-11T21:47:15.5917351Z ✔ fresh starts avoid duplicate baselines, loops persist, and active recording resumes from durable evidence after restart (35.019739ms)
+2026-10-11T21:47:15.5920467Z ✔ stale or missing captured starts acquire the first same-system fresh sample and retain the preceding coverage gap (203.456606ms)
+2026-10-11T21:47:15.5923063Z ✔ pending or failed names cannot move observation ownership, timestamp, ship, sovereignty or activity across session changes (34.490514ms)
+2026-10-11T21:47:15.5925397Z ✔ session read boundaries, equal-time order and legacy-only inferred starts never admit another owned session or pilot (32.726171ms)
+2026-10-11T21:47:15.5928759Z ✔ a same-millisecond end/start assigns accepted samples to the active session without inventing an activity transition (29.471535ms)
+2026-10-11T21:47:15.5931918Z ✔ cold Journey projection and hide/unhide use only legacy adjacency with interleaved session rows and equal timestamps (213.925284ms)
+2026-10-11T21:47:15.5934625Z ✔ inactive and unchanged observations do not scan sovereignty to fabricate movement (28.562865ms)
+2026-10-11T21:47:15.5937484Z ✔ real Core captures location receipt before deferred metadata/names and never transfers it to a later session (134.639365ms)
+2026-10-11T21:47:15.6854524Z ✔ real Core retains delayed hull activity in the receipt session including replay end-cursor handling (94.646531ms)
+2026-10-11T21:47:15.7698729Z ✔ real Core stale transport samples never become new session travel or discovery (83.32736ms)
+2026-10-11T21:47:15.8364113Z ✔ Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (67.243571ms)
+2026-10-11T21:47:15.8736430Z ✔ route projection preserves frozen SQL/prepared rows, name precedence and synthetic-start metadata (37.12969ms)
+2026-10-11T21:47:15.9037959Z ✔ route retains every visit, including quiet transits and repeated systems, clipped to the session (41.723109ms)
+2026-10-11T21:47:15.9040895Z ✔ only in-visit alliance combat qualifies a buffer; same-system windows merge without recursive expansion (1.861999ms)
+2026-10-11T21:47:15.9044264Z ✔ entry is inclusive, departure is exclusive, and alliance losses never add destroyed or unpriced-kill value (0.925896ms)
+2026-10-11T21:47:15.9046706Z ✔ friendly attackers on alliance victims produce losses only, with each value counted on one side (0.852289ms)
+2026-10-11T21:47:15.9049068Z ✔ saved v0.7.1 killmails recalculate exclusively on reopen and retain personal participation in alliance totals (27.25534ms)
+2026-10-11T21:47:15.9051427Z ✔ ships preserve changes between two ships of the same hull and exclude other pilots and end boundary (22.864267ms)
+2026-10-11T21:47:15.9054108Z ✔ LP uses per-corporation net balance changes, including spent/removed balances and valid empty snapshots (1.13735ms)
+2026-10-11T21:47:15.9056934Z ✔ LP reconciliation retains original samples, persists the first later sample, and never keeps drifting (32.722432ms)
+2026-10-11T21:47:15.9059064Z ✔ adjacent sessions flag overlapping LP sample ranges rather than crediting the same change twice (32.201783ms)
+2026-10-11T21:47:15.9061237Z ✔ capture honours paused modules; old sessions retain events and visits without invented alliance or LP data (27.038959ms)
+2026-10-11T21:47:15.9063744Z ✔ alliance collection uses supported system/month queries, preserves quiet visits and survives cache/restart (69.541269ms)
+2026-10-11T21:47:15.9066135Z ✔ public valuations enrich existing personal ESI records without duplicate events or losing values on later ingestion (31.561301ms)
+2026-10-11T21:47:15.9068270Z ✔ month query planning crosses UTC year boundaries and deduplicates repeated visits (0.715132ms)
+2026-10-11T21:47:15.9070453Z ✔ alliance page collection resumes a verification budget, handles late records and preserves totals on rate limits (167.460776ms)
+2026-10-11T21:47:16.0307556Z ✔ Good and Excellent are Blue; Bad and Terrible are Hostile in every contact source (4.054862ms)
+2026-10-11T21:47:16.0326911Z ✔ standing precedence includes explicit Neutral and rejects stale, denied and wrong-membership lists (0.820308ms)
+2026-10-11T21:47:16.0339482Z ✔ space categories distinguish security, Pochven, Abyssal and Anoikis before general null-sec (0.707307ms)
+2026-10-11T21:47:16.0341629Z ✔ new covered categories retain brief jump continuity; released High-Sec never carries through missing location (0.979915ms)
+2026-10-11T21:47:16.0343805Z ✔ OBS upgrade retains Unknown actions for new categories and handles old Safe policy without an automatic reveal (43.925516ms)
+2026-10-11T21:47:16.0345662Z ✔ organization collectors request scoped membership routes and discard contacts after membership changes (306.000597ms)
+2026-10-11T21:47:16.0347337Z ✔ Abyssal observations remain classifiable when ESI cannot provide public system details (65.501457ms)
+2026-10-11T21:47:16.0348985Z ✔ system lookup resolves Sigma Grindset and Sportmodel via ESI names without a connected pilot (212.896907ms)
+2026-10-11T21:47:16.0658192Z ✔ styled stream keeps the empty default, opaque covers and approved notification metadata (33.244181ms)
+2026-10-11T21:47:16.1775003Z ✔ real SSE delivers three large Unicode frames in order and drains accepted work before close (176.576841ms)
+2026-10-11T21:47:16.1776790Z ✔ a single frame larger than the waiting budget is accepted without copying it into the socket queue (27.288682ms)
+2026-10-11T21:47:16.1778374Z ✔ a stalled real reader is disconnected on drain timeout and releases its writer (234.026878ms)
+2026-10-11T21:47:16.1779717Z ✔ a real blocked reader cannot accumulate unbounded waiting bytes (169.020557ms)
+2026-10-11T21:47:16.3073144Z ✔ a real blocked reader cannot accumulate unbounded waiting frames (130.763813ms)
+2026-10-11T21:47:16.4994666Z ✔ graceful close also has a deadline when its reader never resumes (185.425792ms)
+2026-10-11T21:47:16.5406428Z ✔ intermittent drain progress cannot extend the graceful close deadline (46.857127ms)
+2026-10-11T21:47:16.5475802Z ✔ OBS reconnect sends current protected state after an earlier transport disconnect (7.351492ms)
+2026-10-11T21:47:16.6725831Z ✔ OBS protection closes a backlogged visible stream instead of queueing its mask behind old traffic (125.224569ms)
+2026-10-11T21:47:16.7048886Z ✔ default market consumers share a lazy immutable facade and fresh result objects (5.890029ms)
+2026-10-11T21:47:16.7050524Z ✔ explicit market catalogs are independent snapshots and validate before use (1.024018ms)
+2026-10-11T21:47:16.7052100Z ✔ shared immutable atlas names preserve exact Intel lookup and mutable atlas isolation (395.90963ms)
+2026-10-11T21:47:16.7054448Z ✔ intel abbreviations retain exact precedence, longest multiword matches and duplicate ambiguity (1.796056ms)
+2026-10-11T21:47:16.7056201Z ✔ intel matches all bundled exact names and supported prefixes without changing ambiguity (258.145314ms)
+2026-10-11T21:47:16.7058649Z ✔ startup rolls back acquired owners after store fails (36.505427ms)
+2026-10-11T21:47:16.7060046Z ✔ startup rolls back acquired owners after vault fails (9.610098ms)
+2026-10-11T21:47:16.7061236Z ✔ startup rolls back acquired owners after auth fails (5.544373ms)
+2026-10-11T21:47:16.7062735Z ✔ startup rolls back acquired owners after esi fails (8.816673ms)
+2026-10-11T21:47:16.7064021Z ✔ startup rolls back acquired owners after core fails (5.416535ms)
+2026-10-11T21:47:16.7065472Z ✔ startup rolls back acquired owners after datasets fails (6.162197ms)
+2026-10-11T21:47:16.7066689Z ✔ startup rolls back acquired owners after ready fails (5.716146ms)
+2026-10-11T21:47:16.7067650Z ✔ startup rolls back acquired owners after status fails (4.961109ms)
+2026-10-11T21:47:16.7068838Z ✔ startup rolls back acquired owners after listen-dashboard fails (7.050491ms)
+2026-10-11T21:47:16.7069827Z ✔ startup rolls back acquired owners after listen-broadcast fails (9.720823ms)
+2026-10-11T21:47:16.7070998Z ✔ startup rolls back acquired owners after activation fails (8.04343ms)
+2026-10-11T21:47:16.7072189Z ✔ startup waits for asynchronous Core cleanup and retains secondary failures while closing ESI and Store (10.773554ms)
+2026-10-11T21:47:16.7074281Z ✔ Store closes its database and releases transaction locks after PRAGMA journal_mode fails (6.43241ms)
+2026-10-11T21:47:16.7076522Z ✔ Store closes its database and releases transaction locks after ALTER TABLE sessions ADD COLUMN start_context fails (13.18231ms)
+2026-10-11T21:47:16.7078669Z ✔ Store closes its database and releases transaction locks after DELETE FROM market_orders fails (16.093974ms)
+2026-10-11T21:47:16.7080451Z ✔ Store closes its database and releases transaction locks after idx_events_character_type_at fails (22.216596ms)
+2026-10-11T21:47:16.7082529Z ✔ Store closes its database and releases transaction locks after ALTER TABLE visits ADD COLUMN session_id fails (22.674258ms)
+2026-10-11T21:47:16.7084086Z ✔ one binding update shares sources without sharing pilot scope or retaining freshness (56.966525ms)
+2026-10-11T21:47:16.7085316Z ✔ goal widgets share a read per source and pilot while retaining independent display variants (27.585822ms)
+2026-10-11T21:47:16.7086721Z ✔ training and industry share sorted source choices per update and re-evaluate time, expiry and new samples (31.514833ms)
+2026-10-11T21:47:16.7087983Z ✔ unchanged bindings preserve version, while protection/config and reconnect publish current state (4.482799ms)
+2026-10-11T21:47:16.7123513Z ✔ actual renderer only writes changed time text; paused/ineligible widgets do no clock work (8.068818ms)
+2026-10-11T21:47:16.7125566Z ✔ volatile binding/timestamp/protection packets do not rewrite storage; latest recovery geometry is persisted (3.864507ms)
+2026-10-11T21:47:16.7127647Z ✔ storage failure never blocks protection, latest cover geometry or disconnect/reconnect safety (1.985467ms)
+2026-10-11T21:47:16.7129507Z ✔ renderer preserves node order, toast bounds and immediate disconnect disposal (3.303923ms)
+2026-10-11T21:47:16.7131302Z ✔ a widget-only source clocks only its visible widget and restores an OPSEC widget fail-closed (5.841148ms)
+2026-10-11T21:47:16.7747293Z ✔ late collector bindings cannot write to closed OBS streams during a dataset restart (3.337145ms)
+2026-10-11T21:47:16.7922186Z ✔ geometry/wording/style edits preserve the actual endpoint projection input; binding and pilot edits invalidate it (6.49209ms)
+2026-10-11T21:47:16.7927581Z ✔ preview requests debounce and never publish a superseded pilot/source, including invalidation during an in-flight read (6.46507ms)
+2026-10-11T21:47:16.7930084Z ✔ preview disposal removes queued work and a current failure permits the next refresh (2.442439ms)
+2026-10-11T21:47:16.7932711Z ✔ drag bursts commit once per frame, clamp/grid correctly, and pointer-up commits the latest point before its frame (0.841758ms)
+2026-10-11T21:47:16.7935039Z ✔ preview invalidation follows bound pilots/resources, manual Goals, Session activity and reconnect (0.719179ms)
+2026-10-11T21:47:17.1229012Z ✔ UI snapshot revisions distinguish same-time writes, auth deletion and restart without altering stored snapshots (296.226493ms)
+2026-10-11T21:47:17.1445408Z ✔ the user supplied SMT list imports all 22 endpoint lines as 11 reciprocal bridges (208.355521ms)
+2026-10-11T21:47:17.1464661Z ✔ SMT text and chat preserve directional endpoint structure IDs and never synthesize a reverse (1.011574ms)
+2026-10-11T21:47:17.1484399Z ✔ unknown systems, malformed lines, and conflicting endpoint IDs are visible errors (0.700805ms)
+2026-10-11T21:47:17.1486384Z ✔ CSV labels, quoted fields, prior structure columns, JSON and tabs remain compatible (0.874388ms)
+2026-10-11T21:47:17.1488255Z ✔ the rc4 from_system/to_system CSV header remains directly importable (6.083389ms)
+2026-10-11T21:47:17.1490245Z ✔ JSON retains independent endpoint owners, capitals, access and enabled directions (0.528424ms)
+2026-10-11T21:47:17.1492594Z ✔ nearest destinations use one confirmed chain and return navigable routes ranked by production graph costs (6.570086ms)
+2026-10-11T21:47:17.1494845Z ✔ unconfirmed, closed, inactive, expired, and unsupported-size links never create destination routes (7.0663ms)
+2026-10-11T21:47:17.1496834Z ✔ critical and end-of-life route inclusions are explicit and do not bypass actual expiry (4.925202ms)
+2026-10-11T21:47:17.1498675Z ✔ critical lifetime and critical mass require their own independent opt-ins (3.406955ms)
+2026-10-11T21:47:17.1500536Z ✔ a user-confirmed private observation retains public attribution without requiring public shortcut opt-in (1.208461ms)
+2026-10-11T21:47:17.1503037Z ✔ public shortcuts require source freshness, actual hub, completed report, explicit opt-in and vessel eligibility (5.322102ms)
+2026-10-11T21:47:17.1505088Z ✔ Thera entrance search can reach a current entrance without silently enabling transit through it (0.861775ms)
+2026-10-11T21:47:17.1506135Z ✔ reference station search preserves real station data and destination-security filtering (0.326238ms)
+2026-10-11T21:47:17.1507128Z ✔ security boundary agrees with production routing and wormhole/unknown security is never a high/low exit (1.4389ms)
+2026-10-11T21:47:17.1507970Z ✔ weighted preference, system exclusions and one-way links are respected (1.166884ms)
+2026-10-11T21:47:17.1509064Z ✔ bounded search, validation and origin-is-destination semantics remain predictable (5.60703ms)
+2026-10-11T21:47:17.1510042Z ✔ bundled destinations have pinned provenance, only real atlas systems and the principal Jita station (182.672981ms)
+2026-10-11T21:47:17.1728470Z ✔ FW states follow real opposing occupancy, with command neighbors and all remaining rear systems (2.32467ms)
+2026-10-11T21:47:17.1737279Z ✔ allied occupancy, unknown factions and stale snapshots do not fabricate an enemy front (0.462612ms)
+2026-10-11T21:47:17.2638248Z ✔ quiet scheduled feed upkeep records NPC windows without reading or building display data (6.468346ms)
+2026-10-11T21:47:17.2653843Z ✔ explicit feed refresh still validates sources and returns the full current view (3.063085ms)
+2026-10-11T21:47:17.2683467Z ✔ scheduled upkeep prunes connection deadlines crossed during collection, including a module disable (46.171319ms)
+2026-10-11T21:47:17.2685819Z ✔ disabled and noSync scheduled ticks expire connections without collecting or projecting feeds (1.380391ms)
+2026-10-11T21:47:17.2687997Z ✔ closing a scheduled feed collection drains its request without post-close storage work (1.097915ms)
+2026-10-11T21:47:17.2690146Z ✔ wormhole reports retain limitations, discard incomplete or expired, and validate the actual hub (0.321098ms)
+2026-10-11T21:47:17.2692731Z ✔ public connection expiry physically removes cached reports at their deadline, including while disabled (1.363118ms)
+2026-10-11T21:47:17.2698644Z ✔ 304 and failed in-flight refreshes cannot restore a report that expired while waiting (2.844928ms)
+2026-10-11T21:47:17.2705359Z ✔ combat display window is explicit, bounded and preserves retained observations when shortened (0.978723ms)
+2026-10-11T21:47:17.2711698Z ✔ storm areas follow real gates and preserve report age rather than confirmation claims (0.664328ms)
+2026-10-11T21:47:17.2720369Z ✔ feed fetches are cached, attributed, conditional, bounded and preserve stale data after a failure (3.643435ms)
+2026-10-11T21:47:17.2725331Z ✔ wrong schemas and oversized payloads cannot erase last good reports (1.566688ms)
+2026-10-11T21:47:17.2728812Z ✔ wormhole type limits are nominal and never become remaining mass or confirmed lifetime (2.189318ms)
+2026-10-11T21:47:17.2735302Z ✔ manual storm import is atomic and keeps source provenance and explicit expiry (1.155522ms)
+2026-10-11T21:47:17.2741745Z ✔ shutdown aborts and waits for pending requests before returning without later writes (0.976969ms)
+2026-10-11T21:47:17.4814723Z ✔ public combat is opt-in, independent, deduplicated by kill ID, and respects end-of-feed cooldown (225.545294ms)
+2026-10-11T21:47:17.6133447Z ✔ combat resumes successfully persisted steps after a later response fails (112.058436ms)
+2026-10-11T21:47:17.6164292Z ✔ malformed combat entries are not silently skipped by advancing the cursor (0.968344ms)
+2026-10-11T21:47:17.6193958Z ✔ combat resumes at current pointer after a gap beyond source retention and labels missing coverage (5.966522ms)
+2026-10-11T21:47:17.6196120Z ✔ campaign and development state use existing public snapshots with honest unknowns and no requests (0.513056ms)
+2026-10-11T21:47:17.6223859Z ✔ NPC rolling-window changes keep negative values, sparse zeros, identities and wormhole exclusion (0.386509ms)
+2026-10-11T21:47:17.6253893Z ✔ same cached NPC window never creates a comparison; stale or disabled feed state remains explicit (0.770174ms)
+2026-10-11T21:47:17.6283589Z ✔ invalid provider timestamps never advertise ready reports (0.318303ms)
+2026-10-11T21:47:17.6313885Z ✔ public chain retains cached cards through refresh and reconciles only the resulting snapshot (10.279915ms)
+2026-10-11T21:47:18.0912808Z ▶ Universe HTTP contract: local planning, private records, CSRF and stream isolation
+2026-10-11T21:47:18.0914297Z   ✔ guest pilot receives the full local graph and valid route without network access (498.67635ms)
+2026-10-11T21:47:18.2226940Z   ✔ static graph cache supports gzip and authenticated conditional requests (131.123242ms)
+2026-10-11T21:47:18.2476588Z   ✔ view and link writes require CSRF before reaching the service (24.24256ms)
+2026-10-11T21:47:18.4908618Z   ✔ selected pilots keep views and manual route connections separate (242.657371ms)
+2026-10-11T21:47:18.5484471Z   ✔ invalid pilot and system identifiers fail through the public API (57.075192ms)
+2026-10-11T21:47:18.6567705Z   ✔ connection-list import is atomic, updates in place and deletion removes its links (107.678782ms)
+2026-10-11T21:47:18.7869403Z   ✔ jump-plan API returns physical range legs and source metadata (129.607636ms)
+2026-10-11T21:47:18.8017194Z   ✔ stream output exposes neither Universe APIs nor private labels (10.669101ms)
+2026-10-11T21:47:18.8076383Z ✔ Universe HTTP contract: local planning, private records, CSRF and stream isolation (1496.266475ms)
+2026-10-11T21:47:18.8537855Z ✔ J-Space HTTP commands preserve session, pilot, revision, import and OBS boundaries (505.698559ms)
+2026-10-11T21:47:18.9286094Z ✔ selected reads remain scoped and full reads share canonical links and signature records (389.934569ms)
+2026-10-11T21:47:18.9288812Z ℹ {"selectedLinkBodiesBeforeOtherMaps":2,"selectedLinkBodiesAfterOtherMaps":2,"fullEightMapsLinkBodies":16,"fullEightMapsSignatureBodies":24,"fullQueries":73,"summaryQueries":8}
+2026-10-11T21:47:18.9291530Z ✔ indexed expiry sees canonical updates immediately, including collapsed unknown lifetimes and dated timezone offsets (117.377299ms)
+2026-10-11T21:47:18.9293943Z ✔ summary and search reads reconcile expiry and pruning without stale revisions or a cross-request cache (123.906667ms)
+2026-10-11T21:47:18.9295868Z ✔ library search retains shared result semantics and keeps sources and other pilots private (132.926726ms)
+2026-10-11T21:47:18.9298064Z ✔ unchanged map reads preserve stored notes, passage references, revision and database writes (69.631392ms)
+2026-10-11T21:47:18.9299476Z ✔ summary reconciliation still normalizes locked false (73.984821ms)
+2026-10-11T21:47:18.9300622Z ✔ summary reconciliation still normalizes empty archive (97.665955ms)
+2026-10-11T21:47:18.9301699Z ✔ summary reconciliation still normalizes missing activity (72.311922ms)
+2026-10-11T21:47:18.9303237Z ✔ summary reconciliation still normalizes stale references (82.595444ms)
+2026-10-11T21:47:19.0083031Z ✔ summary reconciliation still normalizes connection activity (79.662263ms)
+2026-10-11T21:47:19.3600297Z ✔ selected and full projections keep real Auth roster reads bounded as maps and tracked pilots increase (351.252999ms)
+2026-10-11T21:47:19.4549782Z ✔ projection roster ownership never retains changed access, location freshness or mutations across reads (94.858982ms)
+2026-10-11T21:47:19.5000760Z ✔ observed lifetime bands persist without granting access, renewing expiry or losing their age on mass edits (84.006139ms)
+2026-10-11T21:47:19.5031881Z ✔ private chain maps survive reopening, isolate pilots and require revision-matched writes (41.944266ms)
+2026-10-11T21:47:19.5034513Z ✔ positions, locks, aliases, roles, annotations and undo are atomic and bounded (41.46882ms)
+2026-10-11T21:47:19.5036517Z ✔ global visits and pins cannot seed private maps or create map-owned connections (55.405727ms)
+2026-10-11T21:47:19.5038370Z ✔ connections use canonical links, demand explicit confirmation and reflect expiry/removal (57.947511ms)
+2026-10-11T21:47:19.5040230Z ✔ passage ledger records direction and observed mass without claiming remaining mass (55.441919ms)
+2026-10-11T21:47:19.5042173Z ✔ canonical scanner signatures link both endpoints and deletions do not invent replacement observations (58.31009ms)
+2026-10-11T21:47:19.5044398Z ✔ structures, timers and local pings preserve observation times and expire honestly (53.906835ms)
+2026-10-11T21:47:19.5046246Z ✔ Wanderer v1 import previews without writes and never revives portable connection evidence (48.942043ms)
+2026-10-11T21:47:19.5047996Z ✔ invalid imports and invalid cross-service commands roll back every affected record (54.23974ms)
+2026-10-11T21:47:19.5049642Z ✔ native exports preserve map content across pilots while demoting imported links (53.741895ms)
+2026-10-11T21:47:19.5051642Z ✔ duplicating a chain preserves observed ages and makes connection evidence independent (65.939373ms)
+2026-10-11T21:47:19.5054012Z ✔ passage corrections preserve identity and occurrence while multi-delete obeys locked graph constraints (65.08762ms)
+2026-10-11T21:47:19.5056364Z ✔ opt-in sampled passage tracking is deduplicated, reviewable and never changes connection trust (73.181282ms)
+2026-10-11T21:47:19.5059045Z ✔ the shared selected-location stream expands only subscribed private maps and map-local pause stops tracking (63.268354ms)
+2026-10-11T21:47:19.5063893Z ✔ scheduled ESI refreshes connect J-Space travel and both K-Space endpoints in source, global and scoped maps (74.958432ms)
+2026-10-11T21:47:19.5069376Z ✔ scoped maps adopt a source chain when a later exit matches without renewing its lifetime or copying user data (63.374533ms)
+2026-10-11T21:47:19.5074564Z ✔ changing the selected pilot resets only source baselines and keeps explicitly tracked interactive pilots active (64.519215ms)
+2026-10-11T21:47:19.5079505Z ✔ shared maintenance expires source connections immediately and prunes source cards without an open view or connected account (52.059576ms)
+2026-10-11T21:47:19.5084531Z ✔ Wanderer-compatible export preserves portable fields while excluding unroutable observations (92.591991ms)
+2026-10-11T21:47:19.5089324Z ✔ destination search uses only the selected pilot chain and ignores caller-owned graph evidence (54.328058ms)
+2026-10-11T21:47:19.5094345Z ✔ deleted signature bindings permit condition edits without rebinding and ship-size unknown can be recorded (53.609539ms)
+2026-10-11T21:47:19.5099872Z ✔ drawn connections preserve explicit unknown lifetime until an observed expiry is deliberately supplied (47.42026ms)
+2026-10-11T21:47:19.5105758Z ✔ disconnected cards prune after the last expiry while metadata, signatures and reports survive rediscovery (60.282394ms)
+2026-10-11T21:47:19.5108612Z ✔ deletion grace survives refreshes, reconnecting cancels it, and standalone cards are retained (56.988352ms)
+2026-10-11T21:47:19.5614949Z ✔ unlock and manual re-add each grant disconnected cards a fresh thirty minutes (61.771141ms)
+2026-10-11T21:47:19.6040265Z ✔ effective J-Space owners are private annotations, validated and preserved through manual removal (42.290081ms)
+2026-10-11T21:47:19.6165237Z ✔ logs-only waiting and disabled positions never fall back to the ESI map position or advance stops (69.530523ms)
+2026-10-11T21:47:19.6167859Z ✔ new bound Local observations advance navigation from the selected log source without overwriting ESI (60.050759ms)
+2026-10-11T21:47:19.6169929Z ✔ prefer-ESI advances from fresh ESI, then fresh logs only after ESI becomes stale (48.988461ms)
+2026-10-11T21:47:19.6171710Z ✔ UTF-16 and UTF-8 EVE headers preserve listener and channel identity (2.32121ms)
+2026-10-11T21:47:19.6173659Z ✔ logs are opt-in, start at EOF and only ingest the bound pilot and selected channels (41.108815ms)
+2026-10-11T21:47:19.6175533Z ✔ UTF-16 partial code units and partial lines are emitted once after completion (9.475312ms)
+2026-10-11T21:47:19.6179131Z ✔ rotated files and re-enabled readers establish a fresh baseline without replaying history (7.659865ms)
+2026-10-11T21:47:19.6180879Z ✔ parent EVE log directory supports game logs separately, never arbitrary or linked files (5.907259ms)
+2026-10-11T21:47:19.6182728Z ✔ guest and missing folders do not collect; shutdown blocks later changes (3.994581ms)
+2026-10-11T21:47:19.6184549Z ✔ large appended logs are consumed in bounded chunks and simultaneous ticks coalesce (5.01805ms)
+2026-10-11T21:47:19.6186345Z ✔ bounds include glyph overhangs, descenders and halo, rather than just an anchor or advance width (1.819725ms)
+2026-10-11T21:47:19.6188585Z ✔ all four edges fade smoothly before clipping, with full opacity in the readable interior (2.324326ms)
+2026-10-11T21:47:19.6190284Z ✔ long names fade based on their far edge while their system anchor is still well inside the map (0.21473ms)
+2026-10-11T21:47:19.6191914Z ✔ fade is independent of camera zoom and device pixel ratio for the same screen footprint (0.281936ms)
+2026-10-11T21:47:19.6194308Z ✔ unused schematic coordinates are never read and both first-use orders preserve exact projections (3.963854ms)
+2026-10-11T21:47:19.6197510Z ✔ replacement Atlas revision cannot retain stale coordinates and leaves the prior revision intact (1.851253ms)
+2026-10-11T21:47:19.6199668Z ✔ radar fallback and physical distance scale preserve valid-coordinate filtering and empty bounds (0.488331ms)
+2026-10-11T21:47:19.6201720Z ✔ known-space extents exclude J-space, abyssal and other-space outliers, preserving zero coordinates (3.314282ms)
+2026-10-11T21:47:19.6204509Z ✔ overview has modest padding and repeated wheel zoom-out cannot shrink known space (1.146078ms)
+2026-10-11T21:47:19.6206381Z ✔ active region and independent J-space bounds get their own minimum fit (0.360713ms)
+2026-10-11T21:47:19.6208197Z ✔ overview resize preserves 1× and zoomed resize preserves the world centre and relative zoom (0.382613ms)
+2026-10-11T21:47:19.6210139Z ✔ panning at the overview is locked; zoomed panning retains visible space at every edge (0.390819ms)
+2026-10-11T21:47:19.6211664Z ✔ a singleton and an empty discovery graph produce finite cameras (0.333562ms)
+2026-10-11T21:47:19.6213600Z ✔ vector cell boundary is the exact bisector and survives arbitrary zoom without raster quantisation (1.588413ms)
+2026-10-11T21:47:19.6215587Z ✔ spatial clipping agrees with an independent nearest-point oracle throughout dense and sparse space (27.989117ms)
+2026-10-11T21:47:19.6217336Z ✔ standing filters dim the same full partition and never transfer enemy territory (1.690824ms)
+2026-10-11T21:47:19.6219061Z ✔ disconnected holdings get separate interior anchors and an enclave remains its own component (1.176054ms)
+2026-10-11T21:47:19.6221187Z ✔ relevant revisions ignore object replacement and unrelated refreshes but detect politics changes (0.651705ms)
+2026-10-11T21:47:19.6223195Z ✔ duplicate projected points resolve deterministically without corrupting neighbours (0.349231ms)
+2026-10-11T21:47:19.6225197Z ✔ pixel, line and page wheel events produce equivalent zoom for equivalent physical delta (1.807919ms)
+2026-10-11T21:47:19.6227978Z ✔ changing cursor during a queued zoom preserves the currently pointed world coordinate (1.469131ms)
+2026-10-11T21:47:19.6229611Z ✔ wheel accumulation respects overview minimum and bounded maximum (0.988904ms)
+2026-10-11T21:47:19.6231199Z ✔ pinch combines translation and scaling around its original world midpoint (0.427287ms)
+2026-10-11T21:47:19.6238955Z ✔ pinching inward cannot expose a smaller-than-overview galaxy (0.350944ms)
+2026-10-11T21:47:19.6240415Z ✔ release coast is directional, capped in distance and finite in time (0.33782ms)
+2026-10-11T21:47:19.6241959Z ✔ old, stationary, invalid and outward-at-edge release samples do not drift (0.267329ms)
+2026-10-11T21:47:19.6243839Z ✔ overview reports actual camera footprint and stays inside its inset at all edges (0.337409ms)
+2026-10-11T21:47:19.6245476Z ✔ projected scale gives readable 1/2/5 distances with exact geometric pixel widths (0.660272ms)
+2026-10-11T21:47:19.6247337Z ✔ route watch is an undirected gate-only shortest-path model, independent of supplied ordering (4.904047ms)
+2026-10-11T21:47:19.6249217Z ✔ radar includes cross-region gate neighbours and regional schematic retains disconnected systems (2.177221ms)
+2026-10-11T21:47:19.6251264Z ✔ radar reports a bounded truncation rather than silently pretending the whole neighbourhood is visible (4.191839ms)
+2026-10-11T21:47:19.6257232Z ✔ report phases have absolute ages and expiration is exact, including future/unknown timestamps (0.870634ms)
+2026-10-11T21:47:19.6269002Z ✔ clear supersedes only its channel and system; expired intel is absent and fleet/pilot duplicates are removed (1.337163ms)
+2026-10-11T21:47:19.6276821Z ✔ feed footprints cross region boundaries; stale wormholes are never rendered as usable connections (0.704655ms)
+2026-10-11T21:47:19.6285653Z ✔ projected hull removes internal points and duplicates without claiming reachability for its interior (0.50349ms)
+2026-10-11T21:47:19.6305772Z ✔ disabled operations retain notes without resurfacing old live intel or presence (0.277698ms)
+2026-10-11T21:47:19.6307584Z ✔ a response for different origin/range cannot turn stale range dots into verified destinations (0.923222ms)
+2026-10-11T21:47:19.6313445Z ✔ a pilot appears at only the freshest independently observed position across fleet and pilot sources (1.000787ms)
+2026-10-11T21:47:19.6323151Z ✔ hub discovery accepts only completed unexpired public reports from a fresh source (0.536951ms)
+2026-10-11T21:47:19.6481497Z ✔ networks use actual hubs and retain K-space entrances without assigning a Thera position (5.514456ms)
+2026-10-11T21:47:19.6484122Z ✔ both hub orientations preserve each endpoint signature and the original report (0.532202ms)
+2026-10-11T21:47:19.6486013Z ✔ stale source and row reports remain inspectable but cannot advertise current public routing (1.42078ms)
+2026-10-11T21:47:19.6487834Z ✔ incomplete and unreported connections remain distinct from fresh candidates (0.738077ms)
+2026-10-11T21:47:19.6489653Z ✔ expired, malformed, unknown and false-hub connections are hidden without fake coordinates (0.86318ms)
+2026-10-11T21:47:19.6491589Z ✔ duplicate IDs resolve versions deterministically without conflating reciprocal report metadata (1.575148ms)
+2026-10-11T21:47:19.6493725Z ✔ time refresh changes state and expiry without moving or mutating report identities (0.594669ms)
+2026-10-11T21:47:19.6774200Z ✔ reopening a route dock cannot restore a saved route over a new destination or origin (1.178007ms)
+2026-10-11T21:47:19.6776067Z ✔ saved plan must match current revision, ordered remaining stops and navigation kind (0.242883ms)
+2026-10-11T21:47:19.6792992Z ✔ completed stops and explicit following preserve a valid remaining itinerary without accepting new draft text (0.303777ms)
+2026-10-11T21:47:19.7764732Z ✔ ordered planning persists per pilot, joins segments and reports an unreachable leg without claiming a partial route (55.623236ms)
+2026-10-11T21:47:19.8058286Z ✔ map navigation drafts, plans and removal stay separate from other maps and K-Space (29.930308ms)
+2026-10-11T21:47:19.8358048Z ✔ automatic map itinerary progress respects roster tracking and never records wormhole positions globally (29.900604ms)
+2026-10-11T21:47:19.8724084Z ✔ forgetting a connection clears every cached route copy without deleting map itinerary or unrelated plans (35.728715ms)
+2026-10-11T21:47:19.8987073Z ✔ a pending calculation cannot save a copy after its connection has vanished (26.833699ms)
+2026-10-11T21:47:19.9317357Z ✔ a delayed gate-only plan cannot recreate scoped settings after its map is deleted (31.125162ms)
+2026-10-11T21:47:19.9668126Z ✔ progress consumes only the next occurrence, retains future revisits, and ignores stale observations (36.754823ms)
+2026-10-11T21:47:20.0029567Z ✔ following location requires a fresh canonical source and never falls back to persisted progress (36.016186ms)
+2026-10-11T21:47:20.0315557Z ✔ a navigation integration without operations can follow a recent explicit observation only (28.24197ms)
+2026-10-11T21:47:20.0634321Z ✔ stop reorder is a complete permutation, remove and clear remain local (30.78941ms)
+2026-10-11T21:47:20.1007411Z ✔ waypoint sends require scope and explicit append/replace, serialize without coalescing and report partial failure (37.977697ms)
+2026-10-11T21:47:20.1464321Z ✔ reverse Ansiblex export targets the departure structure at that endpoint (44.56408ms)
+2026-10-11T21:47:20.1849745Z ✔ editing during a waypoint command stops remaining commands and preserves the edited itinerary (39.491999ms)
+2026-10-11T21:47:20.2205764Z ✔ shutdown finishes the in-flight command but stops further and queued commands (33.87112ms)
+2026-10-11T21:47:20.2466828Z ✔ bridge discovery uses scoped current ESI candidates and does not infer access or accept false origins (27.682256ms)
+2026-10-11T21:47:20.2699226Z ✔ location observations notify the local state stream without creating navigation activity events (23.027203ms)
+2026-10-11T21:47:20.3019289Z ✔ public wormhole routing respects explicit source, freshness, expiry and reported ship limit (32.287475ms)
+2026-10-11T21:47:20.3368787Z ✔ alternate midpoints retain segment identity on revisits and never replace an explicit itinerary stop (34.145857ms)
+2026-10-11T21:47:20.3634199Z ✔ promoting a report into a private wormhole preserves its recorded ship-size restriction (26.437682ms)
+2026-10-11T21:47:20.3975582Z ✔ XL public wormholes need actual mass and fresh nominal limits; nominal capacity is never remaining mass (32.266409ms)
+2026-10-11T21:47:20.3978453Z ✔ jump presets apply exact JDC levels; reachability/overlap and alternatives retain Y axis and restrictions (1.274077ms)
+2026-10-11T21:47:20.3995983Z ✔ fuel estimate uses explicit rate and multiplier, rounds each leg and exposes assumptions (0.490935ms)
+2026-10-11T21:47:20.5348459Z ▶ Universe operations HTTP: authenticated state, private observations and public-output isolation
+2026-10-11T21:47:20.5350164Z   ✔ all operational surfaces require a local session and mutations require CSRF (72.548117ms)
+2026-10-11T21:47:20.6139767Z   ✔ manual intel reaches only the selected pilot and keeps its observed time (78.619187ms)
+2026-10-11T21:47:20.6444141Z   ✔ scanner and infrastructure records have the same pilot boundary (29.339406ms)
+2026-10-11T21:47:20.7292831Z   ✔ map-scoped HTTP scanner and intel never cross independent map instances (85.580042ms)
+2026-10-11T21:47:20.8417709Z   ✔ scanner diagnostics and infrastructure SMT previews are read-only, atomic and private (111.168121ms)
+2026-10-11T21:47:20.8752693Z   ✔ invalid identity, timestamps and settings cannot change saved observations (33.315432ms)
+2026-10-11T21:47:20.8983188Z   ✔ expiry is explicit and disabled collection cannot fetch fleet data (22.843642ms)
+2026-10-11T21:47:21.0436019Z   ✔ SMT preview is read-only and exact import/export preserves unknown structures (142.803027ms)
+2026-10-11T21:47:21.0868036Z   ✔ map wormhole expiry is preserved on ordinary edits and forgotten at the lifetime boundary (44.12635ms)
+2026-10-11T21:47:21.1885444Z   ✔ ordered itineraries reject stale edits and never send without explicit permission (97.2344ms)
+2026-10-11T21:47:21.2884538Z   ✔ manual storms and campaigns retain source provenance and expiry without provider requests (100.015836ms)
+2026-10-11T21:47:21.5703521Z   ✔ composed navigation preserves public hub geometry, ship limits, mass and expiry (286.069724ms)
+2026-10-11T21:47:21.5804474Z   ✔ public output has no operational APIs or private observation content (10.184547ms)
+2026-10-11T21:47:21.5960723Z   ✔ owners can remove manual records without changing another pilot (7.610566ms)
+2026-10-11T21:47:21.5990858Z ✔ Universe operations HTTP: authenticated state, private observations and public-output isolation (1779.804741ms)
+2026-10-11T21:47:22.0381965Z ✔ Universe public-source HTTP refresh retains stale evidence and obeys backoff and collection controls (439.30969ms)
+2026-10-11T21:47:22.1265996Z ✔ intel resolves exact and unique abbreviations, preserves ambiguous names and UTC source time (5.755797ms)
+2026-10-11T21:47:22.1268128Z ✔ game log parser handles malformed input once and keeps combat separate from intel (0.724772ms)
+2026-10-11T21:47:22.1269940Z ✔ gate distances terminate on cycles, honor depth and keep disconnected space unknown (0.554104ms)
+2026-10-11T21:47:22.1271489Z ✔ operations reads never fetch; guest manual records stay isolated and logs require a connected pilot (56.970955ms)
+2026-10-11T21:47:22.1273452Z ✔ alerts use only fresh own location, preserve observation expiry, deduplicate and acknowledge privately (37.392938ms)
+2026-10-11T21:47:22.1275303Z ✔ clear/question/ignored reports do not alert, watches and keywords work without location, and quiet mode wins (38.381905ms)
+2026-10-11T21:47:22.1276668Z ✔ manual callers cannot spoof a game-log source and explicit selected systems are validated (29.652706ms)
+2026-10-11T21:47:22.1278963Z ✔ scanner import accepts localization, preserves known labels, and only valid complete scans mark missing (45.891146ms)
+2026-10-11T21:47:22.1282608Z ✔ signature preview provides a pure real diff and malformed complete scans never mark missing (34.522003ms)
+2026-10-11T21:47:22.1284352Z ✔ manual signatures and upgrades preserve per-pilot identity and unique slots (34.064258ms)
+2026-10-11T21:47:22.1285689Z ✔ fleet polls are explicit, bounded, cache-aware and scope-gated (36.032571ms)
+2026-10-11T21:47:22.1287074Z ✔ a projection read before fleet IO cannot retain authorization across its await (32.458725ms)
+2026-10-11T21:47:22.1288519Z ✔ disconnect during fleet IO is checked afresh before the next projection (39.972242ms)
+2026-10-11T21:47:22.1290196Z ✔ fleet replacement failure never exposes previous fleet members; revoked access clears last-good roster (45.275803ms)
+2026-10-11T21:47:22.1292128Z ✔ fleet commander role loss removes roster and shutdown waits for in-flight work without publishing (38.23666ms)
+2026-10-11T21:47:22.1294213Z ✔ log tail binds listener, baselines old lines, captures fresh intel and stops on disable (31.922695ms)
+2026-10-11T21:47:22.1295747Z ✔ retention is bounded and disabling operations prevents ingests (1434.134669ms)
+2026-10-11T21:47:22.1297459Z ✔ opt-in local positions retain their own source, expire, never replace ESI storage, and stay pilot-bound (41.182585ms)
+2026-10-11T21:47:22.1299139Z ✔ decloak categories have independent opt-outs under the master switch (31.355137ms)
+2026-10-11T21:47:22.1300680Z ✔ global module disable stops live state and does not commit an in-flight fleet response (25.73863ms)
+2026-10-11T21:47:22.1302891Z ✔ infrastructure import previews without writes, merges privately and exports notes losslessly as JSON (29.245149ms)
+2026-10-11T21:47:22.1304647Z ✔ infrastructure import rolls back all rows on a storage failure and emits no change before commit (29.01289ms)
+2026-10-11T21:47:22.1306775Z ✔ scanner normalizes every Wanderer language and includes anomalies only on explicit request (34.171029ms)
+2026-10-11T21:47:22.1308527Z ✔ signature deletion restore is pilot and revision scoped, preserves observations, and expires (48.839881ms)
+2026-10-11T21:47:22.1309757Z ✔ signature restore never overwrites a newer matching scan and trash is capped at 100 (192.424403ms)
+2026-10-11T21:47:22.1515617Z ✔ signature metadata survives scanner refresh and bookmark configuration validates tokens (25.91517ms)
+2026-10-11T21:47:22.1763807Z ✔ signature delete transaction rolls back the tombstone if removing the live observation fails (24.31098ms)
+2026-10-11T21:47:22.2091265Z ✔ bookmark metadata and per-pilot conventions preserve zero indices, manual branches and type provenance (33.027676ms)
+2026-10-11T21:47:22.2546784Z ✔ scanner observations and undo belong to one map instance, including uncharted systems (44.850753ms)
+2026-10-11T21:47:22.2928642Z ✔ legacy J-Space observations migrate once into existing maps and never seed new maps (38.630918ms)
+2026-10-11T21:47:22.3300640Z ✔ map intel, alerts and infrastructure notes stay private to that map; global wormhole writes are rejected (36.952592ms)
+2026-10-11T21:47:22.3651805Z ✔ explicit map duplication copies observations independently without duplicating scanner import records (35.063186ms)
+2026-10-11T21:47:22.3937813Z ✔ followed discovery maps cannot be mutated through operations APIs (28.457764ms)
+2026-10-11T21:47:22.4321072Z ✔ native map operational records round-trip independently without live telemetry or retroactive alerts (37.813979ms)
+2026-10-11T21:47:22.4693064Z ✔ native operational validation and storage failures cannot leave partial imported map records (37.760004ms)
+2026-10-11T21:47:22.4857550Z ✔ partial owner search uses scoped ESI and returns only IDs with verified matching entity categories (58.18099ms)
+2026-10-11T21:47:22.4859526Z ✔ missing search scope and reauth pilots can resolve full names publicly without knowing an ID (27.311524ms)
+2026-10-11T21:47:22.4861427Z ✔ fresh typed cached names support immediate exact lookup and safe partial fallback without guessing entity types (23.824432ms)
+2026-10-11T21:47:22.4863917Z ✔ search coalesces matching concurrent requests and bounds name hydration to twenty identities (27.390178ms)
+2026-10-11T21:47:22.4865948Z ✔ invalid input, stale lookup and wrong-category numeric IDs cannot produce selectable identities (27.989208ms)
+2026-10-11T21:47:22.4867619Z ✔ group union preserves exact holdings, membership and observed-region denominators (6.100216ms)
+2026-10-11T21:47:22.4869200Z ✔ frontiers deduplicate bidirectional gates and internal bloc crossings; adjacency is never a relationship (1.317077ms)
+2026-10-11T21:47:22.4870894Z ✔ sovereignty view separates the alliances inside a configured group and reveals their real gate frontier (0.720023ms)
+2026-10-11T21:47:22.4872804Z ✔ missing activity members make the whole aggregate unknown; explicit null never inherits zero defaults (2.436264ms)
+2026-10-11T21:47:22.4874789Z ✔ unavailable activity sources ignore leftover values; stale sources preserve cached totals with a stale flag (1.213213ms)
+2026-10-11T21:47:22.4876965Z ✔ unavailable ownership never converts cached or static rows into current territory, while stale ownership is explicit (0.802447ms)
+2026-10-11T21:47:22.4878535Z ✔ territory, neighbour and server palette colours agree and empire hues stay fixed (0.628362ms)
+2026-10-11T21:47:22.4880217Z ✔ view filters, selected regions, standings and camera state never change the full atlas or mutate inputs (1.296679ms)
+2026-10-11T21:47:22.4882917Z ✔ mismatched membership cannot move an owner into a different alliance group and each owner key stays separate (0.887716ms)
+2026-10-11T21:47:22.4884479Z ▶ Power bloc HTTP settings preserve precedence, authenticate mutations and resolve actual alliances
+2026-10-11T21:47:22.4885776Z   ✔ settings require a local authenticated session and CSRF (20.503315ms)
+2026-10-11T21:47:22.4887080Z   ✔ manual membership and independence resolve consistently in map and detail (56.964192ms)
+2026-10-11T21:47:22.4888615Z   ✔ stale edits and duplicate assignments cannot overwrite a saved configuration (8.414545ms)
+2026-10-11T21:47:22.4889998Z   ✔ alliance search is local and exact lookups validate the entity category (23.172816ms)
+2026-10-11T21:47:22.4891084Z   ✔ configured groups survive fallback refresh and stay off the stream server (26.850976ms)
+2026-10-11T21:47:22.4892833Z ✔ Power bloc HTTP settings preserve precedence, authenticate mutations and resolve actual alliances (442.0216ms)
+2026-10-11T21:47:23.4551321Z ✔ config enforces explicit moves, independence, stable IDs and optimistic revisions (5.218974ms)
+2026-10-11T21:47:23.4564944Z ✔ compact ingestion deduplicates alliance attackers, rejects malformed/future/huge events and never reads system totals (0.854054ms)
+2026-10-11T21:47:23.4574257Z ✔ one fleet, common enemies, adjacency and low activity alone do not create coalitions (11.389856ms)
+2026-10-11T21:47:23.4576120Z ✔ sustained partnerships share one stable snapshot and deduplicate kills and encounters (16.438393ms)
+2026-10-11T21:47:23.4577635Z ✔ hostility blocks grouping, including three hostile parties (0.705897ms)
+2026-10-11T21:47:23.4579352Z ✔ an ambiguous bridge cannot merge unsupported partners; configured alliances cannot bridge fallback (0.714903ms)
+2026-10-11T21:47:23.4581040Z ✔ territory corroborates supported pairs without changing their admission (0.583498ms)
+2026-10-11T21:47:23.4582998Z ✔ expired cooperation dissolves and stable group identity survives a supported member addition (1.072841ms)
+2026-10-11T21:47:23.4585256Z ✔ service resolves configured/independent first, still infers unassigned pairs, and never changes settings (80.410472ms)
+2026-10-11T21:47:23.4587217Z ✔ same kill across personal and alliance caches counts once, and reads never ingest queued records (40.645758ms)
+2026-10-11T21:47:23.4588916Z ✔ queue drains in bounded batches and reports incomplete coverage until caught up (469.504953ms)
+2026-10-11T21:47:23.4590729Z ✔ collection outage is distinct from no evidence, and old unrefreshed membership cannot live forever (39.11198ms)
+2026-10-11T21:47:23.4592913Z ✔ inference-off retains manual blocs and leaves unknown alliances separate (30.372506ms)
+2026-10-11T21:47:23.4594836Z ✔ configured colours reject duplicates and empire reservations before persisting settings (31.86216ms)
+2026-10-11T21:47:23.4596544Z ✔ a memoized full-roster palette keeps map memberships, empire fills and groups consistent (34.426258ms)
+2026-10-11T21:47:23.4598619Z ✔ disabled inference bounds queued metadata and resumes complete evidence with corrections behind its cursor (1288.909692ms)
+2026-10-11T21:47:23.5019704Z ✔ canonical evidence handles conflicting replicas, ineligible corrections and owner deletion deterministically (48.297ms)
+2026-10-11T21:47:24.9140290Z ✔ legacy truncated bootstrap upgrades provenance and replays omitted in-window evidence (1411.546542ms)
+2026-10-11T21:47:25.1247096Z ✔ capacity omissions remain explicit after the limiting batch and expire with their evidence window (211.286414ms)
+2026-10-11T21:47:25.1421450Z ✔ wormhole location labels expose class and J-Space without organizational region or constellation names (1.784258ms)
+2026-10-11T21:47:25.1444831Z ✔ K-Space search retains regions and politics while all-space system results hide J-Space partitions (23.571067ms)
+2026-10-11T21:47:25.1453905Z ✔ J-Space search finds either endpoint across spaces without region or political destinations (0.540618ms)
+2026-10-11T21:47:25.1456226Z ✔ known J-Space counts include usable public endpoints without retaining expired public-only discoveries (1.132141ms)
+2026-10-11T21:47:25.1458429Z ✔ explicit discovery membership survives missing connections without reviving a lifetime Journey payload (0.509781ms)
+2026-10-11T21:47:25.1460497Z ✔ prepared gate and jump planners preserve per-leg results while reusing one graph or grid (9.642135ms)
+2026-10-11T21:47:25.1467744Z ✔ a fifty-stop production itinerary reads one computational snapshot projection and builds one graph (82.308329ms)
+2026-10-11T21:47:25.1469658Z ✔ route badges preserve all source metadata without unrelated body decoding (51.532325ms)
+2026-10-11T21:47:25.1471437Z ▶ production itinerary acceptance rejects routing evidence changes but permits unrelated writes
+2026-10-11T21:47:25.1473111Z   ✔ kill data (51.300157ms)
+2026-10-11T21:47:25.1473923Z   ✔ standings (49.312523ms)
+2026-10-11T21:47:25.1474738Z   ✔ pilot reauthorisation (42.584439ms)
+2026-10-11T21:47:25.1475592Z   ✔ pilot scopes (46.411917ms)
+2026-10-11T21:47:25.1476463Z   ✔ module policy (58.494848ms)
+2026-10-11T21:47:25.1477262Z   ✔ source expiry (44.957517ms)
+2026-10-11T21:47:25.1478207Z   ✔ unrelated pilot, display data and settings (54.269831ms)
+2026-10-11T21:47:25.1479915Z ✔ production itinerary acceptance rejects routing evidence changes but permits unrelated writes (350.358202ms)
+2026-10-11T21:47:25.1481710Z ▶ used private connection access, size, expiry and list evidence is revalidated before save
+2026-10-11T21:47:25.1483341Z   ✔ access (54.41417ms)
+2026-10-11T21:47:25.1484116Z   ✔ confirmation (49.050449ms)
+2026-10-11T21:47:25.1484831Z   ✔ size (49.331816ms)
+2026-10-11T21:47:25.1485491Z   ✔ mass (50.939668ms)
+2026-10-11T21:47:25.1486261Z   ✔ used list becomes disabled (48.194654ms)
+2026-10-11T21:47:25.1487550Z   ✔ used connection expires while source snapshots remain fresh (50.906438ms)
+2026-10-11T21:47:25.1488830Z   ✔ map removal cannot recreate a saved route (61.744472ms)
+2026-10-11T21:47:25.1489854Z   ✔ another map connection changes (61.944674ms)
+2026-10-11T21:47:25.1491391Z ✔ used private connection access, size, expiry and list evidence is revalidated before save (429.207001ms)
+2026-10-11T21:47:25.1493325Z ▶ used public reports and nominal limits retain freshness and mutation guards
+2026-10-11T21:47:25.1494441Z   ✔ unchanged (55.653598ms)
+2026-10-11T21:47:25.1495311Z   ✔ report changed (46.010442ms)
+2026-10-11T21:47:25.1496128Z   ✔ type changed (38.147753ms)
+2026-10-11T21:47:25.1496901Z   ✔ feed expired (41.089242ms)
+2026-10-11T21:47:25.1497807Z   ✔ camel timestamps (48.440223ms)
+2026-10-11T21:47:25.1499173Z ✔ used public reports and nominal limits retain freshness and mutation guards (230.779186ms)
+2026-10-11T21:47:25.1500940Z ✔ Zarzakh routing is explicitly opt-in for the actual four-gate catalogue hub (162.788647ms)
+2026-10-11T21:47:25.1503489Z ✔ shortest routing chooses exact mixed edges and does not use journey or visual coordinates (1.553253ms)
+2026-10-11T21:47:25.1505364Z ✔ wormhole expiry and access are enforced at request time, including missing expiry (0.990194ms)
+2026-10-11T21:47:25.1507194Z ✔ gate reciprocity, disconnected nodes and directed manual connections remain distinct (1.017135ms)
+2026-10-11T21:47:25.1509196Z ✔ safer routing uses the selected pilot standings and recorded activity independently of overlays (1.41685ms)
+2026-10-11T21:47:25.1510887Z ✔ safer routing favours highsec without labelling zero data as safe (0.564271ms)
+2026-10-11T21:47:25.1513003Z ✔ prefer-low routing chooses the lowsec branch without overriding hard security exclusions (0.668044ms)
+2026-10-11T21:47:25.1515056Z ✔ live Ansiblex rules require current sovereign membership and retain allowed industrial exceptions (1.163777ms)
+2026-10-11T21:47:25.1516792Z ✔ safer routing prefers a friendly nullsec detour over neutral nullsec (0.742123ms)
+2026-10-11T21:47:25.1518681Z ✔ announced Ansiblex zones use physical destination distance from the owner capital per direction (1.126167ms)
+2026-10-11T21:47:25.1520559Z ✔ zone boundaries are continuous and missing capital cannot bypass zone restrictions (0.704321ms)
+2026-10-11T21:47:25.1522621Z ✔ announced access model does not confuse positive standings with owning-alliance membership (0.84807ms)
+2026-10-11T21:47:25.1524927Z ✔ a differently owned reverse gate cannot inherit the forward owner capital (0.596692ms)
+2026-10-11T21:47:25.1526683Z ✔ graph returns the selected exact connection when a parallel gate also exists (0.401588ms)
+2026-10-11T21:47:25.1528871Z ✔ jump projection includes physical Y even when two systems coincide on the 2D map (1.570454ms)
+2026-10-11T21:47:25.1530706Z ✔ jump boundary uses the exact EVE light-year rather than the larger scientific light-year (0.37568ms)
+2026-10-11T21:47:25.1532991Z ✔ jump projection finds intermediate cyno systems and preserves each leg distance (0.731613ms)
+2026-10-11T21:47:25.1534941Z ✔ jump destinations exclude highsec and special space while allowing a highsec origin (1.474245ms)
+2026-10-11T21:47:25.1538529Z ✔ legacy saved views restore without rewriting storage or discarding unrelated preferences (66.257815ms)
+2026-10-11T21:47:25.1540855Z ✔ saved-view writes normalize only the retired top-level indicator and preserve generic config validation (39.854075ms)
+2026-10-11T21:47:25.1544191Z ✔ every bundled known-space system has a unique CCP schematic position (24.340221ms)
+2026-10-11T21:47:25.1547271Z ✔ Tenerifis preserves the in-game geometry instead of collapsing single-system hop bands (2.639225ms)
+2026-10-11T21:47:25.1550831Z ✔ schematic works galaxy-wide, region-wide and constellation-wide without a pilot or gate-hop cutoff (46.612276ms)
+2026-10-11T21:47:25.1554765Z ✔ region card placement uses one uniform scale, with readable spacing and no overlapping rectangles (5.110098ms)
+2026-10-11T21:47:25.1558190Z ✔ incomplete references fall back explicitly without mixing coordinate spaces or dropping systems (1.185137ms)
+2026-10-11T21:47:25.1560652Z ✔ empty, singleton and zero coordinates remain finite; source records are not mutated (0.400857ms)
+2026-10-11T21:47:25.1562980Z ✔ standings preserve own alliance, personal precedence, explicit neutral and unavailable evidence (2.860398ms)
+2026-10-11T21:47:25.1565478Z ✔ freshness rejects expired, future and partial snapshots (0.342467ms)
+2026-10-11T21:47:25.1567943Z ✔ live map sources include real activity, incursions, indices, structures and honest missing data (91.076506ms)
+2026-10-11T21:47:25.1571131Z ✔ private saved views and pins survive service recreation and cannot be edited by another pilot (56.833926ms)
+2026-10-11T21:47:25.1573440Z ✔ Ansiblex list import is atomic, explicitly accessible, directional and isolated (65.984121ms)
+2026-10-11T21:47:25.1575390Z ✔ wormholes default to sixteen hours, expire exactly, and prune keeps durable pins and notes (61.46121ms)
+2026-10-11T21:47:25.1577579Z ✔ all mapper durations persist precisely and unrelated edits never renew a connection (56.077791ms)
+2026-10-11T21:47:25.1579720Z ✔ wormhole expiry deadline deletes persisted records without a read, while disabled and without sync (58.04776ms)
+2026-10-11T21:47:25.1582184Z ✔ manual deletion removes exact bound signatures and route copies but preserves replacement observations and itinerary (59.927327ms)
+2026-10-11T21:47:25.1584538Z ✔ terminal saves and startup migration do not retain or resurrect dead wormholes (52.796777ms)
+2026-10-11T21:47:25.1586313Z ✔ observed travel never creates global J-Space discoveries or routes visit history (51.886033ms)
+2026-10-11T21:47:25.1588305Z ✔ structure verification coalesces requests and caches successes and failures separately for each pilot (40.361105ms)
+2026-10-11T21:47:25.1590434Z ✔ calendar moon mapping takes the selected pilot event title and time, while manual EVE time is UTC (65.399646ms)
+2026-10-11T21:47:25.1592627Z ✔ route and physical jump use server pilot standings and reject client evidence overrides (45.193839ms)
+2026-10-11T21:47:25.1594554Z ✔ reported wormhole promotion preserves expiry, provenance and endpoint restrictions (52.504633ms)
+2026-10-11T21:47:25.1597899Z ✔ wormholes and routing are isolated to their owning map and global J-Space details stay static (45.191563ms)
+2026-10-11T21:47:25.1600033Z ✔ scope migration keeps mapped signature copies and forgets original global bindings at both endpoints (46.235659ms)
+2026-10-11T21:47:25.1601894Z ✔ scope options use fresh complete sovereignty and the configured name cache (56.807155ms)
+2026-10-11T21:47:25.1604913Z ✔ generic connection mutations cannot edit tracking sources while expiry housekeeping still removes them (43.99201ms)
+2026-10-11T21:47:25.1609479Z ✔ Universe discovery is pilot membership and hot projections never read lifetime visits (61.647102ms)
+2026-10-11T21:47:25.1614725Z ✔ bookmark names interpolate reference and observed context without creating endpoints or live claims (2.033497ms)
+2026-10-11T21:47:25.1619288Z ✔ bookmark formats reject unknown or malformed tokens and produce bounded plain text (1.530822ms)
+2026-10-11T21:47:25.1623369Z ✔ all Wanderer token names support bounded labels, explicit chain names and deliberate return holes (0.734057ms)
+2026-10-11T21:47:25.1627329Z ✔ class suffixes reflect same-system observations and custom mapping rejects unsafe keys or unbounded labels (9.189694ms)
+2026-10-11T21:47:25.1629629Z ✔ metadata and link edits preserve scan age/missing; explicit rescan or present observation refreshes them (62.216508ms)
+2026-10-11T21:47:25.1631679Z ✔ current ESI claims preserve ownership, development, capital and authoritative hub windows (1.386893ms)
+2026-10-11T21:47:25.1633993Z ✔ legacy snapshots remain readable, empty replacement clears claims and malformed data is rejected (1.194736ms)
+2026-10-11T21:47:26.9234851Z ✔ official snapshot provenance, payload sizes and detail checksum agree (180.613031ms)
+2026-10-11T21:47:26.9238989Z ✔ known physical coordinates project on XZ and never substitute the SDE schematic positions (12.114915ms)
+2026-10-11T21:47:26.9243948Z ✔ bundled gate graph has unique reciprocal links and no invented Jspace links (24.908176ms)
+2026-10-11T21:47:26.9247752Z ✔ shared topology and detailed records cannot be mutated by a caller (2.19585ms)
+2026-10-11T21:47:26.9251553Z ✔ every independently compressed detail record matches its system, counts and static references (2456.598841ms)
+2026-10-11T21:47:26.9254550Z ✔ truncated detail archives and mismatched offsets fail instead of returning another system (441.248322ms)
+2026-10-11T21:47:26.9614985Z ✔ the four empire territories retain canonical distinct colours and readable outlines (3.196343ms)
+2026-10-11T21:47:26.9616810Z ✔ 1,200 owner identities plus blocs never reuse fill or outline and ignore input ordering (672.297886ms)
+2026-10-11T21:47:26.9618473Z ✔ configured preference wins deterministic legacy conflicts without changing input definitions (0.492328ms)
+2026-10-11T21:47:26.9620508Z ✔ small generated palettes separate nearby shades instead of recycling a short hue list (0.839363ms)
+2026-10-11T21:47:26.9622149Z ✔ custom black fills have readable outlines, with collision-safe individual shades (2.082539ms)
+2026-10-11T21:47:26.9624036Z ✔ one ownership/group roster uses live sovereignty and preserves source priority (0.620205ms)
+2026-10-11T21:47:26.9625685Z ✔ settings reject exact duplicate/reserved colours and suggest genuinely unused replacements (0.674035ms)
+2026-10-11T21:47:26.9640336Z ✔ repeated systems share one owner colour and inconsistent faction aliases fail visibly (0.688302ms)
+2026-10-11T21:47:26.9642135Z ✔ the unmodified SMT example imports every system, including numeric system names, and round-trips (51.010571ms)
+2026-10-11T21:47:26.9645300Z ✔ headers, comments, whitespace, unlevelled slots and case-insensitive status are accepted (4.798989ms)
+2026-10-11T21:47:26.9647270Z ✔ unknown headers, duplicate slots, malformed states and ranges return line diagnostics and invalidate the whole batch (5.248155ms)
+2026-10-11T21:47:26.9649208Z ✔ JSON preserves notes and observed state, while SMT warns about notes it cannot represent (23.633449ms)
+2026-10-11T21:47:26.9650920Z ✔ oversized batches and duplicate JSON slots cannot become importable partial results (28.021251ms)
+2026-10-11T21:47:26.9652982Z ✔ legacy footprint workspaces retain selected context and supported choices as a custom view (2.508242ms)
+2026-10-11T21:47:26.9654774Z ✔ named saved views use the same retired-indicator migration without losing their identity (0.387001ms)
+2026-10-11T21:47:26.9656424Z ✔ space, malformed state and supported indicators retain established restoration boundaries (0.544494ms)
+2026-10-11T21:47:26.9658163Z ✔ active CCP weather overrides pinned weather without changing Wanderer statics (32.774637ms)
+2026-10-11T21:47:26.9659577Z ✔ wormhole reference covers the complete SDE J-space and records exact source provenance (8.695767ms)
+2026-10-11T21:47:26.9660960Z ✔ J225111 has C4 identity and P060 C1 / C247 C3 statics without invented endpoints (1.424523ms)
+2026-10-11T21:47:26.9662066Z ✔ CCP effect identity and power correct upstream errors and retain class-specific modifiers (0.730019ms)
+2026-10-11T21:47:26.9663865Z ✔ all C13 systems and Thera are shattered and special identities use authoritative SDE names (0.875401ms)
+2026-10-11T21:47:26.9664977Z ✔ unknown hole values stay unknown while enrichment is immutable and never changes graph topology (0.850023ms)
+2026-10-11T21:47:26.9665954Z ✔ visit sovereignty uses only existing fresh complete ESI evidence with captured owner identity and age (31.529357ms)
+2026-10-11T21:47:26.9666981Z ✔ session starts and recorded visits retain their original holder after later sovereignty changes and restart (149.076472ms)
+2026-10-11T21:47:26.9667936Z ✔ nullable visit sovereignty migration preserves older travel records and is idempotent (28.761029ms)
+2026-10-11T21:47:26.9668813Z ✔ malformed or legacy historical ownership is never reconstructed from present-day sources (0.695575ms)
+2026-10-11T21:47:26.9669651Z ✔ Universe has Atlas, Maps and its settings while Sessions remains independent (2.542927ms)
+2026-10-11T21:47:26.9670422Z ✔ legacy Universe and Journey links open Atlas without exposing the retired page (0.410204ms)
+2026-10-11T21:47:26.9671198Z ✔ workspace routing preserves extension destinations and bounds unknown links (0.317983ms)
+2026-10-11T21:47:26.9671936Z ✔ saved retired tabs never restore hidden pages in either map workspace (1.941927ms)
+2026-10-11T21:47:26.9673012Z ✔ early history bootstrap claims only workspace traversal and supports auth cleanup (4.941934ms)
+2026-10-11T21:47:26.9673508Z ℹ tests 1004
+2026-10-11T21:47:26.9673751Z ℹ suites 0
+2026-10-11T21:47:26.9674013Z ℹ pass 1004
+2026-10-11T21:47:26.9674238Z ℹ fail 0
+2026-10-11T21:47:26.9674459Z ℹ cancelled 0
+2026-10-11T21:47:26.9674689Z ℹ skipped 0
+2026-10-11T21:47:26.9674906Z ℹ todo 0
+2026-10-11T21:47:26.9675157Z ℹ duration_ms 24344.383857
+2026-10-11T21:47:26.9909816Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-11T21:47:26.9910286Z with:
+2026-10-11T21:47:26.9910560Z   path: /home/runner/work/_temp/Kairo-test-build.zip
+2026-10-11T21:47:26.9910883Z   archive: false
+2026-10-11T21:47:26.9911118Z   if-no-files-found: error
+2026-10-11T21:47:26.9911374Z   retention-days: 30
+2026-10-11T21:47:26.9911596Z   name: artifact
+2026-10-11T21:47:26.9911822Z   compression-level: 6
+2026-10-11T21:47:26.9912060Z   overwrite: false
+2026-10-11T21:47:26.9912749Z   include-hidden-files: false
+2026-10-11T21:47:26.9913035Z ##[endgroup]
+2026-10-11T21:47:27.1375890Z With the provided path, there will be 1 file uploaded
+2026-10-11T21:47:27.1400050Z Artifact name is valid!
+2026-10-11T21:47:27.1401328Z Root directory input is valid!
+2026-10-11T21:47:27.5094562Z Uploading artifact: Kairo-test-build.zip
+2026-10-11T21:47:27.5135997Z Beginning upload of artifact content to blob storage
+2026-10-11T21:47:28.4188137Z Uploaded bytes 8388608
+2026-10-11T21:47:28.4567762Z Uploaded bytes 16777216
+2026-10-11T21:47:28.5387296Z Uploaded bytes 25165824
+2026-10-11T21:47:28.6186937Z Uploaded bytes 25938696
+2026-10-11T21:47:28.6919562Z Finished uploading artifact content to blob storage!
+2026-10-11T21:47:28.6920801Z SHA256 digest of uploaded artifact is 7024711ed49dafa21ec0b89ed90d01ad45748528066fb653d83b4147a141b2f0
+2026-10-11T21:47:28.6921635Z Finalizing artifact upload
+2026-10-11T21:47:29.0938240Z Artifact Kairo-test-build.zip successfully finalized. Artifact ID 11717150334
+2026-10-11T21:47:29.0939985Z Artifact artifact has been successfully uploaded! Final size is 25938696 bytes. Artifact ID is 11717150334
+2026-10-11T21:47:29.0944356Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/38177333462/artifacts/11717150334
+2026-10-11T21:47:29.1099829Z ##[group]Run python3 - <<'PY'
+2026-10-11T21:47:29.1100183Z [36;1mpython3 - <<'PY'[0m
+2026-10-11T21:47:29.1100443Z [36;1mimport os[0m
+2026-10-11T21:47:29.1100690Z [36;1mfrom pathlib import Path[0m
+2026-10-11T21:47:29.1100973Z [36;1mtext = ([0m
+2026-10-11T21:47:29.1101357Z [36;1m    f"[Download Kairo-test-build.zip]({os.environ['KAIRO_ARTIFACT_URL']})\n\n"[0m
+2026-10-11T21:47:29.1101935Z [36;1m    "Sign into GitHub, download the ZIP and extract it into a new folder. "[0m
+2026-10-11T21:47:29.1103003Z [36;1m    "Stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. "[0m
+2026-10-11T21:47:29.1103656Z [36;1m    "Node.js 24 or newer is required; no npm install or local build is needed.\n\n"[0m
+2026-10-11T21:47:29.1104265Z [36;1m    "This is a test build awaiting review. It does not merge into main or publish a release.\n"[0m
+2026-10-11T21:47:29.1104730Z [36;1m)[0m
+2026-10-11T21:47:29.1105102Z [36;1mwith Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as summary:[0m
+2026-10-11T21:47:29.1105527Z [36;1m    summary.write(text)[0m
+2026-10-11T21:47:29.1105793Z [36;1mPY[0m
+2026-10-11T21:47:29.1167129Z shell: /usr/bin/bash -e {0}
+2026-10-11T21:47:29.1167402Z env:
+2026-10-11T21:47:29.1167843Z   KAIRO_ARTIFACT_URL: https://github.com/BunBajiro/kairo/actions/runs/38177333462/artifacts/11717150334
+2026-10-11T21:47:29.1168359Z ##[endgroup]
+2026-10-11T21:47:29.1600997Z Post job cleanup.
+2026-10-11T21:47:29.2713537Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-9ebf7ba24ce4271ffeeb5024ac6cfe49ad3b6177b7dc9633cb2962026fc756b8, not saving cache.
+2026-10-11T21:47:29.2845876Z Post job cleanup.
+2026-10-11T21:47:29.3737063Z [command]/usr/bin/git version
+2026-10-11T21:47:29.3785253Z git version 2.55.0
+2026-10-11T21:47:29.3854228Z Temporarily overriding HOME='/home/runner/work/_temp/64540988-581b-4d27-af74-b1a5cdf6fdfa' before making global git config changes
+2026-10-11T21:47:29.3855916Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-11T21:47:29.3861328Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/kairo/kairo
+2026-10-11T21:47:29.3901310Z Removing SSH command configuration
+2026-10-11T21:47:29.3910415Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-11T21:47:29.3958999Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-11T21:47:29.4251624Z Removing HTTP extra header
+2026-10-11T21:47:29.4275869Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-11T21:47:29.4337853Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-11T21:47:29.4703510Z Removing includeIf entries pointing to credentials config files
+2026-10-11T21:47:29.4705103Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-11T21:47:29.4734646Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-11T21:47:29.5240775Z Cleaning up orphan processes

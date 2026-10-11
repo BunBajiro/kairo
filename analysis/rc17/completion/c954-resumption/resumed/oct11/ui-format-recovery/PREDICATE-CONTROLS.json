@@ -1,0 +1,1399 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11T21:59:29.681Z",
+  "status": "pass",
+  "scope": "Pure V8 mock-DOM expression and predicate controls; no browser, Node VM, application or benchmark execution",
+  "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "oldHarnessCommit": "00a4bdaf1046664da837c75ac3d17a046f5969ba",
+  "oldSha256": "00437e26ce333c6a477fd4ad3d48201d4ec11a42de227a6b775c24eaf1d6a21e",
+  "newSha256": "11ae8708bd605d8af052bab9103249fa0d98eca63e9f37b7e069eebe1b0de2ed",
+  "singleReplacementOnly": true,
+  "expression": "(()=>{const cards=[...document.querySelectorAll('.stats-grid .stat')].filter(card=>card.querySelector('.eyebrow')?.textContent==='WALLET BALANCE'),formatter=new Intl.NumberFormat('en-GB',{maximumFractionDigits:2,notation:'compact'});return {matchingCards:cards.length,actual:cards[0]?.querySelector('strong')?.textContent,expected:formatter.format(9999)+'ISK',format:formatter.resolvedOptions()};})()",
+  "expressionSha256": "f329a7923bbf0f384816e84474b4f21ef95672cc164505cf890cf3ea55984f71",
+  "predicate": "result.latestWallet.matchingCards===1&&result.latestWallet.actual===result.latestWallet.expected",
+  "predicateSha256": "627fa8bf5c4402392dadfcef8cc6089576b550046743bc9340b4979b5896dda2",
+  "sources": [
+    {
+      "path": "components/kairo/operations.tsx",
+      "gitBlob": "a2a500c2c43f4dee25d8842a908f6e7dd388dc35",
+      "sha256": "d44a656b7d7625eb0d28b47a8144d24a2d15f1ccee8d2599bda1b567bd84e354"
+    },
+    {
+      "path": "components/kairo/formatters.mjs",
+      "gitBlob": "8b1ba5eb11ce3584dd7377ebb566c3f29edd7054",
+      "sha256": "6416928ba83605871352617941a337f2fd7f3ddf9fdd33c3c00c9cffc7b0a122"
+    },
+    {
+      "path": "components/kairo/model.ts",
+      "gitBlob": "e50c799b36f13f2427eee444145f2ddbdffe82b7",
+      "sha256": "74be1682a3a6331807003012a8581177f025618ffcbf046f07d215a0dce4cac4"
+    }
+  ],
+  "controls": [
+    {
+      "policy": "uppercase",
+      "name": "current9999",
+      "expectedPass": true,
+      "actualPass": true,
+      "matchingCards": 1,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "stale4200",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.2KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "stale4300",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "wrong-pilot43-fixture4300",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "other-card9999-with-stale-wallet",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "no-wallet-other-card9999",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "zero-cards",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "duplicate-wallet-both-current",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 2,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "duplicate-wallet-one-current",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 2,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "missing-wallet-strong",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "empty-wallet-strong",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "missing-wallet-label",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "wrong-currency",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "10KSP",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "current-wallet-with-unrelated-card",
+      "expectedPass": true,
+      "actualPass": true,
+      "matchingCards": 1,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "uppercase",
+      "name": "original-predicate-accepts-unrelated-card",
+      "expectedPass": true,
+      "actualPass": true,
+      "meaning": "Demonstrates old false-positive; corrected expression rejects this fixture."
+    },
+    {
+      "policy": "lowercase",
+      "name": "current9999",
+      "expectedPass": true,
+      "actualPass": true,
+      "matchingCards": 1,
+      "actual": "10kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "stale4200",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.2kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "stale4300",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "wrong-pilot43-fixture4300",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "other-card9999-with-stale-wallet",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "no-wallet-other-card9999",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "zero-cards",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "duplicate-wallet-both-current",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 2,
+      "actual": "10kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "duplicate-wallet-one-current",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 2,
+      "actual": "10kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "missing-wallet-strong",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": null,
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "empty-wallet-strong",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "missing-wallet-label",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "wrong-currency",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "10kSP",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "current-wallet-with-unrelated-card",
+      "expectedPass": true,
+      "actualPass": true,
+      "matchingCards": 1,
+      "actual": "10kISK",
+      "expected": "10kISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "lowercase",
+      "name": "original-predicate-rejects-current-lowercase",
+      "expectedPass": false,
+      "actualPass": false
+    },
+    {
+      "policy": "native",
+      "name": "current9999",
+      "expectedPass": true,
+      "actualPass": true,
+      "matchingCards": 1,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "stale4200",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.2KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "stale4300",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "wrong-pilot43-fixture4300",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "other-card9999-with-stale-wallet",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "4.3KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "no-wallet-other-card9999",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "zero-cards",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "duplicate-wallet-both-current",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 2,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "duplicate-wallet-one-current",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 2,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "missing-wallet-strong",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "empty-wallet-strong",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "missing-wallet-label",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 0,
+      "actual": null,
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "wrong-currency",
+      "expectedPass": false,
+      "actualPass": false,
+      "matchingCards": 1,
+      "actual": "10KSP",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    },
+    {
+      "policy": "native",
+      "name": "current-wallet-with-unrelated-card",
+      "expectedPass": true,
+      "actualPass": true,
+      "matchingCards": 1,
+      "actual": "10KISK",
+      "expected": "10KISK",
+      "requestedFormat": {
+        "locale": "en-GB",
+        "options": {
+          "maximumFractionDigits": 2,
+          "notation": "compact"
+        }
+      },
+      "resolvedFormat": {
+        "locale": "en-GB",
+        "numberingSystem": "latn",
+        "style": "decimal",
+        "minimumIntegerDigits": 1,
+        "minimumFractionDigits": 0,
+        "maximumFractionDigits": 2,
+        "useGrouping": "min2",
+        "notation": "compact",
+        "compactDisplay": "short",
+        "signDisplay": "auto",
+        "roundingIncrement": 1,
+        "roundingMode": "halfExpand",
+        "roundingPriority": "auto",
+        "trailingZeroDisplay": "auto"
+      }
+    }
+  ],
+  "limitations": [
+    "Controlled uppercase/lowercase policies test the exact predicate mechanics, not any particular browser's ICU implementation.",
+    "The wrong-pilot counterexample is fixture pilot43's unchanged4300 balance. This value assertion is not a new independent selected-character identity check.",
+    "Compact rounding does not distinguish every nearby value mapping to the same displayed number; the original4200/4300 race fixture is unambiguous.",
+    "One matching Wallet card is required; the first strong inside that production card is compared. The source template has one strong; this does not add a generic malformed-DOM strong-count check.",
+    "Original failed CI evidence remains failed; remaining archive/pilot/reconnect checks require a fresh full CI run after banking.",
+    "Filesystem executor was unavailable; source bytes were recovered from exact Git commit and proposal reconstructed by the sole reviewed replacement. Hashes match observed workspace old/new pins."
+  ]
+}

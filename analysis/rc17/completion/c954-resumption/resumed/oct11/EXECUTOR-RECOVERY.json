@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "purpose": "Executor-outage recovery checkpoint; completed results are distinguished from unexecuted preparation.",
+  "analysisParent": "cbea2e225bef1cfdee8342b1e60db1a49ab6f3f3",
+  "measuredSource": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "documentationSource": "0149e86638aa7bef279f24a6425504345ae1179f",
+  "tradeoff": "All 46 component decisions remain closed; accepted first-Assets/startup-versus-ongoing-use tradeoff retained. No optimization or timing retry requested.",
+  "executor": {
+    "status": "transport returned; workspace reset confirmed",
+    "observedError": "exec-server transport disconnected; failed to resume exec-server session: recovery timed out after25s",
+    "localRoot": "/workspace/scratch/a2f3334402fc",
+    "warning": "Read-only pwd/listing succeeded after outage, but kairo-analysis-restored and all prior /tmp evidence/build directories are absent. Restore from Git/Actions; local pending file survival must not be assumed.",
+    "restored": "Fresh Git clone at original analysis path succeeded; initial clean HEAD cbea2e225bef1cfdee8342b1e60db1a49ab6f3f3. Source worktrees/dependencies/artifacts still require restoration."
+  },
+  "comparison": {
+    "run": 38176821997,
+    "attempt": 1,
+    "trigger": "cbcd22ff6b57ea2c168fa363332a80d7c414f7d5",
+    "workflow": "success",
+    "audit": "unfinished: verify bundle/source/harness guards and recompute numerical rows before acceptance",
+    "artifacts": [
+      {
+        "artifactId": 11716144963,
+        "bytes": 2792289,
+        "sha256": "a98542607becc243ce84fea2dfe7b5e7d717e05e80b9f34a78582824a02d3dbd",
+        "stableUrl": "https://github.com/BunBajiro/kairo/actions/runs/38176821997/artifacts/11716144963"
+      },
+      {
+        "artifactId": 11717365026,
+        "bytes": 1926,
+        "sha256": "27c8f6cd93af8b5764473c082e5cca8b5098e70202857b7f2cdb65cfb44046c4",
+        "stableUrl": "https://github.com/BunBajiro/kairo/actions/runs/38176821997/artifacts/11717365026"
+      },
+      {
+        "artifactId": 11716169668,
+        "bytes": 31417765,
+        "sha256": "2217a20081bb3cb767b3649696a99696829097f32612f0b8fe155510c651c87e",
+        "stableUrl": "https://github.com/BunBajiro/kairo/actions/runs/38176821997/artifacts/11716169668"
+      },
+      {
+        "artifactId": 11717335211,
+        "bytes": 31406720,
+        "sha256": "db6a6f0e09e86d2da961aca3b14081621f8aec8cda0f5425837947c1df18492c",
+        "stableUrl": "https://github.com/BunBajiro/kairo/actions/runs/38176821997/artifacts/11717335211"
+      },
+      {
+        "artifactId": 11717355022,
+        "bytes": 9277025,
+        "sha256": "afa21845585589c7e951ddc09c92a5a0793bfc98e4cdf5751249e8abb2a9b741",
+        "stableUrl": "https://github.com/BunBajiro/kairo/actions/runs/38176821997/artifacts/11717355022"
+      }
+    ],
+    "downloadChecks": "All five original ZIPs downloaded and matched API sizes/digests before outage; total 74,895,725 bytes.",
+    "localDirectory": "/tmp/kairo-ci-comparison-38176821997",
+    "pendingLocalAudit": "analysis/rc17/completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1"
+  },
+  "uiRecovery1": {
+    "run": 38177282671,
+    "attempt": 1,
+    "trigger": "00a4bdaf1046664da837c75ac3d17a046f5969ba",
+    "result": "failed",
+    "runtimeTests": {
+      "pass": 1004,
+      "fail": 0
+    },
+    "lanesPassed": 6,
+    "failedLane": "frontend-refresh",
+    "failure": "Check15 used uppercase whole-grid 9.999K/10K substring; correct current Wallet was 10kISK in Chrome154.0.8037.97. Checks after15 were not reached.",
+    "artifact": {
+      "artifactId": 11716262291,
+      "bytes": 588180,
+      "sha256": "61c48812e73d10f1b7f3562100b742c341dde6a9af37ee0877aec520ead9fdbd",
+      "stableUrl": "https://github.com/BunBajiro/kairo/actions/runs/38177282671/artifacts/11716262291"
+    },
+    "audit": "Completed before outage:38 raw files,37 evidence pins,486 source and214 harness bindings; 45 ownership rows and15 quiescent snapshots verified.",
+    "localRawBank": "47 files/2,295,278 bytes, deterministic gzip1,233,639 bytes in6 chunks round-tripped, but not Git banked before outage. Recover from original artifact; do not claim chunks persisted."
+  },
+  "packageBuild66": {
+    "run": 38177333462,
+    "attempt": 1,
+    "source": "0149e86638aa7bef279f24a6425504345ae1179f",
+    "scope": "Exact extracted-package gate passed; reconstructed completed-audit receipt and original connector evidence banked alongside this checkpoint. Original ZIP remains Actions-retained.",
+    "receipt": "release-preparation/package-build66/RECOVERY-RECEIPT.json"
+  },
+  "exportClosure": {
+    "status": "static review passed, zero runtime attempts",
+    "reason": "Predeclared RC16 followup-methodology + final runbook complete export/stopped-directory two-reopen requirement; sole identified missing local semantic acceptance. Synthetic actual RC16 directory, not user's installed data.",
+    "directory": "analysis/rc17/completion/c954-resumption/resumed/oct11/release-preparation/export-closure",
+    "pins": {
+      "worker.mjs": "b6af2663dfdb734bbf2420e7775337f0eaba6dffb8ef77f80e008106af352121",
+      "run.py": "19fd302ef1821d334e37634a86c9013ff7e136bebde5377a391509a925f862d3",
+      "README.md": "d0a1cdebde8bf31bc59f925dffbf1ae7702d60b1d376ce57edd4ac4f41853f3f"
+    },
+    "scope": "Actual RC16 close -> byte-identical stopped-directory copy -> source70 upgrade -> two clean source70 reopens. Complete authenticated export + explicit fixture/24-table SQL oracle, six auth-negative checks each lifecycle, exact enumerated migration differences, no retained-data mutation, tokens excluded, external fetch denied. Closed evidence immediate/final hashes cross-bound by reviewed Envelope. No performance claims.",
+    "command": "KAIRO_EXPORT_GRANTED=1 python3 analysis/rc17/completion/c954-resumption/resumed/oct11/release-preparation/export-closure/run.py /tmp/kairo-public-resume-20261011/setup-matrix/rc16-source.json /tmp/kairo-public-resume-20261011/setup/candidate-source.json /tmp/kairo-public-resume-20261011/export-closure-attempt1",
+    "recovery": "README.md, run.py and worker.mjs reconstructed exactly from retained patch history; all three SHA256 values match independent final review pins. Exact recovered Git blobs are banked here. Runtime remains unexecuted."
+  },
+  "retention": "Completed Actions artifacts cited here expire 2026-11-10. Artifact IDs are durable recovery locators only within retention; original archives are not all duplicated in Git. Avoid rerunning measurements to recover data.",
+  "next": [
+    "Bank reviewed exact refresh assertion correction and request full independent UI run on unchanged70; preserve failed attempts.",
+    "Restore Git checkout and completed Actions artifacts; finish comparison offline source/provenance/numeric audit without repeating measurements.",
+    "Recover or reconstruct reviewed export preparation, bank it, execute once with fresh output directory and audit.",
+    "Update existing three-version report and single ledger, complete evidence preservation and release disposition, then clean user-review handoff."
+  ],
+  "reviewBoundary": "PR10 stays withdrawn/draft; PR11 internal draft; no clean RC handoff, main update, merge or release."
+}

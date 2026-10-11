@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "kind": "emergency-reconstruction",
+  "runId": 38177282671,
+  "runAttempt": 1,
+  "harnessCommit": "00a4bdaf1046664da837c75ac3d17a046f5969ba",
+  "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "reconstructionBoundary": "The completed subagent turn's functions stores and filesystem executor are unavailable. This receipt reconstructs the earlier completed audit from visible tool outputs and messages; it is NOT byte-identical to the original AUDIT.json or INDEPENDENT-REVIEW.md. API jobs/artifacts/run and complete job log were freshly retrieved through GitHub connectors. No executor, application runtime, harness edit, rerun, tree update or ref update occurred in this recovery.",
+  "originalLocalReviewSha256": "b6676ffdd543c7b8f10cb63f0bbbeaf723f6f9374ce156276f65b32da98ba26f",
+  "originalBankInventorySummary": {
+    "files": 45,
+    "bytes": 1699644,
+    "includes": "all38 raw artifact files, job log, API metadata, reproducible audit.py and audit/review"
+  },
+  "artifact": {
+    "id": 11716262291,
+    "name": "internal-rc17-completion-ui-38177282671-1",
+    "bytes": 588180,
+    "sha256": "61c48812e73d10f1b7f3562100b742c341dde6a9af37ee0877aec520ead9fdbd",
+    "previousAudit": "downloaded ZIP/API/upload log digests agreed; all37 evidence bindings plus nested lane inventories passed",
+    "archiveRestoredInThisEmergencyRecovery": false,
+    "priorTemporaryPath": "/tmp/kairo-ui-actions-38177282671-1.zip"
+  },
+  "previousIntegrityAudit": {
+    "pass": true,
+    "sourceFilesMatchedGit": 486,
+    "compiledAssetManifestEntries": 20,
+    "harnessBindingsMatchedGit": 214,
+    "ownerSha256": "27f05929f03ec6b17d9632c561420b0a802578518db93169d046ed0f0a134378",
+    "sourceFingerprint": "0274d763b9b47b26a4070d07c919c34c00a11a816421addb0ef9cc32eceb82a4",
+    "buildLogAndLockfileReceiptMatch": true,
+    "finalSourceAndHarnessGuards": true,
+    "eachLaneSourceBeforeAndAfter": true,
+    "studioCopiedBuildReceiptAndHelpersMatch": true,
+    "replayIndividualSourceHashesMatch": true,
+    "node": "v24.19.0",
+    "chrome": "Google Chrome 154.0.8037.97"
+  },
+  "acceptance": {
+    "pass": false,
+    "completion": false,
+    "failedOrMissing": [
+      "refresh",
+      "frontend-refresh"
+    ],
+    "runtimeTests": {
+      "tests": 1004,
+      "pass": 1004,
+      "fail": 0
+    },
+    "lanesExecuted": 7,
+    "lanesPassed": 6,
+    "refresh": {
+      "exitCode": 1,
+      "passedChecks": 14,
+      "failedCheck": 15,
+      "label": "late state cannot overwrite newer snapshot",
+      "location": "analysis/rc17/completion/frontend-refresh/browser-acceptance.mjs:47:381",
+      "previousChecks": [
+        "state burst retains one follow-up",
+        "state transport never overlaps within selected scope"
+      ],
+      "coalescedStateCount": 4,
+      "maximumStateTransportInFlight": 1,
+      "failureBodyWalletCompact": "10kISK",
+      "failureBodyWalletFull": "9,999 ISK",
+      "assertionPermitsOnly": [
+        "9.999K",
+        "10K"
+      ],
+      "disposition": "Observed lowercase compact-number suffix mismatch. The retained rendered value is correct9999; this does not show a stale-wallet overwrite. Archive/pilot/reconnect assertions later in the worker were not reached."
+    },
+    "otherLanes": [
+      {
+        "lane": "admin-polling",
+        "complete": true,
+        "exitCode": 0,
+        "checks": 18
+      },
+      {
+        "lane": "frontend-models",
+        "complete": true,
+        "exitCode": 0,
+        "checks": 17
+      },
+      {
+        "lane": "studio-stream",
+        "complete": true,
+        "exitCode": 0,
+        "checks": 10,
+        "cleanupVerified": true
+      },
+      {
+        "lane": "session-replay-repeat-small",
+        "complete": true,
+        "exitCode": 0,
+        "smoke": false,
+        "measuredCycles": 12,
+        "samples": 3,
+        "retentionSnapshots": 5,
+        "ownershipRows": 15,
+        "eventSources": 1,
+        "controls": {
+          "successfulBrowserExternalResponses": 0,
+          "rendererExceptions": 0,
+          "deniedBackendFetchAttempts": 0
+        }
+      },
+      {
+        "lane": "session-replay-repeat-cap",
+        "complete": true,
+        "exitCode": 0,
+        "smoke": false,
+        "measuredCycles": 12,
+        "samples": 3,
+        "retentionSnapshots": 5,
+        "ownershipRows": 15,
+        "eventSources": 1,
+        "controls": {
+          "successfulBrowserExternalResponses": 0,
+          "rendererExceptions": 0,
+          "deniedBackendFetchAttempts": 0
+        }
+      },
+      {
+        "lane": "session-replay-distinct-cap",
+        "complete": true,
+        "exitCode": 0,
+        "smoke": false,
+        "measuredCycles": 12,
+        "samples": 3,
+        "retentionSnapshots": 5,
+        "ownershipRows": 15,
+        "eventSources": 1,
+        "controls": {
+          "successfulBrowserExternalResponses": 0,
+          "rendererExceptions": 0,
+          "deniedBackendFetchAttempts": 0
+        }
+      }
+    ]
+  },
+  "cleanupBoundary": "All seven workers terminated sequentially; six exit0, refresh exit1. Owner receipts record processGroupCleaned:true and no cleanupFailure/timeout. Actual worker close/awaited finalizers support completion, but processGroupCleaned is a signaling receipt, not an independent post-exit census. No remote census is retained. Job log records orphan-process cleanup without residual process identities.",
+  "replayScope": "All45 ownership rows had zero stale Universe requests.15 quiescent Overview retention snapshots had no map/replay surfaces and three explicit GC passes each. Single-candidate correctness/retention coverage; no matched performance improvement claim.",
+  "status": "Preserve as failed recovery1, separate from original failed run38176822076. Clean review/PR10 remains blocked. Root owns subsequent reviewed harness correction and new UI-only request.",
+  "recoveredBlobPathsPrefix": "analysis/rc17/completion/c954-resumption/resumed/oct11/independent-actions/ui-recovery1/"
+}
