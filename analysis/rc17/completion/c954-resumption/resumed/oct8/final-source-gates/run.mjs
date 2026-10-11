@@ -10,6 +10,7 @@ import {cpus} from 'node:os';
 import {dirname, isAbsolute, join, relative, resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {observeOwnedGroup} from './ownership.mjs';
+import {finalizeRowEvidence, verifyInventoriedRowEvidence} from './final-row-evidence.mjs';
 import {loadSourceManifest, verifySource} from '../../../../../harness/source-manifest.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -556,7 +557,15 @@ try {
     releases: [], errors: [], excludedFromArtifactInventory: true};
   if (report) {
     if (interruptedSignal && !failures.some(item => item.stage === 'interrupted')) failures.push({stage: 'interrupted', signal: interruptedSignal});
-    report.cleanupComplete = rows.every(row => row.cleanupComplete);
+    // Recheck retained child bytes and cleanup at final receipt time. A prior
+    // per-row pass cannot establish that later files still match its evidence.
+    try { await finalizeRowEvidence(report); }
+    catch (error) {
+      failures.push({stage: 'final-row-evidence', error: errorText(error)});
+      report.finalRowEvidence = {complete: false, temporaryDataAbsent: false, error: errorText(error)};
+      report.complete = false;
+    }
+    report.cleanupComplete = rows.every(row => row.cleanupComplete) && report.finalRowEvidence.temporaryDataAbsent;
     report.complete = report.complete && failures.length === 0 && report.cleanupComplete;
     report.finishedAt = stamp();
     report.finalization = {heldLocks: report.locks.filter(lock => lock.acquired).map(lock => lock.path),
@@ -564,9 +573,17 @@ try {
       cleanupCompleteScope: 'Worker process groups and temporary data; lock release is recorded separately.'};
     try {
       await save();
-      const artifacts = await fingerprint((await filesBelow(destination)).filter(path =>
+      const artifactPaths = () => filesBelow(destination).then(paths => paths.filter(path =>
         path !== join(destination, 'artifacts.json') && path !== join(destination, 'lock-release.json')));
-      const artifactBytes = Buffer.from(JSON.stringify({schemaVersion: 1, complete: report.complete, ...artifacts}, null, 2) + '\n');
+      let artifacts = await fingerprint(await artifactPaths());
+      const finalRowEvidence = await verifyInventoriedRowEvidence(report, artifacts);
+      if (!finalRowEvidence.complete) {
+        // Preserve the fault and damaged raw bytes, then bind the failed receipt.
+        // A failed attempt never becomes passing by adopting the new file hashes.
+        await save();
+        artifacts = await fingerprint(await artifactPaths());
+      }
+      const artifactBytes = Buffer.from(JSON.stringify({schemaVersion: 1, complete: report.complete, finalRowEvidence, ...artifacts}, null, 2) + '\n');
       await writeFile(join(destination, 'artifacts.json'), artifactBytes, {flag: 'wx'});
       const receipt = artifacts.files.find(file => file.path === join(destination, 'receipt.json'));
       assert.ok(receipt, 'Final receipt is missing from the artifact inventory');
@@ -575,6 +592,10 @@ try {
       release.evidenceComplete = report.complete;
     } catch (error) {
       release.errors.push({stage: 'final-artifacts', error: errorText(error)});
+      report.complete = false;
+      failures.push({stage: 'final-artifacts', error: errorText(error)});
+      try { await save(); }
+      catch (saveError) { release.errors.push({stage: 'failed-receipt', error: errorText(saveError)}); }
       process.stderr.write('Final artifact write failed: ' + errorText(error) + '\n'); process.exitCode = 1;
     }
   }

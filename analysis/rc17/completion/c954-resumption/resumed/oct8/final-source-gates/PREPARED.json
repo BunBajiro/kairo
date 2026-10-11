@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "revision": 3,
-  "preparedAt": "2026-10-11T07:35:44.523219+00:00",
-  "status": "Namespace correction and 27 focused ownership controls complete; awaiting independent review",
+  "revision": 4,
+  "preparedAt": "2026-10-11T08:10:55.680042+00:00",
+  "status": "Final retained evidence checks and 10 synthetic controls complete; independent review pending",
   "candidateCommit": null,
   "runtimeExecuted": false,
   "syntaxExecuted": true,
@@ -56,8 +56,8 @@
     },
     {
       "path": "run.mjs",
-      "bytes": 37601,
-      "sha256": "94c4578b68667a90fc5397c8e0d4759cbb22732ca141171b42e7290e7fce63cc"
+      "bytes": 38892,
+      "sha256": "a0ea1e26f4cf62cff6761be61d2bbfc275a1c376c31ae24f02a115a09c6ac531"
     },
     {
       "path": "ownership.mjs",
@@ -83,13 +83,27 @@
       "path": "../final-merged-frontend/ownership.py",
       "bytes": 3462,
       "sha256": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027"
+    },
+    {
+      "path": "final-row-evidence.mjs",
+      "bytes": 6959,
+      "sha256": "db0157af8042a8e71172da746328d24a5a4823f4ef2b5e17e25b9148f8c6a21c"
+    },
+    {
+      "path": "final-row-evidence-controls.mjs",
+      "bytes": 7469,
+      "sha256": "d0fe4fdb2adc8307536e2b162bb11a6b718037442be452c0780a9ea9711d80a1"
     }
   ],
   "changes": [
     "Finalize substantial receipt and artifact inventory while both runtime locks remain held; separate linked lock-release receipt afterward.",
     "Expose pair and per-cycle both-pair adverse flags; name all-pairs flag explicitly.",
-    "Replace residual host/local numeric PGID census with unchanged approved NamespaceCensus helper through a bounded JSON bridge; retain namespace-local signals and existing drain/failure policy."
+    "Replace residual host/local numeric PGID census with unchanged approved NamespaceCensus helper through a bounded JSON bridge; retain namespace-local signals and existing drain/failure policy.",
+    "Recheck all final saved logs, temp-path absence and retained result/full contract payload bindings; cross-check the final inventory against original child pins and final checked payload hashes. Faults preserve raw bytes and produce a complete:false receipt."
   ],
   "namespaceControlsExecuted": true,
-  "namespaceControlCount": 27
+  "namespaceControlCount": 27,
+  "finalProvenanceControlsExecuted": true,
+  "finalProvenanceControlCount": 10,
+  "applicationRuntimeExecuted": false
 }

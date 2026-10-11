@@ -1,0 +1,7 @@
+# Final retained-evidence correction — 11 October
+
+The first final-source attempt reported successful workers but independent review found one empty stdout log conflicting with its earlier child fingerprint and four empty temporary directories after recorded removal. The cause is unknown. The failed attempt and full audit are banked at6a817712a87ce71042148ad3da76027956b8b062; no raw log was reconstructed from its embedded result.
+
+The revised external runner checks every retained child log against its original closed-child fingerprint, checks result/contract payload bindings, and requires temporary paths to remain absent using lstat. It then cross-checks the actual final recursive inventory against those same pins and checks temporary paths again. A discrepancy produces a failed final receipt without adopting altered bytes as successful evidence. Original worker commands, timing bodies, fixtures, child counts, source checks, signals and owned-process cleanup are unchanged.
+
+Ten focused synthetic controls pass, including changes between final checking and inventory. Read-only verification against the damaged attempt reproduces exactly the one log and four temporary-path failures and leaves the original receipt unchanged. [Independent review](provenance-validation/INDEPENDENT-REVIEW.md) approves the exact proposal; it supersedes the frozen revision4 PREPARED awaiting-review phrase. Runtime replacement remains separate; this correction alone is not final acceptance.
