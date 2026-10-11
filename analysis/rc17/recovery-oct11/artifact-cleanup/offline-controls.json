@@ -1,0 +1,44 @@
+{
+  "complete": true,
+  "networkRequests": 0,
+  "liveDeletions": 0,
+  "checks": [
+    {
+      "name": "fixed request identity and protected/internal run exclusion",
+      "passed": true
+    },
+    {
+      "name": "complete plan performs reads only",
+      "passed": true
+    },
+    {
+      "name": "success deletes only exact 124 IDs and confirms absence",
+      "passed": true
+    },
+    {
+      "name": "changed run identity stops before mutation",
+      "passed": true
+    },
+    {
+      "name": "changed last artifact blocks every deletion at preflight",
+      "passed": true
+    },
+    {
+      "name": "late changed identity stops and records prior confirmed deletion",
+      "passed": true
+    },
+    {
+      "name": "protected run and internal artifact substitutions rejected",
+      "passed": true
+    },
+    {
+      "name": "altered plan targets rejected before API calls",
+      "passed": true
+    }
+  ],
+  "bindings": {
+    "cleanup.py": "357629952943e9183e1909c82f84b0a5bedcfdc3bc06f6b6f1c04b30c6c0a456",
+    "request.json": "af6dd38ed523b35ac9471256536627979744cab4391c0cfe175eab2bbffe6f9c",
+    "offline-controls.py": "05d474e57f2bf7f93f63f66b163a4fed615ca3fe0d77c9ae4561b11948a5341c"
+  }
+}

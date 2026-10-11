@@ -1,0 +1,43 @@
+name: Internal superseded test artifact cleanup
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths:
+      - '.github/workflows/internal-artifact-cleanup.yml'
+      - 'analysis/rc17/recovery-oct11/artifact-cleanup/cleanup.py'
+      - 'analysis/rc17/recovery-oct11/artifact-cleanup/request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: kairo-authorized-artifact-cleanup
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Validate live identities and print fixed deletion plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 analysis/rc17/recovery-oct11/artifact-cleanup/cleanup.py plan
+          --request analysis/rc17/recovery-oct11/artifact-cleanup/request.json
+          --plan "$RUNNER_TEMP/kairo-artifact-deletion-plan.json"
+      - name: Delete only reviewed obsolete artifacts and record confirmation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 analysis/rc17/recovery-oct11/artifact-cleanup/cleanup.py delete
+          --request analysis/rc17/recovery-oct11/artifact-cleanup/request.json
+          --plan "$RUNNER_TEMP/kairo-artifact-deletion-plan.json"
+          --receipt "$RUNNER_TEMP/kairo-artifact-deletion-receipt.json"
