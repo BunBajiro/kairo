@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "Prepared, awaiting independent review and coordinator runtime grant",
+  "comparison": "Original names component baseline c9d04ef versus integrated70; not RC16",
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "phaseLabels": [
+    "initial-overview-bootstrap",
+    "assets-first-open"
+  ],
+  "commandTimeoutSeconds": 180,
+  "arms": {
+    "baseline": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-names-c9d-baseline",
+      "commit": "c9d04ef62cb8a18292b309a2452fcab851185a7d",
+      "fingerprint": "e38b8ae174553d402f2bba77e17cec3f02197304a0eebb857c212e878ce8e15a",
+      "built": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-source.json",
+      "prebuild": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-setup/names-c9d-prebuild-source.json",
+      "buildReceipt": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-setup/receipt.json"
+    },
+    "candidate": {
+      "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+      "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "fingerprint": "f6a82797d4d4fec6460da743fac5a9337b474e88c27640d72a4f464cde19f769",
+      "built": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/candidate-source.json",
+      "prebuild": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/setup/candidate-prebuild-source.json",
+      "buildReceipt": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/completion-ui/build-receipt.json"
+    }
+  },
+  "sourceHelper": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+  "fixture": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/names-protocol-227/browser-fixture.mjs",
+  "historicalBaselineManifest": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/names-protocol-227/baseline-source.json",
+  "browser": {
+    "product": "HeadlessChrome/138.0.7204.0",
+    "protocolVersion": "1.3",
+    "revision": "@d5de512dc9dc8ddfe4e6d71b0637578bb6158683",
+    "jsVersion": "13.8.258"
+  },
+  "bindings": {
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/names-bootstrap-prepared/run.py": "aca36bfd586f614860d086c736d0d03aace14baaf42948f40c95bc85e2dbd058",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/names-bootstrap-prepared/browser-bootstrap.mjs": "e4564bdf69b4691917bb31c45356cd9e94584c3baf8226f6cf2401b5e23b8f08",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/names-protocol-227/browser-protocol.mjs": "f70af4f4cebf2e2fe0ef61f39d6381e7dabccfe4592b9ec2d652995e9ebbab89",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/names-protocol-227/browser-fixture.mjs": "c60f95589832dac8b7e298a9e83e7b72b4e02cf5d10a5dd09e2fd902139377a1",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/names-protocol-227/baseline-source.json": "cd47fe7875971238c5f286f3dffb56955853a0d920358b9199ab33e1e317f3a2",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/final-merged-frontend/chrome-strict.mjs": "18f98095acdb692934114eb2f14836c9448a952893f1252b69707c80e2789611",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/final-merged-frontend/ownership.py": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/final-merged-frontend/run.py": "9be19f0b3333bf26a6b0e5aa7af7ba18b7d5bbf038632c9f5ea3b37fe75d0031",
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487",
+    "/tmp/kairo-chrome-runtime/chromium": "7ddc6837ec0e0c9ff488cf8c8fa64d8eef71cc3fa7c79752c52367bddbfe94dd",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-source.json": "d12d072cc15fef32423820aab604b63d6c11040bf76ba081c630edb929ecf4e7",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-setup/names-c9d-prebuild-source.json": "40e5c186aa1e60c51e1db0555fc4d64298047299a8ad98ee58e633345f63b3b2",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-setup/receipt.json": "251591df1e1420fba3b3d0e32c7aa3b0300238f9627913dab057babf80bdec36",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/candidate-source.json": "cd8e3d492705cc9c8a11ebee4f1bc2879b3b9644898f3a427dc24d564335bc5a",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/setup/candidate-prebuild-source.json": "2707eeaf1ff83dbafeacd624ce6737ae760bd75e3faeac1d74ee47865df9016d",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/completion-ui/build-receipt.json": "645fbd003d717546c00b4fecd58168eb4db9e87cb129850ed4a266c445e6c7a0",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-setup/names-c9d-build.log": "e4176fe67192b5a9b917f2bd6bf49b9c01ae430d90864819a709cb430f058b5e",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/names-c9d-setup/final-verification.json": "4ebc9b51990fb701b88c34e0e26ea929c441d53a6b801f8753aa9038d0db8789",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/setup/candidate-build.log": "61dcd6518ccc9a095f6acdf0c1b1accaf3c1606c2097b64b6559270cf1bf13dc",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/setup/closed-log-finalization.json": "dfe0f43aa3f5089b6acce0da58bd40ab80f5fb782c8c44fab651253c2d32b312",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/NAMES-BASELINE-CONTINUITY.json": "0dc2d4d3725ea887d44308dac43b90c7937e6d8a454e5e7b929b8f265fc5cb53",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/NAMES-OWNER-CONTINUITY.json": "fab0209d053979a238fd80bcd0d69415f279e6cec15ed334082001dc272f1ca3"
+  },
+  "runtimeExecuted": false,
+  "node": "v24.19.0"
+}
