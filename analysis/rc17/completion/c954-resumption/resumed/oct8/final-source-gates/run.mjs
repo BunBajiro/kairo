@@ -9,6 +9,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {cpus} from 'node:os';
 import {dirname, isAbsolute, join, relative, resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {observeOwnedGroup} from './ownership.mjs';
 import {loadSourceManifest, verifySource} from '../../../../../harness/source-manifest.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -63,6 +64,7 @@ async function harnessFiles() {
   // Measured application imports are instead covered by full source manifests.
   const pending = [join(here, 'run.mjs'), join(here, 'contracts-worker.mjs'),
     join(here, 'README.md'), join(here, 'config.example.json'),
+    join(here, 'ownership-bridge.py'), join(here, '../final-merged-frontend/ownership.py'),
     join(rc17, 'completion/startup/worker.mjs'), join(rc17, 'completion/atlas/worker.mjs'),
     join(analysis, 'rc16/harness/legacy/rc-database.mjs')];
   // These partial source excerpts are review evidence, never executable imports.
@@ -162,30 +164,8 @@ async function childProcess(args, row, env, timeoutMs) {
     catch (error) { attempt.error = errorText(error); if (error.code !== 'ESRCH') spawnError ||= error; }
     row.process.terminationAttempts.push(attempt);
   };
-  const groupState = async () => {
-    const state = {at: stamp(), exists: false, members: [], live: [], unknown: false};
-    if (!child?.pid) return state;
-    try { process.kill(-child.pid, 0); state.exists = true; }
-    catch (error) { if (error.code === 'ESRCH') return state; state.unknown = true; state.error = errorText(error); return state; }
-    try {
-      for (const pid of (await readdir('/proc')).filter(name => /^\d+$/.test(name))) {
-        let content;
-        try { content = await readFile('/proc/' + pid + '/stat', 'utf8'); }
-        catch (error) { if (error.code === 'ENOENT' || error.code === 'ESRCH') continue; throw error; }
-        const fields = content.slice(content.lastIndexOf(')') + 2).trim().split(/\s+/);
-        if (Number(fields[2]) !== child.pid) continue;
-        state.members.push({pid: Number(pid), state: fields[0], parent: Number(fields[1]), group: Number(fields[2])});
-      }
-      state.live = state.members.filter(member => member.state !== 'Z' && member.state !== 'X');
-      // A disappearing group will resolve on the next check. Do not declare an
-      // inaccessible/still-present group clean just because no member was read.
-      if (!state.members.length) {
-        try { process.kill(-child.pid, 0); state.unknown = true; }
-        catch (error) { if (error.code === 'ESRCH') state.exists = false; else throw error; }
-      }
-    } catch (error) { state.unknown = true; state.error = errorText(error); }
-    return state;
-  };
+  const groupState = async () => child?.pid ? observeOwnedGroup(child.pid) :
+    {at: stamp(), exists: false, members: [], live: [], unknown: false};
   const needsDrain = state => state.unknown || state.live.length > 0;
   const waitForGroupDrain = async milliseconds => {
     const deadline = performance.now() + milliseconds;

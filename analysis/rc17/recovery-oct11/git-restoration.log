@@ -1,0 +1,62 @@
+$ git init --bare /workspace/scratch/a2f3334402fc/recovery-oct11/verify.git
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /workspace/scratch/a2f3334402fc/recovery-oct11/verify.git/
+$ git --git-dir=/workspace/scratch/a2f3334402fc/recovery-oct11/verify.git bundle verify /workspace/scratch/a2f3334402fc/recovery-oct11/repository.bundle
+/workspace/scratch/a2f3334402fc/recovery-oct11/repository.bundle is okay
+The bundle contains these 18 refs:
+382cd3e7f1aeab98575a3005e8e4a80e52fe10db refs/heads/perf/rc16-checkpoint-v0.8.0
+1b073d995287a6a95baf6c15be00c68bc689fb18 refs/remotes/origin/feat/import-buying-character
+cfafcfca735bf0f25cd25eb4c1793b9d61e83c2a refs/remotes/origin/feature/optimisation-refactor-v0.7.3
+85ede76af912c13e032cffacce1b68a80a6a0c13 refs/remotes/origin/feature/sessions-cards-v0.7.2
+72721fd2242e32ff4e7ea6e9f36a2a1905660bde refs/remotes/origin/feature/sessions-v0.7.1
+57c8dcc7fbd8fc2b62129498d1819050c78381a1 refs/remotes/origin/feature/universe-v0.8.0
+239794774320fcdebaa1d76ce8a77c5c25cfc48c refs/remotes/origin/main
+14a53a8f002c956a5da88e216f63b9d51cba018f refs/remotes/origin/perf/benchmark-baseline
+b75ce9452d161a2bf91b66d7c64f33bbc8292224 refs/remotes/origin/perf/database-review-v0.7.3
+382cd3e7f1aeab98575a3005e8e4a80e52fe10db refs/remotes/origin/perf/rc16-checkpoint-v0.8.0
+70cd12f9a4d014e7e2cf931b9681c4bdc7f18789 refs/remotes/origin/refactor/rc17-c954-continuation-v0.8.0
+508f2d450c7cc17cc464cf316b80748367adc9e2 refs/remotes/origin/refactor/rc17-v0.8.0
+9a01826d863602c5738b89c90644933d2f30ddc2 refs/remotes/origin/review/rc17-v0.8.0
+50b640053215c0aeff06227b5b1cca7e3d8b8102 refs/tags/v0.7.0
+86cc8994ff1f7b910eb15bca3029180a344cbe62 refs/tags/v0.7.1
+b151125cd7b26611364923f00683b1c6f1c1bdd6 refs/tags/v0.7.2
+239794774320fcdebaa1d76ce8a77c5c25cfc48c refs/tags/v0.7.3
+382cd3e7f1aeab98575a3005e8e4a80e52fe10db HEAD
+The bundle records a complete history.
+The bundle uses this hash algorithm: sha1
+$ git clone --no-checkout /workspace/scratch/a2f3334402fc/recovery-oct11/repository.bundle /workspace/scratch/a2f3334402fc/kairo-analysis-restored
+Cloning into '/workspace/scratch/a2f3334402fc/kairo-analysis-restored'...
+$ git -C /workspace/scratch/a2f3334402fc/kairo-analysis-restored checkout --detach 382cd3e7f1aeab98575a3005e8e4a80e52fe10db
+HEAD is now at 382cd3e chore: bank completed artifact cleanup and enable private recovery fallback
+$ git -C /workspace/scratch/a2f3334402fc/kairo-analysis-restored remote set-url origin https://github.com/BunBajiro/kairo.git
+$ git -C /workspace/scratch/a2f3334402fc/kairo-analysis-restored worktree add --detach /workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation 70cd12f9a4d014e7e2cf931b9681c4bdc7f18789
+Preparing worktree (detached HEAD 70cd12f)
+HEAD is now at 70cd12f Publish revisioned names, Maps clock ownership and Session archive focus/memo changes
+$ git -C /workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation rev-parse HEAD^{tree}
+35826c9d50c45702ff103e1f173e05c529ba2d9c
+$ git -C /workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation status --porcelain
+$ git -C /workspace/scratch/a2f3334402fc/kairo-analysis-restored worktree add --detach /workspace/scratch/a2f3334402fc/kairo-rc16-baseline 57c8dcc7fbd8fc2b62129498d1819050c78381a1
+Preparing worktree (detached HEAD 57c8dcc)
+HEAD is now at 57c8dcc Add automatic SDE updates, safe activation and dataset settings for rc16
+$ git -C /workspace/scratch/a2f3334402fc/kairo-rc16-baseline rev-parse HEAD^{tree}
+83635e81965febbcc0b9e36c032d91ab95678469
+$ git -C /workspace/scratch/a2f3334402fc/kairo-rc16-baseline status --porcelain
+$ git -C /workspace/scratch/a2f3334402fc/kairo-analysis-restored worktree add --detach /workspace/scratch/a2f3334402fc/kairo-v073-final-baseline 239794774320fcdebaa1d76ce8a77c5c25cfc48c
+Preparing worktree (detached HEAD 2397947)
+HEAD is now at 2397947 Merge approved Kairo 0.7.3 optimisation and database improvements (#5)
+$ git -C /workspace/scratch/a2f3334402fc/kairo-v073-final-baseline rev-parse HEAD^{tree}
+e665ca3810f0ab3f0336643f30a2369be5cc73b1
+$ git -C /workspace/scratch/a2f3334402fc/kairo-v073-final-baseline status --porcelain
+$ git -C /workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation rev-parse --is-shallow-repository
+false

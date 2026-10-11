@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "revision": 2,
-  "preparedAt": "2026-10-08T11:19:15.465939+00:00",
-  "status": "Two static review corrections applied; awaiting narrow independent recheck",
+  "revision": 3,
+  "preparedAt": "2026-10-11T07:35:44.523219+00:00",
+  "status": "Namespace correction and 27 focused ownership controls complete; awaiting independent review",
   "candidateCommit": null,
   "runtimeExecuted": false,
-  "syntaxExecuted": false,
+  "syntaxExecuted": true,
   "sourceFreezePerformed": false,
   "ciDispatched": false,
   "sourceBoundary": {
@@ -21,8 +21,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 10273,
-      "sha256": "53d197fbe724779fc4f58609046d28b3fb6052a063bf5904f1f111c17672c99e"
+      "bytes": 12062,
+      "sha256": "289af5a8d47654d18c0331f1f67cd81beb0aa987fbf9530ebf793f965b365a02"
     },
     {
       "path": "config.example.json",
@@ -56,12 +56,40 @@
     },
     {
       "path": "run.mjs",
-      "bytes": 38790,
-      "sha256": "087386d717b2b4f9544bff064d535325b029a2db89431182fb689a4eed53b9c2"
+      "bytes": 37601,
+      "sha256": "94c4578b68667a90fc5397c8e0d4759cbb22732ca141171b42e7290e7fce63cc"
+    },
+    {
+      "path": "ownership.mjs",
+      "bytes": 2199,
+      "sha256": "84b45435655d36f3115b18773d4dd4c118779e08d455e5f5bdbdf2e0ccf9626c"
+    },
+    {
+      "path": "ownership-bridge.py",
+      "bytes": 619,
+      "sha256": "d900b2ff4f998cedd8e22fa61159c05c20c6bb0997f7ccf9ebf9e2523363a659"
+    },
+    {
+      "path": "ownership-controls.mjs",
+      "bytes": 3099,
+      "sha256": "49af11c4a950579ba61682c6165b4f31d9ef2ec4fd4d53a2b694b01336d35dfb"
+    },
+    {
+      "path": "ownership-tests.py",
+      "bytes": 6044,
+      "sha256": "f7d47158a346dbcf0300ec49d952f46dabaca984e91c961394de8fcd625b30c7"
+    },
+    {
+      "path": "../final-merged-frontend/ownership.py",
+      "bytes": 3462,
+      "sha256": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027"
     }
   ],
   "changes": [
     "Finalize substantial receipt and artifact inventory while both runtime locks remain held; separate linked lock-release receipt afterward.",
-    "Expose pair and per-cycle both-pair adverse flags; name all-pairs flag explicitly."
-  ]
+    "Expose pair and per-cycle both-pair adverse flags; name all-pairs flag explicitly.",
+    "Replace residual host/local numeric PGID census with unchanged approved NamespaceCensus helper through a bounded JSON bridge; retain namespace-local signals and existing drain/failure policy."
+  ],
+  "namespaceControlsExecuted": true,
+  "namespaceControlCount": 27
 }

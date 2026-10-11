@@ -1,0 +1,169 @@
+{
+  "complete": true,
+  "scope": "External ownership helper only",
+  "checks": [
+    {
+      "name": "unrelated host numeric PGID and sibling namespace excluded",
+      "passed": true
+    },
+    {
+      "name": "leader-exited descendant anchors group",
+      "passed": true
+    },
+    {
+      "name": "nested namespace descendants included with anchor",
+      "passed": true
+    },
+    {
+      "name": "nested-only unsupported topology fails closed",
+      "passed": true
+    },
+    {
+      "name": "sibling namespace same local group fails closed",
+      "passed": true
+    },
+    {
+      "name": "live group with no reliable rows fails closed",
+      "passed": true
+    },
+    {
+      "name": "session mismatch fails closed",
+      "passed": true
+    },
+    {
+      "name": "zombie state retained",
+      "passed": true
+    },
+    {
+      "name": "actual proc namespace reconciles",
+      "passed": true
+    },
+    {
+      "name": "ordinary fast child exits without host collision",
+      "passed": true
+    },
+    {
+      "name": "live owned group maps to host receipt",
+      "passed": true
+    },
+    {
+      "name": "owned interrupt cleanup absent",
+      "passed": true
+    },
+    {
+      "name": "actual descendant survives exited leader and remains owned",
+      "passed": true
+    },
+    {
+      "name": "leader-exited descendant drains cleanly",
+      "passed": true
+    },
+    {
+      "name": "vanished proc row and local ESRCH during census",
+      "passed": true
+    },
+    {
+      "name": "local ESRCH bypasses mounted proc bridge",
+      "passed": true
+    },
+    {
+      "name": "inaccessible local group remains unknown",
+      "passed": true
+    },
+    {
+      "name": "valid namespace receipt retains live member",
+      "passed": true
+    },
+    {
+      "name": "zombie receipt remains existing but non-executable",
+      "passed": true
+    },
+    {
+      "name": "bridge timeout remains unknown",
+      "passed": true
+    },
+    {
+      "name": "bridge unsuccessful exit remains unknown",
+      "passed": true
+    },
+    {
+      "name": "malformed bridge JSON remains unknown",
+      "passed": true
+    },
+    {
+      "name": "invalid member state cannot classify live group as zombies",
+      "passed": true
+    },
+    {
+      "name": "duplicate member identity remains unknown",
+      "passed": true
+    },
+    {
+      "name": "absent bridge observation with live local group remains unknown",
+      "passed": true
+    },
+    {
+      "name": "local ESRCH after bridge is authoritative",
+      "passed": true
+    },
+    {
+      "name": "unsafe group is rejected before any probe or bridge",
+      "passed": true
+    }
+  ],
+  "children": [
+    {
+      "kind": "ordinary",
+      "localGroup": 22,
+      "exitCode": 0
+    },
+    {
+      "kind": "interrupt",
+      "localGroup": 31,
+      "before": [
+        {
+          "pid": 2504,
+          "state": "S"
+        }
+      ],
+      "exitCode": -15
+    },
+    {
+      "kind": "leader-exited-descendant",
+      "localGroup": 49,
+      "descendantLocalPid": 50,
+      "before": [
+        {
+          "pid": 2523,
+          "state": "S"
+        }
+      ],
+      "leaderExitCode": 0,
+      "descendantWaitStatus": 15
+    }
+  ],
+  "namespace": {
+    "nativePid": 2,
+    "nativePgid": 1,
+    "NSpid": [
+      2475,
+      2
+    ],
+    "NSpgid": [
+      2474,
+      1
+    ],
+    "inode": 4026532277,
+    "depth": 2
+  },
+  "applicationRuntime": false,
+  "cleanupFailures": [],
+  "bindings": {
+    "../final-merged-frontend/ownership.py": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027",
+    "ownership-bridge.py": "d900b2ff4f998cedd8e22fa61159c05c20c6bb0997f7ccf9ebf9e2523363a659",
+    "ownership.mjs": "84b45435655d36f3115b18773d4dd4c118779e08d455e5f5bdbdf2e0ccf9626c",
+    "ownership-controls.mjs": "49af11c4a950579ba61682c6165b4f31d9ef2ec4fd4d53a2b694b01336d35dfb",
+    "ownership-tests.py": "f7d47158a346dbcf0300ec49d952f46dabaca984e91c961394de8fcd625b30c7",
+    "run.mjs": "94c4578b68667a90fc5397c8e0d4759cbb22732ca141171b42e7290e7fce63cc"
+  }
+}
