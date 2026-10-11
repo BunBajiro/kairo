@@ -77,11 +77,6 @@ jobs:
         if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
         working-directory: candidate
         run: npm run check:kairo 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/types.log"
-      - name: Run exact candidate runtime tests
-        id: runtime_tests
-        if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
-        working-directory: candidate
-        run: npm run test:kairo 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/runtime-tests.log"
       - name: Build exact candidate with locked dependencies
         id: build
         if: ${{ always() && !cancelled() && steps.install.outcome == 'success' }}
@@ -89,6 +84,11 @@ jobs:
         run: |
           date -u +%FT%TZ > "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/build-started.txt"
           npm run build 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/build.log"
+      - name: Run exact candidate runtime tests
+        id: runtime_tests
+        if: ${{ always() && !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: candidate
+        run: npm run test:kairo 2>&1 | tee "$GITHUB_WORKSPACE/checkpoint/analysis/rc17/raw/completion-ui/runtime-tests.log"
       - name: Capture compiled source and build receipt
         id: manifest
         if: ${{ always() && !cancelled() && steps.build.outcome == 'success' }}

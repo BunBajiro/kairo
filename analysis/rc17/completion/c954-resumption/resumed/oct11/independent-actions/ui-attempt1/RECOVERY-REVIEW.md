@@ -1,0 +1,9 @@
+# Narrow UI workflow recovery review
+
+**Approved for a new UI-only attempt.** Reviewed workflow SHA-256 `a2c6fdbad832ba5d360ef7a94423e67f0d4e550bc9bf1ea2e4466aeeb218f18a`. Application remains70cd12f; no test, UI owner, worker or measured workload is changed.
+
+The failed attempt's stack points to the first root-page assertion in `tests/kairo/contracts.test.mjs:34:392`, before the security assertions. `server/index.mjs:453–466` needs an existing built `index.html` and emits404 otherwise. Fresh candidate Git has no tracked out/dist assets, and original workflow ordered runtime tests before build. The retained logs prove runtime-test failure precedes the successful build. This supports correcting a missing build precondition, not weakening the page assertion or inferring an application defect.
+
+Independent byte comparison proves the entire workflow outside the one moved runtime-test block is unchanged. The block's command, working directory and log destination are identical. Its sole expression change is dependency from `steps.install.outcome == 'success'` to `steps.build.outcome == 'success'`; it now follows build and precedes manifest capture. The seven UI lanes still each require successful manifest, types and runtime tests. Build failure skips tests and lanes; test failure skips all lanes. Final completeness still requires every original step and seven complete lane receipts, and the always-upload/final guards preserve failures. Types/build/source/harness checks remain mandatory.
+
+The original failure stays banked separately. A new UI request must identify the repaired harness trigger and unchanged candidate70; comparison/updater do not need redispatch for this UI-only workflow-order repair. This approval covers the exact reviewed workflow change, not a claim that the future run passes or that remote cleanup has already been proven.

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-10-11T21:38:10.602389+00:00",
+  "runId": 38176822076,
+  "attempt": 1,
+  "harnessCommit": "cbcd22ff6b57ea2c168fa363332a80d7c414f7d5",
+  "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "artifact": {
+    "id": 11715709225,
+    "name": "internal-rc17-completion-ui-38176822076-1",
+    "bytes": 80106,
+    "sha256": "fe4b932525c8199be550c443b94c784b464854b86708aaaacae30631e6843b69",
+    "apiUploadDownloadDigestsAgree": true,
+    "localZip": "/tmp/kairo-ui-actions-38176822076-1.zip"
+  },
+  "integrity": {
+    "pass": true,
+    "archiveFiles": 13,
+    "evidenceBindings": 12,
+    "sourceFilesMatchedGit": 486,
+    "builtAssetManifestEntries": 20,
+    "compiledBytesIndependentlyAvailable": false,
+    "sourceFingerprintRecomputed": true,
+    "finalSourceVerification": true,
+    "harnessFilesMatchedGit": 214,
+    "ownerSha256": "27f05929f03ec6b17d9632c561420b0a802578518db93169d046ed0f0a134378",
+    "finalHarnessVerification": true,
+    "buildReceiptAndLogMatch": true
+  },
+  "acceptance": {
+    "pass": false,
+    "complete": false,
+    "runtimeTests": {
+      "tests": 1004,
+      "pass": 1003,
+      "fail": 1,
+      "failure": "contracts.test.mjs:34:392 initial page status 404 instead of 200"
+    },
+    "lanesStarted": 0,
+    "lanesRequired": 7,
+    "laneReceipts": 0,
+    "cleanup": "No UI lane was started; no UI ownership/cleanup claim is available. Runtime test registers app.close()/temporary-directory removal with t.after; remote post-job logs report orphan cleanup without a retained process census."
+  },
+  "sourceFingerprint": "1f856d533098bb78d12d25b0076b1bb1451adf101e21efaa6c438f6a81f22699",
+  "browser": "Google Chrome 154.0.8037.97",
+  "reviewReady": false
+}
