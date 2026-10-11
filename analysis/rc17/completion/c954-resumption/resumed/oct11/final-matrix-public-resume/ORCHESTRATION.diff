@@ -1,0 +1,45 @@
+--- analysis/rc17/harness/local-run.py
++++ analysis/rc17/completion/c954-resumption/resumed/oct11/final-matrix-public-resume/local-run-owned.py
+@@ -12,6 +12,7 @@
+ from pathlib import Path
+ import subprocess
+ import time
++from envelope import Envelope
+ 
+ p = argparse.ArgumentParser()
+ p.add_argument('baseline', type=Path)
+@@ -19,9 +20,10 @@
+ p.add_argument('output', type=Path)
+ p.add_argument('--lanes', nargs='+', choices=['maps', 'routes', 'memory', 'backend', 'mixed', 'restart', 'browser', 'browser-performance'], default=['maps', 'routes', 'memory', 'backend', 'mixed', 'restart', 'browser', 'browser-performance'])
+ a = p.parse_args()
+-repo = Path(__file__).resolve().parents[3]
++repo = Path('/workspace/scratch/a2f3334402fc/kairo-analysis-restored')
+ out = a.output.resolve()
+ out.mkdir(parents=True, exist_ok=False)
++owner = Envelope(out)
+ baseline, candidate = a.baseline.resolve(), a.candidate.resolve()
+ helper = repo / 'analysis/rc17/harness'
+ env = dict(os.environ)
+@@ -36,12 +38,11 @@
+     record['steps'].append(step)
+     save()
+     print(label, flush=True)
+-    with (out / (label + '.log')).open('w') as log:
+-        result = subprocess.run(step['command'], cwd=repo, env=env | (extra or {}), stdout=log, stderr=subprocess.STDOUT, timeout=timeout)
+-    step.update(complete=True, exitCode=result.returncode, elapsedSeconds=time.monotonic() - started)
++    owner.command(label, step['command'], out / (label + '.log'), cwd=repo, env=env | (extra or {}), timeout=timeout)
++    # This boundary follows original worker exit; no hashing occurs in its timed window.
++    owner.capture_tree(out, excluded=('run.json', 'ownership-progress.json', 'ownership-completed.json'))
++    step.update(complete=True, exitCode=0, elapsedSeconds=time.monotonic() - started)
+     save()
+-    if result.returncode:
+-        raise RuntimeError(f'{label} failed ({result.returncode}); see {out / (label + ".log")}')
+ 
+ try:
+     manifests = {}
+@@ -83,3 +84,5 @@
+ finally:
+     record['finishedAt'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+     save()
++    owner.capture_tree(out, excluded=('ownership-progress.json', 'ownership-completed.json'))
++    owner.finish(record['complete'])
