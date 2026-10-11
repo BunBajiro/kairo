@@ -1,0 +1,1861 @@
+{
+  "schemaVersion": 1,
+  "auditComplete": true,
+  "scope": "Independent read-only results review; no application, setup, browser, benchmark or bound-harness execution.",
+  "disposition": "Close C2 missing configured-startup observation; retain accepted lazy-formatter trade-off. Not release approval.",
+  "completed": {
+    "bytes": 18428,
+    "sha256": "0fb191eda54bc2aadc7b15c6feb358bb8a54d1bc94658ba453464b6a7f0ae5d5"
+  },
+  "counts": {
+    "inventoryFiles": 31,
+    "closedPins": 29,
+    "inputPins": 20,
+    "ownedCommands": 13,
+    "freshSetupProcesses": 4,
+    "freshObservationProcesses": 4,
+    "sourceAndBuildFilesRehashed": 933,
+    "warmRawDurations": 400,
+    "warmDistributionValues": 24,
+    "timingMetrics": 6,
+    "matchedPairs": 12,
+    "adversePairs": 5,
+    "firstWireObjects": 4,
+    "exactElementsCompared": 8,
+    "temporaryPathsAbsent": 8
+  },
+  "sourceBindings": {
+    "baseline": {
+      "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "fingerprint": "dd45414826ed86743d3890129f00251bf19e3bf8e2363bd3bc873bdbdf91e167",
+      "manifestSha256": "b9fbc313f6a8ce142eb507fb0891e3cc4a5aaed108e99de619efba7cf6c93fad"
+    },
+    "candidate": {
+      "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "fingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+      "manifestSha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+    }
+  },
+  "builds": [
+    {
+      "arm": "baseline",
+      "receipt": {
+        "bytes": 12551,
+        "sha256": "f8d1a654c5a779a930fbcff4436b3e79aebb83dee91e83e7bb47be75e9a726e7"
+      },
+      "command": {
+        "args": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "start": "2026-10-11T20:11:54.752868+00:00",
+        "log": "rc16-build.log",
+        "pid": 307,
+        "exitCode": 0,
+        "remainingProcessGroupMembers": [],
+        "end": "2026-10-11T20:12:04.415947+00:00",
+        "logSha256": "9f46487b559b2e1656eea7553460a8ed41595429f2722f14b873f47c7c2cb9ce",
+        "logBytes": 2156
+      },
+      "binding": {
+        "label": "rc16",
+        "root": "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+        "complete": true,
+        "lockSha256Before": "5124f2eea8522c04106b74b0dccacc3ea89d4127b2005f51a2b13c97fc450966",
+        "installReceipt": {
+          "lockfile_sha256": "5124f2eea8522c04106b74b0dccacc3ea89d4127b2005f51a2b13c97fc450966",
+          "node": "v24.19.0",
+          "platform": "linux-x64"
+        },
+        "fingerprint": "dd45414826ed86743d3890129f00251bf19e3bf8e2363bd3bc873bdbdf91e167",
+        "sourceFiles": 407,
+        "builtFiles": 20,
+        "manifest": "/tmp/kairo-public-resume-20261011/setup-matrix/rc16-source.json"
+      }
+    },
+    {
+      "arm": "candidate",
+      "receipt": {
+        "bytes": 12643,
+        "sha256": "1e02b8d1699821324fd04c4fd49de12d943b009549a372fa17f9c9e902651d90"
+      },
+      "command": {
+        "args": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "start": "2026-10-11T20:08:17.600900+00:00",
+        "log": "candidate-build.log",
+        "pid": 311,
+        "exitCode": 0,
+        "remainingProcessGroupMembers": [],
+        "end": "2026-10-11T20:08:26.119651+00:00",
+        "logSha256": "e4a5716939a099eac4efcda49b504df660a6b18ace94655d6f41912482f4b5ae",
+        "logBytes": 1845
+      },
+      "binding": {
+        "label": "candidate",
+        "root": "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+        "complete": true,
+        "lockSha256Before": "ee62865dfc3f03b1aca7978d205583f4d67c0c0e4a6fd489fa6c1baa0b6f78b2",
+        "installReceipt": {
+          "lockfile_sha256": "ee62865dfc3f03b1aca7978d205583f4d67c0c0e4a6fd489fa6c1baa0b6f78b2",
+          "node": "v24.19.0",
+          "platform": "linux-x64"
+        },
+        "fingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+        "sourceFiles": 486,
+        "builtFiles": 20,
+        "manifest": "/tmp/kairo-public-resume-20261011/setup/candidate-source.json"
+      }
+    }
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "lineage": {
+    "selected": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+    "excluded": "508f2d450c7cc17cc464cf316b80748367adc9e2",
+    "selectedAncestor": true,
+    "excludedAncestor": false,
+    "nonShallow": true
+  },
+  "inputs": {
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/INDEPENDENT-REVIEW.md": {
+      "bytes": 3504,
+      "sha256": "3d6f01f468787c989a6e4533b17921a0cc6f7f3f0597313a792965adabc4d5f9"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/README.md": {
+      "bytes": 7364,
+      "sha256": "d90e6fd9c8659c57c4056346cbfb6ffa6dffed70d3c614cae0729c007a39b445"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/common.mjs": {
+      "bytes": 2598,
+      "sha256": "b6fca2c4b9067e01ef2ff64d39a0e943eefc6e9268902cd5e1b0ab18549b34e0"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/prepare.mjs": {
+      "bytes": 4095,
+      "sha256": "7c9b88f1c9506885806868ab79d543945f3c4039d44667bdf650baf765f6b344"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/run.py": {
+      "bytes": 12891,
+      "sha256": "30c3958e59645ef71eaff191c40a7818a6aee7856e1d73216bcd2a7d901b3c42"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/worker.mjs": {
+      "bytes": 7356,
+      "sha256": "a7c5badef0a8c4c634b02ad707462b38a043baa69811b45da382d7c0152f8082"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs": {
+      "bytes": 4822,
+      "sha256": "4cd636f98836261ee7808daa7ad98c7eda16f21bf8847a9ae1196042ccf58487"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/backend/fixture.mjs": {
+      "bytes": 8888,
+      "sha256": "62ea73e7fc23ab6c69ba7986c2162823146e350e474729f7cc9c478485cc4073"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/backend/target.mjs": {
+      "bytes": 311,
+      "sha256": "a7e061ea9e8e961214f39ec794ff855e947e017bce350368336d891f3b67ad2e"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/legacy-discovery-fixture.mjs": {
+      "bytes": 1356,
+      "sha256": "486671013d230998828929e24e4fd83ee33e765a052dfffb5d22e03efce4545b"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/final-matrix-public-resume/envelope.py": {
+      "bytes": 9837,
+      "sha256": "f0b54c70c93891fd105d4f950a72046ce7998d21a8154e65a0440aca2b61a61a"
+    },
+    "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct8/final-merged-frontend/ownership.py": {
+      "bytes": 3462,
+      "sha256": "e54305d8275a565c42f0be34c40319102875fce12b142869c1fd833bf166d027"
+    },
+    "/tmp/kairo-public-resume-20261011/setup-matrix/rc16-source.json": {
+      "bytes": 71365,
+      "sha256": "b9fbc313f6a8ce142eb507fb0891e3cc4a5aaed108e99de619efba7cf6c93fad"
+    },
+    "/tmp/kairo-public-resume-20261011/setup-matrix/rc16-prebuild.json": {
+      "bytes": 68018,
+      "sha256": "f34c079beea753d23629b46157cc9464a1591c7a3bb72e37c23c427d03c8f32e"
+    },
+    "/tmp/kairo-public-resume-20261011/setup-matrix/receipt.json": {
+      "bytes": 12551,
+      "sha256": "f8d1a654c5a779a930fbcff4436b3e79aebb83dee91e83e7bb47be75e9a726e7"
+    },
+    "/tmp/kairo-public-resume-20261011/setup-matrix/rc16-build.log": {
+      "bytes": 2156,
+      "sha256": "9f46487b559b2e1656eea7553460a8ed41595429f2722f14b873f47c7c2cb9ce"
+    },
+    "/tmp/kairo-public-resume-20261011/setup/candidate-source.json": {
+      "bytes": 84964,
+      "sha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+    },
+    "/tmp/kairo-public-resume-20261011/setup/candidate-prebuild.json": {
+      "bytes": 81617,
+      "sha256": "2707eeaf1ff83dbafeacd624ce6737ae760bd75e3faeac1d74ee47865df9016d"
+    },
+    "/tmp/kairo-public-resume-20261011/setup/receipt.json": {
+      "bytes": 12643,
+      "sha256": "1e02b8d1699821324fd04c4fd49de12d943b009549a372fa17f9c9e902651d90"
+    },
+    "/tmp/kairo-public-resume-20261011/setup/candidate-build.log": {
+      "bytes": 1845,
+      "sha256": "e4a5716939a099eac4efcda49b504df660a6b18ace94655d6f41912482f4b5ae"
+    }
+  },
+  "inventory": {
+    "baseline-source-after.log": {
+      "bytes": 157,
+      "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+    },
+    "baseline-build.log": {
+      "bytes": 2156,
+      "sha256": "9f46487b559b2e1656eea7553460a8ed41595429f2722f14b873f47c7c2cb9ce"
+    },
+    "ownership-progress.json": {
+      "bytes": 22179,
+      "sha256": "26969ab5cb5021fcf2df2ac47fdda96aacbd9bb1d169984b2571541a9f77ec1e"
+    },
+    "candidate-source-before.log": {
+      "bytes": 157,
+      "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+    },
+    "candidate-lineage.log": {
+      "bytes": 177,
+      "sha256": "ea11908621c4709ab9f623e533b942e01a4722823fa66b33e0564079ad115398"
+    },
+    "candidate-build-receipt.json": {
+      "bytes": 12643,
+      "sha256": "1e02b8d1699821324fd04c4fd49de12d943b009549a372fa17f9c9e902651d90"
+    },
+    "baseline-prebuild.json": {
+      "bytes": 68018,
+      "sha256": "f34c079beea753d23629b46157cc9464a1591c7a3bb72e37c23c427d03c8f32e"
+    },
+    "ownership-completed.json": {
+      "bytes": 22179,
+      "sha256": "26969ab5cb5021fcf2df2ac47fdda96aacbd9bb1d169984b2571541a9f77ec1e"
+    },
+    "candidate-source-after.log": {
+      "bytes": 157,
+      "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+    },
+    "baseline-source.json": {
+      "bytes": 71365,
+      "sha256": "b9fbc313f6a8ce142eb507fb0891e3cc4a5aaed108e99de619efba7cf6c93fad"
+    },
+    "candidate-build.log": {
+      "bytes": 1845,
+      "sha256": "e4a5716939a099eac4efcda49b504df660a6b18ace94655d6f41912482f4b5ae"
+    },
+    "baseline-source-before.log": {
+      "bytes": 157,
+      "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+    },
+    "candidate-source.json": {
+      "bytes": 84964,
+      "sha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+    },
+    "baseline-build-receipt.json": {
+      "bytes": 12551,
+      "sha256": "f8d1a654c5a779a930fbcff4436b3e79aebb83dee91e83e7bb47be75e9a726e7"
+    },
+    "candidate-prebuild.json": {
+      "bytes": 81617,
+      "sha256": "2707eeaf1ff83dbafeacd624ce6737ae760bd75e3faeac1d74ee47865df9016d"
+    },
+    "4-baseline/result.json": {
+      "bytes": 6782,
+      "sha256": "d1d48fc1354a216fd6a17d8069b57de1a2fb33d194dd2b16a74e3907da184b4e"
+    },
+    "4-baseline/setup.json": {
+      "bytes": 6236,
+      "sha256": "d4b4fa12869d05fbdc53b370c16ee2688ede16a9778fc370d25349bf40c50b6d"
+    },
+    "4-baseline/observe.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "4-baseline/prepare.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "1-baseline/result.json": {
+      "bytes": 6800,
+      "sha256": "ac6a3d29a0dc6f9f26991af42ed9defd9a1007dbbf5274861305885a3051ebbb"
+    },
+    "1-baseline/setup.json": {
+      "bytes": 6236,
+      "sha256": "c92feaf042c82b42b542894ea92879fefaa3a7031ec217b6a6fda130983b4f3a"
+    },
+    "1-baseline/observe.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "1-baseline/prepare.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "3-candidate/result.json": {
+      "bytes": 6837,
+      "sha256": "71c99767babbd85815290f9ccd841d3382339304851ae910e966b7885f3c0dcd"
+    },
+    "3-candidate/setup.json": {
+      "bytes": 6233,
+      "sha256": "6e8a75d99e9b6876b3a7879aad5f84fcfc029cb237c7d5f777552d775aa9e788"
+    },
+    "3-candidate/observe.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "3-candidate/prepare.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "2-candidate/result.json": {
+      "bytes": 6847,
+      "sha256": "16b7acfd8f51c7551a9c699455959ffc26742d9b6d1ae81a28dfcf81c215e1cf"
+    },
+    "2-candidate/setup.json": {
+      "bytes": 6233,
+      "sha256": "761db0323335709b7945b3ad7b7916c59765a44b33589e0696216d7a96bf4fb6"
+    },
+    "2-candidate/observe.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "2-candidate/prepare.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "commands": [
+    {
+      "label": "baseline-source-before",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-first-binding-20261011/attempt1/baseline-source.json"
+      ],
+      "pid": 19,
+      "startedAt": "2026-10-11T21:16:14.876099+00:00",
+      "endedAt": "2026-10-11T21:16:15.079025+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+      }
+    },
+    {
+      "label": "candidate-source-before",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-first-binding-20261011/attempt1/candidate-source.json"
+      ],
+      "pid": 34,
+      "startedAt": "2026-10-11T21:16:15.090134+00:00",
+      "endedAt": "2026-10-11T21:16:15.393141+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+      }
+    },
+    {
+      "label": "candidate-lineage",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import assert from 'node:assert/strict';import {spawnSync} from 'node:child_process';\nconst root=process.argv[1],selected='c954c0d808847f249df0659ed15fdce2e89f84c4',excluded='508f2d450c7cc17cc464cf316b80748367adc9e2';\nfunction git(...args){const r=spawnSync('git',['-C',root,...args],{encoding:'utf8',timeout:30000});assert.equal(r.error,undefined);assert.equal(r.signal,null);return r;}\nfor(const commit of [selected,excluded])assert.equal(git('cat-file','-e',commit+'^{commit}').status,0);\nconst shallow=git('rev-parse','--is-shallow-repository');assert.equal(shallow.status,0);assert.equal(shallow.stdout.trim(),'false');\nassert.equal(git('merge-base','--is-ancestor',selected,'HEAD').status,0);\nassert.equal(git('merge-base','--is-ancestor',excluded,'HEAD').status,1);\nconsole.log(JSON.stringify({selected,excluded,selectedAncestor:true,excludedAncestor:false,nonShallow:true}));",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation"
+      ],
+      "pid": 49,
+      "startedAt": "2026-10-11T21:16:15.397467+00:00",
+      "endedAt": "2026-10-11T21:16:15.500465+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 177,
+        "sha256": "ea11908621c4709ab9f623e533b942e01a4722823fa66b33e0564079ad115398"
+      }
+    },
+    {
+      "label": "prepare",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/prepare.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/tmp/kairo-first-binding-20261011/attempt1/baseline-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/1-baseline/data",
+        "/tmp/kairo-first-binding-20261011/attempt1/1-baseline/setup.json"
+      ],
+      "pid": 62,
+      "startedAt": "2026-10-11T21:16:15.504816+00:00",
+      "endedAt": "2026-10-11T21:16:16.609065+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "observe",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/worker.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/tmp/kairo-first-binding-20261011/attempt1/baseline-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/1-baseline/setup.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/1-baseline/result.json"
+      ],
+      "pid": 80,
+      "startedAt": "2026-10-11T21:16:16.615902+00:00",
+      "endedAt": "2026-10-11T21:16:17.319580+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "prepare",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/prepare.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "/tmp/kairo-first-binding-20261011/attempt1/candidate-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/2-candidate/data",
+        "/tmp/kairo-first-binding-20261011/attempt1/2-candidate/setup.json"
+      ],
+      "pid": 98,
+      "startedAt": "2026-10-11T21:16:17.325926+00:00",
+      "endedAt": "2026-10-11T21:16:18.530447+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "observe",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/worker.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "/tmp/kairo-first-binding-20261011/attempt1/candidate-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/2-candidate/setup.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/2-candidate/result.json"
+      ],
+      "pid": 116,
+      "startedAt": "2026-10-11T21:16:18.537510+00:00",
+      "endedAt": "2026-10-11T21:16:19.241145+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "prepare",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/prepare.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "/tmp/kairo-first-binding-20261011/attempt1/candidate-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/3-candidate/data",
+        "/tmp/kairo-first-binding-20261011/attempt1/3-candidate/setup.json"
+      ],
+      "pid": 134,
+      "startedAt": "2026-10-11T21:16:19.248381+00:00",
+      "endedAt": "2026-10-11T21:16:20.452774+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "observe",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/worker.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc17-c954-continuation",
+        "/tmp/kairo-first-binding-20261011/attempt1/candidate-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/3-candidate/setup.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/3-candidate/result.json"
+      ],
+      "pid": 152,
+      "startedAt": "2026-10-11T21:16:20.459709+00:00",
+      "endedAt": "2026-10-11T21:16:21.163452+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "prepare",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/prepare.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/tmp/kairo-first-binding-20261011/attempt1/baseline-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/4-baseline/data",
+        "/tmp/kairo-first-binding-20261011/attempt1/4-baseline/setup.json"
+      ],
+      "pid": 170,
+      "startedAt": "2026-10-11T21:16:21.170047+00:00",
+      "endedAt": "2026-10-11T21:16:22.174457+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "observe",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/first-binding-acceptance/worker.mjs",
+        "/workspace/scratch/a2f3334402fc/kairo-rc16-baseline",
+        "/tmp/kairo-first-binding-20261011/attempt1/baseline-source.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/4-baseline/setup.json",
+        "/tmp/kairo-first-binding-20261011/attempt1/4-baseline/result.json"
+      ],
+      "pid": 188,
+      "startedAt": "2026-10-11T21:16:22.181552+00:00",
+      "endedAt": "2026-10-11T21:16:22.985439+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "baseline-source-after",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-first-binding-20261011/attempt1/baseline-source.json"
+      ],
+      "pid": 206,
+      "startedAt": "2026-10-11T21:16:22.993210+00:00",
+      "endedAt": "2026-10-11T21:16:23.196248+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+      }
+    },
+    {
+      "label": "candidate-source-after",
+      "command": [
+        "node",
+        "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-first-binding-20261011/attempt1/candidate-source.json"
+      ],
+      "pid": 221,
+      "startedAt": "2026-10-11T21:16:23.202505+00:00",
+      "endedAt": "2026-10-11T21:16:23.505600+00:00",
+      "exitCode": 0,
+      "drainPassed": true,
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "ordinal": 1,
+      "arm": "baseline",
+      "setup": {
+        "bytes": 6236,
+        "sha256": "c92feaf042c82b42b542894ea92879fefaa3a7031ec217b6a6fda130983b4f3a"
+      },
+      "result": {
+        "bytes": 6800,
+        "sha256": "ac6a3d29a0dc6f9f26991af42ed9defd9a1007dbbf5274861305885a3051ebbb"
+      },
+      "source": {
+        "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+        "fingerprint": "dd45414826ed86743d3890129f00251bf19e3bf8e2363bd3bc873bdbdf91e167",
+        "manifestSha256": "b9fbc313f6a8ce142eb507fb0891e3cc4a5aaed108e99de619efba7cf6c93fad"
+      },
+      "payloadFingerprint": "ec31881aa4eeefd48888934adbaa6d98a4baab0b5ac0b0a86a76d4f5a6d34e1c",
+      "payloadFiles": [
+        {
+          "path": "kairo.sqlite",
+          "bytes": 50978816,
+          "sha256": "d15a37736a6459e52d34eb9d848d928ecfc4622c48810cf358c4b52bd39c164e"
+        },
+        {
+          "path": "vault.key",
+          "bytes": 44,
+          "sha256": "cd3d41c919aa6803d6c70985171dcd7c15d23b448d9e137c913e7c0aba6e0ba5"
+        }
+      ],
+      "timings": {
+        "coldIndexImportMs": 47.21225300000003,
+        "configuredStartKairoMs": 153.238091,
+        "firstStreamHTTPReadMs": 17.62352999999996,
+        "coldImportConfiguredStartupMs": 200.45034400000003,
+        "coldImportStartupFirstWireMs": 218.073874
+      },
+      "warmMs": [
+        0.7072170000000142,
+        0.6517370000000255,
+        0.4266190000000165,
+        0.3465439999999944,
+        0.3118949999999927,
+        0.3160310000000095,
+        0.6200690000000009,
+        0.4712470000000053,
+        0.4310410000000502,
+        0.30873200000002043,
+        0.25635399999998754,
+        0.22354799999999386,
+        0.21331600000002027,
+        0.23756600000001526,
+        0.3472210000000473,
+        0.47918700000002445,
+        0.34058600000003025,
+        0.5225560000000087,
+        0.2295520000000124,
+        0.2506249999999568,
+        0.2568409999999517,
+        0.20007599999996728,
+        0.19685499999997091,
+        0.6343590000000177,
+        0.21378399999997555,
+        0.28631999999998925,
+        0.21050500000001193,
+        0.20176699999996117,
+        0.1926740000000109,
+        0.205475999999976,
+        0.1805970000000343,
+        0.18635299999999688,
+        0.17857499999996662,
+        0.6598640000000273,
+        0.22834100000000035,
+        0.28360799999995834,
+        0.19712400000003072,
+        0.2004360000000247,
+        0.5366329999999948,
+        0.2185060000000476,
+        0.20475899999996727,
+        0.24563599999999042,
+        0.1930349999999521,
+        0.20347299999997404,
+        0.19302800000002662,
+        0.5552129999999806,
+        0.25366299999996045,
+        0.2587419999999838,
+        0.21289200000001074,
+        0.1984860000000026,
+        0.19216199999999617,
+        0.23952900000000454,
+        0.20999000000000478,
+        0.18389600000000428,
+        0.18086700000003475,
+        0.2250139999999874,
+        0.1890549999999962,
+        0.17906999999996742,
+        0.3074250000000234,
+        0.30122299999999314,
+        0.19898200000000088,
+        0.2015260000000012,
+        0.656377999999961,
+        0.28147100000001046,
+        0.31458700000001727,
+        0.23643999999995913,
+        0.1948950000000309,
+        0.22898799999995845,
+        0.2310070000000337,
+        0.4523870000000443,
+        0.7775369999999953,
+        0.46394099999997707,
+        0.2322950000000219,
+        0.6072490000000244,
+        0.8473579999999856,
+        0.8645729999999503,
+        0.29967999999996664,
+        0.2948549999999841,
+        0.21550600000000486,
+        0.18593999999995958,
+        0.18584399999997459,
+        0.25520800000003874,
+        0.19103600000005372,
+        0.2479680000000144,
+        0.24098100000003342,
+        0.1987699999999677,
+        0.2590659999999616,
+        0.27311100000008537,
+        0.30811100000005354,
+        1.0173010000000886,
+        0.9315370000000485,
+        0.24120600000003378,
+        0.30264999999997144,
+        0.2115400000000136,
+        0.18571800000006533,
+        0.1747090000000071,
+        0.2904040000000805,
+        0.18654500000002372,
+        0.17410700000004908,
+        0.21461299999998573
+      ],
+      "warmDistribution": {
+        "n": 100,
+        "mean": 0.31763515000000436,
+        "min": 0.17410700000004908,
+        "max": 1.0173010000000886,
+        "p50": 0.23952900000000454,
+        "p95": 0.7072170000000142
+      },
+      "firstWire": {
+        "version": 2,
+        "serverTime": 1791753377089,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "firstWireBytes": 704,
+      "firstWireSha256": "cf392449569cf0eae683994c85186a646848bae8ad6771b05fdf11243eb91384",
+      "finalWire": {
+        "version": 102,
+        "serverTime": 1791753377142,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "sourceVerified": true,
+      "appClosed": true,
+      "cleanupComplete": true,
+      "externalAttempts": 0
+    },
+    {
+      "ordinal": 2,
+      "arm": "candidate",
+      "setup": {
+        "bytes": 6233,
+        "sha256": "761db0323335709b7945b3ad7b7916c59765a44b33589e0696216d7a96bf4fb6"
+      },
+      "result": {
+        "bytes": 6847,
+        "sha256": "16b7acfd8f51c7551a9c699455959ffc26742d9b6d1ae81a28dfcf81c215e1cf"
+      },
+      "source": {
+        "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+        "fingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+        "manifestSha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+      },
+      "payloadFingerprint": "4008ddab6a94fd60c45fd10e1052d1ee2e8b534d5ec9b1b9f9b8f8a378eb9d2d",
+      "payloadFiles": [
+        {
+          "path": "kairo.sqlite",
+          "bytes": 51023872,
+          "sha256": "5936519c7b4ae513ef8713a9cf04a4ce15ef0f1628f11e3a8af578be51068b47"
+        },
+        {
+          "path": "vault.key",
+          "bytes": 44,
+          "sha256": "98c92f7d28f9f6332382e118a6542ad18ec982c994007c9208e980b88d97bb28"
+        }
+      ],
+      "timings": {
+        "coldIndexImportMs": 47.77820000000003,
+        "configuredStartKairoMs": 159.51849599999997,
+        "firstStreamHTTPReadMs": 18.45547499999998,
+        "coldImportConfiguredStartupMs": 207.296696,
+        "coldImportStartupFirstWireMs": 225.75217099999998
+      },
+      "warmMs": [
+        0.25314999999994825,
+        0.22432900000001155,
+        0.184628000000032,
+        0.4704399999999964,
+        0.23033199999997578,
+        0.1277170000000183,
+        0.13249400000000833,
+        0.2649189999999635,
+        0.1664159999999697,
+        0.0932809999999904,
+        0.07955100000003767,
+        0.07353899999998248,
+        0.07001999999999953,
+        0.08969099999995933,
+        0.07990400000005593,
+        0.06788400000004913,
+        0.0684620000000109,
+        0.06701900000001615,
+        0.06507199999998647,
+        0.06488400000000638,
+        0.06565200000000004,
+        0.06619699999998829,
+        0.06366599999995515,
+        0.07884400000000369,
+        0.13124299999998357,
+        0.0740549999999871,
+        0.11560100000002649,
+        0.07037700000000768,
+        0.06446100000005117,
+        0.06892099999998891,
+        0.11763599999994767,
+        0.06731899999999769,
+        0.06482699999997976,
+        0.06239799999997331,
+        0.06150800000000345,
+        0.069074999999998,
+        0.060043000000007396,
+        0.06079899999997451,
+        0.06037900000001173,
+        0.060534000000018295,
+        0.07351499999998623,
+        0.06784299999998211,
+        0.06673200000000179,
+        0.059506999999996424,
+        0.05863199999998869,
+        0.059392000000002554,
+        0.0588130000000433,
+        0.06995699999998806,
+        0.06073199999997314,
+        0.059023999999965326,
+        0.20479899999997997,
+        0.06239499999998088,
+        0.06297000000000708,
+        0.06086900000002515,
+        0.06242500000001883,
+        0.06334199999997736,
+        0.06396199999994678,
+        0.06482199999999239,
+        0.06368099999997412,
+        0.11482499999999618,
+        0.07626499999997804,
+        0.0699170000000322,
+        0.06486799999998993,
+        0.43790500000000065,
+        0.09436400000004141,
+        0.07018099999999095,
+        0.06853700000004892,
+        0.06470699999999852,
+        0.06400400000001127,
+        0.06284199999998918,
+        0.06809000000004062,
+        0.0655479999999784,
+        0.11820199999999659,
+        0.07384400000000824,
+        0.0666140000000155,
+        0.060487999999963904,
+        0.05971399999998539,
+        0.06126199999999926,
+        0.05986799999999448,
+        0.06095700000003035,
+        0.059777999999994336,
+        0.060089000000004944,
+        0.10311100000001261,
+        0.14367700000002515,
+        0.08190000000001874,
+        0.06689700000003995,
+        0.06623000000001866,
+        0.06703400000003512,
+        0.1364799999999491,
+        0.08354600000001255,
+        0.3027060000000006,
+        0.10109400000004598,
+        0.08467200000001185,
+        0.11827699999997776,
+        0.08618599999999788,
+        0.07067299999999932,
+        0.06568100000004051,
+        0.06605600000000322,
+        0.06287800000001198,
+        0.06158199999998715
+      ],
+      "warmDistribution": {
+        "n": 100,
+        "mean": 0.0947222800000003,
+        "min": 0.05863199999998869,
+        "max": 0.4704399999999964,
+        "p50": 0.06731899999999769,
+        "p95": 0.23033199999997578
+      },
+      "firstWire": {
+        "version": 2,
+        "serverTime": 1791753379028,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "firstWireBytes": 704,
+      "firstWireSha256": "ce49aa80f47cc82039518e368662509fbe27a41cd954e0ab79941b2edc5fd8a5",
+      "finalWire": {
+        "version": 2,
+        "serverTime": 1791753379051,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "sourceVerified": true,
+      "appClosed": true,
+      "cleanupComplete": true,
+      "externalAttempts": 0
+    },
+    {
+      "ordinal": 3,
+      "arm": "candidate",
+      "setup": {
+        "bytes": 6233,
+        "sha256": "6e8a75d99e9b6876b3a7879aad5f84fcfc029cb237c7d5f777552d775aa9e788"
+      },
+      "result": {
+        "bytes": 6837,
+        "sha256": "71c99767babbd85815290f9ccd841d3382339304851ae910e966b7885f3c0dcd"
+      },
+      "source": {
+        "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+        "fingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+        "manifestSha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+      },
+      "payloadFingerprint": "1355c9c8b08b796af4ce2f077e7b110baed8624ed5853e8f33dcd1e32c5e32fc",
+      "payloadFiles": [
+        {
+          "path": "kairo.sqlite",
+          "bytes": 51023872,
+          "sha256": "ed88392841000bbe5d7529c7220430b2896c37cb5ded1ef42979627138af56a8"
+        },
+        {
+          "path": "vault.key",
+          "bytes": 44,
+          "sha256": "700dbe28f8e5f0bb8c8332c297014faa27a20879f7baa29edd227408415ebec2"
+        }
+      ],
+      "timings": {
+        "coldIndexImportMs": 41.251645999999994,
+        "configuredStartKairoMs": 167.947381,
+        "firstStreamHTTPReadMs": 18.448677999999973,
+        "coldImportConfiguredStartupMs": 209.199027,
+        "coldImportStartupFirstWireMs": 227.64770499999997
+      },
+      "warmMs": [
+        0.2565960000000018,
+        0.24750899999997955,
+        0.13123200000001134,
+        0.34981399999998075,
+        0.17112599999995837,
+        0.12403299999999717,
+        0.13822199999998475,
+        0.12622899999996662,
+        0.15994799999998577,
+        0.0949799999999641,
+        0.08283499999998867,
+        0.08767499999999018,
+        0.06969400000002679,
+        0.1652119999999968,
+        0.08698599999996759,
+        0.07724100000001499,
+        0.06862700000004907,
+        0.2991880000000151,
+        0.25612599999999475,
+        0.10026599999997643,
+        0.07504399999999123,
+        0.11118700000002946,
+        0.07874700000002122,
+        0.06817499999999654,
+        0.1385190000000307,
+        0.07114599999999882,
+        0.105179000000021,
+        0.08634299999999939,
+        0.0717379999999821,
+        0.2341819999999757,
+        0.07433500000001914,
+        0.06620599999996557,
+        0.06338899999997238,
+        0.0634380000000192,
+        0.061177000000043336,
+        0.0707779999999616,
+        0.06272300000000541,
+        0.10798799999997755,
+        0.06757600000003094,
+        0.06644099999999753,
+        0.061807000000044354,
+        0.05878899999999021,
+        0.05874199999999519,
+        0.05918400000001611,
+        0.06766300000003866,
+        0.060722999999995864,
+        0.05957699999999022,
+        0.09906699999999091,
+        0.23945600000001832,
+        0.10014000000001033,
+        0.15484199999997372,
+        0.071708000000001,
+        0.20653399999997646,
+        0.07280600000001414,
+        0.30205399999999827,
+        0.08220499999998765,
+        0.06826100000000679,
+        0.11894300000000158,
+        0.06938999999999851,
+        0.06264599999997245,
+        0.061560999999983324,
+        0.05949700000002167,
+        0.06275899999997137,
+        0.05975799999998799,
+        0.06212799999997287,
+        0.05931900000001633,
+        0.060476999999991676,
+        0.10279100000002472,
+        0.06676299999998037,
+        0.06204999999999927,
+        0.06324299999999994,
+        0.06085999999999103,
+        0.0609890000000064,
+        0.10540600000001632,
+        0.06985900000000811,
+        0.06533500000000458,
+        0.12266399999998612,
+        0.06966399999998885,
+        0.06534500000003618,
+        0.06349699999998393,
+        0.06519900000000689,
+        0.3038289999999506,
+        0.11722199999996974,
+        0.08164099999999053,
+        0.06933199999997441,
+        0.07003600000001597,
+        0.06479600000000119,
+        0.061564999999973224,
+        0.0640510000000063,
+        0.063871000000006,
+        0.14956399999999803,
+        0.11343199999998888,
+        0.08902599999998984,
+        0.07936899999998559,
+        0.07088300000003755,
+        0.13082100000002583,
+        0.0751229999999623,
+        0.06696399999998448,
+        0.06436500000000933,
+        0.06195900000000165
+      ],
+      "warmDistribution": {
+        "n": 100,
+        "mean": 0.1017939999999976,
+        "min": 0.05874199999999519,
+        "max": 0.34981399999998075,
+        "p50": 0.07114599999999882,
+        "p95": 0.25612599999999475
+      },
+      "firstWire": {
+        "version": 2,
+        "serverTime": 1791753380950,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "firstWireBytes": 704,
+      "firstWireSha256": "768cc46b82c036c5f2d5fe77b1dbcfe72619231aaf65a31fcc1b4637462f3fed",
+      "finalWire": {
+        "version": 2,
+        "serverTime": 1791753380973,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "sourceVerified": true,
+      "appClosed": true,
+      "cleanupComplete": true,
+      "externalAttempts": 0
+    },
+    {
+      "ordinal": 4,
+      "arm": "baseline",
+      "setup": {
+        "bytes": 6236,
+        "sha256": "d4b4fa12869d05fbdc53b370c16ee2688ede16a9778fc370d25349bf40c50b6d"
+      },
+      "result": {
+        "bytes": 6782,
+        "sha256": "d1d48fc1354a216fd6a17d8069b57de1a2fb33d194dd2b16a74e3907da184b4e"
+      },
+      "source": {
+        "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+        "fingerprint": "dd45414826ed86743d3890129f00251bf19e3bf8e2363bd3bc873bdbdf91e167",
+        "manifestSha256": "b9fbc313f6a8ce142eb507fb0891e3cc4a5aaed108e99de619efba7cf6c93fad"
+      },
+      "payloadFingerprint": "d63c775f611f2d6e7bba52a02a65f02cebdeec7f1f49f0a4edb4e6824f02ef69",
+      "payloadFiles": [
+        {
+          "path": "kairo.sqlite",
+          "bytes": 50978816,
+          "sha256": "173000a4fcc5cc4e7dda77041532ac95650ff98bb542fb19093f08a28ba01faa"
+        },
+        {
+          "path": "vault.key",
+          "bytes": 44,
+          "sha256": "80a8343a92045d42afd6451b3158b910546c53bafed6bb829bccb09628f61631"
+        }
+      ],
+      "timings": {
+        "coldIndexImportMs": 43.754481,
+        "configuredStartKairoMs": 188.86714,
+        "firstStreamHTTPReadMs": 19.432123000000047,
+        "coldImportConfiguredStartupMs": 232.621621,
+        "coldImportStartupFirstWireMs": 252.05374400000005
+      },
+      "warmMs": [
+        0.6111109999999371,
+        0.5257060000000138,
+        0.4616079999999556,
+        0.3603779999999688,
+        0.3918469999999843,
+        0.31821899999999914,
+        0.4617519999999331,
+        0.42120199999999386,
+        0.37632699999994657,
+        0.2639289999999619,
+        0.24109499999997297,
+        0.30120899999997164,
+        0.2405189999999493,
+        0.21868799999992916,
+        0.3378450000000157,
+        0.48888899999997193,
+        0.35458700000003773,
+        0.3659420000000182,
+        0.24984200000005785,
+        0.3905979999999545,
+        0.2946120000000292,
+        0.24827700000003006,
+        0.19856099999992693,
+        0.20076099999994312,
+        0.2905789999999797,
+        0.19592599999998583,
+        0.18479199999990215,
+        0.19686000000001513,
+        0.24198899999998957,
+        0.1936359999999695,
+        0.19313999999997122,
+        0.23098800000002484,
+        0.21236799999996947,
+        0.201595999999995,
+        0.19564099999990958,
+        0.2506029999999555,
+        0.2411050000000614,
+        0.19761700000003657,
+        0.180761000000075,
+        0.2600370000000112,
+        0.20277400000009038,
+        0.18202500000006694,
+        0.17317000000002736,
+        0.2553570000000036,
+        0.20340300000009393,
+        0.181927000000087,
+        0.17837199999996756,
+        0.24612300000001142,
+        0.20145500000000993,
+        0.1795439999999644,
+        0.18228099999998904,
+        0.289984000000004,
+        0.2219920000000002,
+        0.19408399999997528,
+        0.1805420000000595,
+        0.49622599999997874,
+        0.2385550000000194,
+        0.3163879999999608,
+        0.3206270000000586,
+        0.23979100000008202,
+        0.269416000000092,
+        0.20731599999999162,
+        0.19690600000001268,
+        0.18564700000001721,
+        0.22015300000009574,
+        0.21875,
+        0.18343500000003132,
+        0.22159799999997176,
+        0.25902499999995143,
+        0.22274500000003172,
+        0.18232699999998658,
+        0.19037200000002485,
+        0.38982399999997597,
+        0.3791360000000168,
+        1.2336269999999558,
+        0.2750310000000127,
+        0.31871699999999237,
+        0.24015299999996387,
+        0.21973000000002685,
+        0.18567700000005516,
+        0.1744300000000294,
+        0.247257999999988,
+        0.19466799999997875,
+        0.22450599999990573,
+        0.22005400000000463,
+        0.23107900000002246,
+        0.17403799999999592,
+        0.1863060000000587,
+        0.27979499999992186,
+        0.2787399999999707,
+        0.8566620000000285,
+        0.2538809999999785,
+        0.23516499999993812,
+        0.2837819999999738,
+        0.20291299999996681,
+        0.17792199999996683,
+        0.360274000000004,
+        0.21595499999989443,
+        0.3885020000000168,
+        0.22423399999991034
+      ],
+      "warmDistribution": {
+        "n": 100,
+        "mean": 0.27685510999999563,
+        "min": 0.17317000000002736,
+        "max": 1.2336269999999558,
+        "p50": 0.23516499999993812,
+        "p95": 0.48888899999997193
+      },
+      "firstWire": {
+        "version": 2,
+        "serverTime": 1791753382698,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "firstWireBytes": 704,
+      "firstWireSha256": "1ef53bd60331a3713fa774c696a3f04faa35d589cab4c421dcc4b5211c9d49b2",
+      "finalWire": {
+        "version": 102,
+        "serverTime": 1791753382746,
+        "position": "top-right",
+        "muted": false,
+        "paused": false,
+        "elements": [
+          {
+            "id": "first-wallet",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "1,234,567.89 ISK",
+            "label": "",
+            "x": 40,
+            "y": 40,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 0,
+            "detail": "",
+            "bindingStatus": "ready"
+          },
+          {
+            "id": "first-goal",
+            "kind": "text",
+            "appearance": "frame",
+            "text": "Fixture objective",
+            "label": "",
+            "x": 40,
+            "y": 180,
+            "width": 400,
+            "height": 120,
+            "fontSize": 24,
+            "opacity": 0.7,
+            "color": "#97ebce",
+            "visible": true,
+            "endsAt": 0,
+            "value": 52.631580764820015,
+            "detail": "1,234,567.89 / 2,345,678.91",
+            "bindingStatus": "ready"
+          }
+        ],
+        "opsec": {
+          "state": "manual",
+          "hidden": true
+        },
+        "toasts": []
+      },
+      "sourceVerified": true,
+      "appClosed": true,
+      "cleanupComplete": true,
+      "externalAttempts": 0
+    }
+  ],
+  "metrics": {
+    "coldImportConfiguredStartupMs": {
+      "rawInOrder": [
+        200.45034400000003,
+        207.296696,
+        209.199027,
+        232.621621
+      ],
+      "pairs": [
+        {
+          "baselineOrdinal": 1,
+          "candidateOrdinal": 2,
+          "baselineMs": 200.45034400000003,
+          "candidateMs": 207.296696,
+          "deltaMs": 6.846351999999968,
+          "percentChange": 3.4154852834774716,
+          "adverseOver1MsAnd10Percent": false
+        },
+        {
+          "baselineOrdinal": 4,
+          "candidateOrdinal": 3,
+          "baselineMs": 232.621621,
+          "candidateMs": 209.199027,
+          "deltaMs": -23.422594000000004,
+          "percentChange": -10.068966891087051,
+          "adverseOver1MsAnd10Percent": false
+        }
+      ],
+      "bothPairsAdverseOver1MsAnd10Percent": false
+    },
+    "coldImportStartupFirstWireMs": {
+      "rawInOrder": [
+        218.073874,
+        225.75217099999998,
+        227.64770499999997,
+        252.05374400000005
+      ],
+      "pairs": [
+        {
+          "baselineOrdinal": 1,
+          "candidateOrdinal": 2,
+          "baselineMs": 218.073874,
+          "candidateMs": 225.75217099999998,
+          "deltaMs": 7.678296999999986,
+          "percentChange": 3.5209614334635915,
+          "adverseOver1MsAnd10Percent": false
+        },
+        {
+          "baselineOrdinal": 4,
+          "candidateOrdinal": 3,
+          "baselineMs": 252.05374400000005,
+          "candidateMs": 227.64770499999997,
+          "deltaMs": -24.406039000000078,
+          "percentChange": -9.682871046739965,
+          "adverseOver1MsAnd10Percent": false
+        }
+      ],
+      "bothPairsAdverseOver1MsAnd10Percent": false
+    },
+    "coldIndexImportMs": {
+      "rawInOrder": [
+        47.21225300000003,
+        47.77820000000003,
+        41.251645999999994,
+        43.754481
+      ],
+      "pairs": [
+        {
+          "baselineOrdinal": 1,
+          "candidateOrdinal": 2,
+          "baselineMs": 47.21225300000003,
+          "candidateMs": 47.77820000000003,
+          "deltaMs": 0.5659469999999942,
+          "percentChange": 1.1987290672190412,
+          "adverseOver1MsAnd10Percent": false
+        },
+        {
+          "baselineOrdinal": 4,
+          "candidateOrdinal": 3,
+          "baselineMs": 43.754481,
+          "candidateMs": 41.251645999999994,
+          "deltaMs": -2.5028350000000046,
+          "percentChange": -5.720179837123436,
+          "adverseOver1MsAnd10Percent": false
+        }
+      ],
+      "bothPairsAdverseOver1MsAnd10Percent": false
+    },
+    "configuredStartKairoMs": {
+      "rawInOrder": [
+        153.238091,
+        159.51849599999997,
+        167.947381,
+        188.86714
+      ],
+      "pairs": [
+        {
+          "baselineOrdinal": 1,
+          "candidateOrdinal": 2,
+          "baselineMs": 153.238091,
+          "candidateMs": 159.51849599999997,
+          "deltaMs": 6.280404999999973,
+          "percentChange": 4.098462046228423,
+          "adverseOver1MsAnd10Percent": false
+        },
+        {
+          "baselineOrdinal": 4,
+          "candidateOrdinal": 3,
+          "baselineMs": 188.86714,
+          "candidateMs": 167.947381,
+          "deltaMs": -20.919759,
+          "percentChange": -11.07644188396139,
+          "adverseOver1MsAnd10Percent": false
+        }
+      ],
+      "bothPairsAdverseOver1MsAnd10Percent": false
+    },
+    "firstStreamHTTPReadMs": {
+      "rawInOrder": [
+        17.62352999999996,
+        18.45547499999998,
+        18.448677999999973,
+        19.432123000000047
+      ],
+      "pairs": [
+        {
+          "baselineOrdinal": 1,
+          "candidateOrdinal": 2,
+          "baselineMs": 17.62352999999996,
+          "candidateMs": 18.45547499999998,
+          "deltaMs": 0.8319450000000188,
+          "percentChange": 4.720649041366972,
+          "adverseOver1MsAnd10Percent": false
+        },
+        {
+          "baselineOrdinal": 4,
+          "candidateOrdinal": 3,
+          "baselineMs": 19.432123000000047,
+          "candidateMs": 18.448677999999973,
+          "deltaMs": -0.9834450000000743,
+          "percentChange": -5.06092412033452,
+          "adverseOver1MsAnd10Percent": false
+        }
+      ],
+      "bothPairsAdverseOver1MsAnd10Percent": false
+    },
+    "warmUpdateBindingsMeanMs": {
+      "rawInOrder": [
+        0.31763515000000436,
+        0.0947222800000003,
+        0.1017939999999976,
+        0.27685510999999563
+      ],
+      "pairs": [
+        {
+          "baselineOrdinal": 1,
+          "candidateOrdinal": 2,
+          "baselineMs": 0.31763515000000436,
+          "candidateMs": 0.0947222800000003,
+          "deltaMs": -0.22291287000000407,
+          "percentChange": -70.17890494802008,
+          "adverseOver1MsAnd10Percent": false
+        },
+        {
+          "baselineOrdinal": 4,
+          "candidateOrdinal": 3,
+          "baselineMs": 0.27685510999999563,
+          "candidateMs": 0.1017939999999976,
+          "deltaMs": -0.17506110999999802,
+          "percentChange": -63.23203136832143,
+          "adverseOver1MsAnd10Percent": false
+        }
+      ],
+      "bothPairsAdverseOver1MsAnd10Percent": false
+    }
+  },
+  "adversePairs": [
+    {
+      "metric": "coldImportConfiguredStartupMs",
+      "baselineOrdinal": 1,
+      "candidateOrdinal": 2,
+      "baselineMs": 200.45034400000003,
+      "candidateMs": 207.296696,
+      "deltaMs": 6.846351999999968,
+      "percentChange": 3.4154852834774716,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "metric": "coldImportStartupFirstWireMs",
+      "baselineOrdinal": 1,
+      "candidateOrdinal": 2,
+      "baselineMs": 218.073874,
+      "candidateMs": 225.75217099999998,
+      "deltaMs": 7.678296999999986,
+      "percentChange": 3.5209614334635915,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "metric": "coldIndexImportMs",
+      "baselineOrdinal": 1,
+      "candidateOrdinal": 2,
+      "baselineMs": 47.21225300000003,
+      "candidateMs": 47.77820000000003,
+      "deltaMs": 0.5659469999999942,
+      "percentChange": 1.1987290672190412,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "metric": "configuredStartKairoMs",
+      "baselineOrdinal": 1,
+      "candidateOrdinal": 2,
+      "baselineMs": 153.238091,
+      "candidateMs": 159.51849599999997,
+      "deltaMs": 6.280404999999973,
+      "percentChange": 4.098462046228423,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "metric": "firstStreamHTTPReadMs",
+      "baselineOrdinal": 1,
+      "candidateOrdinal": 2,
+      "baselineMs": 17.62352999999996,
+      "candidateMs": 18.45547499999998,
+      "deltaMs": 0.8319450000000188,
+      "percentChange": 4.720649041366972,
+      "adverseOver1MsAnd10Percent": false
+    }
+  ],
+  "limitations": [
+    "Only two observations per source on one local host; ranges are not confidence intervals.",
+    "Fresh process/module graph with source/fixture guard reads, not OS-disk-cold startup.",
+    "noSync and deferred dataset start isolate configured local startup; ordinary mixed gate retains scheduler/provider/load responsibility.",
+    "Configured startup includes first projection but does not instrument or identify formatter-only cost.",
+    "First wire timing includes loopback HTTP/client overhead.",
+    "All warm intermediate output checks are enforced by the immutable worker; raw result archives first/final wire and all timings, not each intermediate state.",
+    "Fixture SQLite/vault payloads were hash-verified by the observation worker then removed by actual cleanup; independent audit can recompute manifest fingerprints and receipt bindings, not rehash the deleted payloads.",
+    "No browser, GPU, physical OBS or total OBS CPU claim; no matched broad production gain/regression claim."
+  ]
+}
