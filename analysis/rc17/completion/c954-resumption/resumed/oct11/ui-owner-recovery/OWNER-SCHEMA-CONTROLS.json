@@ -1,0 +1,42 @@
+{
+  "complete": true,
+  "scope": "Offline assertion-only schema controls; no application or browser execution",
+  "checks": [
+    "Original wrapper reproduces the exact undefined-versus-false schema failure",
+    "Corrected complete replay branch accepts the actual completed worker record",
+    "Rejects smoke true",
+    "Rejects missing nested smoke with misleading top-level false",
+    "Rejects missing environment",
+    "Rejects numeric smoke zero",
+    "Rejects string smoke false",
+    "Rejects null smoke",
+    "Rejects object smoke",
+    "Rejects null environment",
+    "Rejects string environment",
+    "Rejects incomplete cycle count",
+    "Rejects wrong source identity",
+    "Rejects wrong replay case",
+    "Rejects renderer error",
+    "Rejects external response",
+    "Rejects missing middle-playback sample",
+    "Rejects extra EventSource",
+    "Rejects missing completion time"
+  ],
+  "bindings": {
+    "originalOwner": {
+      "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/ui-owner-recovery/original-ui-ci-lane.mjs",
+      "sha256": "58ff9778d7dc8857bad3f9c29d2c53e55b1ffd95115348c49ef7d482e8441b43"
+    },
+    "proposedOwner": {
+      "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/ui-owner-recovery/proposed-ui-ci-lane.mjs",
+      "sha256": "27f05929f03ec6b17d9632c561420b0a802578518db93169d046ed0f0a134378"
+    },
+    "raw": {
+      "path": "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/completion-ui/session-replay-repeat-small/result.json",
+      "bytes": 198389,
+      "sha256": "e695683c4ffc6ae8418aa14925d29ad7658c949f736d51ae321cec494b7f156a"
+    }
+  },
+  "originalAttemptRemainsFailed": true,
+  "measurementRerun": false
+}

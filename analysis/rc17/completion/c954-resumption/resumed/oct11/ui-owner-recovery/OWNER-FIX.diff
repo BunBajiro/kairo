@@ -1,0 +1,11 @@
+--- a/analysis/rc17/completion/ui-ci-lane.mjs
++++ b/analysis/rc17/completion/ui-ci-lane.mjs
+@@ -44,7 +44,7 @@
+  const result=JSON.parse(await readFile(resultPath,'utf8'));
+  assert.ok(!result.failure,'Harness recorded a failure');assert.deepEqual(result.errors,[]);
+  if(spec.replayCase){
+-  assert.equal(result.sourceCommit,manifest.sourceCommit);assert.equal(result.replayCase,spec.replayCase);assert.equal(result.smoke,false);assert.ok(result.endedAt);
++  assert.equal(result.sourceCommit,manifest.sourceCommit);assert.equal(result.replayCase,spec.replayCase);assert.equal(result.environment?.smoke,false);assert.ok(result.endedAt);
+   assert.deepEqual(result.controls,{successfulBrowserExternalResponses:0,rendererExceptions:0,deniedBackendFetchAttempts:0});
+   assert.ok(result.samples.some(value=>value.name==='replay-playback-middle-60x'));assert.equal(result.retentionMethod.measuredCycles,12);assert.equal(result.eventSourceRequests.length,1);
+   receipt.provenanceBoundary='Replay harness receives source SHA by environment; this external owner verifies the complete source/build manifest before and after.';

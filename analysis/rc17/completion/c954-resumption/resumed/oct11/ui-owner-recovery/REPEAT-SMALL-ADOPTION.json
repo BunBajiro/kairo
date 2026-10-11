@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "scope": "New offline validation receipt for an existing completed worker; not a rewrite of original failure or a new measurement",
+  "eligible": true,
+  "correctedReplayAssertionsPassed": true,
+  "originalAttemptComplete": false,
+  "originalLaneReceiptComplete": false,
+  "measurementRerun": false,
+  "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "sourceFingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+  "replayCase": "repeat-small",
+  "sourceSchema": 2,
+  "smokeLocation": "environment.smoke",
+  "smoke": false,
+  "measuredCycles": 12,
+  "bindings": {
+    "independentAudit": {
+      "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/final-matrix-public-resume/results/UI-ATTEMPT1-AUDIT.json",
+      "bytes": 23976,
+      "sha256": "79c9e5d4b97ab83eecf94b584b5984784406841151d614f9e68f46a09ec459c2"
+    },
+    "originalResult": {
+      "path": "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/completion-ui/session-replay-repeat-small/result.json",
+      "bytes": 198389,
+      "sha256": "e695683c4ffc6ae8418aa14925d29ad7658c949f736d51ae321cec494b7f156a"
+    },
+    "originalFailedLaneReceipt": {
+      "path": "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/completion-ui/session-replay-repeat-small/lane-receipt.json",
+      "bytes": 2295,
+      "sha256": "a0159861aeab256eafc69356d7af89daf9b0bc04b99d78a396a9b0566793dcb7"
+    },
+    "originalFailedAttempt": {
+      "path": "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/completed.json",
+      "bytes": 42919,
+      "sha256": "13cc8b5a720f04b60628205decd11033be0a7c772049f00fa880babd3e0f00dd"
+    },
+    "originalOwnershipReceipt": {
+      "path": "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/ownership-completed.json",
+      "bytes": 17545,
+      "sha256": "1be5c904c4aa125f144c0f86588fba78d0458aef1f5d5b6c51b9f7bfb395857b"
+    },
+    "originalInputs": {
+      "path": "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/inputs.json",
+      "bytes": 33888,
+      "sha256": "fb59c8f351fdd91304ad1c9f506cdbae8673a75927928a4e822b0ff5c3888441"
+    },
+    "originalOwner": {
+      "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/ui-owner-recovery/original-ui-ci-lane.mjs",
+      "bytes": 7109,
+      "sha256": "58ff9778d7dc8857bad3f9c29d2c53e55b1ffd95115348c49ef7d482e8441b43"
+    },
+    "correctedOwnerProposal": {
+      "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/ui-owner-recovery/proposed-ui-ci-lane.mjs",
+      "bytes": 7122,
+      "sha256": "27f05929f03ec6b17d9632c561420b0a802578518db93169d046ed0f0a134378"
+    },
+    "correctedAssertionControls": {
+      "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/ui-owner-recovery/OWNER-SCHEMA-CONTROLS.json",
+      "bytes": 1807,
+      "sha256": "4fc3ebaceaaa991ee3e40865f489f865441f81bf2030212f8a7e98bd2d6ae6d1"
+    }
+  },
+  "disposition": "Existing repeat-small worker may satisfy its local UI coverage when this receipt, independent audit and unchanged raw/source inputs are verified. Canonical owner installation and two remaining lanes are separately required.",
+  "limitations": [
+    "This is single-candidate UI/ownership evidence, not matched ABBA performance improvement.",
+    "Original outer UI stage aborted before final outer source-after commands; all five individual lane owners nevertheless verified the candidate full source/build manifest after their workers, and this audit rehashed all 506 candidate source/build files.",
+    "Actual descendant absence is established by outer completed drain records; original owner processGroupCleaned alone is weaker.",
+    "Twelve retained-heap diagnostic cycles and stable listeners/DOM are not a no-leak proof; heap growth remains explicit.",
+    "Raw route sequence hashes can be compared with the worker fixture assertions, but complete response bodies are not archived here."
+  ]
+}
