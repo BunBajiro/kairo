@@ -1,0 +1,1041 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11T20:37:26.574854+00:00",
+  "status": "passed-historical-collection-review",
+  "scope": "v0.7.3-to-RC16 historical backend ABBA only; integrated70 source guarded but not measured",
+  "rawRoot": "/tmp/kairo-final-matrix-public-20261011/attempt1/historical",
+  "completedSha256": "211b5e9a0a1363276f68da6ca545b320e83890acb790af8d22ca63bb58cf4383",
+  "ownershipSha256": "da302f7ffdab7c8835b15d38310bcef9e8681295a7e3be92183e32169afd8b58",
+  "summarySha256": "f30c0345847a33b3e55e68dc5281676d0b97fa53a5905cc9190148c29909ed0e",
+  "verified": {
+    "inventoryFiles": 38,
+    "totalFiles": 39,
+    "inputBindings": 153,
+    "closedFilePins": 36,
+    "ownedCommandsExit0AndDrained": 8,
+    "sourceTrees": [
+      {
+        "name": "candidate",
+        "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+        "files": 486,
+        "assets": 20,
+        "fingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+        "measuredInHistoricalStage": false
+      },
+      {
+        "name": "rc16",
+        "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+        "files": 407,
+        "assets": 20,
+        "fingerprint": "dd45414826ed86743d3890129f00251bf19e3bf8e2363bd3bc873bdbdf91e167",
+        "measuredInHistoricalStage": true
+      },
+      {
+        "name": "v073",
+        "commit": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+        "files": 195,
+        "assets": 18,
+        "fingerprint": "4e028c9397f0c05f21bd8156c2840b3ea020bbc2f6f8ea9f11255a658492383b",
+        "measuredInHistoricalStage": true
+      }
+    ],
+    "rawReports": 4,
+    "profiles": 8,
+    "rawSamples": 1360,
+    "distributionValuesRecomputed": 544,
+    "summaryMetricRows": 78,
+    "nearestPairsRecomputed": 156,
+    "markdownMetricRows": 26,
+    "bothSharedLocksObservedFree": true
+  },
+  "settings": {
+    "iterations": 10,
+    "warmups": 3,
+    "idleSeconds": 35,
+    "serialization": true,
+    "scope": "controlled-legacy-warm-cache-corrected-storms",
+    "newUniverseTicks": "enabled",
+    "datasetAutomaticStart": "deferred",
+    "network": "all worker fetch calls blocked; expect zero",
+    "publicFeedCaches": "thera/turnur/wormhole_types/combat empty arrays; storms {storms:[],points:[]}; all ready with +7-day expiry and next_at; real tick success audited"
+  },
+  "environment": {
+    "commit": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "dirty": false,
+    "node": "v24.19.0",
+    "platform": "linux",
+    "release": "6.18.44",
+    "arch": "x64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "logicalCpus": 9,
+    "totalMemoryBytes": 10451460096,
+    "runner": "local",
+    "runUrl": null
+  },
+  "workloads": [
+    {
+      "version": 1,
+      "profile": "typical",
+      "characters": 1,
+      "assets": 2000,
+      "events": 10000,
+      "visits": 300,
+      "combat": 600,
+      "sessions": 50,
+      "marketTypes": 1000,
+      "fingerprint": "0c2523716cf3b3f063e681452e345d656c7ee24b045f965d3856c235b77e2854"
+    },
+    {
+      "version": 1,
+      "profile": "stress",
+      "characters": 4,
+      "assets": 20000,
+      "events": 50000,
+      "visits": 2000,
+      "combat": 4000,
+      "sessions": 200,
+      "marketTypes": 5000,
+      "fingerprint": "5d6a8174075b20619915215e42ff752d983670e73590a11a3f5b11102d1fc15b"
+    }
+  ],
+  "observations": [
+    {
+      "profile": "typical",
+      "metric": "idle_cpu",
+      "unit": "% one core",
+      "baselineMean": 0.5087869299132945,
+      "rc16Mean": 2.647679145186963,
+      "changePercent": 420.3905583105623,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_rss",
+      "unit": "MiB",
+      "baselineMean": 69.02734375,
+      "rc16Mean": 150.3671875,
+      "changePercent": 117.83713428781621,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "baselineMean": 59.211775,
+      "rc16Mean": 137.330687,
+      "changePercent": 131.93138020267082,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "typical",
+      "metric": "idle_loop_p95",
+      "unit": "ms",
+      "baselineMean": 10.203135,
+      "rc16Mean": 10.498047,
+      "changePercent": 2.8904057429407715,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "baselineMean": 12.784749500000018,
+      "rc16Mean": 172.442739,
+      "changePercent": 1248.8159388652844,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "typical",
+      "metric": "state_http",
+      "unit": "ms",
+      "baselineMean": 9.01468549999845,
+      "rc16Mean": 9.711422000000312,
+      "changePercent": 7.728905240254713,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_http_p95",
+      "unit": "ms",
+      "baselineMean": 11.706281000002491,
+      "rc16Mean": 11.758903999998438,
+      "changePercent": 0.4495279072485481,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec",
+      "unit": "ms",
+      "baselineMean": 0.07676650000212248,
+      "rc16Mean": 0.0822760000010021,
+      "changePercent": 7.1769586977747934,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_p95",
+      "unit": "ms",
+      "baselineMean": 0.1285009999992326,
+      "rc16Mean": 0.15245900000445545,
+      "changePercent": 18.644212889678634,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 0.091,
+      "rc16Mean": 0.089,
+      "changePercent": -2.197802197802201,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "opsec_payload",
+      "unit": "KiB",
+      "baselineMean": 0.646484375,
+      "rc16Mean": 0.646484375,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state",
+      "unit": "ms",
+      "baselineMean": 4.239256000000751,
+      "rc16Mean": 4.6188380000021425,
+      "changePercent": 8.953976829927823,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_p95",
+      "unit": "ms",
+      "baselineMean": 6.084129999995639,
+      "rc16Mean": 5.942988000002515,
+      "changePercent": -2.3198386621131606,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 4.2275,
+      "rc16Mean": 4.612500000000001,
+      "changePercent": 9.107037256061524,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "state_payload",
+      "unit": "KiB",
+      "baselineMean": 537.64453125,
+      "rc16Mean": 538.126953125,
+      "changePercent": 0.08972877932533763,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey",
+      "unit": "ms",
+      "baselineMean": 1.9745729999995092,
+      "rc16Mean": 2.030384999998205,
+      "changePercent": 2.8265351546237882,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_p95",
+      "unit": "ms",
+      "baselineMean": 2.6982595000008587,
+      "rc16Mean": 3.0336569999999483,
+      "changePercent": 12.43014246772718,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 2.012,
+      "rc16Mean": 2.056,
+      "changePercent": 2.1868787276341894,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "journey_payload",
+      "unit": "KiB",
+      "baselineMean": 155.52734375,
+      "rc16Mean": 163.73046875,
+      "changePercent": 5.27439407258572,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session",
+      "unit": "ms",
+      "baselineMean": 15.323769999999058,
+      "rc16Mean": 15.44001500000013,
+      "changePercent": 0.7585926961908074,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_p95",
+      "unit": "ms",
+      "baselineMean": 19.50159799999892,
+      "rc16Mean": 23.39727050000147,
+      "changePercent": 19.976170670745862,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "typical",
+      "metric": "session_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 16.689,
+      "rc16Mean": 16.3485,
+      "changePercent": -2.040266043501704,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "session_payload",
+      "unit": "KiB",
+      "baselineMean": 445.31640625,
+      "rc16Mean": 469.92578125,
+      "changePercent": 5.5262673134446105,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse",
+      "unit": "ms",
+      "baselineMean": 2.1142915000018547,
+      "rc16Mean": 2.127131500001269,
+      "changePercent": 0.6072956354127745,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_p95",
+      "unit": "ms",
+      "baselineMean": 2.6268175000004703,
+      "rc16Mean": 2.519359499998245,
+      "changePercent": -4.090805699375988,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 2.1515,
+      "rc16Mean": 2.123,
+      "changePercent": -1.3246572158958747,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_browse_payload",
+      "unit": "KiB",
+      "baselineMean": 58.8837890625,
+      "rc16Mean": 58.8837890625,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report",
+      "unit": "ms",
+      "baselineMean": 7.388672500001121,
+      "rc16Mean": 7.205746499999805,
+      "changePercent": -2.475762730061304,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_p95",
+      "unit": "ms",
+      "baselineMean": 8.345138500000758,
+      "rc16Mean": 8.47579400000177,
+      "changePercent": 1.5656480716407462,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 7.3835,
+      "rc16Mean": 7.242,
+      "changePercent": -1.9164352949143315,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "market_report_payload",
+      "unit": "KiB",
+      "baselineMean": 39.3427734375,
+      "rc16Mean": 39.3427734375,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm",
+      "unit": "ms",
+      "baselineMean": 0.6202799999991839,
+      "rc16Mean": 0.6015325000007579,
+      "changePercent": -3.0224253560409364,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_p95",
+      "unit": "ms",
+      "baselineMean": 0.7754464999998163,
+      "rc16Mean": 0.71776250000039,
+      "changePercent": -7.438811059104655,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 0.6174999999999999,
+      "rc16Mean": 0.601,
+      "changePercent": -2.6720647773279316,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_warm_payload",
+      "unit": "KiB",
+      "baselineMean": 171.20703125,
+      "rc16Mean": 171.20703125,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write",
+      "unit": "ms",
+      "baselineMean": 0.6661324999986391,
+      "rc16Mean": 0.6390974999958416,
+      "changePercent": -4.058501875055287,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_p95",
+      "unit": "ms",
+      "baselineMean": 0.7894339999984368,
+      "rc16Mean": 0.8606304999993881,
+      "changePercent": 9.018676672285753,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 0.663,
+      "rc16Mean": 0.636,
+      "changePercent": -4.072398190045257,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "typical",
+      "metric": "imports_after_write_payload",
+      "unit": "KiB",
+      "baselineMean": 171.20703125,
+      "rc16Mean": 171.20703125,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_cpu",
+      "unit": "% one core",
+      "baselineMean": 1.2017832478211838,
+      "rc16Mean": 2.2228962568340074,
+      "changePercent": 84.96648716514288,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_rss",
+      "unit": "MiB",
+      "baselineMean": 92.232421875,
+      "rc16Mean": 171.08203125,
+      "changePercent": 85.49012133917795,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "baselineMean": 37.371903,
+      "rc16Mean": 92.56959900000001,
+      "changePercent": 147.6983818565514,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_p95",
+      "unit": "ms",
+      "baselineMean": 10.190847,
+      "rc16Mean": 10.223614999999999,
+      "changePercent": 0.3215434399122863,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "baselineMean": 18.50627049999997,
+      "rc16Mean": 172.40823599999993,
+      "changePercent": 831.620641771124,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_http",
+      "unit": "ms",
+      "baselineMean": 39.86431799999991,
+      "rc16Mean": 37.542035500002385,
+      "changePercent": -5.825466523715606,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state_http_p95",
+      "unit": "ms",
+      "baselineMean": 55.854636000003666,
+      "rc16Mean": 64.63496099999611,
+      "changePercent": 15.71995742661696,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec",
+      "unit": "ms",
+      "baselineMean": 0.06817650000084541,
+      "rc16Mean": 0.09388949999993201,
+      "changePercent": 37.71534179485272,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_p95",
+      "unit": "ms",
+      "baselineMean": 0.11103300000104355,
+      "rc16Mean": 0.26627649999863934,
+      "changePercent": 139.81744165800865,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 0.07300000000000001,
+      "rc16Mean": 0.1125,
+      "changePercent": 54.10958904109589,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "opsec_payload",
+      "unit": "KiB",
+      "baselineMean": 0.646484375,
+      "rc16Mean": 0.646484375,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "state",
+      "unit": "ms",
+      "baselineMean": 20.827140500001406,
+      "rc16Mean": 25.89454250000199,
+      "changePercent": 24.330762065009548,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_p95",
+      "unit": "ms",
+      "baselineMean": 25.7356054999982,
+      "rc16Mean": 34.02140199999849,
+      "changePercent": 32.19584827720827,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 21.396500000000003,
+      "rc16Mean": 26.6595,
+      "changePercent": 24.597480896408275,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_payload",
+      "unit": "KiB",
+      "baselineMean": 3390.97265625,
+      "rc16Mean": 3391.455078125,
+      "changePercent": 0.014226651875559604,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey",
+      "unit": "ms",
+      "baselineMean": 3.9465574999958335,
+      "rc16Mean": 4.1717344999997295,
+      "changePercent": 5.705656132062775,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_p95",
+      "unit": "ms",
+      "baselineMean": 4.420664999997825,
+      "rc16Mean": 5.479828000003181,
+      "changePercent": 23.95935905584061,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 3.9545,
+      "rc16Mean": 4.24,
+      "changePercent": 7.219623214059934,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "journey_payload",
+      "unit": "KiB",
+      "baselineMean": 238.5986328125,
+      "rc16Mean": 252.2705078125,
+      "changePercent": 5.730072649135365,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session",
+      "unit": "ms",
+      "baselineMean": 95.47245999999723,
+      "rc16Mean": 87.42982199999824,
+      "changePercent": -8.424039770211456,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_p95",
+      "unit": "ms",
+      "baselineMean": 129.1923895,
+      "rc16Mean": 102.45441800000117,
+      "changePercent": -20.696243488861874,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 96.571,
+      "rc16Mean": 89.018,
+      "changePercent": -7.821188555570513,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "session_payload",
+      "unit": "KiB",
+      "baselineMean": 2613.1103515625,
+      "rc16Mean": 2777.1728515625,
+      "changePercent": 6.278437491241018,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse",
+      "unit": "ms",
+      "baselineMean": 6.759426999997231,
+      "rc16Mean": 6.696369000001141,
+      "changePercent": -0.9328897256544955,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_p95",
+      "unit": "ms",
+      "baselineMean": 7.511574500000279,
+      "rc16Mean": 7.739097000001493,
+      "changePercent": 3.0289588421336333,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 6.750500000000001,
+      "rc16Mean": 6.83,
+      "changePercent": 1.1776905414413674,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_browse_payload",
+      "unit": "KiB",
+      "baselineMean": 58.9814453125,
+      "rc16Mean": 58.9814453125,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report",
+      "unit": "ms",
+      "baselineMean": 33.036637000001065,
+      "rc16Mean": 33.34676400000171,
+      "changePercent": 0.9387365911386114,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_p95",
+      "unit": "ms",
+      "baselineMean": 42.044936499998585,
+      "rc16Mean": 36.24027399999977,
+      "changePercent": -13.805853886826558,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 33.032,
+      "rc16Mean": 33.319,
+      "changePercent": 0.8688544441753709,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "market_report_payload",
+      "unit": "KiB",
+      "baselineMean": 39.34375,
+      "rc16Mean": 39.34375,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm",
+      "unit": "ms",
+      "baselineMean": 0.6687579999961599,
+      "rc16Mean": 0.8397710000026564,
+      "changePercent": 25.57173147947067,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_p95",
+      "unit": "ms",
+      "baselineMean": 0.9617609999986598,
+      "rc16Mean": 1.1465175000012096,
+      "changePercent": 19.210229984664306,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 0.6665000000000001,
+      "rc16Mean": 0.8495,
+      "changePercent": 27.456864216054,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_warm_payload",
+      "unit": "KiB",
+      "baselineMean": 196.33203125,
+      "rc16Mean": 196.33203125,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write",
+      "unit": "ms",
+      "baselineMean": 0.752120000004652,
+      "rc16Mean": 0.7944954999984475,
+      "changePercent": 5.634140827731393,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_p95",
+      "unit": "ms",
+      "baselineMean": 1.1037459999970451,
+      "rc16Mean": 2.0107200000020384,
+      "changePercent": 82.17234762412922,
+      "bothPairsAdverse": true,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 0.7615000000000001,
+      "rc16Mean": 0.792,
+      "changePercent": 4.0052527905449775,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    },
+    {
+      "profile": "stress",
+      "metric": "imports_after_write_payload",
+      "unit": "KiB",
+      "baselineMean": 196.33203125,
+      "rc16Mean": 196.33203125,
+      "changePercent": 0.0,
+      "bothPairsAdverse": false,
+      "jointFlag": false
+    }
+  ],
+  "jointAdverseRows": [
+    {
+      "profile": "typical",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "baselineMean": 59.211775,
+      "rc16Mean": 137.330687,
+      "changePercent": 131.93138020267082,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "typical",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "baselineMean": 12.784749500000018,
+      "rc16Mean": 172.442739,
+      "changePercent": 1248.8159388652844,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "typical",
+      "metric": "session_p95",
+      "unit": "ms",
+      "baselineMean": 19.50159799999892,
+      "rc16Mean": 23.39727050000147,
+      "changePercent": 19.976170670745862,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "idle_loop_max",
+      "unit": "ms",
+      "baselineMean": 37.371903,
+      "rc16Mean": 92.56959900000001,
+      "changePercent": 147.6983818565514,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "startKairo_startup",
+      "unit": "ms",
+      "baselineMean": 18.50627049999997,
+      "rc16Mean": 172.40823599999993,
+      "changePercent": 831.620641771124,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state",
+      "unit": "ms",
+      "baselineMean": 20.827140500001406,
+      "rc16Mean": 25.89454250000199,
+      "changePercent": 24.330762065009548,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_p95",
+      "unit": "ms",
+      "baselineMean": 25.7356054999982,
+      "rc16Mean": 34.02140199999849,
+      "changePercent": 32.19584827720827,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    },
+    {
+      "profile": "stress",
+      "metric": "state_cpu_p50",
+      "unit": "ms",
+      "baselineMean": 21.396500000000003,
+      "rc16Mean": 26.6595,
+      "changePercent": 24.597480896408275,
+      "bothPairsAdverse": true,
+      "jointFlag": true
+    }
+  ],
+  "rawIdleAndStartup": [
+    {
+      "arm": "baseline-1",
+      "profile": "typical",
+      "cpuPercentOneCore": 0.5344257161943486,
+      "rssMiB": 69.28515625,
+      "startupMs": 14.45858100000001,
+      "successfulIdleTicks": 0
+    },
+    {
+      "arm": "baseline-1",
+      "profile": "stress",
+      "cpuPercentOneCore": 1.1906814051259,
+      "rssMiB": 82.78515625,
+      "startupMs": 18.91814899999997,
+      "successfulIdleTicks": 0
+    },
+    {
+      "arm": "candidate-1",
+      "profile": "typical",
+      "cpuPercentOneCore": 3.6900522545373766,
+      "rssMiB": 150.28125,
+      "startupMs": 182.090759,
+      "successfulIdleTicks": 12
+    },
+    {
+      "arm": "candidate-1",
+      "profile": "stress",
+      "cpuPercentOneCore": 2.73598892002786,
+      "rssMiB": 169.05078125,
+      "startupMs": 177.69621699999993,
+      "successfulIdleTicks": 12
+    },
+    {
+      "arm": "candidate-2",
+      "profile": "typical",
+      "cpuPercentOneCore": 1.605306035836549,
+      "rssMiB": 150.453125,
+      "startupMs": 162.794719,
+      "successfulIdleTicks": 12
+    },
+    {
+      "arm": "candidate-2",
+      "profile": "stress",
+      "cpuPercentOneCore": 1.7098035936401548,
+      "rssMiB": 173.11328125,
+      "startupMs": 167.12025499999993,
+      "successfulIdleTicks": 12
+    },
+    {
+      "arm": "baseline-2",
+      "profile": "typical",
+      "cpuPercentOneCore": 0.4831481436322405,
+      "rssMiB": 68.76953125,
+      "startupMs": 11.110918000000026,
+      "successfulIdleTicks": 0
+    },
+    {
+      "arm": "baseline-2",
+      "profile": "stress",
+      "cpuPercentOneCore": 1.2128850905164676,
+      "rssMiB": 101.6796875,
+      "startupMs": 18.09439199999997,
+      "successfulIdleTicks": 0
+    }
+  ],
+  "limits": [
+    "No RC17 measured operations in this stage; historical changes cannot be attributed to integrated70.",
+    "Two observations per arm/profile; range is not a confidence interval; p95 from10samples equals sample maximum.",
+    "Live scheduler/Universe activity enabled in RC16; v0.7.3 has no Universe service; zero observed external attempts and SDE start deferred.",
+    "Full decoded cross-version output equivalence was not tested; fixture assertions and payload sizes are retained.",
+    "No database workers ran here; empty database outputs are not a database parity pass.",
+    "Original nested outputs are captured at orchestration exit rather than continuously monitored.",
+    "RSS is process memory, not leak evidence; sampled idle-loop maximum is not a user interaction metric.",
+    "Source70 retention stays accepted; original comparison/UI/updater/CI/package/review gates remain."
+  ]
+}
