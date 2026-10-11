@@ -1,0 +1,133 @@
+{
+  "scope": "Independent mixed and managed-restart raw audit; no runtime executed",
+  "passed": true,
+  "rawPins": {
+    "mixed.log": {
+      "bytes": 862,
+      "sha256": "ff6a4267dce3d3bb45e7e2aa5bd1daf70d4bfe1eb561a79a6361a9b5790b01b6"
+    },
+    "mixed-summary.log": {
+      "bytes": 516,
+      "sha256": "3c383406a73abe202e64815bce961c5457f54d45787b00beb04c5cfe1215a44e"
+    },
+    "mixed/mixed.json": {
+      "bytes": 861279,
+      "sha256": "000a44d5c5ecfb690b6ef0c1352bae2e31efb914054dfa0eabc293cbffbbf258"
+    },
+    "mixed/mixed-summary.json": {
+      "bytes": 11200,
+      "sha256": "e95b163894e7a648e4b372fa29998df04e17ae5b6bae8eb895f899f722b22eaa"
+    },
+    "mixed/mixed-summary.md": {
+      "bytes": 1036,
+      "sha256": "f8d129e02dc9cc3da50759929ec413b92394c3d9f41a4337e428e85ff530d37a"
+    },
+    "restart.log": {
+      "bytes": 46959,
+      "sha256": "5ee2d07a21b72d69429f1f11d85ec2657b12e084a6d6cb561c438a020eb6c044"
+    }
+  },
+  "ownedCommands": [
+    {
+      "label": "mixed",
+      "exitCode": 0,
+      "drained": true,
+      "log": "mixed.log",
+      "pin": {
+        "bytes": 862,
+        "sha256": "ff6a4267dce3d3bb45e7e2aa5bd1daf70d4bfe1eb561a79a6361a9b5790b01b6"
+      }
+    },
+    {
+      "label": "mixed-summary",
+      "exitCode": 0,
+      "drained": true,
+      "log": "mixed-summary.log",
+      "pin": {
+        "bytes": 516,
+        "sha256": "3c383406a73abe202e64815bce961c5457f54d45787b00beb04c5cfe1215a44e"
+      }
+    },
+    {
+      "label": "restart",
+      "exitCode": 0,
+      "drained": true,
+      "log": "restart.log",
+      "pin": {
+        "bytes": 46959,
+        "sha256": "5ee2d07a21b72d69429f1f11d85ec2657b12e084a6d6cb561c438a020eb6c044"
+      }
+    }
+  ],
+  "mixed": {
+    "windows": 4,
+    "requests": 296,
+    "recomputedScalarMetricFields": 192,
+    "rows": [
+      {
+        "name": "quiet-1",
+        "requests": 56,
+        "maxRequestMs": 86.58624899999995,
+        "dashboardP95Ms": 76.59195599999839,
+        "streamP95Ms": 74.65196500000093,
+        "loopMaxMs": 105.447423,
+        "dispatchMaxMs": 5,
+        "maxCommitToWireMs": 25
+      },
+      {
+        "name": "loaded-1",
+        "requests": 92,
+        "maxRequestMs": 221.01266799999576,
+        "dashboardP95Ms": 120.98684199999843,
+        "streamP95Ms": 130.60155099999974,
+        "loopMaxMs": 160.956415,
+        "dispatchMaxMs": 73,
+        "maxCommitToWireMs": 34
+      },
+      {
+        "name": "loaded-2",
+        "requests": 92,
+        "maxRequestMs": 174.46446000000287,
+        "dashboardP95Ms": 101.9758359999978,
+        "streamP95Ms": 111.5964699999895,
+        "loopMaxMs": 144.179199,
+        "dispatchMaxMs": 75,
+        "maxCommitToWireMs": 31
+      },
+      {
+        "name": "quiet-2",
+        "requests": 56,
+        "maxRequestMs": 81.5275959999999,
+        "dashboardP95Ms": 59.405661000011605,
+        "streamP95Ms": 72.4935259999911,
+        "loopMaxMs": 107.347967,
+        "dispatchMaxMs": 3,
+        "maxCommitToWireMs": 22
+      }
+    ]
+  },
+  "restart": {
+    "scenarios": [
+      {
+        "name": "drain-accepted",
+        "passed": true,
+        "childExitCodes": [
+          0,
+          0
+        ],
+        "traceEntries": 65
+      },
+      {
+        "name": "drain-semantic-after-http",
+        "passed": true,
+        "childExitCodes": [
+          0,
+          0
+        ],
+        "traceEntries": 66
+      }
+    ],
+    "sourceFilesVerified": 92,
+    "numericRestartGapAvailable": false
+  }
+}
