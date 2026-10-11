@@ -1,0 +1,4213 @@
+{
+  "schemaVersion": 1,
+  "complete": false,
+  "auditCompleted": true,
+  "scope": "Independent read-only artifact, contract, source and numeric review; no app execution",
+  "applicationRuntime": false,
+  "performanceAcceptance": false,
+  "attempt": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1",
+  "bindings": {
+    "receipt.json": "db0f10236da1d3ce2f0e502c221987eac7a29fe625080f49ac4d64f2c45f3a49",
+    "artifacts.json": "eb76c2c037dd5233a668f28b024dd5bb8e39ffa93a97c58f9c9e63680b54f769",
+    "lock-release.json": "d9d924bebb7d9438b436f3d5b849924cf38832a0bb6a67aa0ebc69f7036b9230"
+  },
+  "artifactCount": 75,
+  "artifactBytes": 73076940,
+  "completeAttemptFileCount": 77,
+  "harnessFileCount": 22,
+  "harnessFingerprint": "25747e2c1e458a1a702f408315727e016250be98527b043e3c9db4db6e8d6c9b",
+  "sourceBindings": {
+    "baseline": {
+      "commit": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "fingerprint": "6191aa1d858f386821ffa73db08dbc5a175655dd052440744913358daa423156",
+      "sourceFiles": 407,
+      "builtFiles": 20,
+      "manifestSha256": "b65359b72fe3cf67ca698027444c4a317dd91c36c3cf850c3c23098a9fdb3046",
+      "currentClean": true
+    },
+    "candidate": {
+      "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "fingerprint": "f6a82797d4d4fec6460da743fac5a9337b474e88c27640d72a4f464cde19f769",
+      "sourceFiles": 486,
+      "builtFiles": 20,
+      "manifestSha256": "cd8e3d492705cc9c8a11ebee4f1bc2879b3b9644898f3a427dc24d564335bc5a",
+      "currentClean": true
+    }
+  },
+  "children": {
+    "startup": 24,
+    "contracts": 2,
+    "database": 4
+  },
+  "quantileValuesRecomputed": 128,
+  "rowMetricValuesRecomputed": 212,
+  "comparisonMetricCount": 25,
+  "matchedMetricPairs": 106,
+  "childLogBindingDiscrepancies": [
+    {
+      "row": "startup-format-3-3-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/stdout.log",
+      "recorded": {
+        "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/stdout.log",
+        "bytes": 3144,
+        "sha256": "ba79111e7a3ff5590811c7674728e54fe9da1fcdd31e61f21a8cc6f4bed6e4af"
+      },
+      "actualBytes": 0,
+      "actualSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "embeddedOnlyArithmeticRows": [
+    "startup-format-3-3-candidate"
+  ],
+  "fullRawEvidenceVerified": false,
+  "currentTmpDirectoryObservations": [
+    {
+      "row": "startup-core-1-2-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-core-1-2-candidate/tmp",
+      "entries": [],
+      "modifiedTimeNs": 1791705439925052280
+    },
+    {
+      "row": "startup-core-2-2-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-core-2-2-candidate/tmp",
+      "entries": [],
+      "modifiedTimeNs": 1791705442984723741
+    },
+    {
+      "row": "startup-format-1-2-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-1-2-candidate/tmp",
+      "entries": [],
+      "modifiedTimeNs": 1791705450704603008
+    },
+    {
+      "row": "startup-format-3-3-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/tmp",
+      "entries": [],
+      "modifiedTimeNs": 1791705456804698137
+    }
+  ],
+  "currentCleanupCaveat": "Four empty tmp directories were observed during review despite successful recorded end-of-run removal; origin not established by this audit.",
+  "contractAudit": {
+    "completeDecodedCommonEquality": true,
+    "allowedNormalizationPaths": 8,
+    "assertedNullVisitFieldsRemoved": 9200,
+    "routeShapes": 5,
+    "routePilots": 8,
+    "candidateOwnershipRawIdsChecked": true,
+    "databaseReportedOutputHashesEqual": true,
+    "databaseUnderlyingHashedPayloadsNotRetained": true
+  },
+  "checks": {
+    "completed envelope": 1,
+    "no blanket performance acceptance": 1,
+    "release complete": 1,
+    "both locks released": 1,
+    "both locks acquired": 1,
+    "bound file byte/hash": 1102,
+    "artifact inventory fingerprint": 1,
+    "complete attempt file set": 1,
+    "harness unchanged": 1,
+    "harness fingerprint": 1,
+    "source manifest identity": 2,
+    "source and build fingerprint": 2,
+    "current source clean and pinned": 2,
+    "current source file set": 2,
+    "current built file set": 2,
+    "post-source receipt": 2,
+    "child validation and cleanup": 30,
+    "clean child exit": 30,
+    "no forced or blocked cleanup": 30,
+    "owned group absent": 30,
+    "no log errors": 30,
+    "raw startup result matches receipt": 24,
+    "ordinary startup worker": 24,
+    "startup source binding": 24,
+    "startup semantic equality": 24,
+    "startup raw sample set": 24,
+    "startup quantile recomputation": 96,
+    "startup cumulative recomputation": 24,
+    "raw metric matches receipt keys": 28,
+    "raw metric matches receipt": 212,
+    "raw contract result matches receipt": 2,
+    "contract worker correctness": 2,
+    "contract source binding": 2,
+    "raw database result matches receipt": 4,
+    "database identity": 4,
+    "original write workloads": 4,
+    "database quantile recomputation": 32,
+    "database contract receipt": 4,
+    "expected thirty children": 1,
+    "planned row order": 1,
+    "semantic digest summary": 1,
+    "all database common output receipts equal": 1,
+    "complete decoded common contracts equal": 1,
+    "baseline raw contracts unchanged": 1,
+    "matched complete contract fixtures": 1,
+    "all four original report offsets": 2,
+    "original report visit count": 8,
+    "only asserted null session ownership removed": 9200,
+    "only documented normalization changes complete raw candidate": 1,
+    "normalization allowlist exactly eight paths": 1,
+    "five route shapes eight pilots": 1,
+    "raw candidate ownership IDs": 1,
+    "two matched ABBA pairs per cycle": 53,
+    "summary independently recomputed keys": 294,
+    "summary independently recomputed array length": 153,
+    "summary independently recomputed": 2139
+  },
+  "rawMetrics": [
+    {
+      "name": "startup-core-1-1-baseline",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 1,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "coldCoreImportMs": 48.46969,
+        "coreConstructionMs": 121.698012,
+        "firstMarketCategoriesMs": 1.033990000000017,
+        "warmMarketCategoriesMs.p50": 0.39501300000000583,
+        "warmMarketCategoriesMs.p95": 0.7289719999999988,
+        "warmMarketCategoriesMs.max": 1.2617690000000152,
+        "coldImportConstructionFirstMarketMs": 171.20169200000004
+      }
+    },
+    {
+      "name": "startup-core-1-2-candidate",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 1,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "coldCoreImportMs": 37.910472999999996,
+        "coreConstructionMs": 111.38584700000001,
+        "firstMarketCategoriesMs": 9.180756000000002,
+        "warmMarketCategoriesMs.p50": 0.3430529999999976,
+        "warmMarketCategoriesMs.p95": 0.6206219999999973,
+        "warmMarketCategoriesMs.max": 1.3511320000000069,
+        "coldImportConstructionFirstMarketMs": 158.477076
+      }
+    },
+    {
+      "name": "startup-core-1-3-candidate",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 1,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "coldCoreImportMs": 47.317699000000005,
+        "coreConstructionMs": 155.519029,
+        "firstMarketCategoriesMs": 10.116994000000034,
+        "warmMarketCategoriesMs.p50": 0.5534420000000182,
+        "warmMarketCategoriesMs.p95": 0.8462680000000091,
+        "warmMarketCategoriesMs.max": 1.079609000000005,
+        "coldImportConstructionFirstMarketMs": 212.95372200000003
+      }
+    },
+    {
+      "name": "startup-core-1-4-baseline",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 1,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "coldCoreImportMs": 44.723428,
+        "coreConstructionMs": 118.067822,
+        "firstMarketCategoriesMs": 1.0688579999999774,
+        "warmMarketCategoriesMs.p50": 0.36957400000000007,
+        "warmMarketCategoriesMs.p95": 0.6127910000000156,
+        "warmMarketCategoriesMs.max": 0.8000839999999982,
+        "coldImportConstructionFirstMarketMs": 163.86010799999997
+      }
+    },
+    {
+      "name": "startup-core-2-1-baseline",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 2,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "coldCoreImportMs": 41.30480500000001,
+        "coreConstructionMs": 110.939339,
+        "firstMarketCategoriesMs": 0.9364430000000254,
+        "warmMarketCategoriesMs.p50": 0.3212599999999952,
+        "warmMarketCategoriesMs.p95": 0.547064999999975,
+        "warmMarketCategoriesMs.max": 0.7833760000000041,
+        "coldImportConstructionFirstMarketMs": 153.18058700000003
+      }
+    },
+    {
+      "name": "startup-core-2-2-candidate",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 2,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "coldCoreImportMs": 35.197579,
+        "coreConstructionMs": 121.25011699999999,
+        "firstMarketCategoriesMs": 7.34233900000001,
+        "warmMarketCategoriesMs.p50": 0.38891799999998966,
+        "warmMarketCategoriesMs.p95": 0.7060730000000035,
+        "warmMarketCategoriesMs.max": 1.5651750000000106,
+        "coldImportConstructionFirstMarketMs": 163.790035
+      }
+    },
+    {
+      "name": "startup-core-2-3-candidate",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 2,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "coldCoreImportMs": 40.615634,
+        "coreConstructionMs": 114.63313500000001,
+        "firstMarketCategoriesMs": 8.709442999999993,
+        "warmMarketCategoriesMs.p50": 0.38491100000001666,
+        "warmMarketCategoriesMs.p95": 0.6130239999999958,
+        "warmMarketCategoriesMs.max": 0.7929709999999943,
+        "coldImportConstructionFirstMarketMs": 163.958212
+      }
+    },
+    {
+      "name": "startup-core-2-4-baseline",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 2,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "coldCoreImportMs": 45.048896000000006,
+        "coreConstructionMs": 114.95552099999999,
+        "firstMarketCategoriesMs": 0.9678409999999928,
+        "warmMarketCategoriesMs.p50": 0.3451840000000175,
+        "warmMarketCategoriesMs.p95": 0.5755290000000173,
+        "warmMarketCategoriesMs.max": 0.8220079999999825,
+        "coldImportConstructionFirstMarketMs": 160.97225799999998
+      }
+    },
+    {
+      "name": "startup-core-3-1-baseline",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 3,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "coldCoreImportMs": 45.430671,
+        "coreConstructionMs": 146.994166,
+        "firstMarketCategoriesMs": 1.0057819999999822,
+        "warmMarketCategoriesMs.p50": 0.35756400000002486,
+        "warmMarketCategoriesMs.p95": 0.5160149999999817,
+        "warmMarketCategoriesMs.max": 0.822084000000018,
+        "coldImportConstructionFirstMarketMs": 193.43061899999998
+      }
+    },
+    {
+      "name": "startup-core-3-2-candidate",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 3,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "coldCoreImportMs": 36.334729,
+        "coreConstructionMs": 110.86939300000002,
+        "firstMarketCategoriesMs": 9.174075999999985,
+        "warmMarketCategoriesMs.p50": 0.34819900000002235,
+        "warmMarketCategoriesMs.p95": 0.5351720000000171,
+        "warmMarketCategoriesMs.max": 0.8813320000000147,
+        "coldImportConstructionFirstMarketMs": 156.378198
+      }
+    },
+    {
+      "name": "startup-core-3-3-candidate",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 3,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "coldCoreImportMs": 36.182717,
+        "coreConstructionMs": 122.590231,
+        "firstMarketCategoriesMs": 9.209658999999988,
+        "warmMarketCategoriesMs.p50": 0.34019100000000435,
+        "warmMarketCategoriesMs.p95": 0.5583589999999958,
+        "warmMarketCategoriesMs.max": 0.7637880000000052,
+        "coldImportConstructionFirstMarketMs": 167.98260699999997
+      }
+    },
+    {
+      "name": "startup-core-3-4-baseline",
+      "phase": "startup",
+      "lane": "core",
+      "cycle": 3,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "coldCoreImportMs": 41.717807,
+        "coreConstructionMs": 111.51939699999998,
+        "firstMarketCategoriesMs": 0.9459439999999972,
+        "warmMarketCategoriesMs.p50": 0.34746599999999717,
+        "warmMarketCategoriesMs.p95": 0.5584080000000142,
+        "warmMarketCategoriesMs.max": 0.7062050000000113,
+        "coldImportConstructionFirstMarketMs": 154.183148
+      }
+    },
+    {
+      "name": "startup-format-1-1-baseline",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 1,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "coldProjectionImportMs": 1.6706509999999994,
+        "firstFormattedWalletMs": 13.933522000000004,
+        "firstFormattedGoalMs": 0.13819200000000365,
+        "warmWalletGoalPairMs.p50": 0.06020699999999124,
+        "warmWalletGoalPairMs.p95": 0.13065000000000282,
+        "warmWalletGoalPairMs.max": 0.23704599999999232,
+        "coldImportFirstFormattedPairMs": 15.742365000000007
+      }
+    },
+    {
+      "name": "startup-format-1-2-candidate",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 1,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "coldProjectionImportMs": 1.8895469999999932,
+        "firstFormattedWalletMs": 13.186770999999993,
+        "firstFormattedGoalMs": 0.14466099999999926,
+        "warmWalletGoalPairMs.p50": 0.007215999999999667,
+        "warmWalletGoalPairMs.p95": 0.03626799999999264,
+        "warmWalletGoalPairMs.max": 0.2602150000000023,
+        "coldImportFirstFormattedPairMs": 15.220978999999986
+      }
+    },
+    {
+      "name": "startup-format-1-3-candidate",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 1,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "coldProjectionImportMs": 1.572344000000001,
+        "firstFormattedWalletMs": 13.686447000000008,
+        "firstFormattedGoalMs": 0.13637699999999597,
+        "warmWalletGoalPairMs.p50": 0.0074939999999941165,
+        "warmWalletGoalPairMs.p95": 0.06427300000000002,
+        "warmWalletGoalPairMs.max": 0.09078999999999837,
+        "coldImportFirstFormattedPairMs": 15.395168000000005
+      }
+    },
+    {
+      "name": "startup-format-1-4-baseline",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 1,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "coldProjectionImportMs": 1.594619999999999,
+        "firstFormattedWalletMs": 12.618902999999996,
+        "firstFormattedGoalMs": 0.13706200000000024,
+        "warmWalletGoalPairMs.p50": 0.058608000000006655,
+        "warmWalletGoalPairMs.p95": 0.12147499999998956,
+        "warmWalletGoalPairMs.max": 0.1561190000000039,
+        "coldImportFirstFormattedPairMs": 14.350584999999995
+      }
+    },
+    {
+      "name": "startup-format-2-1-baseline",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 2,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "coldProjectionImportMs": 1.6472849999999966,
+        "firstFormattedWalletMs": 13.093632000000007,
+        "firstFormattedGoalMs": 0.13590800000000058,
+        "warmWalletGoalPairMs.p50": 0.057977999999991425,
+        "warmWalletGoalPairMs.p95": 0.12381099999998924,
+        "warmWalletGoalPairMs.max": 0.33183300000000315,
+        "coldImportFirstFormattedPairMs": 14.876825000000004
+      }
+    },
+    {
+      "name": "startup-format-2-2-candidate",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 2,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "coldProjectionImportMs": 1.6868280000000055,
+        "firstFormattedWalletMs": 12.857065999999996,
+        "firstFormattedGoalMs": 0.1300859999999915,
+        "warmWalletGoalPairMs.p50": 0.007199999999997431,
+        "warmWalletGoalPairMs.p95": 0.02841200000000299,
+        "warmWalletGoalPairMs.max": 0.0626180000000005,
+        "coldImportFirstFormattedPairMs": 14.673979999999993
+      }
+    },
+    {
+      "name": "startup-format-2-3-candidate",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 2,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "coldProjectionImportMs": 1.8771529999999998,
+        "firstFormattedWalletMs": 12.791707000000002,
+        "firstFormattedGoalMs": 0.13647299999999518,
+        "warmWalletGoalPairMs.p50": 0.007757999999995491,
+        "warmWalletGoalPairMs.p95": 0.034734000000000265,
+        "warmWalletGoalPairMs.max": 0.0665429999999958,
+        "coldImportFirstFormattedPairMs": 14.805332999999997
+      }
+    },
+    {
+      "name": "startup-format-2-4-baseline",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 2,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "coldProjectionImportMs": 1.5215770000000006,
+        "firstFormattedWalletMs": 12.566637999999998,
+        "firstFormattedGoalMs": 0.13775899999998842,
+        "warmWalletGoalPairMs.p50": 0.05931900000000212,
+        "warmWalletGoalPairMs.p95": 0.09939300000000628,
+        "warmWalletGoalPairMs.max": 0.13918599999999515,
+        "coldImportFirstFormattedPairMs": 14.225973999999987
+      }
+    },
+    {
+      "name": "startup-format-3-1-baseline",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 3,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "coldProjectionImportMs": 1.5942489999999978,
+        "firstFormattedWalletMs": 13.010379,
+        "firstFormattedGoalMs": 0.13745699999999772,
+        "warmWalletGoalPairMs.p50": 0.05938000000000443,
+        "warmWalletGoalPairMs.p95": 0.1497720000000129,
+        "warmWalletGoalPairMs.max": 0.22051400000000854,
+        "coldImportFirstFormattedPairMs": 14.742084999999996
+      }
+    },
+    {
+      "name": "startup-format-3-2-candidate",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 3,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "coldProjectionImportMs": 1.7765210000000025,
+        "firstFormattedWalletMs": 12.953973000000005,
+        "firstFormattedGoalMs": 0.14167899999999634,
+        "warmWalletGoalPairMs.p50": 0.007556999999991376,
+        "warmWalletGoalPairMs.p95": 0.029016999999996074,
+        "warmWalletGoalPairMs.max": 0.06912100000000976,
+        "coldImportFirstFormattedPairMs": 14.872173000000004
+      }
+    },
+    {
+      "name": "startup-format-3-3-candidate",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 3,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "coldProjectionImportMs": 1.9238739999999979,
+        "firstFormattedWalletMs": 12.889792,
+        "firstFormattedGoalMs": 0.1504589999999979,
+        "warmWalletGoalPairMs.p50": 0.007739999999998304,
+        "warmWalletGoalPairMs.p95": 0.035951999999994655,
+        "warmWalletGoalPairMs.max": 0.09700299999998663,
+        "coldImportFirstFormattedPairMs": 14.964124999999996
+      }
+    },
+    {
+      "name": "startup-format-3-4-baseline",
+      "phase": "startup",
+      "lane": "format",
+      "cycle": 3,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "coldProjectionImportMs": 1.5344809999999995,
+        "firstFormattedWalletMs": 13.014009999999992,
+        "firstFormattedGoalMs": 0.1378430000000037,
+        "warmWalletGoalPairMs.p50": 0.05945299999999065,
+        "warmWalletGoalPairMs.p95": 0.1428980000000024,
+        "warmWalletGoalPairMs.max": 0.23151199999999506,
+        "coldImportFirstFormattedPairMs": 14.686333999999995
+      }
+    },
+    {
+      "name": "database-original-1-1-baseline",
+      "phase": "database",
+      "lane": "original",
+      "cycle": 1,
+      "position": 1,
+      "arm": "baseline",
+      "metrics": {
+        "firstOpenMs": 1037.4677370000002,
+        "agedImportsP50Ms": 498.7596349999999,
+        "agedImportsMaxMs": 519.2237519999999,
+        "eventInsertP50Ms": 20.41883599999983,
+        "eventInsertMaxMs": 25.996594999999616,
+        "historyWriteP50Ms": 36.93833900000027,
+        "historyWriteMaxMs": 37.55932899999971,
+        "historyWriteBlockP50Ms": 2.4586469999994733,
+        "historyWriteBlockMaxMs": 3.026867000000493,
+        "eventIndexBytes": 2400256,
+        "workingHistoryJsonBytes": 16355000
+      }
+    },
+    {
+      "name": "database-original-1-2-candidate",
+      "phase": "database",
+      "lane": "original",
+      "cycle": 1,
+      "position": 2,
+      "arm": "candidate",
+      "metrics": {
+        "firstOpenMs": 926.71594,
+        "agedImportsP50Ms": 486.41914499999984,
+        "agedImportsMaxMs": 523.003166,
+        "eventInsertP50Ms": 18.942409000000225,
+        "eventInsertMaxMs": 19.529249000000164,
+        "historyWriteP50Ms": 35.01831200000015,
+        "historyWriteMaxMs": 36.75101699999959,
+        "historyWriteBlockP50Ms": 2.2929999999996653,
+        "historyWriteBlockMaxMs": 2.7559970000002068,
+        "eventIndexBytes": 2400256,
+        "workingHistoryJsonBytes": 16355000
+      }
+    },
+    {
+      "name": "database-original-1-3-candidate",
+      "phase": "database",
+      "lane": "original",
+      "cycle": 1,
+      "position": 3,
+      "arm": "candidate",
+      "metrics": {
+        "firstOpenMs": 846.0953689999999,
+        "agedImportsP50Ms": 472.4734910000002,
+        "agedImportsMaxMs": 506.08179999999993,
+        "eventInsertP50Ms": 18.61532699999998,
+        "eventInsertMaxMs": 20.10436699999991,
+        "historyWriteP50Ms": 34.81318099999953,
+        "historyWriteMaxMs": 35.69217200000003,
+        "historyWriteBlockP50Ms": 2.370409999999538,
+        "historyWriteBlockMaxMs": 2.7199489999993602,
+        "eventIndexBytes": 2400256,
+        "workingHistoryJsonBytes": 16355000
+      }
+    },
+    {
+      "name": "database-original-1-4-baseline",
+      "phase": "database",
+      "lane": "original",
+      "cycle": 1,
+      "position": 4,
+      "arm": "baseline",
+      "metrics": {
+        "firstOpenMs": 846.638677,
+        "agedImportsP50Ms": 481.486586,
+        "agedImportsMaxMs": 498.7245290000001,
+        "eventInsertP50Ms": 18.997091000000182,
+        "eventInsertMaxMs": 20.214782000000014,
+        "historyWriteP50Ms": 35.68641800000023,
+        "historyWriteMaxMs": 36.46877900000072,
+        "historyWriteBlockP50Ms": 2.4126960000003237,
+        "historyWriteBlockMaxMs": 2.854034999999385,
+        "eventIndexBytes": 2400256,
+        "workingHistoryJsonBytes": 16355000
+      }
+    }
+  ],
+  "recomputedSummary": {
+    "startup/core": {
+      "coldCoreImportMs": {
+        "baseline": [
+          48.46969,
+          44.723428,
+          41.30480500000001,
+          45.048896000000006,
+          45.430671,
+          41.717807
+        ],
+        "candidate": [
+          37.910472999999996,
+          47.317699000000005,
+          35.197579,
+          40.615634,
+          36.334729,
+          36.182717
+        ],
+        "meanBaseline": 44.449216166666666,
+        "meanCandidate": 38.92647183333333,
+        "meanDelta": -5.5227443333333355,
+        "meanPercent": -12.424840772501511,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 48.46969,
+            "b": 37.910472999999996,
+            "delta": -10.559217000000004,
+            "percent": -21.785196067893164,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 44.723428,
+            "b": 47.317699000000005,
+            "delta": 2.594271000000006,
+            "percent": 5.800698014472427,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 41.30480500000001,
+            "b": 35.197579,
+            "delta": -6.107226000000011,
+            "percent": -14.785751924019518,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 45.048896000000006,
+            "b": 40.615634,
+            "delta": -4.433262000000006,
+            "percent": -9.841000321073368,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 45.430671,
+            "b": 36.334729,
+            "delta": -9.095941999999994,
+            "percent": -20.021588499100073,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 41.717807,
+            "b": 36.182717,
+            "delta": -5.535090000000004,
+            "percent": -13.26793136561566,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 48.46969,
+                "b": 37.910472999999996,
+                "delta": -10.559217000000004,
+                "percent": -21.785196067893164,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 44.723428,
+                "b": 47.317699000000005,
+                "delta": 2.594271000000006,
+                "percent": 5.800698014472427,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 41.30480500000001,
+                "b": 35.197579,
+                "delta": -6.107226000000011,
+                "percent": -14.785751924019518,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 45.048896000000006,
+                "b": 40.615634,
+                "delta": -4.433262000000006,
+                "percent": -9.841000321073368,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 45.430671,
+                "b": 36.334729,
+                "delta": -9.095941999999994,
+                "percent": -20.021588499100073,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 41.717807,
+                "b": 36.182717,
+                "delta": -5.535090000000004,
+                "percent": -13.26793136561566,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "coreConstructionMs": {
+        "baseline": [
+          121.698012,
+          118.067822,
+          110.939339,
+          114.95552099999999,
+          146.994166,
+          111.51939699999998
+        ],
+        "candidate": [
+          111.38584700000001,
+          155.519029,
+          121.25011699999999,
+          114.63313500000001,
+          110.86939300000002,
+          122.590231
+        ],
+        "meanBaseline": 120.6957095,
+        "meanCandidate": 122.70795866666667,
+        "meanDelta": 2.0122491666666633,
+        "meanPercent": 1.667208532103337,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 121.698012,
+            "b": 111.38584700000001,
+            "delta": -10.312164999999993,
+            "percent": -8.473568984840929,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 118.067822,
+            "b": 155.519029,
+            "delta": 37.45120699999998,
+            "percent": 31.72007949803628,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 110.939339,
+            "b": 121.25011699999999,
+            "delta": 10.310777999999985,
+            "percent": 9.294068355680384,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 114.95552099999999,
+            "b": 114.63313500000001,
+            "delta": -0.3223859999999803,
+            "percent": -0.2804441206438302,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 146.994166,
+            "b": 110.86939300000002,
+            "delta": -36.12477299999999,
+            "percent": -24.57565084589819,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 111.51939699999998,
+            "b": 122.590231,
+            "delta": 11.07083400000002,
+            "percent": 9.927272113926522,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 121.698012,
+                "b": 111.38584700000001,
+                "delta": -10.312164999999993,
+                "percent": -8.473568984840929,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 118.067822,
+                "b": 155.519029,
+                "delta": 37.45120699999998,
+                "percent": 31.72007949803628,
+                "adverseOver1MsAnd10Percent": true
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 110.939339,
+                "b": 121.25011699999999,
+                "delta": 10.310777999999985,
+                "percent": 9.294068355680384,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 114.95552099999999,
+                "b": 114.63313500000001,
+                "delta": -0.3223859999999803,
+                "percent": -0.2804441206438302,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 146.994166,
+                "b": 110.86939300000002,
+                "delta": -36.12477299999999,
+                "percent": -24.57565084589819,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 111.51939699999998,
+                "b": 122.590231,
+                "delta": 11.07083400000002,
+                "percent": 9.927272113926522,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "firstMarketCategoriesMs": {
+        "baseline": [
+          1.033990000000017,
+          1.0688579999999774,
+          0.9364430000000254,
+          0.9678409999999928,
+          1.0057819999999822,
+          0.9459439999999972
+        ],
+        "candidate": [
+          9.180756000000002,
+          10.116994000000034,
+          7.34233900000001,
+          8.709442999999993,
+          9.174075999999985,
+          9.209658999999988
+        ],
+        "meanBaseline": 0.9931429999999987,
+        "meanCandidate": 8.955544500000002,
+        "meanDelta": 7.962401500000003,
+        "meanPercent": 801.7376651700725,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 1.033990000000017,
+            "b": 9.180756000000002,
+            "delta": 8.146765999999985,
+            "percent": 787.8960144682105,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 1.0688579999999774,
+            "b": 10.116994000000034,
+            "delta": 9.048136000000056,
+            "percent": 846.5236729294487,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 0.9364430000000254,
+            "b": 7.34233900000001,
+            "delta": 6.405895999999984,
+            "percent": 684.0668358885496,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 0.9678409999999928,
+            "b": 8.709442999999993,
+            "delta": 7.741602,
+            "percent": 799.8836585761564,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 1.0057819999999822,
+            "b": 9.174075999999985,
+            "delta": 8.168294000000003,
+            "percent": 812.1336432746011,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 0.9459439999999972,
+            "b": 9.209658999999988,
+            "delta": 8.26371499999999,
+            "percent": 873.5945256801687,
+            "adverseOver1MsAnd10Percent": true
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 1.033990000000017,
+                "b": 9.180756000000002,
+                "delta": 8.146765999999985,
+                "percent": 787.8960144682105,
+                "adverseOver1MsAnd10Percent": true
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 1.0688579999999774,
+                "b": 10.116994000000034,
+                "delta": 9.048136000000056,
+                "percent": 846.5236729294487,
+                "adverseOver1MsAnd10Percent": true
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 0.9364430000000254,
+                "b": 7.34233900000001,
+                "delta": 6.405895999999984,
+                "percent": 684.0668358885496,
+                "adverseOver1MsAnd10Percent": true
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 0.9678409999999928,
+                "b": 8.709442999999993,
+                "delta": 7.741602,
+                "percent": 799.8836585761564,
+                "adverseOver1MsAnd10Percent": true
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 1.0057819999999822,
+                "b": 9.174075999999985,
+                "delta": 8.168294000000003,
+                "percent": 812.1336432746011,
+                "adverseOver1MsAnd10Percent": true
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 0.9459439999999972,
+                "b": 9.209658999999988,
+                "delta": 8.26371499999999,
+                "percent": 873.5945256801687,
+                "adverseOver1MsAnd10Percent": true
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": true
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": true
+      },
+      "warmMarketCategoriesMs.p50": {
+        "baseline": [
+          0.39501300000000583,
+          0.36957400000000007,
+          0.3212599999999952,
+          0.3451840000000175,
+          0.35756400000002486,
+          0.34746599999999717
+        ],
+        "candidate": [
+          0.3430529999999976,
+          0.5534420000000182,
+          0.38891799999998966,
+          0.38491100000001666,
+          0.34819900000002235,
+          0.34019100000000435
+        ],
+        "meanBaseline": 0.35601016666667346,
+        "meanCandidate": 0.39311900000000816,
+        "meanDelta": 0.0371088333333347,
+        "meanPercent": 10.423531912244254,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 0.39501300000000583,
+            "b": 0.3430529999999976,
+            "delta": -0.05196000000000822,
+            "percent": -13.153997463376509,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 0.36957400000000007,
+            "b": 0.5534420000000182,
+            "delta": 0.18386800000001813,
+            "percent": 49.751335321212565,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 0.3212599999999952,
+            "b": 0.38891799999998966,
+            "delta": 0.06765799999999444,
+            "percent": 21.06020046068464,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 0.3451840000000175,
+            "b": 0.38491100000001666,
+            "delta": 0.03972699999999918,
+            "percent": 11.508934365439071,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 0.35756400000002486,
+            "b": 0.34819900000002235,
+            "delta": -0.00936500000000251,
+            "percent": -2.619111543668229,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 0.34746599999999717,
+            "b": 0.34019100000000435,
+            "delta": -0.007274999999992815,
+            "percent": -2.0937300340156617,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 0.39501300000000583,
+                "b": 0.3430529999999976,
+                "delta": -0.05196000000000822,
+                "percent": -13.153997463376509,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 0.36957400000000007,
+                "b": 0.5534420000000182,
+                "delta": 0.18386800000001813,
+                "percent": 49.751335321212565,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 0.3212599999999952,
+                "b": 0.38891799999998966,
+                "delta": 0.06765799999999444,
+                "percent": 21.06020046068464,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 0.3451840000000175,
+                "b": 0.38491100000001666,
+                "delta": 0.03972699999999918,
+                "percent": 11.508934365439071,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 0.35756400000002486,
+                "b": 0.34819900000002235,
+                "delta": -0.00936500000000251,
+                "percent": -2.619111543668229,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 0.34746599999999717,
+                "b": 0.34019100000000435,
+                "delta": -0.007274999999992815,
+                "percent": -2.0937300340156617,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "warmMarketCategoriesMs.p95": {
+        "baseline": [
+          0.7289719999999988,
+          0.6127910000000156,
+          0.547064999999975,
+          0.5755290000000173,
+          0.5160149999999817,
+          0.5584080000000142
+        ],
+        "candidate": [
+          0.6206219999999973,
+          0.8462680000000091,
+          0.7060730000000035,
+          0.6130239999999958,
+          0.5351720000000171,
+          0.5583589999999958
+        ],
+        "meanBaseline": 0.5897966666666671,
+        "meanCandidate": 0.6465863333333365,
+        "meanDelta": 0.0567896666666694,
+        "meanPercent": 9.628685592210196,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 0.7289719999999988,
+            "b": 0.6206219999999973,
+            "delta": -0.1083500000000015,
+            "percent": -14.863396673672192,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 0.6127910000000156,
+            "b": 0.8462680000000091,
+            "delta": 0.2334769999999935,
+            "percent": 38.10059220843445,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 0.547064999999975,
+            "b": 0.7060730000000035,
+            "delta": 0.15900800000002846,
+            "percent": 29.0656503340619,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 0.5755290000000173,
+            "b": 0.6130239999999958,
+            "delta": 0.03749499999997852,
+            "percent": 6.514875879404403,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 0.5160149999999817,
+            "b": 0.5351720000000171,
+            "delta": 0.019157000000035396,
+            "percent": 3.7124889780405734,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 0.5584080000000142,
+            "b": 0.5583589999999958,
+            "delta": -4.900000001839544e-05,
+            "percent": -0.008774945920975163,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 0.7289719999999988,
+                "b": 0.6206219999999973,
+                "delta": -0.1083500000000015,
+                "percent": -14.863396673672192,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 0.6127910000000156,
+                "b": 0.8462680000000091,
+                "delta": 0.2334769999999935,
+                "percent": 38.10059220843445,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 0.547064999999975,
+                "b": 0.7060730000000035,
+                "delta": 0.15900800000002846,
+                "percent": 29.0656503340619,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 0.5755290000000173,
+                "b": 0.6130239999999958,
+                "delta": 0.03749499999997852,
+                "percent": 6.514875879404403,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 0.5160149999999817,
+                "b": 0.5351720000000171,
+                "delta": 0.019157000000035396,
+                "percent": 3.7124889780405734,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 0.5584080000000142,
+                "b": 0.5583589999999958,
+                "delta": -4.900000001839544e-05,
+                "percent": -0.008774945920975163,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "warmMarketCategoriesMs.max": {
+        "baseline": [
+          1.2617690000000152,
+          0.8000839999999982,
+          0.7833760000000041,
+          0.8220079999999825,
+          0.822084000000018,
+          0.7062050000000113
+        ],
+        "candidate": [
+          1.3511320000000069,
+          1.079609000000005,
+          1.5651750000000106,
+          0.7929709999999943,
+          0.8813320000000147,
+          0.7637880000000052
+        ],
+        "meanBaseline": 0.8659210000000049,
+        "meanCandidate": 1.0723345000000062,
+        "meanDelta": 0.20641350000000125,
+        "meanPercent": 23.83745168439153,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 1.2617690000000152,
+            "b": 1.3511320000000069,
+            "delta": 0.08936299999999164,
+            "percent": 7.082358181251136,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 0.8000839999999982,
+            "b": 1.079609000000005,
+            "delta": 0.2795250000000067,
+            "percent": 34.93695661955587,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 0.7833760000000041,
+            "b": 1.5651750000000106,
+            "delta": 0.7817990000000066,
+            "percent": 99.79869181593546,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 0.8220079999999825,
+            "b": 0.7929709999999943,
+            "delta": -0.02903699999998821,
+            "percent": -3.532447372773606,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 0.822084000000018,
+            "b": 0.8813320000000147,
+            "delta": 0.05924799999999664,
+            "percent": 7.207049401277166,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 0.7062050000000113,
+            "b": 0.7637880000000052,
+            "delta": 0.057582999999993945,
+            "percent": 8.153864671022305,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 1.2617690000000152,
+                "b": 1.3511320000000069,
+                "delta": 0.08936299999999164,
+                "percent": 7.082358181251136,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 0.8000839999999982,
+                "b": 1.079609000000005,
+                "delta": 0.2795250000000067,
+                "percent": 34.93695661955587,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 0.7833760000000041,
+                "b": 1.5651750000000106,
+                "delta": 0.7817990000000066,
+                "percent": 99.79869181593546,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 0.8220079999999825,
+                "b": 0.7929709999999943,
+                "delta": -0.02903699999998821,
+                "percent": -3.532447372773606,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 0.822084000000018,
+                "b": 0.8813320000000147,
+                "delta": 0.05924799999999664,
+                "percent": 7.207049401277166,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 0.7062050000000113,
+                "b": 0.7637880000000052,
+                "delta": 0.057582999999993945,
+                "percent": 8.153864671022305,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "coldImportConstructionFirstMarketMs": {
+        "baseline": [
+          171.20169200000004,
+          163.86010799999997,
+          153.18058700000003,
+          160.97225799999998,
+          193.43061899999998,
+          154.183148
+        ],
+        "candidate": [
+          158.477076,
+          212.95372200000003,
+          163.790035,
+          163.958212,
+          156.378198,
+          167.98260699999997
+        ],
+        "meanBaseline": 166.13806866666667,
+        "meanCandidate": 170.589975,
+        "meanDelta": 4.451906333333341,
+        "meanPercent": 2.6796425220672937,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-1-baseline",
+            "candidate": "startup-core-1-2-candidate",
+            "a": 171.20169200000004,
+            "b": 158.477076,
+            "delta": -12.724616000000026,
+            "percent": -7.432529346730998,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-core-1-4-baseline",
+            "candidate": "startup-core-1-3-candidate",
+            "a": 163.86010799999997,
+            "b": 212.95372200000003,
+            "delta": 49.09361400000006,
+            "percent": 29.960686953776495,
+            "adverseOver1MsAnd10Percent": true
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-1-baseline",
+            "candidate": "startup-core-2-2-candidate",
+            "a": 153.18058700000003,
+            "b": 163.790035,
+            "delta": 10.609447999999958,
+            "percent": 6.926104807262523,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-core-2-4-baseline",
+            "candidate": "startup-core-2-3-candidate",
+            "a": 160.97225799999998,
+            "b": 163.958212,
+            "delta": 2.985954000000021,
+            "percent": 1.8549494410397216,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-1-baseline",
+            "candidate": "startup-core-3-2-candidate",
+            "a": 193.43061899999998,
+            "b": 156.378198,
+            "delta": -37.05242099999998,
+            "percent": -19.155406311345146,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-core-3-4-baseline",
+            "candidate": "startup-core-3-3-candidate",
+            "a": 154.183148,
+            "b": 167.98260699999997,
+            "delta": 13.799458999999985,
+            "percent": 8.950043619553028,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-1-baseline",
+                "candidate": "startup-core-1-2-candidate",
+                "a": 171.20169200000004,
+                "b": 158.477076,
+                "delta": -12.724616000000026,
+                "percent": -7.432529346730998,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-core-1-4-baseline",
+                "candidate": "startup-core-1-3-candidate",
+                "a": 163.86010799999997,
+                "b": 212.95372200000003,
+                "delta": 49.09361400000006,
+                "percent": 29.960686953776495,
+                "adverseOver1MsAnd10Percent": true
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-1-baseline",
+                "candidate": "startup-core-2-2-candidate",
+                "a": 153.18058700000003,
+                "b": 163.790035,
+                "delta": 10.609447999999958,
+                "percent": 6.926104807262523,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-core-2-4-baseline",
+                "candidate": "startup-core-2-3-candidate",
+                "a": 160.97225799999998,
+                "b": 163.958212,
+                "delta": 2.985954000000021,
+                "percent": 1.8549494410397216,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-1-baseline",
+                "candidate": "startup-core-3-2-candidate",
+                "a": 193.43061899999998,
+                "b": 156.378198,
+                "delta": -37.05242099999998,
+                "percent": -19.155406311345146,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-core-3-4-baseline",
+                "candidate": "startup-core-3-3-candidate",
+                "a": 154.183148,
+                "b": 167.98260699999997,
+                "delta": 13.799458999999985,
+                "percent": 8.950043619553028,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      }
+    },
+    "startup/format": {
+      "coldProjectionImportMs": {
+        "baseline": [
+          1.6706509999999994,
+          1.594619999999999,
+          1.6472849999999966,
+          1.5215770000000006,
+          1.5942489999999978,
+          1.5344809999999995
+        ],
+        "candidate": [
+          1.8895469999999932,
+          1.572344000000001,
+          1.6868280000000055,
+          1.8771529999999998,
+          1.7765210000000025,
+          1.9238739999999979
+        ],
+        "meanBaseline": 1.593810499999999,
+        "meanCandidate": 1.7877111666666667,
+        "meanDelta": 0.19390066666666783,
+        "meanPercent": 12.16585451449015,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 1.6706509999999994,
+            "b": 1.8895469999999932,
+            "delta": 0.21889599999999376,
+            "percent": 13.102437313358317,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 1.594619999999999,
+            "b": 1.572344000000001,
+            "delta": -0.022275999999997964,
+            "percent": -1.3969472350778278,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 1.6472849999999966,
+            "b": 1.6868280000000055,
+            "delta": 0.03954300000000899,
+            "percent": 2.4004953605483603,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 1.5215770000000006,
+            "b": 1.8771529999999998,
+            "delta": 0.3555759999999992,
+            "percent": 23.368912647864626,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 1.5942489999999978,
+            "b": 1.7765210000000025,
+            "delta": 0.18227200000000465,
+            "percent": 11.433094830230717,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 1.5344809999999995,
+            "b": 1.9238739999999979,
+            "delta": 0.3893929999999983,
+            "percent": 25.376202116546143,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 1.6706509999999994,
+                "b": 1.8895469999999932,
+                "delta": 0.21889599999999376,
+                "percent": 13.102437313358317,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 1.594619999999999,
+                "b": 1.572344000000001,
+                "delta": -0.022275999999997964,
+                "percent": -1.3969472350778278,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 1.6472849999999966,
+                "b": 1.6868280000000055,
+                "delta": 0.03954300000000899,
+                "percent": 2.4004953605483603,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 1.5215770000000006,
+                "b": 1.8771529999999998,
+                "delta": 0.3555759999999992,
+                "percent": 23.368912647864626,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 1.5942489999999978,
+                "b": 1.7765210000000025,
+                "delta": 0.18227200000000465,
+                "percent": 11.433094830230717,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 1.5344809999999995,
+                "b": 1.9238739999999979,
+                "delta": 0.3893929999999983,
+                "percent": 25.376202116546143,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "firstFormattedWalletMs": {
+        "baseline": [
+          13.933522000000004,
+          12.618902999999996,
+          13.093632000000007,
+          12.566637999999998,
+          13.010379,
+          13.014009999999992
+        ],
+        "candidate": [
+          13.186770999999993,
+          13.686447000000008,
+          12.857065999999996,
+          12.791707000000002,
+          12.953973000000005,
+          12.889792
+        ],
+        "meanBaseline": 13.039513999999999,
+        "meanCandidate": 13.060959333333335,
+        "meanDelta": 0.02144533333333598,
+        "meanPercent": 0.16446420728055688,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 13.933522000000004,
+            "b": 13.186770999999993,
+            "delta": -0.7467510000000104,
+            "percent": -5.359384368144749,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 12.618902999999996,
+            "b": 13.686447000000008,
+            "delta": 1.0675440000000123,
+            "percent": 8.459879594922093,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 13.093632000000007,
+            "b": 12.857065999999996,
+            "delta": -0.2365660000000105,
+            "percent": -1.8067255899662515,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 12.566637999999998,
+            "b": 12.791707000000002,
+            "delta": 0.22506900000000485,
+            "percent": 1.7910040855796616,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 13.010379,
+            "b": 12.953973000000005,
+            "delta": -0.056405999999995515,
+            "percent": -0.43354617109920834,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 13.014009999999992,
+            "b": 12.889792,
+            "delta": -0.12421799999999195,
+            "percent": -0.9544944256227872,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 13.933522000000004,
+                "b": 13.186770999999993,
+                "delta": -0.7467510000000104,
+                "percent": -5.359384368144749,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 12.618902999999996,
+                "b": 13.686447000000008,
+                "delta": 1.0675440000000123,
+                "percent": 8.459879594922093,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 13.093632000000007,
+                "b": 12.857065999999996,
+                "delta": -0.2365660000000105,
+                "percent": -1.8067255899662515,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 12.566637999999998,
+                "b": 12.791707000000002,
+                "delta": 0.22506900000000485,
+                "percent": 1.7910040855796616,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 13.010379,
+                "b": 12.953973000000005,
+                "delta": -0.056405999999995515,
+                "percent": -0.43354617109920834,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 13.014009999999992,
+                "b": 12.889792,
+                "delta": -0.12421799999999195,
+                "percent": -0.9544944256227872,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "firstFormattedGoalMs": {
+        "baseline": [
+          0.13819200000000365,
+          0.13706200000000024,
+          0.13590800000000058,
+          0.13775899999998842,
+          0.13745699999999772,
+          0.1378430000000037
+        ],
+        "candidate": [
+          0.14466099999999926,
+          0.13637699999999597,
+          0.1300859999999915,
+          0.13647299999999518,
+          0.14167899999999634,
+          0.1504589999999979
+        ],
+        "meanBaseline": 0.1373701666666657,
+        "meanCandidate": 0.13995583333332937,
+        "meanDelta": 0.002585666666663655,
+        "meanPercent": 1.8822621602679446,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 0.13819200000000365,
+            "b": 0.14466099999999926,
+            "delta": 0.006468999999995617,
+            "percent": 4.681168229706101,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 0.13706200000000024,
+            "b": 0.13637699999999597,
+            "delta": -0.0006850000000042655,
+            "percent": -0.4997738249874262,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 0.13590800000000058,
+            "b": 0.1300859999999915,
+            "delta": -0.005822000000009098,
+            "percent": -4.2837802042624995,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 0.13775899999998842,
+            "b": 0.13647299999999518,
+            "delta": -0.001285999999993237,
+            "percent": -0.9335143257379497,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 0.13745699999999772,
+            "b": 0.14167899999999634,
+            "delta": 0.004221999999998616,
+            "percent": 3.0715059982384885,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 0.1378430000000037,
+            "b": 0.1504589999999979,
+            "delta": 0.012615999999994187,
+            "percent": 9.152441545812163,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 0.13819200000000365,
+                "b": 0.14466099999999926,
+                "delta": 0.006468999999995617,
+                "percent": 4.681168229706101,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 0.13706200000000024,
+                "b": 0.13637699999999597,
+                "delta": -0.0006850000000042655,
+                "percent": -0.4997738249874262,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 0.13590800000000058,
+                "b": 0.1300859999999915,
+                "delta": -0.005822000000009098,
+                "percent": -4.2837802042624995,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 0.13775899999998842,
+                "b": 0.13647299999999518,
+                "delta": -0.001285999999993237,
+                "percent": -0.9335143257379497,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 0.13745699999999772,
+                "b": 0.14167899999999634,
+                "delta": 0.004221999999998616,
+                "percent": 3.0715059982384885,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 0.1378430000000037,
+                "b": 0.1504589999999979,
+                "delta": 0.012615999999994187,
+                "percent": 9.152441545812163,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "warmWalletGoalPairMs.p50": {
+        "baseline": [
+          0.06020699999999124,
+          0.058608000000006655,
+          0.057977999999991425,
+          0.05931900000000212,
+          0.05938000000000443,
+          0.05945299999999065
+        ],
+        "candidate": [
+          0.007215999999999667,
+          0.0074939999999941165,
+          0.007199999999997431,
+          0.007757999999995491,
+          0.007556999999991376,
+          0.007739999999998304
+        ],
+        "meanBaseline": 0.059157499999997754,
+        "meanCandidate": 0.007494166666662731,
+        "meanDelta": -0.051663333333335025,
+        "meanPercent": -87.33184014425387,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 0.06020699999999124,
+            "b": 0.007215999999999667,
+            "delta": -0.05299099999999157,
+            "percent": -88.01468267809271,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 0.058608000000006655,
+            "b": 0.0074939999999941165,
+            "delta": -0.05111400000001254,
+            "percent": -87.21334971336121,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 0.057977999999991425,
+            "b": 0.007199999999997431,
+            "delta": -0.050777999999993995,
+            "percent": -87.58149642968282,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 0.05931900000000212,
+            "b": 0.007757999999995491,
+            "delta": -0.05156100000000663,
+            "percent": -86.92155970263286,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 0.05938000000000443,
+            "b": 0.007556999999991376,
+            "delta": -0.05182300000001305,
+            "percent": -87.27349275852002,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 0.05945299999999065,
+            "b": 0.007739999999998304,
+            "delta": -0.05171299999999235,
+            "percent": -86.98131296990981,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 0.06020699999999124,
+                "b": 0.007215999999999667,
+                "delta": -0.05299099999999157,
+                "percent": -88.01468267809271,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 0.058608000000006655,
+                "b": 0.0074939999999941165,
+                "delta": -0.05111400000001254,
+                "percent": -87.21334971336121,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 0.057977999999991425,
+                "b": 0.007199999999997431,
+                "delta": -0.050777999999993995,
+                "percent": -87.58149642968282,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 0.05931900000000212,
+                "b": 0.007757999999995491,
+                "delta": -0.05156100000000663,
+                "percent": -86.92155970263286,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 0.05938000000000443,
+                "b": 0.007556999999991376,
+                "delta": -0.05182300000001305,
+                "percent": -87.27349275852002,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 0.05945299999999065,
+                "b": 0.007739999999998304,
+                "delta": -0.05171299999999235,
+                "percent": -86.98131296990981,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "warmWalletGoalPairMs.p95": {
+        "baseline": [
+          0.13065000000000282,
+          0.12147499999998956,
+          0.12381099999998924,
+          0.09939300000000628,
+          0.1497720000000129,
+          0.1428980000000024
+        ],
+        "candidate": [
+          0.03626799999999264,
+          0.06427300000000002,
+          0.02841200000000299,
+          0.034734000000000265,
+          0.029016999999996074,
+          0.035951999999994655
+        ],
+        "meanBaseline": 0.12799983333333387,
+        "meanCandidate": 0.03810933333333111,
+        "meanDelta": -0.08989050000000276,
+        "meanPercent": -70.22704456646613,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 0.13065000000000282,
+            "b": 0.03626799999999264,
+            "delta": -0.09438200000001018,
+            "percent": -72.24033677765644,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 0.12147499999998956,
+            "b": 0.06427300000000002,
+            "delta": -0.05720199999998954,
+            "percent": -47.08952459353319,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 0.12381099999998924,
+            "b": 0.02841200000000299,
+            "delta": -0.09539899999998624,
+            "percent": -77.05211976318303,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 0.09939300000000628,
+            "b": 0.034734000000000265,
+            "delta": -0.06465900000000602,
+            "percent": -65.05387703359587,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 0.1497720000000129,
+            "b": 0.029016999999996074,
+            "delta": -0.12075500000001682,
+            "percent": -80.62588467804825,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 0.1428980000000024,
+            "b": 0.035951999999994655,
+            "delta": -0.10694600000000776,
+            "percent": -74.84079553248188,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 0.13065000000000282,
+                "b": 0.03626799999999264,
+                "delta": -0.09438200000001018,
+                "percent": -72.24033677765644,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 0.12147499999998956,
+                "b": 0.06427300000000002,
+                "delta": -0.05720199999998954,
+                "percent": -47.08952459353319,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 0.12381099999998924,
+                "b": 0.02841200000000299,
+                "delta": -0.09539899999998624,
+                "percent": -77.05211976318303,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 0.09939300000000628,
+                "b": 0.034734000000000265,
+                "delta": -0.06465900000000602,
+                "percent": -65.05387703359587,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 0.1497720000000129,
+                "b": 0.029016999999996074,
+                "delta": -0.12075500000001682,
+                "percent": -80.62588467804825,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 0.1428980000000024,
+                "b": 0.035951999999994655,
+                "delta": -0.10694600000000776,
+                "percent": -74.84079553248188,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "warmWalletGoalPairMs.max": {
+        "baseline": [
+          0.23704599999999232,
+          0.1561190000000039,
+          0.33183300000000315,
+          0.13918599999999515,
+          0.22051400000000854,
+          0.23151199999999506
+        ],
+        "candidate": [
+          0.2602150000000023,
+          0.09078999999999837,
+          0.0626180000000005,
+          0.0665429999999958,
+          0.06912100000000976,
+          0.09700299999998663
+        ],
+        "meanBaseline": 0.21936833333333303,
+        "meanCandidate": 0.1077149999999989,
+        "meanDelta": -0.11165333333333413,
+        "meanPercent": -50.897653110066464,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 0.23704599999999232,
+            "b": 0.2602150000000023,
+            "delta": 0.023169000000009987,
+            "percent": 9.77405229365218,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 0.1561190000000039,
+            "b": 0.09078999999999837,
+            "delta": -0.06532900000000552,
+            "percent": -41.845643387418505,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 0.33183300000000315,
+            "b": 0.0626180000000005,
+            "delta": -0.26921500000000265,
+            "percent": -81.1296646204567,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 0.13918599999999515,
+            "b": 0.0665429999999958,
+            "delta": -0.07264299999999935,
+            "percent": -52.19131234463371,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 0.22051400000000854,
+            "b": 0.06912100000000976,
+            "delta": -0.15139299999999878,
+            "percent": -68.65459789400805,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 0.23151199999999506,
+            "b": 0.09700299999998663,
+            "delta": -0.13450900000000843,
+            "percent": -58.10022806593666,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 0.23704599999999232,
+                "b": 0.2602150000000023,
+                "delta": 0.023169000000009987,
+                "percent": 9.77405229365218,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 0.1561190000000039,
+                "b": 0.09078999999999837,
+                "delta": -0.06532900000000552,
+                "percent": -41.845643387418505,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 0.33183300000000315,
+                "b": 0.0626180000000005,
+                "delta": -0.26921500000000265,
+                "percent": -81.1296646204567,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 0.13918599999999515,
+                "b": 0.0665429999999958,
+                "delta": -0.07264299999999935,
+                "percent": -52.19131234463371,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 0.22051400000000854,
+                "b": 0.06912100000000976,
+                "delta": -0.15139299999999878,
+                "percent": -68.65459789400805,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 0.23151199999999506,
+                "b": 0.09700299999998663,
+                "delta": -0.13450900000000843,
+                "percent": -58.10022806593666,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "coldImportFirstFormattedPairMs": {
+        "baseline": [
+          15.742365000000007,
+          14.350584999999995,
+          14.876825000000004,
+          14.225973999999987,
+          14.742084999999996,
+          14.686333999999995
+        ],
+        "candidate": [
+          15.220978999999986,
+          15.395168000000005,
+          14.673979999999993,
+          14.805332999999997,
+          14.872173000000004,
+          14.964124999999996
+        ],
+        "meanBaseline": 14.770694666666664,
+        "meanCandidate": 14.988626333333329,
+        "meanDelta": 0.21793166666666508,
+        "meanPercent": 1.4754327510301701,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-1-baseline",
+            "candidate": "startup-format-1-2-candidate",
+            "a": 15.742365000000007,
+            "b": 15.220978999999986,
+            "delta": -0.521386000000021,
+            "percent": -3.3119928295400336,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "startup-format-1-4-baseline",
+            "candidate": "startup-format-1-3-candidate",
+            "a": 14.350584999999995,
+            "b": 15.395168000000005,
+            "delta": 1.04458300000001,
+            "percent": 7.279027300977692,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-1-baseline",
+            "candidate": "startup-format-2-2-candidate",
+            "a": 14.876825000000004,
+            "b": 14.673979999999993,
+            "delta": -0.2028450000000106,
+            "percent": -1.3634965794113385,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "baseline": "startup-format-2-4-baseline",
+            "candidate": "startup-format-2-3-candidate",
+            "a": 14.225973999999987,
+            "b": 14.805332999999997,
+            "delta": 0.5793590000000108,
+            "percent": 4.072543644463367,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-1-baseline",
+            "candidate": "startup-format-3-2-candidate",
+            "a": 14.742084999999996,
+            "b": 14.872173000000004,
+            "delta": 0.13008800000000775,
+            "percent": 0.8824260611711932,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "baseline": "startup-format-3-4-baseline",
+            "candidate": "startup-format-3-3-candidate",
+            "a": 14.686333999999995,
+            "b": 14.964124999999996,
+            "delta": 0.27779100000000057,
+            "percent": 1.8914931391319278,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-1-baseline",
+                "candidate": "startup-format-1-2-candidate",
+                "a": 15.742365000000007,
+                "b": 15.220978999999986,
+                "delta": -0.521386000000021,
+                "percent": -3.3119928295400336,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "startup-format-1-4-baseline",
+                "candidate": "startup-format-1-3-candidate",
+                "a": 14.350584999999995,
+                "b": 15.395168000000005,
+                "delta": 1.04458300000001,
+                "percent": 7.279027300977692,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 2,
+            "pairs": [
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-1-baseline",
+                "candidate": "startup-format-2-2-candidate",
+                "a": 14.876825000000004,
+                "b": 14.673979999999993,
+                "delta": -0.2028450000000106,
+                "percent": -1.3634965794113385,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 2,
+                "baseline": "startup-format-2-4-baseline",
+                "candidate": "startup-format-2-3-candidate",
+                "a": 14.225973999999987,
+                "b": 14.805332999999997,
+                "delta": 0.5793590000000108,
+                "percent": 4.072543644463367,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 3,
+            "pairs": [
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-1-baseline",
+                "candidate": "startup-format-3-2-candidate",
+                "a": 14.742084999999996,
+                "b": 14.872173000000004,
+                "delta": 0.13008800000000775,
+                "percent": 0.8824260611711932,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 3,
+                "baseline": "startup-format-3-4-baseline",
+                "candidate": "startup-format-3-3-candidate",
+                "a": 14.686333999999995,
+                "b": 14.964124999999996,
+                "delta": 0.27779100000000057,
+                "percent": 1.8914931391319278,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      }
+    },
+    "database/original": {
+      "firstOpenMs": {
+        "baseline": [
+          1037.4677370000002,
+          846.638677
+        ],
+        "candidate": [
+          926.71594,
+          846.0953689999999
+        ],
+        "meanBaseline": 942.0532070000002,
+        "meanCandidate": 886.4056545,
+        "meanDelta": -55.64755250000019,
+        "meanPercent": -5.907049844584855,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 1037.4677370000002,
+            "b": 926.71594,
+            "delta": -110.75179700000012,
+            "percent": -10.675203965402936,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 846.638677,
+            "b": 846.0953689999999,
+            "delta": -0.5433080000001382,
+            "percent": -0.06417235767273155,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 1037.4677370000002,
+                "b": 926.71594,
+                "delta": -110.75179700000012,
+                "percent": -10.675203965402936,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 846.638677,
+                "b": 846.0953689999999,
+                "delta": -0.5433080000001382,
+                "percent": -0.06417235767273155,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "agedImportsP50Ms": {
+        "baseline": [
+          498.7596349999999,
+          481.486586
+        ],
+        "candidate": [
+          486.41914499999984,
+          472.4734910000002
+        ],
+        "meanBaseline": 490.12311049999994,
+        "meanCandidate": 479.446318,
+        "meanDelta": -10.67679249999992,
+        "meanPercent": -2.1783899333185808,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 498.7596349999999,
+            "b": 486.41914499999984,
+            "delta": -12.340490000000045,
+            "percent": -2.4742359112521317,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 481.486586,
+            "b": 472.4734910000002,
+            "delta": -9.013094999999794,
+            "percent": -1.8719306543671377,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 498.7596349999999,
+                "b": 486.41914499999984,
+                "delta": -12.340490000000045,
+                "percent": -2.4742359112521317,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 481.486586,
+                "b": 472.4734910000002,
+                "delta": -9.013094999999794,
+                "percent": -1.8719306543671377,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "agedImportsMaxMs": {
+        "baseline": [
+          519.2237519999999,
+          498.7245290000001
+        ],
+        "candidate": [
+          523.003166,
+          506.08179999999993
+        ],
+        "meanBaseline": 508.9741405,
+        "meanCandidate": 514.542483,
+        "meanDelta": 5.5683424999999716,
+        "meanPercent": 1.0940324973150561,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 519.2237519999999,
+            "b": 523.003166,
+            "delta": 3.779414000000088,
+            "percent": 0.7278969780257771,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 498.7245290000001,
+            "b": 506.08179999999993,
+            "delta": 7.357270999999855,
+            "percent": 1.475217394009487,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 519.2237519999999,
+                "b": 523.003166,
+                "delta": 3.779414000000088,
+                "percent": 0.7278969780257771,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 498.7245290000001,
+                "b": 506.08179999999993,
+                "delta": 7.357270999999855,
+                "percent": 1.475217394009487,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "eventInsertP50Ms": {
+        "baseline": [
+          20.41883599999983,
+          18.997091000000182
+        ],
+        "candidate": [
+          18.942409000000225,
+          18.61532699999998
+        ],
+        "meanBaseline": 19.707963500000005,
+        "meanCandidate": 18.778868000000102,
+        "meanDelta": -0.929095499999903,
+        "meanPercent": -4.714315104145095,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 20.41883599999983,
+            "b": 18.942409000000225,
+            "delta": -1.4764269999996031,
+            "percent": -7.230710898503789,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 18.997091000000182,
+            "b": 18.61532699999998,
+            "delta": -0.38176400000020294,
+            "percent": -2.009591889622464,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 20.41883599999983,
+                "b": 18.942409000000225,
+                "delta": -1.4764269999996031,
+                "percent": -7.230710898503789,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 18.997091000000182,
+                "b": 18.61532699999998,
+                "delta": -0.38176400000020294,
+                "percent": -2.009591889622464,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "eventInsertMaxMs": {
+        "baseline": [
+          25.996594999999616,
+          20.214782000000014
+        ],
+        "candidate": [
+          19.529249000000164,
+          20.10436699999991
+        ],
+        "meanBaseline": 23.105688499999815,
+        "meanCandidate": 19.816808000000037,
+        "meanDelta": -3.2888804999997774,
+        "meanPercent": -14.234072704649348,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 25.996594999999616,
+            "b": 19.529249000000164,
+            "delta": -6.467345999999452,
+            "percent": -24.87766570968063,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 20.214782000000014,
+            "b": 20.10436699999991,
+            "delta": -0.11041500000010274,
+            "percent": -0.5462092047299971,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 25.996594999999616,
+                "b": 19.529249000000164,
+                "delta": -6.467345999999452,
+                "percent": -24.87766570968063,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 20.214782000000014,
+                "b": 20.10436699999991,
+                "delta": -0.11041500000010274,
+                "percent": -0.5462092047299971,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "historyWriteP50Ms": {
+        "baseline": [
+          36.93833900000027,
+          35.68641800000023
+        ],
+        "candidate": [
+          35.01831200000015,
+          34.81318099999953
+        ],
+        "meanBaseline": 36.31237850000025,
+        "meanCandidate": 34.91574649999984,
+        "meanDelta": -1.3966320000004089,
+        "meanPercent": -3.846159512796443,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 36.93833900000027,
+            "b": 35.01831200000015,
+            "delta": -1.9200270000001183,
+            "percent": -5.1979245737067465,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 35.68641800000023,
+            "b": 34.81318099999953,
+            "delta": -0.8732370000006995,
+            "percent": -2.446972963217253,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 36.93833900000027,
+                "b": 35.01831200000015,
+                "delta": -1.9200270000001183,
+                "percent": -5.1979245737067465,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 35.68641800000023,
+                "b": 34.81318099999953,
+                "delta": -0.8732370000006995,
+                "percent": -2.446972963217253,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "historyWriteMaxMs": {
+        "baseline": [
+          37.55932899999971,
+          36.46877900000072
+        ],
+        "candidate": [
+          36.75101699999959,
+          35.69217200000003
+        ],
+        "meanBaseline": 37.014054000000215,
+        "meanCandidate": 36.22159449999981,
+        "meanDelta": -0.7924595000004047,
+        "meanPercent": -2.1409692113174117,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 37.55932899999971,
+            "b": 36.75101699999959,
+            "delta": -0.8083120000001145,
+            "percent": -2.1520938246796684,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 36.46877900000072,
+            "b": 35.69217200000003,
+            "delta": -0.7766070000006948,
+            "percent": -2.129511931289718,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 37.55932899999971,
+                "b": 36.75101699999959,
+                "delta": -0.8083120000001145,
+                "percent": -2.1520938246796684,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 36.46877900000072,
+                "b": 35.69217200000003,
+                "delta": -0.7766070000006948,
+                "percent": -2.129511931289718,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "historyWriteBlockP50Ms": {
+        "baseline": [
+          2.4586469999994733,
+          2.4126960000003237
+        ],
+        "candidate": [
+          2.2929999999996653,
+          2.370409999999538
+        ],
+        "meanBaseline": 2.4356714999998985,
+        "meanCandidate": 2.3317049999996016,
+        "meanDelta": -0.10396650000029695,
+        "meanPercent": -4.268494335147466,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 2.4586469999994733,
+            "b": 2.2929999999996653,
+            "delta": -0.16564699999980803,
+            "percent": -6.737323414050234,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 2.4126960000003237,
+            "b": 2.370409999999538,
+            "delta": -0.04228600000078586,
+            "percent": -1.7526451737301385,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 2.4586469999994733,
+                "b": 2.2929999999996653,
+                "delta": -0.16564699999980803,
+                "percent": -6.737323414050234,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 2.4126960000003237,
+                "b": 2.370409999999538,
+                "delta": -0.04228600000078586,
+                "percent": -1.7526451737301385,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "historyWriteBlockMaxMs": {
+        "baseline": [
+          3.026867000000493,
+          2.854034999999385
+        ],
+        "candidate": [
+          2.7559970000002068,
+          2.7199489999993602
+        ],
+        "meanBaseline": 2.940450999999939,
+        "meanCandidate": 2.7379729999997835,
+        "meanDelta": -0.2024780000001556,
+        "meanPercent": -6.885950488552939,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 3.026867000000493,
+            "b": 2.7559970000002068,
+            "delta": -0.2708700000002864,
+            "percent": -8.948857019493827,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 2.854034999999385,
+            "b": 2.7199489999993602,
+            "delta": -0.1340860000000248,
+            "percent": -4.6981203804457135,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 3.026867000000493,
+                "b": 2.7559970000002068,
+                "delta": -0.2708700000002864,
+                "percent": -8.948857019493827,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 2.854034999999385,
+                "b": 2.7199489999993602,
+                "delta": -0.1340860000000248,
+                "percent": -4.6981203804457135,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "eventIndexBytes": {
+        "baseline": [
+          2400256,
+          2400256
+        ],
+        "candidate": [
+          2400256,
+          2400256
+        ],
+        "meanBaseline": 2400256.0,
+        "meanCandidate": 2400256.0,
+        "meanDelta": 0.0,
+        "meanPercent": 0.0,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 2400256,
+            "b": 2400256,
+            "delta": 0,
+            "percent": 0.0,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 2400256,
+            "b": 2400256,
+            "delta": 0,
+            "percent": 0.0,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 2400256,
+                "b": 2400256,
+                "delta": 0,
+                "percent": 0.0,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 2400256,
+                "b": 2400256,
+                "delta": 0,
+                "percent": 0.0,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      },
+      "workingHistoryJsonBytes": {
+        "baseline": [
+          16355000,
+          16355000
+        ],
+        "candidate": [
+          16355000,
+          16355000
+        ],
+        "meanBaseline": 16355000.0,
+        "meanCandidate": 16355000.0,
+        "meanDelta": 0.0,
+        "meanPercent": 0.0,
+        "pairs": [
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-1-baseline",
+            "candidate": "database-original-1-2-candidate",
+            "a": 16355000,
+            "b": 16355000,
+            "delta": 0,
+            "percent": 0.0,
+            "adverseOver1MsAnd10Percent": false
+          },
+          {
+            "cycle": 1,
+            "baseline": "database-original-1-4-baseline",
+            "candidate": "database-original-1-3-candidate",
+            "a": 16355000,
+            "b": 16355000,
+            "delta": 0,
+            "percent": 0.0,
+            "adverseOver1MsAnd10Percent": false
+          }
+        ],
+        "cycles": [
+          {
+            "cycle": 1,
+            "pairs": [
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-1-baseline",
+                "candidate": "database-original-1-2-candidate",
+                "a": 16355000,
+                "b": 16355000,
+                "delta": 0,
+                "percent": 0.0,
+                "adverseOver1MsAnd10Percent": false
+              },
+              {
+                "cycle": 1,
+                "baseline": "database-original-1-4-baseline",
+                "candidate": "database-original-1-3-candidate",
+                "a": 16355000,
+                "b": 16355000,
+                "delta": 0,
+                "percent": 0.0,
+                "adverseOver1MsAnd10Percent": false
+              }
+            ],
+            "bothPairsAdverseOver1MsAnd10Percent": false
+          }
+        ],
+        "allPairsAdverseOver1MsAnd10Percent": false
+      }
+    }
+  },
+  "allPositivePairsIncludingBelowFlagThreshold": [
+    {
+      "group": "startup/core",
+      "metric": "coldCoreImportMs",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 44.723428,
+      "b": 47.317699000000005,
+      "delta": 2.594271000000006,
+      "percent": 5.800698014472427,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "coreConstructionMs",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 118.067822,
+      "b": 155.519029,
+      "delta": 37.45120699999998,
+      "percent": 31.72007949803628,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "coreConstructionMs",
+      "cycle": 2,
+      "baseline": "startup-core-2-1-baseline",
+      "candidate": "startup-core-2-2-candidate",
+      "a": 110.939339,
+      "b": 121.25011699999999,
+      "delta": 10.310777999999985,
+      "percent": 9.294068355680384,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "coreConstructionMs",
+      "cycle": 3,
+      "baseline": "startup-core-3-4-baseline",
+      "candidate": "startup-core-3-3-candidate",
+      "a": 111.51939699999998,
+      "b": 122.590231,
+      "delta": 11.07083400000002,
+      "percent": 9.927272113926522,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "firstMarketCategoriesMs",
+      "cycle": 1,
+      "baseline": "startup-core-1-1-baseline",
+      "candidate": "startup-core-1-2-candidate",
+      "a": 1.033990000000017,
+      "b": 9.180756000000002,
+      "delta": 8.146765999999985,
+      "percent": 787.8960144682105,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "firstMarketCategoriesMs",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 1.0688579999999774,
+      "b": 10.116994000000034,
+      "delta": 9.048136000000056,
+      "percent": 846.5236729294487,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "firstMarketCategoriesMs",
+      "cycle": 2,
+      "baseline": "startup-core-2-1-baseline",
+      "candidate": "startup-core-2-2-candidate",
+      "a": 0.9364430000000254,
+      "b": 7.34233900000001,
+      "delta": 6.405895999999984,
+      "percent": 684.0668358885496,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "firstMarketCategoriesMs",
+      "cycle": 2,
+      "baseline": "startup-core-2-4-baseline",
+      "candidate": "startup-core-2-3-candidate",
+      "a": 0.9678409999999928,
+      "b": 8.709442999999993,
+      "delta": 7.741602,
+      "percent": 799.8836585761564,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "firstMarketCategoriesMs",
+      "cycle": 3,
+      "baseline": "startup-core-3-1-baseline",
+      "candidate": "startup-core-3-2-candidate",
+      "a": 1.0057819999999822,
+      "b": 9.174075999999985,
+      "delta": 8.168294000000003,
+      "percent": 812.1336432746011,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "firstMarketCategoriesMs",
+      "cycle": 3,
+      "baseline": "startup-core-3-4-baseline",
+      "candidate": "startup-core-3-3-candidate",
+      "a": 0.9459439999999972,
+      "b": 9.209658999999988,
+      "delta": 8.26371499999999,
+      "percent": 873.5945256801687,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p50",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 0.36957400000000007,
+      "b": 0.5534420000000182,
+      "delta": 0.18386800000001813,
+      "percent": 49.751335321212565,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p50",
+      "cycle": 2,
+      "baseline": "startup-core-2-1-baseline",
+      "candidate": "startup-core-2-2-candidate",
+      "a": 0.3212599999999952,
+      "b": 0.38891799999998966,
+      "delta": 0.06765799999999444,
+      "percent": 21.06020046068464,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p50",
+      "cycle": 2,
+      "baseline": "startup-core-2-4-baseline",
+      "candidate": "startup-core-2-3-candidate",
+      "a": 0.3451840000000175,
+      "b": 0.38491100000001666,
+      "delta": 0.03972699999999918,
+      "percent": 11.508934365439071,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p95",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 0.6127910000000156,
+      "b": 0.8462680000000091,
+      "delta": 0.2334769999999935,
+      "percent": 38.10059220843445,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p95",
+      "cycle": 2,
+      "baseline": "startup-core-2-1-baseline",
+      "candidate": "startup-core-2-2-candidate",
+      "a": 0.547064999999975,
+      "b": 0.7060730000000035,
+      "delta": 0.15900800000002846,
+      "percent": 29.0656503340619,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p95",
+      "cycle": 2,
+      "baseline": "startup-core-2-4-baseline",
+      "candidate": "startup-core-2-3-candidate",
+      "a": 0.5755290000000173,
+      "b": 0.6130239999999958,
+      "delta": 0.03749499999997852,
+      "percent": 6.514875879404403,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.p95",
+      "cycle": 3,
+      "baseline": "startup-core-3-1-baseline",
+      "candidate": "startup-core-3-2-candidate",
+      "a": 0.5160149999999817,
+      "b": 0.5351720000000171,
+      "delta": 0.019157000000035396,
+      "percent": 3.7124889780405734,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.max",
+      "cycle": 1,
+      "baseline": "startup-core-1-1-baseline",
+      "candidate": "startup-core-1-2-candidate",
+      "a": 1.2617690000000152,
+      "b": 1.3511320000000069,
+      "delta": 0.08936299999999164,
+      "percent": 7.082358181251136,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.max",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 0.8000839999999982,
+      "b": 1.079609000000005,
+      "delta": 0.2795250000000067,
+      "percent": 34.93695661955587,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.max",
+      "cycle": 2,
+      "baseline": "startup-core-2-1-baseline",
+      "candidate": "startup-core-2-2-candidate",
+      "a": 0.7833760000000041,
+      "b": 1.5651750000000106,
+      "delta": 0.7817990000000066,
+      "percent": 99.79869181593546,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.max",
+      "cycle": 3,
+      "baseline": "startup-core-3-1-baseline",
+      "candidate": "startup-core-3-2-candidate",
+      "a": 0.822084000000018,
+      "b": 0.8813320000000147,
+      "delta": 0.05924799999999664,
+      "percent": 7.207049401277166,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "warmMarketCategoriesMs.max",
+      "cycle": 3,
+      "baseline": "startup-core-3-4-baseline",
+      "candidate": "startup-core-3-3-candidate",
+      "a": 0.7062050000000113,
+      "b": 0.7637880000000052,
+      "delta": 0.057582999999993945,
+      "percent": 8.153864671022305,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "coldImportConstructionFirstMarketMs",
+      "cycle": 1,
+      "baseline": "startup-core-1-4-baseline",
+      "candidate": "startup-core-1-3-candidate",
+      "a": 163.86010799999997,
+      "b": 212.95372200000003,
+      "delta": 49.09361400000006,
+      "percent": 29.960686953776495,
+      "adverseOver1MsAnd10Percent": true
+    },
+    {
+      "group": "startup/core",
+      "metric": "coldImportConstructionFirstMarketMs",
+      "cycle": 2,
+      "baseline": "startup-core-2-1-baseline",
+      "candidate": "startup-core-2-2-candidate",
+      "a": 153.18058700000003,
+      "b": 163.790035,
+      "delta": 10.609447999999958,
+      "percent": 6.926104807262523,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "coldImportConstructionFirstMarketMs",
+      "cycle": 2,
+      "baseline": "startup-core-2-4-baseline",
+      "candidate": "startup-core-2-3-candidate",
+      "a": 160.97225799999998,
+      "b": 163.958212,
+      "delta": 2.985954000000021,
+      "percent": 1.8549494410397216,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/core",
+      "metric": "coldImportConstructionFirstMarketMs",
+      "cycle": 3,
+      "baseline": "startup-core-3-4-baseline",
+      "candidate": "startup-core-3-3-candidate",
+      "a": 154.183148,
+      "b": 167.98260699999997,
+      "delta": 13.799458999999985,
+      "percent": 8.950043619553028,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldProjectionImportMs",
+      "cycle": 1,
+      "baseline": "startup-format-1-1-baseline",
+      "candidate": "startup-format-1-2-candidate",
+      "a": 1.6706509999999994,
+      "b": 1.8895469999999932,
+      "delta": 0.21889599999999376,
+      "percent": 13.102437313358317,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldProjectionImportMs",
+      "cycle": 2,
+      "baseline": "startup-format-2-1-baseline",
+      "candidate": "startup-format-2-2-candidate",
+      "a": 1.6472849999999966,
+      "b": 1.6868280000000055,
+      "delta": 0.03954300000000899,
+      "percent": 2.4004953605483603,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldProjectionImportMs",
+      "cycle": 2,
+      "baseline": "startup-format-2-4-baseline",
+      "candidate": "startup-format-2-3-candidate",
+      "a": 1.5215770000000006,
+      "b": 1.8771529999999998,
+      "delta": 0.3555759999999992,
+      "percent": 23.368912647864626,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldProjectionImportMs",
+      "cycle": 3,
+      "baseline": "startup-format-3-1-baseline",
+      "candidate": "startup-format-3-2-candidate",
+      "a": 1.5942489999999978,
+      "b": 1.7765210000000025,
+      "delta": 0.18227200000000465,
+      "percent": 11.433094830230717,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldProjectionImportMs",
+      "cycle": 3,
+      "baseline": "startup-format-3-4-baseline",
+      "candidate": "startup-format-3-3-candidate",
+      "a": 1.5344809999999995,
+      "b": 1.9238739999999979,
+      "delta": 0.3893929999999983,
+      "percent": 25.376202116546143,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "firstFormattedWalletMs",
+      "cycle": 1,
+      "baseline": "startup-format-1-4-baseline",
+      "candidate": "startup-format-1-3-candidate",
+      "a": 12.618902999999996,
+      "b": 13.686447000000008,
+      "delta": 1.0675440000000123,
+      "percent": 8.459879594922093,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "firstFormattedWalletMs",
+      "cycle": 2,
+      "baseline": "startup-format-2-4-baseline",
+      "candidate": "startup-format-2-3-candidate",
+      "a": 12.566637999999998,
+      "b": 12.791707000000002,
+      "delta": 0.22506900000000485,
+      "percent": 1.7910040855796616,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "firstFormattedGoalMs",
+      "cycle": 1,
+      "baseline": "startup-format-1-1-baseline",
+      "candidate": "startup-format-1-2-candidate",
+      "a": 0.13819200000000365,
+      "b": 0.14466099999999926,
+      "delta": 0.006468999999995617,
+      "percent": 4.681168229706101,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "firstFormattedGoalMs",
+      "cycle": 3,
+      "baseline": "startup-format-3-1-baseline",
+      "candidate": "startup-format-3-2-candidate",
+      "a": 0.13745699999999772,
+      "b": 0.14167899999999634,
+      "delta": 0.004221999999998616,
+      "percent": 3.0715059982384885,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "firstFormattedGoalMs",
+      "cycle": 3,
+      "baseline": "startup-format-3-4-baseline",
+      "candidate": "startup-format-3-3-candidate",
+      "a": 0.1378430000000037,
+      "b": 0.1504589999999979,
+      "delta": 0.012615999999994187,
+      "percent": 9.152441545812163,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "warmWalletGoalPairMs.max",
+      "cycle": 1,
+      "baseline": "startup-format-1-1-baseline",
+      "candidate": "startup-format-1-2-candidate",
+      "a": 0.23704599999999232,
+      "b": 0.2602150000000023,
+      "delta": 0.023169000000009987,
+      "percent": 9.77405229365218,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldImportFirstFormattedPairMs",
+      "cycle": 1,
+      "baseline": "startup-format-1-4-baseline",
+      "candidate": "startup-format-1-3-candidate",
+      "a": 14.350584999999995,
+      "b": 15.395168000000005,
+      "delta": 1.04458300000001,
+      "percent": 7.279027300977692,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldImportFirstFormattedPairMs",
+      "cycle": 2,
+      "baseline": "startup-format-2-4-baseline",
+      "candidate": "startup-format-2-3-candidate",
+      "a": 14.225973999999987,
+      "b": 14.805332999999997,
+      "delta": 0.5793590000000108,
+      "percent": 4.072543644463367,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldImportFirstFormattedPairMs",
+      "cycle": 3,
+      "baseline": "startup-format-3-1-baseline",
+      "candidate": "startup-format-3-2-candidate",
+      "a": 14.742084999999996,
+      "b": 14.872173000000004,
+      "delta": 0.13008800000000775,
+      "percent": 0.8824260611711932,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "startup/format",
+      "metric": "coldImportFirstFormattedPairMs",
+      "cycle": 3,
+      "baseline": "startup-format-3-4-baseline",
+      "candidate": "startup-format-3-3-candidate",
+      "a": 14.686333999999995,
+      "b": 14.964124999999996,
+      "delta": 0.27779100000000057,
+      "percent": 1.8914931391319278,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "database/original",
+      "metric": "agedImportsMaxMs",
+      "cycle": 1,
+      "baseline": "database-original-1-1-baseline",
+      "candidate": "database-original-1-2-candidate",
+      "a": 519.2237519999999,
+      "b": 523.003166,
+      "delta": 3.779414000000088,
+      "percent": 0.7278969780257771,
+      "adverseOver1MsAnd10Percent": false
+    },
+    {
+      "group": "database/original",
+      "metric": "agedImportsMaxMs",
+      "cycle": 1,
+      "baseline": "database-original-1-4-baseline",
+      "candidate": "database-original-1-3-candidate",
+      "a": 498.7245290000001,
+      "b": 506.08179999999993,
+      "delta": 7.357270999999855,
+      "percent": 1.475217394009487,
+      "adverseOver1MsAnd10Percent": false
+    }
+  ],
+  "caveats": [
+    "This audit fails evidence acceptance: one raw log differs from its child receipt and four empty temporary directories remain.",
+    "Embedded-only arithmetic is explicitly labeled; no missing raw log was reconstructed.",
+    "A passing functional/envelope result is not blanket performance acceptance.",
+    "Positive deltas remain listed even when below the existing >1ms and >10% joint flag.",
+    "Source/harness bytes were reread; no application code was imported or executed.",
+    "Database full response/history payloads are not recorded by the original worker; this audit verifies their reported hashes agree, not independent hash derivation from absent payloads."
+  ],
+  "rawBackedMetricValues": 205,
+  "embeddedOnlyMetricValues": 7
+}

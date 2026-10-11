@@ -1,0 +1,1696 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-11T07:56:34.884Z",
+  "repository": "BunBajiro/kairo",
+  "readOnly": true,
+  "deletedArtifacts": 0,
+  "scope": {
+    "sourceRunInventory": "recovery-oct11/workflow-runs.json",
+    "listedRunCount": 85,
+    "inspectedRunCount": 47,
+    "excludedPreviouslyDeletedRunCount": 38,
+    "excludedRule": "Normal test-build run numbers 25\u201364 excluding protected48/54; those38 runs already had124 artifacts deleted",
+    "newerRunsNotInSourceInventory": "Not included; this is an inventory of the47 remaining runs from the supplied85-run snapshot",
+    "api": "GET /repos/BunBajiro/kairo/actions/runs/{id}/artifacts?per_page=100&page=1",
+    "paginationCompleteForEveryInspectedRun": true,
+    "sourceRunInventorySha256": "b8e8216761c64e39a7dd8ad8302b67694cc31078ca8ed7872e9224a087f1d3fc"
+  },
+  "totals": {
+    "nonexpiredArtifactCount": 60,
+    "nonexpiredBytes": 416934907,
+    "expiredCount": 0,
+    "expiredBytes": 0
+  },
+  "groups": {
+    "internal_performance_recovery": {
+      "runs": 16,
+      "nonexpiredArtifactCount": 22,
+      "nonexpiredBytes": 175604855,
+      "earliestExpiry": "2026-10-14T13:56:01Z",
+      "latestExpiry": "2026-11-02T00:51:32Z"
+    },
+    "normal_protected_48_54_65": {
+      "runs": 3,
+      "nonexpiredArtifactCount": 12,
+      "nonexpiredBytes": 209278926,
+      "earliestExpiry": "2026-10-30T11:06:38Z",
+      "latestExpiry": "2026-11-07T11:23:45Z"
+    },
+    "release": {
+      "runs": 4,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "earliestExpiry": null,
+      "latestExpiry": null
+    },
+    "normal_older_1_24_not_authorized_for_deletion": {
+      "runs": 24,
+      "nonexpiredArtifactCount": 26,
+      "nonexpiredBytes": 32051126,
+      "earliestExpiry": "2026-10-13T10:33:18Z",
+      "latestExpiry": "2026-10-18T13:17:38Z"
+    }
+  },
+  "interpretation": {
+    "reportedBytesMeaning": "Sum of current GitHub artifact size_in_bytes for nonexpired returned artifacts; not a billing/quota reading.",
+    "quotaLimit": "Unknown; no billing/admin endpoints queried.",
+    "quotaConclusion": "The deletion does not establish remaining storage is below the applicable quota. Remaining artifacts, other repository usage and delayed quota recalculation may still prevent upload.",
+    "protectedEvidence": "All artifacts returned here are preserved; no additional deletion scope is proposed.",
+    "withinThisInventoryAfterDeletion": "60 nonexpired artifacts remain, 416,934,907 reported bytes (416.935 MB decimal; about397.620 MiB). This is about17% of this inventory\u2019s combined pre/post-deletion reported bytes; it is not an account-wide quota reading."
+  },
+  "largestArtifacts": [
+    {
+      "id": 11091839046,
+      "name": "universe-interface-check",
+      "bytes": 40749165,
+      "expired": false,
+      "createdAt": "2026-09-30T11:06:41Z",
+      "expiresAt": "2026-10-30T11:06:39Z",
+      "digest": "sha256:615ed10f42fa4da0d3c070d0358a757ac6506ef6ef7b7cad155a3a2ddce5545f",
+      "owningRunId": 36705850772,
+      "owningSourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "runId": 36705850772,
+      "runName": "Kairo test build",
+      "runNumber": 48,
+      "category": "normal_protected_48_54_65"
+    },
+    {
+      "id": 11546463397,
+      "name": "universe-interface-check",
+      "bytes": 40702871,
+      "expired": false,
+      "createdAt": "2026-10-08T11:22:55Z",
+      "expiresAt": "2026-11-07T11:22:52Z",
+      "digest": "sha256:ef1484bf90b33ce5bdbda91200ddfbc4b7257a90a78232955ab9ce51098c3c7a",
+      "owningRunId": 37768942689,
+      "owningSourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "runId": 37768942689,
+      "runName": "Kairo test build",
+      "runNumber": 65,
+      "category": "normal_protected_48_54_65"
+    },
+    {
+      "id": 11478862688,
+      "name": "universe-interface-check",
+      "bytes": 40605226,
+      "expired": false,
+      "createdAt": "2026-10-07T11:31:25Z",
+      "expiresAt": "2026-11-06T11:31:23Z",
+      "digest": "sha256:61f2ce81e2cc1e81013d75e1facbb14d7ac0ec5adbaceca1ec9ffd3fc8b7651d",
+      "owningRunId": 37613842075,
+      "owningSourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "runId": 37613842075,
+      "runName": "Kairo test build",
+      "runNumber": 54,
+      "category": "normal_protected_48_54_65"
+    },
+    {
+      "id": 11258581244,
+      "name": "internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da",
+      "bytes": 33696242,
+      "expired": false,
+      "createdAt": "2026-10-03T00:10:01Z",
+      "expiresAt": "2026-11-02T00:09:59Z",
+      "digest": "sha256:84379fbf90037171fc86aa273485fd94e9fa85072234f9732696749e0bba6ccb",
+      "owningRunId": 37080679048,
+      "owningSourceSha": "a478d437fe94e8179aab6c0404e404126421a006",
+      "runId": 37080679048,
+      "runName": "Internal instrumented RC17 comparison",
+      "runNumber": 2,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11258614897,
+      "name": "internal-instrumented-rc17-fa6e852b76089b51cd552fa202de85ad6948b0ec",
+      "bytes": 31468048,
+      "expired": false,
+      "createdAt": "2026-10-03T00:51:34Z",
+      "expiresAt": "2026-11-02T00:51:32Z",
+      "digest": "sha256:000603647c14c5d6261a0777311589c8dd2df02416ac8ea4c9aa68181fb410c8",
+      "owningRunId": 37083252892,
+      "owningSourceSha": "2ea1a999fb2e366b2381b84615b8affa09aca3a8",
+      "runId": 37083252892,
+      "runName": "Internal instrumented RC17 comparison",
+      "runNumber": 3,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11259102214,
+      "name": "internal-rc17-recovered-part-01",
+      "bytes": 31421490,
+      "expired": false,
+      "createdAt": "2026-10-03T00:23:16Z",
+      "expiresAt": "2026-11-02T00:23:14Z",
+      "digest": "sha256:9f2ee7c384fca0fd18849c386e4dd1088c9b3e4f9b45b5e752cac9f2c49293b8",
+      "owningRunId": 37081834569,
+      "owningSourceSha": "f11263c792df8687b251ef1eaf1adc07a1f78fac",
+      "runId": 37081834569,
+      "runName": "Internal RC17 artifact recovery",
+      "runNumber": 1,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11259188523,
+      "name": "internal-rc17-original-browser-bundle-part-01",
+      "bytes": 31418721,
+      "expired": false,
+      "createdAt": "2026-10-03T00:34:10Z",
+      "expiresAt": "2026-11-02T00:34:07Z",
+      "digest": "sha256:e9040659d54fa2246cc1e91a742186f921cd7797c021d4c5bed9d3c064ea585b",
+      "owningRunId": 37082520646,
+      "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231",
+      "runId": 37082520646,
+      "runName": "Internal RC17 original-runtime browser replay",
+      "runNumber": 1,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11257683807,
+      "name": "internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da",
+      "bytes": 31260357,
+      "expired": false,
+      "createdAt": "2026-10-02T23:54:07Z",
+      "expiresAt": "2026-11-01T23:54:05Z",
+      "digest": "sha256:6249d8671682e19f886a760c1be33661a8558d5499bedf78edd7609bb8e94cee",
+      "owningRunId": 37078241973,
+      "owningSourceSha": "82394c58d0a7d8987877835b693f31f09c3c0d7f",
+      "runId": 37078241973,
+      "runName": "Internal instrumented RC17 comparison",
+      "runNumber": 1,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11478877872,
+      "name": "Kairo-test-build.zip",
+      "bytes": 25970182,
+      "expired": false,
+      "createdAt": "2026-10-07T11:32:20Z",
+      "expiresAt": "2026-11-06T11:32:20Z",
+      "digest": "sha256:46d38e6a08b54bc6459399c7ead6aa7ffbb345924b987871e740f8075062817b",
+      "owningRunId": 37613842075,
+      "owningSourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "runId": 37613842075,
+      "runName": "Kairo test build",
+      "runNumber": 54,
+      "category": "normal_protected_48_54_65"
+    },
+    {
+      "id": 11546549068,
+      "name": "Kairo-test-build.zip",
+      "bytes": 25938356,
+      "expired": false,
+      "createdAt": "2026-10-08T11:23:46Z",
+      "expiresAt": "2026-11-07T11:23:45Z",
+      "digest": "sha256:16875e6e95f64f373581ebcdc1cba1c5278b833d3c0dcbfe281c5d00760b1453",
+      "owningRunId": 37768942689,
+      "owningSourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "runId": 37768942689,
+      "runName": "Kairo test build",
+      "runNumber": 65,
+      "category": "normal_protected_48_54_65"
+    },
+    {
+      "id": 11092446600,
+      "name": "Kairo-test-build.zip",
+      "bytes": 25788170,
+      "expired": false,
+      "createdAt": "2026-09-30T11:07:11Z",
+      "expiresAt": "2026-10-30T11:07:09Z",
+      "digest": "sha256:1f28d2e2a988bd11fe1cc3fd94901dcceea658f8c31422e6884f9afdf8de707f",
+      "owningRunId": 36705850772,
+      "owningSourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "runId": 36705850772,
+      "runName": "Kairo test build",
+      "runNumber": 48,
+      "category": "normal_protected_48_54_65"
+    },
+    {
+      "id": 11257938559,
+      "name": "internal-rc17-comparison-evidence",
+      "bytes": 2767519,
+      "expired": false,
+      "createdAt": "2026-10-02T23:54:05Z",
+      "expiresAt": "2026-11-01T23:54:03Z",
+      "digest": "sha256:8ff4be58d46fa5ddb1af7e322ec9ff98041afcfc83626703c6d561cd0df681e9",
+      "owningRunId": 37078241973,
+      "owningSourceSha": "82394c58d0a7d8987877835b693f31f09c3c0d7f",
+      "runId": 37078241973,
+      "runName": "Internal instrumented RC17 comparison",
+      "runNumber": 1,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11258779155,
+      "name": "internal-rc17-original-browser-evidence",
+      "bytes": 2347835,
+      "expired": false,
+      "createdAt": "2026-10-03T00:34:05Z",
+      "expiresAt": "2026-11-02T00:34:03Z",
+      "digest": "sha256:cd74fea70ba828eff6b3dc8dd757b2ea53fea7e355b81917e22c776a6db50c1b",
+      "owningRunId": 37082520646,
+      "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231",
+      "runId": 37082520646,
+      "runName": "Internal RC17 original-runtime browser replay",
+      "runNumber": 1,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11258591203,
+      "name": "internal-rc17-comparison-evidence",
+      "bytes": 2319476,
+      "expired": false,
+      "createdAt": "2026-10-03T00:09:58Z",
+      "expiresAt": "2026-11-02T00:09:57Z",
+      "digest": "sha256:21e4ab8e718845d4ad66cd7b36cd66e3c12547f0e8e5191945a8805af78a0209",
+      "owningRunId": 37080679048,
+      "owningSourceSha": "a478d437fe94e8179aab6c0404e404126421a006",
+      "runId": 37080679048,
+      "runName": "Internal instrumented RC17 comparison",
+      "runNumber": 2,
+      "category": "internal_performance_recovery"
+    },
+    {
+      "id": 11259113685,
+      "name": "internal-rc17-original-browser-bundle-part-02",
+      "bytes": 2309517,
+      "expired": false,
+      "createdAt": "2026-10-03T00:34:11Z",
+      "expiresAt": "2026-11-02T00:34:10Z",
+      "digest": "sha256:098ff0cf44e73665b77cb45fc067fb211e978165347a2f24cb84ff38a66976dd",
+      "owningRunId": 37082520646,
+      "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231",
+      "runId": 37082520646,
+      "runName": "Internal RC17 original-runtime browser replay",
+      "runNumber": 1,
+      "category": "internal_performance_recovery"
+    }
+  ],
+  "runs": [
+    {
+      "id": 38121769158,
+      "name": "Internal checkpoint recovery export",
+      "number": 1,
+      "workflowId": 381094079,
+      "workflowPath": ".github/workflows/internal-recovery.yml",
+      "sourceSha": "f3b2ddbf13656932edfa673c96f3d29ddea94024",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 37768942689,
+      "name": "Kairo test build",
+      "number": 65,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "category": "normal_protected_48_54_65",
+      "reportedArtifactCount": 4,
+      "nonexpiredArtifactCount": 4,
+      "nonexpiredBytes": 69812313,
+      "artifacts": [
+        {
+          "id": 11547238468,
+          "name": "datasets-interface-check",
+          "bytes": 1213032,
+          "expired": false,
+          "createdAt": "2026-10-08T11:22:52Z",
+          "expiresAt": "2026-11-07T11:22:51Z",
+          "digest": "sha256:f896e609dae288a039b9a721e636f7e3d380dc172993934a0e01cc46c0a7d2e7",
+          "owningRunId": 37768942689,
+          "owningSourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+        },
+        {
+          "id": 11546753777,
+          "name": "session-interface-check",
+          "bytes": 1958054,
+          "expired": false,
+          "createdAt": "2026-10-08T11:22:57Z",
+          "expiresAt": "2026-11-07T11:22:55Z",
+          "digest": "sha256:7aaa1cac12d21018d45876fc54292ced457003654b9f161a691bda26f66112ea",
+          "owningRunId": 37768942689,
+          "owningSourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+        },
+        {
+          "id": 11546549068,
+          "name": "Kairo-test-build.zip",
+          "bytes": 25938356,
+          "expired": false,
+          "createdAt": "2026-10-08T11:23:46Z",
+          "expiresAt": "2026-11-07T11:23:45Z",
+          "digest": "sha256:16875e6e95f64f373581ebcdc1cba1c5278b833d3c0dcbfe281c5d00760b1453",
+          "owningRunId": 37768942689,
+          "owningSourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+        },
+        {
+          "id": 11546463397,
+          "name": "universe-interface-check",
+          "bytes": 40702871,
+          "expired": false,
+          "createdAt": "2026-10-08T11:22:55Z",
+          "expiresAt": "2026-11-07T11:22:52Z",
+          "digest": "sha256:ef1484bf90b33ce5bdbda91200ddfbc4b7257a90a78232955ab9ce51098c3c7a",
+          "owningRunId": 37768942689,
+          "owningSourceSha": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789"
+        }
+      ]
+    },
+    {
+      "id": 37613842075,
+      "name": "Kairo test build",
+      "number": 54,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4",
+      "category": "normal_protected_48_54_65",
+      "reportedArtifactCount": 4,
+      "nonexpiredArtifactCount": 4,
+      "nonexpiredBytes": 69750155,
+      "artifacts": [
+        {
+          "id": 11478877872,
+          "name": "Kairo-test-build.zip",
+          "bytes": 25970182,
+          "expired": false,
+          "createdAt": "2026-10-07T11:32:20Z",
+          "expiresAt": "2026-11-06T11:32:20Z",
+          "digest": "sha256:46d38e6a08b54bc6459399c7ead6aa7ffbb345924b987871e740f8075062817b",
+          "owningRunId": 37613842075,
+          "owningSourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4"
+        },
+        {
+          "id": 11478862688,
+          "name": "universe-interface-check",
+          "bytes": 40605226,
+          "expired": false,
+          "createdAt": "2026-10-07T11:31:25Z",
+          "expiresAt": "2026-11-06T11:31:23Z",
+          "digest": "sha256:61f2ce81e2cc1e81013d75e1facbb14d7ac0ec5adbaceca1ec9ffd3fc8b7651d",
+          "owningRunId": 37613842075,
+          "owningSourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4"
+        },
+        {
+          "id": 11478712924,
+          "name": "datasets-interface-check",
+          "bytes": 1210957,
+          "expired": false,
+          "createdAt": "2026-10-07T11:31:22Z",
+          "expiresAt": "2026-11-06T11:31:22Z",
+          "digest": "sha256:bbfaed906d819e03fe735ffb1c1faaf8509a007801f83459f9e9b863aeef114a",
+          "owningRunId": 37613842075,
+          "owningSourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4"
+        },
+        {
+          "id": 11478443078,
+          "name": "session-interface-check",
+          "bytes": 1963790,
+          "expired": false,
+          "createdAt": "2026-10-07T11:31:26Z",
+          "expiresAt": "2026-11-06T11:31:25Z",
+          "digest": "sha256:918a1c6a72ed7de2717bb3e12408c1fee3b9bcbe15ad73a94ef01e34fce60d9a",
+          "owningRunId": 37613842075,
+          "owningSourceSha": "c954c0d808847f249df0659ed15fdce2e89f84c4"
+        }
+      ]
+    },
+    {
+      "id": 37083252892,
+      "name": "Internal instrumented RC17 comparison",
+      "number": 3,
+      "workflowId": 373559339,
+      "workflowPath": ".github/workflows/rc17-comparison.yml",
+      "sourceSha": "2ea1a999fb2e366b2381b84615b8affa09aca3a8",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 31564459,
+      "artifacts": [
+        {
+          "id": 11259985336,
+          "name": "internal-rc17-comparison-evidence",
+          "bytes": 96411,
+          "expired": false,
+          "createdAt": "2026-10-03T00:51:32Z",
+          "expiresAt": "2026-11-02T00:51:31Z",
+          "digest": "sha256:b052ced8bf78db62aade26451aa476821b092b0dd3afb12e1dcc1e4ffc7b6519",
+          "owningRunId": 37083252892,
+          "owningSourceSha": "2ea1a999fb2e366b2381b84615b8affa09aca3a8"
+        },
+        {
+          "id": 11258614897,
+          "name": "internal-instrumented-rc17-fa6e852b76089b51cd552fa202de85ad6948b0ec",
+          "bytes": 31468048,
+          "expired": false,
+          "createdAt": "2026-10-03T00:51:34Z",
+          "expiresAt": "2026-11-02T00:51:32Z",
+          "digest": "sha256:000603647c14c5d6261a0777311589c8dd2df02416ac8ea4c9aa68181fb410c8",
+          "owningRunId": 37083252892,
+          "owningSourceSha": "2ea1a999fb2e366b2381b84615b8affa09aca3a8"
+        }
+      ]
+    },
+    {
+      "id": 37082520646,
+      "name": "Internal RC17 original-runtime browser replay",
+      "number": 1,
+      "workflowId": 373585482,
+      "workflowPath": ".github/workflows/rc17-original-browser.yml",
+      "sourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 4,
+      "nonexpiredArtifactCount": 4,
+      "nonexpiredBytes": 36077954,
+      "artifacts": [
+        {
+          "id": 11259188523,
+          "name": "internal-rc17-original-browser-bundle-part-01",
+          "bytes": 31418721,
+          "expired": false,
+          "createdAt": "2026-10-03T00:34:10Z",
+          "expiresAt": "2026-11-02T00:34:07Z",
+          "digest": "sha256:e9040659d54fa2246cc1e91a742186f921cd7797c021d4c5bed9d3c064ea585b",
+          "owningRunId": 37082520646,
+          "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231"
+        },
+        {
+          "id": 11259178557,
+          "name": "internal-rc17-original-browser-bundle-manifest",
+          "bytes": 1881,
+          "expired": false,
+          "createdAt": "2026-10-03T00:34:07Z",
+          "expiresAt": "2026-11-02T00:34:05Z",
+          "digest": "sha256:40086963c88c7ad2ac20654c3c1f77958c6f3844d665dde2938c77b8bff42c44",
+          "owningRunId": 37082520646,
+          "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231"
+        },
+        {
+          "id": 11259113685,
+          "name": "internal-rc17-original-browser-bundle-part-02",
+          "bytes": 2309517,
+          "expired": false,
+          "createdAt": "2026-10-03T00:34:11Z",
+          "expiresAt": "2026-11-02T00:34:10Z",
+          "digest": "sha256:098ff0cf44e73665b77cb45fc067fb211e978165347a2f24cb84ff38a66976dd",
+          "owningRunId": 37082520646,
+          "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231"
+        },
+        {
+          "id": 11258779155,
+          "name": "internal-rc17-original-browser-evidence",
+          "bytes": 2347835,
+          "expired": false,
+          "createdAt": "2026-10-03T00:34:05Z",
+          "expiresAt": "2026-11-02T00:34:03Z",
+          "digest": "sha256:cd74fea70ba828eff6b3dc8dd757b2ea53fea7e355b81917e22c776a6db50c1b",
+          "owningRunId": 37082520646,
+          "owningSourceSha": "eed75ae03a12ca5b0090f24b89f1dbc622399231"
+        }
+      ]
+    },
+    {
+      "id": 37081834569,
+      "name": "Internal RC17 artifact recovery",
+      "number": 1,
+      "workflowId": 373580895,
+      "workflowPath": ".github/workflows/rc17-artifact-recovery.yml",
+      "sourceSha": "f11263c792df8687b251ef1eaf1adc07a1f78fac",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 3,
+      "nonexpiredArtifactCount": 3,
+      "nonexpiredBytes": 33754347,
+      "artifacts": [
+        {
+          "id": 11259262076,
+          "name": "internal-rc17-recovered-part-02",
+          "bytes": 2274616,
+          "expired": false,
+          "createdAt": "2026-10-03T00:23:17Z",
+          "expiresAt": "2026-11-02T00:23:16Z",
+          "digest": "sha256:cb7ce6b37f9425f3292e26e98004394264903396c42f3fdf22f987eed2564a5e",
+          "owningRunId": 37081834569,
+          "owningSourceSha": "f11263c792df8687b251ef1eaf1adc07a1f78fac"
+        },
+        {
+          "id": 11259102214,
+          "name": "internal-rc17-recovered-part-01",
+          "bytes": 31421490,
+          "expired": false,
+          "createdAt": "2026-10-03T00:23:16Z",
+          "expiresAt": "2026-11-02T00:23:14Z",
+          "digest": "sha256:9f2ee7c384fca0fd18849c386e4dd1088c9b3e4f9b45b5e752cac9f2c49293b8",
+          "owningRunId": 37081834569,
+          "owningSourceSha": "f11263c792df8687b251ef1eaf1adc07a1f78fac"
+        },
+        {
+          "id": 11259102205,
+          "name": "internal-rc17-recovered-entrypoints-and-manifest",
+          "bytes": 58241,
+          "expired": false,
+          "createdAt": "2026-10-03T00:23:14Z",
+          "expiresAt": "2026-11-02T00:23:13Z",
+          "digest": "sha256:5273640b59b3540484b976976df7f2901c6b412f7485077d800b9848c43d09fa",
+          "owningRunId": 37081834569,
+          "owningSourceSha": "f11263c792df8687b251ef1eaf1adc07a1f78fac"
+        }
+      ]
+    },
+    {
+      "id": 37080679048,
+      "name": "Internal instrumented RC17 comparison",
+      "number": 2,
+      "workflowId": 373559339,
+      "workflowPath": ".github/workflows/rc17-comparison.yml",
+      "sourceSha": "a478d437fe94e8179aab6c0404e404126421a006",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 36015718,
+      "artifacts": [
+        {
+          "id": 11258591203,
+          "name": "internal-rc17-comparison-evidence",
+          "bytes": 2319476,
+          "expired": false,
+          "createdAt": "2026-10-03T00:09:58Z",
+          "expiresAt": "2026-11-02T00:09:57Z",
+          "digest": "sha256:21e4ab8e718845d4ad66cd7b36cd66e3c12547f0e8e5191945a8805af78a0209",
+          "owningRunId": 37080679048,
+          "owningSourceSha": "a478d437fe94e8179aab6c0404e404126421a006"
+        },
+        {
+          "id": 11258581244,
+          "name": "internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da",
+          "bytes": 33696242,
+          "expired": false,
+          "createdAt": "2026-10-03T00:10:01Z",
+          "expiresAt": "2026-11-02T00:09:59Z",
+          "digest": "sha256:84379fbf90037171fc86aa273485fd94e9fa85072234f9732696749e0bba6ccb",
+          "owningRunId": 37080679048,
+          "owningSourceSha": "a478d437fe94e8179aab6c0404e404126421a006"
+        }
+      ]
+    },
+    {
+      "id": 37078241973,
+      "name": "Internal instrumented RC17 comparison",
+      "number": 1,
+      "workflowId": 373559339,
+      "workflowPath": ".github/workflows/rc17-comparison.yml",
+      "sourceSha": "82394c58d0a7d8987877835b693f31f09c3c0d7f",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 34027876,
+      "artifacts": [
+        {
+          "id": 11257938559,
+          "name": "internal-rc17-comparison-evidence",
+          "bytes": 2767519,
+          "expired": false,
+          "createdAt": "2026-10-02T23:54:05Z",
+          "expiresAt": "2026-11-01T23:54:03Z",
+          "digest": "sha256:8ff4be58d46fa5ddb1af7e322ec9ff98041afcfc83626703c6d561cd0df681e9",
+          "owningRunId": 37078241973,
+          "owningSourceSha": "82394c58d0a7d8987877835b693f31f09c3c0d7f"
+        },
+        {
+          "id": 11257683807,
+          "name": "internal-instrumented-rc17-05d0d4b36c154329006d6772769063db874762da",
+          "bytes": 31260357,
+          "expired": false,
+          "createdAt": "2026-10-02T23:54:07Z",
+          "expiresAt": "2026-11-01T23:54:05Z",
+          "digest": "sha256:6249d8671682e19f886a760c1be33661a8558d5499bedf78edd7609bb8e94cee",
+          "owningRunId": 37078241973,
+          "owningSourceSha": "82394c58d0a7d8987877835b693f31f09c3c0d7f"
+        }
+      ]
+    },
+    {
+      "id": 37073070547,
+      "name": "Internal RC16 targeted follow-up",
+      "number": 3,
+      "workflowId": 371145507,
+      "workflowPath": ".github/workflows/rc16-followup.yml",
+      "sourceSha": "827a0475acc1457b1943d130bf92f66f38e93c2e",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 48345,
+      "artifacts": [
+        {
+          "id": 11256137304,
+          "name": "internal-rc16-followup-evidence",
+          "bytes": 48345,
+          "expired": false,
+          "createdAt": "2026-10-02T22:40:03Z",
+          "expiresAt": "2026-11-01T22:40:02Z",
+          "digest": "sha256:43349f8792506740f4cf8f7a82a9d2c077989f0d94c9b09a4be915dd2f98c992",
+          "owningRunId": 37073070547,
+          "owningSourceSha": "827a0475acc1457b1943d130bf92f66f38e93c2e"
+        }
+      ]
+    },
+    {
+      "id": 36718342385,
+      "name": "Internal RC16 targeted follow-up",
+      "number": 2,
+      "workflowId": 371145507,
+      "workflowPath": ".github/workflows/rc16-followup.yml",
+      "sourceSha": "e30b45ab4dcee5ea44aa5a992a7af26f3de5e5d3",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 182801,
+      "artifacts": [
+        {
+          "id": 11097651492,
+          "name": "internal-rc16-followup-evidence",
+          "bytes": 182801,
+          "expired": false,
+          "createdAt": "2026-09-30T13:05:42Z",
+          "expiresAt": "2026-10-30T13:05:41Z",
+          "digest": "sha256:f7bfb6a6e4e88f32ba04b38781de2d5b4a749bcccaf16af05f70dbde382d19c5",
+          "owningRunId": 36718342385,
+          "owningSourceSha": "e30b45ab4dcee5ea44aa5a992a7af26f3de5e5d3"
+        }
+      ]
+    },
+    {
+      "id": 36716150075,
+      "name": "Internal RC16 targeted follow-up",
+      "number": 1,
+      "workflowId": 371145507,
+      "workflowPath": ".github/workflows/rc16-followup.yml",
+      "sourceSha": "4d9366c3889c0d9df49dd2022e46d92c7e5b443a",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 141457,
+      "artifacts": [
+        {
+          "id": 11096411503,
+          "name": "internal-rc16-followup-evidence",
+          "bytes": 141457,
+          "expired": false,
+          "createdAt": "2026-09-30T12:42:14Z",
+          "expiresAt": "2026-10-30T12:42:12Z",
+          "digest": "sha256:b303f8f2a1edcec57361192a779556289111ff0b96295c46f8191fdb066709b4",
+          "owningRunId": 36716150075,
+          "owningSourceSha": "4d9366c3889c0d9df49dd2022e46d92c7e5b443a"
+        }
+      ]
+    },
+    {
+      "id": 36708404690,
+      "name": "Internal RC16 performance checkpoint",
+      "number": 1,
+      "workflowId": 371082413,
+      "workflowPath": ".github/workflows/rc16-performance.yml",
+      "sourceSha": "0344ff4ec069080a87e19294fa8fddc28f737327",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 113873,
+      "artifacts": [
+        {
+          "id": 11093357604,
+          "name": "internal-rc16-performance-evidence",
+          "bytes": 113873,
+          "expired": false,
+          "createdAt": "2026-09-30T11:42:11Z",
+          "expiresAt": "2026-10-30T11:42:10Z",
+          "digest": "sha256:4c4f833594c91d64dd09d8a945948a592346e17734b9ee30b982d0a38acedbc6",
+          "owningRunId": 36708404690,
+          "owningSourceSha": "0344ff4ec069080a87e19294fa8fddc28f737327"
+        }
+      ]
+    },
+    {
+      "id": 36705850772,
+      "name": "Kairo test build",
+      "number": 48,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+      "category": "normal_protected_48_54_65",
+      "reportedArtifactCount": 4,
+      "nonexpiredArtifactCount": 4,
+      "nonexpiredBytes": 69716458,
+      "artifacts": [
+        {
+          "id": 11092600630,
+          "name": "session-interface-check",
+          "bytes": 1965146,
+          "expired": false,
+          "createdAt": "2026-09-30T11:06:43Z",
+          "expiresAt": "2026-10-30T11:06:42Z",
+          "digest": "sha256:192a1bbab2e1f149bb2b464f98729d2e63e2bd6b64573fcba222ad51e2a5a896",
+          "owningRunId": 36705850772,
+          "owningSourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1"
+        },
+        {
+          "id": 11092446600,
+          "name": "Kairo-test-build.zip",
+          "bytes": 25788170,
+          "expired": false,
+          "createdAt": "2026-09-30T11:07:11Z",
+          "expiresAt": "2026-10-30T11:07:09Z",
+          "digest": "sha256:1f28d2e2a988bd11fe1cc3fd94901dcceea658f8c31422e6884f9afdf8de707f",
+          "owningRunId": 36705850772,
+          "owningSourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1"
+        },
+        {
+          "id": 11091839046,
+          "name": "universe-interface-check",
+          "bytes": 40749165,
+          "expired": false,
+          "createdAt": "2026-09-30T11:06:41Z",
+          "expiresAt": "2026-10-30T11:06:39Z",
+          "digest": "sha256:615ed10f42fa4da0d3c070d0358a757ac6506ef6ef7b7cad155a3a2ddce5545f",
+          "owningRunId": 36705850772,
+          "owningSourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1"
+        },
+        {
+          "id": 11091744428,
+          "name": "datasets-interface-check",
+          "bytes": 1213977,
+          "expired": false,
+          "createdAt": "2026-09-30T11:06:39Z",
+          "expiresAt": "2026-10-30T11:06:38Z",
+          "digest": "sha256:c1c3b27269153106724cf75dd27a94e99edaeefe3ff67c6b13439a10152588c3",
+          "owningRunId": 36705850772,
+          "owningSourceSha": "57c8dcc7fbd8fc2b62129498d1819050c78381a1"
+        }
+      ]
+    },
+    {
+      "id": 35349529173,
+      "name": "Kairo release",
+      "number": 4,
+      "workflowId": 354723277,
+      "workflowPath": ".github/workflows/release.yml",
+      "sourceSha": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+      "category": "release",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 35349252236,
+      "name": "Kairo test build",
+      "number": 24,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "cfafcfca735bf0f25cd25eb4c1793b9d61e83c2a",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 3092086,
+      "artifacts": [
+        {
+          "id": 10548751514,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1061356,
+          "expired": false,
+          "createdAt": "2026-09-18T13:17:38Z",
+          "expiresAt": "2026-10-18T13:17:38Z",
+          "digest": "sha256:264890628ad57b4b15739018327d050768c397962fca7b40c7e60289d02f180b",
+          "owningRunId": 35349252236,
+          "owningSourceSha": "cfafcfca735bf0f25cd25eb4c1793b9d61e83c2a"
+        },
+        {
+          "id": 10548726558,
+          "name": "session-interface-check",
+          "bytes": 2030730,
+          "expired": false,
+          "createdAt": "2026-09-18T13:17:28Z",
+          "expiresAt": "2026-10-18T13:17:27Z",
+          "digest": "sha256:e4617370f635a950e3390438b43b3d98ea187b8edb2311632b4d93f07232a011",
+          "owningRunId": 35349252236,
+          "owningSourceSha": "cfafcfca735bf0f25cd25eb4c1793b9d61e83c2a"
+        }
+      ]
+    },
+    {
+      "id": 35341904522,
+      "name": "Kairo test build",
+      "number": 23,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "b75ce9452d161a2bf91b66d7c64f33bbc8292224",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 35340471182,
+      "name": "Kairo test build",
+      "number": 22,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "1a1866bd0cf5f54cf522374277d6930f1baf105a",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 35340471146,
+      "name": "Kairo RC three-build performance comparison",
+      "number": 6,
+      "workflowId": 357866014,
+      "workflowPath": ".github/workflows/performance.yml",
+      "sourceSha": "1a1866bd0cf5f54cf522374277d6930f1baf105a",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 57149,
+      "artifacts": [
+        {
+          "id": 10545496664,
+          "name": "kairo-rc-three-build-comparison-1a1866bd0cf5f54cf522374277d6930f1baf105a",
+          "bytes": 57149,
+          "expired": false,
+          "createdAt": "2026-09-18T11:48:59Z",
+          "expiresAt": "2026-10-18T11:48:58Z",
+          "digest": "sha256:2d5aa3383c226b440088bf96fe4191c92545d4d05d4e2e586b51de71c040828d",
+          "owningRunId": 35340471146,
+          "owningSourceSha": "1a1866bd0cf5f54cf522374277d6930f1baf105a"
+        }
+      ]
+    },
+    {
+      "id": 35339984207,
+      "name": "Kairo test build",
+      "number": 21,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "5a58faff44e6292705550ea5e3994d341b748455",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 3092684,
+      "artifacts": [
+        {
+          "id": 10545210103,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1061116,
+          "expired": false,
+          "createdAt": "2026-09-18T11:31:54Z",
+          "expiresAt": "2026-10-18T11:31:53Z",
+          "digest": "sha256:bf2d3dc9552e2d956276ef0376dacc855b5e5f9a34414b793ab0c321c35dd6e4",
+          "owningRunId": 35339984207,
+          "owningSourceSha": "5a58faff44e6292705550ea5e3994d341b748455"
+        },
+        {
+          "id": 10544239348,
+          "name": "session-interface-check",
+          "bytes": 2031568,
+          "expired": false,
+          "createdAt": "2026-09-18T11:31:43Z",
+          "expiresAt": "2026-10-18T11:31:42Z",
+          "digest": "sha256:221488f35e2decb880ae478fce3db4d665d00fff83173bde02c80f14e3cbda96",
+          "owningRunId": 35339984207,
+          "owningSourceSha": "5a58faff44e6292705550ea5e3994d341b748455"
+        }
+      ]
+    },
+    {
+      "id": 35337389294,
+      "name": "Kairo database implementation review",
+      "number": 5,
+      "workflowId": 357866014,
+      "workflowPath": ".github/workflows/performance.yml",
+      "sourceSha": "6cb8f4d151b60cb0afb20a252908edfbbdfac49d",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 7274,
+      "artifacts": [
+        {
+          "id": 10544110012,
+          "name": "kairo-database-review-6cb8f4d151b60cb0afb20a252908edfbbdfac49d",
+          "bytes": 7274,
+          "expired": false,
+          "createdAt": "2026-09-18T11:00:00Z",
+          "expiresAt": "2026-10-18T10:59:59Z",
+          "digest": "sha256:2fed5a61bf17dc2127f5aa9bb627a7e2796d3a6497c15840be2d3200e10fcb3e",
+          "owningRunId": 35337389294,
+          "owningSourceSha": "6cb8f4d151b60cb0afb20a252908edfbbdfac49d"
+        }
+      ]
+    },
+    {
+      "id": 35337389275,
+      "name": "Kairo test build",
+      "number": 20,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "6cb8f4d151b60cb0afb20a252908edfbbdfac49d",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 35334789591,
+      "name": "Kairo test build",
+      "number": 19,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "ff8bbc530ce278a883f8b1831407095a14d3277d",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 3084055,
+      "artifacts": [
+        {
+          "id": 10543065593,
+          "name": "session-interface-check",
+          "bytes": 2028129,
+          "expired": false,
+          "createdAt": "2026-09-18T10:28:37Z",
+          "expiresAt": "2026-10-18T10:28:36Z",
+          "digest": "sha256:ea4b6cf465841e3b414baae431deb2afbe0e27459e2e53c7811c98303db07b17",
+          "owningRunId": 35334789591,
+          "owningSourceSha": "ff8bbc530ce278a883f8b1831407095a14d3277d"
+        },
+        {
+          "id": 10542506416,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1055926,
+          "expired": false,
+          "createdAt": "2026-09-18T10:28:49Z",
+          "expiresAt": "2026-10-18T10:28:48Z",
+          "digest": "sha256:78f33db124d3f34773dab51a04b52a9cd125d66fe813e941db88eb58cb666b36",
+          "owningRunId": 35334789591,
+          "owningSourceSha": "ff8bbc530ce278a883f8b1831407095a14d3277d"
+        }
+      ]
+    },
+    {
+      "id": 35333693389,
+      "name": "Kairo test build",
+      "number": 18,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "138a91f6c5d31bc133ca0b6b93bf9f0ee7cadf83",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 35333693369,
+      "name": "Kairo internal performance",
+      "number": 4,
+      "workflowId": 357866014,
+      "workflowPath": ".github/workflows/performance.yml",
+      "sourceSha": "138a91f6c5d31bc133ca0b6b93bf9f0ee7cadf83",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 1935712,
+      "artifacts": [
+        {
+          "id": 10542555782,
+          "name": "kairo-v073-comparison-138a91f6c5d31bc133ca0b6b93bf9f0ee7cadf83",
+          "bytes": 1935712,
+          "expired": false,
+          "createdAt": "2026-09-18T10:30:18Z",
+          "expiresAt": "2026-10-18T10:30:17Z",
+          "digest": "sha256:93336f062b24fe4bbb7f41f38e9705e2608fd666eec4c4833c235544180c442c",
+          "owningRunId": 35333693369,
+          "owningSourceSha": "138a91f6c5d31bc133ca0b6b93bf9f0ee7cadf83"
+        }
+      ]
+    },
+    {
+      "id": 34852836758,
+      "name": "Kairo internal performance",
+      "number": 3,
+      "workflowId": 357866014,
+      "workflowPath": ".github/workflows/performance.yml",
+      "sourceSha": "ec26c4f36238954227cb2af9d0f8bf330fd4a182",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 965184,
+      "artifacts": [
+        {
+          "id": 10351651721,
+          "name": "kairo-internal-performance-ec26c4f36238954227cb2af9d0f8bf330fd4a182",
+          "bytes": 965184,
+          "expired": false,
+          "createdAt": "2026-09-14T14:09:05Z",
+          "expiresAt": "2026-10-14T14:09:04Z",
+          "digest": "sha256:dd2dfeeed74b31f82ead3fd28c07563a7d7afc0328855e2a6ab28bd13661dd36",
+          "owningRunId": 34852836758,
+          "owningSourceSha": "ec26c4f36238954227cb2af9d0f8bf330fd4a182"
+        }
+      ]
+    },
+    {
+      "id": 34852836604,
+      "name": "Kairo test build",
+      "number": 17,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "ec26c4f36238954227cb2af9d0f8bf330fd4a182",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34851625873,
+      "name": "Kairo internal performance",
+      "number": 2,
+      "workflowId": 357866014,
+      "workflowPath": ".github/workflows/performance.yml",
+      "sourceSha": "bb4587b2d5968f354610cf413d95324095734f56",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 712706,
+      "artifacts": [
+        {
+          "id": 10351521400,
+          "name": "kairo-internal-performance-bb4587b2d5968f354610cf413d95324095734f56",
+          "bytes": 712706,
+          "expired": false,
+          "createdAt": "2026-09-14T13:56:02Z",
+          "expiresAt": "2026-10-14T13:56:01Z",
+          "digest": "sha256:3d47cc65b6efaea08f49eed398b63bd4a21ec3f4e9375c7bae43acbd6708a34a",
+          "owningRunId": 34851625873,
+          "owningSourceSha": "bb4587b2d5968f354610cf413d95324095734f56"
+        }
+      ]
+    },
+    {
+      "id": 34851625868,
+      "name": "Kairo test build",
+      "number": 16,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "bb4587b2d5968f354610cf413d95324095734f56",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34851186011,
+      "name": "Kairo internal performance",
+      "number": 1,
+      "workflowId": 357866014,
+      "workflowPath": ".github/workflows/performance.yml",
+      "sourceSha": "2bde9680dc2781e56f4a98111061e7d2b8e3df91",
+      "category": "internal_performance_recovery",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34851185785,
+      "name": "Kairo test build",
+      "number": 15,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "2bde9680dc2781e56f4a98111061e7d2b8e3df91",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34825204670,
+      "name": "Kairo release",
+      "number": 3,
+      "workflowId": 354723277,
+      "workflowPath": ".github/workflows/release.yml",
+      "sourceSha": "b151125cd7b26611364923f00683b1c6f1c1bdd6",
+      "category": "release",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34825057751,
+      "name": "Kairo test build",
+      "number": 14,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "85ede76af912c13e032cffacce1b68a80a6a0c13",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 3080123,
+      "artifacts": [
+        {
+          "id": 10340535394,
+          "name": "session-interface-check",
+          "bytes": 2027724,
+          "expired": false,
+          "createdAt": "2026-09-14T08:54:39Z",
+          "expiresAt": "2026-10-14T08:54:38Z",
+          "digest": "sha256:10ffa6571683bc9dbba4bfbad9ef14a511d6c11822878f4f8da6a9678b1d6b97",
+          "owningRunId": 34825057751,
+          "owningSourceSha": "85ede76af912c13e032cffacce1b68a80a6a0c13"
+        },
+        {
+          "id": 10340056522,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1052399,
+          "expired": false,
+          "createdAt": "2026-09-14T08:54:58Z",
+          "expiresAt": "2026-10-14T08:54:57Z",
+          "digest": "sha256:c03f7e5e8bc3f00443c8fc3338e28c319a3387592a2d84b6b70c5fc861a05814",
+          "owningRunId": 34825057751,
+          "owningSourceSha": "85ede76af912c13e032cffacce1b68a80a6a0c13"
+        }
+      ]
+    },
+    {
+      "id": 34823930536,
+      "name": "Kairo test build",
+      "number": 13,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "da12e1f692cb529847250701f204989efa1835b3",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 3080969,
+      "artifacts": [
+        {
+          "id": 10339492547,
+          "name": "session-interface-check",
+          "bytes": 2028547,
+          "expired": false,
+          "createdAt": "2026-09-14T08:41:32Z",
+          "expiresAt": "2026-10-14T08:41:30Z",
+          "digest": "sha256:651c44c27e21eb96246e0d0c2afc7a159cabe075521623898bd474181f2dac10",
+          "owningRunId": 34823930536,
+          "owningSourceSha": "da12e1f692cb529847250701f204989efa1835b3"
+        },
+        {
+          "id": 10339308719,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1052422,
+          "expired": false,
+          "createdAt": "2026-09-14T08:41:50Z",
+          "expiresAt": "2026-10-14T08:41:49Z",
+          "digest": "sha256:db7d8285149b0478d9ae56aa93698494a336ac0ad64d183a5a3f425d94fc09e4",
+          "owningRunId": 34823930536,
+          "owningSourceSha": "da12e1f692cb529847250701f204989efa1835b3"
+        }
+      ]
+    },
+    {
+      "id": 34803294000,
+      "name": "Kairo test build",
+      "number": 12,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "5006e05a9bb46e3c6edfcdae03bbe800cf4519f9",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 2737918,
+      "artifacts": [
+        {
+          "id": 10332560797,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1040734,
+          "expired": false,
+          "createdAt": "2026-09-14T03:39:52Z",
+          "expiresAt": "2026-10-14T03:39:50Z",
+          "digest": "sha256:9538ae8ec86db749c559b5a6f49cb33d09f73d6030143c92e4251cd966140a61",
+          "owningRunId": 34803294000,
+          "owningSourceSha": "5006e05a9bb46e3c6edfcdae03bbe800cf4519f9"
+        },
+        {
+          "id": 10332181509,
+          "name": "session-interface-check",
+          "bytes": 1697184,
+          "expired": false,
+          "createdAt": "2026-09-14T03:39:37Z",
+          "expiresAt": "2026-10-14T03:39:35Z",
+          "digest": "sha256:e6eb61799c34d9868d3fc2b27596485769411be723cc7286fa6955b55655447a",
+          "owningRunId": 34803294000,
+          "owningSourceSha": "5006e05a9bb46e3c6edfcdae03bbe800cf4519f9"
+        }
+      ]
+    },
+    {
+      "id": 34803029045,
+      "name": "Kairo test build",
+      "number": 11,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "1438e6ed42b05732b43345b4d495e237d713a036",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 2738998,
+      "artifacts": [
+        {
+          "id": 10332151176,
+          "name": "session-interface-check",
+          "bytes": 1698438,
+          "expired": false,
+          "createdAt": "2026-09-14T03:34:47Z",
+          "expiresAt": "2026-10-14T03:34:46Z",
+          "digest": "sha256:f25e1dac2a69aa69f904eb209b23235c69e1e8cc1383fdcbc1bc321e5bff1cb3",
+          "owningRunId": 34803029045,
+          "owningSourceSha": "1438e6ed42b05732b43345b4d495e237d713a036"
+        },
+        {
+          "id": 10331789636,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1040560,
+          "expired": false,
+          "createdAt": "2026-09-14T03:35:00Z",
+          "expiresAt": "2026-10-14T03:34:59Z",
+          "digest": "sha256:8d33463ccf8f0968a9b421a5d50269a440bc65415d04c8639c190c6b2b744d15",
+          "owningRunId": 34803029045,
+          "owningSourceSha": "1438e6ed42b05732b43345b4d495e237d713a036"
+        }
+      ]
+    },
+    {
+      "id": 34786785532,
+      "name": "Kairo test build",
+      "number": 10,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "e9d625616251155ac38d25a89ae8e7cb735b53f0",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 2719969,
+      "artifacts": [
+        {
+          "id": 10327455327,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1040017,
+          "expired": false,
+          "createdAt": "2026-09-13T22:27:36Z",
+          "expiresAt": "2026-10-13T22:27:34Z",
+          "digest": "sha256:23fb074d227cacbf54b6b63c32b1d4f50c26c854c494c073333ee11491a68ad2",
+          "owningRunId": 34786785532,
+          "owningSourceSha": "e9d625616251155ac38d25a89ae8e7cb735b53f0"
+        },
+        {
+          "id": 10327270791,
+          "name": "session-interface-check",
+          "bytes": 1679952,
+          "expired": false,
+          "createdAt": "2026-09-13T22:27:23Z",
+          "expiresAt": "2026-10-13T22:27:21Z",
+          "digest": "sha256:b974799f32e77fae7127ea2ec086efa6a0b3d475780bc182ceae617e83d73a2a",
+          "owningRunId": 34786785532,
+          "owningSourceSha": "e9d625616251155ac38d25a89ae8e7cb735b53f0"
+        }
+      ]
+    },
+    {
+      "id": 34766947000,
+      "name": "Kairo release",
+      "number": 2,
+      "workflowId": 354723277,
+      "workflowPath": ".github/workflows/release.yml",
+      "sourceSha": "86cc8994ff1f7b910eb15bca3029180a344cbe62",
+      "category": "release",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34766853582,
+      "name": "Kairo test build",
+      "number": 9,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "72721fd2242e32ff4e7ea6e9f36a2a1905660bde",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 2030251,
+      "artifacts": [
+        {
+          "id": 10320636910,
+          "name": "session-interface-check",
+          "bytes": 1001111,
+          "expired": false,
+          "createdAt": "2026-09-13T15:52:33Z",
+          "expiresAt": "2026-10-13T15:52:33Z",
+          "digest": "sha256:ca3ec6babf467954f2cf02c2a8a916d2e96cfafb658f44dccb8af65d2ca99367",
+          "owningRunId": 34766853582,
+          "owningSourceSha": "72721fd2242e32ff4e7ea6e9f36a2a1905660bde"
+        },
+        {
+          "id": 10320337385,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1029140,
+          "expired": false,
+          "createdAt": "2026-09-13T15:52:47Z",
+          "expiresAt": "2026-10-13T15:52:46Z",
+          "digest": "sha256:c0f1d25efca4f3b9a665b59ae04ce77775101d9ec6f5bcd5ad06d87d350c747e",
+          "owningRunId": 34766853582,
+          "owningSourceSha": "72721fd2242e32ff4e7ea6e9f36a2a1905660bde"
+        }
+      ]
+    },
+    {
+      "id": 34765784902,
+      "name": "Kairo test build",
+      "number": 8,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "b42f49c221b6fb8ca757bf6d32abaf2ccade134d",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 2024129,
+      "artifacts": [
+        {
+          "id": 10320965968,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1029156,
+          "expired": false,
+          "createdAt": "2026-09-13T15:31:29Z",
+          "expiresAt": "2026-10-13T15:31:28Z",
+          "digest": "sha256:749c1ebbf5837637695c38e4ef48ebced4b663abb2dc5734587083da80f4aec2",
+          "owningRunId": 34765784902,
+          "owningSourceSha": "b42f49c221b6fb8ca757bf6d32abaf2ccade134d"
+        },
+        {
+          "id": 10320009842,
+          "name": "session-interface-check",
+          "bytes": 994973,
+          "expired": false,
+          "createdAt": "2026-09-13T15:31:17Z",
+          "expiresAt": "2026-10-13T15:31:15Z",
+          "digest": "sha256:03d33ff3d49eedcdfb27fe4cf4dbaea979db74e3c262b850a0e5011350fcbf68",
+          "owningRunId": 34765784902,
+          "owningSourceSha": "b42f49c221b6fb8ca757bf6d32abaf2ccade134d"
+        }
+      ]
+    },
+    {
+      "id": 34765639230,
+      "name": "Kairo test build",
+      "number": 7,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "292bb86f0b0c155415e5e2285634c42fcfeb716c",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 2,
+      "nonexpiredArtifactCount": 2,
+      "nonexpiredBytes": 2026469,
+      "artifacts": [
+        {
+          "id": 10320620825,
+          "name": "Kairo-test-build.zip",
+          "bytes": 1028911,
+          "expired": false,
+          "createdAt": "2026-09-13T15:28:24Z",
+          "expiresAt": "2026-10-13T15:28:24Z",
+          "digest": "sha256:dcb071ad2ee3b09f4cdf2b8b1b1d890c5f316a207053cafd0a2c526409d51436",
+          "owningRunId": 34765639230,
+          "owningSourceSha": "292bb86f0b0c155415e5e2285634c42fcfeb716c"
+        },
+        {
+          "id": 10320236274,
+          "name": "session-interface-check",
+          "bytes": 997558,
+          "expired": false,
+          "createdAt": "2026-09-13T15:28:12Z",
+          "expiresAt": "2026-10-13T15:28:11Z",
+          "digest": "sha256:30d0e88642746f4d8679ee7d48976ef708c368c5fc21472da526a5605c7af6de",
+          "owningRunId": 34765639230,
+          "owningSourceSha": "292bb86f0b0c155415e5e2285634c42fcfeb716c"
+        }
+      ]
+    },
+    {
+      "id": 34765459266,
+      "name": "Kairo test build",
+      "number": 6,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "bcc64a1ffbe004a2f8fe1922bfdc2611be8c76fa",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 126298,
+      "artifacts": [
+        {
+          "id": 10321165003,
+          "name": "session-interface-check",
+          "bytes": 126298,
+          "expired": false,
+          "createdAt": "2026-09-13T15:24:51Z",
+          "expiresAt": "2026-10-13T15:24:50Z",
+          "digest": "sha256:f0faca66c11cd08cd65dcb1eb373a09dadb67a13e30438c5381738fccb49f3cd",
+          "owningRunId": 34765459266,
+          "owningSourceSha": "bcc64a1ffbe004a2f8fe1922bfdc2611be8c76fa"
+        }
+      ]
+    },
+    {
+      "id": 34765231704,
+      "name": "Kairo test build",
+      "number": 5,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "c0a8cae2fa7a9b832d93f8aabc32c3049e2b956a",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 1094883,
+      "artifacts": [
+        {
+          "id": 10320855111,
+          "name": "session-interface-check",
+          "bytes": 1094883,
+          "expired": false,
+          "createdAt": "2026-09-13T15:20:07Z",
+          "expiresAt": "2026-10-13T15:20:06Z",
+          "digest": "sha256:781569974694f94d31f89db0fdb5c9cfe5bb9115b6e075908a8ebd75d33864a6",
+          "owningRunId": 34765231704,
+          "owningSourceSha": "c0a8cae2fa7a9b832d93f8aabc32c3049e2b956a"
+        }
+      ]
+    },
+    {
+      "id": 34752437445,
+      "name": "Kairo test build",
+      "number": 4,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "cb1270626103f5dd85f8a10d17b89d131b0181a9",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 126357,
+      "artifacts": [
+        {
+          "id": 10316681559,
+          "name": "session-interface-check",
+          "bytes": 126357,
+          "expired": false,
+          "createdAt": "2026-09-13T10:40:52Z",
+          "expiresAt": "2026-10-13T10:40:51Z",
+          "digest": "sha256:6536d1f7a75eaf7a2ddda758fbf43e5a5e070946deaeeb76385829abd1b0e5d4",
+          "owningRunId": 34752437445,
+          "owningSourceSha": "cb1270626103f5dd85f8a10d17b89d131b0181a9"
+        }
+      ]
+    },
+    {
+      "id": 34752084513,
+      "name": "Kairo test build",
+      "number": 3,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "50b640053215c0aeff06227b5b1cca7e3d8b8102",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 1,
+      "nonexpiredArtifactCount": 1,
+      "nonexpiredBytes": 995937,
+      "artifacts": [
+        {
+          "id": 10316396670,
+          "name": "Kairo-test-build.zip",
+          "bytes": 995937,
+          "expired": false,
+          "createdAt": "2026-09-13T10:33:19Z",
+          "expiresAt": "2026-10-13T10:33:18Z",
+          "digest": "sha256:a27eff556da5f3e167ef6519e8efaa700bdbe44fdcf0ab59e5d66d0356b03681",
+          "owningRunId": 34752084513,
+          "owningSourceSha": "50b640053215c0aeff06227b5b1cca7e3d8b8102"
+        }
+      ]
+    },
+    {
+      "id": 34454217576,
+      "name": "Kairo release",
+      "number": 1,
+      "workflowId": 354723277,
+      "workflowPath": ".github/workflows/release.yml",
+      "sourceSha": "50b640053215c0aeff06227b5b1cca7e3d8b8102",
+      "category": "release",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34453934947,
+      "name": "Kairo test build",
+      "number": 2,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "1b073d995287a6a95baf6c15be00c68bc689fb18",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    },
+    {
+      "id": 34429310474,
+      "name": "Kairo test build",
+      "number": 1,
+      "workflowId": 354534933,
+      "workflowPath": ".github/workflows/test-build.yml",
+      "sourceSha": "466b1fa24fe2b481686f7543f1c4b650fb69c01e",
+      "category": "normal_older_1_24_not_authorized_for_deletion",
+      "reportedArtifactCount": 0,
+      "nonexpiredArtifactCount": 0,
+      "nonexpiredBytes": 0,
+      "artifacts": []
+    }
+  ],
+  "errors": [],
+  "nextExpiringArtifacts": [
+    {
+      "id": 10316396670,
+      "name": "Kairo-test-build.zip",
+      "runId": 34752084513,
+      "runName": "Kairo test build",
+      "runNumber": 3,
+      "bytes": 995937,
+      "expiresAt": "2026-10-13T10:33:18Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10316681559,
+      "name": "session-interface-check",
+      "runId": 34752437445,
+      "runName": "Kairo test build",
+      "runNumber": 4,
+      "bytes": 126357,
+      "expiresAt": "2026-10-13T10:40:51Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320855111,
+      "name": "session-interface-check",
+      "runId": 34765231704,
+      "runName": "Kairo test build",
+      "runNumber": 5,
+      "bytes": 1094883,
+      "expiresAt": "2026-10-13T15:20:06Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10321165003,
+      "name": "session-interface-check",
+      "runId": 34765459266,
+      "runName": "Kairo test build",
+      "runNumber": 6,
+      "bytes": 126298,
+      "expiresAt": "2026-10-13T15:24:50Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320236274,
+      "name": "session-interface-check",
+      "runId": 34765639230,
+      "runName": "Kairo test build",
+      "runNumber": 7,
+      "bytes": 997558,
+      "expiresAt": "2026-10-13T15:28:11Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320620825,
+      "name": "Kairo-test-build.zip",
+      "runId": 34765639230,
+      "runName": "Kairo test build",
+      "runNumber": 7,
+      "bytes": 1028911,
+      "expiresAt": "2026-10-13T15:28:24Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320009842,
+      "name": "session-interface-check",
+      "runId": 34765784902,
+      "runName": "Kairo test build",
+      "runNumber": 8,
+      "bytes": 994973,
+      "expiresAt": "2026-10-13T15:31:15Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320965968,
+      "name": "Kairo-test-build.zip",
+      "runId": 34765784902,
+      "runName": "Kairo test build",
+      "runNumber": 8,
+      "bytes": 1029156,
+      "expiresAt": "2026-10-13T15:31:28Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320636910,
+      "name": "session-interface-check",
+      "runId": 34766853582,
+      "runName": "Kairo test build",
+      "runNumber": 9,
+      "bytes": 1001111,
+      "expiresAt": "2026-10-13T15:52:33Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    },
+    {
+      "id": 10320337385,
+      "name": "Kairo-test-build.zip",
+      "runId": 34766853582,
+      "runName": "Kairo test build",
+      "runNumber": 9,
+      "bytes": 1029140,
+      "expiresAt": "2026-10-13T15:52:46Z",
+      "category": "normal_older_1_24_not_authorized_for_deletion"
+    }
+  ]
+}

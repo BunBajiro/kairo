@@ -1,0 +1,87 @@
+{
+  "observedAt": "2026-10-11T08:03:33.461519+00:00",
+  "attempt": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1",
+  "mutationPerformed": false,
+  "cause": "Unknown; observations alone do not attribute a writer or application defect.",
+  "directoryDiscrepancies": [
+    {
+      "row": "startup-core-1-2-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-core-1-2-candidate/tmp",
+      "entries": [],
+      "recordedCleanupComplete": true,
+      "recordedFinishedAt": "2026-10-11T07:57:20.107Z",
+      "stat": {
+        "ctimeNs": 1791705442115546596,
+        "mtimeNs": 1791705439925052280,
+        "atimeNs": 1791705443004722876,
+        "inode": 176482
+      }
+    },
+    {
+      "row": "startup-core-2-2-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-core-2-2-candidate/tmp",
+      "entries": [],
+      "recordedCleanupComplete": true,
+      "recordedFinishedAt": "2026-10-11T07:57:23.878Z",
+      "stat": {
+        "ctimeNs": 1791705445338436080,
+        "mtimeNs": 1791705442984723741,
+        "atimeNs": 1791705446068590438,
+        "inode": 176503
+      }
+    },
+    {
+      "row": "startup-format-1-2-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-1-2-candidate/tmp",
+      "entries": [],
+      "recordedCleanupComplete": true,
+      "recordedFinishedAt": "2026-10-11T07:57:30.891Z",
+      "stat": {
+        "ctimeNs": 1791705452889352257,
+        "mtimeNs": 1791705450704603008,
+        "atimeNs": 1791705453608264760,
+        "inode": 176538
+      }
+    },
+    {
+      "row": "startup-format-3-3-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/tmp",
+      "entries": [],
+      "recordedCleanupComplete": true,
+      "recordedFinishedAt": "2026-10-11T07:57:37.083Z",
+      "stat": {
+        "ctimeNs": 1791705458983063216,
+        "mtimeNs": 1791705456804698137,
+        "atimeNs": 1791705459700001674,
+        "inode": 176586
+      }
+    }
+  ],
+  "logBindingDiscrepancies": [
+    {
+      "row": "startup-format-3-3-candidate",
+      "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/stdout.log",
+      "childReceipt": {
+        "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/stdout.log",
+        "bytes": 3144,
+        "sha256": "ba79111e7a3ff5590811c7674728e54fe9da1fcdd31e61f21a8cc6f4bed6e4af"
+      },
+      "finalArtifactInventory": {
+        "path": "/workspace/scratch/a2f3334402fc/recovery-oct11/final-local/final-source-all-attempt1/startup-format-3-3-candidate/stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "current": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stat": {
+        "ctimeNs": 1791705458992032251,
+        "mtimeNs": 1791705456632134172,
+        "inode": 176587
+      },
+      "embeddedResultPresent": true
+    }
+  ],
+  "runnerDisposalSequence": "After child close and logs hash, runJob lists tmp entries, awaits recursive rm, then stat requires ENOENT; only then cleanupComplete=true. Final artifact fingerprint does not revalidate earlier per-child log hashes."
+}
