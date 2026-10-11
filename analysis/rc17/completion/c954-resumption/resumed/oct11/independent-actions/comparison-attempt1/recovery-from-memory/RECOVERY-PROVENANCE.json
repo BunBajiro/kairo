@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Memory recovery after confirmed executor filesystem reset; GitHub blobs only, no ref or tree mutation",
+  "runId": 38176821997,
+  "runAttempt": 1,
+  "triggerCommit": "cbcd22ff6b57ea2c168fa363332a80d7c414f7d5",
+  "candidateCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "files": [
+    {
+      "path": "analysis/rc17/completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/recovery-from-memory/artifacts-original-tool-object.json",
+      "blobSha": "2b32c8854aac7e5ae6c819f6ead10017f36c1492",
+      "provenance": "Exact structured artifact tool object retained in functions.store; JSON serialization is newly produced."
+    },
+    {
+      "path": "analysis/rc17/completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/recovery-from-memory/jobs-last-stored-in-progress-tool-object.json",
+      "blobSha": "36469d91741f69a464f47f1d9206f8804a59342a",
+      "provenance": "Exact last stored jobs object; bundle assembly was still in progress at that observation."
+    },
+    {
+      "path": "analysis/rc17/completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/recovery-from-memory/job-114580856302.connector-decoded.safe.log",
+      "blobSha": "a20d57207fc9b4b15efdc40345d513768ab6ba34",
+      "provenance": "Exact retained connector-decoded text, including initial BOM; no URL queries found, so zero redactions. Not original HTTP transport bytes."
+    },
+    {
+      "path": "analysis/rc17/completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/recovery-from-memory/jobs-final-refetched-tool-object.json",
+      "blobSha": "51ae7f6554d534daa985120aae6b58c391940f23",
+      "provenance": "Fresh connector read after reset; confirms completed/success. Not reconstructed from the earlier partial display."
+    }
+  ],
+  "safeLog": {
+    "characters": 265352,
+    "urlQueryRedactions": 0
+  },
+  "priorDownloads": {
+    "verification": "All five original ZIP byte counts and SHA256 digests were checked against API values before the executor reset. This is a newly written recovery account of tool-observed checks, not the lost original DOWNLOADS.json bytes.",
+    "totalZipBytes": 74895725,
+    "workspaceCopiesLost": true,
+    "redownloadRequired": true,
+    "artifacts": [
+      {
+        "id": 11717365026,
+        "name": "internal-instrumented-rc17-70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+        "bytes": 1926,
+        "sha256": "27c8f6cd93af8b5764473c082e5cca8b5098e70202857b7f2cdb65cfb44046c4",
+        "formerLocalPath": "/tmp/kairo-ci-comparison-38176821997/artifact-11717365026.zip"
+      },
+      {
+        "id": 11717355022,
+        "name": "internal-instrumented-rc17-70cd12f9a4d014e7e2cf931b9681c4bdc7f18789-part-03",
+        "bytes": 9277025,
+        "sha256": "afa21845585589c7e951ddc09c92a5a0793bfc98e4cdf5751249e8abb2a9b741",
+        "formerLocalPath": "/tmp/kairo-ci-comparison-38176821997/artifact-11717355022.zip"
+      },
+      {
+        "id": 11717335211,
+        "name": "internal-instrumented-rc17-70cd12f9a4d014e7e2cf931b9681c4bdc7f18789-part-02",
+        "bytes": 31406720,
+        "sha256": "db6a6f0e09e86d2da961aca3b14081621f8aec8cda0f5425837947c1df18492c",
+        "formerLocalPath": "/tmp/kairo-ci-comparison-38176821997/artifact-11717335211.zip"
+      },
+      {
+        "id": 11716169668,
+        "name": "internal-instrumented-rc17-70cd12f9a4d014e7e2cf931b9681c4bdc7f18789-part-01",
+        "bytes": 31417765,
+        "sha256": "2217a20081bb3cb767b3649696a99696829097f32612f0b8fe155510c651c87e",
+        "formerLocalPath": "/tmp/kairo-ci-comparison-38176821997/artifact-11716169668.zip"
+      },
+      {
+        "id": 11716144963,
+        "name": "internal-rc17-comparison-evidence",
+        "bytes": 2792289,
+        "sha256": "a98542607becc243ce84fea2dfe7b5e7d717e05e80b9f34a78582824a02d3dbd",
+        "formerLocalPath": "/tmp/kairo-ci-comparison-38176821997/artifact-11716144963.zip"
+      }
+    ]
+  },
+  "unfinished": {
+    "offlineArtifactVerification": "Started as exec session 99077; completion was unconfirmed before reset. Must be performed again offline.",
+    "numericReview": "Not performed; all comparison numeric reviews remain incomplete.",
+    "finalRunLevelRestObject": "Not retained in functions.store; no exact reconstruction claimed.",
+    "offlineScripts": "Written only to lost workspace; no exact script text was retained in functions.store, so no recreated script is labelled recovered original."
+  },
+  "measurementRerunRequired": false,
+  "releaseApproval": false
+}
