@@ -1,6 +1,6 @@
 # Validation and release readiness
 
-**RC17 remains internal work in progress. PR #10 is withdrawn; a clean 0.8.0 review candidate is not yet available.** The [analysis checkpoint](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) records accepted changes, rejected experiments, remaining findings and exact source/evidence boundaries. Do not infer final acceptance from an older test count or a successful ordinary test-build workflow.
+**Use the exact build designated in the [current acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).** It records the application commit, completed gates, verified package/download and remaining review requirements. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
 
 ## Reproduce source checks
 
@@ -25,13 +25,15 @@ Build before tests that require compiled `dist` entrypoints. Dependencies and th
 | Stream/OBS | Projection, protection, bindings, renderer recovery, native timing and actual user OBS review |
 | Dataset or packaging | Fault/restart/rollback tests, fresh package extraction and checks against the extracted runtime |
 
-The full contract suite is `tests/kairo/*.test.mjs`. Browser and packaging gates are defined in [test-build.yml](../.github/workflows/test-build.yml) and the referenced scripts. Keep synthetic fixture results separate from real EVE/OBS/Windows checks.
+The full contract suite is `tests/kairo/*.test.mjs`. Browser and packaging gates are defined in [test-build.yml](https://github.com/BunBajiro/kairo/blob/70cd12f9a4d014e7e2cf931b9681c4bdc7f18789/.github/workflows/test-build.yml) and the referenced scripts. Keep synthetic fixture results separate from real EVE/OBS/Windows checks.
 
 ## What is verified at this checkpoint
 
-Application code checkpoint `a7b1bf97b0073695926c443e52d523638e59e48d` passed [test build #63](https://github.com/BunBajiro/kairo/actions/runs/37753808235): types, fresh build, selected compiled Session/Universe/replay/dataset checks, extraction and packaged-runtime checks. The analysis record contains the narrower source-bound optimization gates that led to it. This is not a claim that a full current optimization matrix or final combined suite has passed.
+Measured application source `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789` passed **1,004 runtime tests, type checks and a fresh build**, plus **89 compiled integration controls**. [Test build #65](https://github.com/BunBajiro/kairo/actions/runs/37768942689) separately verified its ordinary feature-build/package checks. All **46 refactoring and optimisation component decisions** have supported fix, retention or rejection dispositions in the [single issue ledger](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-ISSUES.md).
 
-Remaining closure includes source-bound component decisions, combined correctness/performance, startup/state/idle/retention and independent CI/package acceptance. Documentation changes do not close runtime findings. Final acceptance must name the exact source commit, built assets, harness/fixtures and retained failures/adverse results.
+The final local historical/current comparisons, startup and full-contract/database adapters, completion UI, configured first binding and real-archive updater collections have independent reviews. The [three-version performance report](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/PERFORMANCE-REVIEW-0.8.0.md) retains improvements, adverse results, first-use trade-offs and limits. The 0.7.3/RC16 and RC16/current groups are separately matched; their percentages are not combined into an inferred 0.7.3/current result.
+
+The [current acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) owns the independent comparison/UI/updater Actions results and the exact extracted package. Documentation-only preparation after source70 must record the changed files and unchanged runtime/build inputs there; it does not relabel earlier measurements as having run on a later commit. A passing ordinary build or documentation update alone does not close release acceptance.
 
 ## Performance evidence rules
 

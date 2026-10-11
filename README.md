@@ -2,7 +2,7 @@
 
 A local EVE Online workspace for pilot data, Markets, Sessions, maps and a separate transparent OBS output. Windows is the primary platform. No cloud deployment or AI service is required.
 
-**0.8.0 development: RC17 optimization and refactoring are still under validation. A clean RC17 review build has not been approved.** See the [validation status](docs/VALIDATION.md) before using an internal test artifact.
+**0.8.0-rc.17 · Optimisation and refactoring candidate.** See the [validation and review record](docs/VALIDATION.md) for the exact designated build and acceptance status. Internal test artifacts do not by themselves establish readiness for user review.
 
 ## Install and run
 

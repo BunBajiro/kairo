@@ -1,6 +1,6 @@
 # Documentation map
 
-These are the maintained entry points for the current application. Historical release claims do not establish that the current RC17 candidate is ready; check [Validation](VALIDATION.md).
+These are the maintained user and developer entry points. See [Validation](VALIDATION.md) for the exact candidate and review status.
 
 ## Users
 
@@ -27,4 +27,4 @@ Source code and its behavioral tests define implemented behavior. These guides e
 
 ## History and investigation
 
-[CHANGELOG.md](../CHANGELOG.md) owns release history. Superseded release-review notes, source audits and feature comparisons are preserved in Git history and the separate [documentation archive](https://github.com/BunBajiro/kairo/tree/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/oct8/documentation-prune). They are not current instructions or acceptance evidence for a newer source tree. RC17 measurements and open findings are tracked in the [analysis checkpoint](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).
+[CHANGELOG.md](../CHANGELOG.md) owns release history. Superseded release-review notes, source audits and feature comparisons are preserved in Git history and the separate [documentation archive](https://github.com/BunBajiro/kairo/tree/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/oct8/documentation-prune). They are not current instructions or acceptance evidence for a newer source tree. RC17 measurements, decisions and release acceptance are tracked in the [analysis checkpoint](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).

@@ -15,9 +15,9 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 - Returns keyboard focus to the opening Session button after dismissing a report or cancelling the naming dialog, while respecting pilot changes and navigation.
 
-## 0.8.0-rc.17 — Optimisation and refactoring development
+## 0.8.0-rc.17 — Optimisation and refactoring
 
-- Refactors shared work across Kairo, including existing services beyond the Universe sprint. Clean RC17 review remains withheld until the optimization and refactoring findings have evidence-backed closure.
+- Refactors shared work across Kairo, including existing services beyond the Universe sprint. The [performance review](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/PERFORMANCE-REVIEW-0.8.0.md) records accepted changes, retained first-use and ongoing costs, and the evidence limits. See [Validation](docs/VALIDATION.md) for release acceptance and the designated review build.
 - Loads the Maps library through compact summaries and the opened map through selected detail. Request-scoped reads share canonical links and operational records; signature bindings use one edge pass, and overlapping browser refreshes are coalesced.
 - Prepares route evidence and graph/spatial indexes once per itinerary, reuses them across legs and validates relevant evidence and connections again before saving the result.
 - Retires the standalone Journey log, lifetime visit counters, footprint preset and visit overlay. Sessions owns new operation travel, preserving reports, combat and replay. Discovery, ordinary activity and OBS notifications remain independent; existing records and exports are retained without a reset.
@@ -158,8 +158,6 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 - Ansiblex zone calculations are labelled as the announced 22 September model; ship-specific capacitor modelling is not included.
 
 This release candidate awaits human review. It is not merged into `main`.
-
-## Unreleased
 
 ## 0.7.3 — 2026-09-18
 
