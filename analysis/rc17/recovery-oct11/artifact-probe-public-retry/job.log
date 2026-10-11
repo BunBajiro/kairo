@@ -1,0 +1,73 @@
+﻿2026-10-11T20:02:52.7627906Z Current runner version: '2.337.0'
+2026-10-11T20:02:52.7662793Z ##[group]Runner Image Provisioner
+2026-10-11T20:02:52.7664177Z Hosted Compute Agent
+2026-10-11T20:02:52.7665444Z Version: 20261002.596
+2026-10-11T20:02:52.7666495Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-11T20:02:52.7667897Z Build Date: 2026-10-02T22:28:27Z
+2026-10-11T20:02:52.7669011Z Worker ID: {9e3a90b3-c96e-4d22-b719-da7a0d422f84}
+2026-10-11T20:02:52.7670332Z Region: eastus2
+2026-10-11T20:02:52.7671626Z Cloud: Azure
+2026-10-11T20:02:52.7672468Z ##[endgroup]
+2026-10-11T20:02:52.7674796Z ##[group]Operating System
+2026-10-11T20:02:52.7676092Z Ubuntu
+2026-10-11T20:02:52.7677040Z 24.04.5
+2026-10-11T20:02:52.7677976Z LTS
+2026-10-11T20:02:52.7678771Z ##[endgroup]
+2026-10-11T20:02:52.7679722Z ##[group]Runner Image
+2026-10-11T20:02:52.7680798Z Image: ubuntu-24.04
+2026-10-11T20:02:52.7682245Z Version: 20261004.327.1
+2026-10-11T20:02:52.7684409Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-11T20:02:52.7687473Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-11T20:02:52.7689110Z ##[endgroup]
+2026-10-11T20:02:52.7691033Z ##[group]GITHUB_TOKEN Permissions
+2026-10-11T20:02:52.7693927Z Contents: read
+2026-10-11T20:02:52.7695236Z Metadata: read
+2026-10-11T20:02:52.7696129Z ##[endgroup]
+2026-10-11T20:02:52.7699115Z Secret source: Actions
+2026-10-11T20:02:52.7700698Z Cache mode: write
+2026-10-11T20:02:52.7702228Z Prepare workflow directory
+2026-10-11T20:02:52.8169857Z Prepare all required actions
+2026-10-11T20:02:52.8239948Z Getting action download info
+2026-10-11T20:02:53.0329338Z Download action repository 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-10-11T20:02:53.2508940Z Complete job name: probe
+2026-10-11T20:02:53.3370460Z ##[group]Run set -euo pipefail
+2026-10-11T20:02:53.3371135Z [36;1mset -euo pipefail[0m
+2026-10-11T20:02:53.3371731Z [36;1mpython3 - <<'PY'[0m
+2026-10-11T20:02:53.3372245Z [36;1mimport hashlib, json, os[0m
+2026-10-11T20:02:53.3372799Z [36;1mfrom pathlib import Path[0m
+2026-10-11T20:02:53.3373409Z [36;1mout = Path(os.environ['PROBE_DIRECTORY'])[0m
+2026-10-11T20:02:53.3374030Z [36;1mout.mkdir()[0m
+2026-10-11T20:02:53.3376124Z [36;1mpayload = {'purpose': 'Artifact upload availability only; no Kairo performance or release acceptance', 'repository': os.environ['GITHUB_REPOSITORY'], 'commit': os.environ['GITHUB_SHA'], 'runId': os.environ['GITHUB_RUN_ID'], 'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'], 'probe': '2026-10-11-evening'}[0m
+2026-10-11T20:02:53.3378263Z [36;1mdata = (json.dumps(payload, sort_keys=True, indent=2) + '\n').encode()[0m
+2026-10-11T20:02:53.3379062Z [36;1m(out / 'receipt.json').write_bytes(data)[0m
+2026-10-11T20:02:53.3380054Z [36;1mprint(json.dumps({'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest(), 'payload': payload}))[0m
+2026-10-11T20:02:53.3380960Z [36;1mPY[0m
+2026-10-11T20:02:53.3638465Z shell: /usr/bin/bash -e {0}
+2026-10-11T20:02:53.3639326Z env:
+2026-10-11T20:02:53.3639982Z   PROBE_DIRECTORY: /home/runner/work/_temp/kairo-artifact-probe
+2026-10-11T20:02:53.3640781Z ##[endgroup]
+2026-10-11T20:02:53.4141486Z {"bytes": 268, "sha256": "efbf7bfcb2654f8ec893794e7ad1072fab218f267f897f3a2ae6d87faa8c8fbc", "payload": {"purpose": "Artifact upload availability only; no Kairo performance or release acceptance", "repository": "BunBajiro/kairo", "commit": "1271ccdc8c6fdc73b88f5e81dd7090c9bd09ac1c", "runId": "38166297130", "runAttempt": "2", "probe": "2026-10-11-evening"}}
+2026-10-11T20:02:53.5075555Z ##[group]Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+2026-10-11T20:02:53.5076414Z with:
+2026-10-11T20:02:53.5076907Z   name: kairo-artifact-probe-38166297130-2
+2026-10-11T20:02:53.5077634Z   path: /home/runner/work/_temp/kairo-artifact-probe/receipt.json
+2026-10-11T20:02:53.5078329Z   if-no-files-found: error
+2026-10-11T20:02:53.5078813Z   retention-days: 1
+2026-10-11T20:02:53.5079515Z   compression-level: 6
+2026-10-11T20:02:53.5080009Z   overwrite: false
+2026-10-11T20:02:53.5080524Z   include-hidden-files: false
+2026-10-11T20:02:53.5081036Z   archive: true
+2026-10-11T20:02:53.5081465Z ##[endgroup]
+2026-10-11T20:02:53.6537059Z With the provided path, there will be 1 file uploaded
+2026-10-11T20:02:53.6542864Z Artifact name is valid!
+2026-10-11T20:02:53.6544033Z Root directory input is valid!
+2026-10-11T20:02:53.8501033Z Uploading artifact: kairo-artifact-probe-38166297130-2.zip
+2026-10-11T20:02:53.8586567Z Beginning upload of artifact content to blob storage
+2026-10-11T20:02:53.9332324Z Uploaded bytes 335
+2026-10-11T20:02:53.9498945Z Finished uploading artifact content to blob storage!
+2026-10-11T20:02:53.9501421Z SHA256 digest of uploaded artifact is 42faf586be97cdcdecc1fb2f7b91c2ff9cc2fd86ab25f11d4aff28ed7ed569df
+2026-10-11T20:02:53.9503126Z Finalizing artifact upload
+2026-10-11T20:02:54.1480131Z Artifact kairo-artifact-probe-38166297130-2 successfully finalized. Artifact ID 11713214039
+2026-10-11T20:02:54.1484146Z Artifact kairo-artifact-probe-38166297130-2 has been successfully uploaded! Final size is 335 bytes. Artifact ID is 11713214039
+2026-10-11T20:02:54.1488138Z Artifact download URL: https://github.com/BunBajiro/kairo/actions/runs/38166297130/artifacts/11713214039
+2026-10-11T20:02:54.1692243Z Cleaning up orphan processes
