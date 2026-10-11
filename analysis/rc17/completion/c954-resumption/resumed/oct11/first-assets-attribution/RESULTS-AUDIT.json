@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11T20:21:10.288212+00:00",
+  "status": "passed-independent-evidence-review",
+  "scope": "one diagnostic browser per c9d/70 arm; no ordinary timing or whole-release acceptance",
+  "completed": {
+    "path": "/tmp/kairo-public-resume-20261011/first-assets-counts-attempt2/completed.json",
+    "sha256": "429739d3c86bb6665d7e6e455d089a27c6860a2a23f2afad1efcaf9cd69b0323"
+  },
+  "outerExecution": {
+    "path": "/tmp/kairo-public-resume-20261011/first-assets-attempt2-execution.json",
+    "sha256": "3662bcdf811b80f88429c715ca90a34aa768181863db191d16a370bc6d21512c",
+    "exitCode": 0,
+    "consoleHashVerified": true
+  },
+  "inventoryFiles": 34,
+  "totalAttemptFiles": 36,
+  "preparationBindingsVerified": 47,
+  "closedCommandLogPinsVerified": 10,
+  "consumedWorkerJsonPinsVerified": 2,
+  "copiedInputsVerified": 22,
+  "recomputedScalarCountDeltas": 28,
+  "temporaryRootsRemovedAndStillAbsent": 2,
+  "bothSharedLocksObservedFree": true,
+  "allOwnedCommandExitsZeroAndGroupsDrained": true,
+  "sources": [
+    {
+      "arm": "baseline",
+      "commit": "c9d04ef62cb8a18292b309a2452fcab851185a7d",
+      "sourceFiles": 488,
+      "assets": 20,
+      "fingerprint": "c21a938f2c140954465e0f461c6e689d5ad8116d41b681f9beffc6094b84ad53",
+      "currentSourceAndAssetsMatch": true
+    },
+    {
+      "arm": "candidate",
+      "commit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+      "sourceFiles": 486,
+      "assets": 20,
+      "fingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+      "currentSourceAndAssetsMatch": true
+    }
+  ],
+  "workers": [
+    {
+      "arm": "baseline",
+      "rawSha256": "6bf90013128c52bf44df5cc381bc2e93db7dd8b06084e480949b2f826281f9b9",
+      "phaseCounts": [
+        {
+          "label": "initial-overview-bootstrap",
+          "delta": {
+            "map": {
+              "journal": {
+                "calls": 1,
+                "rows": 80
+              }
+            },
+            "searchRows": 0,
+            "numberFormat": 2,
+            "dateFormat": 3
+          }
+        },
+        {
+          "label": "assets-first-open",
+          "delta": {
+            "map": {
+              "journal": {
+                "calls": 0,
+                "rows": 0
+              },
+              "prices": {
+                "calls": 1,
+                "rows": 20000
+              },
+              "assets": {
+                "calls": 1,
+                "rows": 10000
+              }
+            },
+            "searchRows": 0,
+            "numberFormat": 0,
+            "dateFormat": 0
+          }
+        }
+      ],
+      "totalReceiptRows": 12,
+      "httpStarted": 5,
+      "httpResolved200": 5,
+      "httpRejected": 0,
+      "requestPaths": [
+        "/api/bootstrap",
+        "/api/state",
+        "/api/universe/jspace/tracking/active",
+        "/api/timeline",
+        "/api/goals"
+      ],
+      "sse": {
+        "open": 1,
+        "dataset-revision": 1
+      },
+      "sourceChanged": 0,
+      "assetsPhaseReceipts": 0,
+      "afterAssertionAdditionalCountsOrReceipts": false,
+      "browserExitCode": 0,
+      "browserExitSignal": null
+    },
+    {
+      "arm": "candidate",
+      "rawSha256": "04ae663356a9e18ec5a82450af5150fd33ef9945bf11f7c96d4a73321288a55b",
+      "phaseCounts": [
+        {
+          "label": "initial-overview-bootstrap",
+          "delta": {
+            "map": {
+              "journal": {
+                "calls": 1,
+                "rows": 80
+              }
+            },
+            "searchRows": 0,
+            "numberFormat": 2,
+            "dateFormat": 3
+          }
+        },
+        {
+          "label": "assets-first-open",
+          "delta": {
+            "map": {
+              "journal": {
+                "calls": 0,
+                "rows": 0
+              },
+              "prices": {
+                "calls": 1,
+                "rows": 20000
+              },
+              "assets": {
+                "calls": 1,
+                "rows": 10000
+              }
+            },
+            "searchRows": 0,
+            "numberFormat": 0,
+            "dateFormat": 0
+          }
+        }
+      ],
+      "totalReceiptRows": 13,
+      "httpStarted": 5,
+      "httpResolved200": 5,
+      "httpRejected": 0,
+      "requestPaths": [
+        "/api/bootstrap",
+        "/api/state",
+        "/api/universe/jspace/tracking/active",
+        "/api/timeline",
+        "/api/goals"
+      ],
+      "sse": {
+        "open": 1,
+        "names": 1,
+        "dataset-revision": 1
+      },
+      "sourceChanged": 0,
+      "assetsPhaseReceipts": 0,
+      "afterAssertionAdditionalCountsOrReceipts": false,
+      "browserExitCode": 0,
+      "browserExitSignal": null
+    }
+  ],
+  "fixture": {
+    "pilots": 2,
+    "rowsPerLargeDataset": 10000,
+    "namesJsonBytes": 550001,
+    "namesSha256": "8181d17022f21e3a2f72de4c527d14f49771e4194729c076b5d111a894d44141",
+    "dataSha256": "0c71f0a3f1a5d5c1ffdb576d1d04b2acfa5bdeaad9caffe820c4a3d3fd11c5c2"
+  },
+  "phaseCountsEqual": true,
+  "failedAttempt1": {
+    "preserved": true,
+    "completedSha256": "fae981a54d5edfd417131b6cd9975e03e06dcbbfb1c485d7ae79e1bb5daa6f55",
+    "inventoriedFilesReverified": 29,
+    "complete": false,
+    "completePhases": 0,
+    "cause": "harness IIFE composition; no application defect established; old temporary-root reappeared wording was inaccurate"
+  },
+  "recommendation": "Retain source70 and accept observed first-use costs under the established tradeoff policy; proceed to the original final matrix. No further optimization/profiling is supported by this bounded count observation.",
+  "limitations": [
+    "Shape-matched operations are not React commits, all work, allocations or CPU cost.",
+    "No extra observed receipt or repeat derivation within these phases; not proof that all bootstrap work is minimal.",
+    "One fresh browser per arm, diagnostic instrumentation and CDP snapshots may perturb scheduling.",
+    "Earlier ordinary adverse pairs and spike remain; no GC, JIT or layout cause is established.",
+    "Receipt timestamps are phase chronology only, not comparative timings.",
+    "Final local/CI/package/user acceptance remains open."
+  ]
+}

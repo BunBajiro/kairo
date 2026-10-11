@@ -1,0 +1,118 @@
+{
+  "status": "prepared-not-executed",
+  "applicationExecuted": false,
+  "benchmarksExecuted": false,
+  "syntaxParsed": true,
+  "originalLaneDispatchAstIdentical": true,
+  "originalCommandTimeoutSeconds": 900,
+  "declarativeAdapterEdits": 5,
+  "ownershipControls": {
+    "complete": true,
+    "scope": "Four bounded ownership/evidence controls, no application or benchmark",
+    "checks": [
+      {
+        "name": "ordinary-exit",
+        "expectedCommandPass": true,
+        "actualCommandPass": true,
+        "allOwnedDescendantsAbsent": true,
+        "receipt": "/tmp/kairo-final-matrix-ownership-controls-20261011/ordinary-exit/ownership-completed.json"
+      },
+      {
+        "name": "detached-survivor",
+        "expectedCommandPass": false,
+        "actualCommandPass": false,
+        "allOwnedDescendantsAbsent": true,
+        "receipt": "/tmp/kairo-final-matrix-ownership-controls-20261011/detached-survivor/ownership-completed.json"
+      },
+      {
+        "name": "deadline",
+        "expectedCommandPass": false,
+        "actualCommandPass": false,
+        "allOwnedDescendantsAbsent": true,
+        "receipt": "/tmp/kairo-final-matrix-ownership-controls-20261011/deadline/ownership-completed.json"
+      },
+      {
+        "name": "changed-closed-file",
+        "alterationRejected": true
+      }
+    ]
+  },
+  "bindings": {
+    "ORCHESTRATION.diff": {
+      "bytes": 2200,
+      "sha256": "979a23fa80c66238775501295c7858691f013344996a86e099490a65b43f5a9f"
+    },
+    "README.md": {
+      "bytes": 6693,
+      "sha256": "d19f2648644d27dfd0bd93eda4e1e1643858682f3c1e49e800e5a6d555ea9532"
+    },
+    "adapt-local-run.py": {
+      "bytes": 2085,
+      "sha256": "413aa3849889c70735fae3006f30896817d6cf8ccd3ad73e10fefb985f28563e"
+    },
+    "controls/changed-closed-file/input.txt": {
+      "bytes": 11,
+      "sha256": "95713e9cbdd1dfcb2d4080c2537f418d43ca0da25f0d7d6631f4f7c97b89dc47"
+    },
+    "controls/changed-closed-file/ownership-progress.json": {
+      "bytes": 378,
+      "sha256": "25d092652c88503b7df1df17dd42744638218ad6b9424ddf9dfa89954bb9e220"
+    },
+    "controls/controls.json": {
+      "bytes": 999,
+      "sha256": "b3fe5e2bb2f066265cb451e42db42b34025bd8dea5482ebc9c3ad0907be3d5d8"
+    },
+    "controls/deadline/child.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "controls/deadline/ownership-completed.json": {
+      "bytes": 1561,
+      "sha256": "f6a82bdedefec1a543f85349c597cf07291f54ef02e973b6cb73278fa3e8431c"
+    },
+    "controls/deadline/ownership-progress.json": {
+      "bytes": 1561,
+      "sha256": "f6a82bdedefec1a543f85349c597cf07291f54ef02e973b6cb73278fa3e8431c"
+    },
+    "controls/detached-survivor/child.log": {
+      "bytes": 14,
+      "sha256": "2cc8c5b867becf509074f05dfcd8b7b8caca45d61c58aba0f7b51520d7fe6bdf"
+    },
+    "controls/detached-survivor/ownership-completed.json": {
+      "bytes": 2185,
+      "sha256": "e9c9af7ce15fb5033b96e44c29909046c5abb98b05c929758ca65e89eb9a33c5"
+    },
+    "controls/detached-survivor/ownership-progress.json": {
+      "bytes": 2185,
+      "sha256": "e9c9af7ce15fb5033b96e44c29909046c5abb98b05c929758ca65e89eb9a33c5"
+    },
+    "controls/ordinary-exit/child.log": {
+      "bytes": 15,
+      "sha256": "0c1a203bf74561256565c3af3fc3fdc7f4587f0985316c488726598d9d84bcc2"
+    },
+    "controls/ordinary-exit/ownership-completed.json": {
+      "bytes": 1472,
+      "sha256": "cbacb7293d4557433151fa0b5fc150a403fc31c21d1c77d40a8d6a4aa0016ba2"
+    },
+    "controls/ordinary-exit/ownership-progress.json": {
+      "bytes": 1472,
+      "sha256": "cbacb7293d4557433151fa0b5fc150a403fc31c21d1c77d40a8d6a4aa0016ba2"
+    },
+    "envelope.py": {
+      "bytes": 9837,
+      "sha256": "f0b54c70c93891fd105d4f950a72046ce7998d21a8154e65a0440aca2b61a61a"
+    },
+    "local-run-owned.py": {
+      "bytes": 5311,
+      "sha256": "2dadd7210d356f65044c5a926be440afb8cf8f9f357c72137a6d2d5d605949a7"
+    },
+    "ownership-controls.py": {
+      "bytes": 1948,
+      "sha256": "ee5affc94f7f70b829827aeb59317b77b7aa1591b69396b8f77c52e9048f4c55"
+    },
+    "run.py": {
+      "bytes": 11693,
+      "sha256": "880d74d23462183e0623835dee051c847a8755b05097bf21662c34fab940c0d9"
+    }
+  }
+}

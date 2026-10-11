@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-11T20:14:13.474261+00:00",
+  "complete": true,
+  "reviewReady": false,
+  "commands": [
+    {
+      "label": "ordinary-exit",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-c",
+        "print('closed receipt')"
+      ],
+      "cwd": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored",
+      "timeoutSeconds": 5,
+      "startedAt": "2026-10-11T20:14:13.474688+00:00",
+      "log": "child.log",
+      "pid": 5,
+      "exitCode": 0,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:14:13.575878+00:00",
+        "initialGroups": {
+          "5": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:14:13.576403+00:00",
+        "finalGroups": {
+          "5": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "drainPassed": true,
+      "endedAt": "2026-10-11T20:14:13.576603+00:00",
+      "closedLog": {
+        "bytes": 15,
+        "sha256": "0c1a203bf74561256565c3af3fc3fdc7f4587f0985316c488726598d9d84bcc2"
+      }
+    }
+  ],
+  "closedFiles": {
+    "child.log": {
+      "bytes": 15,
+      "sha256": "0c1a203bf74561256565c3af3fc3fdc7f4587f0985316c488726598d9d84bcc2"
+    }
+  },
+  "scope": "Original commands with boundary-only process ownership and evidence hashes",
+  "endedAt": "2026-10-11T20:14:13.577166+00:00"
+}

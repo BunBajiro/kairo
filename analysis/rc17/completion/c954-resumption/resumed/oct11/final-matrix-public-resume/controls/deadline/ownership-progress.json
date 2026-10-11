@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-11T20:14:13.781819+00:00",
+  "complete": false,
+  "reviewReady": false,
+  "commands": [
+    {
+      "label": "deadline",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-c",
+        "import time; time.sleep(30)"
+      ],
+      "cwd": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored",
+      "timeoutSeconds": 0.25,
+      "startedAt": "2026-10-11T20:14:13.782331+00:00",
+      "log": "child.log",
+      "pid": 8,
+      "failure": "RuntimeError('Command interrupted or exceeded original deadline')",
+      "exitCode": -15,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:14:14.084454+00:00",
+        "initialGroups": {
+          "8": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:14:14.084931+00:00",
+        "finalGroups": {
+          "8": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "drainPassed": true,
+      "endedAt": "2026-10-11T20:14:14.085133+00:00",
+      "closedLog": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "closedFiles": {
+    "child.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scope": "Original commands with boundary-only process ownership and evidence hashes",
+  "endedAt": "2026-10-11T20:14:14.085625+00:00"
+}

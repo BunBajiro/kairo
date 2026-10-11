@@ -1,5 +1,7 @@
 # Checkpoint and next work — 11 October2026
 
+**Later continuation update:** artifact delivery recovered after the user made Kairo public. The bounded first-Assets check is complete and the initial cost is accepted; see [decision](first-assets-attribution/RESULTS.md) and the current checkpoint/ledger. The historical next-diagnostic/profile suggestions below do not queue further work. The reviewed replacement local matrix is in `final-matrix-public-resume/`.
+
 This is a continuation handoff, not another live ledger. `CURRENT-ISSUES.md` remains the closure ledger; the coordinator updates it after the audits. The latest banked `CURRENT-CHECKPOINT.md` owns restoration. This review executed no application, browser, build or benchmark.
 
 **Bank the completed evidence and pause. Do not queue another names or final-source run.** Bank `3972909` already retains failed final-source attempt2 and names preparation; the next bank must include the later failed/passing attempts and audits below. Application source remains `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789`. Final-source runner is revision4, SHA256 `a0ea1e26f4cf62cff6761be61d2bbfc275a1c376c31ae24f02a115a09c6ac531`. Recovery, four fresh builds and official updater archive restoration are complete. The older `NEXT-RESTORE-AND-GATES.md` is superseded.

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-11T20:14:13.577521+00:00",
+  "complete": false,
+  "reviewReady": false,
+  "commands": [
+    {
+      "label": "detached-survivor",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-c",
+        "import subprocess,sys; subprocess.Popen([sys.executable,'-c','import time; time.sleep(30)'],start_new_session=True); print('leader exited')"
+      ],
+      "cwd": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored",
+      "timeoutSeconds": 5,
+      "startedAt": "2026-10-11T20:14:13.577822+00:00",
+      "log": "child.log",
+      "pid": 6,
+      "exitCode": 0,
+      "descendantDrain": {
+        "complete": false,
+        "startedAt": "2026-10-11T20:14:13.678667+00:00",
+        "initialGroups": {
+          "6": [],
+          "7": [
+            {
+              "pid": 30997,
+              "state": "S"
+            }
+          ]
+        },
+        "initialAdopted": [
+          {
+            "pid": 7,
+            "group": 7,
+            "state": "S",
+            "hostPid": 30997
+          }
+        ],
+        "unexpectedLiveAfterLeaderExit": true,
+        "cleanupSignals": [
+          {
+            "at": "2026-10-11T20:14:13.679898+00:00",
+            "groups": [
+              6,
+              7
+            ],
+            "signal": "SIGKILL"
+          }
+        ],
+        "endedAt": "2026-10-11T20:14:13.780710+00:00",
+        "finalGroups": {
+          "6": [],
+          "7": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "adoptedChildExits": [
+        {
+          "pid": 7,
+          "waitStatus": 9
+        }
+      ],
+      "drainPassed": false,
+      "endedAt": "2026-10-11T20:14:13.780923+00:00",
+      "closedLog": {
+        "bytes": 14,
+        "sha256": "2cc8c5b867becf509074f05dfcd8b7b8caca45d61c58aba0f7b51520d7fe6bdf"
+      }
+    }
+  ],
+  "closedFiles": {
+    "child.log": {
+      "bytes": 14,
+      "sha256": "2cc8c5b867becf509074f05dfcd8b7b8caca45d61c58aba0f7b51520d7fe6bdf"
+    }
+  },
+  "scope": "Original commands with boundary-only process ownership and evidence hashes",
+  "endedAt": "2026-10-11T20:14:13.781458+00:00"
+}

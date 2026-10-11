@@ -1,0 +1,31 @@
+{
+  "complete": true,
+  "scope": "Four bounded ownership/evidence controls, no application or benchmark",
+  "checks": [
+    {
+      "name": "ordinary-exit",
+      "expectedCommandPass": true,
+      "actualCommandPass": true,
+      "allOwnedDescendantsAbsent": true,
+      "receipt": "/tmp/kairo-final-matrix-ownership-controls-20261011/ordinary-exit/ownership-completed.json"
+    },
+    {
+      "name": "detached-survivor",
+      "expectedCommandPass": false,
+      "actualCommandPass": false,
+      "allOwnedDescendantsAbsent": true,
+      "receipt": "/tmp/kairo-final-matrix-ownership-controls-20261011/detached-survivor/ownership-completed.json"
+    },
+    {
+      "name": "deadline",
+      "expectedCommandPass": false,
+      "actualCommandPass": false,
+      "allOwnedDescendantsAbsent": true,
+      "receipt": "/tmp/kairo-final-matrix-ownership-controls-20261011/deadline/ownership-completed.json"
+    },
+    {
+      "name": "changed-closed-file",
+      "alterationRejected": true
+    }
+  ]
+}
