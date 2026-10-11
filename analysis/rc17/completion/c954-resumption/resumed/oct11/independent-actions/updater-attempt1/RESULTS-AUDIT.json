@@ -1,0 +1,779 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11T21:47:38.299051+00:00",
+  "passed": true,
+  "releaseApproval": false,
+  "runUrl": "https://github.com/BunBajiro/kairo/actions/runs/38176822054",
+  "analysisTrigger": "cbcd22ff6b57ea2c168fa363332a80d7c414f7d5",
+  "candidateCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "sourceFingerprint": "e10ebd999436d0d048178aea2fbe42717478c843aaf629444ed5ce26ea43dd46",
+  "artifactReceipt": {
+    "bytes": 1738,
+    "sha256": "d58dad036f35a0aec7acb37cf62bce79b44172fd3074d54cf7ebdaf375a8f49c"
+  },
+  "rawPins": {
+    "source.json": {
+      "bytes": 84943,
+      "sha256": "11b79793aa92c44d51ac32b11fc531b9f58bce294111b05a69a1c08adab9c210"
+    },
+    "inventory.json": {
+      "bytes": 5420,
+      "sha256": "c6c8c1f86ccbfdc5ec7f3be6b42d2791b64023390cf967f5086ecec991c23d02"
+    },
+    "loaded.json": {
+      "bytes": 1412977,
+      "sha256": "e8e61412e2243788ebfe697ca6c1f1927d4b829a252c64122f7b993514d97594"
+    }
+  },
+  "checksPassed": [
+    "run and all job steps success",
+    "API/upload/download ZIP binding",
+    "ZIP CRC and all extracted bytes",
+    "exact clean source identity",
+    "manifest fingerprint recomputed",
+    "486 local frozen source pins",
+    "18 built matches; two same-size entrypoints differ",
+    "all result source/end guards",
+    "exact-trigger harness loaded-run.mjs",
+    "exact-trigger harness loaded-child.mjs",
+    "exact-trigger harness ../../harness/backend/fixture.mjs",
+    "exact-trigger harness ../../harness/backend/metrics.mjs",
+    "exact-trigger harness ../../harness/backend/target.mjs",
+    "exact-trigger harness ../../harness/legacy-discovery-fixture.mjs",
+    "exact-trigger harness ../../harness/source-manifest.mjs",
+    "trigger workflow.yml",
+    "trigger request.json",
+    "archive triple",
+    "inventory25/six data pins",
+    "nominal60000ms/originalorder",
+    "loaded-control-1 completion/error/window",
+    "loaded-control-1 schedule",
+    "loaded-control-1 numeric metrics",
+    "loaded-control-1 generation lifecycle",
+    "loaded-control-1 scheduler/clients/dataset",
+    "loaded-control-1 expected errors",
+    "loaded-control-1 control lifecycle",
+    "loaded-control-1 SSE connects",
+    "loaded-conversion-1 completion/error/window",
+    "loaded-conversion-1 schedule",
+    "loaded-conversion-1 numeric metrics",
+    "loaded-conversion-1 generation lifecycle",
+    "loaded-conversion-1 scheduler/clients/dataset",
+    "loaded-conversion-1 expected errors",
+    "loaded-conversion-1 install5s/bootstrap",
+    "loaded-conversion-1 restart/reconnect",
+    "loaded-conversion-1 ordered phases",
+    "loaded-conversion-1 replacement revisions",
+    "loaded-conversion-1 manifest identity",
+    "loaded-conversion-1 SSE connects",
+    "loaded-conversion-2 completion/error/window",
+    "loaded-conversion-2 schedule",
+    "loaded-conversion-2 numeric metrics",
+    "loaded-conversion-2 generation lifecycle",
+    "loaded-conversion-2 scheduler/clients/dataset",
+    "loaded-conversion-2 expected errors",
+    "loaded-conversion-2 install5s/bootstrap",
+    "loaded-conversion-2 restart/reconnect",
+    "loaded-conversion-2 ordered phases",
+    "loaded-conversion-2 replacement revisions",
+    "loaded-conversion-2 manifest identity",
+    "loaded-conversion-2 SSE connects",
+    "loaded-control-2 completion/error/window",
+    "loaded-control-2 schedule",
+    "loaded-control-2 numeric metrics",
+    "loaded-control-2 generation lifecycle",
+    "loaded-control-2 scheduler/clients/dataset",
+    "loaded-control-2 expected errors",
+    "loaded-control-2 control lifecycle",
+    "loaded-control-2 SSE connects",
+    "loaded-control-3 completion/error/window",
+    "loaded-control-3 schedule",
+    "loaded-control-3 numeric metrics",
+    "loaded-control-3 generation lifecycle",
+    "loaded-control-3 scheduler/clients/dataset",
+    "loaded-control-3 expected errors",
+    "loaded-control-3 control lifecycle",
+    "loaded-control-3 SSE connects",
+    "loaded-conversion-3 completion/error/window",
+    "loaded-conversion-3 schedule",
+    "loaded-conversion-3 numeric metrics",
+    "loaded-conversion-3 generation lifecycle",
+    "loaded-conversion-3 scheduler/clients/dataset",
+    "loaded-conversion-3 expected errors",
+    "loaded-conversion-3 install5s/bootstrap",
+    "loaded-conversion-3 restart/reconnect",
+    "loaded-conversion-3 ordered phases",
+    "loaded-conversion-3 replacement revisions",
+    "loaded-conversion-3 manifest identity",
+    "loaded-conversion-3 SSE connects",
+    "all three output manifests agree",
+    "paired building 1control",
+    "paired building 1conversion",
+    "paired building 2control",
+    "paired building 2conversion",
+    "paired building 3control",
+    "paired building 3conversion"
+  ],
+  "sourceComparison": {
+    "trackedFilesEqualLocal": 486,
+    "builtFilesEqualLocal": 18,
+    "sameSizeDifferentHashes": [
+      "dist/client/index.html",
+      "dist/client/index.rsc"
+    ]
+  },
+  "workflowPin": {
+    "bytes": 4571,
+    "sha256": "5e6f8ddda6680c52918831272ad07b9e32a056cc4c9b94bf859e5a86193e3ba0"
+  },
+  "tests": {
+    "total": 1004,
+    "fail": 0
+  },
+  "inventory": {
+    "first": {
+      "index": 0,
+      "elapsedMs": 15.570891999999986,
+      "cpuMs": 17.426,
+      "heapDeltaBytes": 5881344,
+      "rssBytes": 77348864
+    },
+    "warm24WallMs": {
+      "n": 24,
+      "p50": 9.944659000000001,
+      "p95": 14.458169999999996,
+      "max": 16.018654999999995
+    },
+    "warm24CpuMs": {
+      "n": 24,
+      "p50": 10.582,
+      "p95": 21.773,
+      "max": 32.545
+    },
+    "maxRssBytes": 118611968,
+    "finalRssBytes": 118611968
+  },
+  "archive": {
+    "build": 3552227,
+    "bytes": 99197259,
+    "sha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+  },
+  "runs": {
+    "loaded-control-1": {
+      "wallWindowMs": 60002,
+      "httpTotal": 230,
+      "allSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 55.49706199999855,
+        "p95": 117.87011400000483,
+        "max": 134.61825900000258
+      },
+      "regularSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 55.49706199999855,
+        "p95": 117.87011400000483,
+        "max": 134.61825900000258
+      },
+      "dispatchLatenessMs": {
+        "n": 230,
+        "p50": 0,
+        "p95": 1,
+        "max": 4
+      },
+      "restartFailures": [],
+      "restartGapMs": null,
+      "sseConnectionErrors": 0,
+      "generationMetrics": [
+        {
+          "elapsedMs": 60023.123589,
+          "cpuMs": 5873.101,
+          "cpuPercentOneCore": 9.784730698480876,
+          "eventLoopUtilization": 0.08843407972614292,
+          "eventLoopDelayP95Ms": 10.772479,
+          "eventLoopDelayMaxMs": 180.486143,
+          "rssBeforeBytes": 163500032,
+          "rssAfterBytes": 184942592,
+          "peakRssBytes": 312229888,
+          "heapBeforeBytes": 58920864,
+          "heapAfterBytes": 53894760
+        }
+      ],
+      "cpuMsSum": 5873.101,
+      "rssMaximumObservedBytes": 312229888,
+      "generationMeterGapsMs": [],
+      "buildingPhases": []
+    },
+    "loaded-conversion-1": {
+      "wallWindowMs": 60001,
+      "httpTotal": 232,
+      "allSuccessfulHttpMs": {
+        "n": 226,
+        "p50": 55.40349100000458,
+        "p95": 117.89381499999581,
+        "max": 150.54253399999288
+      },
+      "regularSuccessfulHttpMs": {
+        "n": 224,
+        "p50": 55.41363900000579,
+        "p95": 117.89381499999581,
+        "max": 150.54253399999288
+      },
+      "dispatchLatenessMs": {
+        "n": 232,
+        "p50": 1,
+        "p95": 2,
+        "max": 7
+      },
+      "restartFailures": [
+        {
+          "path": "/api/state?character=42",
+          "scheduledAt": 1791754547803,
+          "dispatchedAt": 1791754547808,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754547811,
+          "latencyMs": 3.6590679999935674
+        },
+        {
+          "path": "/state",
+          "scheduledAt": 1791754547803,
+          "dispatchedAt": 1791754547809,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754547811,
+          "latencyMs": 2.8078950000053737
+        },
+        {
+          "path": "/api/universe?character=42",
+          "scheduledAt": 1791754547803,
+          "dispatchedAt": 1791754547809,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754547812,
+          "latencyMs": 2.6288710000080755
+        },
+        {
+          "path": "/api/universe/jspace/maps/updater-map-0?character=42",
+          "scheduledAt": 1791754547803,
+          "dispatchedAt": 1791754547809,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754547812,
+          "latencyMs": 2.578005999996094
+        },
+        {
+          "path": "/api/state?character=43",
+          "scheduledAt": 1791754547803,
+          "dispatchedAt": 1791754547809,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754547812,
+          "latencyMs": 2.520730000003823
+        },
+        {
+          "path": "/api/universe/systems/30000142?character=42",
+          "scheduledAt": 1791754547803,
+          "dispatchedAt": 1791754547810,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754547812,
+          "latencyMs": 2.4510900000022957
+        }
+      ],
+      "restartGapMs": 827,
+      "sseConnectionErrors": 14,
+      "generationMetrics": [
+        {
+          "elapsedMs": 17974.277569,
+          "cpuMs": 19186.672,
+          "cpuPercentOneCore": 106.74516361698451,
+          "eventLoopUtilization": 0.131642202829208,
+          "eventLoopDelayP95Ms": 11.198463,
+          "eventLoopDelayMaxMs": 173.670399,
+          "rssBeforeBytes": 177405952,
+          "rssAfterBytes": 506036224,
+          "peakRssBytes": 582164480,
+          "heapBeforeBytes": 53630488,
+          "heapAfterBytes": 47582072
+        },
+        {
+          "elapsedMs": 41733.118493,
+          "cpuMs": 3337.886,
+          "cpuPercentOneCore": 7.998170567003929,
+          "eventLoopUtilization": 0.07600134020452055,
+          "eventLoopDelayP95Ms": 10.461183,
+          "eventLoopDelayMaxMs": 88.342527,
+          "rssBeforeBytes": 163131392,
+          "rssAfterBytes": 284610560,
+          "peakRssBytes": 293154816,
+          "heapBeforeBytes": 63768176,
+          "heapAfterBytes": 134269048
+        }
+      ],
+      "cpuMsSum": 22524.557999999997,
+      "rssMaximumObservedBytes": 582557696,
+      "generationMeterGapsMs": [
+        387
+      ],
+      "buildingPhases": [
+        {
+          "phase": "building",
+          "startedAt": 1791754535203,
+          "endedAt": 1791754547443,
+          "measured": {
+            "elapsedMs": 12239.282525999999,
+            "cpuMs": 17371.029,
+            "cpuPercentOneCore": 141.92849101324848,
+            "eventLoopUtilization": 0.10274711296524593,
+            "eventLoopDelayP95Ms": 11.190271,
+            "eventLoopDelayMaxMs": 101.056511,
+            "rssBeforeBytes": 297680896,
+            "rssAfterBytes": 504725504,
+            "peakRssBytes": 582557696,
+            "heapBeforeBytes": 40602728,
+            "heapAfterBytes": 42464096
+          }
+        }
+      ]
+    },
+    "loaded-conversion-2": {
+      "wallWindowMs": 59999,
+      "httpTotal": 232,
+      "allSuccessfulHttpMs": {
+        "n": 232,
+        "p50": 58.445072000002256,
+        "p95": 123.14037200000894,
+        "max": 193.41922000001068
+      },
+      "regularSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 58.52684400000726,
+        "p95": 123.14037200000894,
+        "max": 193.41922000001068
+      },
+      "dispatchLatenessMs": {
+        "n": 232,
+        "p50": 0,
+        "p95": 1,
+        "max": 4
+      },
+      "restartFailures": [],
+      "restartGapMs": 802,
+      "sseConnectionErrors": 14,
+      "generationMetrics": [
+        {
+          "elapsedMs": 18316.721131,
+          "cpuMs": 19772.518,
+          "cpuPercentOneCore": 107.94791195753999,
+          "eventLoopUtilization": 0.13911344154004146,
+          "eventLoopDelayP95Ms": 11.206655,
+          "eventLoopDelayMaxMs": 173.932543,
+          "rssBeforeBytes": 166879232,
+          "rssAfterBytes": 459845632,
+          "peakRssBytes": 556093440,
+          "heapBeforeBytes": 57650968,
+          "heapAfterBytes": 57386312
+        },
+        {
+          "elapsedMs": 41370.006260999995,
+          "cpuMs": 3494.784,
+          "cpuPercentOneCore": 8.447627437984158,
+          "eventLoopUtilization": 0.07892025416867443,
+          "eventLoopDelayP95Ms": 10.526719,
+          "eventLoopDelayMaxMs": 123.863039,
+          "rssBeforeBytes": 158441472,
+          "rssAfterBytes": 238170112,
+          "peakRssBytes": 280367104,
+          "heapBeforeBytes": 58972112,
+          "heapAfterBytes": 77328600
+        }
+      ],
+      "cpuMsSum": 23267.302,
+      "rssMaximumObservedBytes": 562421760,
+      "generationMeterGapsMs": [
+        387
+      ],
+      "buildingPhases": [
+        {
+          "phase": "building",
+          "startedAt": 1791754596797,
+          "endedAt": 1791754609410,
+          "measured": {
+            "elapsedMs": 12613.393279000002,
+            "cpuMs": 17925.298,
+            "cpuPercentOneCore": 142.1132093759716,
+            "eventLoopUtilization": 0.11318495310705824,
+            "eventLoopDelayP95Ms": 11.354111,
+            "eventLoopDelayMaxMs": 119.865343,
+            "rssBeforeBytes": 271163392,
+            "rssAfterBytes": 456777728,
+            "peakRssBytes": 556093440,
+            "heapBeforeBytes": 39697344,
+            "heapAfterBytes": 62756872
+          }
+        }
+      ]
+    },
+    "loaded-control-2": {
+      "wallWindowMs": 60002,
+      "httpTotal": 230,
+      "allSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 51.818304000014905,
+        "p95": 112.1768710000033,
+        "max": 146.5565190000052
+      },
+      "regularSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 51.818304000014905,
+        "p95": 112.1768710000033,
+        "max": 146.5565190000052
+      },
+      "dispatchLatenessMs": {
+        "n": 230,
+        "p50": 1,
+        "p95": 2,
+        "max": 3
+      },
+      "restartFailures": [],
+      "restartGapMs": null,
+      "sseConnectionErrors": 0,
+      "generationMetrics": [
+        {
+          "elapsedMs": 60022.868183000006,
+          "cpuMs": 5440.849,
+          "cpuPercentOneCore": 9.064626807588954,
+          "eventLoopUtilization": 0.083446746588603,
+          "eventLoopDelayP95Ms": 10.510335,
+          "eventLoopDelayMaxMs": 179.306495,
+          "rssBeforeBytes": 166600704,
+          "rssAfterBytes": 216272896,
+          "peakRssBytes": 313233408,
+          "heapBeforeBytes": 57727680,
+          "heapAfterBytes": 66043048
+        }
+      ],
+      "cpuMsSum": 5440.849,
+      "rssMaximumObservedBytes": 313888768,
+      "generationMeterGapsMs": [],
+      "buildingPhases": []
+    },
+    "loaded-control-3": {
+      "wallWindowMs": 60000,
+      "httpTotal": 230,
+      "allSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 53.5638269999763,
+        "p95": 115.43394799999078,
+        "max": 149.06010900001274
+      },
+      "regularSuccessfulHttpMs": {
+        "n": 230,
+        "p50": 53.5638269999763,
+        "p95": 115.43394799999078,
+        "max": 149.06010900001274
+      },
+      "dispatchLatenessMs": {
+        "n": 230,
+        "p50": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "restartFailures": [],
+      "restartGapMs": null,
+      "sseConnectionErrors": 0,
+      "generationMetrics": [
+        {
+          "elapsedMs": 60020.96033,
+          "cpuMs": 5778.941,
+          "cpuPercentOneCore": 9.628204827491803,
+          "eventLoopUtilization": 0.0883415946725433,
+          "eventLoopDelayP95Ms": 10.518527,
+          "eventLoopDelayMaxMs": 178.651135,
+          "rssBeforeBytes": 177688576,
+          "rssAfterBytes": 238276608,
+          "peakRssBytes": 312168448,
+          "heapBeforeBytes": 53780272,
+          "heapAfterBytes": 90220784
+        }
+      ],
+      "cpuMsSum": 5778.941,
+      "rssMaximumObservedBytes": 312168448,
+      "generationMeterGapsMs": [],
+      "buildingPhases": []
+    },
+    "loaded-conversion-3": {
+      "wallWindowMs": 60001,
+      "httpTotal": 232,
+      "allSuccessfulHttpMs": {
+        "n": 226,
+        "p50": 56.15986100002192,
+        "p95": 119.57518400001572,
+        "max": 154.03264200000558
+      },
+      "regularSuccessfulHttpMs": {
+        "n": 224,
+        "p50": 59.33084099995904,
+        "p95": 119.57518400001572,
+        "max": 154.03264200000558
+      },
+      "dispatchLatenessMs": {
+        "n": 232,
+        "p50": 1,
+        "p95": 2,
+        "max": 2
+      },
+      "restartFailures": [
+        {
+          "path": "/api/state?character=42",
+          "scheduledAt": 1791754794055,
+          "dispatchedAt": 1791754794056,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754794058,
+          "latencyMs": 1.7034780000103638
+        },
+        {
+          "path": "/state",
+          "scheduledAt": 1791754794055,
+          "dispatchedAt": 1791754794057,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754794058,
+          "latencyMs": 1.350291000038851
+        },
+        {
+          "path": "/api/universe?character=42",
+          "scheduledAt": 1791754794055,
+          "dispatchedAt": 1791754794057,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754794058,
+          "latencyMs": 1.2546529999817722
+        },
+        {
+          "path": "/api/universe/jspace/maps/updater-map-0?character=42",
+          "scheduledAt": 1791754794055,
+          "dispatchedAt": 1791754794057,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754794058,
+          "latencyMs": 1.1507299999939278
+        },
+        {
+          "path": "/api/state?character=43",
+          "scheduledAt": 1791754794055,
+          "dispatchedAt": 1791754794057,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754794058,
+          "latencyMs": 1.0760410000220872
+        },
+        {
+          "path": "/api/universe/systems/30000142?character=42",
+          "scheduledAt": 1791754794055,
+          "dispatchedAt": 1791754794057,
+          "method": "GET",
+          "error": "fetch failed",
+          "finishedAt": 1791754794058,
+          "latencyMs": 0.9931070000166073
+        }
+      ],
+      "restartGapMs": 783,
+      "sseConnectionErrors": 14,
+      "generationMetrics": [
+        {
+          "elapsedMs": 17821.428253000002,
+          "cpuMs": 18911.12,
+          "cpuPercentOneCore": 106.11450289802985,
+          "eventLoopUtilization": 0.12524694126356092,
+          "eventLoopDelayP95Ms": 11.182079,
+          "eventLoopDelayMaxMs": 174.456831,
+          "rssBeforeBytes": 175640576,
+          "rssAfterBytes": 424976384,
+          "peakRssBytes": 619278336,
+          "heapBeforeBytes": 53917240,
+          "heapAfterBytes": 57817024
+        },
+        {
+          "elapsedMs": 41916.736442,
+          "cpuMs": 3486.975,
+          "cpuPercentOneCore": 8.318813190108232,
+          "eventLoopUtilization": 0.08172697663729359,
+          "eventLoopDelayP95Ms": 10.469375,
+          "eventLoopDelayMaxMs": 128.057343,
+          "rssBeforeBytes": 162906112,
+          "rssAfterBytes": 258756608,
+          "peakRssBytes": 275271680,
+          "heapBeforeBytes": 63932384,
+          "heapAfterBytes": 115032528
+        }
+      ],
+      "cpuMsSum": 22398.094999999998,
+      "rssMaximumObservedBytes": 619278336,
+      "generationMeterGapsMs": [
+        385
+      ],
+      "buildingPhases": [
+        {
+          "phase": "building",
+          "startedAt": 1791754781395,
+          "endedAt": 1791754793550,
+          "measured": {
+            "elapsedMs": 12155.583299,
+            "cpuMs": 17232.939,
+            "cpuPercentOneCore": 141.7697413288073,
+            "eventLoopUtilization": 0.09851415398549151,
+            "eventLoopDelayP95Ms": 11.157503,
+            "eventLoopDelayMaxMs": 113.377279,
+            "rssBeforeBytes": 323235840,
+            "rssAfterBytes": 424976384,
+            "peakRssBytes": 619278336,
+            "heapBeforeBytes": 39610672,
+            "heapAfterBytes": 57779008
+          }
+        }
+      ]
+    }
+  },
+  "sameSourcePairedBuildingWindows": [
+    {
+      "pair": 1,
+      "elapsedOffsetMs": [
+        5400,
+        17640
+      ],
+      "control": {
+        "n": 46,
+        "p50": 53.8194139999996,
+        "p95": 119.02953999999954,
+        "max": 124.18264199999976
+      },
+      "conversion": {
+        "n": 46,
+        "p50": 71.12609199999133,
+        "p95": 124.19491299999936,
+        "max": 150.54253399999288
+      },
+      "cpuDeltaMs": 16651.457,
+      "rssDeltaMiB": 257.8046875
+    },
+    {
+      "pair": 2,
+      "elapsedOffsetMs": [
+        5337,
+        17950
+      ],
+      "control": {
+        "n": 46,
+        "p50": 64.45623399998294,
+        "p95": 112.1768710000033,
+        "max": 128.98520399999688
+      },
+      "conversion": {
+        "n": 46,
+        "p50": 74.4276939999836,
+        "p95": 144.62850099999923,
+        "max": 146.77113499998813
+      },
+      "cpuDeltaMs": 17826.453,
+      "rssDeltaMiB": 237.01953125
+    },
+    {
+      "pair": 3,
+      "elapsedOffsetMs": [
+        5340,
+        17495
+      ],
+      "control": {
+        "n": 46,
+        "p50": 52.972111000010045,
+        "p95": 103.06907100000535,
+        "max": 117.75009900002624
+      },
+      "conversion": {
+        "n": 46,
+        "p50": 68.13568599999417,
+        "p95": 123.48888600000646,
+        "max": 134.0338150000316
+      },
+      "cpuDeltaMs": 16619.154,
+      "rssDeltaMiB": 292.8828125
+    }
+  ],
+  "outputManifest": {
+    "schema": 1,
+    "build": 3552227,
+    "releasedAt": "2026-09-28T11:08:09Z",
+    "source": "https://developers.eveonline.com/static-data/tranquility/eve-online-static-data-3552227-jsonl.zip",
+    "files": [
+      {
+        "name": "universe-details-000.bin",
+        "bytes": 8388608,
+        "sha256": "d6eaadca8515e69e1c04946d8622ff226e44d94d755d9236e9b6e6e3d1f59976"
+      },
+      {
+        "name": "universe-details-001.bin",
+        "bytes": 8388608,
+        "sha256": "873d3001d7e0f8c4cb4f00e1f2ea1d654756b4914667e68e21d0709b55451ed7"
+      },
+      {
+        "name": "universe-details-002.bin",
+        "bytes": 4914461,
+        "sha256": "3eae5d098dff66c802888cc420fcfbf90349b5a22f3ce44a1059985e75515bdc"
+      },
+      {
+        "name": "universe.json.gz",
+        "bytes": 844130,
+        "sha256": "8d8b65eb6815add0d205a95ecbf4b2252ed95fe86624a0ce62c3cb6b9f247e14"
+      },
+      {
+        "name": "universe-provenance.json",
+        "bytes": 2805,
+        "sha256": "447eea844fa14f9a59f7312e3b705a7f2c4d84cf620afe513c6a7b2992d5060e"
+      },
+      {
+        "name": "market-categories.json",
+        "bytes": 483778,
+        "sha256": "4c1fa9de366069a8398c17676bf21041cde5fc4d25ed008ccdbfec87258f158a"
+      },
+      {
+        "name": "npc-market-owners.json",
+        "bytes": 16536,
+        "sha256": "a31a9e0388b8fb6d5f0a0974a6a2188d378b3a354a64fc72719f193ed1a654e7"
+      }
+    ],
+    "counts": {
+      "systems": 8490,
+      "regions": 114,
+      "constellations": 1184,
+      "gates": 6989,
+      "stargates": 13978,
+      "celestials": 454830,
+      "stations": 5210,
+      "space": {
+        "known": 5485,
+        "wormhole": 2604,
+        "abyssal": 200,
+        "other": 201
+      }
+    },
+    "sourceArchiveSha256": "0788ec9352556fcb2eb28ba084eb1f408cb0ad22f8e30d91bfa49f534ec1ad83"
+  },
+  "lifecycle": {
+    "createdSummaryClosedGenerations": 9,
+    "externalNamespaceDrainReceipt": false,
+    "scope": "Successful hosted owner/job, actual runtime closed probes and original finally cleanup; not the stricter local subreaper namespace census."
+  },
+  "limitations": [
+    "Nominal60000ms default windows; actual Date.now spans59999-60002ms. Conversion2 is1ms below nominal with full original request schedule.",
+    "Checking phase may complete between100ms observations; it was observed in conversions2/3.",
+    "Paired comparisons only on this CI host/source, never pooled with local runs.",
+    "Generated files and response bodies are not retained; output file hashes/sizes and cookie/CSRF equality are original executed assertions.",
+    "Source manifest verified before/after; two compiled entrypoint hashes differ from local for an unestablished reason.",
+    "CPU covers measured generation processes including Worker; unmetered startup, gaps and supervisor excluded. RSS maximum combines phase/generation meters and100ms observations, a lower bound.",
+    "Building requests selected by identical scheduled elapsed offsets, excluding install/bootstrap.",
+    "Event-loop histogram summaries cannot be pooled or reconstructed from absent raw histograms.",
+    "No rerun, runtime, source change, negative-auth test or generic descendant-census claim."
+  ]
+}
