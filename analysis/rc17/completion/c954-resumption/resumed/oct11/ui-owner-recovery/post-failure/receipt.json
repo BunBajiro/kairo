@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "scope": "Separate read-only source/build verification after original failed UI owner; does not alter its failed receipt.",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/candidate-source.json"
+      ],
+      "startedAt": "2026-10-11T21:01:37.991080+00:00",
+      "endedAt": "2026-10-11T21:01:38.201239+00:00",
+      "exitCode": 0,
+      "log": "candidate-verify.log",
+      "bytes": 157,
+      "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+    },
+    {
+      "command": [
+        "node",
+        "analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/rc16-source.json"
+      ],
+      "startedAt": "2026-10-11T21:01:38.201277+00:00",
+      "endedAt": "2026-10-11T21:01:38.403268+00:00",
+      "exitCode": 0,
+      "log": "rc16-verify.log",
+      "bytes": 157,
+      "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+    },
+    {
+      "command": [
+        "node",
+        "analysis/rc17/harness/source-manifest.mjs",
+        "verify",
+        "/tmp/kairo-final-matrix-public-20261011/attempt1/ui/v073-source.json"
+      ],
+      "startedAt": "2026-10-11T21:01:38.403293+00:00",
+      "endedAt": "2026-10-11T21:01:38.525955+00:00",
+      "exitCode": 0,
+      "log": "v073-verify.log",
+      "bytes": 157,
+      "sha256": "50679ce0b3c7d41b7f66ef2173eb8a52421bdb661f5709d8262b1f9e22abf360"
+    }
+  ]
+}

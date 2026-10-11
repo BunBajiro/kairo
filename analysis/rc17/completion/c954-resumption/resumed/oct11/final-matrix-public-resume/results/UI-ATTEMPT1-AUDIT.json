@@ -1,0 +1,717 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent read-only UI attempt1 integrity and replay result adoption review; no application or browser execution.",
+  "auditComplete": true,
+  "originalAttemptComplete": false,
+  "adoptionEligible": true,
+  "measurementRerunRequired": false,
+  "candidate": {
+    "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+    "sourceFingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+    "files": 486,
+    "builtFiles": 20
+  },
+  "failure": "Original owner checks missing schema2 top-level result.smoke instead of result.environment.smoke. Worker succeeded; original receipt and attempt remain failed.",
+  "counts": {
+    "inventoryFiles": 44,
+    "closedPins": 39,
+    "boundInputs": 155,
+    "ownedCommands": 8,
+    "successfulPriorLanes": 4,
+    "completedReplayWorkers": 1,
+    "unrunReplayWorkers": 2
+  },
+  "completed": {
+    "bytes": 42919,
+    "sha256": "13cc8b5a720f04b60628205decd11033be0a7c772049f00fa880babd3e0f00dd"
+  },
+  "ownershipCompleted": {
+    "bytes": 17545,
+    "sha256": "1be5c904c4aa125f144c0f86588fba78d0458aef1f5d5b6c51b9f7bfb395857b"
+  },
+  "inputs": {
+    "bytes": 33888,
+    "sha256": "fb59c8f351fdd91304ad1c9f506cdbae8673a75927928a4e822b0ff5c3888441"
+  },
+  "inventory": {
+    "ownership-progress.json": {
+      "bytes": 17545,
+      "sha256": "1be5c904c4aa125f144c0f86588fba78d0458aef1f5d5b6c51b9f7bfb395857b"
+    },
+    "rc16-source.json": {
+      "bytes": 71365,
+      "sha256": "b9fbc313f6a8ce142eb507fb0891e3cc4a5aaed108e99de619efba7cf6c93fad"
+    },
+    "studio-stream-owner.log": {
+      "bytes": 1313,
+      "sha256": "f1171dc0c04d2a9c65ec1b32067386203765e1f0d86bdac7703b0dad077b6240"
+    },
+    "candidate-before.log": {
+      "bytes": 157,
+      "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+    },
+    "candidate-setup-receipt.json": {
+      "bytes": 12643,
+      "sha256": "1e02b8d1699821324fd04c4fd49de12d943b009549a372fa17f9c9e902651d90"
+    },
+    "ownership-completed.json": {
+      "bytes": 17545,
+      "sha256": "1be5c904c4aa125f144c0f86588fba78d0458aef1f5d5b6c51b9f7bfb395857b"
+    },
+    "v073-before.log": {
+      "bytes": 157,
+      "sha256": "50679ce0b3c7d41b7f66ef2173eb8a52421bdb661f5709d8262b1f9e22abf360"
+    },
+    "v073-prebuild.json": {
+      "bytes": 31622,
+      "sha256": "309aad33280cdfc2cff652f24e54b3bcddb6f4994183a6e077e02da909de4d55"
+    },
+    "matrix-setup-receipt.json": {
+      "bytes": 12551,
+      "sha256": "f8d1a654c5a779a930fbcff4436b3e79aebb83dee91e83e7bb47be75e9a726e7"
+    },
+    "candidate-build.log": {
+      "bytes": 1845,
+      "sha256": "e4a5716939a099eac4efcda49b504df660a6b18ace94655d6f41912482f4b5ae"
+    },
+    "rc16-prebuild.json": {
+      "bytes": 68018,
+      "sha256": "f34c079beea753d23629b46157cc9464a1591c7a3bb72e37c23c427d03c8f32e"
+    },
+    "inputs.json": {
+      "bytes": 33888,
+      "sha256": "fb59c8f351fdd91304ad1c9f506cdbae8673a75927928a4e822b0ff5c3888441"
+    },
+    "admin-polling-owner.log": {
+      "bytes": 265,
+      "sha256": "848a5ad3576fea71851ed6a6f4f7815b04ece50ead680528f9625a162efa5788"
+    },
+    "session-replay-repeat-small-owner.log": {
+      "bytes": 16477,
+      "sha256": "7abacc19e7b69f1a196298f7c41c2b13ca6a82d17699699015ae05293bbe966b"
+    },
+    "candidate-source.json": {
+      "bytes": 84964,
+      "sha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+    },
+    "matrix-setup-inventory.json": {
+      "bytes": 3398,
+      "sha256": "846b5d632185c3f6117b6208825f83d8e2830f2dcaf43f884baf517faad755b9"
+    },
+    "candidate-prebuild.json": {
+      "bytes": 81617,
+      "sha256": "2707eeaf1ff83dbafeacd624ce6737ae760bd75e3faeac1d74ee47865df9016d"
+    },
+    "v073-source.json": {
+      "bytes": 34610,
+      "sha256": "8e7aa603b2d4032bf8b6c1842ef25073a47c5af120bcfccd8a410a36c810a410"
+    },
+    "rc16-build.log": {
+      "bytes": 2156,
+      "sha256": "9f46487b559b2e1656eea7553460a8ed41595429f2722f14b873f47c7c2cb9ce"
+    },
+    "v073-build.log": {
+      "bytes": 1839,
+      "sha256": "4dc467ffcd58dc801100d936e7d6f9a55cea32cc8a386c3dc85feff8288f9e82"
+    },
+    "frontend-models-owner.log": {
+      "bytes": 136,
+      "sha256": "00287424f62730473d1e4f95a4506c95a905a13f6068a7802066a5d732b7fadb"
+    },
+    "rc16-before.log": {
+      "bytes": 157,
+      "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+    },
+    "frontend-refresh-owner.log": {
+      "bytes": 1118,
+      "sha256": "7f21eb0ce1be2a7fda5825925b20df3a41e0fbfe46fa0a44cd57f41ab5f90e0f"
+    },
+    "candidate-setup-inventory.json": {
+      "bytes": 3464,
+      "sha256": "774caa339b81c99ae0499b82803dea1124c60ec5729aefe6ed43bed1f721c058"
+    },
+    "completion-ui/build-receipt.json": {
+      "bytes": 852,
+      "sha256": "fb8f7532a227375d754080ac7f96ba3820dc40e61b6499a2982b51c71f365362"
+    },
+    "completion-ui/studio-stream/stream-fail-closed.png": {
+      "bytes": 193353,
+      "sha256": "9f95562f7e9483148ed54b0c31fbb80dbf3c73b0042559efd28cdcde169dde82"
+    },
+    "completion-ui/studio-stream/source-manifest.json": {
+      "bytes": 84926,
+      "sha256": "0a2619f3f3c4622ede2a9de037e50f21821cf18865063042a96620087f3d7902"
+    },
+    "completion-ui/studio-stream/studio.png": {
+      "bytes": 198594,
+      "sha256": "90fb9fb50ba61bcb98447ef500e49d6300c794eb2a71b72c9299f82d3f9d2a65"
+    },
+    "completion-ui/studio-stream/result.json": {
+      "bytes": 2338,
+      "sha256": "50131f31ec425dcf8626a24e66bda5ea690b82090e3f1824f6863f33037fb2c7"
+    },
+    "completion-ui/studio-stream/lane-receipt.json": {
+      "bytes": 2655,
+      "sha256": "f14632e744d3352fd70031bebb2651f0a914ad9959e4a8241594bdf0ab8cb667"
+    },
+    "completion-ui/studio-stream/harness.log": {
+      "bytes": 1181,
+      "sha256": "0f445d340c8d97c5a0489a683089b0ce7ab5aa3622a65065133715e17bceab82"
+    },
+    "completion-ui/studio-stream/build-receipt.json": {
+      "bytes": 852,
+      "sha256": "fb8f7532a227375d754080ac7f96ba3820dc40e61b6499a2982b51c71f365362"
+    },
+    "completion-ui/frontend-models/result.json": {
+      "bytes": 8926,
+      "sha256": "219ace83f6752b05939dec3f07dcdcbd58b90a78d73c80825f387eb43ce03b8a"
+    },
+    "completion-ui/frontend-models/lane-receipt.json": {
+      "bytes": 2043,
+      "sha256": "35774762df83e8d7487c1f2b160e1af5828b02d9988af32da8c163b75e1d46f0"
+    },
+    "completion-ui/frontend-models/harness.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "completion-ui/frontend-refresh/result.json": {
+      "bytes": 4841,
+      "sha256": "db83999289203835c7673ea7c2970b07e0f7aebe4cac76799ff8112ff4bcb5d4"
+    },
+    "completion-ui/frontend-refresh/lane-receipt.json": {
+      "bytes": 2016,
+      "sha256": "6b8290529285a7e6d528b0505a2b6b8163cd135cecc8215600ff95daa8036998"
+    },
+    "completion-ui/frontend-refresh/harness.log": {
+      "bytes": 980,
+      "sha256": "5b632df4ce6a70a4a707c2e8281349cd32e38499b44c2473d77cd62266e64266"
+    },
+    "completion-ui/admin-polling/result.json": {
+      "bytes": 8893,
+      "sha256": "ae9a22a8b3ec720b5c22be64ad583b8e33529ba7d1f7d714629c979901afb45b"
+    },
+    "completion-ui/admin-polling/lane-receipt.json": {
+      "bytes": 1893,
+      "sha256": "341fb02f58aa75b3bb3d2af061cc9f6aa61664ac06c4d4cbbd638a7e94442918"
+    },
+    "completion-ui/admin-polling/harness.log": {
+      "bytes": 133,
+      "sha256": "5a5b54e65a0b931ea2b2fa1dfe227c3c117d04d094caec742673b4f7bece1829"
+    },
+    "completion-ui/session-replay-repeat-small/result.json": {
+      "bytes": 198389,
+      "sha256": "e695683c4ffc6ae8418aa14925d29ad7658c949f736d51ae321cec494b7f156a"
+    },
+    "completion-ui/session-replay-repeat-small/lane-receipt.json": {
+      "bytes": 2295,
+      "sha256": "a0159861aeab256eafc69356d7af89daf9b0bc04b99d78a396a9b0566793dcb7"
+    },
+    "completion-ui/session-replay-repeat-small/harness.log": {
+      "bytes": 16069,
+      "sha256": "66985ee81871e1e48cd6b176de0867ee427ba0a612df3e4062e8db5b5806f67a"
+    }
+  },
+  "ownedCommands": [
+    {
+      "label": "candidate-before",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:56:20.769121+00:00",
+        "initialGroups": {
+          "19": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:56:20.769801+00:00",
+        "finalGroups": {
+          "19": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "5db591895ad296e86bc6801fc989c35eaaa90bee455d54faf2bb312d97788690"
+      }
+    },
+    {
+      "label": "rc16-before",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:56:21.449400+00:00",
+        "initialGroups": {
+          "34": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:56:21.449981+00:00",
+        "finalGroups": {
+          "34": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "216a885cbc623fca9afa3a51da9b8b7933aa94e0add8392d85ce79ebd0c3cbed"
+      }
+    },
+    {
+      "label": "v073-before",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:56:22.082051+00:00",
+        "initialGroups": {
+          "49": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:56:22.082551+00:00",
+        "finalGroups": {
+          "49": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 157,
+        "sha256": "50679ce0b3c7d41b7f66ef2173eb8a52421bdb661f5709d8262b1f9e22abf360"
+      }
+    },
+    {
+      "label": "frontend-refresh-owner",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:56:38.049293+00:00",
+        "initialGroups": {
+          "64": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:56:38.050038+00:00",
+        "finalGroups": {
+          "64": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 1118,
+        "sha256": "7f21eb0ce1be2a7fda5825925b20df3a41e0fbfe46fa0a44cd57f41ab5f90e0f"
+      }
+    },
+    {
+      "label": "admin-polling-owner",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:56:50.321983+00:00",
+        "initialGroups": {
+          "169": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:56:50.322600+00:00",
+        "finalGroups": {
+          "169": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 265,
+        "sha256": "848a5ad3576fea71851ed6a6f4f7815b04ece50ead680528f9625a162efa5788"
+      }
+    },
+    {
+      "label": "frontend-models-owner",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:57:02.579690+00:00",
+        "initialGroups": {
+          "275": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:57:02.580396+00:00",
+        "finalGroups": {
+          "275": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 136,
+        "sha256": "00287424f62730473d1e4f95a4506c95a905a13f6068a7802066a5d732b7fadb"
+      }
+    },
+    {
+      "label": "studio-stream-owner",
+      "exitCode": 0,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:57:17.751611+00:00",
+        "initialGroups": {
+          "383": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:57:17.752196+00:00",
+        "finalGroups": {
+          "383": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 1313,
+        "sha256": "f1171dc0c04d2a9c65ec1b32067386203765e1f0d86bdac7703b0dad077b6240"
+      }
+    },
+    {
+      "label": "session-replay-repeat-small-owner",
+      "exitCode": 1,
+      "drainPassed": true,
+      "descendantDrain": {
+        "complete": true,
+        "startedAt": "2026-10-11T20:59:48.138532+00:00",
+        "initialGroups": {
+          "501": []
+        },
+        "initialAdopted": [],
+        "unexpectedLiveAfterLeaderExit": false,
+        "endedAt": "2026-10-11T20:59:48.139165+00:00",
+        "finalGroups": {
+          "501": []
+        },
+        "waitpidConfirmedNoChildren": true
+      },
+      "closedLog": {
+        "bytes": 16477,
+        "sha256": "7abacc19e7b69f1a196298f7c41c2b13ca6a82d17699699015ae05293bbe966b"
+      }
+    }
+  ],
+  "lanes": [
+    {
+      "lane": "admin-polling",
+      "receipt": {
+        "bytes": 1893,
+        "sha256": "341fb02f58aa75b3bb3d2af061cc9f6aa61664ac06c4d4cbbd638a7e94442918"
+      },
+      "result": {
+        "bytes": 8893,
+        "sha256": "ae9a22a8b3ec720b5c22be64ad583b8e33529ba7d1f7d714629c979901afb45b"
+      },
+      "workerHarness": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/admin-polling/browser-acceptance.mjs",
+        "sha256": "6eeb9003888332f606690c2aee0055ee23be8e4664b4eb7f41042a2487ab5af4"
+      },
+      "summary": {
+        "checks": 18,
+        "complete": true
+      }
+    },
+    {
+      "lane": "frontend-models",
+      "receipt": {
+        "bytes": 2043,
+        "sha256": "35774762df83e8d7487c1f2b160e1af5828b02d9988af32da8c163b75e1d46f0"
+      },
+      "result": {
+        "bytes": 8926,
+        "sha256": "219ace83f6752b05939dec3f07dcdcbd58b90a78d73c80825f387eb43ce03b8a"
+      },
+      "workerHarness": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/frontend-models/browser-acceptance.mjs",
+        "sha256": "387538f5da60c1307c45ccbb17f835b81c07963d6f6c40fb61ef137d41b21f75"
+      },
+      "summary": {
+        "checks": 17,
+        "complete": true
+      }
+    },
+    {
+      "lane": "frontend-refresh",
+      "receipt": {
+        "bytes": 2016,
+        "sha256": "6b8290529285a7e6d528b0505a2b6b8163cd135cecc8215600ff95daa8036998"
+      },
+      "result": {
+        "bytes": 4841,
+        "sha256": "db83999289203835c7673ea7c2970b07e0f7aebe4cac76799ff8112ff4bcb5d4"
+      },
+      "workerHarness": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/frontend-refresh/browser-acceptance.mjs",
+        "sha256": "00437e26ce333c6a477fd4ad3d48201d4ec11a42de227a6b775c24eaf1d6a21e"
+      },
+      "summary": {
+        "checks": 21,
+        "complete": true
+      }
+    },
+    {
+      "lane": "session-replay-repeat-small",
+      "receipt": {
+        "bytes": 2295,
+        "sha256": "a0159861aeab256eafc69356d7af89daf9b0bc04b99d78a396a9b0566793dcb7"
+      },
+      "result": {
+        "bytes": 198389,
+        "sha256": "e695683c4ffc6ae8418aa14925d29ad7658c949f736d51ae321cec494b7f156a"
+      },
+      "workerHarness": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/session-replay/compiled-replay-trial.mjs",
+        "sha256": "332a1ce4584f0d303dceb1098c2d8cf921968ad3d7d969891401a5999dcc7acf"
+      },
+      "summary": {
+        "completeOriginalReceipt": false,
+        "workerExitCode": 0,
+        "workerSignal": null,
+        "correctedSchemaValidationPasses": true,
+        "schema": 2,
+        "topLevelSmokePresent": false,
+        "environmentSmoke": false,
+        "measuredCycles": 12,
+        "warmupCycles": 2,
+        "samples": [
+          {
+            "name": "replay-prepare",
+            "windowMs": 867.3335740000002,
+            "taskMs": 199.53999999999994
+          },
+          {
+            "name": "replay-playback-start-60x",
+            "windowMs": 6049.215853,
+            "taskMs": 1041.702
+          },
+          {
+            "name": "replay-playback-middle-60x",
+            "windowMs": 6034.917674999999,
+            "taskMs": 1614.2790000000002
+          }
+        ],
+        "fixture": {
+          "id": "followup-replay-1000",
+          "characterId": 42,
+          "visits": 1000,
+          "events": 200,
+          "travel": 999,
+          "durationMs": 60000000,
+          "uniqueSystems": 11,
+          "firstSystem": "Jita",
+          "lastSystem": "Itamo",
+          "started": "2026-10-01T20:57:18.620Z",
+          "ended": "2026-10-02T13:37:18.620Z",
+          "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358",
+          "validated": {
+            "visits": 1000,
+            "events": 200,
+            "travel": 999,
+            "durationMs": 60000000,
+            "uniqueSystems": 11,
+            "owner": 42,
+            "live": false,
+            "gaps": 0,
+            "missingCoordinates": 0,
+            "inferredVisits": 0,
+            "truncated": false,
+            "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358"
+          },
+          "responseBytes": 639707,
+          "backwardStart": {
+            "playing": false,
+            "elapsed": 0,
+            "duration": 60000000,
+            "location": "Jita",
+            "title": "1000-visit synthetic recorded journey"
+          },
+          "endTransition": {
+            "playing": false,
+            "elapsed": 60000000,
+            "duration": 60000000,
+            "location": "Itamo",
+            "title": "1000-visit synthetic recorded journey"
+          }
+        },
+        "retention": [
+          {
+            "label": "before-navigation-warmup",
+            "completedCycles": 0,
+            "lastGc": {
+              "heap": {
+                "usedSize": 7409520,
+                "totalSize": 8151040,
+                "embedderHeapUsedSize": 3296832,
+                "backingStorageSize": 3207765
+              },
+              "dom": {
+                "documents": 1,
+                "nodes": 577,
+                "jsEventListeners": 614
+              }
+            },
+            "overview": {
+              "pilot": "42",
+              "elements": 432,
+              "canvases": 0,
+              "mapNodes": 0,
+              "replayControls": 0
+            }
+          },
+          {
+            "label": "warmed-baseline",
+            "completedCycles": 0,
+            "lastGc": {
+              "heap": {
+                "usedSize": 9385148,
+                "totalSize": 10383360,
+                "embedderHeapUsedSize": 2864760,
+                "backingStorageSize": 3216099
+              },
+              "dom": {
+                "documents": 1,
+                "nodes": 583,
+                "jsEventListeners": 614
+              }
+            },
+            "overview": {
+              "pilot": "42",
+              "elements": 432,
+              "canvases": 0,
+              "mapNodes": 0,
+              "replayControls": 0
+            }
+          },
+          {
+            "label": "after-batch-1",
+            "completedCycles": 4,
+            "lastGc": {
+              "heap": {
+                "usedSize": 9759832,
+                "totalSize": 10907648,
+                "embedderHeapUsedSize": 2997120,
+                "backingStorageSize": 3216099
+              },
+              "dom": {
+                "documents": 1,
+                "nodes": 583,
+                "jsEventListeners": 614
+              }
+            },
+            "overview": {
+              "pilot": "42",
+              "elements": 432,
+              "canvases": 0,
+              "mapNodes": 0,
+              "replayControls": 0
+            }
+          },
+          {
+            "label": "after-batch-2",
+            "completedCycles": 8,
+            "lastGc": {
+              "heap": {
+                "usedSize": 9905492,
+                "totalSize": 10907648,
+                "embedderHeapUsedSize": 3077448,
+                "backingStorageSize": 3216099
+              },
+              "dom": {
+                "documents": 1,
+                "nodes": 583,
+                "jsEventListeners": 614
+              }
+            },
+            "overview": {
+              "pilot": "42",
+              "elements": 432,
+              "canvases": 0,
+              "mapNodes": 0,
+              "replayControls": 0
+            }
+          },
+          {
+            "label": "after-batch-3",
+            "completedCycles": 12,
+            "lastGc": {
+              "heap": {
+                "usedSize": 9982992,
+                "totalSize": 11169792,
+                "embedderHeapUsedSize": 3678160,
+                "backingStorageSize": 3216140
+              },
+              "dom": {
+                "documents": 1,
+                "nodes": 583,
+                "jsEventListeners": 614
+              }
+            },
+            "overview": {
+              "pilot": "42",
+              "elements": 432,
+              "canvases": 0,
+              "mapNodes": 0,
+              "replayControls": 0
+            }
+          }
+        ],
+        "stableGlobalListenerSignatures": true,
+        "zeroStaleUniverseOwnershipProbes": 15,
+        "successfulPilotFences": 14,
+        "oneEventSourceRequest": {
+          "requestId": "586.20",
+          "at": 83778.019434,
+          "url": "/api/events",
+          "method": "GET",
+          "status": 200,
+          "responseHeadersMs": 10.870999991311692
+        },
+        "sourceSubsetPins": 8,
+        "loadedBuildAssetPins": 7,
+        "heapGrowthFromWarmedBaselineBytes": 597844
+      }
+    },
+    {
+      "lane": "studio-stream",
+      "receipt": {
+        "bytes": 2655,
+        "sha256": "f14632e744d3352fd70031bebb2651f0a914ad9959e4a8241594bdf0ab8cb667"
+      },
+      "result": {
+        "bytes": 2338,
+        "sha256": "50131f31ec425dcf8626a24e66bda5ea690b82090e3f1824f6863f33037fb2c7"
+      },
+      "workerHarness": {
+        "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/studio-stream/browser-acceptance.mjs",
+        "sha256": "0d575771688735f4fc8543c87c23651d0345144e50f46e5947fae86642bf4a06"
+      },
+      "summary": {
+        "checks": 10,
+        "complete": true
+      }
+    }
+  ],
+  "unrunLanes": [
+    "session-replay-repeat-cap",
+    "session-replay-distinct-cap"
+  ],
+  "adoptionRequirements": [
+    "Preserve all original raw bytes, failed lane receipt and failed completed record unchanged.",
+    "Publish a separate adoption receipt bound to this audit, original result/receipt/completed/ownership hashes and corrected owner/control hashes.",
+    "Read schema2 result.environment.smoke and retain all existing replay validations; no measurement or application/harness-worker change.",
+    "Run only the two uncollected cap lanes under a fresh recovery envelope after quiet/banking checks."
+  ],
+  "limitations": [
+    "This is single-candidate UI/ownership evidence, not matched ABBA performance improvement.",
+    "Original outer UI stage aborted before final outer source-after commands; all five individual lane owners nevertheless verified the candidate full source/build manifest after their workers, and this audit rehashed all 506 candidate source/build files.",
+    "Actual descendant absence is established by outer completed drain records; original owner processGroupCleaned alone is weaker.",
+    "Twelve retained-heap diagnostic cycles and stable listeners/DOM are not a no-leak proof; heap growth remains explicit.",
+    "Raw route sequence hashes can be compared with the worker fixture assertions, but complete response bodies are not archived here."
+  ]
+}
