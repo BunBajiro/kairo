@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One bounded output-location diagnostic; retain failed workspace attempt and every adverse row.",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/workspace/scratch/a2f3334402fc/recovery-oct11/names-bootstrap-prepared/run.py",
+    "--output",
+    "/tmp/kairo-names-output-location-20261011/attempt2"
+  ],
+  "startedAt": "2026-10-11T08:29:49.174866+00:00",
+  "runnerSha256": "aca36bfd586f614860d086c736d0d03aace14baaf42948f40c95bc85e2dbd058",
+  "intendedChanges": [
+    "New output destination under /tmp",
+    "Coordinator and subagents do not issue other tool operations during the bounded run"
+  ],
+  "unchanged": [
+    "Source and build manifests",
+    "Reviewed runner and worker bytes",
+    "Original fixture and two measured phase bodies",
+    "Four-worker ABBA order",
+    "All source, output, process cleanup and final artifact cross-binding guards"
+  ],
+  "causeEstablished": false,
+  "finishedAt": "2026-10-11T08:30:10.967393+00:00",
+  "exitCode": 0,
+  "console": {
+    "path": "/tmp/kairo-names-output-location-20261011/console.log",
+    "bytes": 136,
+    "sha256": "53c802f1daba0136a76058b9080b17e2cd7c4f64baa93f60024e041963a35160"
+  },
+  "completed": {
+    "path": "/tmp/kairo-names-output-location-20261011/attempt2/completed.json",
+    "bytes": 34059,
+    "sha256": "770bf009a4ce3f4de8e397594f2f7486778dd61d52fc36627d0354960b862070",
+    "complete": true,
+    "finalGuardsVerified": true,
+    "artifactCrossBinding": true
+  }
+}
