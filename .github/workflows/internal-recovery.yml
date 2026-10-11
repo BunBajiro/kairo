@@ -1,0 +1,61 @@
+name: Internal checkpoint recovery export
+
+on:
+  push:
+    branches: ['perf/rc16-checkpoint-v0.8.0']
+    paths: ['.github/workflows/internal-recovery.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: internal-kairo-recovery-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    if: github.ref == 'refs/heads/perf/rc16-checkpoint-v0.8.0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Export recoverable Git objects and references
+        env:
+          EXPORT_DIRECTORY: ${{ runner.temp }}/kairo-recovery
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git rev-parse --is-shallow-repository)" = false
+          for revision in 70cd12f9a4d014e7e2cf931b9681c4bdc7f18789 01fd7b991ed0e0c34619a3c1833404bab191ab17 57c8dcc7fbd8fc2b62129498d1819050c78381a1 239794774320fcdebaa1d76ce8a77c5c25cfc48c; do
+            git cat-file -e "$revision^{commit}"
+          done
+          mkdir -p "$EXPORT_DIRECTORY"
+          git bundle create "$EXPORT_DIRECTORY/repository.bundle" --all
+          git bundle verify "$EXPORT_DIRECTORY/repository.bundle"
+          python3 - <<'PY'
+          import hashlib,json,os,subprocess
+          from pathlib import Path
+          out=Path(os.environ['EXPORT_DIRECTORY'])
+          bundle=out/'repository.bundle'
+          manifest={
+            'purpose':'Private checkpoint recovery only; no release or performance acceptance',
+            'repository':os.environ['GITHUB_REPOSITORY'],
+            'exportCommit':os.environ['GITHUB_SHA'],
+            'workflowRun':os.environ['GITHUB_RUN_ID'],
+            'workflowAttempt':os.environ['GITHUB_RUN_ATTEMPT'],
+            'bundle':{'path':bundle.name,'bytes':bundle.stat().st_size,'sha256':hashlib.sha256(bundle.read_bytes()).hexdigest()},
+            'refs':subprocess.check_output(['git','show-ref'],text=True).splitlines()
+          }
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: internal-kairo-recovery
+          path: ${{ runner.temp }}/kairo-recovery/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
