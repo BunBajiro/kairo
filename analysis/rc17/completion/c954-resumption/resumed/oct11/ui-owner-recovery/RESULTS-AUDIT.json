@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11T21:15:18.102114+00:00",
+  "scope": "Independent offline audit of two new UI cap lanes; prior four lanes and repeat-small audit retained by hash, not reanalysed",
+  "passed": true,
+  "releaseApproval": false,
+  "recoveryRoot": "/tmp/kairo-final-matrix-public-20261011/ui-owner-recovery-attempt1",
+  "sourceCommit": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "sourceFingerprint": "09dfcf5950c2e6b340ea03ae1e813caffd2bd4e4d98d1e1c7a7ae6fe6ad22262",
+  "pins": {
+    "completed.json": {
+      "bytes": 10610,
+      "sha256": "bdcc1c44b311c5081d9800ee23ee079ca413bfa84df9dd886d757ae709b9c855"
+    },
+    "ownership-completed.json": {
+      "bytes": 7930,
+      "sha256": "16cb69ef0ce587fd8fd9330f9b6d5b818e7c9597ec75d27773c49029a0010ebf"
+    },
+    "inputs.json": {
+      "bytes": 5589,
+      "sha256": "e83468a3eb3fb8f0a3f1bc358a6b9ebdb0e3ce1ddc9151beb2da11b0057f7368"
+    },
+    "candidate-source.json": {
+      "bytes": 84964,
+      "sha256": "a98af35e6849277177ad189295616ae5b18c93ff9eb8cd657f93cf2f7ee39970"
+    },
+    "repeat-small-adoption.json": {
+      "bytes": 4135,
+      "sha256": "a77ff80dd7f2e28d3fd0a6a9d2a0c0765bf3bedc628ff5fab01068ef8bb8266d"
+    }
+  },
+  "verifiedCounts": {
+    "inventoryFiles": 15,
+    "closedFiles": 13,
+    "inputPins": 25,
+    "adoptionPins": 9,
+    "sourceAndBuildFiles": 506
+  },
+  "originalFailedAttemptPreserved": true,
+  "priorIndependentAudit": {
+    "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/final-matrix-public-resume/results/UI-ATTEMPT1-AUDIT.json",
+    "bytes": 23976,
+    "sha256": "79c9e5d4b97ab83eecf94b584b5984784406841151d614f9e68f46a09ec459c2"
+  },
+  "oldOwner": {
+    "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/c954-resumption/resumed/oct11/ui-owner-recovery/original-ui-ci-lane.mjs",
+    "bytes": 7109,
+    "sha256": "58ff9778d7dc8857bad3f9c29d2c53e55b1ffd95115348c49ef7d482e8441b43"
+  },
+  "newOwner": {
+    "path": "/workspace/scratch/a2f3334402fc/kairo-analysis-restored/analysis/rc17/completion/ui-ci-lane.mjs",
+    "bytes": 7122,
+    "sha256": "27f05929f03ec6b17d9632c561420b0a802578518db93169d046ed0f0a134378"
+  },
+  "commands": [
+    {
+      "label": "source-before",
+      "exitCode": 0,
+      "actualDescendantsDrained": true,
+      "adoptedZeroExits": 0,
+      "startedAt": "2026-10-11T21:07:06.840421+00:00",
+      "endedAt": "2026-10-11T21:07:07.142822+00:00"
+    },
+    {
+      "label": "session-replay-repeat-cap",
+      "exitCode": 0,
+      "actualDescendantsDrained": true,
+      "adoptedZeroExits": 3,
+      "startedAt": "2026-10-11T21:07:07.566177+00:00",
+      "endedAt": "2026-10-11T21:09:37.325812+00:00"
+    },
+    {
+      "label": "session-replay-distinct-cap",
+      "exitCode": 0,
+      "actualDescendantsDrained": true,
+      "adoptedZeroExits": 3,
+      "startedAt": "2026-10-11T21:09:37.761120+00:00",
+      "endedAt": "2026-10-11T21:12:07.014778+00:00"
+    },
+    {
+      "label": "source-after",
+      "exitCode": 0,
+      "actualDescendantsDrained": true,
+      "adoptedZeroExits": 0,
+      "startedAt": "2026-10-11T21:12:07.445892+00:00",
+      "endedAt": "2026-10-11T21:12:07.648371+00:00"
+    }
+  ],
+  "emptyTemporaryObservations": 4,
+  "finalCrossBindingPassed": true,
+  "lanes": {
+    "session-replay-repeat-cap": {
+      "raw": {
+        "bytes": 198310,
+        "sha256": "520edc9fed2cea9a5c393279441ec3efc8477a2b50ec6a4d7ea6efb55908c538"
+      },
+      "receipt": {
+        "bytes": 2269,
+        "sha256": "6fa1c65e0ef74cead4ec7ddd3f1576354337408a50d390a953233734888bd2ba"
+      },
+      "sourceAndBuildHashChecks": 15,
+      "semanticControlsPassed": true,
+      "measuredCycles": 12,
+      "ownershipCheckpoints": 15,
+      "pilotFencingCheckpoints": 14,
+      "requests": 538,
+      "sseConnections": 1,
+      "fixture": {
+        "visits": 1000,
+        "events": 10000,
+        "uniqueSystems": 11,
+        "responseBytes": 3985905,
+        "routeSha256": "c3ea5e2913c27b05914c6a70aea269916af9405cc119f1dff703538bbfcd5358"
+      },
+      "retainedHeap": {
+        "labels": [
+          "before-navigation-warmup",
+          "warmed-baseline",
+          "after-batch-1",
+          "after-batch-2",
+          "after-batch-3"
+        ],
+        "thirdGcUsedBytes": [
+          7382704,
+          9368840,
+          9741232,
+          9922936,
+          9980556
+        ],
+        "warmedToFinalBytes": 611716,
+        "warmedToFinalPercent": 6.5293,
+        "stableListeners": true,
+        "finalDom": {
+          "documents": 1,
+          "nodes": 583,
+          "jsEventListeners": 614
+        }
+      },
+      "samples": [
+        {
+          "name": "replay-prepare",
+          "windowMs": 937.3284089999997,
+          "taskMs": 328.2699999999999,
+          "scriptMs": 101.53299999999999,
+          "layoutMs": 11.013999999999996,
+          "recalcMs": 17.507999999999996,
+          "canvasDraws": 5,
+          "raf": null,
+          "longTasks": []
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "windowMs": 6052.883441,
+          "taskMs": 1364.8920000000003,
+          "scriptMs": 424.807,
+          "layoutMs": 32.98000000000001,
+          "recalcMs": 217.077,
+          "canvasDraws": 236,
+          "raf": {
+            "count": 361,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 33.29999999999927,
+            "over33ms": 0
+          },
+          "longTasks": []
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "windowMs": 6066.388259000001,
+          "taskMs": 1957.7419999999997,
+          "scriptMs": 422.73400000000004,
+          "layoutMs": 29.26799999999999,
+          "recalcMs": 233.1599999999999,
+          "canvasDraws": 237,
+          "raf": {
+            "count": 363,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "max": 16.80000000000291,
+            "over33ms": 0
+          },
+          "longTasks": []
+        }
+      ],
+      "replayRequest": {
+        "requestId": "117.30",
+        "at": 84371.929113,
+        "url": "/api/sessions/followup-replay-1000/replay?character=42",
+        "method": "GET",
+        "status": 200,
+        "responseHeadersMs": 149.73799999279436,
+        "totalMs": 188.293999992311,
+        "encodedBytes": 3986528
+      }
+    },
+    "session-replay-distinct-cap": {
+      "raw": {
+        "bytes": 198436,
+        "sha256": "bd7ebf7f70f7a4d4be36f1f3a4506142dd7960b3d89fe38aa4e853db83de4ac6"
+      },
+      "receipt": {
+        "bytes": 2275,
+        "sha256": "066b298de2b98fd278e79d55c5462d45470118a2530a8dfe688ba16bd215c4b2"
+      },
+      "sourceAndBuildHashChecks": 15,
+      "semanticControlsPassed": true,
+      "measuredCycles": 12,
+      "ownershipCheckpoints": 15,
+      "pilotFencingCheckpoints": 14,
+      "requests": 538,
+      "sseConnections": 1,
+      "fixture": {
+        "visits": 1000,
+        "events": 10000,
+        "uniqueSystems": 1000,
+        "responseBytes": 4589623,
+        "routeSha256": "38b30a0dc82e34179b4995de03fa1122ded98f52dfc5c4f8766e974a6a05b855"
+      },
+      "retainedHeap": {
+        "labels": [
+          "before-navigation-warmup",
+          "warmed-baseline",
+          "after-batch-1",
+          "after-batch-2",
+          "after-batch-3"
+        ],
+        "thirdGcUsedBytes": [
+          7213896,
+          9364132,
+          9759976,
+          9926172,
+          9990592
+        ],
+        "warmedToFinalBytes": 626460,
+        "warmedToFinalPercent": 6.69,
+        "stableListeners": true,
+        "finalDom": {
+          "documents": 1,
+          "nodes": 583,
+          "jsEventListeners": 614
+        }
+      },
+      "samples": [
+        {
+          "name": "replay-prepare",
+          "windowMs": 922.3416259999995,
+          "taskMs": 311.627,
+          "scriptMs": 117.78,
+          "layoutMs": 10.492,
+          "recalcMs": 17.275,
+          "canvasDraws": 5,
+          "raf": null,
+          "longTasks": []
+        },
+        {
+          "name": "replay-playback-start-60x",
+          "windowMs": 6053.887544000001,
+          "taskMs": 1536.971,
+          "scriptMs": 463.049,
+          "layoutMs": 35.227,
+          "recalcMs": 244.99699999999996,
+          "canvasDraws": 233,
+          "raf": {
+            "count": 358,
+            "p50": 16.699999999999818,
+            "p95": 16.799999999999272,
+            "max": 50.100000000000364,
+            "over33ms": 1
+          },
+          "longTasks": [
+            {
+              "start": 9213.90000000596,
+              "duration": 62
+            }
+          ]
+        },
+        {
+          "name": "replay-playback-middle-60x",
+          "windowMs": 6036.491364999998,
+          "taskMs": 1934.0209999999995,
+          "scriptMs": 403.8029999999999,
+          "layoutMs": 35.39700000000001,
+          "recalcMs": 227.77000000000004,
+          "canvasDraws": 235,
+          "raf": {
+            "count": 360,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "max": 33.399999999999636,
+            "over33ms": 0
+          },
+          "longTasks": []
+        }
+      ],
+      "replayRequest": {
+        "requestId": "280.30",
+        "at": 84522.039427,
+        "url": "/api/sessions/followup-replay-1000/replay?character=42",
+        "method": "GET",
+        "status": 200,
+        "responseHeadersMs": 164.64100001030602,
+        "totalMs": 194.7340000042459,
+        "encodedBytes": 4590246
+      }
+    }
+  },
+  "limitations": [
+    "Single candidate, one trial per case; not a matched performance improvement or desktop GPU/FPS claim.",
+    "Forced-GC main-renderer heap remains above warmed baseline; stable DOM/listeners and twelve cycles do not prove absence of leaks.",
+    "Distinct-cap start retains one 62 ms long task and 50.1 ms maximum RAF interval.",
+    "Replay prepare includes navigation, API/parse, readiness polling and two fixed 350 ms settles.",
+    "Fixture assertions and route hashes are recorded, but full replay response bodies are not archived.",
+    "Original failed receipts remain failed; local UI coverage is assembled through the separately bound adoption receipt."
+  ]
+}
