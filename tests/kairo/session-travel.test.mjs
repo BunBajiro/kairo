@@ -7,7 +7,7 @@ import { openStore } from '../../server/store.mjs';
 import { discoveredSystemIds } from '../../server/discovery.mjs';
 import { readSessionVisits, recordSessionObservation } from '../../server/session-travel.mjs';
 import { registerUniverseHistory } from '../../server/universe-history.mjs';
-import { sessionRoute } from '../../server/session-details.mjs';
+import { sessionRoute, sessionShips } from '../../server/session-details.mjs';
 import { changeSession, sessionReport } from '../../server/history.mjs';
 import { createCore } from '../../server/core.mjs';
 import { catalog } from '../../server/modules/catalog.mjs';
@@ -40,9 +40,9 @@ function observer(store, { now = () => epoch + 1000, names = async () => ({}) } 
         return callbacks.get('data.location')({ characterId, payload: {
             current: { solar_system_id: systemId, ...(name ? { system: { name } } : {}) },
             previous: previousId ? { solar_system_id: previousId } : undefined } });
-    }, ship(characterId, shipId, previousId) {
+    }, ship(characterId, shipId, previousId, shipTypeId = 587) {
         return callbacks.get('data.ship')({ characterId, payload: {
-            current: { ship_id: shipId, ship_type_id: 587 }, previous: { ship_id: previousId, ship_type_id: 588 } } });
+            current: { ship_id: shipId, ship_type_id: shipTypeId }, previous: previousId === undefined ? undefined : { ship_id: previousId, ship_type_id: 588 } } });
     } };
 }
 const visits = store => store.db.prepare('SELECT * FROM visits ORDER BY at,id').all();
@@ -315,6 +315,90 @@ test('real Core stale transport samples never become new session travel or disco
     assert.equal(store.snapshot(42, 'location').status, 'stale');
     assert.equal(visits(store).length, 0); assert.deepEqual(discoveredSystemIds(store, 42), []);
     assert.equal(store.db.prepare("SELECT COUNT(*) n FROM events WHERE type='location.changed'").get().n, 0);
+});
+
+test('a missing Session ship baseline starts with the first fresh same-ship sample without inventing a change', { timeout: 5000 }, async t => {
+    const f = await coreFixture(t, { key: 'ship' }), { store, core } = f;
+    const clock = Date.now(); t.mock.timers.enable({apis: ['Date'], now: clock});
+    store.saveSnapshot(42, 'ship', { ...f.fresh({ ship_id: 200, ship_type_id: 999999 }), status: 'stale', refreshAt: new Date(Date.now() - 1).toISOString() });
+    const id = changeSession(store, core.publish, 42, { action: 'start', label: 'Awaiting ship' }).id;
+    assert.deepEqual(sessionReport(store, id, 42).ships.hulls, [], 'A stale starting sample is not recorded as fresh');
+    t.mock.timers.tick(1000);
+    f.names.resolve(); await core.sync(42); await core.bus.drain();
+    const first = JSON.parse(store.db.prepare('SELECT start_context FROM sessions WHERE id=?').get(id).start_context).firstShip;
+    assert.deepEqual(first, {typeId: 999999, shipId: 200, at: new Date(clock + 1000).toISOString()});
+    assert.deepEqual(sessionReport(store, id, 42).ships.hulls, [], 'Hull stints use the existing half-open end boundary');
+    t.mock.timers.tick(1);
+    const report = sessionReport(store, id, 42);
+    assert.deepEqual(report.ships.hulls.map(hull => hull.typeId), [999999]);
+    assert.equal(report.ships.initialRecorded, false, 'Missing start evidence must not be backdated');
+    assert.equal(report.stats.shipChanges, 0, 'The first observed baseline is not a ship transition');
+    assert.equal(report.ships.changes[0].at, first.at);
+});
+
+test('first ship observations persist across restart, cost no repeat writes and remain pilot-owned', async t => {
+    const f = await storage(t);session(f.store, 'late-ship', 42);session(f.store, 'other-ship', 43);
+    let o = observer(f.store);
+    o.ship(42, 200);o.ship(43, 300, undefined, 609);
+    const first = JSON.parse(f.store.db.prepare('SELECT start_context FROM sessions WHERE id=?').get('late-ship').start_context);
+    assert.deepEqual(first.firstShip, { typeId: 587, shipId: 200, at: at(1000) });
+    assert.equal(o.events.length, 0);o.stop();
+    const store = f.reopen();o = observer(store, {now: () => epoch + 2000});
+    const writes = store.db.prepare('SELECT total_changes() n').get().n;
+    o.ship(42, 200, 200);o.ship(42, 200, 200);
+    assert.equal(store.db.prepare('SELECT total_changes() n').get().n, writes, 'Unchanged samples never rewrite a retained baseline');
+    store.db.prepare('UPDATE sessions SET ended=? WHERE id=?').run(at(3000), 'late-ship');
+    const report = sessionReport(store, 'late-ship', 42);
+    assert.deepEqual(report.ships.hulls, [{typeId:587,name:'Hull 587',seconds:2,stints:1}]);
+    assert.equal(report.ships.initialRecorded, false);assert.equal(report.stats.shipChanges, 0);
+    assert.equal(JSON.parse(store.db.prepare('SELECT start_context FROM sessions WHERE id=?').get('other-ship').start_context).firstShip.typeId, 609);
+    o.stop();
+});
+
+test('first hull received before delayed names stays with the original Session', { timeout: 5000 }, async t => {
+    const f = await coreFixture(t, {key:'ship'}), {store,core} = f;
+    store.saveSnapshot(42, 'ship', {status:'waiting',data:null});
+    const clock = Date.now();t.mock.timers.enable({apis:['Date'],now:clock});
+    const a = changeSession(store, core.publish, 42, {action:'start'}).id;
+    t.mock.timers.tick(1000);const work = core.sync(42);await f.namesStarted.promise;
+    t.mock.timers.tick(1000);changeSession(store, core.publish, 42, {action:'end'});
+    const b = changeSession(store, core.publish, 42, {action:'start'}).id;
+    f.names.resolve();await work;await core.bus.drain();
+    const before = sessionReport(store, a, 42),after = sessionReport(store, b, 42);
+    assert.deepEqual(before.ships.hulls.map(hull=>[hull.typeId,hull.seconds]), [[999999,1]]);
+    assert.equal(before.ships.changes[0].at, new Date(clock+1000).toISOString());
+    assert.equal(before.stats.shipChanges, 0);assert.deepEqual(after.ships.hulls, []);
+    assert.equal(JSON.parse(store.db.prepare('SELECT start_context FROM sessions WHERE id=?').get(b).start_context).firstShip, undefined);
+});
+
+test('stale and paused ship delivery cannot establish a first hull, but re-enabled fresh evidence can', { timeout: 5000 }, async t => {
+    const stale = await coreFixture(t, {key:'ship',stale:true});
+    stale.store.saveSnapshot(42, 'ship', {status:'waiting',data:null});
+    const staleId = changeSession(stale.store, stale.core.publish, 42, {action:'start'}).id;
+    stale.names.resolve();await stale.core.sync(42);await stale.core.bus.drain();
+    assert.deepEqual(sessionReport(stale.store, staleId, 42).ships.hulls, []);
+    const paused = await coreFixture(t, {key:'ship'});
+    paused.store.saveSnapshot(42, 'ship', {status:'waiting',data:null});
+    const pausedId = changeSession(paused.store, paused.core.publish, 42, {action:'start'}).id;
+    const work = paused.core.sync(42);await paused.namesStarted.promise;
+    paused.core.toggle('pilot', false);paused.names.resolve();await work;await paused.core.bus.drain();
+    assert.deepEqual(sessionReport(paused.store, pausedId, 42).ships.hulls, []);
+    paused.core.toggle('pilot', true);await paused.core.requestSync(42);await paused.core.bus.drain();
+    assert.deepEqual(sessionReport(paused.store, pausedId, 42).ships.hulls.map(hull=>hull.typeId), [999999]);
+    assert.equal(sessionReport(paused.store, pausedId, 42).stats.shipChanges, 0);
+});
+
+test('first-ship projection respects earlier/equal transitions and excludes out-of-window observations', async t => {
+    const {store} = await storage(t),s=session(store,'ordered-ships',42,{},at(0),at(10000));
+    store.db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)')
+        .run(42,'ship.changed','universe','Changed hull',JSON.stringify({ship_type_id:609,ship_id:300,session_id:s.id}),at(2000));
+    const project=first=>sessionShips(store,s,{capturedAt:at(0),firstShip:first},s.ended,{});
+    for(const timestamp of [at(-1),at(2000),at(3000),at(10000),'invalid']){
+        const result=project({typeId:587,shipId:200,at:timestamp});
+        assert.deepEqual(result.changes.map(change=>[change.typeId,change.at]),[[609,at(2000)]]);
+    }
+    assert.deepEqual(project({typeId:587,shipId:200,at:at(1000)}).changes.map(change=>[change.typeId,change.seconds]),[[587,1],[609,8]]);
+    assert.deepEqual(project({typeId:587,shipId:200,at:'2026-09-20T13:00:01+01:00'}).changes.map(change=>[change.typeId,change.seconds]),[[587,1],[609,8]]);
 });
 
 test('Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline', { timeout: 5000 }, async t => {

@@ -51,6 +51,16 @@ export default function Dashboard() {
     const datasetConnectionRef = useRef<ReturnType<typeof createDatasetConnection> | null>(null);
     const [namesOwner] = useState(createNameDirectoryState);
     const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null);
+    const bootstrapRead = useRef(0), bootstrapPublished = useRef(0);
+    const installBootstrap = useCallback((result: Bootstrap, generation: number) => {
+        // Separate edits and reconnects may read concurrently. An older reply
+        // cannot replace a newer roster, module setting or appearance choice.
+        if (generation < bootstrapPublished.current) return false;
+        bootstrapPublished.current = generation;
+        bootRef.current = result; setBoot(result);
+        document.documentElement.dataset.theme = result.settings.theme || 'mint';
+        return true;
+    }, []);
     const snapshotEvents = useRef<Record<string,number>>({}), resourceEvents = useRef<Record<string,number>>({}), ancillaryEvents = useRef({names:0,opsec:0}), stateError = useRef<unknown>(null);
     const stateOwner = useRef<ReturnType<typeof createScopedRefresh> | null>(null);
     const [resourceRevisions, setResourceRevisions] = useState<Record<string,string>>({}), resourceRef = useRef<Record<string,string>>({});
@@ -82,25 +92,24 @@ export default function Dashboard() {
     }, [applyResourceRevisions, namesOwner]);
     const refresh = useCallback(async () => {await stateOwner.current?.request(); if (stateError.current) throw stateError.current;}, []);
     const reload = useCallback(async () => {
+        const generation = ++bootstrapRead.current;
         const result = await api('/bootstrap'), prior = bootRef.current?.characters;
+        if (!installBootstrap(result, generation)) return;
         const rosterChanged = retainValue(prior, result.characters) !== prior;
-        bootRef.current = result; setBoot(result);
         if (charRef.current && !result.characters.some((c: any) => c.id === charRef.current)) setCharacter(result.characters[0]?.id || 0);
-        document.documentElement.dataset.theme = result.settings.theme || 'mint';
         if (rosterChanged) {
             setRecoveryRevision(value => value + 1);
             window.dispatchEvent(new CustomEvent('kairo:resource-changed', {detail:{resources:['goalSources']}}));
             window.dispatchEvent(new CustomEvent('kairo:source-changed', {detail:{resources:['recovery','roster']}}));
         }
-    }, [setCharacter]);
+    }, [setCharacter, installBootstrap]);
     useEffect(() => { let alive = true; const initial = async () => { try {
+        const generation = ++bootstrapRead.current;
         const result = await api('/bootstrap');
-        if (!alive)
+        if (!alive || !installBootstrap(result, generation))
             return;
-        bootRef.current = result;
-        setBoot(result);
-        document.documentElement.dataset.theme = result.settings.theme || 'mint';
-        const chosen = Number(localStorage.getItem('kairo-character') || 0);
+        let chosen = 0;
+        try { chosen = Number(localStorage.getItem('kairo-character') || 0); } catch { }
         const id = result.characters.some((c: any) => c.id === chosen) ? chosen : result.characters[0]?.id || 0;
         setCharacter(id);
         // The selected-pilot effect owns the initial state read as well as switches.
@@ -130,7 +139,7 @@ export default function Dashboard() {
     const hotkey = (e: KeyboardEvent) => { if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         setSearch(v => !v);
-    } }; window.addEventListener('keydown', hotkey); return () => { alive = false; window.removeEventListener('hashchange', hash);window.removeEventListener('kairo:workspace-traverse',traverseWorkspace); window.removeEventListener('keydown', hotkey); }; }, [refresh]);
+    } }; window.addEventListener('keydown', hotkey); return () => { alive = false; window.removeEventListener('hashchange', hash);window.removeEventListener('kairo:workspace-traverse',traverseWorkspace); window.removeEventListener('keydown', hotkey); }; }, [refresh, installBootstrap]);
     const activePilotSync=useRef<Promise<unknown>>(Promise.resolve());
     useEffect(() => {if(boot?.csrf&&character&&boot.characters.some(pilot=>pilot.id===character))activePilotSync.current=activePilotSync.current.catch(()=>{}).then(()=>api('/universe/jspace/tracking/active','PUT',{character_id:character},boot.csrf)).catch(()=>{});},[character,boot?.csrf]);
     useEffect(() => {
@@ -153,13 +162,14 @@ export default function Dashboard() {
             seenRecovery: key => remembered.includes(key),
             rememberRecovery: key => { remembered = [...remembered.slice(-9), key]; try { sessionStorage.setItem(recoveryKey, JSON.stringify(remembered)); } catch { } },
             refresh: async (revision, isCurrent) => {
+                const generation = ++bootstrapRead.current;
                 const nextBoot = await api('/bootstrap');
                 if (!isCurrent()) return;
                 if (nextBoot.datasetRevision !== revision) throw new Error('Dataset generation changed while reconnecting.');
-                bootRef.current = nextBoot; setBoot(nextBoot);
-                document.documentElement.dataset.theme = nextBoot.settings.theme || 'mint';
+                installBootstrap(nextBoot, generation);
+                const currentBoot = bootRef.current!;
                 const characterId = charRef.current;
-                if (characterId && !nextBoot.characters.some((pilot: any) => pilot.id === characterId)) setCharacter(nextBoot.characters[0]?.id || 0);
+                if (characterId && !currentBoot.characters.some((pilot: any) => pilot.id === characterId)) setCharacter(currentBoot.characters[0]?.id || 0);
                 else await refresh();
                 if (!isCurrent()) return;
                 setRecoveryRevision(value => value + 1);
@@ -217,7 +227,7 @@ export default function Dashboard() {
         });
         const poll = setInterval(() => refresh().catch(() => {}), 30000);
         return () => { connection.dispose(); datasetConnectionRef.current = null; events.close(); if (timer) clearTimeout(timer); clearInterval(poll); };
-    }, [!!boot, refresh, reload, applyResourceRevisions, namesOwner]);
+    }, [!!boot, refresh, reload, applyResourceRevisions, namesOwner, installBootstrap]);
     async function retryDatasetConnection() {
         const connection = datasetConnectionRef.current;
         if (!connection) return;

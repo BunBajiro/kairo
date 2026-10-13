@@ -619,7 +619,7 @@ export function createUniverse(store, auth, esi, options = {}) {
         const owners=new Map(sourceRows(samples,'sovereignty').map(row=>[row.system_id||row.solar_system_id,row]));
         const kills=new Map(sourceRows(samples,'kills').map(row=>[row.system_id,row])),standings=new Map(),standingBySystem=new Map();
         const completeKills=['ready','stale'].includes(sources.kills.status)&&!sources.kills.truncated&&Array.isArray(samples.kills?.data);
-        for (const key of ['mode', 'useAnsiblex', 'useWormholes', 'useZarzakh', 'maxAnsiblexZone', 'ansiblexZones', 'avoidSystemIds', 'avoidHostile', 'ansiblexRules', 'shipClass', 'shipSize', 'shipMassKg', 'allowUnknownWormholeSize', 'highSecOnly', 'avoidLowsec', 'avoidNullsec'])
+        for (const key of ['mode', 'useAnsiblex', 'useWormholes', 'useThera', 'useTurnur', 'useZarzakh', 'maxAnsiblexZone', 'ansiblexZones', 'avoidSystemIds', 'avoidHostile', 'ansiblexRules', 'shipClass', 'shipSize', 'shipMassKg', 'allowUnknownWormholeSize', 'highSecOnly', 'avoidLowsec', 'avoidNullsec'])
             if (input.preferences?.[key] !== undefined) preferences[key] = input.preferences[key];
         if (preferences.avoidSystemIds != null && !Array.isArray(preferences.avoidSystemIds)) throw new Error('Avoided systems must be a list of system IDs.');
         preferences.pilotAllianceId = sources.profile.status === 'ready' ? samples.profile?.data?.alliance_id : undefined;

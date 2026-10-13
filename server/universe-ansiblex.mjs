@@ -31,6 +31,11 @@ export function parseAnsiblexImport(input, systems = []) {
     const accept = (row, line, raw, format) => {
         formats.add(format);
         try {
+            // The import form supplies common ownership for text formats without
+            // these columns. An endpoint's explicit owner keeps its own capital.
+            const differentOwner = row.owner_alliance_id != null && options.owner_alliance_id != null && Number(row.owner_alliance_id) !== Number(options.owner_alliance_id);
+            row = { ...row, owner_alliance_id: row.owner_alliance_id ?? options.owner_alliance_id,
+                capital_system_id: row.capital_system_id ?? (differentOwner ? undefined : options.capital_system_id) };
             const from = resolve(row.from_system_id ?? row.from ?? row.From), to = resolve(row.to_system_id ?? row.to ?? row.To);
             if (!from || !to) throw new Error('Unknown system: ' + (!from ? row.from_system_id ?? row.from ?? row.From : row.to_system_id ?? row.to ?? row.To));
             if (from.system_id === to.system_id) throw new Error('A bridge needs different endpoints.');

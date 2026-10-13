@@ -10,7 +10,7 @@ const owners=JSON.parse(readFileSync(datasetFile('npc-market-owners.json'),'utf8
 const taxonomy=createMarketCategories(),JITA=60003760,iso=n=>new Date(n).toISOString();
 const privateKeys={skills:['training','esi-skills.read_skills.v1'],standings:['combat','esi-characters.read_standings.v1'],orders:['wallet','esi-markets.read_character_orders.v1']};
 export function createImports(store,auth,{now=()=>Date.now(),request,refreshCharacter}={}){
- const db=store.db;let memo=null,flight=null,refreshFlight=null;
+ const db=store.db,refreshFlights=new Map();let memo=null,flight=null;
  const revision=importRevision(db);
  const cacheKey=(id,roster=auth.characters())=>JSON.stringify([id,revision(),roster.map(c=>[c.id,c.name,!!c.needsReauth,c.scopes])]);
  const hub=id=>{const h=db.prepare('SELECT * FROM market_hubs WHERE id=?').get(Number(id));if(!h)throw new Error('Choose a saved trade hub.');return h;};
@@ -35,8 +35,11 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
   return {hub:h,settings:s,fees,buyer,watched,ordersReady:Array.isArray(snapshot(c,'orders')?.data),categories:IMPORT_CATEGORIES.map(({id,name,minimum})=>({id,name,minimum})),plans:db.prepare("SELECT id,json_extract(body,'$.name') name,json_array_length(body,'$.lines') lineCount,json_extract(body,'$.packing.trips') trips,json_extract(body,'$.quotedAt') quotedAt FROM market_import_plans WHERE hub_id=? ORDER BY updated DESC LIMIT 100").all(h.id)};
  }
  function saveSettings(id,input){const h=hub(id),s=validateImportSettings(input),roster=auth.characters();if(s.characterId&&!roster.some(c=>c.id===s.characterId))throw new Error('Choose a connected selling character.');if(s.buyingCharacterId&&!roster.some(c=>c.id===s.buyingCharacterId))throw new Error('Choose a connected buying character.');store.set('market:imports:'+h.id,s);memo=null;return state(h.id,roster);}
- async function refresh(id){const h=hub(id),roster=auth.characters(),s=settings(id,roster);if(!store.get('module:markets',true))throw new Error('Enable Markets before updating trader data.');if(refreshFlight)return refreshFlight;
-  refreshFlight=(async()=>{const chosen=roster.find(c=>c.id===s.characterId);if(!chosen||chosen.needsReauth)throw new Error('Choose a connected selling character.');
+ async function refresh(id){const h=hub(id),roster=auth.characters(),s=settings(id,roster);if(!store.get('module:markets',true))throw new Error('Enable Markets before updating trader data.');
+  // A refresh owns its destination's fee owner and the selected seller's
+  // profile. Only callers with the same selection and access can share it.
+  const key=JSON.stringify([h.id,s.characterId,s.buyingCharacterId,roster.map(c=>[c.id,!!c.needsReauth,c.scopes])]);if(refreshFlights.has(key))return refreshFlights.get(key);
+  const task=(async()=>{const chosen=roster.find(c=>c.id===s.characterId);if(!chosen||chosen.needsReauth)throw new Error('Choose a connected selling character.');
    const buyer=roster.find(c=>c.id===(s.buyingCharacterId||s.characterId));if(!buyer||buyer.needsReauth)throw new Error('Choose a connected buying character, or reconnect it in Connections.');
    if(h.kind==='station'){
     const old=store.get('market:owner:'+h.id,null);if(!old||old.expires<=now()){
@@ -46,7 +49,7 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
    }
    if(refreshCharacter)await Promise.allSettled(auth.characters().filter(c=>!c.needsReauth).map(c=>refreshCharacter(c.id,c.id===chosen.id?['skills','standings','orders']:['orders'])));
    memo=null;return state(id);
-  })().finally(()=>{refreshFlight=null;});return refreshFlight;
+  })().finally(()=>{refreshFlights.delete(key);});refreshFlights.set(key,task);return task;
  }
  function ownership(id,roster){const ownIds=new Set(),ownTypes=new Set();for(const c of roster){const sample=snapshot(c,'orders');if(!Array.isArray(sample?.data))continue;for(const o of sample.data){if(Number.isSafeInteger(o.order_id))ownIds.add(o.order_id);if(o.location_id===id&&!o.is_buy_order&&o.volume_remain>0&&Date.parse(o.issued)+o.duration*DAY>now())ownTypes.add(o.type_id);}}return {ownIds,ownTypes};}
  function levelMap(id,typeIds,ownIds,expires){const map=new Map();if(!typeIds.length)return map;const rows=db.prepare('SELECT type_id,order_id,price,volume,issued,duration FROM market_orders WHERE hub_id=? AND buy=0 AND volume>0 AND type_id IN (SELECT value FROM json_each(?)) ORDER BY type_id,price,order_id').all(id,JSON.stringify(typeIds));
@@ -98,8 +101,14 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
  }
  async function quote(id,input){return quoteFrom(await cached(id),input);}
  async function planQuote(id,input){if(!Array.isArray(input.lines)||!input.lines.length||input.lines.length>100)throw new Error('An import plan needs 1–100 items.');if(new Set(input.lines.map(l=>l.typeId)).size!==input.lines.length)throw new Error('Keep one import line per item.');const cache=await cached(id),s=cache.result.settings,lines=input.lines.map(line=>quoteFrom(cache,line));const packing=packCargo(lines,s.cargo),sum=k=>lines.reduce((n,l)=>n+l[k],0),haul=packing.trips*s.haulPerTrip,upfront=sum('upfront')-sum('haul')+haul,net=sum('net')+sum('haul')-haul;return {lines,packing,buyer:cache.result.buyer,feeProfile:cache.result.fees,totals:{purchase:lines.reduce((n,l)=>n+l.buy.cost,0),revenue:sum('revenue'),brokerFee:sum('brokerFee'),salesTax:sum('salesTax'),relistReserve:sum('relistReserve'),haul,upfront,net,roi:net/upfront*100,budget:s.budget,budgetExceeded:upfront>s.budget,maxEta:Math.max(...lines.map(l=>l.eta||0))},settings:s,quotedAt:iso(now())};}
- async function savePlan(id,input){const h=hub(id);if(typeof input.name!=='string'||!input.name.trim()||input.name.length>100)throw new Error('Name the import plan (up to 100 characters).');const prior=input.id?db.prepare('SELECT * FROM market_import_plans WHERE id=? AND hub_id=?').get(input.id,h.id):null;if(input.id&&!prior)throw new Error('Import plan not found.');if(!prior&&db.prepare('SELECT COUNT(*) n FROM market_import_plans WHERE hub_id=?').get(h.id).n>=100)throw new Error('Keep up to 100 plans per hub.');const quote=await planQuote(id,input),plan={id:prior?.id||randomUUID(),name:input.name.trim(),hubId:h.id,hubName:h.name,...quote};db.prepare('INSERT INTO market_import_plans VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET updated=excluded.updated,body=excluded.body').run(plan.id,h.id,iso(now()),JSON.stringify(plan));return plan;}
+ async function savePlan(id,input){const h=hub(id);if(typeof input.name!=='string'||!input.name.trim()||input.name.length>100)throw new Error('Name the import plan (up to 100 characters).');
+  const checkSlot=()=>{const prior=input.id?db.prepare('SELECT id FROM market_import_plans WHERE id=? AND hub_id=?').get(input.id,h.id):null;if(input.id&&!prior)throw new Error('Import plan not found.');if(!prior&&db.prepare('SELECT COUNT(*) n FROM market_import_plans WHERE hub_id=?').get(h.id).n>=100)throw new Error('Keep up to 100 plans per hub.');return prior;};
+  checkSlot();const quote=await planQuote(id,input);
+  // Quoting can yield: a delete or another save may change identity/capacity.
+  // Revalidate immediately before publishing, without another asynchronous gap.
+  const prior=checkSlot(),plan={id:prior?.id||randomUUID(),name:input.name.trim(),hubId:h.id,hubName:h.name,...quote};db.prepare('INSERT INTO market_import_plans VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET updated=excluded.updated,body=excluded.body').run(plan.id,h.id,iso(now()),JSON.stringify(plan));return plan;
+ }
  function getPlan(id,planId){hub(id);const r=db.prepare('SELECT body FROM market_import_plans WHERE hub_id=? AND id=?').get(Number(id),String(planId));if(!r)throw new Error('Saved import plan not found.');return JSON.parse(r.body);}
  function removePlan(id,planId){hub(id);db.prepare('DELETE FROM market_import_plans WHERE id=? AND hub_id=?').run(String(planId),Number(id));return {ok:true};}
- return {state,saveSettings,refresh,analyse,detail,quote,planQuote,savePlan,getPlan,removePlan,async close(){await Promise.allSettled([flight,refreshFlight]);}};
+ return {state,saveSettings,refresh,analyse,detail,quote,planQuote,savePlan,getPlan,removePlan,async close(){await Promise.allSettled([flight,...refreshFlights.values()]);}};
 }

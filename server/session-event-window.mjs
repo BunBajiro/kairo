@@ -3,7 +3,7 @@ import { sessionObservationOwnershipSql } from './session-travel.mjs';
 // Shared event membership only: reports own aggregation/pagination and replay
 // owns suppression, limits and its fixed snapshot. Killmails use occurrence
 // time; other events at an exact boundary use captured cursors. An owned end
-// event may arrive after the end cursor, as may accepted Pilot observations.
+// event may arrive after the end cursor, as may accepted fresh observations.
 // A missing session_id is legacy evidence; explicit JSON null means unowned.
 export function sessionEventWindow(session, start, finish, end, { prefix = '', eventCursor } = {}) {
     const column = name => prefix + name;

@@ -38,8 +38,19 @@ test('pagination changes, unreasonable counts and malformed orders leave no part
  let kind='drift';const {m}=await setup(t,path=>{if(!path.includes('/orders?'))return;const page=Number(new URL(path,'https://test').searchParams.get('page'));return kind==='large'?response([],{headers:{'x-pages':'2001'}}):kind==='invalid'?response([{...order(1,1),price:NaN}]):response([order(page,1)],{headers:{'x-pages':page===1?'2':'3'}});});for(kind of ['drift','large','invalid']){await scan(m);assert.equal(m.overview().job.status,'failed');assert.equal(m.browse(AMARR).total,0);assert.equal(m.overview().hubs.find(h=>h.id===AMARR).last_scan,null);}
 });
 test('one scan at a time, cancellation and restart retain durable completed books',async t=>{
- let pause=false,release,arrived;const barrier=new Promise(r=>arrived=r);const {m,store,dir,esi}=await setup(t,async path=>{if(path.includes('/orders?')){if(pause){arrived();await new Promise(r=>release=r);}return response([order(1,1),order(2,2)]);}});await scan(m);pause=true;const j=m.start({hubId:AMARR,mode:'quick',characterId:43,compareJita:false});await barrier;assert.equal(m.start({hubId:AMARR,mode:'quick',characterId:43}).id,j.id);assert.throws(()=>m.start({hubId:JITA,mode:'full'}),/One market scan/);m.cancel();release();await m.idle();assert.equal(m.overview().job.status,'cancelled');assert.equal(m.browse(AMARR).total,2);
+ let pause=false,release,arrived;const barrier=new Promise(r=>arrived=r);const {m,store,dir,esi}=await setup(t,async path=>{if(path.includes('/orders?')){if(pause){arrived();await new Promise(r=>release=r);}return response([order(1,1),order(2,2)]);}});await scan(m);pause=true;const j=m.start({hubId:AMARR,mode:'quick',characterId:43,compareJita:false});await barrier;assert.equal(m.start({hubId:AMARR,mode:'quick',characterId:43,compareJita:false}).id,j.id);assert.throws(()=>m.start({hubId:JITA,mode:'full'}),/One market scan/);m.cancel();release();await m.idle();assert.equal(m.overview().job.status,'cancelled');assert.equal(m.browse(AMARR).total,2);
  store.db.prepare('INSERT INTO market_jobs VALUES(?,?)').run('interrupted',JSON.stringify({id:'interrupted',status:'running'}));const reopened=openStore(dir),next=createMarkets(reopened,auth,esi,{historySource:'esi',spacingMs:0,now:()=>now+86400000});try{assert.equal(next.overview().job.status,'interrupted');assert.equal(next.browse(AMARR).total,2);assert.equal(next.browse(AMARR).rows[0].stale,true);}finally{await next.close();reopened.close();}
+});
+test('scan coalescing never acknowledges a different item, character or Jita comparison',async t=>{
+ let release,arrived;const gate=new Promise(resolve=>{release=resolve;}),seen=new Promise(resolve=>{arrived=resolve;});
+ const {m}=await setup(t,async path=>{if(path.includes('/orders?')){arrived();await gate;return response([order(1,1)]);}});
+ const input={hubId:AMARR,mode:'item',typeId:1,characterId:43,compareJita:false};
+ const first=m.start(input);await seen;
+ try{
+  assert.equal(m.start({...input}).id,first.id,'An identical active request reuses its job');
+  for(const change of [{typeId:2},{characterId:42},{compareJita:true}])assert.throws(()=>m.start({...input,...change}),/One market scan/,'A distinct request must not be reported as the already running job');
+  m.cancel();assert.throws(()=>m.start(input),/One market scan/,'A stopping job cannot acknowledge a new scan request');
+ }finally{release();await m.idle();}
 });
 test('history failure keeps the newly completed book and reports explicit missing coverage',async t=>{
  const {m}=await setup(t,path=>{if(path.includes('/orders?'))return response([order(1,1),order(2,2)]);if(path.includes('/history?'))throw new Error('History is temporarily unavailable');});await scan(m);assert.equal(m.overview().job.status,'failed');assert.equal(m.overview().job.books.length,1);assert.equal(m.browse(AMARR).total,2);assert.equal(m.report(AMARR,{signal:'undersupply'}).total,0);assert.equal(m.report(AMARR).historyCount,0);assert.equal(m.report(AMARR).comparable,0);

@@ -1,0 +1,663 @@
+{
+  "source": "c9ea251d490c79e6ec399b6bcf6d8749999a0be6",
+  "run": "https://github.com/BunBajiro/kairo/actions/runs/38425291854",
+  "artifact": 11827539354,
+  "digest": "b4fae51832f3076a427008bfb89233e276ca696a032a4802e564dc254d6891f7",
+  "scope": "Unchanged compiled dashboard, synthetic HTTP/SSE/image/storage/delayed-response fixtures; actual Chrome/Firefox desktop and narrow pages",
+  "checks": [
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Initial hull image transport failure is observed",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Failed hull has no decoded pixels",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "A successfully loaded replacement hull is visible",
+      "pass": false,
+      "actual": "0",
+      "expected": "1",
+      "before": {
+        "src": "https://images.evetech.net/types/587/render?size=512",
+        "decoded": false,
+        "opacity": "0",
+        "display": "block"
+      },
+      "after": {
+        "src": "https://images.evetech.net/types/621/render?size=512",
+        "decoded": true,
+        "opacity": "0",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Replacement uses the new ship telemetry",
+      "pass": true,
+      "actual": "Caracal",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Pilot switching renders only the selected pilot hull",
+      "pass": true,
+      "actual": "Kestrel",
+      "expected": "Kestrel",
+      "switched": {
+        "src": "https://images.evetech.net/types/602/render?size=512",
+        "decoded": true,
+        "opacity": "1",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Image failure does not leak into another pilot",
+      "pass": true,
+      "actual": "1",
+      "expected": "1"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Both replacement images actually loaded",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "denied-storage",
+      "label": "Storage scenario uses a healthy core with connected pilots",
+      "pass": true,
+      "actual": [
+        42,
+        43
+      ],
+      "expected": [
+        42,
+        43
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "denied-storage",
+      "label": "Unavailable saved-pilot preference falls back to the first pilot",
+      "pass": false,
+      "actual": "",
+      "expected": "Dashboard Alpha"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "denied-storage",
+      "label": "Storage denial does not substitute guest data for connected pilot",
+      "pass": false,
+      "actual": "No ship connected",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "bootstrap-race",
+      "label": "Both module mutations persist on the real server",
+      "pass": true,
+      "actual": {
+        "wallet": false,
+        "industry": false
+      },
+      "expected": {
+        "wallet": false,
+        "industry": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "bootstrap-race",
+      "label": "An older bootstrap cannot undo a newer displayed module setting",
+      "pass": false,
+      "actual": {
+        "wallet": "false",
+        "industry": "true"
+      },
+      "expected": {
+        "wallet": "false",
+        "industry": "false"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Initial hull image transport failure is observed",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Failed hull has no decoded pixels",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "A successfully loaded replacement hull is visible",
+      "pass": false,
+      "actual": "0",
+      "expected": "1",
+      "before": {
+        "src": "https://images.evetech.net/types/587/render?size=512",
+        "decoded": false,
+        "opacity": "0",
+        "display": "block"
+      },
+      "after": {
+        "src": "https://images.evetech.net/types/621/render?size=512",
+        "decoded": true,
+        "opacity": "0",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Replacement uses the new ship telemetry",
+      "pass": true,
+      "actual": "Caracal",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Pilot switching renders only the selected pilot hull",
+      "pass": true,
+      "actual": "Kestrel",
+      "expected": "Kestrel",
+      "switched": {
+        "src": "https://images.evetech.net/types/602/render?size=512",
+        "decoded": true,
+        "opacity": "1",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Image failure does not leak into another pilot",
+      "pass": true,
+      "actual": "1",
+      "expected": "1"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Both replacement images actually loaded",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "denied-storage",
+      "label": "Storage scenario uses a healthy core with connected pilots",
+      "pass": true,
+      "actual": [
+        42,
+        43
+      ],
+      "expected": [
+        42,
+        43
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "denied-storage",
+      "label": "Unavailable saved-pilot preference falls back to the first pilot",
+      "pass": false,
+      "actual": "",
+      "expected": "Dashboard Alpha"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "denied-storage",
+      "label": "Storage denial does not substitute guest data for connected pilot",
+      "pass": false,
+      "actual": "No ship connected",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "Both module mutations persist on the real server",
+      "pass": true,
+      "actual": {
+        "wallet": false,
+        "industry": false
+      },
+      "expected": {
+        "wallet": false,
+        "industry": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "An older bootstrap cannot undo a newer displayed module setting",
+      "pass": false,
+      "actual": {
+        "wallet": "false",
+        "industry": "true"
+      },
+      "expected": {
+        "wallet": "false",
+        "industry": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Initial hull image transport failure is observed",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Failed hull has no decoded pixels",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "A successfully loaded replacement hull is visible",
+      "pass": false,
+      "actual": "0",
+      "expected": "1",
+      "before": {
+        "src": "https://images.evetech.net/types/587/render?size=512",
+        "decoded": false,
+        "opacity": "0",
+        "display": "block"
+      },
+      "after": {
+        "src": "https://images.evetech.net/types/621/render?size=512",
+        "decoded": true,
+        "opacity": "0",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Replacement uses the new ship telemetry",
+      "pass": true,
+      "actual": "Caracal",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Pilot switching renders only the selected pilot hull",
+      "pass": true,
+      "actual": "Kestrel",
+      "expected": "Kestrel",
+      "switched": {
+        "src": "https://images.evetech.net/types/602/render?size=512",
+        "decoded": true,
+        "opacity": "1",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Image failure does not leak into another pilot",
+      "pass": true,
+      "actual": "1",
+      "expected": "1"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "hull-recovery",
+      "label": "Both replacement images actually loaded",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "denied-storage",
+      "label": "Storage scenario uses a healthy core with connected pilots",
+      "pass": true,
+      "actual": [
+        42,
+        43
+      ],
+      "expected": [
+        42,
+        43
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "denied-storage",
+      "label": "Unavailable saved-pilot preference falls back to the first pilot",
+      "pass": false,
+      "actual": "",
+      "expected": "Dashboard Alpha"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "denied-storage",
+      "label": "Storage denial does not substitute guest data for connected pilot",
+      "pass": false,
+      "actual": "No ship connected",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "bootstrap-race",
+      "label": "Both module mutations persist on the real server",
+      "pass": true,
+      "actual": {
+        "wallet": false,
+        "industry": false
+      },
+      "expected": {
+        "wallet": false,
+        "industry": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "bootstrap-race",
+      "label": "An older bootstrap cannot undo a newer displayed module setting",
+      "pass": false,
+      "actual": {
+        "wallet": "false",
+        "industry": "true"
+      },
+      "expected": {
+        "wallet": "false",
+        "industry": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Initial hull image transport failure is observed",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Failed hull has no decoded pixels",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "A successfully loaded replacement hull is visible",
+      "pass": false,
+      "actual": "0",
+      "expected": "1",
+      "before": {
+        "src": "https://images.evetech.net/types/587/render?size=512",
+        "decoded": false,
+        "opacity": "0",
+        "display": "block"
+      },
+      "after": {
+        "src": "https://images.evetech.net/types/621/render?size=512",
+        "decoded": true,
+        "opacity": "0",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Replacement uses the new ship telemetry",
+      "pass": true,
+      "actual": "Caracal",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Pilot switching renders only the selected pilot hull",
+      "pass": true,
+      "actual": "Kestrel",
+      "expected": "Kestrel",
+      "switched": {
+        "src": "https://images.evetech.net/types/602/render?size=512",
+        "decoded": true,
+        "opacity": "1",
+        "display": "block"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Image failure does not leak into another pilot",
+      "pass": true,
+      "actual": "1",
+      "expected": "1"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "hull-recovery",
+      "label": "Both replacement images actually loaded",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "denied-storage",
+      "label": "Storage scenario uses a healthy core with connected pilots",
+      "pass": true,
+      "actual": [
+        42,
+        43
+      ],
+      "expected": [
+        42,
+        43
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "denied-storage",
+      "label": "Unavailable saved-pilot preference falls back to the first pilot",
+      "pass": false,
+      "actual": "",
+      "expected": "Dashboard Alpha"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "denied-storage",
+      "label": "Storage denial does not substitute guest data for connected pilot",
+      "pass": false,
+      "actual": "No ship connected",
+      "expected": "Caracal"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "Both module mutations persist on the real server",
+      "pass": true,
+      "actual": {
+        "wallet": false,
+        "industry": false
+      },
+      "expected": {
+        "wallet": false,
+        "industry": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "An older bootstrap cannot undo a newer displayed module setting",
+      "pass": false,
+      "actual": {
+        "wallet": "false",
+        "industry": "true"
+      },
+      "expected": {
+        "wallet": "false",
+        "industry": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "No uncaught browser errors",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "No unexpected browser requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "bootstrap-race",
+      "label": "No external server requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

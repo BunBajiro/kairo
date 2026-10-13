@@ -72,6 +72,18 @@ test('Thera entrance search can reach a current entrance without silently enabli
     const result=findNearestDestinations(input);assert.deepEqual(result.results.map(row=>row.systemId),[4]);assert.equal(result.results[0].route.edges[0].kind,'gate');assert.equal(result.results[0].route.expiresAt,future);
 });
 
+test('public destination shortcuts work independently of the confirmed-chain toggle',()=>{
+    for(const [source,name,preference] of [['thera','Thera','useThera'],['turnur','Turnur','useTurnur']]){
+        const hub=system(12,-1,{space:source==='thera'?'wormhole':'known',name});
+        const input={systems:[hub,system(4),system(5)],originId:12,category:'highsec',now,connections:[hole(12,5)],
+            preferences:{useWormholes:false,[preference]:true,shipSize:'small'},feeds:{sources:{[source]:{status:'ready'}},connections:[
+                {id:source+':1',source,...gate(12,4),reported:true,completed:true,expires_at:future,max_ship_size:'large'}]}};
+        const result=findNearestDestinations(input);
+        assert.equal(result.status,'ok');assert.deepEqual(result.results.map(row=>row.systemId),[4]);
+        assert.equal(findNearestDestinations({...input,preferences:{...input.preferences,[preference]:false}}).status,'no_route');
+    }
+});
+
 test('reference station search preserves real station data and destination-security filtering',()=>{
     const input={systems:[origin,system(4,.2)],connections:[hole(1,4)],originId:1,category:'blue_loot',now,preferences:{useWormholes:true,shipSize:'small'},reference};
     assert.equal(findNearestDestinations({...input,security:'high'}).status,'no_route');

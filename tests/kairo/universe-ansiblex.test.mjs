@@ -44,3 +44,12 @@ test('JSON retains independent endpoint owners, capitals, access and enabled dir
  const directed=parseAnsiblexImport({links:[{from:1,to:2,directional:true,enabled:true},{from:2,to:1,directional:true,enabled:false}]},systems);
  assert.equal(directed.links.length,2);assert.ok(directed.links.every(l=>l.directional));assert.deepEqual(directed.links.map(l=>l.enabled),[true,false]);
 });
+test('import ownership defaults preserve explicit endpoint owners and their independent capitals',()=>{
+ const defaults={owner_alliance_id:10,capital_system_id:1};
+ const parsed=parseAnsiblexImport({...defaults,links:[{from:1,to:2,owner_alliance_id:20,capital_system_id:3,reverse_owner_alliance_id:30}]},systems);
+ assert.equal(parsed.valid,true);assert.equal(parsed.links[0].owner_alliance_id,20);assert.equal(parsed.links[0].capital_system_id,3);
+ assert.equal(parsed.links[0].reverse_owner_alliance_id,30);assert.equal(parsed.links[0].reverse_capital_system_id,null);
+ const unknownCapital=parseAnsiblexImport({...defaults,links:[{from:1,to:2,owner_alliance_id:20}]},systems);
+ assert.equal(unknownCapital.links[0].owner_alliance_id,20);assert.equal(unknownCapital.links[0].capital_system_id,undefined);
+ assert.equal(parseAnsiblexImport({...defaults,capital_system_id:'missing',text:'0 A-A --> B B'},systems).valid,false);
+});

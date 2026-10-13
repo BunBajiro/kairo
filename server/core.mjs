@@ -24,6 +24,7 @@ import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
 import {createUIResourceVersions, eventResources} from './ui-resources.mjs';
 const DATASET_NOT_DUE = Symbol('dataset-not-due');
+const DATASET_OBSOLETE = Symbol('dataset-obsolete');
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
     let stopped = false, closing, quiesceFailures;
@@ -192,6 +193,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         let notDue = false;
         const task = runDataset(character, m, d).then(result => {
             notDue = result === DATASET_NOT_DUE;
+            return result;
         }).finally(() => {
             datasetSync.delete(key);
             if (!stopped && !notDue && protectionKeys.has(d.key)) refreshOPSEC();
@@ -201,6 +203,9 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     }
     async function runDataset(character, m, d) {
         const id = character?.id || 0;
+        const revision = auth.connectionRevision?.(id), key = id + ':' + d.key;
+        // Reuse admission identity for synchronous cache checks. Only work
+        // crossing an await needs the fresh ownership checks below.
         if (!enabled(m) || character?.needsReauth)
             return;
         const metadata = store.snapshotMetadata(id, d.key);
@@ -209,11 +214,19 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 store.saveSnapshot(id, d.key, { status: 'missing_scope', data: null, scope: d.scope });
             return;
         }
-        const key = id + ':' + d.key;
         let ownerId;
+        function current() {
+            if (!id) return true;
+            const active = auth.characters().find(c => c.id === id);
+            const valid = active && !active.needsReauth && auth.connectionRevision?.(id) === revision &&
+                (!d.scope || active.scopes.includes(d.scope));
+            if (!valid) nextRun.delete(key);
+            return valid;
+        }
         if (d.owner) {
             const pilot = catalog.find(m => m.id === 'pilot');
             await syncDataset(character, pilot, pilot.datasets.find(d => d.key === 'profile'));
+            if (!current()) return DATASET_OBSOLETE;
             const profile = store.snapshot(id, 'profile');
             if (!enabled(pilot) || profile?.status !== 'ready') {
                 store.saveSnapshot(id, d.key, { status: 'waiting', data: null, error: 'Waiting for current corporation and alliance membership.' });
@@ -241,14 +254,19 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         try {
             const options = { characterId: d.scope ? id : 0, ttl: d.ttl, priority: protectionKeys.has(d.key) };
             const r = await (d.paged ? esi.paged : esi.request)(d.route.replaceAll('{id}', id).replaceAll('{owner}', ownerId), options);
+            // Disconnect/reconnect and scope changes end collection ownership,
+            // even if an already dispatched ESI response still succeeds.
+            if (!current()) return DATASET_OBSOLETE;
             // Session ownership follows local fresh-response receipt, before
-            // optional location metadata or names can cross a session boundary.
-            const observation = !r.stale && (d.key === 'location' || d.key === 'ship')
+            // optional display metadata or names can cross a session boundary.
+            const observation = !r.stale && ['location', 'ship', 'skills', 'jobs'].includes(d.key)
                 ? captureSessionObservation(store, { characterId: id, systemId: d.key === 'location' ? r.data?.solar_system_id : undefined }) : undefined;
             const data = await enrich(d.key, r.data, id);
+            if (!current()) return DATASET_OBSOLETE;
             if (d.key === 'sovereignty') await resolveNames(data.map(s => ({ alliance_id: s.alliance_id, corporation_id: s.corporation_id, faction_id: s.faction_id })), true);
             else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts', 'industry_systems'].includes(d.key))
                 await resolveNames(data, protectionKeys.has(d.key));
+            if (!current()) return DATASET_OBSOLETE;
             const snapshot = { ...r, data, status: r.stale ? 'stale' : 'ready', ...(d.owner ? { ownerId } : {}) };
             snapshot.sourceModifiedAt = r.headers?.['last-modified'] || null;
             if (!r.stale) snapshot.refreshAt = new Date(refreshDeadline(pollingPolicy(d, id), r, d.key === 'queue' ? data : store.snapshot(id, 'queue')?.data)).toISOString();
@@ -285,6 +303,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             }
         }
         catch (e) {
+            if (!current()) return DATASET_OBSOLETE;
             const retained = d.owner && prior?.ownerId !== ownerId ? null : prior;
             const retryAt = new Date(retryDeadline(d, e.retryAt)).toISOString();
             store.saveSnapshot(id, d.key, { ...retained, data: retained?.data ?? null, status: retained?.data != null ? 'stale' : 'error', error: e.message, errorStatus: e.status, retryAt, ...(d.owner ? { ownerId } : {}) });
@@ -333,10 +352,11 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     }
     async function sync(id) { if (stopped || syncing.has(id))
         return; const character = auth.characters().find(c => c.id === id); if (id && !character)
-        return; const task = (async () => { const modules = id ? catalog.filter(m => m.id !== 'universe') : catalog.filter(m => m.id === 'universe'); const tasks = modules.filter(enabled).flatMap(m => m.datasets.map(d => () => syncDataset(character, m, d))); for (let i = 0; i < tasks.length; i += 3) {
-        if (stopped)
+        return; const revision = auth.connectionRevision?.(id); const task = (async () => { const modules = id ? catalog.filter(m => m.id !== 'universe') : catalog.filter(m => m.id === 'universe'); const tasks = modules.filter(enabled).flatMap(m => m.datasets.map(d => () => syncDataset(character, m, d))); for (let i = 0; i < tasks.length; i += 3) {
+        if (stopped || (id && auth.connectionRevision?.(id) !== revision))
             break;
-        await Promise.allSettled(tasks.slice(i, i + 3).map(f => f()));
+        const results = await Promise.allSettled(tasks.slice(i, i + 3).map(f => f()));
+        if (results.some(result => result.status === 'fulfilled' && result.value === DATASET_OBSOLETE)) break;
     } refreshOPSEC(); updateBindings(); })().finally(() => syncing.delete(id)); syncing.set(id, task); return task; }
     function snapshots(id, expire = true) { const data = {}; for (const m of catalog)
         for (const d of m.datasets) {

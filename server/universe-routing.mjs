@@ -161,7 +161,9 @@ export function buildTravelGraph({ systems = [], gates = [], connections = [], p
         if (!['ansiblex', 'wormhole'].includes(kind)) continue;
         const from = endpoint(connection, 'from'), to = endpoint(connection, 'to');
         const base = { ...connection, id: connection.id ?? `${kind}:${from}:${to}`, kind, from_system_id: from, to_system_id: to };
-        if (!prefs[kind === 'ansiblex' ? 'useAnsiblex' : 'useWormholes']) { exclude(base, `${kind === 'ansiblex' ? 'Ansiblex' : 'Wormhole'} routing is off`); continue; }
+        const publicReport = kind === 'wormhole' && connection.reported === true && connection.route_eligible === true && ['thera','turnur'].includes(connection.source);
+        const preference = kind === 'ansiblex' ? 'useAnsiblex' : publicReport ? connection.source === 'thera' ? 'useThera' : 'useTurnur' : 'useWormholes';
+        if (prefs[preference] !== true) { exclude(base, `${kind === 'ansiblex' ? 'Ansiblex' : publicReport ? connection.source === 'thera' ? 'Thera' : 'Turnur' : 'Wormhole'} routing is off`); continue; }
         if (connection.enabled !== true) { exclude(base, 'Connection is disabled'); continue; }
         const expiresAt = connection.expires_at ?? connection.expiresAt;
         if (kind === 'wormhole' && (!Number.isFinite(clock) || !Number.isFinite(Date.parse(expiresAt)) || Date.parse(expiresAt) <= clock)) {
@@ -172,7 +174,6 @@ export function buildTravelGraph({ systems = [], gates = [], connections = [], p
             const edge = { ...base, from_system_id: reverse ? to : from, to_system_id: reverse ? from : to,
                 structure_id: reverse ? connection.reverse_structure_id ?? null : connection.structure_id ?? null,
                 reverse_structure_id: reverse ? connection.structure_id ?? null : connection.reverse_structure_id ?? null };
-            const publicReport = connection.reported === true && connection.route_eligible === true && ['thera','turnur'].includes(connection.source);
             const accessible = publicReport || (reverse ? connection.reverse_accessible ?? connection.accessible : connection.accessible);
             if (accessible !== true) { exclude(edge, 'Access has not been confirmed'); continue; }
             if(publicReport)warnings.add('Public wormhole reports are unverified by your pilot; scan and check ship size, mass and lifetime before travelling.');

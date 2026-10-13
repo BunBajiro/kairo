@@ -28,7 +28,7 @@ export function createStream(store, bus, publish = e=>bus.emit(e)) {
         for (const client of clients) if (!writeSSE(client, message, options)) clients.delete(client);
     }
     function changed(requireImmediate = false) { if (closed) return; version++; broadcast('state', undefined, {requireImmediate}); }
-    function save(c, nextBindings) { if (closed) throw new Error('Stream is stopping.'); const normalized = sanitizeConfig(c); if(nextBindings) {bindings=nextBindings;bindingKey=JSON.stringify(nextBindings);} store.set('stream', normalized); notifications=notifications.filter(n=>normalized.rules.some(r=>r.event===n.event.type&&(n.test||r.enabled))); if (normalized.paused) {
+    function save(c, nextBindings) { if (closed) throw new Error('Stream is stopping.'); const normalized = sanitizeConfig(c); if(nextBindings) {bindings=nextBindings;bindingKey=JSON.stringify(nextBindings);} store.set('stream', normalized); notifications=notifications.filter(n=>normalized.rules.some(r=>r.event===n.event.type&&(n.test||r.enabled&&(!r.characterId||r.characterId===n.event.characterId)))); if (normalized.paused) {
         notifications = [];
         for (const t of timers)
             clearTimeout(t);

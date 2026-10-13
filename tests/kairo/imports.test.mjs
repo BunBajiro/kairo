@@ -26,6 +26,31 @@ test('calendar history windows deduplicate days, exclude today and never inflate
 test('trading fees use active character skills, unmodified standings, structure rates and seller-only taxes',()=>{const max=tradingRates({accounting:5,brokerRelations:5,faction:10,corporation:10});assert.ok(Math.abs(max.salesTax-.03375)<1e-10);assert.ok(Math.abs(max.broker-.01)<1e-10);assert.equal(max.buyTax,0);const bad=tradingRates({accounting:0,brokerRelations:0,faction:-10,corporation:-10});assert.equal(bad.broker,.035);const structure=tradingRates({accounting:5,brokerRelations:5,faction:10,corporation:10,kind:'structure',structureBroker:2.5});assert.equal(structure.broker,.025);assert.throws(()=>tradingRates({accounting:5,brokerRelations:5,kind:'structure'}),/total broker fee/);});
 test('depth-weighted purchases, valid EVE ticks and minimum/relisting fees produce exact net returns',()=>{const levels=[{price:100,volume:10},{price:150,volume:30}],buy=purchaseQuote(levels,20);assert.equal(buy.cost,2500);assert.equal(buy.average,125);assert.equal(buy.maxPrice,150);assert.equal(purchaseQuote(levels,50).complete,false);assert.equal(undercut(1000000),999900);assert.equal(marketPrice(1234567),1234000);assert.equal(marketPrice(1234567,true),1235000);
  const q=scenario({levels,quantity:20,price:250,duration:7,volume:1,daily:5,rates,settings:{...DEFAULT_IMPORT_SETTINGS,haulPerTrip:100},strategy:'profiteering'});assert.equal(q.buy.cost,2500);assert.equal(q.brokerFee,100);assert.equal(q.relistReserve,100);assert.equal(q.haul,100);assert.equal(q.upfront,2700);assert.ok(Math.abs(q.net-2031.25)<1e-8);assert.equal(q.eta,4);});
+test('break-even reports the first non-loss-making price instead of double-counting fee minima',()=>{
+ const input={levels:[{price:100,volume:10},{price:150,volume:30}],quantity:20,price:250,duration:7,volume:1,daily:5,rates,settings:{...DEFAULT_IMPORT_SETTINGS,haulPerTrip:100},strategy:'profiteering'};
+ const quote=scenario(input);assert.equal(quote.breakEven,144.9);
+ assert.ok(scenario({...input,price:144.9}).net>=0);assert.ok(scenario({...input,price:144.8}).net<0);
+});
+test('break-even follows minimum, mixed and proportional fees, including no possible recovery',()=>{
+ const cases=[
+  {name:'both minimum fees',purchase:20,quantity:1,relistCount:1,brokerMinimum:true,relistMinimum:true},
+  {name:'percentage broker and minimum relisting',purchase:1000,quantity:10,relistCount:1,brokerMinimum:false,relistMinimum:true},
+  {name:'both percentage fees',purchase:100000,quantity:1,relistCount:1,brokerMinimum:false,relistMinimum:false},
+  {name:'no planned repricing',purchase:100000,quantity:1,relistCount:0,brokerMinimum:false,relistMinimum:null},
+  {name:'power-of-ten tick boundary',purchase:1000,levels:[{price:941.2,volume:5},{price:941.3,volume:5}],quantity:10,relistCount:1,brokerMinimum:false,relistMinimum:true,expected:1000}
+ ];
+ for(const c of cases){
+  const input={levels:c.levels||[{price:c.purchase,volume:c.quantity}],quantity:c.quantity,price:c.purchase*2,duration:7,volume:1,daily:5,rates,settings:{...DEFAULT_IMPORT_SETTINGS,relistCount:c.relistCount},strategy:'profiteering'};
+  const initial=scenario(input),at=scenario({...input,price:initial.breakEven}),below=scenario({...input,price:undercut(initial.breakEven)});
+  if(c.expected)assert.equal(initial.breakEven,c.expected,c.name);
+  assert.ok(at.net>=-1e-8,c.name+' reaches nonnegative net');assert.ok(below.net<0,c.name+' previous tick still loses ISK');
+  assert.equal(at.brokerFee===100,c.brokerMinimum,c.name+' exercises the intended broker regime');
+  assert.equal(at.relistReserve, c.relistCount?Math.max(100,at.revenue*rates.broker*(1-rates.relistDiscount)):0);
+  if(c.relistMinimum!==null)assert.equal(at.relistReserve===100,c.relistMinimum,c.name+' exercises the intended relisting regime');
+ }
+ const impossible=scenario({levels:[{price:100,volume:1}],quantity:1,price:1000,duration:7,volume:1,daily:5,rates:tradingRates({accounting:0,brokerRelations:0,kind:'structure',structureBroker:50}),settings:{...DEFAULT_IMPORT_SETTINGS,relistCount:20},strategy:'profiteering'});
+ assert.equal(impossible.breakEven,null,'When proportional fees exceed revenue, no break-even price exists');
+});
 test('cargo packing counts indivisible hulls and shares unused space between plan lines',()=>{const p=packCargo([{typeId:1,quantity:3,unitVolume:6},{typeId:2,quantity:3,unitVolume:4}],10);assert.equal(p.trips,3);assert.equal(p.utilization,100);assert.ok(p.loads.every(l=>l.used<=10));assert.throws(()=>packCargo([{typeId:1,quantity:1,unitVolume:11}],10),/larger/);const q=scenario({levels:[{price:100,volume:3}],quantity:3,price:200,duration:3,volume:6,daily:3,rates,settings:{...DEFAULT_IMPORT_SETTINGS,cargo:10},strategy:'profiteering'});assert.equal(q.trips,3);});
 test('activity thresholds use the assumed local share and prefer shorter active windows by type',()=>{const ammo=importCategory(11);assert.equal(demandEvidence(history(1000),ammo,10,NOW).eligible,false);const active=demandEvidence(history(100000),ammo,10,NOW);assert.equal(active.activeWindow,1);assert.equal(active.eligible,true);assert.equal(demandEvidence(history(500),importCategory(9),10,NOW).eligible,true);assert.equal(demandEvidence(history(500),importCategory(4),10,NOW).eligible,true);assert.equal(demandEvidence([{...history()[0],volume:1000000}],ammo,100,NOW).eligible,false);});
 test('recommendations respect real depth, budget, margin, cargo and price-correction objectives',()=>{const model={typeId:1403,name:'Module',category:importCategory(9),volume:5,levels:[{price:1000000,volume:2},{price:1100000,volume:100}],localSell:10000000,localBuy:500000,localSupply:5,history:history(),rates,settings:{...DEFAULT_IMPORT_SETTINGS,budget:10000000,minProfit:0,cargo:100},now:NOW,detail:true};const r=buildOpportunity(model);assert.ok(r);assert.equal(r.tier,500);assert.deepEqual(r.scarcity,[3,7,30]);assert.ok(r.best.anchoring.price<=model.localSell*.9);for(const o of Object.values(r.best).filter(Boolean)){assert.ok(o.upfront<=model.settings.budget);assert.ok(o.roi>=15);assert.ok(o.quantity<=102);assert.ok(o.eta<=7);assert.ok(o.trips<=3);assert.ok(o.buy.fills.length>0);}assert.ok(Math.max(...Object.values(r.best).filter(Boolean).map(o=>o.upfront))>7000000);assert.equal(buildOpportunity({...model,volume:101}),null);});
@@ -77,6 +102,59 @@ test('trader refresh covers the buyer once without requesting buyer skills or st
  const service=createImports(store,auth,{now:()=>NOW,request(){throw new Error('Owner is already cached.');},refreshCharacter:async(id,keys)=>calls.push({id,keys})});
  await service.refresh(AMARR);assert.deepEqual(calls,[{id:42,keys:['skills','standings','orders']},{id:43,keys:['orders']}]);
  calls.length=0;service.saveSettings(AMARR,{...service.state(AMARR).settings,buyingCharacterId:0});await service.refresh(AMARR);assert.equal(calls.filter(c=>c.id===42).length,1);assert.equal(calls.length,2);
+});
+test('overlapping trader refreshes preserve each destination and selling character',async t=>{
+ const {store}=await desk(t),calls=[],requests=[];let release;
+ const gate=new Promise(resolve=>{release=resolve;});
+ const service=createImports(store,auth,{now:()=>NOW,request:async path=>{requests.push(path);return {data:{owner:1000035}};},refreshCharacter:async(id,keys)=>{calls.push({id,keys});await gate;}});
+ service.saveSettings(JITA,{...DEFAULT_IMPORT_SETTINGS,characterId:43});
+ const amarr=service.refresh(AMARR),jita=service.refresh(JITA);release();
+ const [a,b]=await Promise.all([amarr,jita]);
+ assert.equal(a.hub.id,AMARR);assert.equal(b.hub.id,JITA,'Each refresh must return its requested destination');
+ assert.ok(requests.includes('/universe/stations/'+JITA),'The second destination resolves its own broker-fee owner');
+ assert.ok(calls.some(c=>c.id===43&&c.keys.includes('skills')),'The second seller receives a fee-profile refresh');
+ await service.close();
+});
+test('trader refresh coalesces the same context but refreshes a newly selected seller',async t=>{
+ const {store}=await desk(t),calls=[];let release;const gate=new Promise(resolve=>{release=resolve;});
+ const service=createImports(store,auth,{now:()=>NOW,refreshCharacter:async(id,keys)=>{calls.push({id,keys});await gate;}});
+ const first=service.refresh(AMARR),duplicate=service.refresh(AMARR);
+ assert.equal(calls.length,2,'An identical refresh shares the two existing character requests');
+ service.saveSettings(AMARR,{...service.state(AMARR).settings,characterId:43});
+ const changed=service.refresh(AMARR);release();await Promise.all([first,duplicate,changed]);
+ assert.equal(calls.length,4);assert.equal(calls.filter(c=>c.id===43&&c.keys.includes('skills')).length,1);
+ await service.close();
+});
+test('trader refresh failure permits retry and close drains every destination',async t=>{
+ const {store}=await desk(t);let rejectOwner=true,releaseA,releaseB;
+ const gateA=new Promise(resolve=>{releaseA=resolve;}),gateB=new Promise(resolve=>{releaseB=resolve;});
+ const service=createImports(store,auth,{now:()=>NOW,request:async()=>{if(rejectOwner)throw new Error('Owner unavailable');return {data:{owner:1000035}};},refreshCharacter:async(id,keys)=>{if(keys.includes('skills'))await (id===42?gateA:gateB);}});
+ service.saveSettings(JITA,{...DEFAULT_IMPORT_SETTINGS,characterId:43});
+ await assert.rejects(service.refresh(JITA),/Owner unavailable/);rejectOwner=false;
+ const a=service.refresh(AMARR),b=service.refresh(JITA);let closed=false;
+ const closing=service.close().then(()=>{closed=true;});releaseA();await a;
+ assert.equal(closed,false,'A second destination still owns pending refresh work');
+ releaseB();const result=await b;await closing;assert.equal(result.hub.id,JITA);assert.equal(closed,true);
+});
+test('a pending plan save cannot recreate a plan deleted during its quote',async t=>{
+ const {store,imports}=await desk(t);seedItem(store,1403);
+ const item=(await imports.analyse(AMARR)).groups.flatMap(g=>g.items)[0],lines=[{typeId:item.typeId,...item.best.profiteering}];
+ const saved=await imports.savePlan(AMARR,{name:'Original',lines});
+ const updating=imports.savePlan(AMARR,{id:saved.id,name:'Pending revision',lines});
+ imports.removePlan(AMARR,saved.id);
+ await assert.rejects(updating,/Import plan not found/);
+ assert.equal(imports.state(AMARR).plans.length,0,'Deletion remains durable after the pending save completes');
+});
+test('concurrent new plan saves enforce the destination limit at publication',async t=>{
+ const {store,imports}=await desk(t);seedItem(store,1403);
+ const item=(await imports.analyse(AMARR)).groups.flatMap(g=>g.items)[0],lines=[{typeId:item.typeId,...item.best.profiteering}];
+ const saved=await imports.savePlan(AMARR,{name:'Seed',lines});
+ const insert=store.db.prepare('INSERT INTO market_import_plans VALUES(?,?,?,?)');
+ for(let i=1;i<99;i++)insert.run('plan-limit-'+i,AMARR,iso(NOW),JSON.stringify({...saved,id:'plan-limit-'+i}));
+ const outcomes=await Promise.allSettled([imports.savePlan(AMARR,{name:'New A',lines}),imports.savePlan(AMARR,{name:'New B',lines})]);
+ assert.equal(outcomes.filter(r=>r.status==='fulfilled').length,1,'Only the final free saved-plan slot can be filled');
+ assert.match(outcomes.find(r=>r.status==='rejected')?.reason.message||'',/100 plans/);
+ assert.equal(store.db.prepare('SELECT COUNT(*) n FROM market_import_plans WHERE hub_id=?').get(AMARR).n,100);
 });
 test('EVE Ref decoder validates CRC/truncation and retains only the four core market regions',async()=>{const bytes=Buffer.from(fixture['2026-09-07'],'hex'),r=await decodeArchive(bytes,'2026-09-07');assert.equal(r.records,10);assert.equal(r.rows.length,8);assert.equal(new Set(r.rows.map(r=>r.region_id)).size,4);await assert.rejects(decodeArchive(bytes.subarray(0,bytes.length-8),'2026-09-07'));await assert.rejects(decodeArchive(bytes,'2026-09-06'),/Invalid history/);const corrupt=Buffer.from(bytes);corrupt[Math.floor(corrupt.length/2)]^=255;await assert.rejects(decodeArchive(corrupt,'2026-09-07'));});
 test('EVE Ref bulk history imports changed days once, shares all four regions and resumes from disk',async t=>{const {store,dir}=await storage(t),calls=[];let total=10;const fetcher=async(url,options)=>{calls.push({url,options});if(url.endsWith('totals.json'))return new Response(JSON.stringify({'2026-09-06':total,'2026-09-07':10}));const d=url.match(/market-history-(\d{4}-\d{2}-\d{2})/)[1];return new Response(Buffer.from(fixture[d],'hex'));};const service=createHistoryArchive(store,{fetcher,now:()=>NOW,spacingMs:0});const status=await service.update();assert.equal(status.archiveDays,2);assert.equal(status.downloaded,2);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM market_history').get().n,8);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM market_history_days').get().n,16);assert.equal(store.db.prepare('SELECT source FROM market_history_meta LIMIT 1').get().source,'EVE Ref');await service.update();assert.equal(calls.length,3);const next=openStore(dir);await createHistoryArchive(next,{fetcher,now:()=>NOW,spacingMs:0}).update();next.close();assert.equal(calls.length,3);assert.ok(calls.every(c=>!Object.keys(c.options.headers).some(h=>/authorization|cookie/i.test(h))));total=11;store.db.prepare('DELETE FROM settings WHERE key=?').run('market:everef:manifest');await assert.rejects(service.update(),/incomplete/);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM market_history_days').get().n,16);});

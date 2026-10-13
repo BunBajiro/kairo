@@ -1,4 +1,4 @@
-import { captureSessionObservation, recordSessionObservation } from './session-travel.mjs';
+import { captureSessionObservation, recordSessionObservation, recordSessionShipBaseline } from './session-travel.mjs';
 import { recordDiscoveredSystem } from './discovery.mjs';
 
 // Fresh Pilot observations feed Sessions, discovery and activity independently.
@@ -37,11 +37,13 @@ export function registerUniverseHistory({ store, bus, esi, publish, now = Date.n
     off.push(bus.on('data.ship', e => {
         if (!store.get('module:pilot', true)) return;
         const { current, previous } = e.payload;
-        if (!previous || !current || current.ship_id === previous.ship_id) return;
+        if (!current) return;
         // Core resolves ordinary dataset names before emission; a missing
         // optional name must not postpone the event beyond a session boundary.
         const observation = e.payload.observation || captureSessionObservation(store, { characterId: e.characterId, at: new Date(now()).toISOString() });
         if (observation.characterId !== e.characterId) return;
+        recordSessionShipBaseline(store, e.characterId, current, observation);
+        if (!previous || current.ship_id === previous.ship_id) return;
         const at = observation.at, names = store.get('names', {});
         publish({ type: 'ship.changed', module: 'universe', characterId: e.characterId, at,
             summary: 'Changed ship to ' + (names[current.ship_type_id] || 'Hull ' + current.ship_type_id),

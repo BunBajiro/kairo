@@ -7,6 +7,7 @@ const validId = id => Number.isSafeInteger(id) && id > 0 && id < 2147483647;
 const transportHeaders = { Accept: 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE,
     'User-Agent': 'Kairo/0.8 (local EVE companion)' };
 const pacingOwner = Symbol('pacingOwner'), pacingStage = Symbol('pacingStage'), admissionCheck = Symbol('admissionCheck');
+const connectionOwner = Symbol('connectionOwner');
 
 export function createESI(store, auth, { fetcher = fetch } = {}) {
     const limits = store.get('esi:limits', {});
@@ -18,6 +19,9 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     const accepted = new Set();
     let closing;
     const counters = { requests: 0, cacheHits: 0, coalesced: 0, notModified: 0, failed: 0 };
+    const connectionRevision = id => auth.connectionRevision?.(id) ?? 0;
+    const withConnection = options => options.characterId && options[connectionOwner] === undefined
+        ? { ...options, [connectionOwner]: connectionRevision(options.characterId) } : options;
     const readCache = store.db.prepare('SELECT * FROM cache WHERE key=?');
     const putCache = store.db.prepare('INSERT INTO cache VALUES(?,?,?,?,?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body,etag=excluded.etag,expires=excluded.expires,updated=excluded.updated,headers=excluded.headers');
     const deleteCache = store.db.prepare('DELETE FROM cache WHERE key=?');
@@ -87,7 +91,13 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         return out;
     }
     async function request(path, options = {}) {
+        options = withConnection(options);
         let { characterId = 0, method = 'GET', body, ttl = 300, priority = false } = options;
+        const checkConnection = () => {
+            if (characterId && connectionRevision(characterId) !== options[connectionOwner])
+                throw new Error('Character connection changed during ESI request.');
+        };
+        checkConnection();
         const pace = options[pacingOwner], checkAdmission = options[admissionCheck];
         checkAdmission?.();
         if (!path.startsWith('/') || path.startsWith('//')) throw new Error('Invalid ESI path.');
@@ -99,7 +109,8 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         // IDs are a set here; batch order must not duplicate cache entries.
         if (path === '/universe/names' && Array.isArray(body)) body = [...new Set(body)].sort((a, b) => a - b);
         const key = characterId + ':' + method + ':' + path + ':' + (body ? createHash('sha256').update(JSON.stringify(body)).digest('hex') : '');
-        if (inflight.has(key)) { counters.coalesced++; return inflight.get(key); }
+        const flightKey = characterId ? key + ':connection:' + options[connectionOwner] : key;
+        if (inflight.has(flightKey)) { counters.coalesced++; return inflight.get(flightKey); }
         const cached = readCache.get(key);
         if (cached) retention.touch(key);
         if (cached && cached.expires > Date.now()) {
@@ -142,14 +153,17 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 else if (cached && JSON.parse(cached.headers)['last-modified']) headers['If-Modified-Since'] = JSON.parse(cached.headers)['last-modified'];
                 if (body) headers['Content-Type'] = 'application/json';
                 const fetchResponse = () => {
+                    checkConnection();
                     if (pace) pace.lastRequest = pace.now();
                     attempted = true; counters.requests++;
                     return fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) });
                 };
                 let response = await fetchResponse();
+                checkConnection();
                 if (response.status === 401 && characterId) {
                     headers.Authorization = 'Bearer ' + await auth.access(characterId, true);
                     response = await fetchResponse();
+                    checkConnection();
                 }
                 const { now, retry, retryMs } = responseLimits(response, route, characterId);
                 if (!response.ok && response.status !== 304) {
@@ -168,6 +182,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 const age = Number(response.headers.get('age') || 0);
                 const expires = Number.isFinite(exp) ? Math.max(now + 1000, exp) : cacheMax ? now + Math.max(1, Number(cacheMax[1]) - age) * 1000 : now + ttl * 1000;
                 const data = response.status === 304 ? JSON.parse(cached.body) : await response.json();
+                checkConnection();
                 // A new representation without an ETag must not inherit the old one.
                 const etag = response.headers.get('etag') || (response.status === 304 ? cached.etag : null);
                 putCache.run(key, JSON.stringify(data), etag, expires, now, JSON.stringify(h));
@@ -177,6 +192,9 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 return { data, updatedAt: iso(now), expiresAt: iso(expires), headers: h, cached: response.status === 304 };
             }
             catch (error) {
+                // An old grant's response must not recreate purged cache or
+                // retry state, nor return stale data to its replacement owner.
+                checkConnection();
                 if (attempted) {
                     counters.failed++;
                     const failures = Math.min(8, (previousFailure ? JSON.parse(previousFailure.body).failures || 0 : 0) + 1);
@@ -189,9 +207,9 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 if (cached) return { ...sample(cached), stale: true, error: error.message, errorStatus: error.status, retryAt: error.retryAt };
                 throw error;
             }
-            finally { release?.(); inflight.delete(key); }
+            finally { release?.(); inflight.delete(flightKey); }
         });
-        inflight.set(key, task);
+        inflight.set(flightKey, task);
         return task;
     }
     /** An explicit command. Never cached, coalesced, or replayed after an uncertain network failure. */
@@ -230,6 +248,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         } finally { release?.(); }
     }
     async function paged(path, options = {}) {
+        options = withConnection(options);
         const first = await request(path + (path.includes('?') ? '&' : '?') + 'page=1', options);
         const pages = Math.min(250, Number(first.headers['x-pages'] || 1));
         let data = [...first.data], stale = first.stale, error = first.error, errorStatus = first.errorStatus, expiresAt = first.expiresAt, retryAt = first.retryAt;

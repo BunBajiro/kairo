@@ -1,6 +1,7 @@
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
+import { StringDecoder } from 'node:string_decoder';
 import { readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -106,12 +107,12 @@ export async function startKairo(options = {}) {
         if (s.expires < Date.now())
             sessions.delete(key); const key = randomBytes(32).toString('base64url'); sessions.set(key, { csrf: randomBytes(32).toString('base64url'), expires: Date.now() + 86400000 }); res.setHeader('Set-Cookie', `kairo_session=${key}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400`); }
     async function body(req, maximum = 150000) { if (!req.headers['content-type']?.startsWith('application/json'))
-        throw new Error('JSON is required.'); let size = 0, out = ''; for await (const part of req) {
+        throw new Error('JSON is required.'); let size = 0, out = ''; const decoder = new StringDecoder('utf8'); for await (const part of req) {
         size += part.length;
         if (size > maximum)
             throw new Error('Request is too large.');
-        out += part;
-    } return JSON.parse(out || '{}'); }
+        out += decoder.write(part);
+    } return JSON.parse((out + decoder.end()) || '{}'); }
     const isOwn = req => (!req.headers.origin || req.headers.origin === origin) && req.headers['sec-fetch-site'] !== 'cross-site';
     const pageHeaders = res => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.evetech.net https://web.ccpgamescdn.com; connect-src 'self'; font-src 'self' data:; frame-src ${streamOrigin}; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://login.eveonline.com`); };
     const checkedChar = url => { const id = Number(url.searchParams.get('character') || 0); if (!Number.isSafeInteger(id) || id < 0) throw new Error('Choose a valid character.'); if (id && !auth.characters().some(c => c.id === id))

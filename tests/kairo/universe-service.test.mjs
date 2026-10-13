@@ -125,6 +125,33 @@ test('Ansiblex list import is atomic, explicitly accessible, directional and iso
     service.deleteLinkList(42, list.id); assert.equal(service.state(42).links.length, 0);
 });
 
+test('Ansiblex text import retains the form owner and capital for zone-restricted routes', async t => {
+    const { service, store } = await fixture(t);
+    store.saveSnapshot(0, 'sovereignty', sample([{ system_id: A, alliance_id: 99 }, { system_id: C, alliance_id: 99 }]));
+    const list = service.saveLinkList(42, { name: 'Alliance network', text: '0 Alpha --> Gamma\n0 Gamma --> Alpha', accessible: true,
+        owner_alliance_id: 99, capital_system_id: A });
+    const route = service.route(42, { originId: A, destinationId: C, preferences: { useAnsiblex: true, ansiblexRules: 'live', maxAnsiblexZone: 1 } });
+    assert.equal(route.status, 'ok');
+    assert.equal(list.links[0].owner_alliance_id, 99); assert.equal(list.links[0].capital_system_id, A);
+    assert.equal(list.links[0].reverse_owner_alliance_id, 99); assert.equal(list.links[0].reverse_capital_system_id, A);
+    assert.equal(service.route(42, { originId: C, destinationId: A, preferences: { useAnsiblex: true, ansiblexRules: 'live', maxAnsiblexZone: 1 } }).status, 'ok');
+});
+
+test('public wormhole opt-in never re-enables excluded private itinerary connections', async t => {
+    const { service, store } = await fixture(t, { options: { staticData: { ...atlas, systems: atlas.systems.map(row => row.system_id === W ? { ...row, name: 'Thera' } : row) } } });
+    const map = service.jspace.create(42, { name: 'Private chain' });
+    service.saveLink(42, { map_id: map.id, kind: 'wormhole', from_system_id: A, to_system_id: C, max_ship_size: 'large' });
+    store.set('universe:feeds:thera', { status: 'ready', updated_at: new Date(AT).toISOString(), expires_at: new Date(AT + 3600000).toISOString(),
+        data: [{ id: 'thera:fixture', source: 'thera', from_system_id: W, to_system_id: B, reported: true, completed: true, max_ship_size: 'large', expires_at: new Date(AT + 3600000).toISOString() }] });
+    service.navigation.saveItinerary(42, { map_id: map.id, originId: A, stops: [C], preferences: { useWormholes: false, useThera: true, shipSize: 'small' } });
+    assert.equal((await service.navigation.plan(42, { map_id: map.id })).status, 'no_route');
+    const feed = store.get('universe:feeds:thera');
+    feed.data.push({ ...feed.data[0], id: 'thera:exit', to_system_id: C }); store.set('universe:feeds:thera', feed);
+    assert.deepEqual((await service.navigation.plan(42, { map_id: map.id })).systemIds, [A, B, W, C]);
+    service.navigation.saveItinerary(42, { map_id: map.id, preferences: { useWormholes: true } });
+    assert.deepEqual((await service.navigation.plan(42, { map_id: map.id })).systemIds, [A, C]);
+});
+
 test('wormholes default to sixteen hours, expire exactly, and prune keeps durable pins and notes', async t => {
     const { service, store, time } = await fixture(t);
     const map_id=service.jspace.create(42,{name:'Test chain'}).id;

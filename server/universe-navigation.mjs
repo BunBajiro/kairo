@@ -130,7 +130,7 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
             if(!from){value.plan={...failure('Fresh pilot location is unavailable. Wait for the selected location source, or turn off follow location and choose a manual origin.'),revision,generatedAt:iso(now())};save(id,value);return clone(value.plan);}
         }
         if(!from||!pending.length){value.plan=failure(!from?'Choose an origin.':'Add an uncompleted destination.');save(id,value);return clone(value.plan);}
-        const publicData=publicConnections(itinerary.preferences),prefs={...itinerary.preferences,useWormholes:itinerary.preferences.useWormholes===true||publicData.links.length>0};
+        const publicData=publicConnections(itinerary.preferences),prefs={...itinerary.preferences};
         const planningInput={map_id:mapId,kind:itinerary.kind,rangeLy:itinerary.rangeLy,preferences:prefs,extraConnections:publicData.links};
         const prepared=typeof preparePlan==='function'?await preparePlan(id,planningInput):null;
         const callback=prepared?.plan?(_id,leg)=>prepared.plan(leg):itinerary.kind==='jump'?planJump:planRoute;

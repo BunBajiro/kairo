@@ -69,7 +69,13 @@ export function sessionRoute(store, session, start, end, names=store.get('names'
 
 export function sessionShips(store, session, start, end, names) {
     const rows = store.db.prepare(`SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) AND ${sessionObservationOwnershipSql()} ORDER BY at,id`).all(session.character_id,session.started,end,session.started,start.eventCursor??0,session.id);
-    const points = start.shipTypeId ? [{typeId:start.shipTypeId, shipId:start.ship?.id||null, at:session.started}] : [];
+    const first = start.firstShip, firstAt = Date.parse(first?.at);
+    // An equal/earlier actual transition already establishes the first hull.
+    // Never move an observation back to the start or ahead of older events.
+    const observed = first && validId(first.typeId) && Number.isFinite(firstAt)
+        && firstAt >= Date.parse(session.started) && firstAt < Date.parse(end) && (!rows[0] || firstAt < Date.parse(rows[0].at));
+    const points = start.shipTypeId ? [{typeId:start.shipTypeId, shipId:start.ship?.id||null, at:session.started}]
+        : observed ? [{typeId:first.typeId, shipId:first.shipId||null, at:iso(firstAt)}] : [];
     for (const row of rows) {
         const p = JSON.parse(row.payload);
         if (validId(p.ship_type_id)) points.push({typeId:p.ship_type_id, shipId:p.ship_id||null, at:row.at});
