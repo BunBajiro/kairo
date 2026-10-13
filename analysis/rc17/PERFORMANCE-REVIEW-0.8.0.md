@@ -1,6 +1,6 @@
-# Kairo 0.8.0 performance review — acceptance draft
+# Kairo 0.8.0 performance review
 
-Collected 11 October; acceptance review updated 13 October 2026. **The integrated refactor shows real local improvements in recurring work, memory, Maps, navigation and camera task time. It also retains measurable costs. Independent updater and exact extracted-package acceptance have passed. The comparison audit and complete export/reopen supplement remain pending; corrected independent UI acceptance has passed; this is not a user-review-ready release candidate.** Local and CI observations remain separate throughout this report.
+Collected 11 October; final acceptance review completed 13 October 2026. **The integrated refactor delivers reproducible reductions in recurring idle CPU and memory and substantial Maps/routes gains, with retained costs documented below. All declared automated acceptance gates are complete; clean 0.8.0-rc.17 is ready for user review.** Local and CI observations remain separate. Actual Windows/EVE/OBS review and later approval are required before merge and stable release.
 
 Retain the measured application source `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789`, tree `35826c9d50c45702ff103e1f173e05c529ba2d9c`. It includes selected c954/build #54 and excludes withdrawn `508f2d4`/build #55. All **46 component decisions** are closed as supported fixes, retentions or rejections; release gates B/W/L/P remain governed by the [single current issue ledger][ledger]. Withdrawn PR #10 remains outside user review. No new optimization or repeat measurement is proposed merely to obtain better numbers.
 
@@ -19,7 +19,7 @@ Backend observations use typical/stress fixtures, three warmups and ten measured
 
 Tables show means of the two per-run observations, including means of per-run medians or p95s where labelled. They are descriptive, not confidence intervals. With ten backend samples, reported p95 is the observed maximum. The existing >1 ms **and** >10% in both pairs marker is a diagnostic aid, not a statistical test or permission to discard smaller costs. Full original rows, tails, payloads and both pairs are linked in the appendix.
 
-## Historical v0.7.3 versus RC16
+## Local historical v0.7.3 versus RC16
 
 | Metric | v0.7.3 | RC16 | RC16 change |
 |---|---:|---:|---:|
@@ -38,7 +38,7 @@ Tables show means of the two per-run observations, including means of per-run me
 
 Eight historical rows cross the joint marker in both pairs: startup and idle-loop maximum in both profiles, typical Session p95, and stress direct-state p50/p95/CPU p50. Typical Session p95 rises 19.502→23.397 ms; stress direct-state p95 rises 25.736→34.021 ms. These are retained historical costs, not a newly established defect in integrated70. Changed payload sizes and added product responsibilities prevent an implementation-only causal claim. [Full historical review and all 78 rows/156 pairs][historical].
 
-## Matched RC16 versus integrated70
+## Local matched RC16 versus integrated70
 
 | Metric | RC16 | Integrated70 | Current change |
 |---|---:|---:|---:|
@@ -81,7 +81,7 @@ The six new compact Maps-summary cases have no same-endpoint RC16 comparator: th
 
 ## Correctness, loaded work and development backbone
 
-The unchanged integrated source has **1,004/1,004 tests, types and a fresh combined build passing**, plus **89 compiled integration controls**: Assets31, actual-Core names10, names races10, Maps clock13 and Session focus25. The original Maps browser lane adds its 17 declared controls. Complete Session/route adapter outputs agree after exactly the documented 9,200 asserted-null `session_id` fields are removed at eight candidate visit paths. These scoped checks do not establish complete decoded equality for every backend endpoint or full database payload; relevant bodies absent from the original workers cannot be independently reconstructed.
+The unchanged integrated source has **1,004/1,004 tests, types and a fresh combined build passing**, plus **89 compiled integration controls**: Assets 31, actual-Core names 10, names races 10, Maps clock 13 and Session focus 25. The original Maps browser lane adds its 17 declared controls. Complete Session/route adapter outputs agree after exactly the documented 9,200 asserted-null `session_id` fields are removed at eight candidate visit paths. These scoped checks do not establish complete decoded equality for every backend endpoint or full database payload; relevant bodies absent from the original workers cannot be independently reconstructed.
 
 All seven original local completion-UI lanes are covered: refresh21, admin18, frontend-models17, Studio10, and three replay cases with two warmups plus 12 measured cycles each. The original UI outer attempt remains failed because its owner read the wrong smoke-field path. A separate reviewed validation adopts the already successful repeat-small worker; only the two unrun cap cases were executed afterward. No successful measurement was rerun. The original failure, corrected owner, adoption and recovery are separately pinned. [UI result review][ui].
 
@@ -101,7 +101,45 @@ The maintained [internal API guide][api-guide] explains the backbone: private HT
 
 ## Independent Actions and exact package
 
-The independent comparison run **38176821997** completed successfully and all five original downloaded ZIP digests matched. Artifact/bundle/source/harness identity verification is complete: 3,078 bundled files, 1,088 source files against pinned Git objects and 34 harness files against the trigger commit verify. Its full numerical/lane acceptance audit remains pending. Workflow success alone is not promoted to completed performance acceptance. The workspace reset interrupted offline review, not the measured workflow; original artifacts were restored without repeating measurements.
+The independent comparison run **38176821997** and its full numerical/scoped semantic audit are complete. All five original downloaded ZIP digests matched. Verification covers 3,078 bundled files, 1,088 source files against pinned Git objects and 34 harness files against the trigger commit. The numerical audit recomputes both 1,360-sample backend groups, all memory/Session rows, 141 Maps/routes/camera comparisons and the complete mixed/restart observations. Original artifacts were restored after workspace resets without repeating measurements. The following CI tables are separate from the local tables above; this comparison host used AMD EPYC9V45, four logical CPUs and Node 24.19.0. [Complete CI review, all rows and reproducible audits][ci-comparison].
+
+Historical **v0.7.3→RC16**, independent CI:
+
+| Metric | v0.7.3 | RC16 | RC16 change |
+|---|---:|---:|---:|
+| Typical idle CPU, % of one core | 0.487 | 0.726 | +49.27% |
+| Stress idle CPU, % of one core | 1.044 | 1.389 | +33.05% |
+| Typical idle RSS, MiB | 93.518 | 180.002 | +92.48% |
+| Stress idle RSS, MiB | 126.354 | 224.266 | +77.49% |
+| Typical startup, ms | 13.130 | 138.566 | +955.30% |
+| Stress startup, ms | 16.095 | 127.565 | +692.58% |
+
+Current **RC16→integrated70**, independent CI:
+
+| Metric | RC16 | Integrated70 | Current change |
+|---|---:|---:|---:|
+| Typical idle CPU, % of one core | 0.665 | 0.385 | −42.07% |
+| Stress idle CPU, % of one core | 1.301 | 0.929 | −28.62% |
+| Typical idle RSS, MiB | 183.176 | 137.645 | −24.86% |
+| Stress idle RSS, MiB | 224.230 | 154.281 | −31.20% |
+| Typical startup, ms | 131.230 | 133.781 | +1.94% |
+| Stress startup, ms | 123.802 | 126.398 | +2.10% |
+| Typical HTTP-state p50, ms | 7.625 | 7.926 | +3.95% |
+| Stress HTTP-state p50, ms | 30.212 | 30.960 | +2.48% |
+| Typical HTTP-state p95, ms | 11.591 | 16.292 | +40.56% |
+| Stress HTTP-state p95, ms | 37.990 | 34.457 | −9.30% |
+| Typical Session p50, ms | 10.606 | 11.912 | +12.31% |
+| Stress Session p50, ms | 65.339 | 65.865 | +0.80% |
+
+**Recurring idle CPU and resident-memory gains reproduce in both local and CI pairs; uniform startup or state-tail gains do not.** The two CI RC16 anchors belong to separate matched lanes and are not interchangeable. The much larger historical startup cost remains explicit; these measurements do not show a return to v0.7.3's footprint or startup time.
+
+The current typical HTTP-state p95 exceeds the existing joint diagnostic marker in both CI pairs: **12.504→17.454 ms (+4.950 ms/+39.59%)** and **10.679→15.130 ms (+4.452 ms/+41.69%)**. These are warmed operations after three excluded HTTP warmups and the idle/direct-work phases. **This is an ongoing tail cost, not the accepted first-use trade-off.** With ten samples, p95 is the observed maximum; two process pairs do not establish a population-tail distribution or a cause. Local stress HTTP tails also remain adverse, while CI stress HTTP p95 improves. The complete direct/HTTP distributions, payload sizes, CPU observations and Session costs remain in the [backend/memory audit][ci-backend].
+
+All 15 shared CI Maps median cases improve in both pairs (24.78–90.51%); route medians at 1/10/50 stops fall **15.510/156.646/771.078→12.278/12.960/24.403 ms**. All four 100/600-node zoom/pan total-task comparisons improve. Repeated component markers remain: one-map full-list maximum CPU **+6.255 ms**, one-second 100-node idle task **+2.509 ms**, 100-node zoom layout **+2.371 ms**, and 600-node zoom layout **+3.002 ms**. Dense pan retains two 79–114 ms long tasks per candidate run. These costs preclude a stall-free claim; none identifies a new causal owner by itself. Five live-sync cache-hit fixture medians improve to 0.00396–0.00493 ms, separately from full Session reports.
+
+Candidate-only CI mixed work records **296/296 HTTP 200**, with loaded Dashboard p95 **94.735/86.075 ms** versus quiet **71.960/69.145 ms**. The nominal 28-second quiet-1 window records 27,999 ms; six independent millisecond clock reads differ by 1 ms. The full schedule remains present and these boundaries are retained without reruns. Both managed-restart semantic schedules pass, including 92 source hashes and four code-0 exits. Compiled Maps passes 17 functional assertions. Omitted HTTP/DOM/disk bodies cannot be independently replayed from this artifact; recorded assertions and pinned workers define the scoped coverage. [Mixed/restart review][ci-lifetime].
+
+**Performance disposition: retain the integrated implementation for candidate review, with these costs disclosed.** The repeated G8 tail marker has been reviewed in full context and is retained as an observed limitation; it is not marked fixed or explained. The earlier bounded allocation experiment did not identify a useful intervention, and the final evidence supplies no concrete redundant-work or correctness defect warranting another source change. The recurring CPU/memory and Maps/routes gains are supported across hosts, while initial-use, state/report tails and camera component costs remain visible. This closes the required measurement/review decision; user approval of the candidate and stable release remain separate.
 
 **Independent updater run38176822054 passed its full audit**, including 87 independent checks, 1,004 runtime tests, 25 inventory activations, the six original nominal 60-second windows, exact source70/archive/harness bindings and the downloaded ZIP digest. One observed window is 59,999 ms; this 1 ms boundary is retained without a workload override. All nine runtime-generation create/summary/close records agree. This CI job provides scoped process cleanup evidence; the stronger local namespace/subreaper census is not inferred from it.
 
@@ -111,17 +149,17 @@ The independent comparison run **38176821997** completed successfully and all fi
 | 2 | +17,826.453 | +237.020 | 112.177→144.629 | 802 |
 | 3 | +16,619.154 | +292.883 | 103.069→123.489 | 783 |
 
-The CI host reports AMD EPYC7763, four logical CPUs and Node24.19.0. Building takes 12.155–12.613 seconds; all three building-interval p95/max pairs worsen. Inventory first activation is 15.571 ms wall /17.426 ms CPU; the other 24 wall p50/p95/max are 9.945/14.458/16.019 ms. **Twelve of 1,386 HTTP attempts fail during announced restarts**, six each in conversions1/3; SSE clients record 42 reconnect retries. Successful-request distributions exclude those failures. These are additional same-source conversion/control observations, not a cross-version updater gain or an interruption-free guarantee. They are not pooled with local measurements. [Full independent updater audit and raw bank][ci-updater].
+The CI host reports AMD EPYC7763, four logical CPUs and Node 24.19.0. Building takes 12.155–12.613 seconds; all three building-interval p95/max pairs worsen. Inventory first activation is 15.571 ms wall /17.426 ms CPU; the other 24 wall p50/p95/max are 9.945/14.458/16.019 ms. **Twelve of 1,386 HTTP attempts fail during announced restarts**, six each in conversions1/3; SSE clients record 42 reconnect retries. Successful-request distributions exclude those failures. These are additional same-source conversion/control observations, not a cross-version updater gain or an interruption-free guarantee. They are not pooled with local measurements. [Full independent updater audit and raw bank][ci-updater].
 
-The first independent UI run38176822076 failed a compiled homepage test because the workflow tested before building; all seven browser lanes correctly skipped. The preserved failure led to a reviewed build-before-tests correction. Recovery38177282671 then passed 1,004 tests and six lanes, while refresh check15 failed an uppercase compact-number assertion despite the correct current Wallet displaying `10kISK` in CI Chrome154. Later refresh checks were not reached. A narrowly reviewed assertion now selects exactly one Wallet card and compares the browser's explicit production formatting policy; 44 offline controls passed. Recovery2/run38179056807 passed the original complete UI workload on unchanged70: refresh21, admin18, models17, Studio10 and three full12-cycle replay cases. The independent1,021-check audit verifies486 source files,215 harness pins,45 ownership rows,15 quiescent snapshots and42 pilot fences. The original580,824-byte ZIP matches API/upload digest `eff12a1216b60d3c8b0f814185095b7c69a32838b076e9a4a51e5c2fc8228512`. [Complete corrected UI audit][ci-ui]. These harness failures are not application optimization findings; neither failed attempt is relabelled a pass. [Recovery evidence and exact run identities][reset-recovery].
+The first independent UI run38176822076 failed a compiled homepage test because the workflow tested before building; all seven browser lanes correctly skipped. The preserved failure led to a reviewed build-before-tests correction. Recovery38177282671 then passed 1,004 tests and six lanes, while refresh check15 failed an uppercase compact-number assertion despite the correct current Wallet displaying `10kISK` in CI Chrome154. Later refresh checks were not reached. A narrowly reviewed assertion now selects exactly one Wallet card and compares the browser's explicit production formatting policy; 44 offline controls passed. Recovery2/run 38179056807 passed the original complete UI workload on unchanged70: refresh21, admin18, models17, Studio10 and three full12-cycle replay cases. The independent1,021-check audit verifies486 source files,215 harness pins,45 ownership rows,15 quiescent snapshots and42 pilot fences. The original580,824-byte ZIP matches API/upload digest `eff12a1216b60d3c8b0f814185095b7c69a32838b076e9a4a51e5c2fc8228512`. [Complete corrected UI audit][ci-ui]. These harness failures are not application optimization findings; neither failed attempt is relabelled a pass. [Recovery evidence and exact run identities][reset-recovery].
 
-**Build66/run38177333462 passed the exact extracted-package gate** for documentation-inclusive0149. All 1,004 tests ran from the extracted ZIP before that same ZIP was uploaded. The downloaded package is 25,938,696 bytes, SHA256 `7024711ed49dafa21ec0b89ed90d01ad45748528066fb653d83b4147a141b2f0`. Its 504 members comprise 484 exact source files and 20 compiled assets; 54 required paths and 115 documentation links verify. Eighteen compiled assets match the measured build byte-for-byte; index.html and index.rsc each differ by one build UUID only. The package uses the normal workflow's Node24.21.0, separately from performance Node24.19.0. Browser controls ran before packaging, and exact source/asset inventories bind their scope; no physical Windows/EVE/OBS review is claimed. The reset recovery receipt explicitly distinguishes reconstructed audit findings from retained original Actions metadata/logs. [Package evidence][package-audit].
+**Build 66/run38177333462 passed the exact extracted-package gate** for documentation-inclusive0149. All 1,004 tests ran from the extracted ZIP before that same ZIP was uploaded. The downloaded package is 25,938,696 bytes, SHA256 `7024711ed49dafa21ec0b89ed90d01ad45748528066fb653d83b4147a141b2f0`. Its 504 members comprise 484 exact source files and 20 compiled assets; 54 required paths and 115 documentation links verify. Eighteen compiled assets match the measured build byte-for-byte; index.html and index.rsc each differ by one build UUID only. The package uses the normal workflow's Node 24.21.0, separately from performance Node 24.19.0. Browser controls ran before packaging, and exact source/asset inventories bind their scope; no physical Windows/EVE/OBS review is claimed. The reset recovery receipt explicitly distinguishes reconstructed audit findings from retained original Actions metadata/logs. [Package evidence][package-audit].
 
-## Remaining release acceptance
+## Candidate disposition and user review
 
-The local historical/current matrix, startup/contracts/database adapters, merged compiled controls, original UI scope, configured first-binding supplement, both real-archive updater audits and exact package gate are complete within their stated limits. Finish the independent comparison's full raw/adverse audit; corrected independent UI acceptance is complete. The final traceability check also found the predeclared complete export/stopped-directory/two-reopen comparison still uncollected. Its independently reviewed control uses an actual synthetic RC16 directory upgraded by source70, not a claimed installed-user upgrade. Its preparation is banked; runtime remains pending. This is a missing semantic observation, not a reopened optimization.
+The local and independent CI historical/current matrices, startup/contracts/database adapters, merged compiled controls, complete local/CI UI scope, configured first-binding supplement, both real-archive updater audits and exact package gate are complete within their stated limits. The predeclared export/stopped-directory/two-reopen supplement has now passed its single runtime attempt on fresh exact-source inputs: four complete export/SQL oracles, 24 retained tables and 24 negative authorization checks pass, with zero external fetches and unchanged original stopped data. Its [independent final evidence review][export-review] passed, including complete raw bodies/SQL rows, all four live/stopped pairs, immutable database integrity, the original directory and all closed evidence/ownership pins. This uses an actual synthetic RC16 directory upgraded by source70, not a claimed installed-user upgrade, and adds no timing claim.
 
-After those gates, record the final acceptance disposition against the completed documentation/package continuity and prepare a clean 0.8.0 review candidate. Actual Windows/EVE/OBS review remains for the user. Only after user review and explicit approval may the candidate merge. This report does not reopen PR #10 or mark B/W/L/P closed; the ledger owns those decisions. The accepted initialization-versus-ongoing-use trade-off remains closed; no numerical retry or speculative startup optimization is queued.
+The coordinator accepts the documented fix/retain/reject dispositions and closes the declared automated B/W/L/P gates in the [ledger][ledger]. The [checkpoint][checkpoint] designates the exact build 66/source 0149 package for clean 0.8.0-rc.17 review. Actual Windows/EVE/OBS and longer-session review remain for the user; only after explicit approval may the candidate merge or become a stable release. PR #10 stays withdrawn. The accepted initialization-versus-ongoing-use trade-off remains closed; no numerical retry or speculative optimization is queued.
 
 ## Complete evidence appendices
 
@@ -139,6 +177,10 @@ The tables above select useful summary rows; **none replaces the full original r
 | Integrated initial UI / bounded count diagnostic | [14 ordinary comparisons/28 pairs][names-json]; [retention decision][first-assets]; [count audit][assets-json] | [Names/setup bank][names-raw]; [diagnostic raw][assets-raw] |
 | Configured first binding | [Review][bindings]; [six metrics/12 pairs, 400 warm durations][bindings-json] | [Raw manifest][bindings-raw] |
 | Combined tests and compiled integration | [Exact-source checkpoint][checkpoint]; [89-control result][compiled] | [Combined verification receipt][tests]; [merged bank inventory][compiled-raw] |
+| Independent CI comparison | [Complete review][ci-comparison]; full historical/current backend, memory, Maps/routes/camera and mixed/restart tables | [Original artifact and complete audit bank][ci-comparison-raw] |
+| Independent CI UI / updater | [Seven-lane UI audit][ci-ui]; [updater audit][ci-updater] | Raw banks linked from each review |
+| Complete export / stopped upgrade / two reopens | [Independent result review][export-review] | [All raw responses, SQL, synthetic directories and ownership][export-raw] |
+| Exact extracted candidate | [Package audit][package-audit]; all1,004 extracted tests and source/compiled continuity | [Designated download and package identity][checkpoint] |
 | Prior whitepaper/component decisions | [Single ledger][ledger] links every accepted/rejected proposal and its retained limits | [Original whitepaper](REPORT.md); [traceability catalogue](completion/TRACEABILITY.md) |
 
 [ledger]: completion/c954-resumption/resumed/CURRENT-ISSUES.md
@@ -182,6 +224,13 @@ The tables above select useful summary rows; **none replaces the full original r
 [api-reference]: https://github.com/BunBajiro/kairo/blob/70cd12f9a4d014e7e2cf931b9681c4bdc7f18789/docs/API-REFERENCE.md
 [ci-updater]: completion/c954-resumption/resumed/oct11/independent-actions/updater-attempt1/RESULTS-REVIEW.md
 [reset-recovery]: completion/c954-resumption/resumed/oct11/RESET-RESUMPTION.json
-[package-audit]: completion/c954-resumption/resumed/oct11/release-preparation/package-build66/RECOVERY-RECEIPT.json
+[package-audit]: completion/c954-resumption/resumed/oct11/release-preparation/package-build66/REVIEW.md
 
 [ci-ui]: completion/c954-resumption/resumed/oct11/independent-actions/ui-recovery2/RESULTS-REVIEW.md
+[ci-comparison]: completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/CI-COMPARISON-REVIEW.md
+[ci-backend]: completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/CI-BACKEND-MEMORY-REVIEW.md
+[ci-lifetime]: completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/CI-MIXED-RESTART-REVIEW.md
+
+[export-review]: completion/c954-resumption/resumed/oct11/release-preparation/export-closure/INDEPENDENT-OCT13-RESULT-REVIEW.md
+[export-raw]: completion/c954-resumption/resumed/oct11/release-preparation/export-closure/RAW-OCT13-ATTEMPT1.json
+[ci-comparison-raw]: completion/c954-resumption/resumed/oct11/independent-actions/comparison-attempt1/bank/RAW-MANIFEST.json

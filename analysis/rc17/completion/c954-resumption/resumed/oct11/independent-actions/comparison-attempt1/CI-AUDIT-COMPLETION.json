@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "complete": true,
+  "auditDate": "2026-10-13",
+  "collectionDate": "2026-10-11",
+  "runId": 38176821997,
+  "runAttempt": 1,
+  "jobId": 114580856302,
+  "triggerCommit": "cbcd22ff6b57ea2c168fa363332a80d7c414f7d5",
+  "currentSource": "70cd12f9a4d014e7e2cf931b9681c4bdc7f18789",
+  "rc16Source": "57c8dcc7fbd8fc2b62129498d1819050c78381a1",
+  "v073Source": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "artifact": {
+    "path": "artifact-11716144963.zip",
+    "id": 11716144963,
+    "bytes": 2792289,
+    "sha256": "a98542607becc243ce84fea2dfe7b5e7d717e05e80b9f34a78582824a02d3dbd",
+    "membersVerified": 82
+  },
+  "bankedBundleVerification": {
+    "path": "ARTIFACT-VERIFICATION.json",
+    "bytes": 33273,
+    "sha256": "50d6a38b44c86a829165c9b177babd4803ad1e6a5cc13bc3dc7f048e4f64d834",
+    "status": "Reused completed verified receipt; no bundle/runtime/performance rerun"
+  },
+  "passedLaneAndEndVerificationSteps": [
+    {
+      "name": "Measure Maps with equivalent fixtures",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 11
+    },
+    {
+      "name": "Compare isolated itinerary scaling",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 12
+    },
+    {
+      "name": "Compare historical 0.7.3 and RC16 on this same runner",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 13
+    },
+    {
+      "name": "Compare corrected backend workloads in balanced order",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 14
+    },
+    {
+      "name": "Compare bounded residency and not-due Sessions work",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 15
+    },
+    {
+      "name": "Check combined workloads and large-frame continuity",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 16
+    },
+    {
+      "name": "Check positive managed-restart ownership",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 17
+    },
+    {
+      "name": "Check compiled Mapper preferences and geometry",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 18
+    },
+    {
+      "name": "Compare compiled Maps camera work in balanced order",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 19
+    },
+    {
+      "name": "Verify sources and compiled assets after all lanes",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 20
+    }
+  ],
+  "auditModules": {
+    "audit-maps-routes-camera.py": {
+      "script": {
+        "bytes": 11250,
+        "sha256": "313aff331de616094f533e3653910e75ec05ee96d063a96996068331a0dbeb65"
+      },
+      "output": {
+        "path": "CI-MAPS-ROUTES-CAMERA-AUDIT.json",
+        "bytes": 280799,
+        "sha256": "ed4333461f39a81c07a71c91fa3c314cf8770a8fe5a4b0939e428b16ea865cc4"
+      }
+    },
+    "audit-backend-memory.py": {
+      "script": {
+        "bytes": 34482,
+        "sha256": "71a56e80ba88191e4307f22088c9bac7073586b760f631d6e59b60035d9d5dc6"
+      },
+      "output": {
+        "path": "CI-BACKEND-MEMORY-AUDIT.json",
+        "bytes": 1377103,
+        "sha256": "5735edebfda49c473f8f117826cdda4930edf06315209adf7a9eb1da1716bf27"
+      }
+    },
+    "audit-mixed-restart.py": {
+      "script": {
+        "bytes": 36532,
+        "sha256": "a523670304fa37cebbcfa041ec12a25aaad897bfadc36375200849c5f1524e18"
+      },
+      "output": {
+        "path": "CI-MIXED-RESTART-AUDIT.json",
+        "bytes": 141359,
+        "sha256": "fad5c85065bc64c2553c7eaabd865cad22d53e2884af1597ef28af11f2cb0c5c"
+      }
+    }
+  },
+  "safeJobLog": {
+    "path": "recovery-from-memory/job-114580856302.connector-decoded.safe.log",
+    "bytes": 267495,
+    "sha256": "958f316da18a790cbdd47114d8f1cd87d757abccfe062db2f2421e1aa04c2af2",
+    "scope": "Connector-decoded UTF-8 log; not original HTTP transport bytes"
+  },
+  "disposition": "Offline integrity/arithmetic review complete. Preserve all adverse pairs and domain limits. The review establishes neither release approval nor a clean package, and does not reopen accepted startup tradeoffs. Current warm HTTP-state tail is separate from startup.",
+  "limitations": [
+    "CI evidence is separate from the local outer process ownership envelope.",
+    "Historical 0.7.3\u2192RC16 and current RC16\u2192candidate are distinct matched comparisons, not a pooled three-way run.",
+    "Original bundle remains internal/instrumented and releaseReady:false. Clean review package acceptance remains separate."
+  ]
+}
