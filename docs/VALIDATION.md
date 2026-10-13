@@ -43,18 +43,20 @@ Current automated coverage is intentionally explicit:
 
 | Browser | Existing compiled checks |
 | --- | --- |
-| Chrome | Market icons across desktop/narrow views, image recovery, session cards, Universe/replay and dataset updates/reconnects; Range navigation, import quote ownership and Session snapshot paging at 1600/390 widths |
-| Firefox | Fresh desktop market leaf before All items, All items and return, with delayed image loading and geometry checks; Range navigation, import quote ownership and Session snapshot paging at 1600/390 widths |
+| Chrome | Market icons across desktop/narrow views, image recovery, session cards, Universe/replay and dataset updates/reconnects; Range navigation, import quote ownership, Session snapshot paging, hull-image recovery, denied-storage pilot selection and overlapping module settings at 1600/390 widths |
+| Firefox | Fresh desktop market leaf before All items, All items and return, with delayed image loading and geometry checks; Range navigation, import quote ownership, Session snapshot paging, hull-image recovery, denied-storage pilot selection and overlapping module settings at 1600/390 widths |
 
 The Firefox market regression is a required baseline, not full cross-browser coverage of every module. Future changes must cover their affected behavior in both browsers rather than relying on that baseline alone. The Firefox runner uses an isolated Playwright installation in Actions, separate from application dependencies. The workflow retains both browser checks as blocking steps before package creation; failures must not be made non-blocking to obtain a downloadable build.
 
-Build #72 passes the current coverage table. Historical build #69 passed the original market/session/Universe/dataset scopes, and Bun confirmed its category-first icon fix in Firefox on 13 October 2026. That closes the reported icon finding; it is not blanket approval of every UI flow or authorization to merge/release.
+Build #75 passes the current coverage table. Historical build #69 passed the original market/session/Universe/dataset scopes, and Bun confirmed its category-first icon fix in Firefox on 13 October 2026. That closes the reported icon finding; it is not blanket approval of every UI flow or authorization to merge/release.
 
 ## Current bug-review acceptance
 
-Build #72 at `4ffe436ab5ddd16ee72ee0f63c7777bdf0286c5f` passes types, fresh build, all blocking Chrome/Firefox checks, and **1,016/1,016** packaged-runtime tests. The downloaded ZIP independently passes CRC, byte comparison of all 495 packaged source files, and all 1,016 tests without source dependencies. The [live handoff](PREMERGE-BUG-REVIEW.md#current-verified-candidate) owns the exact download, digest, scope and five closed bug findings; [structured evidence](review-evidence/2026-10-13-fixed.json) retains the 4 navigation, 36 import and 32 Session browser checks.
+Build #75 at `e311a63a0323a5054f42f9fbdc77b52e13765b36` passes types, fresh build, every blocking Chrome/Firefox gate, and **1,074/1,074** packaged-runtime tests. The downloaded ZIP independently passes CRC and SHA256, byte comparison of all 504 packaged source files, and all 1,074 tests without source dependencies. The [live handoff](PREMERGE-BUG-REVIEW.md#current-verified-candidate) owns the exact download, digest, completed seven-area review and 20 closed findings; [structured final evidence](review-evidence/2026-10-13-second-pass-fixed.json) retains all 123 bug-specific browser checks and exact verification scope. No confirmed finding remains open.
 
-Corrections preserve intended UI and avoid new repair notices or controls. Session pagination retains one request per next page and the existing indexed event query instead of rereading a growing prefix. Import ownership fencing adds no requests; OBS fixes reuse the connection lifecycle. These are bounded correctness checks, not new performance measurements. Real Windows/EVE/OBS acceptance remains for the user's in-app review.
+Corrections preserve the intended experience without repair notices or extra controls. Session pagination retains one request per next page and the indexed event query; import and bootstrap ownership fencing adds no requests; OBS reuses its connection lifecycle. Auth/ESI/Core work respects connection ownership while retaining same-connection coalescing, pacing and the existing cached-path roster-read bound. Session milestones keep receipt-time ownership without added polling or historical rescans. These are bounded correctness checks, not new performance measurements. Earlier failed baselines and the corrected combined-suite/Chrome-helper attempts remain recorded.
+
+Real Windows/DPAPI, actual EVE permissions/SSO, OBS scene/audio output and extended play remain outside the automated evidence. They do not require the user to reproduce the internal races and failure paths already established by regression tests. PR #12 stays draft; merge and stable release still need separate approval.
 
 ## Completed performance acceptance (historical)
 
