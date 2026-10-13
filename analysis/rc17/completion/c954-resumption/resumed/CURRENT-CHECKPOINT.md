@@ -1,5 +1,7 @@
 # 0.8.0 RC17 — ready for user review
 
+> **User-review follow-up, 13 October:** R-UI1 is open for category-first Market item icons. Icons load after All items; direct image access works. [Current investigation](oct13/market-icons/REVIEW.md). Build66 has this reported issue; no merge/release approval has occurred. The 46 prior refactor decisions and their completed evidence stay closed.
+
 13 October 2026. **The declared automated acceptance gates are complete. This is the designated clean 0.8.0-rc.17 review candidate.** All 46 component findings have supported fix, retain or reject decisions in [CURRENT-ISSUES.md](CURRENT-ISSUES.md). The [three-version performance report](../../../PERFORMANCE-REVIEW-0.8.0.md) is complete and preserves slower rows and evidence limits. No merge, stable release or user-environment approval has occurred.
 
 ## Exact candidate

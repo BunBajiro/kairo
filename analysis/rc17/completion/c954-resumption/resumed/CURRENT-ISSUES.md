@@ -1,5 +1,7 @@
 # RC17 current issues — 13 October 2026
 
+> **User-review follow-up, 13 October:** R-UI1 is open for category-first Market item icons. Icons load after All items; direct image access works. [Current investigation](oct13/market-icons/REVIEW.md). Build66 has this reported issue; no merge/release approval has occurred. The 46 prior refactor decisions and their completed evidence stay closed.
+
 **46 of 46 component decisions are closed, and the declared automated final acceptance gates are complete. Clean 0.8.0-rc.17 is ready for user review.** Closure means an evidenced fix, retention or rejection, not a claim that every operation became faster. Actual Windows/EVE/OBS review and later explicit merge/release approval remain pending.
 
 This is the single live issue ledger. The [whitepaper](../../../REPORT.md), [original catalogue](../../TRACEABILITY.md) and four c954 traces remain historical evidence; their old open statements do not reopen a disposition recorded here. The [candidate checkpoint](CURRENT-CHECKPOINT.md) owns the exact download/source and user-review steps. PR #10 stays withdrawn/draft.
