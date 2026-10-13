@@ -20,6 +20,29 @@ function put(response,path){return new URL(response.url()).pathname==='/api/'+pa
 async function release(page,gate,path,frame){const done=page.waitForEvent('requestfinished',{predicate:request=>new URL(request.url()).pathname==='/api/'+path&&request.method()==='PUT'});gate.release.resolve();await gate.done.promise;await done;await frame();}
 async function ready(page,app,route){await page.goto(app.origin+'/#'+route,{waitUntil:'domcontentloaded',timeout:15000});await page.locator('.connection-status.online').waitFor({state:'attached'});await page.locator('.page-transition').waitFor();}
 
+async function studioNarrowReachability({page,check,frame}){
+ if(page.viewportSize()?.width!==390)return;
+ const dimensions=await page.evaluate(()=>{
+  const describe=element=>{const r=element.getBoundingClientRect(),style=getComputedStyle(element);return {tag:element.tagName,className:String(element.className),rect:{left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height},clientWidth:element.clientWidth,scrollWidth:element.scrollWidth,scrollLeft:element.scrollLeft,scrollTop:element.scrollTop,overflowX:style.overflowX,overflowY:style.overflowY,gridTemplateColumns:style.gridTemplateColumns};};
+  const grid=document.querySelector('.studio-grid'),ancestors=[];for(let element=grid;element;element=element.parentElement)ancestors.push(describe(element));
+  return {viewport:{width:innerWidth,height:innerHeight},document:describe(document.scrollingElement),grid:describe(grid),children:[...grid.children].map(describe),inspector:describe(document.querySelector('.inspector-fields')),ancestors};
+ });
+ const targets=[...['Text block','Countdown','Kairo goal','OPSEC cover'].map(name=>({name,locator:page.locator('.template-grid').getByRole('button',{name,exact:true})})),{name:'Live output',locator:page.locator('.canvas-bar').getByRole('tab',{name:'Live output',exact:true})}];
+ for(const {name,locator} of targets){
+  const scroll=await locator.evaluate(element=>{const ancestors=[];for(let node=element;node;node=node.parentElement)ancestors.push({left:node.scrollLeft,top:node.scrollTop});return {x:scrollX,y:scrollY,ancestors};});
+  try{
+   await locator.evaluate(element=>element.scrollIntoView({block:'center',inline:'center',behavior:'instant'}));await frame();
+   const result=await locator.evaluate(element=>{
+    const r=element.getBoundingClientRect(),style=getComputedStyle(element),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+    return {rendered:r.width>0&&r.height>0&&style.display!=='none'&&style.visibility==='visible',withinViewport:r.left>=-1&&r.top>=-1&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1,pointerHits:!!hit&&(hit===element||element.contains(hit)),rect:{left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height},viewport:{width:innerWidth,height:innerHeight},scroll:{x:scrollX,y:scrollY},hit:hit?{tag:hit.tagName,className:String(hit.className)}:null};
+   });
+   check('Narrow Studio '+name+' control remains fully reachable by scrolling',{rendered:result.rendered,withinViewport:result.withinViewport,pointerHits:result.pointerHits},{rendered:true,withinViewport:true,pointerHits:true},{dimensions,result});
+  }finally{
+   await locator.evaluate((element,saved)=>{let index=0;for(let node=element;node;node=node.parentElement){const point=saved.ancestors[index++];if(point){node.scrollLeft=point.left;node.scrollTop=point.top;}}window.scrollTo(saved.x,saved.y);},scroll);await frame();
+  }
+ }
+}
+
 export async function studioSaveDraft(args){
  const {page,app,check,frame}=args,c=defaultStream();
  c.elements=[{id:'review-text',kind:'text',name:'Review text',text:'Original stream text',label:'',x:80,y:80,width:400,height:100,fontSize:24,opacity:.7,color:'#97ebce',visible:true,binding:'none'}];
@@ -47,6 +70,7 @@ export async function studioSaveDraft(args){
   check('A failed Studio save stays retryable',await save.isEnabled(),true);
   response=page.waitForResponse(value=>put(value,'stream'));await save.click();assert.equal((await response).status(),200);await frame();
   check('Studio retry persists the retained draft',app.core.stream.config().elements[0].text,'Retain this failed Studio save');
+  await studioNarrowReachability(args);
  }finally{await transport.close();}
 }
 
