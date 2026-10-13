@@ -39,6 +39,26 @@ jobs:
       - name: Build the application
         run: npm run build
 
+      - name: Install isolated Firefox test tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/kairo-browser-tools" --ignore-scripts --no-audit --no-fund --save-exact playwright@1.62.1
+          node "$RUNNER_TEMP/kairo-browser-tools/node_modules/playwright/cli.js" install --with-deps firefox
+
+      - name: Verify category-first market icons in Firefox
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-market-icons-firefox
+        run: node tests/market-icons-firefox.mjs
+
+      - name: Upload Firefox market icon checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: market-icon-firefox-check
+          path: ${{ runner.temp }}/kairo-market-icons-firefox/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify market item icons in Chrome
         env:
           KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-market-icons
