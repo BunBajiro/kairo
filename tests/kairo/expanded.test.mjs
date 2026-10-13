@@ -69,13 +69,13 @@ test('place notes keep system, constellation and region identities separate and 
     store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,10,'UALX-3','2026-09-01');const d=journeyData(store,42);assert.equal(d.systems[0].x,1e17);assert.equal(d.systems[0].region_name,'Tenerifis');assert.equal(d.systems[0].annotation,'Private system');assert.deepEqual(d.systems[0].tags,['logistics','home']);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM place_notes').get().n,3);assert.throws(()=>savePlaceNote(store,'character',1,{}));
 });
 // Minimal real WebSocket server: exercises Node's native client and OBS v5 framing/authentication without installed dependencies.
-async function mockOBS(t,{password='fixture-password'}={}) {
+async function mockOBS(t,{password='fixture-password',holdFirstHello=false}={}) {
     const requests=[],sockets=new Set();let handler,hold,fail='',authRejected=false;
     const server=createServer();server.on('upgrade',(req,socket)=>{
         sockets.add(socket);socket.on('close',()=>sockets.delete(socket));socket.on('error',()=>{});
         const key=createHash('sha1').update(req.headers['sec-websocket-key']+'258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest('base64');socket.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: '+key+'\r\n\r\n');
         function frame(value,opcode=1){const p=Buffer.isBuffer(value)?value:Buffer.from(JSON.stringify(value));const head=p.length<126?Buffer.from([128|opcode,p.length]):Buffer.from([128|opcode,126,p.length>>8,p.length&255]);socket.write(Buffer.concat([head,p]));}
-        socket.send=frame;frame({op:0,d:{rpcVersion:1,obsWebSocketVersion:'5.5.0',authentication:{salt:'fixture-salt',challenge:'fixture-challenge'}}});let buf=Buffer.alloc(0);
+        socket.send=frame;if(holdFirstHello)holdFirstHello=false;else frame({op:0,d:{rpcVersion:1,obsWebSocketVersion:'5.5.0',authentication:{salt:'fixture-salt',challenge:'fixture-challenge'}}});let buf=Buffer.alloc(0);
         socket.on('data',bytes=>{buf=Buffer.concat([buf,bytes]);while(buf.length>=2){const opcode=buf[0]&15,masked=!!(buf[1]&128);let n=buf[1]&127,h=2;if(n===126){if(buf.length<4)return;n=buf.readUInt16BE(2);h=4;}if(n===127){socket.destroy();return;}const maskOffset=h;if(masked)h+=4;if(buf.length<h+n)return;const p=Buffer.from(buf.subarray(h,h+n));if(masked)for(let i=0;i<p.length;i++)p[i]^=buf[maskOffset+i%4];buf=buf.subarray(h+n);if(opcode===8){frame(p,8);socket.end();return;}if(opcode===9){frame(p,10);continue;}if(opcode!==1)continue;const m=JSON.parse(p.toString());
             if(m.op===1){if(m.d.authentication!==obsAuthentication(password,{salt:'fixture-salt',challenge:'fixture-challenge'})){authRejected=true;const code=Buffer.alloc(2);code.writeUInt16BE(4009);frame(code,8);socket.end();}else frame({op:2,d:{negotiatedRpcVersion:1}});}
             if(m.op===6){requests.push(m.d);const respond=(responseData={},ok=true)=>frame({op:7,d:{requestType:m.d.requestType,requestId:m.d.requestId,requestStatus:{result:ok,code:ok?100:600},responseData}});
@@ -122,6 +122,33 @@ test('OBS reconnects to the latest protection state and rejects a wrong password
     const c={...defaultOBS(),enabled:true,automation:true,port:mock.port,collection:'Kairo test',password:'wrong'};await assert.rejects(obs.save(c));assert.ok(mock.authRejected);await delay(40);assert.equal(mock.clients.size,0);
     c.password='fixture-password';c.rules.unknown=[source(false)];c.rules.highsec=[source(true)];c.rules.manual=[source(false)];await obs.save(c);await until(()=>obs.status().appliedState==='unknown');
     for(const s of mock.clients)s.destroy();await until(()=>!obs.status().connected);mock.requests.length=0;obs.setState('highsec');obs.setState('manual');await until(()=>obs.status().appliedState==='manual');assert.ok(mock.requests.some(r=>r.requestData.sceneItemEnabled===false));assert.equal(mock.requests.some(r=>r.requestData.sceneItemEnabled===true),false);
+});
+test('OBS reconnect clears an interrupted collection transition and resumes inventory and protection',async t=>{
+    const {store,vault}=await storage(t),mock=await mockOBS(t),obs=createOBS(store,vault,{requestTimeout:500});t.after(()=>obs.close());
+    const c={...defaultOBS(),enabled:true,automation:true,port:mock.port,collection:'Kairo test',password:'fixture-password'};c.rules.unknown=[source(false)];c.rules.manual=[source(false)];
+    await obs.save(c);await until(()=>obs.status().appliedState==='unknown');mock.requests.length=0;
+    for(const s of mock.clients)s.send({op:5,d:{eventType:'CurrentSceneCollectionChanging'}});
+    await until(()=>obs.status().changing);obs.setState('manual');
+    await assert.rejects(obs.inventory(),/changing scene collections/);
+    assert.equal(mock.requests.length,0,'the original socket remains protected during its collection transition');
+    await obs.reconnect();await until(()=>obs.status().appliedState==='manual');
+    assert.equal(obs.status().connected,true);assert.equal(obs.status().changing,false);
+    assert.ok(mock.requests.some(r=>r.requestType==='SetSceneItemEnabled'&&r.requestData.sceneItemEnabled===false),'the new connection applies the latest protection state');
+    const targets=await obs.inventory();assert.equal(targets.collection,'Kairo test');assert.equal(targets.scenes[0].items[0].sceneItemId,7);
+});
+test('OBS saves a new port or password while the startup connection is still pending',async t=>{
+    for(const change of ['port','password'])await t.test(change,async t=>{
+        const {store,vault}=await storage(t),original=await mockOBS(t,{holdFirstHello:true}),target=change==='port'?await mockOBS(t):original;
+        const c={...defaultOBS(),enabled:true,automation:true,port:original.port,collection:'Kairo test'};c.rules.unknown=[source(false)];
+        store.set('obs',c);store.set('obs.password',vault.encrypt({password:change==='password'?'old-password':'fixture-password'}));
+        const obs=createOBS(store,vault,{requestTimeout:500});t.after(()=>obs.close());
+        await until(()=>original.clients.size===1&&obs.status().connecting);
+        await obs.save({...c,...(change==='port'?{port:target.port}:{password:'fixture-password'})});
+        await until(()=>obs.status().appliedState==='unknown');
+        assert.equal(obs.status().connected,true);assert.equal(obs.status().connecting,false);assert.equal(obs.status().error,'');
+        assert.ok(target.requests.some(r=>r.requestType==='SetSceneItemEnabled'&&r.requestData.sceneItemEnabled===false));
+        assert.equal((await obs.inventory()).collection,'Kairo test');
+    });
 });
 test('HTTP feature APIs preserve data after restart and remain inaccessible to browser sources',async t=>{
     const dir=await mkdtemp(join(tmpdir(),'kairo-feature-http-'));let app;const opts={port:18400,streamPort:18401,dataDir:dir,noSync:true,fetcher:async()=>new Response('[]',{headers:{'Content-Type':'application/json'}})};

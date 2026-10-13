@@ -1,6 +1,6 @@
 # 0.8.0 RC Premerge Bug Review
 
-Start here in the next chat. The performance/refactor phase is complete; this phase is a fresh correctness and usability review of the 0.8.0 RC. No bug hunt was started during the handoff.
+The performance/refactor phase is complete. The correctness and usability review began on 13 October 2026 from PR #12 at `6e54542`. The starting handoff and original tested build remain recorded below.
 
 ## Active work and exact baseline
 
@@ -40,11 +40,17 @@ Build69 passed types/build, Firefox market navigation, Chrome market/session/Uni
 
 ## Bug ledger
 
-No open bug findings are carried into this phase. R-UI1 was fixed and confirmed by Bun; the new bug hunt is not yet performed.
+The first review pass is in progress. Findings below are separate from the closed performance ledger. Source fixes are not yet a downloadable candidate: the new Chrome/Firefox checks and normal packaged-runtime gates must pass first.
 
 | ID | Status | Reproduction / expected / actual | Owner and change | Verification |
 | --- | --- | --- | --- | --- |
-| — | Not started | Add reproduced findings in the next chat | — | — |
+| PBR-1 | Fixed; browser verification pending | Universe → Navigate → Range: set an origin and Alternate midpoint destination, then calculate. Expected midpoint candidates; actual `ReferenceError: alternateJumpMidpoints is not defined`. | `server/universe-navigation.mjs`: import the existing midpoint calculation. | New service regression fails on baseline and passes fixed; 67 navigation/routing/preparation tests pass. New compiled Chrome/Firefox desktop/narrow test queued. |
+| PBR-2 | Fixed; package verification pending | During OBS `CurrentSceneCollectionChanging`, use Reconnect saved. Replacement connection retained the old transition flag indefinitely, blocking inventory/actions. | `server/obs.mjs`: reset connection-owned transition state on cancellation. | Native WebSocket regression verifies live-transition blocking, then successful reconnect, inventory and protection application; fails baseline, passes fixed. |
+| PBR-3 | Fixed; package verification pending | Save a changed OBS port or password while its initial connection is pending. Save reused the cancelled promise and never connected with the new settings. | `server/obs.mjs`: await cancelled connection before opening replacement. | Native WebSocket regressions for port and password fail baseline and pass fixed. 49 adjacent OBS/Stream/lifecycle/OPSEC tests pass. |
+| PBR-4 | Browser reproduction pending | Import Analyser: delay Recalculate response, then edit quantity, change strategy, or close and open another item. Source permits the obsolete response to overwrite the current quote. | `components/kairo/import-analyser.tsx`: candidate missing request ownership. No fix applied at this checkpoint. | New compiled test delays real quote responses; both browser engines queued in Actions. Local browser launch is unavailable due workspace IPC restriction. |
+| PBR-5 | Open; service reproduction confirmed | Load 100 of 200 Session events, insert a delayed killmail with an earlier occurrence time, then finish pagination. Expected 201 events including the killmail; actual 200 displayed, `more:false`, delayed killmail absent. Manual head refresh recovers it. | `components/kairo/session-report.tsx` appends offset pages from mutable time order; background refresh stops beyond 100 loaded rows. Fix design pending; avoid repeatedly rereading the full timeline. | Real `sessionReport()` plus the UI deduplication merge reproduces 201 reported / 200 displayed. Browser verification pending. |
+
+Reviewed areas: Universe/Maps/navigation, Sessions/archive/replay, startup/datasets, Stream/OPSEC/OBS and import planning. The existing targeted suites passed; this is not exhaustive usability acceptance. Actual Windows/EVE/OBS remains for Bun's in-app review.
 
 The [internal API guide](INTERNAL-API.md) and [route/event reference](API-REFERENCE.md) describe the existing backbone for future work. Do not rebuild parallel services or add duplicate documentation around it.
 
@@ -54,4 +60,4 @@ PR12 replaces the old Universe/RC17 review chain. PRs4/6/8 are internal performa
 
 Preserve `perf/benchmark-baseline`, `perf/database-review-v0.7.3` and `perf/rc16-checkpoint-v0.8.0`: these contain evidence outside candidate ancestry. Preserve non-ancestor recovery/withdrawn/excluded histories as archives. Other old branch refs are historical only, not active work. Cleanup disposition and verified PR closures are recorded in the [performance closure record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/oct13/premerge-handoff/CLOSURE.md).
 
-The package Actions run and raw evidence banks are retained. The analysis branch is investigation-only; never package or merge it into the application. No release tag was created, main was not moved, and the bug hunt remains for the next chat.
+The package Actions run and raw evidence banks are retained. The analysis branch is investigation-only; never package or merge it into the application. No release tag was created, main was not moved, and the bug hunt now proceeds on PR #12.

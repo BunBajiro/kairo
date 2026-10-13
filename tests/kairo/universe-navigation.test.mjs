@@ -173,6 +173,17 @@ test('jump presets apply exact JDC levels; reachability/overlap and alternatives
  const sample=[...systems,{...systems[0],system_id:9,x:0,y:5*LY_METRES}];const result=jumpReachability({systems:sample,origins:[{systemId:1,rangeLy:3},{systemId:5,rangeLy:3}],preferences:{avoidHostile:true}});
  assert.deepEqual(result.overlapSystemIds,[2,4]);assert.ok(!result.unionSystemIds.includes(9));assert.deepEqual(alternateJumpMidpoints({systems:sample,originId:1,destinationId:5,rangeLy:3,preferences:{avoidHostile:true}}).map(s=>s.systemId),[2,4]);
 });
+test('range tool accepts an alternate destination and applies route preferences to midpoint candidates',async t=>{
+ const sample=[...systems,{...systems[0],system_id:9,x:0,y:5*LY_METRES}];
+ const {nav}=await fixture(t,{getRouteSystems:()=>sample});
+ const input={origins:[{systemId:1,rangeLy:3},{systemId:5,rangeLy:3}],preferences:{avoidHostile:true}};
+ const range=nav.reachability(42,input),result=nav.reachability(42,{...input,destinationId:5});
+ assert.equal(result.status,'ok');assert.deepEqual(result.unionSystemIds,range.unionSystemIds);assert.deepEqual(result.overlapSystemIds,[2,4]);
+ assert.deepEqual(result.alternateMidpoints,[
+  {systemId:2,fromDistanceLy:1,toDistanceLy:3,totalDistanceLy:4},
+  {systemId:4,fromDistanceLy:3,toDistanceLy:1,totalDistanceLy:4},
+ ]);
+});
 test('fuel estimate uses explicit rate and multiplier, rounds each leg and exposes assumptions',()=>{
  const fuel=estimateJumpFuel([{kind:'jump',distance_ly:1.1},{kind:'jump',distance_ly:1.1}],{isotopeUnitsPerLy:3,consumptionMultiplier:.5,reservePercent:10,unitPriceISK:20,unitVolumeM3:.15});
  assert.equal(fuel.units,4);assert.equal(fuel.withReserve,5);assert.equal(fuel.costISK,100);assert.equal(fuel.volumeM3,.75);assert.throws(()=>estimateJumpFuel([]),/positive/);

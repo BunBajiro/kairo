@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {getUniverseStatic} from './universe-static.mjs';
-import {JUMP_SHIP_PRESETS,jumpRangeForShip,jumpReachability,createJumpPlanner,estimateJumpFuel,wormholeShipRestriction} from './universe-routing.mjs';
+import {JUMP_SHIP_PRESETS,jumpRangeForShip,jumpReachability,alternateJumpMidpoints,createJumpPlanner,estimateJumpFuel,wormholeShipRestriction} from './universe-routing.mjs';
 import {parseAnsiblexImport} from './universe-ansiblex.mjs';
 
 export const WAYPOINT_SCOPE='esi-ui.write_waypoint.v1';
