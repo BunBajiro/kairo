@@ -1,5 +1,7 @@
 # Kairo 0.8.0 performance review
 
+> **Post-report UI follow-up, 13 October:** Build 69/source37a replaces build66 for user review with a bounded market-icon sizing/recovery correction. Its browser and 1,004 extracted-package tests pass; R-UI1 remains open pending Bun's category-first Firefox retest. [Follow-up evidence](completion/c954-resumption/resumed/oct13/market-icons/REVIEW.md). All performance numbers below remain measurements of source70 and its recorded comparators; they have not been relabelled as measurements of37a.
+
 Collected 11 October; final acceptance review completed 13 October 2026. **The integrated refactor delivers reproducible reductions in recurring idle CPU and memory and substantial Maps/routes gains, with retained costs documented below. All declared automated acceptance gates are complete; clean 0.8.0-rc.17 is ready for user review.** Local and CI observations remain separate. Actual Windows/EVE/OBS review and later approval are required before merge and stable release.
 
 Retain the measured application source `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789`, tree `35826c9d50c45702ff103e1f173e05c529ba2d9c`. It includes selected c954/build #54 and excludes withdrawn `508f2d4`/build #55. All **46 component decisions** are closed as supported fixes, retentions or rejections; release gates B/W/L/P remain governed by the [single current issue ledger][ledger]. Withdrawn PR #10 remains outside user review. No new optimization or repeat measurement is proposed merely to obtain better numbers.
@@ -159,7 +161,7 @@ The first independent UI run38176822076 failed a compiled homepage test because 
 
 The local and independent CI historical/current matrices, startup/contracts/database adapters, merged compiled controls, complete local/CI UI scope, configured first-binding supplement, both real-archive updater audits and exact package gate are complete within their stated limits. The predeclared export/stopped-directory/two-reopen supplement has now passed its single runtime attempt on fresh exact-source inputs: four complete export/SQL oracles, 24 retained tables and 24 negative authorization checks pass, with zero external fetches and unchanged original stopped data. Its [independent final evidence review][export-review] passed, including complete raw bodies/SQL rows, all four live/stopped pairs, immutable database integrity, the original directory and all closed evidence/ownership pins. This uses an actual synthetic RC16 directory upgraded by source70, not a claimed installed-user upgrade, and adds no timing claim.
 
-The coordinator accepts the documented fix/retain/reject dispositions and closes the declared automated B/W/L/P gates in the [ledger][ledger]. The [checkpoint][checkpoint] designates the exact build 66/source 0149 package for clean 0.8.0-rc.17 review. Actual Windows/EVE/OBS and longer-session review remain for the user; only after explicit approval may the candidate merge or become a stable release. PR #10 stays withdrawn. The accepted initialization-versus-ongoing-use trade-off remains closed; no numerical retry or speculative optimization is queued.
+The coordinator accepts the documented fix/retain/reject dispositions and closes the declared automated B/W/L/P gates in the [ledger][ledger]. The original checkpoint designated build66/source0149; the current [checkpoint][checkpoint] now designates build69/source37a for the R-UI1 user retest. This presentation-only follow-up does not change the measured source of this report. Actual Windows/EVE/OBS and longer-session review remain for the user; only after explicit approval may the candidate merge or become a stable release. PR #10 stays withdrawn. The accepted initialization-versus-ongoing-use trade-off remains closed; no numerical retry or speculative optimization is queued.
 
 ## Complete evidence appendices
 
@@ -180,7 +182,7 @@ The tables above select useful summary rows; **none replaces the full original r
 | Independent CI comparison | [Complete review][ci-comparison]; full historical/current backend, memory, Maps/routes/camera and mixed/restart tables | [Original artifact and complete audit bank][ci-comparison-raw] |
 | Independent CI UI / updater | [Seven-lane UI audit][ci-ui]; [updater audit][ci-updater] | Raw banks linked from each review |
 | Complete export / stopped upgrade / two reopens | [Independent result review][export-review] | [All raw responses, SQL, synthetic directories and ownership][export-raw] |
-| Exact extracted candidate | [Package audit][package-audit]; all1,004 extracted tests and source/compiled continuity | [Designated download and package identity][checkpoint] |
+| Exact extracted candidate | [Package audit][package-audit]; all 1,004 extracted tests and source/compiled continuity | [Designated download and package identity][checkpoint] |
 | Prior whitepaper/component decisions | [Single ledger][ledger] links every accepted/rejected proposal and its retained limits | [Original whitepaper](REPORT.md); [traceability catalogue](completion/TRACEABILITY.md) |
 
 [ledger]: completion/c954-resumption/resumed/CURRENT-ISSUES.md
