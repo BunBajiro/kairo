@@ -10,6 +10,7 @@ import {useKairo} from './context';
 import {api,isk,stamp} from './model';
 import {CombatCoverage} from './combat-coverage';
 import {mostActiveSystem} from '@/lib/session-summary';
+import {loadSessionReportPage} from './session-report-page.mjs';
 
 const duration=(n:number)=>n<60?Math.floor(n)+'s':n<3600?Math.floor(n/60)+'m':Math.floor(n/3600)+'h '+Math.floor(n%3600/60)+'m';
 const number=(n:number)=>n.toLocaleString('en-GB');
@@ -89,7 +90,7 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
  }
  async function moreEvents(){
   const g=generation.current,request=++requestVersion.current;setLoadingMore(true);requestingMore.current=true;
-  try{const next=await api(url+'&offset='+report.events.length);if(g===generation.current&&request===requestVersion.current){const events=[...new Map([...report.events,...next.events].map((e:any)=>[e.id,e])).values()];const value={...next,events};reportRef.current=value;setReport(value);}}
+  try{const next=await loadSessionReportPage(report,(offset,snapshot)=>api(url+'&'+new URLSearchParams({offset:String(offset),eventCursor:String(snapshot.eventCursor),eventEnd:snapshot.eventEnd})),()=>g===generation.current&&request===requestVersion.current);if(next){reportRef.current=next;setReport(next);setError('');}}
   catch(e:any){if(g===generation.current)toast.error(e.message);}
   finally{if(g===generation.current){setLoadingMore(false);requestingMore.current=false;}}
  }
