@@ -76,7 +76,8 @@ try{
     return route.continue();
    });
    await page.goto(app.origin+'/#universe',{waitUntil:'domcontentloaded',timeout:15000});
-   await page.locator('.connection-status.online').waitFor();
+   // Narrow layouts hide this status label; its state still signals readiness.
+   await page.locator('.connection-status.online').waitFor({state:'attached'});
    await page.locator('.universe-module canvas').waitFor();
    const fixture=await page.evaluate(async()=>{
     const atlas=await(await fetch('/api/universe/static')).json();

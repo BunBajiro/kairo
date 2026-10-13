@@ -69,7 +69,7 @@ try{
     unexpectedNetwork.push({...meta,url:url.href});return route.abort('blockedbyclient');
    });
    await page.goto(app.origin+'/#markets',{waitUntil:'domcontentloaded',timeout:15000});
-   await page.locator('.connection-status.online').waitFor();
+   await page.locator('.connection-status.online').waitFor({state:'attached'});
    await page.locator('.market-hub').filter({has:page.locator('strong',{hasText:'Amarr'})}).click();
    await page.locator('.markets-module > [data-slot=tabs] > [role=tablist]').getByRole('tab',{name:'Import Analyser',exact:true}).click();
    await page.waitForFunction(()=>document.querySelectorAll('.import-card-open').length===2);

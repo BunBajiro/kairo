@@ -37,14 +37,17 @@ jobs:
         run: npm run check:kairo
 
       - name: Build the application
+        id: build
         run: npm run build
 
       - name: Install isolated Firefox test tools
+        id: browser_tools
         run: |
           npm install --prefix "$RUNNER_TEMP/kairo-browser-tools" --ignore-scripts --no-audit --no-fund --save-exact playwright@1.62.1
           node "$RUNNER_TEMP/kairo-browser-tools/node_modules/playwright/cli.js" install --with-deps firefox
 
       - name: Verify Universe range navigation in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
         env:
           KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
           KAIRO_CHROME_PATH: /usr/bin/google-chrome
@@ -61,6 +64,7 @@ jobs:
           retention-days: 30
 
       - name: Verify import quote controls in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
         env:
           KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
           KAIRO_CHROME_PATH: /usr/bin/google-chrome
