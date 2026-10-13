@@ -4,7 +4,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {openStore} from '../../server/store.mjs';
-import {createMarkets,historySummary,JITA,MARKET_SCOPE} from '../../server/markets.mjs';
+import {createMarkets,historySummary,JITA,MARKET_SCOPE,QUICK_NAMES} from '../../server/markets.mjs';
 import {startKairo} from '../../server/index.mjs';
 import {allScopes} from '../../server/modules/catalog.mjs';
 import {sanitizeConfig,defaultStream} from '../../server/stream.mjs';
@@ -73,4 +73,106 @@ test('market HTTP endpoints require a dashboard session and CSRF and are absent 
 
 test('continuing history reuses complete books and fresh histories without repeated network calls',async t=>{
  let failed=true;const {m,calls}=await setup(t,path=>{if(path.includes('/orders?'))return response([order(1,1),order(2,2)]);if(path.includes('/history?type_id=2')&&failed)throw new Error('Temporary history failure');});await scan(m,{mode:'full'});assert.equal(m.overview().job.phase,'history');assert.equal(m.overview().job.status,'failed');assert.equal(m.report(AMARR).historyCount,1);const orderCalls=calls.filter(c=>c.path.includes('/orders?')).length,historyOneCalls=calls.filter(c=>c.path.includes('/history?type_id=1')).length;failed=false;await scan(m,{mode:'history'});assert.equal(m.overview().job.status,'complete');assert.equal(m.report(AMARR).historyCount,2);assert.equal(calls.filter(c=>c.path.includes('/orders?')).length,orderCalls);assert.equal(calls.filter(c=>c.path.includes('/history?type_id=1')).length,historyOneCalls);
+});
+
+test('a pending quick-list addition preserves a removal completed during its item lookup',async t=>{
+ let release,arrived;const gate=new Promise(r=>release=r),seen=new Promise(r=>arrived=r);
+ const {m,store,calls}=await setup(t,async(path,options)=>{
+  if(path==='/universe/ids'){arrived();await gate;return response({inventory_types:[{id:3,name:options.body[0]}]});}
+  if(path==='/universe/types/3')return response({market_group_id:1});
+ });
+ const pending=m.quickChange({name:'Drone'});await seen;
+ await m.quickChange({remove:1});release();await pending;
+ assert.deepEqual(store.get('market:quick'),[2,3],'The added drone must not restore the removed paste');
+ assert.equal(calls.length,2,'Only the new item identity and marketability are requested');
+});
+
+test('concurrent quick-list removals cannot silently restore a removed item or empty the basket',async t=>{
+ const {m,store,calls}=await setup(t);store.set('market:quick',[1,2,3]);
+ await Promise.all([m.quickChange({remove:1}),m.quickChange({remove:2})]);
+ assert.deepEqual(store.get('market:quick'),[3]);assert.equal(calls.length,0);
+ await assert.rejects(m.quickChange({remove:3}),/at least one/);assert.deepEqual(store.get('market:quick'),[3]);
+});
+
+test('a delayed quick-list addition cannot publish after another window starts a scan',async t=>{
+ let releaseLookup,lookupArrived,releaseScan,scanArrived;
+ const lookupGate=new Promise(r=>releaseLookup=r),lookupSeen=new Promise(r=>lookupArrived=r),scanGate=new Promise(r=>releaseScan=r),scanSeen=new Promise(r=>scanArrived=r);
+ const {m,store}=await setup(t,async(path,options)=>{
+  if(path==='/universe/ids'){lookupArrived();await lookupGate;return response({inventory_types:[{id:3,name:options.body[0]}]});}
+  if(path==='/universe/types/3')return response({market_group_id:1});
+  if(path.includes('/orders?')){scanArrived();await scanGate;return response([order(1,1),order(2,2)]);}
+ });
+ const pending=m.quickChange({name:'Drone'});await lookupSeen;m.start({hubId:AMARR,mode:'quick',compareJita:false});await scanSeen;
+ try{releaseLookup();await assert.rejects(pending,/active scan/);assert.deepEqual(store.get('market:quick'),[1,2]);}
+ finally{releaseScan();await m.idle();}
+ assert.equal(m.overview().job.status,'complete');
+});
+
+test('late first-use basket resolution retains an edit already applied by another caller',async t=>{
+ let releaseSecond,secondArrived,calls=0;const gate=new Promise(r=>releaseSecond=r),seen=new Promise(r=>secondArrived=r);
+ const {m,store}=await setup(t,async(path,options)=>{
+  if(path==='/universe/ids'){if(++calls===2){secondArrived();await gate;}return response({inventory_types:options.body.map((name,i)=>({id:i+1,name}))});}
+ });
+ store.db.prepare('DELETE FROM settings WHERE key=?').run('market:quick');
+ const first=m.quickChange({remove:1}),second=m.quickChange({remove:2});await seen;await first;releaseSecond();await second;
+ const result=store.get('market:quick');assert.equal(result.includes(1),false);assert.equal(result.includes(2),false);assert.equal(result.length,QUICK_NAMES.length-2);
+});
+
+test('concurrent additions respect the quick-list limit and a freed slot can be used without reloading',async t=>{
+ let release;const gate=new Promise(r=>release=r);
+ const {m,store,calls}=await setup(t,async(path,options)=>{
+  if(path==='/universe/ids'){await gate;const name=options.body[0];return response({inventory_types:[{id:name==='First item'?1001:1002,name}]});}
+  if(path.startsWith('/universe/types/'))return response({market_group_id:1});
+ });
+ store.set('market:quick',Array.from({length:79},(_,i)=>i+1));
+ const first=m.quickChange({name:'First item'}),second=m.quickChange({name:'Second item'});release();
+ const results=await Promise.allSettled([first,second]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.match(results.find(r=>r.status==='rejected').reason.message,/80 items/);
+ assert.equal(store.get('market:quick').length,80);assert.equal(calls.length,4);
+ await m.quickChange({remove:1});await m.quickChange({name:'Second item'});assert.equal(store.get('market:quick').length,80);assert.equal(store.get('market:quick').includes(1002),true);assert.equal(store.get('market:quick').includes(1),false);
+});
+
+test('concurrent hub additions cannot exceed the followed-hub limit after asynchronous resolution',async t=>{
+ let release;const gate=new Promise(r=>release=r);
+ const {m,store,calls}=await setup(t,async path=>{
+  if(path.startsWith('/universe/stations/')){await gate;return response({name:'Resolved station',system_id:30000001,services:['market']});}
+  if(path==='/universe/systems/30000001')return response({name:'System',constellation_id:20000001});
+  if(path==='/universe/constellations/20000001')return response({region_id:10000001});
+  if(path==='/universe/regions/10000001')return response({name:'Region'});
+ });
+ const put=store.db.prepare("INSERT INTO market_hubs(id,name,station_name,kind,system_id,system_name,region_id,region_name) VALUES(?,?,?,'station',30000001,'System',10000001,'Region')");
+ for(let i=0;i<27;i++)put.run(61000000+i,'Hub '+i,'Station '+i);
+ const a=m.addHub({locationId:62000001}),b=m.addHub({locationId:62000002});release();
+ const results=await Promise.allSettled([a,b]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1,'Only one free slot can be consumed');
+ assert.match(results.find(r=>r.status==='rejected').reason.message,/32 hubs/);assert.equal(m.overview().hubs.length,32);assert.equal(calls.length,8);
+ const accepted=results.find(r=>r.status==='fulfilled').value.id,rejected=accepted===62000001?62000002:62000001;
+ await m.addHub({locationId:accepted,name:'Renamed hub'});assert.equal(m.overview().hubs.length,32);assert.equal(m.overview().hubs.find(h=>h.id===accepted).name,'Renamed hub');
+ const before=calls.length;await assert.rejects(m.addHub({locationId:rejected}),/32 hubs/);assert.equal(calls.length,before,'A full network rejects a new hub before ESI');
+ m.removeHub(accepted);await m.addHub({locationId:rejected});assert.equal(m.overview().hubs.length,32);assert.equal(m.overview().hubs.some(h=>h.id===rejected),true);
+});
+
+test('history requested before the first custom-hub book cannot wedge future market scans',async t=>{
+ const custom=62000001,{m,store}=await setup(t,path=>path.includes('/orders?')?response([order(1,1,custom),order(2,2,custom)]):undefined);
+ store.db.prepare("INSERT INTO market_hubs(id,name,station_name,kind,system_id,system_name,region_id,region_name) VALUES(?,'Custom hub','Station','station',30000001,'System',10000001,'Region')").run(custom);
+ const input={hubId:custom,mode:'history',compareJita:false};const failed=m.start(input);await m.idle();
+ assert.equal(m.overview().job.status,'failed');assert.match(m.overview().job.detail,/Scan an order book/);
+ const retried=m.start(input);await m.idle();assert.notEqual(retried.id,failed.id,'Retry gets a new job, not the already failed task');
+ await scan(m,{hubId:custom,characterId:0});assert.equal(m.overview().job.status,'complete');assert.equal(m.browse(custom).rows.length,2);
+ await scan(m,{hubId:custom,mode:'history',characterId:0});assert.equal(m.overview().job.status,'complete');
+});
+
+test('refreshing a shorter order book clamps an open seller or buyer page to its remaining orders',async t=>{
+ let sellers=85,buyers=81;
+ const {m,calls}=await setup(t,path=>path.includes('/orders?')?response([
+  ...Array.from({length:sellers},(_,i)=>order(i+1,1,AMARR,200+i)),
+  ...Array.from({length:buyers},(_,i)=>order(1000+i,1,AMARR,100+i,10,true))
+ ]):undefined);
+ await scan(m,{mode:'item',typeId:1});
+ for(const side of ['sell','buy']){const initial=m.detail(AMARR,1,{side,page:2});assert.equal(initial.page,2);assert.equal(initial.orders.length,side==='sell'?5:1);}
+ sellers=41;buyers=2;await scan(m,{mode:'item',typeId:1});const before=calls.length;
+ const sell=m.detail(AMARR,1,{side:'sell',page:2}),buy=m.detail(AMARR,1,{side:'buy',page:2});
+ assert.equal(sell.page,1,'An existing seller page must move to the final nonempty page');assert.equal(sell.orders.length,1);assert.equal(sell.orders[0].price,240);assert.equal(sell.total,41);
+ assert.equal(buy.page,0);assert.equal(buy.orders.length,2);assert.deepEqual(buy.orders.map(o=>o.price),[101,100]);assert.equal(calls.length,before,'Paging remains an offline cached read');
+ const first=m.detail(AMARR,1,{side:'sell',page:0});assert.equal(first.page,0);assert.equal(first.orders.length,40);assert.equal(first.orders[0].price,200);
+ sellers=40;buyers=40;await scan(m,{mode:'item',typeId:1});for(const side of ['sell','buy']){const exact=m.detail(AMARR,1,{side,page:1});assert.equal(exact.page,0);assert.equal(exact.orders.length,40);assert.equal(exact.total,40);}
+ sellers=0;buyers=0;await scan(m,{mode:'item',typeId:1});for(const side of ['sell','buy']){const empty=m.detail(AMARR,1,{side,page:2});assert.equal(empty.page,0);assert.equal(empty.total,0);assert.deepEqual(empty.orders,[]);}
 });

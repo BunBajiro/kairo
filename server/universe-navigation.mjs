@@ -193,15 +193,17 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
     }
     function sendWaypoints(characterId,input={}){
         assertOpen();const id=pilot(characterId,true),mapId=mapScope(id,input.map_id);if(typeof input.replace!=='boolean')throw new Error('Explicitly choose append or replace for EVE waypoints.');
+        const connection=auth.connectionRevision?.(id)??0;
+        const assertConnection=()=>{if((auth.connectionRevision?.(id)??0)!==connection)throw Object.assign(new Error('Pilot connection changed; remaining EVE commands were stopped.'),{status:409});};
         const task=(queues.get(id)||Promise.resolve()).catch(()=>{}).then(async()=>{
-            assertOpen();
+            assertOpen();assertConnection();
             const capabilityState=capability(id,[WAYPOINT_SCOPE]);if(!capabilityState.available)throw new Error(capabilityState.reason);
             checkRevision(read(id,mapId),input);const result=await plan(id,{map_id:mapId});if(result.status!=='ok')throw new Error('Calculate a complete itinerary before sending waypoints.');
             const revision=result.revision,targets=waypointTargets(result);if(targets.length>500)throw new Error('This route exceeds the 500-waypoint export limit. Split the itinerary.');
             const output={status:'sending',sent:0,total:targets.length,targets,replace:input.replace,revision,startedAt:iso(now()),warnings:result.edges.some(e=>['wormhole','jump'].includes(e.kind))?['EVE waypoints do not execute wormhole or jump-drive travel. Follow those legs manually.']:[]};
             for(const [index,target] of targets.entries()){
                 try {
-                    assertOpen();
+                    assertOpen();assertConnection();
                     if(read(id,mapId).itinerary.revision!==revision)throw new Error('Itinerary changed; remaining EVE commands were stopped.');
                     const c=capability(id,[WAYPOINT_SCOPE]);if(!c.available)throw new Error(c.reason);
                     if(typeof esi.mutate!=='function')throw new Error('ESI command transport is unavailable.');

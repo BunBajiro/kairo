@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 /** Runtime generations never share module caches or credentials on disk. */
 export function runRuntimeChild({ channel = process, loadRuntime = () => import('./index.mjs'), exit = code => process.exit(code), shutdownTimeout = 30_000 } = {}) {
-    let app, starting = false, stopping = false, activated = false;
+    let app, starting = false, stopping = false, activated = false, startup;
     const send = (message, callback) => {
         if (!channel.connected || typeof channel.send !== 'function') return callback?.();
         try { channel.send(message, callback || (() => {})); } catch { callback?.(); }
@@ -14,6 +14,12 @@ export function runRuntimeChild({ channel = process, loadRuntime = () => import(
         const deadline = setTimeout(() => exit(1), shutdownTimeout);
         deadline.unref?.();
         try {
+            // Startup can already own resources before it returns the app. Drain
+            // that owner before claiming the child has saved and stopped.
+            await startup?.catch(error => {
+                if (error?.cleanupErrors?.length) throw new AggregateError(error.cleanupErrors,
+                    'Kairo startup cleanup failed (' + error.message + '): ' + error.cleanupErrors.map(cause => cause?.message || String(cause)).join('; '), {cause: error});
+            });
             await app?.close();
             const sessions = reason === 'update' ? app?.exportSessions?.() || [] : [];
             send({ type: 'stopped', sessions }, () => {
@@ -30,21 +36,24 @@ export function runRuntimeChild({ channel = process, loadRuntime = () => import(
         if (message.type === 'start' && !starting && !stopping) {
             starting = true;
             try {
-                const { startKairo } = await loadRuntime();
-                if (stopping) return;
-                const options = message.options || {};
-                app = await startKairo({
-                    ...options,
-                    dataDir: process.env.KAIRO_DATA_DIR,
-                    initialSessions: message.initialSessions || [],
-                    datasetRecovery: message.datasetRecovery || null,
-                    deferDatasetStart: true,
-                    onDatasetsReady: () => send({ type: 'dataset-ready' }),
+                startup = Promise.resolve().then(async () => {
+                    const { startKairo } = await loadRuntime();
+                    if (stopping) return;
+                    const options = message.options || {};
+                    app = await startKairo({
+                        ...options,
+                        dataDir: process.env.KAIRO_DATA_DIR,
+                        initialSessions: message.initialSessions || [],
+                        datasetRecovery: message.datasetRecovery || null,
+                        deferDatasetStart: true,
+                        onDatasetsReady: () => send({ type: 'dataset-ready' }),
+                    });
                 });
-                if (stopping) { await app.close(); return; }
+                await startup;
+                if (stopping) return;
                 send({ type: 'ready', origin: app.origin, streamOrigin: app.streamOrigin });
             } catch (error) {
-                send({ type: 'startup-error', error: error.message, code: error.code }, () => exit(1));
+                if (!stopping) send({ type: 'startup-error', error: error.message, code: error.code }, () => exit(1));
             }
         } else if (message.type === 'activated' && app && !activated && !stopping) {
             activated = true;

@@ -273,13 +273,15 @@ export async function startKairo(options = {}) {
             return json(res,201,result);
         }
         if (path.startsWith('/goals/') && req.method === 'PUT') {
+            // A body can still be arriving while another request updates or
+            // deletes this goal. Read its identity/state at the write boundary.
+            const b = await body(req);
             const id = path.split('/')[2];
             const g = store.db.prepare('SELECT * FROM goals WHERE id=?').get(id);
             if (!g)
                 throw new Error('Goal not found.');
             if(url.searchParams.has('character')&&g.character_id!==checkedChar(url))throw new Error('Goal not found for this character.');
             if(store.db.prepare('SELECT goal_id FROM goal_tracking WHERE goal_id=?').get(id))throw new Error('This goal follows ESI automatically; its progress cannot be set manually.');
-            const b = await body(req);
             const progress = Math.min(g.target, Math.max(0, Number(b.progress)));
             if (!Number.isFinite(progress))
                 throw new Error('Invalid progress.');

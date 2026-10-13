@@ -64,3 +64,72 @@ test('a stuck accepted-work drain reaches the child deadline without a successfu
     assert.equal(exitCode, 1); assert.equal(exported, false);
     assert.equal(channel.sent.some(message => message.type === 'stopped'), false);
 });
+
+function gate() { let resolve, reject; const promise = new Promise((a, b) => { resolve = a; reject = b; }); return {promise, resolve, reject}; }
+
+test('stop during startup waits for the accepted runtime and its cleanup before acknowledging shutdown', async () => {
+    const channel = channelFixture(), startup = gate(), cleanup = gate(), events = [];
+    let entered = false, exitCode;
+    runRuntimeChild({channel, exit: code => { events.push('exit'); exitCode = code; }, loadRuntime: async () => ({startKairo: async () => { entered = true; return startup.promise; }})});
+    channel.emit('message', {type: 'start'});
+    await until(() => entered);
+    channel.emit('message', {type: 'stop', reason: 'update'});
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(exitCode, undefined, 'startup may already own listeners, persisted work and clients');
+    assert.equal(channel.sent.some(message => message.type === 'stopped'), false);
+    startup.resolve({origin: 'local', streamOrigin: 'stream', close: async () => { events.push('close'); await cleanup.promise; }, exportSessions: () => { events.push('sessions'); return [['cookie', {csrf: 'token'}]]; }});
+    await until(() => events.includes('close'));
+    assert.equal(exitCode, undefined, 'cleanup must finish before the successful handoff');
+    cleanup.resolve(); await until(() => exitCode !== undefined);
+    assert.deepEqual(events, ['close', 'sessions', 'exit']);
+    assert.equal(channel.sent.some(message => message.type === 'ready'), false);
+    assert.deepEqual(channel.sent.at(-1), {type: 'stopped', sessions: [['cookie', {csrf: 'token'}]]});
+    assert.equal(exitCode, 0);
+});
+
+test('stop during a failing startup acknowledges only after startup has unwound', async () => {
+    const channel = channelFixture(), startup = gate(); let entered = false, exitCode;
+    runRuntimeChild({channel, exit: code => { exitCode = code; }, loadRuntime: async () => ({startKairo: async () => { entered = true; return startup.promise; }})});
+    channel.emit('message', {type: 'start'}); await until(() => entered);
+    channel.emit('message', {type: 'stop'}); await new Promise(resolve => setImmediate(resolve));
+    assert.equal(exitCode, undefined);
+    startup.reject(new Error('Startup cleanup completed'));
+    await until(() => exitCode !== undefined);
+    assert.equal(exitCode, 0);
+    assert.deepEqual(channel.sent, [{type: 'stopped', sessions: []}]);
+});
+
+test('stuck startup retains the bounded shutdown deadline without a successful handoff', async t => {
+    t.mock.timers.enable({apis: ['setTimeout']});
+    const channel = channelFixture(); let entered = false, exitCode;
+    runRuntimeChild({channel, shutdownTimeout: 30, exit: code => { exitCode = code; }, loadRuntime: async () => ({startKairo: async () => { entered = true; return new Promise(() => {}); }})});
+    channel.emit('message', {type: 'start'}); await until(() => entered);
+    channel.emit('message', {type: 'stop'}); t.mock.timers.tick(30);
+    assert.equal(exitCode, 1);
+    assert.equal(channel.sent.some(message => message.type === 'stopped'), false);
+});
+
+test('cleanup failure after stopped startup cannot claim a successful saved handoff', async () => {
+    const channel = channelFixture(), startup = gate(); let entered = false, exitCode, closes = 0;
+    runRuntimeChild({channel, exit: code => { exitCode = code; }, loadRuntime: async () => ({startKairo: async () => { entered = true; return startup.promise; }})});
+    channel.emit('message', {type: 'start'}); await until(() => entered);
+    channel.emit('message', {type: 'stop'});
+    startup.resolve({close: async () => { closes++; throw new Error('Could not finish saving'); }});
+    await until(() => exitCode !== undefined);
+    assert.equal(closes, 1); assert.equal(exitCode, 1);
+    assert.deepEqual(channel.sent, [{type: 'shutdown-error', error: 'Could not finish saving'}]);
+});
+
+test('failed startup rollback remains a shutdown failure instead of a successful handoff', async () => {
+    const channel = channelFixture(), startup = gate(); let entered = false, exitCode;
+    runRuntimeChild({channel, exit: code => { exitCode = code; }, loadRuntime: async () => ({startKairo: async () => { entered = true; return startup.promise; }})});
+    channel.emit('message', {type: 'start'}); await until(() => entered);
+    channel.emit('message', {type: 'stop'});
+    startup.reject(Object.assign(new Error('Port is occupied'), {cleanupErrors: [new Error('Accepted work could not finish saving')]}));
+    await until(() => exitCode !== undefined);
+    assert.equal(exitCode, 1);
+    assert.equal(channel.sent.some(message => message.type === 'stopped'), false);
+    assert.equal(channel.sent.at(-1)?.type, 'shutdown-error');
+    assert.match(channel.sent.at(-1)?.error, /could not finish saving/);
+    assert.match(channel.sent.at(-1)?.error, /Port is occupied/);
+});

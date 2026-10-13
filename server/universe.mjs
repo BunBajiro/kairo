@@ -561,11 +561,19 @@ export function createUniverse(store, auth, esi, options = {}) {
     }
     const structureFlights = new Map();
     async function verifyStructure(characterId, structureId) {
+        if (lifecycleClosed) throw new Error('Universe structure verification is stopping.');
         const id = pilotId(characterId), structure = Number(structureId), character = auth.characters().find(c => c.id === id);
         if (!validId(structure) || structure < 1000000000000) throw new Error('Enter a player structure ID.');
         if (!character?.scopes?.includes(STRUCTURE_SCOPE)) throw new Error('Connect this pilot with the structure visibility scope first.');
         if (character.needsReauth) throw new Error('Reconnect this pilot before checking structures.');
-        const cached = record(id, 'structure', structure), key = id + ':' + structure;
+        const connection = auth.connectionRevision?.(id) ?? 0;
+        const cached = record(id, 'structure', structure), key = id + ':' + structure + ':' + connection;
+        const assertCurrent = () => {
+            if (lifecycleClosed) throw new Error('Universe structure verification is stopping.');
+            const current = auth.characters().find(row => row.id === id);
+            if ((auth.connectionRevision?.(id) ?? 0) !== connection || !current || current.needsReauth || !current.scopes?.includes(STRUCTURE_SCOPE))
+                throw Object.assign(new Error('Pilot connection changed during structure verification.'), {status: 409});
+        };
         if (cached && Date.parse(cached.retryAt || cached.expiresAt) > now()) return currentStructure(cached);
         if (structureFlights.has(key)) return structureFlights.get(key);
         const task = (async () => {
@@ -579,6 +587,9 @@ export function createUniverse(store, auth, esi, options = {}) {
                 value = { ...cached, id: String(structure), structure_id: structure, data: cached?.data || null, status: cached?.data ? 'stale' : 'error',
                     error: text(error.message, 500), errorStatus: error.status || null, retryAt: new Date(now() + 300000).toISOString(), updated_at: iso() };
             }
+            // ESI owns its request/cache; this service separately owns persistence.
+            // A rejected obsolete request must not become the new login's failure cache.
+            assertCurrent();
             persist(id, 'structure', value); return currentStructure(value);
         })().finally(() => structureFlights.delete(key));
         structureFlights.set(key, task); return task;
@@ -775,6 +786,9 @@ export function createUniverse(store, auth, esi, options = {}) {
             expiryTimer = null; scheduledExpiryAt = null;
             closing = (async () => {
                 const results = await Promise.allSettled([operations, feeds, navigation, ownerSearch].map(service => Promise.resolve().then(() => service.close?.())));
+                // Admitted structure lookups may still resume after ESI returns. Drain
+                // them before the store closes; their publication fence rejects late results.
+                await Promise.allSettled([...structureFlights.values()]);
                 const errors = results.filter(result => result.status === 'rejected').map(result => result.reason);
                 if (errors.length) throw new AggregateError(errors, 'Universe collectors could not finish closing.');
             })();

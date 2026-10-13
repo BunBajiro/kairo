@@ -218,6 +218,11 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         method = method.toUpperCase();
         if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) throw new Error('Choose a mutation HTTP method.');
         if (!Number.isSafeInteger(characterId) || characterId <= 0) throw new Error('An ESI command needs a connected pilot.');
+        const owner = connectionRevision(characterId);
+        const checkConnection = () => {
+            if (connectionRevision(characterId) !== owner)
+                throw new Error('Character connection changed during ESI command.');
+        };
         const url = new URL('https://esi.evetech.net' + path);
         if (url.origin !== 'https://esi.evetech.net') throw new Error('Invalid ESI origin.');
         url.searchParams.sort();
@@ -226,14 +231,15 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         try {
             checkCooldown(characterId, route);
             release = await slot(priority);
+            checkConnection();
             checkCooldown(characterId, route);
             const headers = await headersFor(characterId);
             if (body !== undefined) headers['Content-Type'] = 'application/json';
-            const send = () => { attempted = true; counters.requests++; return fetcher(url.href, { method, headers,
+            const send = () => { checkConnection(); attempted = true; counters.requests++; response = null; return fetcher(url.href, { method, headers,
                 body: body === undefined ? undefined : JSON.stringify(body), redirect: 'error', signal: AbortSignal.timeout(15000) }); };
             response = await send();
             // An explicit 401 guarantees rejection; it is the only automatic command retry.
-            if (response.status === 401) { headers.Authorization = 'Bearer ' + await auth.access(characterId, true); response = null; response = await send(); }
+            if (response.status === 401) { checkConnection(); headers.Authorization = 'Bearer ' + await auth.access(characterId, true); response = await send(); }
             const { now, retry, retryMs } = responseLimits(response, route, characterId);
             if (!response.ok) throw Object.assign(new Error(response.status === 403 ? 'ESI command denied. Check pilot scopes and access.' : 'ESI command failed (HTTP ' + response.status + ').'),
                 { status: response.status, ...(retry || [420, 429].includes(response.status) ? { retryAt: iso(now + retryMs) } : {}) });

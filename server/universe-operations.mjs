@@ -511,27 +511,36 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         if (closed || fleetBusy.has(id)) return;
         const pilot = character(id), cfg = config(id);
         if (!cfg.enabled || !cfg.fleet_enabled || !pilot || pilot.needsReauth || !arr(pilot.scopes).includes(FLEET_SCOPE)) return;
+        const connection = auth.connectionRevision?.(id) ?? 0;
+        const connectionCurrent = () => (auth.connectionRevision?.(id) ?? 0) === connection;
         fleetBusy.add(id); fleetNext.set(id, now() + 60000);
         let membership = null, previous = store.snapshot(id, 'universe_fleet');
-        const save = (status, data, response = {}, error = null) => {
+        const allowed = () => {
+            if (closed || !connectionCurrent() || !store.get('module:universe', true)) return false;
             const current = character(id), currentConfig = current ? config(id) : null;
-            if (closed || !store.get('module:universe', true) || !current || current.needsReauth || !currentConfig?.enabled || !currentConfig.fleet_enabled || !arr(current.scopes).includes(FLEET_SCOPE)) return;
+            return !!current && !current.needsReauth && currentConfig?.enabled && currentConfig.fleet_enabled && arr(current.scopes).includes(FLEET_SCOPE);
+        };
+        const save = (status, data, response = {}, error = null) => {
+            if (!allowed()) return;
             const sample = { status, data, updatedAt: response.updatedAt || iso(), expiresAt: response.expiresAt || new Date(now() + 60000).toISOString(), error };
             store.saveSnapshot(id, 'universe_fleet', sample); changed(id);
         };
         try {
             const response = await esi.request('/characters/' + id + '/fleet', { characterId: id, ttl: 60 });
+            if (!allowed()) return;
             if (response.stale) throw Object.assign(new Error(response.error || 'Fleet membership is stale.'), { status: response.errorStatus, retryAt: response.retryAt, staleMembership: true });
             if (!Number.isSafeInteger(response.data?.fleet_id) || response.data.fleet_id <= 0) throw new Error('ESI returned invalid fleet membership.');
             membership = response.data;
             if (membership.role !== 'fleet_commander') { save('no_access', { ...emptyFleet('no_access'), fleet_id: membership.fleet_id, role: membership.role }, response); return; }
             const roster = await esi.request('/fleets/' + membership.fleet_id + '/members', { characterId: id, ttl: 60 });
+            if (!allowed()) return;
             if (roster.stale && [401, 403, 404].includes(roster.errorStatus)) throw Object.assign(new Error(roster.error || 'Fleet access is no longer available.'), { status: roster.errorStatus, retryAt: roster.retryAt });
             if (!Array.isArray(roster.data)) throw new Error('ESI returned an invalid fleet roster.');
             if (roster.stale && previous?.data?.fleet_id !== membership.fleet_id) throw Object.assign(new Error('Waiting for a current roster for this fleet.'), { wrongFleet: true });
             const unique = [...new Map(roster.data.filter(item => validId(item?.character_id)).slice(0, 256).map(item => [item.character_id, item])).values()];
             const ids = [...new Set(unique.flatMap(item => [item.character_id, item.ship_type_id]).filter(validId))];
             const names = esi.names ? await esi.names(ids) : {};
+            if (!allowed()) return;
             const members = unique.map(item => { const system = byId.get(item.solar_system_id); return {
                 character_id: item.character_id, name: names[item.character_id] || 'Pilot ' + item.character_id,
                 system_id: system?.system_id || null, system_name: system?.name || null,
@@ -541,20 +550,30 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
             save(roster.stale ? 'stale' : 'ready', { fleet_id: membership.fleet_id, role: membership.role, members },
                 { updatedAt: roster.updatedAt, expiresAt: [response.expiresAt, roster.expiresAt].filter(Boolean).sort()[0] }, roster.error || null);
         } catch (error) {
+            if (!allowed()) return;
             if ([401, 403, 404].includes(error.status)) save(error.status === 404 && !membership ? 'no_fleet' : error.status === 401 ? 'reauth_required' : 'no_access', emptyFleet('no_access'), {}, error.message);
             else if (previous?.data?.fleet_id && (!membership || previous.data.fleet_id === membership.fleet_id) && !error.wrongFleet)
                 save('stale', previous.data, previous, clean(error.message, 300));
             else save('error', { ...emptyFleet('error'), fleet_id: membership?.fleet_id || null, role: membership?.role || null }, {}, clean(error.message, 300));
             if (finiteDate(error.retryAt)) fleetNext.set(id, Math.max(now() + 60000, Date.parse(error.retryAt)));
-        } finally { fleetBusy.delete(id); }
+        } finally {
+            fleetBusy.delete(id);
+            // An obsolete connection must not impose its polling deadline on a new login.
+            if (!connectionCurrent()) fleetNext.delete(id);
+        }
     }
     async function refreshFleet(characterId) {
         const id = pilotId(characterId);
         if (!closed && store.get('module:universe', true)) {
-            if (fleetFlights.has(id)) await fleetFlights.get(id);
-            else if ((fleetNext.get(id) || 0) <= now()) {
-                const flight = fetchFleet(id); fleetFlights.set(id, flight);
-                try { await flight; } finally { fleetFlights.delete(id); }
+            const connection = auth.connectionRevision?.(id) ?? 0, previous = fleetFlights.get(id);
+            if (previous) {
+                await previous.task;
+                // Keep one fleet collector per pilot, but do not treat an older login's
+                // drained work as the replacement connection's explicit refresh.
+                if (previous.connection !== connection && !closed) return refreshFleet(id);
+            } else if ((fleetNext.get(id) || 0) <= now()) {
+                const entry = {connection, task: fetchFleet(id)}; fleetFlights.set(id, entry);
+                try { await entry.task; } finally { if (fleetFlights.get(id) === entry) fleetFlights.delete(id); }
             }
         }
         return closed ? emptyFleet('disabled') : fleetState(id, config(id));
@@ -647,7 +666,7 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     async function close() {
         closed = true;
         await tail.close();
-        await Promise.allSettled([tickFlight, ...fleetFlights.values()].filter(Boolean));
+        await Promise.allSettled([tickFlight, ...[...fleetFlights.values()].map(entry => entry.task)].filter(Boolean));
     }
     return { state, readContext, migrateMapScopes, removeMapScope, copyMapScope, exportMapScope, validateMapScopeImport, importMapScope, location: id => location(pilotId(id)), config, saveConfig, ingestIntel, removeIntel, acknowledge, previewSignatures, importSignatures, saveSignature,
         removeSignature, restoreSignature, saveUpgrade, previewUpgrades, importUpgrades, exportUpgrades, removeUpgrade: (id, key, mapId) => removeRecord(id, 'upgrade', key, mapId),
