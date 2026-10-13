@@ -1,0 +1,11 @@
+# Fresh setup adaptation: 13 October 2026
+
+The Oct11 reviewed `worker.mjs` and `run.py` remain byte-for-byte unchanged. No export-control runtime attempt was known before this workspace restoration. Fresh exact-source builds are necessary because the former local roots and build inputs were lost.
+
+`setup-oct13.py` adapts the original `public-resume/setup-runtime.py` (5,575 bytes, SHA-256 `e079aed02930ebaf93426b2eb559703ec3af3619872e9b4a27b4fb97c841dac0`) recovered from `first-assets-attribution/RAW-MANIFEST.json`. All original archive chunks, the assembled archive and recovered file matched their recorded byte counts and SHA-256 hashes. Historical receipt/result claims are not reused as a fresh setup pass.
+
+The adaptation restores only RC16 `57c8dcc7fbd8fc2b62129498d1819050c78381a1` and candidate `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789`. Each detached checkout must be clean with no pre-existing built assets. The sequence is source capture, `npm run install:ci`, `npm run check:kairo`, prebuild verification, `npm run build`, fresh source/build capture and final verification. Node must report `v24.19.0`. No Chrome is needed. No application source, dependency specification, optimization, runtime acceptance or performance measurement is introduced.
+
+The adaptation uses the existing reviewed Envelope for both shared locks, child ownership, descendant drain and closed-file pins. It binds its own file and imported helpers, checks lockfile/install provenance, retains command logs, and emits the exact successful-build fields consumed by the unchanged export runner. Fresh setup outputs are at `/tmp/kairo-export-oct13/setup`; export results must use a separate never-reused attempt directory.
+
+An independent reviewer inspected the complete adaptation, original recovered helper, Envelope and existing `run.py` consumer. The final command-count guard prevents an interruption before process creation from being recorded as the preceding command. The reviewer reported **no blocking static findings** for `setup-oct13.py` SHA-256 `49a629206cfa253aba7cccaf3f96e98a3be9d97d40dbc5dbaa5b51b8c8889d73`. That review was static only and did not execute setup or runtime. Runtime success requires the separately retained fresh receipts and export-control result.
