@@ -27,6 +27,12 @@ Build before tests that require compiled `dist` entrypoints. Dependencies and th
 
 The full contract suite is `tests/kairo/*.test.mjs`. Browser and packaging gates are defined in [test-build.yml](../.github/workflows/test-build.yml) and the referenced scripts. Keep synthetic fixture results separate from real EVE/OBS/Windows checks.
 
+## Evidence required to close a bug
+
+A bug-specific regression must demonstrate the actual failure before the fix and the intended behavior after it. Assert meaningful outputs, persisted state, ownership or recovery, with healthy controls and relevant boundaries. Exercise the real service and persistence for integration defects, and the compiled UI for browser-owned behavior. Controlled clocks, deferred promises and local provider fixtures should reproduce rare timing or failure scenarios deterministically; avoid timing-only sleeps and mocks that merely encode the proposed implementation.
+
+Good automated evidence can establish that an internal bug is fixed even when a human cannot realistically reproduce it in Kairo. Unit tests are sufficient for isolated logic; add integration or browser coverage where the failure crosses that boundary. Record the evidence and remaining limitations in the bug ledger. A total passing-test count supports the combined gate but does not replace the specific regression. Manual review addresses genuinely unestablished environment or experiential behavior, not an automatic extra condition on every fix.
+
 ## Browser compatibility
 
 Chrome (Blink) and Firefox (Gecko) are required targets for future review and release builds. Both browser gates must pass before packaging and handoff. For a new or changed UI flow, add or extend behavioral coverage in both engines; if part of the check requires manual interaction, record the browser/version, steps and result before calling that flow verified. One engine's result must not be presented as coverage of the other.

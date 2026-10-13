@@ -4,7 +4,7 @@ The performance/refactor phase is complete. The correctness and usability review
 
 ## Current verified candidate
 
-All five confirmed findings in the [bug ledger](#bug-ledger) are fixed and verified in build #72. The source changes and intermediate evidence are banked on the review branch. This completes the first automated review pass; actual Windows/EVE/OBS acceptance remains for Bun.
+The first five confirmed findings in the [bug ledger](#bug-ledger) are fixed and verified in build #72. The source changes and intermediate evidence are banked on the review branch. **The comprehensive bug hunt remains active:** build72 is a verified checkpoint, not the end of the review. Strong automated regressions establish closure of internal defects; only actual environment behavior outside that evidence remains for manual acceptance.
 
 | Item | Verified identity |
 | --- | --- |
@@ -59,7 +59,7 @@ Build69 passed types/build, Firefox market navigation, Chrome market/session/Uni
 
 ## Bug ledger
 
-The first automated review pass is complete: five findings, five fixes verified in build72, no open confirmed finding in this ledger. Bun confirmed that fixes and general performance work must preserve the intended experience without exposing internal repairs in product UI; this is a standing rule in `AGENTS.md`. Findings below remain separate from the closed performance ledger. Keep this live ledger populated as new evidence arrives; record a finding when reproduced, then update its fix, checks and checkpoint before banking progress.
+The first batch contains five fixes verified in build72. A broader second pass is in progress. Bun confirmed that fixes and general performance work must preserve the intended experience without exposing internal repairs in product UI; this is a standing rule in `AGENTS.md`. Findings below remain separate from the closed performance ledger. Keep this live ledger populated as new evidence arrives; record a finding when reproduced, then update its fix, checks and checkpoint before banking progress.
 
 | ID | Status | Reproduction / expected / actual | Owner and change | Verification |
 | --- | --- | --- | --- | --- |
@@ -69,7 +69,30 @@ The first automated review pass is complete: five findings, five fixes verified 
 | PBR-4 | Closed; fixed and verified in build72 | Import Analyser: delay Recalculate response, then edit quantity, change strategy, or close and open another item. The obsolete response overwrote the current quote; adding another item could use the previous item’s quantity. | `components/kairo/import-analyser.tsx`: invalidate pending quote ownership on edits, option/strategy changes, item changes, close and unmount; gate success, error and completion together. | Build71 reproduces 24 ownership failures; all 12 current-response controls pass. Build72 passes all 36 Chrome/Firefox desktop/narrow checks. Types and 31 owner tests pass. Constant-time ownership fencing; no replacement request or polling added. |
 | PBR-5 | Closed; fixed and verified in build72 | Load 100 of 200 Session events, insert a delayed killmail with an earlier occurrence time, then finish pagination. Expected a timeline consistent with its report count; actual 201 reported / 200 displayed, `more:false`, delayed killmail absent. Manual head refresh recovers it. | `server/history.mjs` and report UI retain an event-ID/time snapshot across pages; original summary stays paired with that timeline. Existing Refresh acquires later arrivals. No new notices, controls or prefix rereads. | Seven regression/cost checks pass: one next-page request, row-ID maximum lookup and existing indexed range query retained. Independent live-to-ended paging check passes. Build72 passes all 32 Chrome/Firefox desktop/narrow checks: consistent 200/200 snapshot, existing Refresh reaches 201/201 unique events, invalid/wrong-pilot input rejected, no new notices. |
 
-Reviewed areas: Universe/Maps/navigation, Sessions/archive/replay, startup/datasets, Stream/OPSEC/OBS and import planning. The existing targeted suites passed; this is not exhaustive usability acceptance. Actual Windows/EVE/OBS remains for Bun's in-app review.
+| PBR-6 | Fixed; checkpoint verification pending | Import a text/SMT Ansiblex list with Owner alliance and Alliance capital supplied by the form. A same-alliance bridge route incorrectly returns `no_route` because imported links lose both defaults. | `server/universe-ansiblex.mjs`: apply form defaults while preserving explicit per-row metadata and owner-specific capital precedence. | Pre-fix real `saveLinkList`→route test returns `no_route` instead of `ok`; fixed parser/service/routing/permanent-link suites pass 53 tests, including override and unknown-capital controls. |
+| PBR-7 | Reproduced; correction in progress | Overlap trader-data refresh for Amarr/seller42 and Jita/seller43. Expected each requested context; the global in-flight promise returns Amarr state for Jita and skips Jita/seller43 collection. | `server/imports.mjs`: scope ownership of refresh work without losing duplicate-context coalescing or close draining. | Deterministic pre-fix service regression fails: requested Jita60003760, actual Amarr60008494. Separate-context, same-context and failure/recovery checks in progress. |
+| PBR-8 | Reproduced; correction in progress | Start a Session with stale or missing ship evidence, then receive a fresh observation of the same hull. Expected that observed hull from its receipt time; report incorrectly remains empty because no ship-change event occurs. | Session travel/history owner: retain the first valid in-session ship baseline without inventing a ship change or backdating it. | Real-Core regression fails before source edits: expected hull999999, actual empty list; shipChanges remains correctly zero. Freshness, ownership and restart checks in progress. |
+| PBR-9 | Fixed; focused verification in progress | Reconnect a pilot while an older token refresh or disconnect revocation is pending. Old success overwrites new tokens/scopes, old `invalid_grant` marks the new login revoked, new access joins the obsolete flight, or delayed disconnect removes the new login. | `server/auth.mjs`: bind refresh work and SQL publication to its token envelope; end local ownership before best-effort revocation. | Four deterministic pre-fix failures use real SQLite, encrypted vault and signed JWTs with controlled provider responses. New connection authority, old access rejection and disconnect/reconnect recovery checks in progress. |
+| PBR-10 | Reproduced; correction in progress | Delete an import plan while its pending save awaits a quote, or concurrently fill the last plan slot. The old save resurrects a deleted plan; two creates can exceed the 100-plan destination limit. | `server/imports.mjs`: recheck current identity/capacity immediately before persistence after awaited calculation. | Two deterministic pre-fix failures: missing rejection after deletion; two final-slot saves accepted instead of one. |
+| PBR-11 | Fixed; focused verification in progress | Change a Stream notification rule from All/pilot42 to pilot43 while pilot42 toasts are visible or delayed. Old notifications survive and a delayed toast still reaches public SSE despite the new filter. | `server/stream.mjs`: apply the current rule's pilot filter when retaining the bounded notification queue on save. | Three deterministic pre-fix failures for visible/delayed notifications. Scope-preservation, preview and removal checks in progress; no polling or product messaging added. |
+
+Reviewed areas in the first batch: Universe/Maps/navigation, Sessions/archive/replay, startup/datasets, Stream/OPSEC/OBS and import planning. The existing targeted suites passed; broader review continues below. Actual Windows/EVE/OBS remains separate from automated closure of these defects.
+
+## Comprehensive review coverage
+
+This table tracks work, not presumed defects. Complete source review and relevant adversarial checks before marking an area reviewed; record concrete findings in the ledger above. Tests must prove externally meaningful behavior through the real owner. Keep pre-fix failure evidence and relevant healthy/recovery controls. Human reproduction is not a prerequisite for closing well-tested internal races or failure paths.
+
+| Area | Second-pass focus | State |
+| --- | --- | --- |
+| Universe / Maps / operations / routes | Expiry, revisions, access, persisted commands, malformed inputs, feeds and route acceptance | In progress |
+| Markets / imports / histories | Jobs, cancellation, trader authorization, books, pricing/date boundaries and saved plans | In progress |
+| Sessions / combat / travel / replay | Event ownership, delayed evidence, aggregation, paging, archive edits and replay boundaries | In progress |
+| Runtime / datasets / Registry / Stream / OBS | Restart/rollback, cancellation, teardown, projection and protection state | In progress |
+| Dashboard / connections / settings | Pilot/resource ownership, delayed responses, invalidation, reconnect and saved preferences | In progress |
+| Auth / ESI / HTTP / Vault | Token races, permissions, caching/pagination/retries, boundary validation and private/public separation | In progress |
+| Core / Goals / modules / persistence | Collection ownership, freshness, accounting, durable writes and event publication | In progress |
+
+Manual review remains useful for real Windows/DPAPI, actual EVE permissions/SSO and OBS scene/audio output, and extended play. It is separate from automated acceptance of the specific corrected contracts and must not be used to defer tests that can realistically reproduce a defect.
 
 The [internal API guide](INTERNAL-API.md) and [route/event reference](API-REFERENCE.md) describe the existing backbone for future work. Do not rebuild parallel services or add duplicate documentation around it.
 
