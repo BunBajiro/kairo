@@ -28,6 +28,7 @@ const StudioText = memo(function StudioText({kind,text,startedAt,endsAt,bindingS
 export function Studio() {
     const {boot,character,data,sessions}=useKairo();
     const [config, setConfig] = useState<StreamConfig>(boot.stream), [selected, setSelected] = useState(''), [dirty, setDirty] = useState(false), [busy, setBusy] = useState(false), [preview, setPreview] = useState('canvas');
+    const draftRevision=useRef(0);
     const [sources,setSources]=useState<any>(null),[projection,setProjection]=useState<{key:string;values:Record<string,any>}>({key:'',values:{}}),[previewRefresh,setPreviewRefresh]=useState(0);
     const projectionKey=studioProjectionKey(config.elements),projected=projection.key===projectionKey?projection.values:{};
     // Snapshot revisions and Session fields are source input, independent of the
@@ -46,14 +47,13 @@ export function Studio() {
     useEffect(()=>()=>{dragWork.current?.cancel();drag.current=null;},[]);
     const e = config.elements.find(e => e.id === selected);
     const url = boot.streamOrigin + '/stream';
-    function change(next: StreamConfig) { setConfig(next); setDirty(true); }
+    function change(next: StreamConfig) { draftRevision.current++; setConfig(next); setDirty(true); }
     function patch(part: Partial<StreamElement>) { change({ ...config, elements: config.elements.map(x => x.id === selected ? { ...x, ...part } : x) }); }
-    function update(id: string, part: Partial<StreamElement>) { setConfig(c => ({ ...c, elements: c.elements.map(x => x.id === id ? { ...x, ...part } : x) })); setDirty(true); }
+    function update(id: string, part: Partial<StreamElement>) { draftRevision.current++; setConfig(c => ({ ...c, elements: c.elements.map(x => x.id === id ? { ...x, ...part } : x) })); setDirty(true); }
     function add(t: typeof templates[number]) { const element: StreamElement = { id: crypto.randomUUID(), kind: t.kind, name: t.name, text: t.text, label: t.label, x: 60 + config.elements.length * 16, y: 60 + config.elements.length * 16, width: t.width, height: t.height, fontSize: t.kind==='goal'?22:28, appearance: 'frame', opacity: t.kind === 'opsec' ? 1 : .7, color: '#97ebce', visible: true, endsAt: t.kind === 'countdown' ? Date.now() + 600000 : 0, value:0,binding:t.kind==='goal'?'goal.progress':'none',characterId:character,bindingDisplay:'both' }; change({ ...config, elements: [...config.elements, element] }); setSelected(element.id); setPreview('canvas'); }
-    async function save() { setBusy(true); try {
+    async function save() { const revision=draftRevision.current; setBusy(true); try {
         const result = await api('/stream', 'PUT', config, boot.csrf);
-        setConfig(result);
-        setDirty(false);
+        if(revision===draftRevision.current){setConfig(result);setDirty(false);}
         toast.success('Stream layout saved. OBS sources updated.');
     }
     catch (error: any) {

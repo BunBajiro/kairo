@@ -4,6 +4,7 @@ import {Link2, Radio, RefreshCw, Users, SlidersHorizontal} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {useKairo} from './context';
+import {setUniverseRequest,takeUniverseRequest} from './universe-requests.mjs';
 import {api} from './model';
 import {PowerBlocSettings} from './power-bloc-settings';
 import {UniverseOperationsSettings} from './universe-operations-settings';
@@ -16,8 +17,7 @@ import './universe-settings.css';
 type SettingsSection = 'connections' | 'power-blocs' | 'sources' | 'mapper';
 function initialSection(): SettingsSection {
   try {
-    const requested = sessionStorage.getItem('kairo-universe-settings-tab');
-    sessionStorage.removeItem('kairo-universe-settings-tab');
+    const requested = takeUniverseRequest('kairo-universe-settings-tab');
     if (requested === 'power-blocs' || requested === 'sources' || requested === 'mapper') return requested;
   } catch {}
   return 'connections';
@@ -64,7 +64,7 @@ export function UniverseSettings() {
   const openSystem = (id: number) => {
     const system = atlas?.systems.find(system => system.system_id === id);
     if (!system) return;
-    sessionStorage.setItem('kairo-system-lookup', system.name);
+    setUniverseRequest('kairo-system-lookup', system.name);
     navigate('universe-kspace');
   };
   return <div className="universe-module universe-settings-page">

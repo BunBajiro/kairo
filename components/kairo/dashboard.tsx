@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { routes, api, type Bootstrap, type ModuleState } from './model';
 import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
+import {setUniverseRequest} from './universe-requests.mjs';
 import { Kairo } from './context';
 import {createScopedRefresh} from './scoped-refresh.mjs';
 import {createNameDirectoryState} from './name-directory-state.mjs';
@@ -28,7 +29,7 @@ const descriptions: any = { markets:'A shared market desk for every character. S
 function workspaceDestination(id: string) {
     const target = resolveWorkspaceRoute(id);
     if (target.universeTab && typeof window !== 'undefined') {
-        try { sessionStorage.setItem('kairo-universe-tab', target.universeTab); } catch { }
+        setUniverseRequest('kairo-universe-tab', target.universeTab);
     }
     return target.id;
 }

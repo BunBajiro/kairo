@@ -256,5 +256,2193 @@
       "ℹ duration_ms 102.752046"
     ],
     "resolution": "Propagate nonempty startup cleanupErrors as failed shutdown, retaining clean startup failure drain behavior."
+  },
+  "expanded_browser_baseline": {
+    "source": "f4ca452799e175f74b290aa0519885835de476dd",
+    "application_baseline": "e311a63a0323a5054f42f9fbdc77b52e13765b36",
+    "run": "https://github.com/BunBajiro/kairo/actions/runs/38437342908",
+    "artifact_id": 11833418157,
+    "bytes": 3612586,
+    "sha256": "c257a8c88257b233979762da151f426885a43ca2d093dbd1df24e63297368a8e",
+    "zip_crc": "pass",
+    "digest_verified": true,
+    "raw_partial": {
+      "checks": [
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Cold note editor loads the actual saved system note",
+          "pass": true,
+          "actual": "Recorded approach and docking notes",
+          "expected": "Recorded approach and docking notes"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Discard owns the editor until the saved note arrives",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Save cannot race an outstanding discard",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Scope controls cannot switch during discard",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Delayed discard cannot replace a newer persisted note with stale text",
+          "pass": false,
+          "actual": "Recorded approach and docking notes",
+          "expected": "Newer saved approach after discard started",
+          "persisted": "Newer saved approach after discard started"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Discard completion restores an editable form",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Saving after discard persists the current text",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Saving after discard retains the current editor text",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "A successful save marks the current draft clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Failed discard preserves the unsaved draft",
+          "pass": true,
+          "actual": "Keep this draft after the failed discard",
+          "expected": "Keep this draft after the failed discard"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Failed discard releases the editor",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Failed discard keeps the draft saveable",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Retrying discard recovers the actual saved note",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Retrying discard marks the note clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "atlas-storage",
+          "label": "Denied session preference storage leaves actual server data available",
+          "pass": true,
+          "actual": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          },
+          "expected": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "atlas-storage",
+          "label": "Unavailable session preferences do not crash universe-kspace",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "atlas-storage",
+          "label": "Unavailable session preferences preserve the selected pilot",
+          "pass": false,
+          "actual": "",
+          "expected": "Shared UI Alpha"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "maps-storage",
+          "label": "Denied session preference storage leaves actual server data available",
+          "pass": true,
+          "actual": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          },
+          "expected": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "maps-storage",
+          "label": "Unavailable session preferences do not crash universe-jspace",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "maps-storage",
+          "label": "Unavailable session preferences preserve the selected pilot",
+          "pass": false,
+          "actual": "",
+          "expected": "Shared UI Alpha"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Cold Studio loads the actual saved element text",
+          "pass": true,
+          "actual": "Original stream text",
+          "expected": "Original stream text"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "An older Studio save preserves newer text edits",
+          "pass": false,
+          "actual": "Submitted stream text",
+          "expected": "Newer unsaved stream text"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "An older Studio save preserves newer layer visibility edits",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Newer Studio edits remain marked unsaved",
+          "pass": false,
+          "actual": "Layout saved",
+          "expected": "Unsaved changes"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Newer Studio edits remain saveable",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Only the submitted stream draft has reached persistent state",
+          "pass": true,
+          "actual": {
+            "text": "Submitted stream text",
+            "visible": true
+          },
+          "expected": {
+            "text": "Submitted stream text",
+            "visible": true
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Saving after the race persists the current full draft",
+          "pass": true,
+          "actual": {
+            "text": "Final stream text",
+            "visible": false
+          },
+          "expected": {
+            "text": "Final stream text",
+            "visible": false
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "A current Studio save marks the form clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "A failed Studio save retains the current draft",
+          "pass": true,
+          "actual": "Retain this failed Studio save",
+          "expected": "Retain this failed Studio save"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "A failed Studio save stays retryable",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Studio retry persists the retained draft",
+          "pass": true,
+          "actual": "Retain this failed Studio save",
+          "expected": "Retain this failed Studio save"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "Cold OPSEC loads the saved cover policy",
+          "pass": true,
+          "actual": "false",
+          "expected": "false"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "An older OPSEC save preserves a newer cover-policy edit",
+          "pass": false,
+          "actual": "true",
+          "expected": "false"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "Only the submitted OPSEC policy is persisted",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "Saving after the OPSEC race persists the current policy",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A delayed immediate manual override still persists and displays",
+          "pass": true,
+          "actual": {
+            "saved": true,
+            "displayed": "true"
+          },
+          "expected": {
+            "saved": true,
+            "displayed": "true"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A manual override response preserves another newer policy edit",
+          "pass": false,
+          "actual": "false",
+          "expected": "true"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A failed OPSEC save retains its current draft",
+          "pass": true,
+          "actual": "false",
+          "expected": "false"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A failed OPSEC save leaves persistence unchanged",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "OPSEC retry persists the retained policy",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Cold Import Analyser loads persisted hauling settings",
+          "pass": true,
+          "actual": {
+            "cargo": "10000",
+            "budget": "1000000000"
+          },
+          "expected": {
+            "cargo": "10000",
+            "budget": "1000000000"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "An earlier Apply preserves newer cargo edits",
+          "pass": false,
+          "actual": "20000",
+          "expected": "30000"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "An earlier Apply preserves newer capital edits",
+          "pass": false,
+          "actual": "2000000000",
+          "expected": "3000000000"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Newer import settings remain unapplied",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Only submitted import settings have reached persistence",
+          "pass": true,
+          "actual": {
+            "cargo": 20000,
+            "budget": 2000000000
+          },
+          "expected": {
+            "cargo": 20000,
+            "budget": 2000000000
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Applying after the race persists the current settings",
+          "pass": true,
+          "actual": {
+            "cargo": 30000,
+            "budget": 3000000000
+          },
+          "expected": {
+            "cargo": 30000,
+            "budget": 3000000000
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "A current import Apply leaves no unapplied-settings notice",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "A failed Apply retains the current import draft",
+          "pass": true,
+          "actual": "40000",
+          "expected": "40000"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "A failed Apply leaves saved import settings intact",
+          "pass": true,
+          "actual": 30000,
+          "expected": 30000
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Retrying Apply persists the retained import settings",
+          "pass": true,
+          "actual": 40000,
+          "expected": 40000
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "Cold appearance loads the persisted accent",
+          "pass": true,
+          "actual": "mint",
+          "expected": "mint"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A delayed earlier accent write cannot replace the latest choice",
+          "pass": false,
+          "actual": "amber",
+          "expected": "ice"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "Displayed accent agrees with the latest user choice",
+          "pass": false,
+          "actual": "amber",
+          "expected": "ice"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "The accent selector retains the latest choice",
+          "pass": false,
+          "actual": "Instrument amber",
+          "expected": "Glacial blue"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "Two selections make at most two settings writes",
+          "pass": true,
+          "actual": [
+            "amber",
+            "ice"
+          ],
+          "expected": [
+            "amber",
+            "ice"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A failed accent write leaves persisted appearance intact",
+          "pass": true,
+          "actual": "amber",
+          "expected": "amber"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A failed accent write leaves the saved theme displayed",
+          "pass": true,
+          "actual": "amber",
+          "expected": "amber"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A later selection recovers after a failed write",
+          "pass": true,
+          "actual": "mint",
+          "expected": "mint"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "session-report-error",
+          "label": "Session report loads its actual first event count",
+          "pass": true,
+          "actual": "1 recorded events",
+          "expected": "1 recorded events"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "session-report-error",
+          "label": "Manual Refresh publishes the newer real Session report",
+          "pass": true,
+          "actual": "2 recorded events",
+          "expected": "2 recorded events"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "session-report-error",
+          "label": "An obsolete Session poll failure cannot replace a successful Refresh with an error",
+          "pass": false,
+          "actual": [
+            "Obsolete Session poll unavailable"
+          ],
+          "expected": []
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "session-report-error",
+          "label": "Obsolete failure preserves the newer recorded count",
+          "pass": true,
+          "actual": "2 recorded events",
+          "expected": "2 recorded events"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "session-report-error",
+          "label": "A current Session read failure remains visible and retryable",
+          "pass": true,
+          "actual": [
+            "Current Session read unavailable"
+          ],
+          "expected": [
+            "Current Session read unavailable"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "session-report-error",
+          "label": "Retry clears the current Session error",
+          "pass": true,
+          "actual": [],
+          "expected": []
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "storage-replay",
+          "label": "Denied storage still permits the pilot-owned Session report",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "storage-replay",
+          "label": "Denied storage preserves the real Session replay handoff to the same pilot",
+          "pass": false,
+          "actual": [],
+          "expected": [
+            "42"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "storage-replay",
+          "label": "Denied storage opens the requested recorded Session on the map",
+          "pass": false,
+          "actual": [],
+          "expected": [
+            "Shared Session review"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "storage-replay",
+          "label": "Denied storage retains functional replay controls",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Cold note editor loads the actual saved system note",
+          "pass": true,
+          "actual": "Recorded approach and docking notes",
+          "expected": "Recorded approach and docking notes"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Discard owns the editor until the saved note arrives",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Save cannot race an outstanding discard",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Scope controls cannot switch during discard",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Delayed discard cannot replace a newer persisted note with stale text",
+          "pass": false,
+          "actual": "Recorded approach and docking notes",
+          "expected": "Newer saved approach after discard started",
+          "persisted": "Newer saved approach after discard started"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Discard completion restores an editable form",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Saving after discard persists the current text",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Saving after discard retains the current editor text",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "A successful save marks the current draft clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Failed discard preserves the unsaved draft",
+          "pass": true,
+          "actual": "Keep this draft after the failed discard",
+          "expected": "Keep this draft after the failed discard"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Failed discard releases the editor",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Failed discard keeps the draft saveable",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Retrying discard recovers the actual saved note",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "note-discard",
+          "label": "Retrying discard marks the note clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "atlas-storage",
+          "label": "Denied session preference storage leaves actual server data available",
+          "pass": true,
+          "actual": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          },
+          "expected": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "atlas-storage",
+          "label": "Unavailable session preferences do not crash universe-kspace",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "atlas-storage",
+          "label": "Unavailable session preferences preserve the selected pilot",
+          "pass": false,
+          "actual": "",
+          "expected": "Shared UI Alpha"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "maps-storage",
+          "label": "Denied session preference storage leaves actual server data available",
+          "pass": true,
+          "actual": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          },
+          "expected": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "maps-storage",
+          "label": "Unavailable session preferences do not crash universe-jspace",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "maps-storage",
+          "label": "Unavailable session preferences preserve the selected pilot",
+          "pass": false,
+          "actual": "",
+          "expected": "Shared UI Alpha"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "Cold Studio loads the actual saved element text",
+          "pass": true,
+          "actual": "Original stream text",
+          "expected": "Original stream text"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "An older Studio save preserves newer text edits",
+          "pass": false,
+          "actual": "Submitted stream text",
+          "expected": "Newer unsaved stream text"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "An older Studio save preserves newer layer visibility edits",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "Newer Studio edits remain marked unsaved",
+          "pass": false,
+          "actual": "Layout saved",
+          "expected": "Unsaved changes"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "Newer Studio edits remain saveable",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "Only the submitted stream draft has reached persistent state",
+          "pass": true,
+          "actual": {
+            "text": "Submitted stream text",
+            "visible": true
+          },
+          "expected": {
+            "text": "Submitted stream text",
+            "visible": true
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "Saving after the race persists the current full draft",
+          "pass": true,
+          "actual": {
+            "text": "Final stream text",
+            "visible": false
+          },
+          "expected": {
+            "text": "Final stream text",
+            "visible": false
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "A current Studio save marks the form clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "A failed Studio save retains the current draft",
+          "pass": true,
+          "actual": "Retain this failed Studio save",
+          "expected": "Retain this failed Studio save"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "A failed Studio save stays retryable",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "studio-save-draft",
+          "label": "Studio retry persists the retained draft",
+          "pass": true,
+          "actual": "Retain this failed Studio save",
+          "expected": "Retain this failed Studio save"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "Cold OPSEC loads the saved cover policy",
+          "pass": true,
+          "actual": "false",
+          "expected": "false"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "An older OPSEC save preserves a newer cover-policy edit",
+          "pass": false,
+          "actual": "true",
+          "expected": "false"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "Only the submitted OPSEC policy is persisted",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "Saving after the OPSEC race persists the current policy",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "A delayed immediate manual override still persists and displays",
+          "pass": true,
+          "actual": {
+            "saved": true,
+            "displayed": "true"
+          },
+          "expected": {
+            "saved": true,
+            "displayed": "true"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "A manual override response preserves another newer policy edit",
+          "pass": false,
+          "actual": "false",
+          "expected": "true"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "A failed OPSEC save retains its current draft",
+          "pass": true,
+          "actual": "false",
+          "expected": "false"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "A failed OPSEC save leaves persistence unchanged",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "opsec-save-draft",
+          "label": "OPSEC retry persists the retained policy",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "Cold Import Analyser loads persisted hauling settings",
+          "pass": true,
+          "actual": {
+            "cargo": "10000",
+            "budget": "1000000000"
+          },
+          "expected": {
+            "cargo": "10000",
+            "budget": "1000000000"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "An earlier Apply preserves newer cargo edits",
+          "pass": false,
+          "actual": "20000",
+          "expected": "30000"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "An earlier Apply preserves newer capital edits",
+          "pass": false,
+          "actual": "2000000000",
+          "expected": "3000000000"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "Newer import settings remain unapplied",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "Only submitted import settings have reached persistence",
+          "pass": true,
+          "actual": {
+            "cargo": 20000,
+            "budget": 2000000000
+          },
+          "expected": {
+            "cargo": 20000,
+            "budget": 2000000000
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "Applying after the race persists the current settings",
+          "pass": true,
+          "actual": {
+            "cargo": 30000,
+            "budget": 3000000000
+          },
+          "expected": {
+            "cargo": 30000,
+            "budget": 3000000000
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "A current import Apply leaves no unapplied-settings notice",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "A failed Apply retains the current import draft",
+          "pass": true,
+          "actual": "40000",
+          "expected": "40000"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "A failed Apply leaves saved import settings intact",
+          "pass": true,
+          "actual": 30000,
+          "expected": 30000
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "import-settings-draft",
+          "label": "Retrying Apply persists the retained import settings",
+          "pass": true,
+          "actual": 40000,
+          "expected": 40000
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "Cold appearance loads the persisted accent",
+          "pass": true,
+          "actual": "mint",
+          "expected": "mint"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "A delayed earlier accent write cannot replace the latest choice",
+          "pass": false,
+          "actual": "amber",
+          "expected": "ice"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "Displayed accent agrees with the latest user choice",
+          "pass": false,
+          "actual": "amber",
+          "expected": "ice"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "The accent selector retains the latest choice",
+          "pass": false,
+          "actual": "Instrument amber",
+          "expected": "Glacial blue"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "Two selections make at most two settings writes",
+          "pass": true,
+          "actual": [
+            "amber",
+            "ice"
+          ],
+          "expected": [
+            "amber",
+            "ice"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "A failed accent write leaves persisted appearance intact",
+          "pass": true,
+          "actual": "amber",
+          "expected": "amber"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "A failed accent write leaves the saved theme displayed",
+          "pass": true,
+          "actual": "amber",
+          "expected": "amber"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "appearance-write-order",
+          "label": "A later selection recovers after a failed write",
+          "pass": true,
+          "actual": "mint",
+          "expected": "mint"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "session-report-error",
+          "label": "Session report loads its actual first event count",
+          "pass": true,
+          "actual": "1 recorded events",
+          "expected": "1 recorded events"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "session-report-error",
+          "label": "Manual Refresh publishes the newer real Session report",
+          "pass": true,
+          "actual": "2 recorded events",
+          "expected": "2 recorded events"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "session-report-error",
+          "label": "An obsolete Session poll failure cannot replace a successful Refresh with an error",
+          "pass": false,
+          "actual": [
+            "Obsolete Session poll unavailable"
+          ],
+          "expected": []
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "session-report-error",
+          "label": "Obsolete failure preserves the newer recorded count",
+          "pass": true,
+          "actual": "2 recorded events",
+          "expected": "2 recorded events"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "session-report-error",
+          "label": "A current Session read failure remains visible and retryable",
+          "pass": true,
+          "actual": [
+            "Current Session read unavailable"
+          ],
+          "expected": [
+            "Current Session read unavailable"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "session-report-error",
+          "label": "Retry clears the current Session error",
+          "pass": true,
+          "actual": [],
+          "expected": []
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "storage-replay",
+          "label": "Denied storage still permits the pilot-owned Session report",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "storage-replay",
+          "label": "Denied storage preserves the real Session replay handoff to the same pilot",
+          "pass": false,
+          "actual": [],
+          "expected": [
+            "42"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "storage-replay",
+          "label": "Denied storage opens the requested recorded Session on the map",
+          "pass": false,
+          "actual": [],
+          "expected": [
+            "Shared Session review"
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "storage-replay",
+          "label": "Denied storage retains functional replay controls",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Cold note editor loads the actual saved system note",
+          "pass": true,
+          "actual": "Recorded approach and docking notes",
+          "expected": "Recorded approach and docking notes"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Discard owns the editor until the saved note arrives",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Save cannot race an outstanding discard",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Scope controls cannot switch during discard",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Delayed discard cannot replace a newer persisted note with stale text",
+          "pass": false,
+          "actual": "Recorded approach and docking notes",
+          "expected": "Newer saved approach after discard started",
+          "persisted": "Newer saved approach after discard started"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Discard completion restores an editable form",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Saving after discard persists the current text",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Saving after discard retains the current editor text",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "A successful save marks the current draft clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Failed discard preserves the unsaved draft",
+          "pass": true,
+          "actual": "Keep this draft after the failed discard",
+          "expected": "Keep this draft after the failed discard"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Failed discard releases the editor",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Failed discard keeps the draft saveable",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Retrying discard recovers the actual saved note",
+          "pass": true,
+          "actual": "Final verified approach",
+          "expected": "Final verified approach"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "note-discard",
+          "label": "Retrying discard marks the note clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "atlas-storage",
+          "label": "Denied session preference storage leaves actual server data available",
+          "pass": true,
+          "actual": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          },
+          "expected": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "atlas-storage",
+          "label": "Unavailable session preferences do not crash universe-kspace",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "atlas-storage",
+          "label": "Unavailable session preferences preserve the selected pilot",
+          "pass": false,
+          "actual": "",
+          "expected": "Shared UI Alpha"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "maps-storage",
+          "label": "Denied session preference storage leaves actual server data available",
+          "pass": true,
+          "actual": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          },
+          "expected": {
+            "pilots": [
+              42
+            ],
+            "systems": true
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "maps-storage",
+          "label": "Unavailable session preferences do not crash universe-jspace",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "maps-storage",
+          "label": "Unavailable session preferences preserve the selected pilot",
+          "pass": false,
+          "actual": "",
+          "expected": "Shared UI Alpha"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Cold Studio loads the actual saved element text",
+          "pass": true,
+          "actual": "Original stream text",
+          "expected": "Original stream text"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "An older Studio save preserves newer text edits",
+          "pass": false,
+          "actual": "Submitted stream text",
+          "expected": "Newer unsaved stream text"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "An older Studio save preserves newer layer visibility edits",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Newer Studio edits remain marked unsaved",
+          "pass": false,
+          "actual": "Layout saved",
+          "expected": "Unsaved changes"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Newer Studio edits remain saveable",
+          "pass": false,
+          "actual": false,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Only the submitted stream draft has reached persistent state",
+          "pass": true,
+          "actual": {
+            "text": "Submitted stream text",
+            "visible": true
+          },
+          "expected": {
+            "text": "Submitted stream text",
+            "visible": true
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Saving after the race persists the current full draft",
+          "pass": true,
+          "actual": {
+            "text": "Final stream text",
+            "visible": false
+          },
+          "expected": {
+            "text": "Final stream text",
+            "visible": false
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "A current Studio save marks the form clean",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "A failed Studio save retains the current draft",
+          "pass": true,
+          "actual": "Retain this failed Studio save",
+          "expected": "Retain this failed Studio save"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "A failed Studio save stays retryable",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "studio-save-draft",
+          "label": "Studio retry persists the retained draft",
+          "pass": true,
+          "actual": "Retain this failed Studio save",
+          "expected": "Retain this failed Studio save"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "Cold OPSEC loads the saved cover policy",
+          "pass": true,
+          "actual": "false",
+          "expected": "false"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "An older OPSEC save preserves a newer cover-policy edit",
+          "pass": false,
+          "actual": "true",
+          "expected": "false"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "Only the submitted OPSEC policy is persisted",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "Saving after the OPSEC race persists the current policy",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A delayed immediate manual override still persists and displays",
+          "pass": true,
+          "actual": {
+            "saved": true,
+            "displayed": "true"
+          },
+          "expected": {
+            "saved": true,
+            "displayed": "true"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A manual override response preserves another newer policy edit",
+          "pass": false,
+          "actual": "false",
+          "expected": "true"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A failed OPSEC save retains its current draft",
+          "pass": true,
+          "actual": "false",
+          "expected": "false"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "A failed OPSEC save leaves persistence unchanged",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "opsec-save-draft",
+          "label": "OPSEC retry persists the retained policy",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Cold Import Analyser loads persisted hauling settings",
+          "pass": true,
+          "actual": {
+            "cargo": "10000",
+            "budget": "1000000000"
+          },
+          "expected": {
+            "cargo": "10000",
+            "budget": "1000000000"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "An earlier Apply preserves newer cargo edits",
+          "pass": false,
+          "actual": "20000",
+          "expected": "30000"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "An earlier Apply preserves newer capital edits",
+          "pass": false,
+          "actual": "2000000000",
+          "expected": "3000000000"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Newer import settings remain unapplied",
+          "pass": false,
+          "actual": 0,
+          "expected": 1
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Only submitted import settings have reached persistence",
+          "pass": true,
+          "actual": {
+            "cargo": 20000,
+            "budget": 2000000000
+          },
+          "expected": {
+            "cargo": 20000,
+            "budget": 2000000000
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Applying after the race persists the current settings",
+          "pass": true,
+          "actual": {
+            "cargo": 30000,
+            "budget": 3000000000
+          },
+          "expected": {
+            "cargo": 30000,
+            "budget": 3000000000
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "A current import Apply leaves no unapplied-settings notice",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "A failed Apply retains the current import draft",
+          "pass": true,
+          "actual": "40000",
+          "expected": "40000"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "A failed Apply leaves saved import settings intact",
+          "pass": true,
+          "actual": 30000,
+          "expected": 30000
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "import-settings-draft",
+          "label": "Retrying Apply persists the retained import settings",
+          "pass": true,
+          "actual": 40000,
+          "expected": 40000
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "Cold appearance loads the persisted accent",
+          "pass": true,
+          "actual": "mint",
+          "expected": "mint"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A delayed earlier accent write cannot replace the latest choice",
+          "pass": false,
+          "actual": "amber",
+          "expected": "ice"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "Displayed accent agrees with the latest user choice",
+          "pass": false,
+          "actual": "amber",
+          "expected": "ice"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "The accent selector retains the latest choice",
+          "pass": false,
+          "actual": "Instrument amber",
+          "expected": "Glacial blue"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "Two selections make at most two settings writes",
+          "pass": true,
+          "actual": [
+            "amber",
+            "ice"
+          ],
+          "expected": [
+            "amber",
+            "ice"
+          ]
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A failed accent write leaves persisted appearance intact",
+          "pass": true,
+          "actual": "amber",
+          "expected": "amber"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A failed accent write leaves the saved theme displayed",
+          "pass": true,
+          "actual": "amber",
+          "expected": "amber"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "appearance-write-order",
+          "label": "A later selection recovers after a failed write",
+          "pass": true,
+          "actual": "mint",
+          "expected": "mint"
+        }
+      ],
+      "errors": [
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "storage-replay",
+          "error": "Synthetic session storage access denied"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "storage-replay",
+          "error": "Synthetic session storage access denied"
+        }
+      ],
+      "unexpectedNetwork": [],
+      "serverRequests": []
+    },
+    "counts": {
+      "checks": 194,
+      "pass": 126,
+      "fail": 68
+    },
+    "limitation": "Run stopped during Firefox1600 Session scenario: its broad synthetic historical window admitted unrelated earlier scenario events, then route cleanup threw Route is already handled. Firefox390 and remaining Firefox Session/storage-replay outcomes are not claimed. Final harness uses unique IDs, an isolated ten-second historical window and caught/drained route gates. This was a harness isolation/cleanup issue, not an application report cache.",
+    "package_created": false
   }
 }

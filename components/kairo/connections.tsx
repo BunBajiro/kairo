@@ -13,6 +13,14 @@ import { Panel, Choice } from './ui';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PollingSettings } from './polling-settings';
 import { SettingsDatasets } from './datasets';
+// Keep appearance writes ordered across Settings unmounts and remounts.
+// Failure releases the queue; every accepted choice still makes one request.
+let appearanceWrite: Promise<unknown> = Promise.resolve();
+function saveAppearance(theme: string, csrf: string) {
+    const write = appearanceWrite.then(() => api('/settings', 'PUT', { theme }, csrf));
+    appearanceWrite = write.catch(() => {});
+    return write;
+}
 export function Connections() {
     const { boot, reload } = useKairo();
     const [clientId, setClientId] = useState(boot.clientId);
@@ -61,7 +69,7 @@ catch (e: any) {
 finally {
     setBusy('');
 } } return <Tabs value={tab} onValueChange={setTab}><TabsList className="page-tabs"><TabsTrigger value="modules">Modules</TabsTrigger><TabsTrigger value="polling">ESI polling</TabsTrigger><TabsTrigger value="datasets">Datasets</TabsTrigger><TabsTrigger value="appearance">Appearance</TabsTrigger></TabsList><TabsContent value="modules"><div className="module-grid">{boot.modules.map(m => <section className={'panel module-card ' + (!m.enabled ? 'module-off' : '')} key={m.id}><div className="flex justify-between"><span className="module-icon"><Blocks size={21}/></span><Switch aria-label={'Enable ' + m.name} checked={m.enabled} disabled={busy === m.id} onCheckedChange={v => toggle(m.id, v)}/></div><h2>{m.name}</h2><p>{m.description}</p><div className="module-footer"><span>{m.scopes.length ? m.scopes.length + ' ESI scopes' : 'Local / public data'}</span><span className={m.enabled ? 'accent' : ''}>{m.enabled ? 'Enabled' : 'Disabled'}</span></div></section>)}</div><p className="meta mt-5">Modules use the shared data service. Disabling a module stops its collection and event subscriptions; existing history is retained.</p></TabsContent><TabsContent value="polling"><PollingSettings/></TabsContent><TabsContent value="datasets"><SettingsDatasets/></TabsContent><TabsContent value="appearance"><Panel title="Appearance"><div className="setting-row"><div><h3>Interface accent</h3><p className="meta">Keep the same visual language across the workspace.</p></div><Choice label="Accent colour" value={boot.settings.theme || 'mint'} options={[{ value: 'mint', label: 'Signal mint' }, { value: 'amber', label: 'Instrument amber' }, { value: 'ice', label: 'Glacial blue' }]} onChange={async (theme) => { try {
-    await api('/settings', 'PUT', { theme }, boot.csrf);
+    await saveAppearance(theme, boot.csrf);
     await reload();
 }
 catch (e: any) {

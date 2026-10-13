@@ -23,7 +23,10 @@ export function ImportAnalyser({hubId,revision,canScan,onHistory,onScan}:{hubId:
  async function load(){const n=++ticket.current;const s=await api('/markets/imports?hub='+hubId);if(!alive.current||n!==ticket.current)return;setState(s);setDraft((v:any)=>v||s.settings);const a=await api('/markets/imports/analyse?hub='+hubId);if(!alive.current||n!==ticket.current)return;setData(a);setError('');if(first.current){setCategory(a.groups.find((g:any)=>g.items.length)?.id||'equipment');first.current=false;}}
  useEffect(()=>{alive.current=true;load().catch(e=>{if(alive.current)setError(e.message);});return()=>{alive.current=false;ticket.current++;};},[hubId,revision]);
  async function run(fn:()=>Promise<void>){setBusy(true);setError('');try{await fn();}catch(e:any){if(alive.current)setError(e.message);}finally{if(alive.current)setBusy(false);}}
- async function apply(refresh=false){await run(async()=>{const s=await api('/markets/imports/settings','PUT',{hubId,settings:draft},boot.csrf);setState(s);setDraft(s.settings);if(refresh)await api('/markets/imports/refresh','POST',{hubId},boot.csrf);await load();});}
+ async function apply(refresh=false){const submitted=draft;await run(async()=>{const s=await api('/markets/imports/settings','PUT',{hubId,settings:submitted},boot.csrf);setState(s);
+  // A saved response acknowledges the submitted draft; later edits still
+  // belong to the user and remain unapplied until their own Apply completes.
+  setDraft((current:any)=>current===submitted?s.settings:current);if(refresh)await api('/markets/imports/refresh','POST',{hubId},boot.csrf);await load();});}
  const set=(key:string,value:any)=>setDraft((s:any)=>({...s,[key]:value}));const dirty=state&&JSON.stringify(draft)!==JSON.stringify(state.settings),fees=state?.fees,buyer=state?.buyer,active=data?.groups.find((g:any)=>g.id===category),plans=state?.plans||[];
  const characterOptions=(id:number)=>[...(id&&!boot.characters.some(c=>c.id===id)?[{value:String(id),label:'Disconnected character · choose another'}]:[]),...boot.characters.map(c=>({value:String(c.id),label:c.name+(c.needsReauth?' · reconnect':'')}))];
  function add(item:any,option:any){setLines(old=>[...old.filter(l=>l.typeId!==item.typeId),{...option,typeId:item.typeId,name:item.name}]);setSelected(0);toast.success(item.name+' added to the import plan.');}

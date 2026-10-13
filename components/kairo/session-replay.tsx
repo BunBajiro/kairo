@@ -4,6 +4,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Activity, ChevronLeft, ChevronRight, Crosshair, Factory, Film, GraduationCap, MapPin, Pause, Play, Rocket, RotateCcw, SkipBack, SkipForward, Skull, Square, Swords, Trophy, Wallet, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {api} from './model';
+import {takeUniverseRequest} from './universe-requests.mjs';
 import type {ReplaySovereigntyOwner} from './session-replay-sovereignty.mjs';
 import {prepareReplayTimeline} from './session-replay-timeline.mjs';
 import './session-replay.css';
@@ -31,9 +32,8 @@ const UTC_DATE = new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'short
 
 function requestFromStorage(): ReplayRequest | null {
   if (typeof window === 'undefined') return null;
-  const value = sessionStorage.getItem('kairo-universe-replay');
+  const value = takeUniverseRequest('kairo-universe-replay');
   if (!value) return null;
-  sessionStorage.removeItem('kairo-universe-replay');
   try {const parsed = JSON.parse(value); return parsed.sessionId && Number.isFinite(Number(parsed.characterId)) ? {sessionId: parsed.sessionId, characterId: Number(parsed.characterId)} : null;} catch {return null;}
 }
 function elapsedLabel(ms: number) {

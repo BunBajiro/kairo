@@ -1,4 +1,5 @@
 "use client";
+import {setUniverseRequest} from './universe-requests.mjs';
 import {Children,isValidElement,useEffect,useId,useRef,useState,type ReactNode} from 'react';
 import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
@@ -70,7 +71,7 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
    if(running||requestingMore.current||(!initial&&(document.hidden||reportRef.current?.collection?.phase==='static'))||(!initial&&(reportRef.current?.events.length||0)>100))return;
    running=true;const request=++requestVersion.current;
    try{const next=await api(url);if(g!==generation.current||request!==requestVersion.current)return;const first=!reportRef.current;reportRef.current=next;setReport(next);if(first){setName(next.session.label);setNotes(next.session.notes||'');}setError('');}
-   catch(e:any){if(g===generation.current)setError(e.message);}
+   catch(e:any){if(g===generation.current&&request===requestVersion.current)setError(e.message);}
    finally{running=false;}
   }
   read(true);const timer=setInterval(()=>read(),15000);
@@ -79,7 +80,7 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
  async function refreshReport(){
   const g=generation.current,request=++requestVersion.current;setRefreshing(true);
   try{const next=await api(url);if(g===generation.current&&request===requestVersion.current){reportRef.current=next;setReport(next);setError('');}}
-  catch(e:any){if(g===generation.current)setError(e.message);}
+  catch(e:any){if(g===generation.current&&request===requestVersion.current)setError(e.message);}
   finally{if(g===generation.current)setRefreshing(false);}
  }
  async function save(){
@@ -91,7 +92,7 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
  async function moreEvents(){
   const g=generation.current,request=++requestVersion.current;setLoadingMore(true);requestingMore.current=true;
   try{const next=await loadSessionReportPage(report,(offset,snapshot)=>api(url+'&'+new URLSearchParams({offset:String(offset),eventCursor:String(snapshot.eventCursor),eventEnd:snapshot.eventEnd})),()=>g===generation.current&&request===requestVersion.current);if(next){reportRef.current=next;setReport(next);setError('');}}
-  catch(e:any){if(g===generation.current)toast.error(e.message);}
+  catch(e:any){if(g===generation.current&&request===requestVersion.current)toast.error(e.message);}
   finally{if(g===generation.current){setLoadingMore(false);requestingMore.current=false;}}
  }
  const s=report?.stats,alliance=report?.allianceCombat,lp=report?.loyalty,personal=report?.personalCombat;
@@ -105,7 +106,7 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
  return <Dialog open={!!id} onOpenChange={open=>{if(!open){restoreOnDismiss.current=true;onClose();}}}><DialogContent onCloseAutoFocus={event=>{event.preventDefault();if(restoreOnDismiss.current)onRestoreFocus();}} className="session-report-dialog session-v2"><DialogHeader><p className="eyebrow">KAIRO / FLIGHT RECORD</p><DialogTitle>Session overview</DialogTitle><DialogDescription>{report?pilot+' · '+stamp(report.session.started)+' → '+(report.session.ended?stamp(report.session.ended):'In progress'):'Loading your session…'}</DialogDescription></DialogHeader>
   {error&&<p role="alert" className="inline-error">{error}</p>}
   {report&&<div className="stack">
-   <div className="flex justify-end"><Button variant="outline" onClick={()=>{sessionStorage.setItem('kairo-universe-replay',JSON.stringify({sessionId:id,characterId:character}));onClose();navigate('universe');}}><MapPin size={15}/> Show on Map</Button></div>
+   <div className="flex justify-end"><Button variant="outline" onClick={()=>{setUniverseRequest('kairo-universe-replay',JSON.stringify({sessionId:id,characterId:character}));onClose();navigate('universe');}}><MapPin size={15}/> Show on Map</Button></div>
    <div className="report-title"><label className="field-label flex-1">Session name<Input value={name} onChange={e=>setName(e.target.value)} maxLength={100}/></label><span className={'tag '+(!report.session.ended?'positive':'')}>{report.session.ended?'COMPLETE':'ACTIVE'}</span></div>
    <section className="session-summary" aria-labelledby={summaryId}>
     <div className="session-summary-heading"><div><h2 id={summaryId}><Clock size={19}/> Session summary</h2><p className="session-collection-status">{collectionLabel}</p></div><Button size="sm" variant="outline" disabled={refreshing} onClick={refreshReport}><RefreshCw size={14} className={refreshing?'animate-spin':''}/> Refresh</Button></div>
