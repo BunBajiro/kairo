@@ -28,7 +28,8 @@ async function snapshot(label,width){
 }
 async function measure(label,width,count,{release=false}={}){
  await page.waitForFunction(n=>document.querySelectorAll('.market-catalogue .item-name img').length===n,count,{timeout:10000});
- await snapshot(label+' before image wait',width);
+ const initial=await snapshot(label+' before image wait',width);
+ for(const row of initial.rows){if(row.width<29||row.height<29)violations.push(label+' '+width+': unloaded icon has no stable box: '+row.width+'×'+row.height);}
  if(release)releaseImages();
  let loadError=null;
  try{await page.waitForFunction(()=>Array.from(document.querySelectorAll('.market-catalogue .item-name img')).every(i=>i.complete&&i.naturalWidth>0),null,{timeout:5000});}

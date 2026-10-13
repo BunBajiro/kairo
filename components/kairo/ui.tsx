@@ -57,4 +57,4 @@ export function DataTable({ rows, columns, state, searchable = true, emptyTitle,
 export function ItemName({ id, name }: {
     id: number;
     name: string;
-}) { return <span className="item-name"><img src={`https://images.evetech.net/types/${id}/icon?size=32`} alt="" loading="lazy" width="30" height="30" onError={e => { e.currentTarget.style.visibility = 'hidden'; }}/>{name}</span>; }
+}) { return <span className="item-name"><img key={id} src={`https://images.evetech.net/types/${id}/icon?size=32`} alt="" loading="lazy" width="30" height="30" onLoad={e => { e.currentTarget.style.visibility = ''; }} onError={e => { e.currentTarget.style.visibility = 'hidden'; }}/>{name}</span>; }

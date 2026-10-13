@@ -13,6 +13,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ### Fixed
 
+- Reserves item-icon space before image loading in market views and restores visibility when a failed icon subsequently loads.
 - Returns keyboard focus to the opening Session button after dismissing a report or cancelling the naming dialog, while respecting pilot changes and navigation.
 
 ## 0.8.0-rc.17 — Optimisation and refactoring
