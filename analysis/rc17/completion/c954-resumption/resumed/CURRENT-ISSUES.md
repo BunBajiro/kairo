@@ -1,16 +1,16 @@
 # RC17 current issues — 13 October 2026
 
-> **User-review follow-up, 13 October:** R-UI1 remains **OPEN — patched; awaiting Bun's category-first Firefox retest**. Build 69/source37a passes focused Firefox/Chrome checks and 1,004 extracted-runtime tests; the original symptom was not reproduced in baseline. [Evidence, fix and retest](oct13/market-icons/REVIEW.md). The 46 prior refactor decisions remain closed. No merge/release approval has occurred.
+> **User-review follow-up, 13 October:** **R-UI1 CLOSED.** Bun confirmed that build #69 resolves the category-first Firefox icon issue at 15:36 BST. [Evidence and closure](oct13/market-icons/REVIEW.md). The 46 original refactor decisions plus this user finding are closed. Overall candidate review and explicit merge/release approval remain separate.
 
-**46 of 46 component decisions are closed, and the declared automated final acceptance gates are complete. The updated 0.8.0-rc.17 package is ready for the open R-UI1 retest.** Closure means an evidenced fix, retention or rejection, not a claim that every operation became faster. Actual Windows/EVE/OBS review and later explicit merge/release approval remain pending.
+**46 of 46 component decisions are closed, and the declared automated final acceptance gates are complete. The updated 0.8.0-rc.17 package also has a successful user retest for R-UI1.** Closure means an evidenced fix, retention or rejection, not a claim that every operation became faster. Actual Windows/EVE/OBS review and later explicit merge/release approval remain pending.
 
 This is the single live issue ledger. The [whitepaper](../../../REPORT.md), [original catalogue](../../TRACEABILITY.md) and four c954 traces remain historical evidence; their old open statements do not reopen a disposition recorded here. The [candidate checkpoint](CURRENT-CHECKPOINT.md) owns the exact download/source and user-review steps. PR #10 stays withdrawn/draft.
 
 Measured runtime remains `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789`. Current package source is `37a0e79b7d9df4e980615e7f3711e6e5f2884d12`, adding the bounded shared-icon correction and tests to documentation-inclusive0149. Build 69 passes types/build, focused and existing browser gates, and all 1,004 extracted-runtime tests; 487 packaged source files match37a. Selected c954/build54 is included; excluded508/build55 is not an ancestor. Main is unchanged.
 
-| New user finding | Current disposition | Closure needed |
+| User finding | Current disposition | Closure evidence |
 |---|---|---|
-| R-UI1 — category icons absent before All items | **OPEN; patched for user retest.** Fixed confirmed hidden-after-successful-reload state and reserved icon geometry. Automated baseline did not reproduce original category-first symptom. | Bun retests a fresh category visit before All items in Firefox on build69. Do not infer primary closure from synthetic passing checks. |
+| R-UI1 — category icons absent before All items | **CLOSED — user-confirmed fix.** Recovery and geometry correction retained; original category-first mechanism remains unproven. | Bun confirmed the requested Firefox retest of build #69 works,13 October 2026 at15:36 BST. Focused Chrome/Firefox and packaged tests also pass. |
 
 | Final gate | Completed evidence |
 |---|---|

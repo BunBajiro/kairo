@@ -1,6 +1,6 @@
 # Market item icons — user-review follow-up
 
-13 October 2026. **R-UI1 OPEN — patched; awaiting Bun's category-first Firefox retest.** Build 69/source37a supersedes build66. The confirmed image-recovery defect is corrected, but the original user symptom was not reproduced in the synthetic baseline and is not claimed closed. The 46 prior refactor decisions remain closed. Earlier investigation notes below retain their historical outcomes.
+13 October 2026. **R-UI1 CLOSED — Bun confirmed build #69 works in his Firefox retest at 15:36 BST.** This closes the user-reported category-first issue. Automated evidence demonstrates the image-recovery correction; the exact original category-first mechanism remains unproven. The 46 prior refactor decisions remain closed. Historical investigation notes below preserve the earlier uncertainty and test outcomes.
 
 Bun reports that all market item icons are absent when opening a market category directly after restart. Clicking **All items** causes icons to load. The same browser can open the direct CCP type-34 icon URL successfully. Treat category-first versus All-items navigation as the required reproduction; the initial broad missing-icon description has been narrowed by the user.
 
@@ -34,10 +34,16 @@ Chrome covers Browse/detail/report/import cards at 1600/1024/390 and import plan
 
 Original baseline Chrome/Firefox and corrected Chrome/Firefox ZIPs are preserved in [the raw bank](bank/RAW-MANIFEST.json), with file hashes. Restore using `../../oct8/restore-evidence.py bank/RAW-MANIFEST.json NEW_DESTINATION` from this directory. The build68 duplicate Chrome ZIP was not downloaded; its repeated failure remains in the full job log.
 
-## Updated tested package and remaining retest
+## Tested package and user-confirmed closure
 
 [Download build69](https://github.com/BunBajiro/kairo/actions/runs/38411934641/artifacts/11821673609): source37a, version 0.8.0-rc.17, 25,949,022 bytes, SHA256 `09d905946f1dbb8fcc412e16549c10bea5cc05aa923ecab2c03d6f4bf54517f6`. Hosted download expires 12 November 2026. The downloaded original ZIP passed CRC; all 487 packaged source files match committed37a exactly, with 20 compiled assets inventoried. [Package audit](PACKAGE-AUDIT.json). No rebuild/repack was substituted. This supersedes build66 for review.
 
-Stop the old process, extract into a fresh application folder and launch `Kairo/START_KAIRO.bat` with Node 24+. In Firefox, open a Market leaf category **before clicking All items**, then check All items and return. Report whether the first visit displays icons. Keep R-UI1 open until that observation arrives.
+Bun responded to the requested category-first Firefox retest of build #69: **“Yup! That works!”** on 13 October 2026 at 15:36 BST. R-UI1 is closed on this user observation together with the passing automated correction checks. No additional reproduction or causal certainty is inferred. Overall candidate approval and merge/release authorization remain separate.
 
 The completed three-version performance report remains pinned to measured70; these correctness checks are not new performance measurements. No broader optimization retry is queued. PR11 stays draft pending actual user review and subsequent approval. PR10 remains withdrawn; main and stable release are unchanged.
+
+## Future browser requirement
+
+Bun also required future builds to work in Chrome and Firefox. Documentation commit `8a5359d9d35b556d5b756a7f2e03721c918fd390` changes only `AGENTS.md` and `docs/VALIDATION.md`, requiring both blocking browser gates and affected-flow checks in both engines for future UI changes. Existing Firefox coverage is desktop market navigation; Chrome has broader market, Session, Universe and dataset coverage. Full suite parity is not claimed. Independent workflow review confirmed failures in either browser prevent packaging and build upload; `always()` only retains diagnostic artifacts.
+
+The documentation-only commit does not change runtime, dependencies, build inputs or tests. CI is skipped for that documentation checkpoint; the exact successful user-tested build #69/source37a remains the designated package. There is no replacement build or performance rerun.
