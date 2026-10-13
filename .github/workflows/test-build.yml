@@ -114,6 +114,23 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Verify shared editors and session preference recovery in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-shared
+        run: node tests/premerge-shared-ui.mjs
+
+      - name: Upload cross-browser shared UI checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-shared-check
+          path: ${{ runner.temp }}/kairo-premerge-shared/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify category-first market icons in Firefox
         env:
           KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
