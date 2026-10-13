@@ -4,7 +4,7 @@ The performance/refactor phase is complete. The correctness and usability review
 
 ## Current verified candidate
 
-**The comprehensive review is complete across the seven areas below. All 20 confirmed findings are fixed and verified in build #75; no confirmed finding remains open.** The source, regression tests, intermediate failures and final evidence are banked on the review branch. Strong automated regressions establish closure of internal defects; actual environment behavior outside that evidence remains separate manual acceptance. This is completion of the recorded review scope, not a guarantee that no other defect exists.
+**A new comprehensive pass is active at Bun’s request, starting from verified build #75.** The previous pass completed all seven areas below and closed PBR-1 through PBR-20. Those fixes remain verified; new findings will receive subsequent IDs and independent regressions. The source, regression tests, intermediate failures and final evidence are banked on the review branch. Strong automated regressions establish closure of internal defects; actual environment behavior outside that evidence remains separate manual acceptance. This is completion of the recorded review scope, not a guarantee that no other defect exists.
 
 | Item | Verified identity |
 | --- | --- |
@@ -87,6 +87,10 @@ The first batch closed five findings in build72; the broader pass added 15. All 
 | PBR-18 | Closed; fixed and verified in build75 | Disconnect, narrow access or reconnect while a dataset/ESI read is pending. Its response can recreate removed private snapshots/cache, publish old data, or be reused by the replacement connection. | Auth connection revision fences Core collection and ESI private flights, page chains, cache/error publication; ordinary token rotation preserves its connection identity. | Six real-Core pre-fix failures plus a healthy rotation control; five ESI pre-fix failures plus a same-connection control. Queued pacing and page chains preserve ownership; same-connection cache/coalescing stays bounded. The combined gate caught and corrected excess cached-path roster reads; the existing exact-two-read control passes. |
 | PBR-19 | Closed; fixed and verified in build75 | Skill/job source data arrives during Session A, but delayed name enrichment publishes it during B. Failed optional skill-name lookup loses completion permanently after the source snapshot advances. | Capture fresh receipt time/Session before enrichment; milestone events retain explicit owner, and name failure uses existing fallback text. Shared report/replay ownership includes skill and industry milestones. | Four real-Core pre-fix failures. Thirteen new controls include same-millisecond owned/null/deleted Sessions, stale suppression, legacy events, failure recovery, request bounds and shutdown; 126 related checks pass. |
 | PBR-20 | Closed; fixed and verified in build75 | Save Unicode JSON with a multibyte character split across HTTP chunks. Private note text is silently persisted as replacement characters. | `server/index.mjs`: incremental UTF-8 decoder preserves split code points within the existing raw-byte body limit. | Real native-HTTP receipt barriers reproduce corruption before correction. Two/three/four-byte boundaries, exact/over byte limit, malformed JSON/content type and CSRF controls pass; 45 related HTTP/lifecycle checks pass. |
+| PBR-21 | Reproduced; fix in progress | Stop or disconnect while runtime child startup is pending. Child reports successful stopped and exits before startup finishes or its owned resources drain. | `server/runtime-child.mjs`: retain startup ownership through shutdown and the existing deadline. | Two deterministic real-child failures on build75 source; three healthy controls pass. Before-fix output saved as `pass2-runtime-child-before.log`; candidate controls follow. |
+| PBR-22 | Reproduced; fix in progress | A private structure lookup survives disconnect/reconnect or service close. It can publish verification after disconnect, share an obsolete flight with the replacement connection, or persist after close has returned. | Universe structure lookup owner: bind flights to connection revision, recheck publication and drain admitted work during close. | Three real SQLite/service failures on build75 source; one cache/coalescing control passes. Before-fix output: `pass2-universe-structures-before.log`. |
+| PBR-23 | Reproduced; fix in progress | Overlap quick-supply list edits across item lookup, or start a scan during a pending add. Old lists resurrect removed items, and the resumed add bypasses the active-scan guard. | `server/markets.mjs`: revalidate current list and scan ownership after awaited lookup. | Three real Market/SQLite regressions fail unchanged source; before-fix output retained in `pass2-markets-mutations-before.log`. |
+| PBR-24 | Reproduced; fix in progress | Concurrent Add hub requests resolve while only one of32 followed-hub slots remains. Both succeed and persist33 hubs. | `server/markets.mjs`: recheck current destination capacity after hub resolution. | Real-owner barrier regression fails: two successes instead of one; before-fix output retained in `pass2-markets-mutations-before.log`. |
 
 Reviewed areas in the first batch: Universe/Maps/navigation, Sessions/archive/replay, startup/datasets, Stream/OPSEC/OBS and import planning. The existing targeted suites passed; the completed broader review is recorded below. Actual Windows/EVE/OBS remains separate from automated closure of these defects.
 
@@ -107,6 +111,22 @@ This table tracks work, not presumed defects. Complete source review and relevan
 Manual review remains useful for real Windows/DPAPI, actual EVE permissions/SSO and OBS scene/audio output, and extended play. It is separate from automated acceptance of the specific corrected contracts and must not be used to defer tests that can realistically reproduce a defect.
 
 The [internal API guide](INTERNAL-API.md) and [route/event reference](API-REFERENCE.md) describe the existing backbone for future work. Do not rebuild parallel services or add duplicate documentation around it.
+
+## Follow-up comprehensive pass — build75 baseline
+
+Started 13 October 2026 after Bun requested another hunt across all of Kairo for overlooked defects. Baseline: application `e311a63`, verified build75; saved review/evidence checkpoint `4da3d9d`. Preserve the twenty closed findings and completed performance decisions. This is a fresh correctness pass across the entire application scope, including boundaries between owners, not a repeat of only the previous failures.
+
+| Area | Explicit scope | State |
+| --- | --- | --- |
+| Universe / Maps / operations | Atlas and J-Space, routes, imports/exports, intel, politics/sovereignty, private records and public feeds; matching UI and geometry | In progress |
+| Markets / imports | Scan jobs, books, histories/workers, categories, trading access, pricing/cargo and plans; matching UI | In progress |
+| Sessions / combat / travel | Reports, archive, replay, observations, event ownership, discovery, combat/backfill and boundary edits; matching UI | In progress |
+| Runtime / datasets / Stream | Startup/shutdown/locks, updater/rollback/package, Registry/bus/SSE, OBS/OPSEC/projections and renderer/Studio | In progress |
+| Dashboard / shared UI | Connections, settings, preferences, navigation, resources/names, intelligence, notes and shared formatters | In progress |
+| Auth / ESI / HTTP / Vault | SSO/token lifecycle, connection ownership, cache/retries/pagination, request validation, admission, private/public boundaries and encryption | In progress |
+| Core / Goals / persistence | Collection/scheduling, every goal source, freshness/accounting, modules/polling, migrations, retention and Goals UI | In progress |
+
+Record confirmed defects in the single contiguous ledger above immediately, with failed-baseline evidence before closing on a passing fix. Track reviewed/rejected hypotheses and cost controls; do not manufacture findings to fill the ledger. Bank source/evidence checkpoints as work progresses. Final acceptance still requires relevant Chrome/Firefox coverage, combined source gates and an independently verified Actions package. No merge or stable release is authorized.
 
 ## Repository cleanup and recovery
 
@@ -132,3 +152,7 @@ The package Actions run and raw evidence banks are retained. The analysis branch
 - `0855d42`: all 20 corrections banked. [Build74](https://github.com/BunBajiro/kairo/actions/runs/38427722255) passes all 123 navigation/import/Session/dashboard checks and the Firefox market gate. Existing Chrome market automation then fails before icon assertions: its click helper loses a target between two DOM lookups (`scrollIntoView` on undefined). The retained failure artifact shows the healthy rendered market and no application errors. The helper now reacquires the current connected element each frame and retains the same stable/unobstructed-click requirement; the gate stays blocking. No package was produced and no application code changed for this harness correction.
 
 - `e311a63`: [build75](https://github.com/BunBajiro/kairo/actions/runs/38428457449) passes every blocking gate, all 123 bug-specific browser checks, and all 1,074 packaged-runtime tests. The independently downloaded ZIP passes CRC, SHA256, byte comparison of all 504 source files, and all 1,074 tests without source dependencies. All 20 findings are closed; all seven review areas are complete. The final documentation/evidence bank preserves the contiguous 20-row, five-column ledger and the exact tested application identity. No merge, stable release or new performance claim.
+
+- Follow-up pass opened from `4da3d9d` / build75 after Bun requested another comprehensive bug hunt across all Kairo. Seven review areas assigned; all earlier evidence and closed findings retained.
+
+- Follow-up initial findings PBR-21–24 recorded from failing build75-source regressions. Runtime startup/stop, structure lookup ownership, quick-supply edits and followed-hub capacity fixes are in progress; healthy controls and bounded work are retained.
