@@ -1,6 +1,6 @@
 # Validation and release readiness
 
-**Use the exact build designated in the [current acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md).** It records the application commit, completed gates, verified package/download and remaining review requirements. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
+**Use the exact build designated in the [Premerge Bug Review handoff](PREMERGE-BUG-REVIEW.md).** It records the application commit, verified package/download, active branch/PR and bug ledger. The completed [performance acceptance record](https://github.com/BunBajiro/kairo/blob/568ce3e29213e4132a535340c1321e28c46a83cc/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) preserves prior gates. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn; PR #12 owns the current phase. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
 
 ## Reproduce source checks
 

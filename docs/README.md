@@ -1,6 +1,6 @@
 # Documentation map
 
-These are the maintained user and developer entry points. See [Validation](VALIDATION.md) for the exact candidate and review status.
+These are the maintained user and developer entry points. Start the current phase at [0.8.0 RC Premerge Bug Review](PREMERGE-BUG-REVIEW.md); [Validation](VALIDATION.md) describes the required checks.
 
 ## Users
 
