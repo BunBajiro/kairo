@@ -1,0 +1,260 @@
+{
+  "source": "f5b9da2843031eb81d2bf36a0f63d4897056d0ff",
+  "application_baseline": "e311a63a0323a5054f42f9fbdc77b52e13765b36",
+  "run": "https://github.com/BunBajiro/kairo/actions/runs/38436103645",
+  "scope": "Partial compiled Chrome1600 PlaceNotes baseline; later scenarios/Firefox did not execute before harness timeout",
+  "checks": [
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Cold note editor loads the actual saved system note",
+      "pass": true,
+      "actual": "Recorded approach and docking notes",
+      "expected": "Recorded approach and docking notes"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Discard owns the editor until the saved note arrives",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Save cannot race an outstanding discard",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Scope controls cannot switch during discard",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Delayed discard cannot replace a newer persisted note with stale text",
+      "pass": false,
+      "actual": "Recorded approach and docking notes",
+      "expected": "Newer saved approach after discard started",
+      "persisted": "Newer saved approach after discard started"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Discard completion restores an editable form",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Saving after discard persists the current text",
+      "pass": true,
+      "actual": "Final verified approach",
+      "expected": "Final verified approach"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "Saving after discard retains the current editor text",
+      "pass": true,
+      "actual": "Final verified approach",
+      "expected": "Final verified approach"
+    },
+    {
+      "engine": "chromium",
+      "version": "154.0.8037.97",
+      "width": 1600,
+      "scenario": "note-discard",
+      "label": "A successful save marks the current draft clean",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    }
+  ],
+  "harness_failure": "Unhandled waitForResponse timeout in follow-up discard recovery control prevented final artifact creation. Actual stale text vs persisted new value had already been recorded; next baseline retains it and completes engines/scenarios.",
+  "package_created": false,
+  "server_baselines": {
+    "pass2-core-goals-http-before.log": {
+      "observed_output": [
+        "✖ manual goal writes use current identity and completion state when the HTTP body is complete (238.888561ms)",
+        "ℹ tests 5",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 4",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 374.30653"
+      ]
+    },
+    "pass2-esi-command-before.log": {
+      "observed_output": [
+        "✖ a command waiting for a network slot cannot migrate to a replacement connection (24.277323ms)",
+        "✖ a command waiting for its token cannot send after connection ownership changes (7.951625ms)",
+        "✖ an obsolete command rejected with401 cannot retry using a replacement login (6.862942ms)",
+        "✔ ordinary token rotation retains the command connection and its single401 retry (6.516048ms)",
+        "✖ connection replacement during401 token refresh stops before a retry without claiming uncertainty (6.700907ms)",
+        "ℹ tests 5",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 4",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 156.52364"
+      ]
+    },
+    "pass2-markets-history-recovery-before.log": {
+      "observed_output": [
+        "✖ history requested before the first custom-hub book cannot wedge future market scans (21.877ms)",
+        "ℹ tests 1",
+        "ℹ suites 0",
+        "ℹ pass 0",
+        "ℹ fail 1",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 151.081536"
+      ]
+    },
+    "pass2-markets-mutations-before.log": {
+      "observed_output": [
+        "✖ a pending quick-list addition preserves a removal completed during its item lookup (36.939277ms)",
+        "✖ concurrent quick-list removals cannot silently restore a removed item or empty the basket (8.037397ms)",
+        "✖ a delayed quick-list addition cannot publish after another window starts a scan (26.940199ms)",
+        "✖ concurrent hub additions cannot exceed the followed-hub limit after asynchronous resolution (14.130722ms)",
+        "ℹ tests 4",
+        "ℹ suites 0",
+        "ℹ pass 0",
+        "ℹ fail 4",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 233.014236"
+      ]
+    },
+    "pass2-markets-order-page-before.log": {
+      "observed_output": [
+        "✖ refreshing a shorter order book clamps an open seller or buyer page to its remaining orders (30.607043ms)",
+        "ℹ tests 1",
+        "ℹ suites 0",
+        "ℹ pass 0",
+        "ℹ fail 1",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 192.36524"
+      ]
+    },
+    "pass2-runtime-child-before.log": {
+      "observed_output": [
+        "✔ child activates updater only after parent commit and exports sessions after drain (3.756909ms)",
+        "✔ child restores update UI on cancellation and shuts down if parent disappears (1.003184ms)",
+        "✔ a stuck accepted-work drain reaches the child deadline without a successful handoff (6.464243ms)",
+        "✖ stop during startup waits for the accepted runtime and its cleanup before acknowledging shutdown (1.382716ms)",
+        "✖ stop during a failing startup acknowledges only after startup has unwound (1.593926ms)",
+        "ℹ tests 5",
+        "ℹ suites 0",
+        "ℹ pass 3",
+        "ℹ fail 2",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 93.378112"
+      ]
+    },
+    "pass2-universe-fleet-before.log": {
+      "observed_output": [
+        "✖ delayed public fleet-name enrichment cannot restore old private roster after reconnect (14.784825ms)",
+        "✖ obsolete fleet request failure cannot resurrect previous roster or throttle replacement refresh (7.864285ms)",
+        "✔ same-connection names enrichment and refresh coalescing retain a single bounded collection (6.905709ms)",
+        "ℹ tests 3",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 2",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 125.50489"
+      ]
+    },
+    "pass2-universe-structures-before.log": {
+      "observed_output": [
+        "✖ structure verification shutdown drains the admitted request and rejects new work without publishing (22.535793ms)",
+        "✖ structure response cannot publish after the pilot disconnects (13.087622ms)",
+        "✖ replacement connection does not join an obsolete structure verification or inherit its failure cache (12.044433ms)",
+        "✔ same-connection duplicate verification coalesces and current transport failure remains cached (11.786936ms)",
+        "ℹ tests 4",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 3",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 172.112583"
+      ]
+    },
+    "pass2-universe-waypoints-before.log": {
+      "observed_output": [
+        "✖ reconnecting during a sent waypoint stops remaining old-connection commands and admits a later explicit send (16.267683ms)",
+        "✖ a waypoint batch queued before reconnect cannot execute with the replacement login (16.692359ms)",
+        "✔ same-connection queued waypoint batches remain serial and retain append/replace semantics (11.441747ms)",
+        "ℹ tests 3",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 2",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 151.142098"
+      ]
+    }
+  },
+  "first_correction_review_failure": {
+    "id": "PBR-21",
+    "observed_output": [
+      "✔ child activates updater only after parent commit and exports sessions after drain (4.096193ms)",
+      "✔ child restores update UI on cancellation and shuts down if parent disappears (1.769671ms)",
+      "✔ a stuck accepted-work drain reaches the child deadline without a successful handoff (1.39152ms)",
+      "✔ stop during startup waits for the accepted runtime and its cleanup before acknowledging shutdown (1.158328ms)",
+      "✔ stop during a failing startup acknowledges only after startup has unwound (0.800198ms)",
+      "✔ stuck startup retains the bounded shutdown deadline without a successful handoff (0.605614ms)",
+      "✔ cleanup failure after stopped startup cannot claim a successful saved handoff (0.944626ms)",
+      "✖ failed startup rollback remains a shutdown failure instead of a successful handoff (1.290297ms)",
+      "ℹ tests 8",
+      "ℹ suites 0",
+      "ℹ pass 7",
+      "ℹ fail 1",
+      "ℹ cancelled 0",
+      "ℹ skipped 0",
+      "ℹ todo 0",
+      "ℹ duration_ms 102.752046"
+    ],
+    "resolution": "Propagate nonempty startup cleanupErrors as failed shutdown, retaining clean startup failure drain behavior."
+  }
+}
