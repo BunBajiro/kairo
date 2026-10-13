@@ -37,20 +37,26 @@ Current automated coverage is intentionally explicit:
 
 | Browser | Existing compiled checks |
 | --- | --- |
-| Chrome | Market icons across desktop/narrow views, image recovery, session cards, Universe/replay and dataset updates/reconnects |
-| Firefox | Fresh desktop market leaf before All items, All items and return, with delayed image loading and geometry checks |
+| Chrome | Market icons across desktop/narrow views, image recovery, session cards, Universe/replay and dataset updates/reconnects; Range navigation, import quote ownership and Session snapshot paging at 1600/390 widths |
+| Firefox | Fresh desktop market leaf before All items, All items and return, with delayed image loading and geometry checks; Range navigation, import quote ownership and Session snapshot paging at 1600/390 widths |
 
 The Firefox market regression is a required baseline, not full cross-browser coverage of every module. Future changes must cover their affected behavior in both browsers rather than relying on that baseline alone. The Firefox runner uses an isolated Playwright installation in Actions, separate from application dependencies. The workflow retains both browser checks as blocking steps before package creation; failures must not be made non-blocking to obtain a downloadable build.
 
-Build #69 passed these automated scopes, and Bun confirmed the category-first icon fix in Firefox on 13 October 2026. That closes the reported icon finding; it is not blanket approval of every UI flow or authorization to merge/release.
+Build #72 passes the current coverage table. Historical build #69 passed the original market/session/Universe/dataset scopes, and Bun confirmed its category-first icon fix in Firefox on 13 October 2026. That closes the reported icon finding; it is not blanket approval of every UI flow or authorization to merge/release.
 
-## What is verified at this checkpoint
+## Current bug-review acceptance
+
+Build #72 at `4ffe436ab5ddd16ee72ee0f63c7777bdf0286c5f` passes types, fresh build, all blocking Chrome/Firefox checks, and **1,016/1,016** packaged-runtime tests. The downloaded ZIP independently passes CRC, byte comparison of all 495 packaged source files, and all 1,016 tests without source dependencies. The [live handoff](PREMERGE-BUG-REVIEW.md#current-verified-candidate) owns the exact download, digest, scope and five closed bug findings; [structured evidence](review-evidence/2026-10-13-fixed.json) retains the 4 navigation, 36 import and 32 Session browser checks.
+
+Corrections preserve intended UI and avoid new repair notices or controls. Session pagination retains one request per next page and the existing indexed event query instead of rereading a growing prefix. Import ownership fencing adds no requests; OBS fixes reuse the connection lifecycle. These are bounded correctness checks, not new performance measurements. Real Windows/EVE/OBS acceptance remains for the user's in-app review.
+
+## Completed performance acceptance (historical)
 
 Measured application source `70cd12f9a4d014e7e2cf931b9681c4bdc7f18789` passed **1,004 runtime tests, type checks and a fresh build**, plus **89 compiled integration controls**. [Test build #65](https://github.com/BunBajiro/kairo/actions/runs/37768942689) separately verified its ordinary feature-build/package checks. All **46 refactoring and optimisation component decisions** have supported fix, retention or rejection dispositions in the [single issue ledger](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-ISSUES.md).
 
 The final local historical/current comparisons, startup and full-contract/database adapters, completion UI, configured first binding and real-archive updater collections have independent reviews. The [three-version performance report](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/PERFORMANCE-REVIEW-0.8.0.md) retains improvements, adverse results, first-use trade-offs and limits. The 0.7.3/RC16 and RC16/current groups are separately matched; their percentages are not combined into an inferred 0.7.3/current result.
 
-The [current acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) owns the independent comparison/UI/updater Actions results and the exact extracted package. Documentation-only preparation after source70 must record the changed files and unchanged runtime/build inputs there; it does not relabel earlier measurements as having run on a later commit. A passing ordinary build or documentation update alone does not close release acceptance.
+The [historical performance acceptance record](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) owns that phase's independent comparison/UI/updater Actions results and extracted package. Later documentation or bug-review commits do not relabel those measurements as having run on newer source. A passing ordinary build or documentation update alone does not close release acceptance.
 
 ## Performance evidence rules
 

@@ -1,6 +1,6 @@
 # Kairo development workflow
 
-Current phase: [0.8.0 RC Premerge Bug Review](docs/PREMERGE-BUG-REVIEW.md), branch `review/0.8.0-rc-premerge-bug-review`, draft PR #12. The performance/refactor phase is complete; start the next bug-review chat from that handoff and its issue ledger.
+Current phase: [0.8.0 RC Premerge Bug Review](docs/PREMERGE-BUG-REVIEW.md), branch `review/0.8.0-rc-premerge-bug-review`, draft PR #12. The performance/refactor phase is complete; continue from that handoff and its populated issue ledger. Record reproduced findings promptly, update their evidence and disposition as work proceeds, and bank useful checkpoints on this branch.
 
 - Make changes and prepare new versions on a feature branch, never directly on `main`.
 - Verify the work and open a draft pull request so the user can review and test it.
