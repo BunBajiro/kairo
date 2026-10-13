@@ -42,10 +42,14 @@ async function waitFor(expression){
 async function clickElement(expression){
  await waitFor('!!('+expression+')');
  const point=await evaluate(`(async()=>{
-  const e=(${expression});e.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
-  let previous,stable=0;
+  let previous,current,stable=0;
   for(let frame=0;frame<120;frame++){
    await new Promise(requestAnimationFrame);
+   // A resource refresh may replace the target between the initial lookup
+   // and this frame. Resolve it again instead of retaining a detached node.
+   const e=(${expression});
+   if(!e?.isConnected){previous=undefined;current=undefined;stable=0;continue;}
+   if(e!==current){e.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});previous=undefined;stable=0;current=e;}
    const r=e.getBoundingClientRect(),point={x:r.x+r.width/2,y:r.y+r.height/2},hit=document.elementFromPoint(point.x,point.y);
    const ready=e.isConnected&&!e.disabled&&r.width>0&&r.height>0&&e.contains(hit);
    stable=ready&&previous&&Math.abs(point.x-previous.x)<.25&&Math.abs(point.y-previous.y)<.25?stable+1:0;
