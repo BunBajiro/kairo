@@ -1,5 +1,7 @@
 # Kairo 0.8.0 performance review
 
+> **Performance phase finalized:** The completed report is preserved. Further work starts at the [0.8.0 RC Premerge Bug Review handoff](https://github.com/BunBajiro/kairo/blob/6e54542d032d4903eab3a948e1f88aaee19739bd/docs/PREMERGE-BUG-REVIEW.md), draft PR12. The branch transition changes documentation only; build69 remains the exact tested runtime. [GitHub cleanup record](completion/c954-resumption/resumed/oct13/premerge-handoff/CLOSURE.md).
+
 > **Post-report UI follow-up, 13 October:** Build 69/source37a replaces build66 for user review with a bounded market-icon sizing/recovery correction. Its browser and 1,004 extracted-package tests pass; R-UI1 was closed after Bun confirmed the category-first Firefox retest works on 13 October at 15:36 BST. [Follow-up evidence](completion/c954-resumption/resumed/oct13/market-icons/REVIEW.md). All performance numbers below remain measurements of source70 and its recorded comparators; they have not been relabelled as measurements of37a.
 
 Collected 11 October; final acceptance review completed 13 October 2026. **The integrated refactor delivers reproducible reductions in recurring idle CPU and memory and substantial Maps/routes gains, with retained costs documented below. All declared automated acceptance gates are complete; clean 0.8.0-rc.17 is ready for user review.** Local and CI observations remain separate. Actual Windows/EVE/OBS review and later approval are required before merge and stable release.
