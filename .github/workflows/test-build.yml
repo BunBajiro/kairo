@@ -39,6 +39,20 @@ jobs:
       - name: Build the application
         run: npm run build
 
+      - name: Verify market item icons in Chrome
+        env:
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-market-icons
+        run: node tests/market-icons-ui.mjs
+
+      - name: Upload market icon checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: market-icon-check
+          path: ${{ runner.temp }}/kairo-market-icons/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify session cards in Chrome
         env:
           KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-session-ui
