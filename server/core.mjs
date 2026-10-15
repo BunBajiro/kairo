@@ -26,13 +26,14 @@ import {createUIResourceVersions, eventResources} from './ui-resources.mjs';
 import {createMarketCategories} from './market-categories.mjs';
 const DATASET_NOT_DUE = Symbol('dataset-not-due');
 const DATASET_OBSOLETE = Symbol('dataset-obsolete');
+const DATASET_PAUSED = Symbol('dataset-paused');
 const itemImageDatasets = new Set(['assets', 'transactions', 'orders', 'jobs']);
 const itemImages = createMarketCategories();
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
     let stopped = false, closing, quiesceFailures;
     let universe, stopUniverseHistory, registry, stream, obs, goals, markets, combat, sessionCombat, publicFeedTransport, ticker, heartbeat;
-    const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
+    const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), pausedModules = new Set(), namesMap = store.get('names', {});
     const namesEpoch = randomUUID(), deliveredNames = new WeakMap();
     let namesVersion = 0;
     const namesRevision = () => `${namesEpoch}:${namesVersion}`;
@@ -232,19 +233,24 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 store.saveSnapshot(id, d.key, { status: 'missing_scope', data: null, scope: d.scope });
             return;
         }
-        let ownerId;
+        let ownerId, obsoleteReason = DATASET_OBSOLETE;
         function current() {
-            if (!id) return true;
-            const active = auth.characters().find(c => c.id === id);
-            const valid = active && !active.needsReauth && auth.connectionRevision?.(id) === revision &&
+            const active = id && auth.characters().find(c => c.id === id);
+            const valid = !id || active && !active.needsReauth && auth.connectionRevision?.(id) === revision &&
                 (!d.scope || active.scopes.includes(d.scope));
-            if (!valid) nextRun.delete(key);
-            return valid;
+            if (!valid || pausedModules.has(m.id)) {
+                nextRun.delete(key);
+                // A paused module ends only its own work. Lost connection
+                // ownership still stops the remaining pilot collection batches.
+                obsoleteReason = valid ? DATASET_PAUSED : DATASET_OBSOLETE;
+                return false;
+            }
+            return true;
         }
         if (d.owner) {
             const pilot = catalog.find(m => m.id === 'pilot');
             await syncDataset(character, pilot, pilot.datasets.find(d => d.key === 'profile'));
-            if (!current()) return DATASET_OBSOLETE;
+            if (!current()) return obsoleteReason;
             const profile = store.snapshot(id, 'profile');
             if (!enabled(pilot) || profile?.status !== 'ready') {
                 store.saveSnapshot(id, d.key, { status: 'waiting', data: null, error: 'Waiting for current corporation and alliance membership.' });
@@ -274,7 +280,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             const r = await (d.paged ? esi.paged : esi.request)(d.route.replaceAll('{id}', id).replaceAll('{owner}', ownerId), options);
             // Disconnect/reconnect and scope changes end collection ownership,
             // even if an already dispatched ESI response still succeeds.
-            if (!current()) return DATASET_OBSOLETE;
+            if (!current()) return obsoleteReason;
             // Session ownership follows local fresh-response receipt, before
             // optional display metadata or names can cross a session boundary.
             const observation = !r.stale && ['location', 'ship', 'skills', 'jobs'].includes(d.key)
@@ -282,13 +288,13 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             // Composite private reads retain the admitted connection without
             // rereading the complete roster for every detail. Full access and
             // scope checks still enclose enrichment and its publication.
-            const sameConnection = auth.connectionRevision ? () => auth.connectionRevision(id) === revision : current;
+            const sameConnection = auth.connectionRevision ? () => !pausedModules.has(m.id) && auth.connectionRevision(id) === revision : current;
             const data = await enrich(d.key, r.data, id, sameConnection);
-            if (!current()) return DATASET_OBSOLETE;
+            if (!current()) return obsoleteReason;
             if (d.key === 'sovereignty') await resolveNames(data.map(s => ({ alliance_id: s.alliance_id, corporation_id: s.corporation_id, faction_id: s.faction_id })), true);
             else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts', 'industry_systems'].includes(d.key))
                 await resolveNames(d.key === 'implants' ? {implants: data} : data, protectionKeys.has(d.key), d.key);
-            if (!current()) return DATASET_OBSOLETE;
+            if (!current()) return obsoleteReason;
             const snapshot = { ...r, data, status: r.stale ? 'stale' : 'ready', ...(d.owner ? { ownerId } : {}) };
             snapshot.sourceModifiedAt = r.headers?.['last-modified'] || null;
             if (!r.stale) snapshot.refreshAt = new Date(refreshDeadline(pollingPolicy(d, id), r, d.key === 'queue' ? data : store.snapshot(id, 'queue')?.data)).toISOString();
@@ -325,7 +331,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             }
         }
         catch (e) {
-            if (!current()) return DATASET_OBSOLETE;
+            if (!current()) return obsoleteReason;
             const retained = d.owner && prior?.ownerId !== ownerId ? null : prior;
             const retryAt = new Date(retryDeadline(d, e.retryAt)).toISOString();
             store.saveSnapshot(id, d.key, { ...retained, data: retained?.data ?? null, status: retained?.data != null ? 'stale' : 'error', error: e.message, errorStatus: e.status, retryAt, ...(d.owner ? { ownerId } : {}) });
@@ -486,6 +492,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     } catch (error) { return rollback(error); }
     return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, connectUI, namesSnapshot, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
+            if (value) pausedModules.delete(id); else pausedModules.add(id);
         }
         else
             registry.toggle(id, value); if (id === 'universe') universe.tick().catch(() => {}); refreshOPSEC(); updateBindings(); changed(); }, requestSync(id) {

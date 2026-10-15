@@ -42,7 +42,9 @@ async function fixture(t, key, count = 6) {
     core.bus.on('data.' + key, event => events.push(event));
     const readCharacters = auth.characters; let rosterReads = 0;
     auth.characters = () => { rosterReads++; return readCharacters(); };
-    return {store, core, auth, esi, connect, calls, events, admitted, release, rosterReads: () => rosterReads,
+    const readSetting=store.get;let moduleReads=0;
+    store.get=(key,...args)=>{if(key.startsWith('module:'))moduleReads++;return readSetting(key,...args);};
+    return {store, core, auth, esi, connect, calls, events, admitted, release, rosterReads: () => rosterReads,moduleReads:()=>moduleReads,
         failFirst() { gates[0].reject(Error('Old transport failed')); }};
 }
 
@@ -101,6 +103,22 @@ for (const key of ['assets', 'planets']) {
         assert.equal(small.calls.length, 4);
         assert.equal(large.calls.length, key === 'assets' ? 64 : 6);
         assert.equal(large.rosterReads(), small.rosterReads(), 'Only existing enclosing access checks read the roster');
+        assert.equal(large.moduleReads(), small.moduleReads(), 'Detail ownership must not reread module settings per item');
         assert.ok(small.rosterReads() < 10, 'The fixed number of enclosing checks remains bounded');
+    });
+
+    test(`disabling the ${key} module stops not-yet-admitted private details and reuses accepted caches on re-enable`, async t => {
+        const f = await fixture(t, key), work = f.core.sync(42);
+        await f.admitted.promise;
+        const module = key === 'assets' ? 'hangar' : 'industry';
+        f.core.toggle(module, false); f.release(); await work;
+        const disabled = {requests: f.calls.length, snapshot: f.store.snapshot(42, key), events: f.events.length};
+        f.core.toggle(module, true); await f.core.requestSync(42);
+        assert.equal(f.store.snapshot(42, key).status, 'ready');
+        assert.equal(f.store.snapshot(42, key).data.length, 6);
+        assert.equal(f.calls.length, 6, 'Re-enable reuses the four accepted detail caches and fetches only the two outstanding details');
+        assert.equal(f.esi.health().active, 0); assert.equal(f.esi.health().queued, 0);
+        assert.deepEqual(disabled, {requests: 4, snapshot: null, events: 0}, 'A disabled owner neither starts remaining private details nor publishes the partial collection');
+        assert.equal(f.events.length, 1);
     });
 }
