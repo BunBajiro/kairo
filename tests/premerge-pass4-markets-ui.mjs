@@ -25,12 +25,46 @@ async function loaded(scenario){
  if(scenario==='browse')await page.waitForFunction(()=>document.querySelectorAll('.market-catalogue .item-name img').length===2);
  else await equipment().waitFor();
 }
+async function concurrentRetries(){
+ const counts={categories:0,browse:0},responses=[],message=key=>'Concurrent '+key+' transport failure';let overviews=0;
+ const handler=async route=>{
+  const u=new URL(route.request().url()),key=u.pathname.split('/').at(-1);
+  if(u.pathname==='/api/markets')overviews++;
+  if(!Object.hasOwn(counts,key)||u.searchParams.get('hub')!=='60008494')return route.fallback();
+  counts[key]++;const response=await route.fetch();responses.push({key,status:response.status()});
+  if(counts[key]===1||(key==='categories'&&counts[key]===2))return route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:message(key)})});
+  return route.fulfill({response});
+ };
+ const response=(key,status)=>page.waitForResponse(r=>{const u=new URL(r.url());return u.pathname==='/api/markets/'+key&&u.searchParams.get('hub')==='60008494'&&r.status()===status;});
+ await page.route(app.origin+'/api/markets{,/**}',handler);
+ try{
+  await page.goto(app.origin+'/#markets',{waitUntil:'domcontentloaded',timeout:15000});await page.locator('.connection-status.online').waitFor({state:'attached'});
+  const categories=response('categories',503);await hub('Amarr').click();await categories;
+  const browse=response('browse',503);await page.getByRole('textbox',{name:'Search cached market items',exact:true}).fill('a');await browse;await frame();
+  const error=page.locator('.markets-module > .inline-error');
+  check('Concurrent failures each issue one real current request',{...counts},{categories:1,browse:1});
+  const overview=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/markets'&&r.status()===200);await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await overview;await frame();
+  check('A healthy overview does not erase a failed category owner',await error.filter({hasText:message('categories')}).count(),1);
+  const before=overviews,currentFailure=response('categories',503);await error.getByRole('button',{name:'Retry',exact:true}).click();await currentFailure;await frame();
+  check('A failed targeted Retry retains its current failure',await error.filter({hasText:message('categories')}).count(),1);
+  check('Retrying categories leaves the failed browse owner unrequested',{...counts},{categories:2,browse:1});
+  const categoryRecovery=response('categories',200);await error.getByRole('button',{name:'Retry',exact:true}).click();await categoryRecovery;await equipment().waitFor();await frame();
+  check('Category recovery exposes the other current failed owner',await error.filter({hasText:message('browse')}).count(),1);
+  check('Category recovery only requests its own resource',{...counts},{categories:3,browse:1});
+  const browseRecovery=response('browse',200);await error.getByRole('button',{name:'Retry',exact:true}).click();await browseRecovery;await loaded('browse');await frame();
+  check('Both independently recovered resources retain the real cached rows',await rowIds(),[519,1403]);
+  check('All recovered owners clear their own errors',await error.count(),0);
+  check('Concurrent recovery uses exactly three explicit resource retries',{...counts},{categories:3,browse:2});
+  check('Resource retries add no overview request',overviews-before,0);
+  check('All intercepted concurrent responses came from healthy real owners',responses.map(r=>r.status),[200,200,200,200,200]);
+ }finally{await page.unroute(app.origin+'/api/markets{,/**}',handler);}
+}
 try{
  await seedMarketIcons(join(dir,'data'),{now,denyNetwork});
  app=await startKairo({port:18652,streamPort:18653,dataDir:join(dir,'data'),noSync:true,fetcher:denyNetwork,markets:{now:()=>now,historySource:'esi',historyFetcher:denyNetwork},datasets:{fetcher:denyNetwork}});
  for(const engine of ['chromium','firefox']){
   browser=await engines[engine].launch({headless:true,timeout:20000,...(engine==='chromium'&&process.env.KAIRO_CHROME_PATH?{executablePath:process.env.KAIRO_CHROME_PATH}:{})});
-  for(const width of [1600,390])for(const scenario of ['browse','categories','settings']){
+  for(const width of [1600,390])for(const scenario of ['browse','categories','settings','concurrent']){
    meta={engine,version:browser.version(),width,scenario};
    context=await browser.newContext({viewport:{width,height:1100},serviceWorkers:'block'});context.setDefaultTimeout(10000);
    page=await context.newPage();page.on('pageerror',error=>errors.push({...meta,error:error.message}));
@@ -53,7 +87,9 @@ try{
     unexpectedNetwork.push({...meta,url:url.href});return route.abort('blockedbyclient');
    });
    try{
-    if(scenario==='settings'){
+    if(scenario==='concurrent'){
+     await concurrentRetries();await page.screenshot({path:join(output,engine+'-'+width+'-concurrent-retry.png')});
+    }else if(scenario==='settings'){
      await marketSettingsOwnership({page,app,check,frame});
      await page.screenshot({path:join(output,engine+'-'+width+'-settings-retry.png')});
     }else{

@@ -29,10 +29,14 @@ export async function goalCreateOwnership({page,app,check,frame,deferred}) {
  const titleInput=()=>dialog.getByRole('textbox',{name:'Objective name',exact:true});
  const targetInput=()=>dialog.getByRole('spinbutton',{name:'Target amount',exact:true});
  const create=()=>dialog.getByRole('button',{name:'Create objective',exact:true});
- const draft=async()=>await dialog.isVisible()?{open:true,title:await titleInput().inputValue(),target:await targetInput().inputValue()}: {open:false,title:null,target:null};
+ const isOpen=()=>dialog.evaluateAll(elements=>elements[0]?.getAttribute('data-state')==='open');
+ const draft=async()=>await isOpen()?{open:true,title:await titleInput().inputValue(),target:await targetInput().inputValue()}: {open:false,title:null,target:null};
  const open=async(title,target)=>{await page.getByRole('button',{name:'New objective',exact:true}).click();await titleInput().fill(title);await targetInput().fill(String(target));};
  const close=async()=>{await dialog.getByRole('button',{name:'Close',exact:true}).click();await dialog.waitFor({state:'detached'});};
  const hold=failure=>{const gate={failure,seen:deferred(),release:deferred(),done:deferred()};gates.add(gate);next=gate;return gate;};
+ // A response event only signals headers. Await the consumed request and the
+ // editor's busy completion; a closing Radix dialog is still visible during animation.
+ const settled=async response=>{await response.finished();await page.waitForFunction(()=>{const d=document.querySelector('.goal-create-dialog');return !d||d.getAttribute('data-state')==='closed'||![...d.querySelectorAll('button')].some(button=>button.textContent==='Creating…');});await frame();};
  const saveCurrent=async()=>{const response=page.waitForResponse(goalRequest);await create().click();assert.equal((await response).status(),201);await dialog.waitFor({state:'detached'});await frame();};
  try{
   await page.goto(app.origin+'/#goals',{waitUntil:'domcontentloaded',timeout:15000});
@@ -44,16 +48,16 @@ export async function goalCreateOwnership({page,app,check,frame,deferred}) {
   await close();await open(titles.newer,7);
   check('A new editor accepts a distinct draft while the older response is held',await draft(),{open:true,title:titles.newer,target:'7'});
   const progressRead=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/goals'&&r.request().method()==='GET');
-  success.release.resolve();await wait(success.done.promise);assert.equal((await progressRead).status(),200);await frame();
+  success.release.resolve();await wait(success.done.promise);const progressResponse=await progressRead;assert.equal(progressResponse.status(),200);await settled(progressResponse);
   check('An older successful Create cannot close the newly opened objective draft',await draft(),{open:true,title:titles.newer,target:'7'});
   check('The unsaved newer draft has not created an extra objective',stored(titles.newer),[]);
   // Repair only the exercised old behavior so healthy controls also run before fix.
-  if(!await dialog.isVisible())await open(titles.newer,7);
+  if(!await isOpen()){await dialog.waitFor({state:'detached'});await open(titles.newer,7);}
   check('The current objective draft remains saveable after the older response',await create().isEnabled(),true);
   await saveCurrent();
   check('Explicit Create saves the newer objective and closes its own editor',stored(titles.newer),[{title:titles.newer,target:7,progress:0,done:0}]);
 
-  await open(titles.retry,9);failNext=true;let response=page.waitForResponse(goalRequest);await create().click();assert.equal((await response).status(),503);await frame();
+  await open(titles.retry,9);failNext=true;let response=page.waitForResponse(goalRequest);await create().click();const currentFailure=await response;assert.equal(currentFailure.status(),503);await settled(currentFailure);
   check('A current create failure is reported to the user',await page.getByText('Synthetic current objective failure',{exact:true}).count(),1);
   check('A current create failure preserves the editable draft',await draft(),{open:true,title:titles.retry,target:'9'});
   check('A current create failure releases its Save control',await create().isEnabled(),true);
@@ -61,7 +65,7 @@ export async function goalCreateOwnership({page,app,check,frame,deferred}) {
   await saveCurrent();check('Retrying the current create saves exactly once',stored(titles.retry),[{title:titles.retry,target:9,progress:0,done:0}]);
 
   await open(titles.obsolete,4);const failure=hold(true);await create().click();await wait(failure.seen.promise);if(failure.error)throw failure.error;await close();await open(titles.last,11);
-  response=page.waitForResponse(goalRequest);failure.release.resolve();await wait(failure.done.promise);assert.equal((await response).status(),503);await frame();
+  response=page.waitForResponse(goalRequest);failure.release.resolve();await wait(failure.done.promise);const obsoleteFailure=await response;assert.equal(obsoleteFailure.status(),503);await settled(obsoleteFailure);
   check('An obsolete create failure leaves the newer objective draft intact',await draft(),{open:true,title:titles.last,target:'11'});
   check('An obsolete create failure does not report an error over the new draft',await page.getByText('Synthetic obsolete objective failure',{exact:true}).count(),0);
   check('A rejected obsolete create never persists an objective',stored(titles.obsolete),[]);

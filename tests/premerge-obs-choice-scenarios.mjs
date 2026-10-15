@@ -61,6 +61,7 @@ async function provider() {
 
 export async function obsChoiceName({page, app, check, frame}) {
     const fixture = await provider(), writes = [];
+    let opened = false;
     const observe = request => { if (new URL(request.url()).pathname === '/api/obs' && request.method() === 'PUT') writes.push(request.postDataJSON()); };
     page.on('request', observe);
     try {
@@ -73,7 +74,11 @@ export async function obsChoiceName({page, app, check, frame}) {
             const config = {...defaultOBS(), enabled: true, automation: false, port: fixture.port, collection: 'Provider names'};
             config.rules.unknown = [{id: 'provider-name', kind, sceneName: 'Game', sourceName: kind === 'filter' ? 'Camera' : 'Microphone', filterName: kind === 'filter' ? 'Blur' : '', enabled: false}];
             await app.core.obs.save(config);
-            await page.goto(app.origin + '/#opsec', {waitUntil: 'domcontentloaded', timeout: 15000});
+            // A same-URL goto can remain in the current document. Each provider
+            // inventory needs a new mounted editor that reads its saved config.
+            if (opened) await page.reload({waitUntil: 'domcontentloaded', timeout: 15000});
+            else await page.goto(app.origin + '/#opsec', {waitUntil: 'domcontentloaded', timeout: 15000});
+            opened = true;
             await page.locator('.connection-status.online').waitFor({state: 'attached'});
             const panel = page.locator('.obs-controls'), row = panel.locator('.obs-action');
             await row.waitFor();

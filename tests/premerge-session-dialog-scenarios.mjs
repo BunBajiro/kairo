@@ -26,14 +26,14 @@ export async function sessionDialogOwnership({page,app,check,frame,deferred}){
  await page.route(pattern,handler);
  try{
   await page.goto(app.origin+'/#sessions',{waitUntil:'domcontentloaded',timeout:15000});await page.locator('.connection-status.online').waitFor({state:'attached'});
-  let dialog=await open(labels[0]);await dialog.getByLabel('Session name',{exact:true}).fill('Accepted source name');await dialog.getByLabel('Debrief & notes',{exact:true}).fill('Accepted source debrief');
+  let dialog=await open(labels[0]);await dialog.getByLabel('Session name',{exact:true}).fill('Accepted source name');await dialog.locator('.session-debrief textarea').fill('Accepted source debrief');
   const save=hold('/api/sessions/'+ids[0],'PUT');await dialog.getByRole('button',{name:'Save session details',exact:true}).click();await seen(save);
   check('Closing a pending Session save retains its already accepted persistence',read(ids[0]),{label:'Accepted source name',notes:'Accepted source debrief'});
   await dialog.getByRole('button',{name:'Close',exact:true}).click();await dialog.waitFor({state:'detached'});
-  dialog=await open(labels[1]);await dialog.getByLabel('Session name',{exact:true}).fill('Newer next-session draft');await dialog.getByLabel('Debrief & notes',{exact:true}).fill('Newer private debrief draft');
+  dialog=await open(labels[1]);await dialog.getByLabel('Session name',{exact:true}).fill('Newer next-session draft');await dialog.locator('.session-debrief textarea').fill('Newer private debrief draft');
   await release(save);
   check('A closed Session save cannot replace the newly opened name draft',await dialog.getByLabel('Session name',{exact:true}).inputValue(),'Newer next-session draft');
-  check('A closed Session save cannot replace the newly opened debrief',await dialog.getByLabel('Debrief & notes',{exact:true}).inputValue(),'Newer private debrief draft');
+  check('A closed Session save cannot replace the newly opened debrief',await dialog.locator('.session-debrief textarea').inputValue(),'Newer private debrief draft');
   check('A previous save acknowledgement does not persist the newer unsaved Session',read(ids[1]),{label:labels[1],notes:'Recorded notes 1'});
   check('The current Session save remains available',await dialog.getByRole('button',{name:'Save session details',exact:true}).isEnabled(),true);
   let response=page.waitForResponse(value=>new URL(value.url()).pathname==='/api/sessions/'+ids[1]&&value.request().method()==='PUT');

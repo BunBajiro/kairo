@@ -4,14 +4,16 @@ let fixtureNumber=0;
 const deferred=()=>{let resolve,reject;const promise=new Promise((r,j)=>{resolve=r;reject=j;});promise.catch(()=>{});return {promise,resolve,reject};};
 async function bounded(promise,label){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Timed out waiting for '+label)),15000);})]);}finally{clearTimeout(timer);}}
 export async function marketSettingsOwnership({page,app,check,frame}){
- const now=Date.now(),firstId=60009000+(fixtureNumber++)*10,nextId=firstId+1,cache=app.store.db.prepare('INSERT OR REPLACE INTO cache VALUES(?,?,?,?,?,?)');
+ const now=Date.now(),firstId=60009000+(fixtureNumber++)*10,nextId=firstId+1,partialId=firstId+2,foundId=firstId+3,manualId=firstId+4,cache=app.store.db.prepare('INSERT OR REPLACE INTO cache VALUES(?,?,?,?,?,?)');
  const seed=(path,data,method='GET',body)=>cache.run('0:'+method+':'+path+':'+(body?createHash('sha256').update(JSON.stringify(body)).digest('hex'):''),JSON.stringify(data),null,now+86400000,now,'{}');
  const queuedName='Queued next module';
  seed('/universe/ids',{inventory_types:[{id:587,name:queuedName}]},'POST',[queuedName]);seed('/universe/types/587',{market_group_id:5});
- for(const id of [firstId,nextId])seed('/universe/stations/'+id,{name:'Fixture station '+id,system_id:30000001,services:['market']});
- seed('/universe/systems/30000001',{name:'Fixture system',constellation_id:20000001});seed('/universe/constellations/20000001',{region_id:10000001});seed('/universe/regions/10000001',{name:'Fixture region'});
+ for(const id of [firstId,nextId,partialId,foundId])seed('/universe/stations/'+id,{name:'Fixture station '+id,system_id:30000001,services:['market']});
+ seed('/universe/ids',{solar_systems:[{id:30000001,name:'Fixture system'}]},'POST',['Fixture system']);
+ seed('/universe/systems/30000001',{name:'Fixture system',constellation_id:20000001,stations:[foundId]});seed('/universe/constellations/20000001',{region_id:10000001});seed('/universe/regions/10000001',{name:'Fixture region'});
  app.store.set('market:quick',[1403,519]);
- const paths={quick:'/api/markets/quick',hubs:'/api/markets/hubs'},counts={quick:0,hubs:0},gates=[],modes={};
+ const paths={quick:'/api/markets/quick',hubs:'/api/markets/hubs'},counts={quick:0,hubs:0},gates=[],modes={};let discoveries=0;
+ const countDiscovery=request=>{if(new URL(request.url()).pathname==='/api/markets/discover')discoveries++;};page.on('request',countDiscovery);
  const hold=key=>{const gate={ready:deferred(),release:deferred(),done:deferred(),started:false};gates.push(gate);modes[key]=gate;return gate;};
  const fail=key=>{modes[key]={failure:true};};
  const handler=async route=>{
@@ -65,9 +67,32 @@ export async function marketSettingsOwnership({page,app,check,frame}){
   const retriedHub=mutation('hubs'),retryHubOverview=overview();await dialog().getByRole('button',{name:'Add hub',exact:true}).click();await retriedHub;await retryHubOverview;await frame();
   check('Retrying the current hub draft persists the matching identity and name',app.store.db.prepare('SELECT id,name,enabled FROM market_hubs WHERE id=?').get(nextId),{id:nextId,name:'Next hub draft',enabled:1});
   check('A current accepted hub addition clears its submitted fields',{id:await location().inputValue(),name:await nickname().inputValue()},{id:'',name:''});
-  check('Market settings use only the six explicit mutation attempts',counts,{quick:3,hubs:3});
+  check('Market settings use only the six explicit mutation attempts',{...counts},{quick:3,hubs:3});
+  await close();await openQuick();await quickInput().fill(queuedName);const sameName=hold('quick');
+  await dialog().getByRole('button',{name:'Add item',exact:true}).click();check('The held same-item addition is accepted by the real owner',(await bounded(sameName.ready.promise,'same-item persistence')).status,200);
+  await quickInput().fill('A different draft');await quickInput().fill(queuedName);
+  const sameOverview=overview();sameName.release.resolve();await bounded(sameName.done.promise,'same-item response');await sameOverview;await frame();
+  check('Editing away and back retains the newer quick draft after acknowledgement',await quickInput().inputValue(),queuedName);
+  check('A repeated accepted item does not duplicate the durable basket',app.store.get('market:quick'),[519,587]);await close();
+
+  await openHubs();await location().fill(String(partialId));await nickname().fill('Partial submitted');const partial=hold('hubs');
+  await dialog().getByRole('button',{name:'Add hub',exact:true}).click();check('The partially edited hub reaches real persistence',(await bounded(partial.ready.promise,'partial hub persistence')).status,200);
+  await nickname().fill('Temporary nickname');await nickname().fill('Partial submitted');
+  const partialOverview=overview();partial.release.resolve();await bounded(partial.done.promise,'partial hub response');await partialOverview;await frame();
+  check('A hub acknowledgement clears only the untouched submitted field',{id:await location().inputValue(),name:await nickname().inputValue()},{id:'',name:'Partial submitted'});
+  check('The partial draft still has exactly its submitted durable identity',app.store.db.prepare('SELECT id,name FROM market_hubs WHERE id=?').get(partialId),{id:partialId,name:'Partial submitted'});
+
+  await location().fill(String(manualId));await nickname().fill('Discovered nickname');await dialog().getByRole('textbox',{name:'Find hub stations by system',exact:true}).fill('Fixture system');
+  const discovery=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/markets/discover'&&r.status()===200),discoveryOverview=overview();
+  await dialog().getByRole('button',{name:'Find stations',exact:true}).click();await discovery;await discoveryOverview;
+  const found=hold('hubs');await dialog().getByRole('button',{name:'Fixture station '+foundId,exact:true}).click();check('A discovered station addition reaches the real owner',(await bounded(found.ready.promise,'found hub persistence')).status,200);
+  const foundOverview=overview();found.release.resolve();await bounded(found.done.promise,'found hub response');await foundOverview;await frame();
+  check('Adding a discovered station preserves an unrelated manual location draft',{id:await location().inputValue(),name:await nickname().inputValue()},{id:String(manualId),name:''});
+  check('The discovered station stores its submitted nickname',app.store.db.prepare('SELECT id,name FROM market_hubs WHERE id=?').get(foundId),{id:foundId,name:'Discovered nickname'});
+  check('The unrelated manual location remains unsubmitted',!!app.store.db.prepare('SELECT id FROM market_hubs WHERE id=?').get(manualId),false);
+  check('Additional draft boundaries use only three explicit mutations and one discovery',{quick:counts.quick,hubs:counts.hubs,discoveries},{quick:4,hubs:5,discoveries:1});
  }finally{
   for(const gate of gates)gate.release.resolve();await bounded(Promise.all(gates.filter(gate=>gate.started).map(gate=>gate.done.promise)),'held settings response cleanup');
-  await page.unroute(app.origin+'/api/markets/quick',handler);await page.unroute(app.origin+'/api/markets/hubs',handler);
+  await page.unroute(app.origin+'/api/markets/quick',handler);await page.unroute(app.origin+'/api/markets/hubs',handler);page.off('request',countDiscovery);
  }
 }
