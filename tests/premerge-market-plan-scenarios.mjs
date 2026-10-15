@@ -88,7 +88,26 @@ export async function importPlanOwnership({page,app,check,frame,deferred}){
   check('A failed current save leaves its previous persisted version intact',persisted(current.id).name,prefix+'delayed saved plan');
   response=page.waitForResponse(r=>new URL(r.url()).pathname===savePath&&r.request().method()==='POST');await save().click();const retried=await(await response).json();await dialog().getByRole('heading',{name:prefix+'retry saved plan',exact:true}).waitFor();
   check('Retrying a failed plan save persists its current name',persisted(retried.id).name,prefix+'retry saved plan');
-  check('Import plan ownership keeps explicit request counts bounded',requests,{quote:4,save:4});
+  await close();
+  await manifest().getByRole('button',{name:'Clear draft',exact:true}).click();
+  await page.locator('.import-card-open').first().click();const renameDetail=page.locator('.import-detail-dialog');
+  await renameDetail.getByLabel('Import quantity',{exact:true}).waitFor();await renameDetail.getByRole('button',{name:/Add (anchoring|profiteering) option to plan/}).click();await renameDetail.waitFor({state:'detached'});
+  await review().click();await save().waitFor();await dialog().getByLabel('Plan name',{exact:true}).fill(prefix+'submitted plan name');
+  const renamed=hold(savePath);await save().click();await seen(renamed);
+  const createdId=renamed.body.id;assert.notEqual(createdId,current.id);
+  await dialog().getByLabel('Plan name',{exact:true}).fill(prefix+'newer plan name');
+  await release(renamed);
+  await page.waitForFunction(()=>{const save=[...document.querySelectorAll('.import-plan-dialog button')].find(button=>button.textContent.trim()==='Save import plan');return !save||!save.disabled;});
+  check('A pending plan save preserves a newer editable plan name',await dialog().getByLabel('Plan name',{exact:true}).inputValue(),prefix+'newer plan name');
+  check('A newer plan name remains saveable after an older acknowledgement',await save().count(),1);
+  check('Only the submitted plan name reaches persistence before retry',{id:renamed.body.id,name:persisted(createdId).name},{id:createdId,name:prefix+'submitted plan name'});
+  // Repair the deliberate old-implementation loss only to reach independent
+  // retry controls. This explicit extra review is counted separately.
+  let recoveryQuotes=0;if(!await save().count()){await close();await review().click();await save().waitFor();await dialog().getByLabel('Plan name',{exact:true}).fill(prefix+'newer plan name');recoveryQuotes++;}
+  response=page.waitForResponse(r=>new URL(r.url()).pathname===savePath&&r.request().method()==='POST');await save().click();const renamedRetry=await(await response).json();await dialog().getByRole('heading',{name:prefix+'newer plan name',exact:true}).waitFor();
+  check('Saving the retained name updates the original plan identity',{id:renamedRetry.id,name:persisted(createdId).name},{id:createdId,name:prefix+'newer plan name'});
+  check('Saving the retained name cannot create a duplicate plan',db.prepare("SELECT COUNT(*) n FROM market_import_plans WHERE hub_id=? AND json_extract(body,'$.name') LIKE ?").get(hubId,prefix+'%').n,3);
+  check('Import plan ownership keeps explicit request counts bounded',requests,{quote:5+recoveryQuotes,save:6});
   await close();
  }finally{
   for(const gate of gates)gate.release.resolve();await Promise.all(gates.filter(gate=>gate.started).map(gate=>gate.done.promise));

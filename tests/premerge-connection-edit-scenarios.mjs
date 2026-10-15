@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 // New Client ID drafts remain owned by the input while an earlier Save is in
 // transit. The server is real; only its reply is held after SQLite persistence.
 export async function connectionClientDraft({page,app,check,frame,deferred}){
- const path='/api/settings',gate={seen:deferred(),release:deferred(),done:deferred()};let hold=true,fail=false,writes=0;
+ const path='/api/settings';let gate={seen:deferred(),release:deferred(),done:deferred()},hold=true,fail=false,writes=0;
  const pilots=app.store.db.prepare('SELECT * FROM characters').all(),originalId=app.store.get('clientId','');
  const initial='synthetic-client-original',submitted='synthetic-client-submitted',newer='synthetic-client-newer-draft',final='synthetic-client-recovery';
  // EVE's Client ID can only change before connecting pilots. Isolate this
@@ -36,13 +36,26 @@ export async function connectionClientDraft({page,app,check,frame,deferred}){
   await page.waitForFunction(()=>!document.querySelector('#client-id').parentElement.querySelector('button').disabled);await frame();
   check('A later Save persists the current Client ID draft',app.store.get('clientId'),newer);
   check('Successful Save leaves the saved Client ID displayed',await input.inputValue(),newer);
+  // Returning to the previously saved value is still a newer edit. Value
+  // equality alone cannot decide whether this input belongs to the old Save.
+  gate={seen:deferred(),release:deferred(),done:deferred()};hold=true;
+  await input.fill(submitted);await save.click();
+  await Promise.race([gate.seen.promise,page.waitForTimeout(10000).then(()=>{throw new Error('Reverted Client ID save did not reach its response gate.');})]);
+  await input.fill(newer);gate.release.resolve();await gate.done.promise;
+  await page.waitForFunction(()=>!document.querySelector('#client-id').parentElement.querySelector('button').disabled);await frame();
+  check('A draft reverted to the previous saved ID survives an older Save',await input.inputValue(),newer);
+  check('Reverting the draft does not perform another settings write',app.store.get('clientId'),submitted);
+  if(await input.inputValue()!==newer)await input.fill(newer);
+  const reverted=page.waitForResponse(response=>new URL(response.url()).pathname===path&&response.request().method()==='PUT');await save.click();assert.equal((await reverted).status(),200);
+  await page.waitForFunction(()=>!document.querySelector('#client-id').parentElement.querySelector('button').disabled);await frame();
+  check('Saving the reverted draft restores the chosen Client ID',app.store.get('clientId'),newer);
   await input.fill(final);fail=true;const failed=page.waitForResponse(response=>new URL(response.url()).pathname===path&&response.request().method()==='PUT');await save.click();assert.equal((await failed).status(),503);
   await page.waitForFunction(()=>!document.querySelector('#client-id').parentElement.querySelector('button').disabled);await frame();
   check('Failed client setup Save preserves the current draft',await input.inputValue(),final);
   check('Failed client setup Save preserves the prior saved ID',app.store.get('clientId'),newer);
   const retried=page.waitForResponse(response=>new URL(response.url()).pathname===path&&response.request().method()==='PUT');await save.click();assert.equal((await retried).status(),200);
   await page.waitForFunction(()=>!document.querySelector('#client-id').parentElement.querySelector('button').disabled);await frame();
-  check('Retry recovers the current Client ID',app.store.get('clientId'),final);check('Every requested Save uses one settings write',writes,4);
+  check('Retry recovers the current Client ID',app.store.get('clientId'),final);check('Every requested Save uses one settings write',writes,6);
  }finally{
   gate.release.resolve();await page.unroute(app.origin+path,handler);app.store.set('clientId',originalId);
   for(const pilot of pilots){const keys=Object.keys(pilot);app.store.db.prepare('INSERT OR REPLACE INTO characters('+keys.join(',')+') VALUES('+keys.map(()=>'?').join(',')+')').run(...keys.map(key=>pilot[key]));}
