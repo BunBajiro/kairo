@@ -117,6 +117,10 @@ The first batch closed five findings in build72; the broader pass added 15, clos
 | PBR-42 | Reproduced; correction in progress | A live combat feed verifies and persists an assisted kill, but the ordinary dashboard snapshot merger retains its old empty list; a related combat goal also remains unchanged. | Combat ingestion must notify the existing change owner when a direct batch changes the ledger, while existing public-page/Core collectors retain their single publication boundary. | Real Core baseline: snapshot dataRevision does not advance and durable goal progress stays zero. Two failures and a deferred/duplicate healthy control. Independent review requires bounded batch notification without per-page or duplicate Core refreshes. |
 | PBR-43 | Reproduced; correction prepared | Submit an import plan with the same item once as a numeric ID and once as a string. Raw-identity uniqueness accepts both, so each line can consume the same full source stock and persist an impossible combined plan. | Import plan uniqueness uses the same numeric item identity as its quote owner, within the existing maximum100 lines. | Real service/SQLite baseline fails mixed-ID and string-ID rejection while numeric duplicate/unique controls remain valid. Fixed seven focused checks pass; normalization is bounded O(n) with no added SQL/provider work. |
 | PBR-44 | Reproduced; correction in progress | An unmet wallet-balance goal has250 progress; a fresh valid balance falls to-100. Tracking remains ready but progress incorrectly stays250 because negative progress is silently discarded. | Wallet-balance evaluation clamps current progress at zero while preserving stale/invalid-source handling and durable completed goals. | Real owner baseline fails expected0/actual250; stale/invalid/zero healthy control passes. Negative character wallet balance is supported source data. The correction adds no requests or queries. |
+| PBR-45 | Reproduced; correction prepared; peer review passed | Active and jump-clone implant arrays contain numeric item IDs; the name walker only examines named object fields, so actual operation rows retain raw implant IDs despite available names. | Core resolves explicitly identified implant arrays through the existing deduplicated name batch and cache. | Three failed-baseline expectations; four new and adjacent33 checks pass, including later recovery and one shared name batch for duplicate active/clone implants. Known IDs and explicit refresh add no transport work. Shared reviewer approved correctness and cost bounds. |
+| PBR-46 | Reproduced; correction in progress | Begin a Session start request, disconnect the pilot before its body finishes, then deliver the body. HTTP returns200 and creates an active Session for the now-disconnected pilot, which cannot be ended until reconnect. | HTTP Session actions must validate the connected pilot after the awaited body, immediately before the synchronous action. | Real partial-body HTTP/SQLite baseline proves connected0, sessions1 and startedEvents1; ordinary connected start/end and disconnected retry control passes. No new request or query is needed. |
+| PBR-47 | Reproduced; correction prepared; peer review passed | A Stream layout save fails in SQLite after selecting a different pilot. Stored layout/version remain old, but the public widget exposes the newly submitted pilot's data. | Publish Stream binding state only after the layout is successfully persisted. | Real SQLite readonly failure reproduces100 versus200ISK; accepted binding survives failure/reconnect and successful retry broadcasts once. New plus adjacent30 checks pass. Shared review passed; no added reads or requests. |
+| PBR-48 | Reproduced; correction in progress | Disable public combat, disable Universe, or close the service while its already-scheduled fetch waits for spacing. A second request still dispatches after the owner is inactive. | Recheck the feed's existing active predicate immediately after its pacing pause and before dispatch. | Real owner/SQLite baseline: three failed dispatch bounds, with enabled spacing/backoff control passing. Preserve current pacing and bounded reads; independent review and fixed evidence pending. |
 
 Reviewed areas in the first batch: Universe/Maps/navigation, Sessions/archive/replay, startup/datasets, Stream/OPSEC/OBS and import planning. The existing targeted suites passed; the completed broader review is recorded below. Actual Windows/EVE/OBS remains separate from automated closure of these defects.
 
@@ -169,6 +173,20 @@ Started 15 October 2026 after Bun reported a connection-hover positioning defect
 | Core / Goals / persistence | Collectors, all goal sources, polling, ship/skill/industry state, migrations and retention | In progress |
 
 Retain a single contiguous five-column bug ledger. Establish new defects with meaningful failing-before/passing-after evidence and healthy/recovery controls; do not reopen prior findings or performance decisions without new evidence. Corrections must preserve intended workflows and presentation without repair notices, and retain bounded request/query/queue work. Bank useful checkpoints. Chrome and Firefox plus final source/package acceptance remain blocking. Local browser IPC was previously denied; use hosted Actions without retrying that restriction. No merge or stable release is authorized.
+
+## Retrospective review of PBR-1–37
+
+Requested on15 October2026 alongside the current pass. Review each earlier correction against current source, its meaningful regression and relevant performance bounds. Preserve its historical closure unless new concrete evidence warrants reopening; do not repeat historical performance benchmarks or make speculative refactors. Current pass work continues in parallel. Every new fix also receives an independent correctness/performance review before candidate acceptance.
+
+| Review owner | Prior findings | State |
+| --- | --- | --- |
+| Universe reviewer | 1,6,12,28,32 | In progress |
+| Markets reviewer | 4,7,10,13,14,23,24,27,29,35 | In progress |
+| Sessions reviewer | 5,8,19,22,25,37 | In progress |
+| Runtime reviewer | 2,3,11,33,34;21 cross-check | In progress |
+| Shared UI reviewer | 15,16,17,31,36 | In progress |
+| Core reviewer | 18,21,26 | In progress |
+| Root Auth/HTTP reviewer | 9,20,30 | In progress |
 
 ## Repository cleanup and recovery
 
