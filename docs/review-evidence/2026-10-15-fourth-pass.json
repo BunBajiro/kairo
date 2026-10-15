@@ -2,7 +2,7 @@
   "date": "2026-10-15",
   "phase": "Fourth comprehensive premerge pass; in progress",
   "banked_test_baseline": "b25f3df59a13d247f90be5d5811227952a2ebfad",
-  "banked_source_checkpoint": "ef44a9365efb3f136996817f7ec1976dc5aaff37",
+  "banked_source_checkpoint": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3",
   "banked_source_findings": [
     "PBR-58",
     "PBR-59",
@@ -16,7 +16,10 @@
     "PBR-67",
     "PBR-68",
     "PBR-69",
-    "PBR-70"
+    "PBR-70",
+    "PBR-71",
+    "PBR-72",
+    "PBR-73"
   ],
   "pending_verification": "No fourth-pass package has been accepted. Both-browser controls and final source/downloaded-package acceptance remain pending.",
   "independent_reviews": {
@@ -1043,6 +1046,22 @@
         "PBR-70"
       ],
       "scope": "Runtime-reviewed Markets UI corrections; skip-CI, fixed browser/package acceptance pending."
+    },
+    {
+      "commit": "73be1c0f2bbb3645baaf0f1efb53469f81d8dc5c",
+      "findings": [
+        "PBR-71"
+      ],
+      "scope": "Runtime-reviewed OBS provider-name correction and six helper corrections/expanded boundary controls; final hosted acceptance pending."
+    },
+    {
+      "commit": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3",
+      "tree": "a363d996a23d3bf960152be96f99b8a997596f46",
+      "findings": [
+        "PBR-72",
+        "PBR-73"
+      ],
+      "scope": "Root-reviewed settings ordering corrections, definitive fresh-document helper, and Session fixture refinement; build89 in progress."
     }
   ],
   "browser_baseline88": {
@@ -13871,7 +13890,13 @@
         "limit": "Mock image responses implement the separately observed live provider contract; no live provider availability claim. Root visually reviewed Firefox1600 Bombs screenshot."
       }
     },
-    "package_limit": "Previous bug browser gates passed; later ordinary/package gates were skipped after expected new baseline failures."
+    "package_limit": "Previous bug browser gates passed; later ordinary/package gates were skipped after expected new baseline failures.",
+    "harness_corrections_commit": "73be1c0f2bbb3645baaf0f1efb53469f81d8dc5c",
+    "harness_corrections_banked": {
+      "goals": "Await response consumption and Creating completion; inspect Radix data-state=open, wait closing animation detachment before healthy baseline recovery. Application source unchanged.",
+      "obs": "Fresh reload after each externally seeded inventory/config so audio and filter branches mount actual new kind. Assertions and exact request bounds unchanged.",
+      "sessions": "Unique .session-debrief textarea replaces ambiguous exact wrapped label selector. No application change or defect claim."
+    }
   },
   "PBR-63": {
     "state": "Actual source independently reviewed and banked; fixed browser/package acceptance pending.",
@@ -14019,7 +14044,7 @@
     }
   },
   "PBR-71": {
-    "state": "Reproduced by hosted build88; source correction workspace-only pending actual review/bank and fixed browser acceptance.",
+    "state": "Actual source independently reviewed by Runtime and banked; complete hosted acceptance pending.",
     "regression_commit": "e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9",
     "harness": "tests/premerge-pass4-shared-ui.mjs",
     "scenario": "obs-choice-name",
@@ -14027,26 +14052,305 @@
     "healthy_checks": 28,
     "contexts": "Chrome155.0.8059.39/Firefox153.0 at1600/390",
     "peer_reviewer": "Runtime",
-    "limit": "Only scene branch completed: four later audio-kind fixture exceptions block audio/filter and final request-count controls."
+    "limit": "Only scene branch completed: four later audio-kind fixture exceptions block audio/filter and final request-count controls.",
+    "actual_review": {
+      "reviewer": "pass4_runtime",
+      "disposition": "PASS",
+      "scope": "All scene/source/filter option and current values use injective target: encoding; handlers decode original names. Empty placeholder remains invalid, prefixed provider names remain distinct, scene-item JSON selection unchanged. No added requests/effects/state or product copy."
+    },
+    "source_commit": "73be1c0f2bbb3645baaf0f1efb53469f81d8dc5c"
   },
   "PBR-72": {
-    "state": "Reproduced by hosted build88; source correction workspace-only pending actual review/bank and fixed browser acceptance.",
+    "state": "Actual source independently reviewed by Root and banked; fixed build89 browser acceptance pending.",
     "regression_commit": "e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9",
     "harness": "tests/premerge-pass4-shared-ui.mjs",
     "scenario": "client-id-navigation",
     "failed_product_checks": 8,
     "healthy_checks": 32,
     "contexts": "Chrome155.0.8059.39/Firefox153.0 at1600/390",
-    "peer_reviewer": "Root"
+    "peer_reviewer": "Root",
+    "actual_review": {
+      "reviewer": "Root",
+      "disposition": "PASS",
+      "scope": "Cross-navigation write ordering retains boot/ack comparisons and Connect draft ownership. Current failures and explicit retry stay bounded."
+    },
+    "source_commit": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3"
   },
   "PBR-73": {
-    "state": "Reproduced by hosted build88; source correction workspace-only pending actual review/bank and fixed browser acceptance.",
+    "state": "Actual source independently reviewed by Root and banked; fixed build89 browser acceptance pending.",
     "regression_commit": "e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9",
     "harness": "tests/premerge-pass4-shared-ui.mjs",
     "scenario": "polling-navigation",
     "failed_product_checks": 4,
     "healthy_checks": 36,
     "contexts": "Chrome155.0.8059.39/Firefox153.0 at1600/390",
-    "peer_reviewer": "Root"
+    "peer_reviewer": "Root",
+    "actual_review": {
+      "reviewer": "Root",
+      "disposition": "PASS",
+      "scope": "Cross-navigation write ordering retains boot/ack comparisons and Connect draft ownership. Current failures and explicit retry stay bounded."
+    },
+    "source_commit": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3"
+  },
+  "runtime_review_records": [
+    {
+      "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-audit.json",
+      "sha256": "42c062d91a5ed32e0c039449c247192a6bdc22e4c53834e32860ae578f7ef630",
+      "raw": {
+        "area": "Runtime / datasets / Registry / Stream / OBS / Studio / projections",
+        "review": "Fourth comprehensive pass; provider contracts, cancellation boundaries, partial durable saves and realistic failure fixtures",
+        "source_head": "dad1d71c576fefd716db82d8393f92ed29df98ce",
+        "reviewed_owners": [
+          "server/runtime-supervisor.mjs",
+          "server/runtime-child.mjs",
+          "server/runtime-lock.mjs",
+          "server/datasets.mjs",
+          "server/dataset-paths.mjs",
+          "server/sde-build.mjs",
+          "server/sde-worker.mjs",
+          "server/registry.mjs",
+          "server/bus.mjs",
+          "server/sse.mjs",
+          "server/stream.mjs",
+          "server/obs.mjs",
+          "server/projections.mjs",
+          "server/opsec.mjs",
+          "public/stream/render.js",
+          "components/kairo/studio-work.mjs",
+          "components/kairo/studio.tsx",
+          "components/kairo/obs-controls.tsx",
+          "components/kairo/administrative-refresh.mjs",
+          "scripts/package-release.py"
+        ],
+        "findings": [
+          {
+            "id": "PBR-61",
+            "status": "Correction independently reviewed and banked at dad1d71c576fefd716db82d8393f92ed29df98ce; final candidate acceptance pending",
+            "symptom": "Rejected OBS config write persisted a replacement or cleared password independently of old port/rules",
+            "before": "2 failed / 2 healthy tests using actual SQLite statement rejection and real vault",
+            "fixed": "28/28 focused OBS/native WebSocket/lifecycle tests; independent Markets 4/4",
+            "cost": "Same settings write counts, no added reads/network/polling; synchronous savepoint only for password changes"
+          },
+          {
+            "id": "PBR-62",
+            "status": "Correction independently reviewed and banked at e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9; final candidate acceptance pending",
+            "symptom": "Close during either final filesystem rename still published cancelled dataset readiness; earlier attempt pointer could be overwritten",
+            "before": "4 failed / 1 healthy on unchanged HEAD dataset owner; real fs/promises operations gated at stage and pointer renames",
+            "fixed": "97/97 new+adjacent dataset/runtime tests; independent Sessions 5/5",
+            "controls": [
+              "active generation remains byte-for-byte intact",
+              "previous pointer retained when not owned by this attempt",
+              "locked cancelled pointer+generation never selected on restart",
+              "fresh UUID can automatically retry the same build without false activation failure",
+              "already completed pending generation retained after close",
+              "one metadata request plus one archive per install"
+            ],
+            "cost": "Two healthy-path signal checks, zero additional API requests or directory scans; read cancellation disposition only after an existing rejection marker, write marker only on late cancellation"
+          },
+          {
+            "id": "PBR-71",
+            "status": "Build88 hosted scene case reproduced 3 failures in each Chrome/Firefox desktop/narrow context; Shared source correction independently reviewed PASS, banking and final hosted acceptance pending. Audio/filter baseline blocked by same-URL navigation fixture; helper fresh mounting corrected.",
+            "owner": "components/kairo/obs-controls.tsx OBSAction",
+            "regression": "tests/premerge-obs-choice-scenarios.mjs",
+            "controls": "Native WebSocket provider with separate valid scene/input/filter inventories, actual HTTP persistence, ordinary and empty-placeholder controls, 12 explicit writes and zero Set actions"
+          }
+        ],
+        "reported_overlap": {
+          "report": "Dataset appeared to finish when Client ID was saved",
+          "disposition": "No direct owner coupling reproduced; retain observation without claiming every visual timing covered",
+          "evidence": "Held archive body and then held builder while actual ClientID HTTP saves and bootstrap/status reads complete. State remains downloading/building with busy=true and no ready/pending/abort; finishing builder yields one ready callback. Metadata1/archive1/build1, zero other external traffic. Core traced bootstrap reload and stable SSE/dataset owner."
+        },
+        "other_scope": "194 existing focused owner controls passed across runtime lock/supervisor/child/startup rollback, dataset service/HTTP/client connection/SDE worker bounds, Registry/bus/SSE lifecycle, Stream scheduling/shutdown/notification scope/atomic saves/projections/renderer, OBS native protocol/OPSEC and Studio coalescing. No additional confirmed defects after source/fixture review.",
+        "rejected_candidate": "Stream session.report timestamp counts were checked against Session kill/loss attribution. Explicit receipt ownership applies to skill/industry milestones, while this widget renders kill/loss counts; no demonstrated membership defect was established, so no speculative change.",
+        "limits": [
+          "No local browser execution or escalation",
+          "Provider-aware OBS UI requires hosted Chrome/Firefox desktop/narrow proof",
+          "Real Windows filesystem locking represented by deterministic EPERM removal failures; actual Windows/OBS scene/audio remain environment checks",
+          "Final hosted candidate and independently downloaded package verification remain root-owned"
+        ],
+        "logs": [
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-audit-controls.log",
+            "bytes": 20271,
+            "sha256": "d62d71c2e81cfc546aa8a7451772c5f28d90928148502e65321de87cb9d9b687"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-obs-atomicity-before.log",
+            "bytes": 2519,
+            "sha256": "e6bdf1ff8e95144103b2e53e266fbfcf84492d659d6fd9e9148319f3f4be15c5"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-obs-atomicity-fixed.log",
+            "bytes": 3058,
+            "sha256": "8dcccdfaa4e29c666f4e449ba7b9d261dddb99407f8f436f2f4da01f9b370037"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-markets-obs-peer-review.log",
+            "bytes": 566,
+            "sha256": "8966ad80839934cc6865642089ecb619b65e36de484950e17777b77c7522b752"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-dataset-publication-before.log",
+            "bytes": 4260,
+            "sha256": "a04c3eb4ee7899f4cedc2d21193ab91262ed3b08bf6d6a047c1054d80dc34f01"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-dataset-publication-fixed.log",
+            "bytes": 10151,
+            "sha256": "c376ba4346a38cfd0a65bb43890264faa704d1dcb944178df7a0bf31e132feb0"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-dataset-settings-overlap.log",
+            "bytes": 255,
+            "sha256": "d43bb55ffd1c2f1b74edac4848982f946de09e79994d5a8b53b42bb75efb2aef"
+          },
+          {
+            "path": "/workspace/scratch/a2b6c8fc6e85/pass4-sessions-review-dataset-cancellation.log",
+            "bytes": 669,
+            "sha256": "764f23dd059db6b09400f97b010d961e81a741b9b01639bb6e035843d812f5d5"
+          }
+        ],
+        "banked_checkpoint": "e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9"
+      },
+      "banking_note": "Raw review captures its then-current source identity. Exact later source banks are recorded by finding in this central record: PBR61 dad1, PBR62 e24, PBR71 73be1c0."
+    },
+    {
+      "path": "/workspace/scratch/a2b6c8fc6e85/pass4-runtime-peer-review-68-71.json",
+      "sha256": "4a48f7db5c9736c50a6f43647cff86f36ddefa2ad589f64f1ad7037889f96d40",
+      "raw": {
+        "reviewer": "/root/pass4_runtime",
+        "source_head": "73be1c0f2bbb3645baaf0f1efb53469f81d8dc5c",
+        "PBR-71": {
+          "disposition": "Independent actual-source review PASS; final hosted and package acceptance pending",
+          "observed_baseline": "Build88: scene literal choose produced 3 failures per engine/width (12 total); audio/filter blocked by fixture same-URL navigation",
+          "source_contracts": [
+            "Actual names consistently encoded in options/current selections/fallbacks and decoded in scene/source/filter handlers",
+            "Encoding injective for all nonempty names, including literal choose and target:-prefixed names",
+            "Placeholder remains separate and decodes to empty; scene-item JSON unchanged"
+          ],
+          "cost": "Constant string mapping only; no additional state, effects, network or polling",
+          "helper": "First goto then reload after each config fixture save; original controls and 12 PUT/3 inventory/1 Camera filter/zero Set bounds retained"
+        },
+        "PBR-68-70 boundary additions": {
+          "disposition": "Independent helper review PASS; expected hosted271 checks pending",
+          "controls": [
+            "Original183 checks preserved",
+            "Concurrent category/browse failure retains own errors across healthy overview and failed Retry",
+            "Targeted recovery exact categories3/browse2 and zero Retry overview requests",
+            "Quick draft ABA preserves newer intent without duplicate durable basket",
+            "Hub partial-field ABA clears untouched ID only",
+            "Discovered station Add preserves unrelated manual ID and persists submitted nickname"
+          ],
+          "request_bounds": "Original six actions snapshot retained; final quick4/hubs5/discoveries1"
+        },
+        "files": [
+          {
+            "path": "components/kairo/obs-controls.tsx",
+            "sha256": "a56422fb40ccf04f4fa2795c23f95d1777035e8c3bdb95bc2927a2630528b0a3"
+          },
+          {
+            "path": "components/kairo/ui.tsx",
+            "sha256": "84253b028de6004f990421d911b0e04ebda08bc03dd0a98da583db56a5968b53"
+          },
+          {
+            "path": "tests/premerge-obs-choice-scenarios.mjs",
+            "sha256": "69f88de416bd8a3757277dadffe3cc6d704d09f9714789321da2f32ed47d0078"
+          },
+          {
+            "path": "tests/premerge-pass4-market-settings.mjs",
+            "sha256": "c03fd0a95b7e0ce7ef144fbc11a73f72ab25e22963cd4e421251731a18737f14"
+          },
+          {
+            "path": "tests/premerge-pass4-markets-ui.mjs",
+            "sha256": "3c0780dad91102bf5214068acd581fdaadb5f3873a6ab1321f21dd8bd2dcf3ad"
+          }
+        ],
+        "limits": [
+          "No local browser execution",
+          "Hosted UI and final downloaded package acceptance root-owned"
+        ]
+      },
+      "banking_note": "Raw review captures its then-current source identity. Exact later source banks are recorded by finding in this central record: PBR61 dad1, PBR62 e24, PBR71 73be1c0."
+    }
+  ],
+  "resume_checkpoint": {
+    "state": "Fourth pass unfinished; safe stopping checkpoint.",
+    "latest_completed_hosted": {
+      "build": 88,
+      "commit": "e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9",
+      "result": "Expected baseline failures; not a validated package."
+    },
+    "next_hosted": "Retrieve build89 run38769610583 at sourceb7390a50528dc3b8815ca9f30f1e408ce1aa6aa3; currently in progress, no acceptance claim.",
+    "pending": [
+      "Retrieve and inspect actual build89 artifacts;72/73 and Session test refinement bankedb7390a5, combined runtime1215/1215 passes.",
+      "Obtain completed Goals baseline before assigning finding or editing source; current/retry/cost controls have not executed.",
+      "Run complete OBS scene/audio/filter, Session cancellation, new fixes and retained healthy/request-bound gates in both engines/widths.",
+      "Session fixture refinement is reviewed/banked and full runtime1215/1215 passes; preserve evidence and repeat final gate only if later source changes require it.",
+      "Resolve any failing gates, then verify final project types/build/runtime/browser, downloaded ZIP digest/CRC and packaged source bytes, and independently extracted package. Close fourth pass only after all required acceptance succeeds."
+    ],
+    "limits": "Historical build86 remains validated only for previous57 findings. No local browser execution. Root owns banks/hosted/final gates.",
+    "banked_source": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3"
+  },
+  "combined_runtime_before": {
+    "tests": 1214,
+    "passed": 1213,
+    "failed": 1,
+    "state": "Failed; root diagnosing existing Session travel assertion. No passing combined/package acceptance claim.",
+    "failure_owner": "tests/kairo/session-travel.test.mjs:414",
+    "diagnosis": "Obsolete test fixture relied on pre-PBR63 paused provider sample B being persisted; retained sample A changes the later same-system assumption. No new application defect/source correction.",
+    "prepared_test_correction": {
+      "state": "Root independently accepted and banked the test refinement at b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3; corrected full runtime gate passes1215/1215.",
+      "old_control": "Parent passes1/current fails1.",
+      "meaningful_controls": "Explicit stale same-system baseline with paused-snapshot guard plus A-to-B fresh resume event/visit/no-duplicate/exact3request control. Parent fails2/current passes2.",
+      "adjacent": "20/20 session-travel tests pass.",
+      "logs": [
+        {
+          "path": "/workspace/scratch/a2b6c8fc6e85/pass4-sessions-pause-parent-before.log",
+          "sha256": "16746eda18d1787bd207ebafe12977de292e5276c03485fb814ccbd4c8493f1a",
+          "raw": "Owner: 2d90e39^ server/core.mjs; unchanged Session travel test and other current dependencies.\n\u2714 Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (244.281342ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 461.241993\n"
+        },
+        {
+          "path": "/workspace/scratch/a2b6c8fc6e85/pass4-sessions-pause-current-before.log",
+          "sha256": "da593679524596192df0a8f84ca1fd392a21ef2db72471bf71bd440c14b661ae",
+          "raw": "\u2716 Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (256.928879ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 456.736403\n\n\u2716 failing tests:\n\ntest at tests/kairo/session-travel.test.mjs:404:1\n\u2716 Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (256.928879ms)\n  AssertionError [ERR_ASSERTION]: A same-system baseline is not a new transition\n  \n  1 !== 0\n  \n      at TestContext.<anonymous> (file:///workspace/scratch/a2b6c8fc6e85/kairo/tests/kairo/session-travel.test.mjs:414:12)\n      at async Test.run (node:internal/test_runner/test:1389:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 1,\n    expected: 0,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+        },
+        {
+          "path": "/workspace/scratch/a2b6c8fc6e85/pass4-sessions-pause-parent-regression.log",
+          "sha256": "57c8e0b75811085aaeef600c7d455af6f6455b1b1b3989bacae27928b18c5b06",
+          "raw": "Owner: 2d90e39^ server/core.mjs; explicit same-system and different-system controls against pre-PBR63 Core.\n"
+        },
+        {
+          "path": "/workspace/scratch/a2b6c8fc6e85/pass4-sessions-pause-fixed.log",
+          "sha256": "6c88aacc74c58014e1a4178efd36db9f428a93df23af6678c1561e8beaf88684",
+          "raw": "\u2714 Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (242.525952ms)\n\u2714 Pilot pause during enrichment retains the prior system until a fresh resumed transition, without duplicate delivery (44.200114ms)\n\u2139 tests 2\n\u2139 suites 0\n\u2139 pass 2\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 485.154349\n"
+        },
+        {
+          "path": "/workspace/scratch/a2b6c8fc6e85/pass4-sessions-pause-adjacent.log",
+          "sha256": "07cef3006597a9bc484bbd59c23cb9148181f132292cb0736712850f92b282d8",
+          "raw": "\u2714 upgrade and repeated reopen preserve legacy evidence, IDs, annotations and membership without backfill duplication (51.265682ms)\n\u2714 fresh observations discover outside sessions, retain activity, and obey Pilot independently of Universe (19.716317ms)\n\u2714 fresh starts avoid duplicate baselines, loops persist, and active recording resumes from durable evidence after restart (14.957934ms)\n\u2714 stale or missing captured starts acquire the first same-system fresh sample and retain the preceding coverage gap (176.838828ms)\n\u2714 pending or failed names cannot move observation ownership, timestamp, ship, sovereignty or activity across session changes (22.844046ms)\n\u2714 session read boundaries, equal-time order and legacy-only inferred starts never admit another owned session or pilot (17.797954ms)\n\u2714 a same-millisecond end/start assigns accepted samples to the active session without inventing an activity transition (10.651224ms)\n\u2714 cold Journey projection and hide/unhide use only legacy adjacency with interleaved session rows and equal timestamps (28.487197ms)\n\u2714 inactive and unchanged observations do not scan sovereignty to fabricate movement (10.858865ms)\n\u2714 real Core captures location receipt before deferred metadata/names and never transfers it to a later session (75.381156ms)\n\u2714 real Core retains delayed hull activity in the receipt session including replay end-cursor handling (41.882241ms)\n\u2714 real Core stale transport samples never become new session travel or discovery (39.76915ms)\n\u2714 a missing Session ship baseline starts with the first fresh same-ship sample without inventing a change (57.082986ms)\n\u2714 first ship observations persist across restart, cost no repeat writes and remain pilot-owned (17.581728ms)\n\u2714 first hull received before delayed names stays with the original Session (68.254711ms)\n\u2714 stale and paused ship delivery cannot establish a first hull, but re-enabled fresh evidence can (77.940694ms)\n\u2714 first-ship projection respects earlier/equal transitions and excludes out-of-window observations (8.637844ms)\n\u2714 Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (37.591038ms)\n\u2714 Pilot pause during enrichment retains the prior system until a fresh resumed transition, without duplicate delivery (42.149167ms)\n\u2714 route projection preserves frozen SQL/prepared rows, name precedence and synthetic-start metadata (10.469378ms)\n\u2139 tests 20\n\u2139 suites 0\n\u2139 pass 20\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1051.33599\n"
+        }
+      ]
+    }
+  },
+  "combined_runtime_gate": {
+    "state": "PASS",
+    "tests": 1215,
+    "passed": 1215,
+    "failed": 0,
+    "duration_seconds": 27.98,
+    "source_commit": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3",
+    "path": "/workspace/scratch/a2b6c8fc6e85/pass4-combined-runtime-fixed.log",
+    "bytes": 128226,
+    "sha256": "2872e78a5885c8b64fdcb6029afd4b8eff5bd0d9200ef1c8b042a0a5ec67bf1b",
+    "raw_summary": "\u2714 legacy Universe and Journey links open Atlas without exposing the retired page (0.414233ms)\n\u2714 workspace routing preserves extension destinations and bounds unknown links (0.248843ms)\n\u2714 saved retired tabs never restore hidden pages in either map workspace (0.245564ms)\n\u2714 early history bootstrap claims only workspace traversal and supports auth cleanup (3.396807ms)\n\u2139 tests 1215\n\u2139 suites 0\n\u2139 pass 1215\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 27981.345592",
+    "limit": "Local combined runtime acceptance only; hosted browser and independently extracted package remain pending."
+  },
+  "browser_candidate89": {
+    "run_id": 38769610583,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/38769610583",
+    "source": "b7390a50528dc3b8815ca9f30f1e408ce1aa6aa3",
+    "tree": "a363d996a23d3bf960152be96f99b8a997596f46",
+    "state": "In progress; no result claimed.",
+    "goals": "Application remains unchanged; semantic-completion regression is a definitive baseline and must complete before classification/fix."
   }
 }
