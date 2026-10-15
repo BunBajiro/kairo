@@ -184,6 +184,8 @@ Retain a single contiguous five-column bug ledger. Establish new defects with me
 
 The primary third-pass hunt remains active through final acceptance. All seven source-review scopes and the supplemental retrospective review are complete. Prepared fixes have independent correctness/performance dispositions; the final import-plan name-edit boundary is reproduced, corrected and independently reviewed. Final source types, fresh build and1,164/1,164 runtime tests pass. All19 new corrections have before evidence and independent correctness/performance review; fixed Chrome/Firefox and package acceptance remain blocking.
 
+Final build84 passes all blocking gates and975 bug-specific browser checks. Visual review identified a possible Firefox390 manifest item-name/quantity overlap, distinct from normal right-column scrolling. A test-only build85 will measure visible text fragments and rightmost-control reachability against the unchanged corrected application before deciding whether another correction is warranted. The nineteen established corrections remain independently reviewed; final handoff awaits resolution of this concrete visual boundary and package verification.
+
 ## Retrospective review of PBR-1–37
 
 Requested on15 October2026 alongside the current pass. Review each earlier correction against current source, its meaningful regression and relevant performance bounds. Preserve its historical closure unless new concrete evidence warrants reopening; do not repeat historical performance benchmarks or make speculative refactors. Current pass work continues in parallel. Every new fix also receives an independent correctness/performance review before candidate acceptance.

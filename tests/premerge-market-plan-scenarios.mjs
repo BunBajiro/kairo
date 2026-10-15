@@ -109,6 +109,24 @@ export async function importPlanOwnership({page,app,check,frame,deferred}){
   check('Saving the retained name cannot create a duplicate plan',db.prepare("SELECT COUNT(*) n FROM market_import_plans WHERE hub_id=? AND json_extract(body,'$.name') LIKE ?").get(hubId,prefix+'%').n,3);
   check('Import plan ownership keeps explicit request counts bounded',requests,{quote:5+recoveryQuotes,save:6});
   await close();
+  const row=manifest().locator('tbody tr').first(),table=manifest().locator('[data-slot=table-container]');
+  await row.scrollIntoViewIfNeeded();await table.evaluate(element=>{element.scrollLeft=0;});await frame();
+  const textGeometry=await row.evaluate(element=>{
+   const container=element.closest('[data-slot=table-container]'),clip=container.getBoundingClientRect();
+   const visible=rect=>({left:Math.max(rect.left,clip.left,0),top:Math.max(rect.top,clip.top,0),right:Math.min(rect.right,clip.right,innerWidth),bottom:Math.min(rect.bottom,clip.bottom,innerHeight)});
+   const fragments=parent=>{const rectangles=[],walker=document.createTreeWalker(parent,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode()){if(!node.textContent.trim())continue;const range=document.createRange();range.selectNodeContents(node);for(const rect of range.getClientRects()){const part=visible(rect);if(part.right>part.left&&part.bottom>part.top)rectangles.push(part);}}return rectangles;};
+   const cells=element.querySelectorAll('td'),name=fragments(cells[0].querySelector('.item-name')),quantity=fragments(cells[1]),overlaps=[];
+   for(const a of name)for(const b of quantity){const width=Math.min(a.right,b.right)-Math.max(a.left,b.left),height=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);if(width>.5&&height>.5)overlaps.push({width,height,name:a,quantity:b});}
+   const box=target=>{const r=target.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height};};
+   return {name,quantity,overlaps,item:box(cells[0].querySelector('.item-name')),firstCell:box(cells[0]),quantityCell:box(cells[1]),scrollWidth:container.scrollWidth,clientWidth:container.clientWidth,scrollLeft:container.scrollLeft};
+  });
+  check('Visible manifest item and quantity text are both measured',{name:textGeometry.name.length>0,quantity:textGeometry.quantity.length>0},{name:true,quantity:true});
+  check('Visible manifest item-name fragments do not overlap quantity text',textGeometry.overlaps.length,0,{geometry:textGeometry});
+  const remove=row.getByRole('button',{name:/^Remove .* from import plan$/});await remove.scrollIntoViewIfNeeded();await frame();
+  const reachable=await remove.evaluate(element=>{const r=element.getBoundingClientRect(),clip=element.closest('[data-slot=table-container]').getBoundingClientRect(),x=(r.left+r.right)/2,y=(r.top+r.bottom)/2,hit=document.elementFromPoint(x,y);return {visible:r.width>0&&r.height>0,insideViewport:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight,insideTable:r.left>=clip.left&&r.right<=clip.right,pointerHits:hit===element||element.contains(hit)};});
+  check('Manifest horizontal scrolling keeps its remove control reachable',reachable,{visible:true,insideViewport:true,insideTable:true,pointerHits:true});
+  check('Manifest geometry and scrolling add no quote or save requests',{...requests},{quote:5+recoveryQuotes,save:6});
+  await table.evaluate(element=>{element.scrollLeft=0;});await frame();
  }finally{
   for(const gate of gates)gate.release.resolve();await Promise.all(gates.filter(gate=>gate.started).map(gate=>gate.done.promise));
   await page.unroute(app.origin+quotePath,handler);await page.unroute(app.origin+savePath,handler);
