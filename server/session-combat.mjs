@@ -89,7 +89,8 @@ export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=
         const progress=prior.progress?.signature===signature?{...prior.progress}:{signature,index:0,page:1,pages:0,expires:null,limited:false};
         store.set(key,{...prior,status:'collecting',error:undefined,retryAt:undefined,progress,ended:session.ended});
         onChange(id);
-        let requests=0,verifications=0,failed=0;
+        let requests=0,verifications=0,failed=0,combatChanged=false;
+        const retainCombatChange=()=>{combatChanged=true;};
         try{
             while(progress.index<groups.length && requests<6 && collecting(session)){
                 const g=groups[progress.index];
@@ -109,7 +110,7 @@ export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=
                         if(killValue(ref)!==null&&killValue(ref)!==killValue(saved)){
                             saved.zkb={totalValue:killValue(ref)};put.run(allianceId,saved.killmail_id,saved.solar_system_id,saved.killmail_time,JSON.stringify(saved));
                         }
-                        if(saved.victim?.character_id===id||saved.attackers?.some(a=>a.character_id===id))await combat.ingest(id,[ref],'zkillboard');
+                        if(saved.victim?.character_id===id||saved.attackers?.some(a=>a.character_id===id))await combat.ingest(id,[ref],'zkillboard',{notify:retainCombatChange});
                         continue;
                     }
                     if(verifications>=100){unfinished=true;break;}
@@ -124,7 +125,7 @@ export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=
                         if(killValue(ref)!==null)saved.zkb={totalValue:killValue(ref)};
                         put.run(allianceId,k.killmail_id,k.solar_system_id,saved.killmail_time,JSON.stringify(saved));
                         await resolveNames([saved]);
-                        if(saved.victim?.character_id===id||saved.attackers?.some(a=>a.character_id===id))await combat.ingest(id,[ref],'zkillboard');
+                        if(saved.victim?.character_id===id||saved.attackers?.some(a=>a.character_id===id))await combat.ingest(id,[ref],'zkillboard',{notify:retainCombatChange});
                     }catch{failed++;}
                 }
                 if(unfinished||failed)break;
@@ -142,7 +143,7 @@ export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=
             store.set(key,{...store.get(key,{}),status:done?(progress.limited?'partial':'ready'):'partial',updatedAt:iso(at),retryAt:iso(retryAt),ended:session.ended,pages:progress.pages,systems:groups.length,checkedGroups:progress.index,limitReached:progress.limited,progress:done?null:progress,detail:failed?'Some killmails are awaiting verification.':done?(progress.limited?'The public page limit was reached; totals are incomplete.':'Published alliance records collected. Delayed records can appear after the next cache refresh.'):'Collecting the remaining system records.'});
         }catch(error){
             if(collecting(session))store.set(key,{...store.get(key,{}),status:prior.updatedAt?'stale':'error',ended:session.ended,progress,error:error.message,retryAt:iso(Math.max(now()+60000,store.get('combat.public.cooldown',0)))});
-        }finally{if(active(id))onChange(id);}
+        }finally{if(combatChanged)combat.notifyChanges(id);if(active(id))onChange(id);}
     }
     function sync(sessionId,id){
         if(!active(id))return Promise.resolve();

@@ -226,22 +226,30 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
     async function discoverBridges(characterId,{query=' » '}={}){
         assertOpen();const id=pilot(characterId,true),c=capability(id,[BRIDGE_SEARCH_SCOPE,STRUCTURE_SCOPE]);if(!c.available)throw new Error(c.reason);
         if(typeof query!=='string'||query.length<3||query.length>100)throw new Error('Bridge search must contain between 3 and 100 characters.');
-        const searchKey=id+':'+query;if(searches.has(searchKey))return searches.get(searchKey);
+        const connection=auth.connectionRevision?.(id)??0;
+        const assertSearch=()=>{
+            assertOpen();
+            if((auth.connectionRevision?.(id)??0)!==connection)throw Object.assign(new Error('Pilot connection changed during bridge discovery.'),{status:409});
+            const current=capability(id,[BRIDGE_SEARCH_SCOPE,STRUCTURE_SCOPE]);if(!current.available)throw new Error(current.reason);
+        };
+        const searchKey=JSON.stringify([id,connection,query]);if(searches.has(searchKey))return searches.get(searchKey);
         const task=(async()=>{
             const result=await esi.request('/characters/'+id+'/search?'+new URLSearchParams({categories:'structure',search:query,strict:'false'}),{characterId:id,ttl:300});
-            assertOpen();
+            assertSearch();
             if(result.stale)throw new Error('Current bridge search is unavailable; cached matches cannot confirm visibility.');
             const ids=[...new Set(result.data?.structure||[])],rows=[],issues=[];
             for(const structure of ids.slice(0,100)){
-                assertOpen();const current=capability(id,[BRIDGE_SEARCH_SCOPE,STRUCTURE_SCOPE]);if(!current.available)throw new Error(current.reason);
+                assertSearch();
                 try {const sample=await esi.request('/universe/structures/'+structure,{characterId:id,ttl:3600});
+                    assertSearch();
                     if(sample.stale)throw new Error('Structure visibility is stale.');const s=sample.data;
                     if(s?.type_id!==35841)continue;
                     const match=String(s.name||'').match(/^(.+?)\s+»\s+(.+?)(?:\s+-\s+.*)?$/);if(!match)throw new Error('Ansiblex name does not identify both systems.');
                     const from=resolve(match[1]),to=resolve(match[2]);if(from!==s.solar_system_id)throw new Error('Structure name origin differs from its reported solar system.');
                     rows.push({from_system_id:from,to_system_id:to,structure_id:structure,directional:true,label:s.name,accessible:false});
-                }catch(error){issues.push({structureId:structure,message:error.message});}
+                }catch(error){assertSearch();issues.push({structureId:structure,message:error.message});}
             }
+            assertSearch();
             const parsed=parseAnsiblexImport({links:rows},systems);return {...parsed,issues:[...parsed.issues,...issues],valid:!parsed.issues.length&&!issues.length,
                 source:'esi-search',reportedAt:iso(now()),truncated:ids.length>100,totalMatches:ids.length,limitation:'Visible structures are candidates only. Confirm bridge pairing and access before enabling routing.'};
         })().finally(()=>searches.delete(searchKey));searches.set(searchKey,task);return task;

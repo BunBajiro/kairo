@@ -190,7 +190,7 @@ export function createGoals(store, auth, publish) {
                     continue;
                 }
                 const data = prepared(goal, sample), created = Date.parse(goal.created);
-                if (goal.source === 'wallet.balance') progress = sample.data;
+                if (goal.source === 'wallet.balance') progress = Math.max(0, sample.data);
                 if (goal.source === 'wallet.income') progress = accumulate(goal, data.filter(row => row.at >= created).map(row => [row.key, row.quantity]));
                 if (goal.source === 'skill.level' || goal.source === 'assets.quantity') progress = data.get(goal.type_id) || 0;
                 if (goal.source === 'mining.quantity') {

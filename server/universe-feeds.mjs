@@ -153,7 +153,10 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         let events = Array.isArray(previous?.data) ? previous.data : [], atEnd = false;
         // At most eight serial requests per scheduler pass, under ten per second.
         for (let step = 0; step < 8 && enabled() && config().combat_enabled; step++) {
-            if (step) await new Promise(resolve => setTimeout(resolve, 110));
+            if (step) {
+                await new Promise(resolve => setTimeout(resolve, 110));
+                if (!enabled() || !config().combat_enabled) return;
+            }
             let result;
             try { result = await request('https://r2z2.zkillboard.com/ephemeral/' + cursor.sequence + '.json', 'combat'); }
             catch (error) { if (error.status === 404) { atEnd = true; break; } throw error; }

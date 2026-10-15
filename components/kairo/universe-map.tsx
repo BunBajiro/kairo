@@ -198,6 +198,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
 
   const symbolHits = useRef<SymbolHit[]>([]), symbolContextElement = useRef<HTMLDivElement>(null);
   const [hoveredSymbol, setHoveredSymbol] = useState<SymbolHit | null>(null), hoveredSymbolRef = useRef<SymbolHit | null>(null);
+  const hoveredPointer = useRef<{x:number;y:number}|null>(null);
   const [pinnedSymbol, setPinnedSymbol] = useState<SymbolHit | null>(null), pinnedSymbolRef = useRef<SymbolHit | null>(null);
   const [symbolNavigator, setSymbolNavigator] = useState(false), [symbolQuery, setSymbolQuery] = useState(''), [symbolChoices, setSymbolChoices] = useState<SymbolHit[]>([]);
   const [portalNetwork, setPortalNetwork] = useState<'thera' | 'turnur' | null>(null);
@@ -306,9 +307,9 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     setIntelPulse({id: recent.map((report: any) => report.id).join(':'), systemIds});
   }, [intel?.operations?.intel, Boolean(replay), tactical.operationsVisible, surface]);
   useEffect(() => {if (!intelPulse) return; const timer = setTimeout(() => setIntelPulse(null), 1600); return () => clearTimeout(timer);}, [intelPulse?.id]);
-  const clearHover = useCallback(() => {hoveredRef.current = null; hoveredTerritoryRef.current = null; setHovered(null); setHoveredTerritory(null); setHoveredCluster(null); hoveredSymbolRef.current = null; setHoveredSymbol(null); redraw();}, [redraw]);
+  const clearHover = useCallback(() => {hoveredRef.current = null; hoveredTerritoryRef.current = null; setHovered(null); setHoveredTerritory(null); setHoveredCluster(null); hoveredSymbolRef.current = null; hoveredPointer.current = null; setHoveredSymbol(null); redraw();}, [redraw]);
   useEffect(() => {clearHover();}, [territoryKey, clearHover]);
-  const dismissContext = useCallback((restoreFocus = false) => {pinnedSymbolRef.current = null; setPinnedSymbol(null); hoveredSymbolRef.current = null; setHoveredSymbol(null); setSymbolNavigator(false); if (restoreFocus) canvas.current?.focus({preventScroll: true}); redraw();}, [redraw]);
+  const dismissContext = useCallback((restoreFocus = false) => {pinnedSymbolRef.current = null; setPinnedSymbol(null); hoveredSymbolRef.current = null; hoveredPointer.current = null; setHoveredSymbol(null); setSymbolNavigator(false); if (restoreFocus) canvas.current?.focus({preventScroll: true}); redraw();}, [redraw]);
   useEffect(() => {dismissContext(); setPortalNetwork(null);}, [Boolean(replay), tactical.feedsVisible, space, intel?.character_id, dismissContext]);
   useEffect(() => {
     const owner = surface();
@@ -421,7 +422,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     if(hovered){const fresh=resolveSymbol(hovered);hoveredSymbolRef.current=fresh;setHoveredSymbol(fresh);}
     setSymbolChoices(previous=>previous.map(resolveSymbol).filter((hit):hit is SymbolHit=>!!hit));
   }, [resolveSymbol]);
-  const pinSymbol = useCallback((hit: SymbolHit) => {const fresh=resolveSymbol(hit);setSymbolNavigator(false);hoveredSymbolRef.current=null;setHoveredSymbol(null);pinnedSymbolRef.current=fresh;setPinnedSymbol(fresh);redraw();}, [redraw,resolveSymbol]);
+  const pinSymbol = useCallback((hit: SymbolHit) => {const fresh=resolveSymbol(hit);setSymbolNavigator(false);hoveredSymbolRef.current=null;hoveredPointer.current=null;setHoveredSymbol(null);pinnedSymbolRef.current=fresh;setPinnedSymbol(fresh);redraw();}, [redraw,resolveSymbol]);
   const exploreNetwork = useCallback((source: 'thera' | 'turnur') => {
     const network = portalNetworks.find(value => value.source === source); if (!network) return;
     const selecting = portalNetwork !== source; setPortalNetwork(selecting ? source : null); dismissContext();
@@ -880,7 +881,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
       const current = hits.find(hit=>hit.symbol.id===active.symbol.id);
       if (current) {active.x=current.x;active.y=current.y;}
       else if (active.symbol.systemId) {const point=byId.get(active.symbol.systemId);if(point){const p=screen(point);active.x=p.x;active.y=p.y;}}
-      positionMapContext(symbolContextElement.current,{x:active.x,y:active.y},{width,height},!!pinnedSymbolRef.current);
+      positionMapContext(symbolContextElement.current,!pinnedSymbolRef.current&&hoveredPointer.current||{x:active.x,y:active.y},{width,height},!!pinnedSymbolRef.current);
     }
   };
   useEffect(() => {redraw();}, [atlas, byId, points, intel, background, indicator, indicatorMax, regionPoints, labels, routeSystemIds, routeEdges, route, showConnections, showSpecialLinks, focusedRegionId, space, replayTrail, pins, cynoPins, replay, standingFilter, territoryPalette, territoryFocus, overviewOpen, overview, worldUnitsPerLightYear, tactical, operational, feeds, intelPulse, projection, surfaceKey, portalEndpoints, portalNetwork, redraw]);
@@ -911,7 +912,10 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   function hoverAt(clientX: number, clientY: number) {
     let symbol = symbolHit(clientX, clientY);
     if(!symbol){const id=nearest(clientX,clientY),point=id?byId.get(id):null;if(point)symbol={symbol:{id:`system:${point.system.system_id}`,kind:'system',title:point.system.name,description:`${systemLocationLabel(point.system)} · ${point.system.security_known===false?'Security unknown':`Security ${point.system.security.toFixed(1)}`}. A dot marks a star system; a square marks NPC stations.`,systemId:point.system.system_id,systemName:point.system.name,source:'CCP universe data'},x:point.x*view.current.scale+view.current.x,y:point.y*view.current.scale+view.current.y,radius:9,priority:0};}
+    const rect=symbol?.segment?canvas.current?.getBoundingClientRect():null;
+    hoveredPointer.current=rect?{x:clientX-rect.left,y:clientY-rect.top}:null;
     if(symbol?.symbol.id!==hoveredSymbolRef.current?.symbol.id){hoveredSymbolRef.current=symbol;setHoveredSymbol(symbol);}
+    if(hoveredPointer.current&&!pinnedSymbolRef.current)positionMapContext(symbolContextElement.current,hoveredPointer.current,dimensions.current);
     const cluster = symbol ? null : clusterHit(clientX, clientY), id = symbol ? symbol.symbol.systemId || null : cluster ? null : nearest(clientX, clientY), hit = symbol || id || cluster ? null : politicalHit(clientX, clientY);
     if (cluster?.key !== hoveredCluster?.key) setHoveredCluster(cluster);
     if (id !== hoveredRef.current) {hoveredRef.current = id; setHovered(id); redraw();}
@@ -1007,7 +1011,7 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
         onPointerLeave={() => {if (!pointer.current) clearHover();}}
         onDoubleClick={event => {const rect = event.currentTarget.getBoundingClientRect(); zoomAt(1.8, event.clientX - rect.left, event.clientY - rect.top);}}
       >Use the system search and system list to select a system without the visual map.</canvas>
-      {activeSymbol && <UniverseMapContext symbol={activeSymbol.symbol} anchor={{x:activeSymbol.x,y:activeSymbol.y}} viewport={dimensions.current} pinned={!!pinnedSymbol} now={clock} onOpenNotebook={onOpenNotebook} anchorElementRef={symbolContextElement} onClose={()=>dismissContext(true)} onRoute={activeSymbol.symbol.systemId && onRouteToSystem ? ()=>onRouteToSystem(activeSymbol.symbol.systemId!) : undefined} onInspect={activeSymbol.symbol.systemId ? ()=>onSelectSystem(activeSymbol.symbol.systemId!) : undefined} onNetwork={activeSymbol.symbol.portalNetwork ? ()=>{const source=activeSymbol.symbol.portalNetwork!;setPortalNetwork(source);frameSystems(portalNetworks.find(value=>value.source===source)?.endpoints.map(endpoint=>endpoint.systemId)||[]);dismissContext();} : activeSymbol.systemIds?.length ? ()=>{frameSystems(activeSymbol.systemIds!);dismissContext();} : undefined} onChooseEntrance={chooseEntrance}/>}
+      {activeSymbol && <UniverseMapContext symbol={activeSymbol.symbol} anchor={!pinnedSymbol&&hoveredPointer.current||{x:activeSymbol.x,y:activeSymbol.y}} viewport={dimensions.current} pinned={!!pinnedSymbol} now={clock} onOpenNotebook={onOpenNotebook} anchorElementRef={symbolContextElement} onClose={()=>dismissContext(true)} onRoute={activeSymbol.symbol.systemId && onRouteToSystem ? ()=>onRouteToSystem(activeSymbol.symbol.systemId!) : undefined} onInspect={activeSymbol.symbol.systemId ? ()=>onSelectSystem(activeSymbol.symbol.systemId!) : undefined} onNetwork={activeSymbol.symbol.portalNetwork ? ()=>{const source=activeSymbol.symbol.portalNetwork!;setPortalNetwork(source);frameSystems(portalNetworks.find(value=>value.source===source)?.endpoints.map(endpoint=>endpoint.systemId)||[]);dismissContext();} : activeSymbol.systemIds?.length ? ()=>{frameSystems(activeSymbol.systemIds!);dismissContext();} : undefined} onChooseEntrance={chooseEntrance}/>}
       {symbolNavigator && <div className="universe-map-symbols" role="region" aria-label="Map symbols" onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();setSymbolNavigator(false);symbolLauncher.current?.focus();}}}>
         <div className="universe-map-symbols-heading"><strong>Symbols in view</strong><button aria-label="Close map symbols" title="Close map symbols" onClick={()=>{setSymbolNavigator(false);symbolLauncher.current?.focus();}}><X size={16}/></button></div>
         <input autoFocus aria-label="Find a map symbol" placeholder="Find a symbol or system…" value={symbolQuery} onChange={event=>setSymbolQuery(event.target.value)}/>

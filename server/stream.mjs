@@ -14,11 +14,20 @@ export function sanitizeConfig(input) {
 }
 export { classifyOPSEC } from './opsec.mjs';
 export function createStream(store, bus, publish = e=>bus.emit(e)) {
-    const clients = new Set(), last = new Map(), timers = new Set();
+    const clients = new Set(), last = new Map(), timers = new Map();
     let version = 0, closed = false, closing, bindingKey = '{}';
     let opsec = { state: 'unknown', hidden: true, reason: 'Awaiting verified context.' };
     let bindings = {};
     let notifications = [];
+    function retainNotifications(next) {
+        // Timer closures own the event too. Release discarded notifications
+        // immediately, keeping scheduled work within the same ten-toast bound.
+        const retained = new Set(next);
+        for (const [notification, timer] of timers) if (!retained.has(notification)) {
+            clearTimeout(timer); timers.delete(notification);
+        }
+        notifications = next;
+    }
     const config = () => sanitizeConfig(store.get('stream', defaultStream()));
     function outputToast(n) {const rule=config().rules.find(r=>r.event===n.event.type)||n.rule;return {id:n.id,signal:signalFor(n.event.type),...renderToast(store,n.event,rule,opsec,n.test),duration:n.rule.duration,sound:rule.sound&&!config().muted,showAt:n.showAt,expiresAt:n.expiresAt};}
     function state() {const c=config();return {version,serverTime:Date.now(),position:c.position,muted:c.muted,paused:c.paused,elements:c.elements.filter(e=>e.visible).map(e=>{const {binding,sourceId,characterId,bindingDisplay,name,...visual}=e;return {...visual,...(binding&&binding!=='none'?bindings[e.id]||bindings[binding]||{text:'Source unavailable',value:0,endsAt:0,detail:'',bindingStatus:'unavailable'}:{})};}),opsec:{state:opsec.state,hidden:opsec.hidden},toasts:notifications.filter(n=>n.showAt<=Date.now()&&n.expiresAt>Date.now()).map(outputToast)};}
@@ -28,17 +37,13 @@ export function createStream(store, bus, publish = e=>bus.emit(e)) {
         for (const client of clients) if (!writeSSE(client, message, options)) clients.delete(client);
     }
     function changed(requireImmediate = false) { if (closed) return; version++; broadcast('state', undefined, {requireImmediate}); }
-    function save(c, nextBindings) { if (closed) throw new Error('Stream is stopping.'); const normalized = sanitizeConfig(c); if(nextBindings) {bindings=nextBindings;bindingKey=JSON.stringify(nextBindings);} store.set('stream', normalized); notifications=notifications.filter(n=>normalized.rules.some(r=>r.event===n.event.type&&(n.test||r.enabled&&(!r.characterId||r.characterId===n.event.characterId)))); if (normalized.paused) {
-        notifications = [];
-        for (const t of timers)
-            clearTimeout(t);
-        timers.clear();
+    function save(c, nextBindings) { if (closed) throw new Error('Stream is stopping.'); const normalized = sanitizeConfig(c); store.set('stream', normalized); if(nextBindings) {bindings=nextBindings;bindingKey=JSON.stringify(nextBindings);} retainNotifications(notifications.filter(n=>normalized.rules.some(r=>r.event===n.event.type&&(n.test||r.enabled&&(!r.characterId||r.characterId===n.event.characterId))))); if (normalized.paused) {
+        retainNotifications([]);
     } changed(); return normalized; }
-    function emit(input,test=false){if(closed)return false;const event=typeof input==='string'?{type:input,payload:{}}:input,c=config(),rule=c.rules.find(r=>r.event===event.type);if(!rule||(!test&&!rule.enabled)||c.paused||(!test&&rule.characterId&&rule.characterId!==event.characterId))return false;const key=event.type+':'+(event.characterId||0);if(!test&&Date.now()-(last.get(key)||0)<rule.cooldown*1000)return false;last.set(key,Date.now());const n={id:randomUUID(),event,rule,test,showAt:Date.now()+rule.delay*1000,expiresAt:Date.now()+(rule.delay+rule.duration)*1000};notifications=notifications.filter(x=>x.expiresAt>Date.now()).slice(-9);notifications.push(n);const t=setTimeout(()=>{timers.delete(t);if(!closed&&!config().paused&&notifications.includes(n))broadcast('toast',outputToast(n));},rule.delay*1000);timers.add(t);return true;}
+    function emit(input,test=false){if(closed)return false;const event=typeof input==='string'?{type:input,payload:{}}:input,c=config(),rule=c.rules.find(r=>r.event===event.type);if(!rule||(!test&&!rule.enabled)||c.paused||(!test&&rule.characterId&&rule.characterId!==event.characterId))return false;const key=event.type+':'+(event.characterId||0);if(!test&&Date.now()-(last.get(key)||0)<rule.cooldown*1000)return false;last.set(key,Date.now());const n={id:randomUUID(),event,rule,test,showAt:Date.now()+rule.delay*1000,expiresAt:Date.now()+(rule.delay+rule.duration)*1000};retainNotifications(notifications.filter(x=>x.expiresAt>Date.now()).slice(-9));notifications.push(n);const t=setTimeout(()=>{timers.delete(n);if(!closed&&!config().paused&&notifications.includes(n))broadcast('toast',outputToast(n));},rule.delay*1000);timers.set(n,t);return true;}
     const unsubscribe = bus.on('*',e=>{if(!e.historical&&eventTemplates.some(t=>t[0]===e.type))emit(e);});
     return { config, state, save, emit, clients, changed, getOPSEC: () => opsec, setOPSEC(next) { if (closed) return; const old = opsec; opsec = next; if (old.state !== next.state || old.hidden !== next.hidden) {
             changed(next.hidden && !old.hidden);
             publish({type:'opsec.changed',module:'opsec',characterId:next.characterId,summary:'Broadcast protection: '+old.state+' → '+next.state,payload:{state:next.state,previous:old.state,reason:next.reason}});
-        } }, setBindings(next) { if (closed) return; const key=JSON.stringify(next); bindings=next; if(key===bindingKey)return; bindingKey=key; changed(); }, connect(res) { if (closed) {res.end();return;} clients.add(res); res.on('close', () => clients.delete(res)); if(!writeSSE(res,sseEvent('state',state())))clients.delete(res); }, close() { if(closed)return closing;closed=true;unsubscribe();for (const t of timers)
-            clearTimeout(t);timers.clear();notifications=[];last.clear();bindings={};closing=Promise.all([...clients].map(closeSSE));clients.clear();return closing; } };
+        } }, setBindings(next) { if (closed) return; const key=JSON.stringify(next); bindings=next; if(key===bindingKey)return; bindingKey=key; changed(); }, connect(res) { if (closed) {res.end();return;} clients.add(res); res.on('close', () => clients.delete(res)); if(!writeSSE(res,sseEvent('state',state())))clients.delete(res); }, close() { if(closed)return closing;closed=true;unsubscribe();retainNotifications([]);last.clear();bindings={};closing=Promise.all([...clients].map(closeSSE));clients.clear();return closing; } };
 }

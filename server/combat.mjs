@@ -14,6 +14,7 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
  const retention=createCacheRetention(store);
  const pending=new Map(),publicPending=new Map();let nextRequest=0,closed=false,queue=Promise.resolve();
  const active=id=>!closed&&store.get('module:combat',true)&&auth.characters().some(c=>c.id===id&&!c.needsReauth);
+ const notifyChanges=id=>{if(active(id))onChange(id);};
  const recent=id=>store.db.prepare('SELECT body FROM combat_records WHERE character_id=? ORDER BY at DESC,killmail_id DESC LIMIT 200').all(id).map(r=>JSON.parse(r.body));
  const coverage=id=>store.snapshot(id,'combat_public')||{status:'waiting',data:null};
  const get=store.db.prepare('SELECT body,source FROM combat_records WHERE character_id=? AND killmail_id=?');
@@ -29,16 +30,18 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
   if(value!==null)killmail.zkb={totalValue:value};
   // A retained reference can repair a missing event without changing the
   // ledger row or requeueing the Universe evidence attached to UPDATE triggers.
-  put.run(id,killmail.killmail_id,result,killmail.killmail_time,JSON.stringify(killmail),source);
+  const changed=put.run(id,killmail.killmail_id,result,killmail.killmail_time,JSON.stringify(killmail),source).changes>0;
   const names=store.get('names',{}),started=store.get('combat.started:'+id,now()),historical=time<started;
   publish?.({type:'killmail.'+result,module:'combat',characterId:id,at:killmail.killmail_time,historical,summary:(result==='loss'?'Lost ':'Participated in kill: ')+(names[killmail.victim.ship_type_id]||'ship'),payload:{killmail_id:killmail.killmail_id,system_id:killmail.solar_system_id,system_name:names[killmail.solar_system_id],ship_type_id:killmail.victim.ship_type_id,hull_name:names[killmail.victim.ship_type_id],attackers:killmail.attackers?.length||0,damage_taken:killmail.victim.damage_taken,participation:result==='kill',source},dedupe:'killmail:'+id+':'+killmail.killmail_id});
-  return true;
+  return changed;
  }
- async function ingest(id,refs,source='esi'){
+ async function ingest(id,refs,source='esi',{notify=notifyChanges}={}){
   if(!active(id)||!Array.isArray(refs))return {pending:0,failed:0};
   if(!store.get('combat.started:'+id,0))store.set('combat.started:'+id,now());
+  let changed=false;
+  try{
   // Migrate retained snapshots into the durable ledger before the first refresh.
-  for(const old of store.snapshot(id,'killmails')?.data||[])if(!get.get(id,old.killmail_id))record(id,old,'esi');
+  for(const old of store.snapshot(id,'killmails')?.data||[])if(!get.get(id,old.killmail_id))changed=record(id,old,'esi')||changed;
   let remaining=0,failed=0,fetched=0;
   const records=[];
   for(const ref of refs){
@@ -49,7 +52,7 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
     const raw=JSON.parse(existing.body),value=killValue(ref),changedValue=value!==null&&value!==killValue(raw);
     if(changedValue)raw.zkb={totalValue:value};
     const changedSource=existing.source!=='esi'&&existing.source!==source;
-    if(changedValue||changedSource||!eventExists.get('killmail:'+id+':'+ref.killmail_id))record(id,raw,source);
+    if(changedValue||changedSource||!eventExists.get('killmail:'+id+':'+ref.killmail_id))changed=record(id,raw,source)||changed;
     continue;
    }
    // Both current full ESI-format zKillboard responses and historical hash-only
@@ -66,9 +69,15 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
   }
   if(records.length&&active(id)){
    await resolveNames(records);
-   if(active(id))for(const raw of records)record(id,raw,source);
+   if(active(id))for(const raw of records)changed=record(id,raw,source)||changed;
   }
   return {pending:remaining,failed};
+  }finally{
+   // Live and Session-history ingestion bypass the public refresh owner.
+   // Publish one batch change from the durable ledger, including corrections
+   // retained before a later lookup fails; identical references stay silent.
+   if(changed&&notify&&active(id))notify(id);
+  }
  }
  async function fetchPublicPage(id,path,key){
   const cached=store.db.prepare('SELECT * FROM cache WHERE key=?').get(key);
@@ -111,15 +120,15 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
    for(let number=1;number<=100&&active(id);number++){
     const r=await page(id,number);expiresAt=expiresAt&&expiresAt<r.expiresAt?expiresAt:r.expiresAt;updatedAt=r.updatedAt;pages++;
     const refs=r.refs.filter(k=>!k.killmail_time||Date.parse(k.killmail_time)>=started-90*DAY);
-    const result=await ingest(id,refs,'zkillboard');
+    const result=await ingest(id,refs,'zkillboard',{notify:false});
     if(result.pending||result.failed){partial=true;break;}
     if(r.refs.length<200||refs.length<r.refs.length)break;
     if(number===100){partial=true;limitReached=true;}
    }
    if(active(id))store.saveSnapshot(id,'combat_public',{status:partial?'partial':'ready',updatedAt,expiresAt,retryAt:partial&&!limitReached?new Date(now()+60000).toISOString():expiresAt,pages,limitReached,windowDays:90,data:null,detail:limitReached?'The public API page limit was reached; coverage is incomplete.':partial?'More killmail details are awaiting collection.':'Public participation records collected. zKillboard responses are cached for at least one hour.'});
   }catch(error){if(active(id))store.saveSnapshot(id,'combat_public',{...prior,status:prior.updatedAt?'stale':'error',error:error.message,retryAt:new Date(Math.max(now()+60000,store.get('combat.public.cooldown',0))).toISOString(),data:null});}
-  if(active(id))onChange(id);
+  notifyChanges(id);
  }
  function syncPublic(id){if(pending.has(id))return pending.get(id);const task=run(id).finally(()=>pending.delete(id));pending.set(id,task);return task;}
- return {ingest,recent,coverage,syncPublic,publicPage,async close(){closed=true;await Promise.allSettled([...pending.values(),...publicPending.values()]);}};
+ return {ingest,recent,coverage,syncPublic,publicPage,notifyChanges,async close(){closed=true;await Promise.allSettled([...pending.values(),...publicPending.values()]);}};
 }

@@ -24,7 +24,7 @@ export function prepareAssetLocations(assets) {
     return {rows,locations:[...new Set(rows.map(asset=>asset.root_location_id))]};
 }
 
-export async function enrichAssetLocations(assets,{names,rememberNames,esi,characterId,canReadStructures}) {
+export async function enrichAssetLocations(assets,{names,rememberNames,esi,characterId,canReadStructures,current=()=>true}) {
     const {rows,locations}=prepareAssetLocations(assets);
     rememberNames(await esi.names(locations.filter(id=>id<2147483647&&!names[id])));
     await mapEnrichment(locations,async location => {
@@ -34,7 +34,9 @@ export async function enrichAssetLocations(assets,{names,rememberNames,esi,chara
                 const result=await esi.request('/universe/stations/'+location,{ttl:86400});
                 rememberNames({[location]:result.data.name});
             } else if(location>=1000000000000&&canReadStructures) {
+                if(!current())return;
                 const result=await esi.request('/universe/structures/'+location,{characterId,ttl:3600});
+                if(!current())return;
                 rememberNames({[location]:result.data.name});
             }
         } catch { /* Keep unresolved locations visible when EVE denies access. */ }

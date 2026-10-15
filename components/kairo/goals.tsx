@@ -13,6 +13,16 @@ import {Panel,Choice} from './ui';
 import {createGoalResourceReads} from './goal-resource-reads.mjs';
 const icons:Record<string,any>={'manual':Target,'wallet.balance':Wallet,'wallet.income':Wallet,'skill.level':BookOpen,'assets.quantity':Package,'mining.quantity':Pickaxe,'industry.runs':Factory,'combat.kills':Swords};
 const statusLabel:Record<string,string>={ready:'Tracking',partial:'Partial coverage',stale:'Awaiting fresh data',waiting:'Waiting for ESI',missing_scope:'Access needed',disabled:'Module paused',disconnected:'Reconnect character',error:'Source unavailable',completed:'Completed'};
+// Field blur and Complete may both accept a write in one click. Retain their
+// order per objective, including when navigation remounts the editor.
+const progressWrites=new Map<string,Promise<void>>();
+function saveProgress(id:string,path:string,value:number,csrf:string){
+ const previous=progressWrites.get(id),write=()=>api(path,'PUT',{progress:value},csrf);
+ const result=previous?previous.then(write):write(),settled=result.then(()=>{},()=>{});
+ progressWrites.set(id,settled);
+ void settled.then(()=>{if(progressWrites.get(id)===settled)progressWrites.delete(id);});
+ return result;
+}
 export function Goals(){
  const {character,boot,goalsRevision,navigate}=useKairo();
  const [goals,setGoals]=useState<any[]>([]),[notes,setNotes]=useState<any[]>([]),[sources,setSources]=useState<any[]>([]),[types,setTypes]=useState<any[]>([]),[show,setShow]=useState(false),[title,setTitle]=useState(''),[target,setTarget]=useState('1'),[source,setSource]=useState('manual'),[typeName,setTypeName]=useState(''),[selectedType,setSelectedType]=useState<any>(null),[typeError,setTypeError]=useState(''),[looking,setLooking]=useState(false),[note,setNote]=useState(''),[busy,setBusy]=useState(false);
@@ -30,7 +40,7 @@ export function Goals(){
  function changeSource(value:string){lookup.current++;setLooking(false);setSource(value);setSelectedType(null);setTypeName('');setTypeError('');setTarget(value.startsWith('wallet.')?'1000000000':value==='skill.level'?'5':'1');}
  async function findType(name:string,id?:number){const token=++lookup.current;setLooking(true);setTypeError('');setSelectedType(null);try{const t=await api('/goals/type','POST',id?{typeId:id}:{name},boot.csrf);if(lookup.current!==token)return;if(source==='skill.level'&&t.categoryId!==16)throw new Error('Choose a skill, rather than an item.');setSelectedType(t);setTypeName(t.name);}catch(e:any){if(lookup.current===token)setTypeError(e.message);}finally{if(lookup.current===token)setLooking(false);}}
  async function addGoal(e:React.FormEvent){e.preventDefault();setBusy(true);const id=character,owner=resource.current;try{await api('/goals'+query,'POST',{title,target:Number(target),source,typeId:selectedType?.id},boot.csrf);if(current.current!==id||resource.current!==owner)return;await owner?.progress();if(resource.current!==owner)return;setShow(false);toast.success(automatic?'Automatic objective added.':'Objective added.');}catch(e:any){if(current.current===id)toast.error(e.message);}finally{if(resource.current===owner)setBusy(false);}}
- async function progress(g:any,value:number){const owner=resource.current;try{await api('/goals/'+g.id+query,'PUT',{progress:value},boot.csrf);if(resource.current!==owner)return;await owner?.progress();if(value>=g.target)toast.success('Objective complete. o7');}catch(e:any){if(resource.current===owner)toast.error(e.message);}}
+ async function progress(g:any,value:number){const owner=resource.current;try{await saveProgress(g.id,'/goals/'+g.id+query,value,boot.csrf);if(resource.current!==owner)return;await owner?.progress();if(value>=g.target)toast.success('Objective complete. o7');}catch(e:any){if(resource.current===owner)toast.error(e.message);}}
  return <div className="goals-grid"><div><Panel title="Objectives" meta={<div className="flex gap-2"><Button size="icon" variant="ghost" aria-label="Refresh objectives" onClick={()=>load().catch(e=>toast.error(e.message))}><RefreshCw size={15}/></Button><Button size="sm" onClick={newGoal}><Plus size={15}/> New objective</Button></div>}>
   <p className="goal-intro">Let Kairo follow your wallet, training, resources and combat—or keep a manual checklist.</p>
   {goals.length?<div className="goal-list">{goals.map(g=>{const auto=g.source!=='manual',Icon=icons[g.source]||Target;return <article className={'goal-card '+(g.done?'done':'')} key={g.id}>

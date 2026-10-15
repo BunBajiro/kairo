@@ -111,12 +111,15 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         if (changed) { namesVersion++; store.set('names', namesMap); }
     }
-    async function resolveNames(data, priority = false) { const ids = []; function walk(x) { if (Array.isArray(x)) {
+    async function resolveNames(data, priority = false, datasetKey) { const ids = []; function walk(x) { if (Array.isArray(x)) {
         x.forEach(walk);
     }
     else if (x && typeof x === 'object') {
         for (const [k, v] of Object.entries(x)) {
-            if (/^(type_id|skill_id|ship_type_id|solar_system_id|system_id|corporation_id|alliance_id|faction_id|product_type_id|blueprint_type_id|from_id|issuer_id|issuer_corporation_id|client_id)$/.test(k) && typeof v === 'number' && !namesMap[v])
+            if (k === 'implants' && Array.isArray(v)) {
+                for (const id of v) if (typeof id === 'number' && !namesMap[id]) ids.push(id);
+            }
+            else if ((/^(type_id|skill_id|ship_type_id|solar_system_id|system_id|corporation_id|alliance_id|faction_id|product_type_id|blueprint_type_id|from_id|issuer_id|issuer_corporation_id|client_id)$/.test(k) || datasetKey === 'mail' && k === 'from') && typeof v === 'number' && !namesMap[v])
                 ids.push(v);
             else if (typeof v === 'object')
                 walk(v);
@@ -124,7 +127,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     } } walk(data); if (ids.length) {
         rememberNames(await esi.names(ids, { priority }));
     } }
-    async function enrich(key, data, id) {
+    async function enrich(key, data, id, current) {
         if (key === 'sovereignty') return normalizeSovereignty(data);
         if (key === 'location' && data.solar_system_id) {
             // Instanced space may not expose system details. Keep the observed ID
@@ -167,14 +170,17 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         if (key === 'assets') {
             return enrichAssetLocations(data,{names:namesMap,rememberNames,esi,characterId:id,
-                canReadStructures:auth.characters().find(c=>c.id===id)?.scopes.includes('esi-universe.read_structures.v1')});
+                canReadStructures:auth.characters().find(c=>c.id===id)?.scopes.includes('esi-universe.read_structures.v1'), current});
         }
         if (key === 'killmails') {
-            await combat.ingest(id,data,'esi');
+            await combat.ingest(id,data,'esi',{notify:false});
             return combat.recent(id);
         }
         if (key === 'planets') {
             return mapEnrichment(data, async p => {
+                // This collection owns the connection that accepted the list,
+                // including detail reads not yet admitted to the worker pool.
+                if (!current()) return p;
                 try {
                     const detail = await esi.request('/characters/' + id + '/planets/' + p.planet_id, { characterId: id, ttl: 600 });
                     return { ...p, details: detail.data };
@@ -261,11 +267,15 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             // optional display metadata or names can cross a session boundary.
             const observation = !r.stale && ['location', 'ship', 'skills', 'jobs'].includes(d.key)
                 ? captureSessionObservation(store, { characterId: id, systemId: d.key === 'location' ? r.data?.solar_system_id : undefined }) : undefined;
-            const data = await enrich(d.key, r.data, id);
+            // Composite private reads retain the admitted connection without
+            // rereading the complete roster for every detail. Full access and
+            // scope checks still enclose enrichment and its publication.
+            const sameConnection = auth.connectionRevision ? () => auth.connectionRevision(id) === revision : current;
+            const data = await enrich(d.key, r.data, id, sameConnection);
             if (!current()) return DATASET_OBSOLETE;
             if (d.key === 'sovereignty') await resolveNames(data.map(s => ({ alliance_id: s.alliance_id, corporation_id: s.corporation_id, faction_id: s.faction_id })), true);
             else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts', 'industry_systems'].includes(d.key))
-                await resolveNames(data, protectionKeys.has(d.key));
+                await resolveNames(d.key === 'implants' ? {implants: data} : data, protectionKeys.has(d.key), d.key);
             if (!current()) return DATASET_OBSOLETE;
             const snapshot = { ...r, data, status: r.stale ? 'stale' : 'ready', ...(d.owner ? { ownerId } : {}) };
             snapshot.sourceModifiedAt = r.headers?.['last-modified'] || null;
