@@ -96,6 +96,13 @@ export function openStore(dir) {
         db.prepare("INSERT INTO migrations VALUES('database-v073',datetime('now'))").run();
         db.exec('COMMIT');
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='wallet-event-time-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+            UPDATE events SET at=strftime('%Y-%m-%dT%H:%M:%fZ',at)
+                WHERE type='wallet.entry' AND strftime('%Y-%m-%dT%H:%M:%fZ',at) IS NOT NULL
+                AND at<>strftime('%Y-%m-%dT%H:%M:%fZ',at);
+            INSERT INTO migrations VALUES('wallet-event-time-v080',datetime('now')); COMMIT;`);
+    }
     if (!db.prepare("SELECT id FROM migrations WHERE id='visits-sovereignty-v080'").get()) {
         db.exec(`BEGIN IMMEDIATE;
         ALTER TABLE visits ADD COLUMN sovereignty_at_visit TEXT;

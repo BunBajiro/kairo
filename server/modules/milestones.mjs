@@ -40,7 +40,16 @@ export default {
                 dedupe: `job:${e.characterId}:${j.job_id}`
             });
         }));
-        off.push(ctx.on('data.journal',e=>{const {current,previous}=e.payload;if(!Array.isArray(previous))return;const old=new Set(previous.map(j=>j.id));for(const j of current||[])if(!old.has(j.id))ctx.publish({type:'wallet.entry',characterId:e.characterId,at:j.date,summary:(j.ref_type||'Wallet entry').replaceAll('_',' ')+': '+new Intl.NumberFormat('en-GB').format(j.amount||0)+' ISK',payload:{journal_id:j.id,amount:j.amount,balance:j.balance,ref_type:j.ref_type},dedupe:'wallet:'+e.characterId+':'+j.id});}));
+        off.push(ctx.on('data.journal',e=>{
+            const {current,previous}=e.payload;if(!Array.isArray(previous))return;
+            const old=new Set(previous.map(j=>j.id));
+            for(const j of current||[])if(!old.has(j.id)){
+                // ESI may omit fractional seconds. Persist the same UTC precision
+                // as Session boundaries so indexed text ranges remain chronological.
+                const time=Date.parse(j.date),at=Number.isFinite(time)?new Date(time).toISOString():j.date;
+                ctx.publish({type:'wallet.entry',characterId:e.characterId,at,summary:(j.ref_type||'Wallet entry').replaceAll('_',' ')+': '+new Intl.NumberFormat('en-GB').format(j.amount||0)+' ISK',payload:{journal_id:j.id,amount:j.amount,balance:j.balance,ref_type:j.ref_type},dedupe:'wallet:'+e.characterId+':'+j.id});
+            }
+        }));
         return () => off.forEach(f => f());
     }
 };

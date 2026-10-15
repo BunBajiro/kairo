@@ -23,8 +23,11 @@ import {createMarkets} from './markets.mjs';
 import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
 import {createUIResourceVersions, eventResources} from './ui-resources.mjs';
+import {createMarketCategories} from './market-categories.mjs';
 const DATASET_NOT_DUE = Symbol('dataset-not-due');
 const DATASET_OBSOLETE = Symbol('dataset-obsolete');
+const itemImageDatasets = new Set(['assets', 'transactions', 'orders', 'jobs']);
+const itemImages = createMarketCategories();
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
     let stopped = false, closing, quiesceFailures;
@@ -98,7 +101,16 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }});
         sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>changed({characterId:id,resources:['sessionReport']})});
     } catch (error) { return rollback(error); }
-    function uiSnapshot(id,key) {const sample=store.snapshot(id,key),revision=store.snapshotRevision?.(id,key);return sample?{...sample,dataRevision:revision}:{status:'waiting',data:null,dataRevision:revision===undefined?undefined:revision+':missing'};}
+    function uiSnapshot(id,key) {
+        const sample=store.snapshot(id,key),revision=store.snapshotRevision?.(id,key);
+        // These rows are freshly decoded for this response. Project image
+        // metadata here so existing saved samples also render without a scan,
+        // durable rewrite, per-type request or duplicate retained row cache.
+        if(itemImageDatasets.has(key)&&Array.isArray(sample?.data)) for(const row of sample.data) {
+            if(row&&typeof row==='object') row.iconVariant=itemImages.imageVariant(key==='jobs'?row.product_type_id||row.blueprint_type_id:row.type_id);
+        }
+        return sample?{...sample,dataRevision:revision}:{status:'waiting',data:null,dataRevision:revision===undefined?undefined:revision+':missing'};
+    }
     function combatSnapshot(id){const s=uiSnapshot(id,'killmails'),records=combat.recent(id);return {...s,dataRevision:s.dataRevision===undefined?undefined:s.dataRevision+':combat:'+(combatVersions.get(id)||0),data:records.length?records:s.data,participation:combat.coverage(id)};}
     function enabled(m) { return store.get('module:' + m.id, true); }
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));

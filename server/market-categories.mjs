@@ -9,6 +9,7 @@ const bundled=Object.freeze({
  get known(){return defaultIndex().known;},
  overview:items=>defaultIndex().overview(items),
  type:id=>defaultIndex().type(id),
+ imageVariant:id=>defaultIndex().imageVariant(id),
 });
 
 // CCP market groups are separate from inventory groups. Keep their full ancestry
@@ -33,5 +34,8 @@ function indexCategories(catalog){
   return {source:catalog.source,build:catalog.build,groups:[...groups.values()].map(g=>({id:g.id,parentId:g.parentId,name:g.name,count:counts.get(g.id)||0})),total:items.length,unknown};
  }
  function type(id){const path=(ancestors.get(owner.get(id))||[]).map(id=>groups.get(id));return {path:path.map(g=>({id:g.id,name:g.name})),root:path.at(-1)?.id||0,volume:catalog.volumes?.[id]??null};}
- return {ids,known,overview,type};
+ // Blueprints and reaction formulas use the image service's bp resource.
+ // Resolve from existing ancestry without allocating a path for each image.
+ const imageVariant=id=>ancestors.get(owner.get(Number(id)))?.at(-1)===2?'bp':'icon';
+ return {ids,known,overview,type,imageVariant};
 }

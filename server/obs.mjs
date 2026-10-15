@@ -87,7 +87,15 @@ export function createOBS(store,vault,{WebSocketClass=globalThis.WebSocket,reque
  const initiallyEnabled=config().enabled;
  const timer=setInterval(()=>{if(ready&&!applied&&!running&&!changing&&config().automation)void apply();},10000);timer.unref();if(initiallyEnabled)queueMicrotask(()=>connect().catch(()=>{}));
  return {config:()=>({...config(),passwordSaved:!!store.get('obs.password',null),legacySafeRules:store.get('obs.legacy-safe-rules',null)}),status,inventory,filters:async sourceName=>(await request('GetSourceFilterList',{sourceName:text(sourceName)})).filters?.map(f=>({name:f.filterName,enabled:f.filterEnabled})),
-  async save(input){const next=sanitizeOBS(input),prior=config();if(input.password!==undefined){if(typeof input.password!=='string'||input.password.length>1000)throw new Error('Invalid OBS password.');store.set('obs.password',input.password?vault.encrypt({password:input.password}):null);}store.set('obs',next);revision++;applied=null;blocked=false;if(!next.enabled){cancel();error='';notify();return status();}if(prior.port!==next.port||input.password!==undefined){cancel();if(connecting)await connecting.catch(()=>{});}await connect();await apply();return status();},
+  async save(input){const next=sanitizeOBS(input),prior=config();if(input.password!==undefined){
+   if(typeof input.password!=='string'||input.password.length>1000)throw new Error('Invalid OBS password.');
+   const credential=input.password?vault.encrypt({password:input.password}):null;
+   // Credentials and their connection settings form one accepted save. A
+   // rejected settings write must not replace or clear the saved password.
+   store.db.exec('SAVEPOINT obs_save');
+   try{store.set('obs.password',credential);store.set('obs',next);store.db.exec('RELEASE obs_save');}
+   catch(error){store.db.exec('ROLLBACK TO obs_save; RELEASE obs_save');throw error;}
+  }else store.set('obs',next);revision++;applied=null;blocked=false;if(!next.enabled){cancel();error='';notify();return status();}if(prior.port!==next.port||input.password!==undefined){cancel();if(connecting)await connecting.catch(()=>{});}await connect();await apply();return status();},
   async reconnect(){blocked=false;cancel();if(connecting)await connecting.catch(()=>{});await connect();await apply();return status();},
   setState(state){if(state==='safe')state='highsec';if(!protectionStates.includes(state))state='unknown';if(desired===state)return;desired=state;revision++;applied=null;notify();void apply();},async reapply(){revision++;applied=null;await apply();return status();},close};
 }

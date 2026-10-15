@@ -80,7 +80,9 @@ try{
     await page.screenshot({path:join(output,engine+'-'+width+'-blueprint-bombs.png')});
     await category('Drones',branch).click();
     await icons('.market-catalogue .item-name img',[2204],'Blueprint Drones category');
-    await category('Ship Equipment').click();
+    // Blueprint ancestry also contains a Ship Equipment branch; select the
+    // ordinary root's two cached fixtures rather than an ambiguous label.
+    await page.getByRole('button',{name:'Ship Equipment 2',exact:true}).click();
     await icons('.market-catalogue .item-name img',[1403,519],'Ordinary category control');
     await page.locator('.market-item-button').filter({has:page.locator('img[src*="/types/1403/"]')}).click();
     await icons('.market-item-heading .item-name img',[1403],'Ordinary selected detail control');

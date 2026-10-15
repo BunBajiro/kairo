@@ -827,6 +827,9 @@ export function createUniverseJSpace(store, auth, options) {
                 edge.link_id = row.link_id; delete edge.life_status;
             } else {
                 const candidate = { kind, map_id: map.id, from_system_id: from, to_system_id: to, label: native ? clean(row.label, 160) : '', confirmed: false, accessible: false, enabled: true,
+                    ...(native ? { directional: row.directional, structure_id: row.structure_id, reverse_structure_id: row.reverse_structure_id,
+                        owner_alliance_id: row.owner_alliance_id, reverse_owner_alliance_id: row.reverse_owner_alliance_id,
+                        capital_system_id: row.capital_system_id, reverse_capital_system_id: row.reverse_capital_system_id } : {}),
                     life_status: edge.life_status, mass: native ? choose(row.mass, ['unknown', 'stable', 'reduced', 'critical'], 'unknown') : ['stable', 'reduced', 'critical'][row.mass_status] || 'unknown',
                     ...(native && row.life_band && row.life_observed_at ? {life_band:row.life_band, life_observed_at:row.life_observed_at} : {}),
                     wh_type: native ? clean(row.wh_type, 16) : clean(row.wormhole_type, 16), from_signature: native ? clean(row.from_signature, 16) : '', to_signature: native ? clean(row.to_signature, 16) : '',
