@@ -11,16 +11,20 @@ export async function atlasHover({page, context, app, check, frame, api, output,
     await context.addInitScript(() => {
         sessionStorage.setItem('kairo-universe-workspace:42:known', JSON.stringify({tab: 'atlas', selected: null, inspectorOpen: false, view: {space: 'known', background: 'none', indicator: 'none', region: 'all', showConnections: false, showSpecialLinks: true}}));
         localStorage.setItem('kairo-atlas-projection', 'physical');
-        window.__atlasHoverPaint = {draws: 0, segments: []};
+        window.__atlasHoverPaint = {draws: 0, segments: [], lineWidths: []};
         const paths = new WeakMap();
         for (const method of ['clearRect', 'beginPath', 'moveTo', 'lineTo', 'stroke']) {
             const original = CanvasRenderingContext2D.prototype[method];
             CanvasRenderingContext2D.prototype[method] = function (...args) {
-                if (this.canvas.closest('.universe-module')) {
-                    if (method === 'clearRect') { window.__atlasHoverPaint.draws++; window.__atlasHoverPaint.segments = []; }
+                if (this.canvas.matches('.universe-canvas-shell canvas')) {
+                    if (method === 'clearRect') { window.__atlasHoverPaint.draws++; window.__atlasHoverPaint.segments = []; window.__atlasHoverPaint.lineWidths = []; }
                     if (method === 'beginPath') paths.set(this, []);
                     if (method === 'moveTo' || method === 'lineTo') paths.get(this)?.push({x: args[0], y: args[1]});
-                    if (method === 'stroke' && this.lineWidth === 1.35 && paths.get(this)?.length === 2) window.__atlasHoverPaint.segments.push(paths.get(this).map(point => ({...point})));
+                    if (method === 'stroke' && paths.get(this)?.length === 2) {
+                        window.__atlasHoverPaint.lineWidths.push(this.lineWidth);
+                        // Canvas implementations can round a stored width to float32.
+                        if (Math.abs(this.lineWidth - 1.35) < .001) window.__atlasHoverPaint.segments.push(paths.get(this).map(point => ({...point})));
+                    }
                 }
                 return original.apply(this, args);
             };
@@ -33,7 +37,13 @@ export async function atlasHover({page, context, app, check, frame, api, output,
         try {
             await page.goto(app.origin + '/#universe-kspace', {waitUntil: 'domcontentloaded', timeout: 15000});
             const canvas = page.locator('.universe-module canvas'), card = page.locator('.universe-map-context');
-            await canvas.waitFor(); await page.waitForFunction(() => window.__atlasHoverPaint?.segments.length > 0); await frame();
+            await canvas.waitFor();
+            try { await page.waitForFunction(() => window.__atlasHoverPaint?.segments.length > 0); }
+            catch (error) {
+                check('Atlas canvas capture has a rendered connection segment', await page.evaluate(() => window.__atlasHoverPaint), 'at least one connection segment');
+                throw error;
+            }
+            await frame();
             await canvas.evaluate(element => element.scrollIntoView({block: 'center', behavior: 'instant'})); await frame();
             const geometry = await page.evaluate(() => { const r = document.querySelector('.universe-module canvas').getBoundingClientRect(); return {rect: {left: r.left, top: r.top, width: r.width, height: r.height}, segment: window.__atlasHoverPaint.segments[0]}; });
             const point = fraction => ({x: geometry.rect.left + geometry.segment[0].x + (geometry.segment[1].x - geometry.segment[0].x) * fraction, y: geometry.rect.top + geometry.segment[0].y + (geometry.segment[1].y - geometry.segment[0].y) * fraction});
