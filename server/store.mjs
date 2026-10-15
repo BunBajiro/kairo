@@ -1,10 +1,12 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { compactHistoryCache } from './market-history-store.mjs';
 export function openStore(dir) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
     const db = new DatabaseSync(join(dir, 'kairo.sqlite'));
+    try {
     db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000;
  CREATE TABLE IF NOT EXISTS migrations(id TEXT PRIMARY KEY, applied_at TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT NOT NULL);
@@ -70,13 +72,11 @@ export function openStore(dir) {
         if(queue.length&&!queue.some(h=>h.hubId===60003760))queue.push({hubId:60003760,mode:queue.some(h=>h.mode==='full')?'full':'quick',characterId:0});
         queue.sort((a,b)=>(a.hubId===60003760?-1:0)-(b.hubId===60003760?-1:0));
         db.exec('BEGIN IMMEDIATE');
-        try {
-            db.exec(`DELETE FROM market_orders; DELETE FROM market_items; DELETE FROM market_history; DELETE FROM market_history_meta; DELETE FROM market_history_days; DELETE FROM market_history_archives; DELETE FROM market_stage; UPDATE market_hubs SET last_scan=NULL,last_full_scan=NULL;
-            DELETE FROM cache WHERE instr(key,':GET:/markets/')>0 AND (instr(key,'/orders')>0 OR instr(key,'/history')>0 OR instr(key,'/structures/')>0);
-            DELETE FROM settings WHERE key LIKE 'market:everef:%';`);
-            if(queue.length)db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run('market:upgrade',JSON.stringify({queue,total:queue.length,completed:0,paused:false,detail:'Older market books have been retired. Fresh scans are queued for your previously scanned hubs.'}));
-            db.prepare("INSERT INTO migrations VALUES('market-rebuild-v6',datetime('now'))").run();db.exec('COMMIT');
-        }catch(e){db.exec('ROLLBACK');throw e;}
+        db.exec(`DELETE FROM market_orders; DELETE FROM market_items; DELETE FROM market_history; DELETE FROM market_history_meta; DELETE FROM market_history_days; DELETE FROM market_history_archives; DELETE FROM market_stage; UPDATE market_hubs SET last_scan=NULL,last_full_scan=NULL;
+        DELETE FROM cache WHERE instr(key,':GET:/markets/')>0 AND (instr(key,'/orders')>0 OR instr(key,'/history')>0 OR instr(key,'/structures/')>0);
+        DELETE FROM settings WHERE key LIKE 'market:everef:%';`);
+        if(queue.length)db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run('market:upgrade',JSON.stringify({queue,total:queue.length,completed:0,paused:false,detail:'Older market books have been retired. Fresh scans are queued for your previously scanned hubs.'}));
+        db.prepare("INSERT INTO migrations VALUES('market-rebuild-v6',datetime('now'))").run();db.exec('COMMIT');
     }
     if (!db.prepare("SELECT id FROM migrations WHERE id='sessions-v071'").get()) {
         db.exec(`BEGIN IMMEDIATE;
@@ -84,14 +84,49 @@ export function openStore(dir) {
         CREATE INDEX idx_alliance_combat_system_at ON alliance_combat_records(alliance_id,system_id,at);
         INSERT INTO migrations VALUES('sessions-v071',datetime('now')); COMMIT;`);
     }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='session-combat-eligibility-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+            CREATE INDEX idx_sessions_character_ended ON sessions(character_id,ended);
+            INSERT INTO migrations VALUES('session-combat-eligibility-v080',datetime('now')); COMMIT;`);
+    }
     if (!db.prepare("SELECT id FROM migrations WHERE id='database-v073'").get()) {
         db.exec('BEGIN IMMEDIATE');
-        try {
-            db.exec('CREATE INDEX IF NOT EXISTS idx_events_character_type_at ON events(character_id,type,at)');
-            compactHistoryCache(db);
-            db.prepare("INSERT INTO migrations VALUES('database-v073',datetime('now'))").run();
-            db.exec('COMMIT');
-        } catch (error) { db.exec('ROLLBACK'); db.close(); throw error; }
+        db.exec('CREATE INDEX IF NOT EXISTS idx_events_character_type_at ON events(character_id,type,at)');
+        compactHistoryCache(db);
+        db.prepare("INSERT INTO migrations VALUES('database-v073',datetime('now'))").run();
+        db.exec('COMMIT');
+    }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='wallet-event-time-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+            UPDATE events SET at=strftime('%Y-%m-%dT%H:%M:%fZ',at)
+                WHERE type='wallet.entry' AND strftime('%Y-%m-%dT%H:%M:%fZ',at) IS NOT NULL
+                AND at<>strftime('%Y-%m-%dT%H:%M:%fZ',at);
+            INSERT INTO migrations VALUES('wallet-event-time-v080',datetime('now')); COMMIT;`);
+    }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='visits-sovereignty-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+        ALTER TABLE visits ADD COLUMN sovereignty_at_visit TEXT;
+        INSERT INTO migrations VALUES('visits-sovereignty-v080',datetime('now')); COMMIT;`);
+    }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='session-travel-v080'").get()) {
+        db.exec('BEGIN IMMEDIATE');
+        db.exec(`ALTER TABLE visits ADD COLUMN session_id TEXT;
+            CREATE TABLE discovered_systems(character_id INTEGER NOT NULL,system_id INTEGER NOT NULL,
+                PRIMARY KEY(character_id,system_id));
+            INSERT OR IGNORE INTO discovered_systems(character_id,system_id)
+                SELECT character_id,system_id FROM visits WHERE character_id>0 AND system_id>0;
+            INSERT INTO migrations VALUES('session-travel-v080',datetime('now'));`);
+        db.exec('COMMIT');
+    }
+    if (!db.prepare("SELECT id FROM migrations WHERE id='cache-retention-v080'").get()) {
+        db.exec(`BEGIN IMMEDIATE;
+            CREATE TABLE cache_usage(key TEXT PRIMARY KEY REFERENCES cache(key) ON DELETE CASCADE,last_used INTEGER NOT NULL);
+            CREATE INDEX idx_cache_updated_key ON cache(updated,key);
+            ALTER TABLE market_jobs ADD COLUMN terminal INTEGER GENERATED ALWAYS AS
+                (CASE WHEN json_extract(body,'$.status') IN ('complete','cancelled','failed','interrupted') THEN 1 ELSE 0 END) VIRTUAL;
+            CREATE INDEX idx_market_jobs_terminal ON market_jobs(terminal) WHERE terminal=1;
+            CREATE INDEX idx_market_jobs_running ON market_jobs(json_extract(body,'$.status')) WHERE json_extract(body,'$.status')='running';
+            INSERT INTO migrations VALUES('cache-retention-v080',datetime('now')); COMMIT;`);
     }
     try {
         chmodSync(join(dir, 'kairo.sqlite'), 0o600);
@@ -107,13 +142,26 @@ export function openStore(dir) {
         json_extract(body,'$.refreshAt') refreshAt, json_extract(body,'$.expiresAt') expiresAt,
         json_extract(body,'$.retryAt') retryAt FROM snapshots WHERE character_id=? AND key=?`);
     const saveSnapshot = db.prepare('INSERT INTO snapshots VALUES(?,?,?) ON CONFLICT(character_id,key) DO UPDATE SET body=excluded.body');
+    // A UI-only revision avoids comparing/stringifying large decoded payloads.
+    // Every production snapshot write uses saveSnapshot. Missing rows are given
+    // a distinct marker by Core, so an auth reset cannot reuse the deleted body.
+    const snapshotEpoch = randomUUID(), snapshotVersions = new Map();
     return {
         db,
         get(key, fallback) { const row = setting.get(key); return row ? JSON.parse(row.value) : fallback; },
         set: (key, value) => saveSetting.run(key, JSON.stringify(value)),
         snapshot(id, key) { const row = snapshot.get(id, key); return row ? JSON.parse(row.body) : null; },
         snapshotMetadata: (id, key) => metadata.get(id, key) || null,
-        saveSnapshot: (id, key, value) => saveSnapshot.run(id, key, JSON.stringify(value)),
+        snapshotRevision: (id, key) => `${snapshotEpoch}:${id}:${key}:${snapshotVersions.get(id + ':' + key) || 0}`,
+        saveSnapshot(id, key, value) { const result = saveSnapshot.run(id, key, JSON.stringify(value)); const entry = id + ':' + key; snapshotVersions.set(entry, (snapshotVersions.get(entry) || 0) + 1); return result; },
         close: () => db.close(),
     };
+    } catch (error) {
+        // Failed construction never transfers this handle to a caller.
+        // Closing SQLite also rolls back any unfinished migration transaction.
+        try { db.close(); } catch (cleanup) {
+            try { Object.defineProperty(error, 'cleanupErrors', {value: [...(error.cleanupErrors || []), cleanup], configurable: true}); } catch {}
+        }
+        throw error;
+    }
 }

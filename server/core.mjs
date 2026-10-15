@@ -1,53 +1,119 @@
+import {randomUUID} from 'node:crypto';
+import { createUniverse } from './universe.mjs';
+import { enrichAssetLocations } from './asset-locations.mjs';
+import { mapEnrichment } from './enrichment.mjs';
+import { registerUniverseHistory } from './universe-history.mjs';
+import { captureSessionObservation } from './session-travel.mjs';
+import { getUniverseSystem } from './universe-static.mjs';
+import { normalizeSovereignty, sovereigntyStructures } from './universe-sovereignty.mjs';
 import { catalog } from './modules/catalog.mjs';
 import { createBus } from './bus.mjs';
 import { createRegistry } from './registry.mjs';
 import { createStream } from './stream.mjs';
+import {sseEvent, writeSSE, heartbeatSSE, closeSSE} from './sse.mjs';
 import { createProtectionTracker } from './opsec.mjs';
 import {rememberSystem} from './places.mjs';
-import {bindingProjection} from './projections.mjs';
+import {bindingProjections} from './projections.mjs';
 import {createOBS} from './obs.mjs';
 import {createCombat} from './combat.mjs';
 import {createSessionCombat} from './session-combat.mjs';
+import {createPublicFeedTransport} from './public-feed-transport.mjs';
 import {reconcileSessionLoyalty} from './session-details.mjs';
 import {createMarkets} from './markets.mjs';
 import {createGoals} from './goals.mjs';
 import {refreshDeadline, snapshotFresh, pollingValues, pollingBatches, validatePolling} from './polling.mjs';
+import {createUIResourceVersions, eventResources} from './ui-resources.mjs';
+import {createMarketCategories} from './market-categories.mjs';
+const DATASET_NOT_DUE = Symbol('dataset-not-due');
+const DATASET_OBSOLETE = Symbol('dataset-obsolete');
+const DATASET_PAUSED = Symbol('dataset-paused');
+const itemImageDatasets = new Set(['assets', 'transactions', 'orders', 'jobs']);
+const itemImages = createMarketCategories();
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
-    let stopped = false;
-    const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), namesMap = store.get('names', {});
+    let stopped = false, closing, quiesceFailures;
+    let universe, stopUniverseHistory, registry, stream, obs, goals, markets, combat, sessionCombat, publicFeedTransport, ticker, heartbeat;
+    const syncing = new Map(), datasetSync = new Map(), nextRun = new Map(), requested = new Set(), pausedModules = new Set(), namesMap = store.get('names', {});
+    const namesEpoch = randomUUID(), deliveredNames = new WeakMap();
+    let namesVersion = 0;
+    const namesRevision = () => `${namesEpoch}:${namesVersion}`;
+    const namesSnapshot = () => ({names: namesMap, namesRevision: namesRevision()});
     const protectionKeys = new Set(['location', 'fw', 'sovereignty', 'profile', 'contacts', 'corporation_contacts', 'alliance_contacts']);
     const datasets = new Map(catalog.flatMap(module => module.datasets.map(dataset => [dataset.key, {module, dataset}])));
     let polling = pollingValues(store.get('esi:polling', {}));
     const protection = createProtectionTracker();
-    function send(type, data) { for (const c of uiClients) {
-        if (c.destroyed || c.writableLength > 1000000) {
-            c.destroy();
-            uiClients.delete(c);
+    const uiVersions = createUIResourceVersions(), combatVersions = new Map();
+    function sendNames(clients = uiClients) {
+        const revision = namesRevision(); let frame;
+        for (const client of clients) {
+            if (deliveredNames.get(client) === revision) continue;
+            frame ??= sseEvent('names', {names: namesMap, namesRevision: revision});
+            if (writeSSE(client, frame)) deliveredNames.set(client, revision);
+            else uiClients.delete(client);
         }
-        else
-            c.write('event: ' + type + '\ndata: ' + JSON.stringify(data) + '\n\n');
-    } }
+    }
+    function connectUI(client) {
+        if (stopped) { client.end(); return false; }
+        if (uiClients.has(client)) return true;
+        uiClients.add(client); client.once('close', () => uiClients.delete(client));
+        sendNames([client]); return uiClients.has(client);
+    }
+    function send(type, data) {
+        if (!uiClients.size) return;
+        // Directory delivery is global to each UI connection, independent of
+        // the pilot-specific snapshots that a dashboard chooses to consume.
+        if (type === 'snapshot') {
+            sendNames();
+            if (!uiClients.size) return;
+            data = {...data, namesRevision: namesRevision()};
+        }
+        const frame = sseEvent(type, data);
+        for (const client of uiClients) if (!writeSSE(client, frame)) uiClients.delete(client);
+    }
+    function changed(detail = {}) {
+        const resources = detail.resources;
+        const resourceRevisions = uiVersions.changed(detail.characterId, resources);
+        send('changed', {...detail, resourceRevisions});
+    }
     function publish(e) { const at = e.at || new Date().toISOString(); const result = store.db.prepare('INSERT OR IGNORE INTO events(character_id,type,module,summary,payload,at,dedupe) VALUES(?,?,?,?,?,?,?)').run(e.characterId || null, e.type, e.module || 'core', e.summary || e.type, JSON.stringify(e.payload || {}), at, e.dedupe || null); if (result.changes) {
         bus.emit({ ...e, at });
-        send('changed', { characterId: e.characterId });
+        changed({characterId: e.characterId, type: e.type, module: e.module || 'core', resources: eventResources(e)});
     } }
-    const registry = await createRegistry(moduleDir, { store, db: store.db, bus, esi, publish });
-    const stream=createStream(store,bus,publish);
-    const obs=createOBS(store,options.vault,{...options.obs,onChange:status=>send('obs',status)});
-    const goals=createGoals(store,auth,publish);
-    const markets=createMarkets(store,auth,esi,{autoUpgrade:!options.noSync,...options.markets,refreshCharacter:async(id,keys)=>{
-        const c=auth.characters().find(c=>c.id===id);if(!c||c.needsReauth)return;
-        const tasks=[];for(const m of catalog)if(enabled(m))for(const d of m.datasets)if(keys.includes(d.key)&&(!d.scope||c.scopes.includes(d.scope))){requested.add(id+':'+d.key);tasks.push(syncDataset(c,m,d));}
-        await Promise.allSettled(tasks);
-    }});
-    const combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
-        goals.refresh(id,'killmails');updateBindings();
-        send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id),names:namesMap});
-    }});
-    const sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:options.sessionFeedFetcher,onChange:id=>send('changed',{characterId:id})});
-    function combatSnapshot(id){const s=store.snapshot(id,'killmails')||{status:'waiting',data:null},records=combat.recent(id);return {...s,data:records.length?records:s.data,participation:combat.coverage(id)};}
-    const enabled = m => store.get('module:' + m.id, true);
+    try {
+        publicFeedTransport = createPublicFeedTransport();
+        universe = createUniverse(store, auth, esi, {...options.universe, noSync: options.noSync,
+            feeds: {...options.universe?.feeds, fetcher: publicFeedTransport.wrap(options.universe?.feeds?.fetcher,
+                {maximum: 2 * 1024 * 1024, checkContentLength: true, sizeError: 'Public feed response exceeded the size limit.'})},
+            publish, onChange: characterId => send('universe', {characterId: characterId || 0})});
+        stopUniverseHistory = registerUniverseHistory({store, bus, esi, publish});
+        registry = await createRegistry(moduleDir, { store, db: store.db, bus, esi, publish });
+        stream=createStream(store,bus,publish);
+        obs=createOBS(store,options.vault,{...options.obs,onChange:status=>send('obs',status)});
+        goals=createGoals(store,auth,publish);
+        markets=createMarkets(store,auth,esi,{autoUpgrade:!options.noSync,...options.markets,refreshCharacter:async(id,keys)=>{
+            const c=auth.characters().find(c=>c.id===id);if(!c||c.needsReauth)return;
+            const tasks=[];for(const m of catalog)if(enabled(m))for(const d of m.datasets)if(keys.includes(d.key)&&(!d.scope||c.scopes.includes(d.scope))){requested.add(id+':'+d.key);tasks.push(syncDataset(c,m,d));}
+            await Promise.allSettled(tasks);
+        }});
+        combat=createCombat(store,auth,esi,{publish,resolveNames,fetcher:options.combatFetcher,onChange:id=>{
+            combatVersions.set(id, (combatVersions.get(id) || 0) + 1);
+            goals.refresh(id,'killmails');updateBindings();
+            send('snapshot',{characterId:id,key:'killmails',snapshot:combatSnapshot(id)});
+        }});
+        sessionCombat=createSessionCombat(store,auth,esi,combat,{resolveNames,feedFetcher:publicFeedTransport.wrap(options.sessionFeedFetcher),onChange:id=>changed({characterId:id,resources:['sessionReport']})});
+    } catch (error) { return rollback(error); }
+    function uiSnapshot(id,key) {
+        const sample=store.snapshot(id,key),revision=store.snapshotRevision?.(id,key);
+        // These rows are freshly decoded for this response. Project image
+        // metadata here so existing saved samples also render without a scan,
+        // durable rewrite, per-type request or duplicate retained row cache.
+        if(itemImageDatasets.has(key)&&Array.isArray(sample?.data)) for(const row of sample.data) {
+            if(row&&typeof row==='object') row.iconVariant=itemImages.imageVariant(key==='jobs'?row.product_type_id||row.blueprint_type_id:row.type_id);
+        }
+        return sample?{...sample,dataRevision:revision}:{status:'waiting',data:null,dataRevision:revision===undefined?undefined:revision+':missing'};
+    }
+    function combatSnapshot(id){const s=uiSnapshot(id,'killmails'),records=combat.recent(id);return {...s,dataRevision:s.dataRevision===undefined?undefined:s.dataRevision+':combat:'+(combatVersions.get(id)||0),data:records.length?records:s.data,participation:combat.coverage(id)};}
+    function enabled(m) { return store.get('module:' + m.id, true); }
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));
     function rememberNames(names) {
         let changed = false;
@@ -56,14 +122,17 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 namesMap[id] = name; changed = true;
             }
         }
-        if (changed) store.set('names', namesMap);
+        if (changed) { namesVersion++; store.set('names', namesMap); }
     }
-    async function resolveNames(data, priority = false) { const ids = []; function walk(x) { if (Array.isArray(x)) {
+    async function resolveNames(data, priority = false, datasetKey) { const ids = []; function walk(x) { if (Array.isArray(x)) {
         x.forEach(walk);
     }
     else if (x && typeof x === 'object') {
         for (const [k, v] of Object.entries(x)) {
-            if (/^(type_id|skill_id|ship_type_id|solar_system_id|system_id|corporation_id|alliance_id|faction_id|product_type_id|blueprint_type_id|from_id|issuer_id|issuer_corporation_id|client_id)$/.test(k) && typeof v === 'number' && !namesMap[v])
+            if (k === 'implants' && Array.isArray(v)) {
+                for (const id of v) if (typeof id === 'number' && !namesMap[id]) ids.push(id);
+            }
+            else if ((/^(type_id|skill_id|ship_type_id|solar_system_id|system_id|corporation_id|alliance_id|faction_id|product_type_id|blueprint_type_id|from_id|issuer_id|issuer_corporation_id|client_id)$/.test(k) || datasetKey === 'mail' && k === 'from') && typeof v === 'number' && !namesMap[v])
                 ids.push(v);
             else if (typeof v === 'object')
                 walk(v);
@@ -71,12 +140,19 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     } } walk(data); if (ids.length) {
         rememberNames(await esi.names(ids, { priority }));
     } }
-    async function enrich(key, data, id) {
-        if (key === 'sovereignty')
-            return (data.solar_systems || []).map(s => ({ system_id: s.solar_system_id, alliance_id: s.claim?.alliance?.alliance_id, corporation_id: s.claim?.alliance?.corporation_id, faction_id: s.claim?.faction?.faction_id, development: s.claim?.alliance?.development }));
+    async function enrich(key, data, id, current) {
+        if (key === 'sovereignty') return normalizeSovereignty(data);
         if (key === 'location' && data.solar_system_id) {
             // Instanced space may not expose system details. Keep the observed ID
             // so documented Abyssal / Anoikis ID ranges can still be classified.
+            const local = getUniverseSystem(data.solar_system_id,{celestials:false});
+            if (local) {
+                const constellation = local.constellation, region = local.region;
+                const system = {...local, security_status: local.security, position: {x:local.x,y:local.y,z:local.z}};
+                rememberSystem(store, system, constellation, region);
+                rememberNames({[system.system_id]:system.name,[system.constellation_id]:constellation?.name,[system.region_id]:region?.name});
+                return {...data, system, constellation, region};
+            }
             let system;
             try { system = await esi.request('/universe/systems/' + data.solar_system_id, { ttl: 86400, priority: true }); }
             catch (error) {
@@ -106,47 +182,26 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             return { ...data, corporation, alliance };
         }
         if (key === 'assets') {
-            const entries = new Map(data.map(a => [a.item_id, a]));
-            const rootLocation = a => { let location = a.location_id; const seen = new Set(); while (entries.has(location) && !seen.has(location)) {
-                seen.add(location);
-                location = entries.get(location).location_id;
-            } return location; };
-            const locations = [...new Set(data.map(rootLocation))];
-            const canReadStructures = auth.characters().find(c => c.id === id)?.scopes.includes('esi-universe.read_structures.v1');
-            rememberNames(await esi.names(locations.filter(x => x < 2147483647 && !namesMap[x])));
-            for (const location of locations) {
-                if (namesMap[location])
-                    continue;
-                try {
-                    if (location >= 60000000 && location < 64000000) {
-                        const r = await esi.request('/universe/stations/' + location, { ttl: 86400 });
-                        rememberNames({ [location]: r.data.name });
-                    }
-                    else if (location >= 1000000000000 && canReadStructures) {
-                        const r = await esi.request('/universe/structures/' + location, { characterId: id, ttl: 3600 });
-                        rememberNames({ [location]: r.data.name });
-                    }
-                }
-                catch { }
-            }
-            return data.map(a => ({ ...a, root_location_id: rootLocation(a), location_name: namesMap[rootLocation(a)] || String(rootLocation(a)) }));
+            return enrichAssetLocations(data,{names:namesMap,rememberNames,esi,characterId:id,
+                canReadStructures:auth.characters().find(c=>c.id===id)?.scopes.includes('esi-universe.read_structures.v1'), current});
         }
         if (key === 'killmails') {
-            await combat.ingest(id,data,'esi');
+            await combat.ingest(id,data,'esi',{notify:false});
             return combat.recent(id);
         }
         if (key === 'planets') {
-            const planets = [];
-            for (const p of data) {
+            return mapEnrichment(data, async p => {
+                // This collection owns the connection that accepted the list,
+                // including detail reads not yet admitted to the worker pool.
+                if (!current()) return p;
                 try {
                     const detail = await esi.request('/characters/' + id + '/planets/' + p.planet_id, { characterId: id, ttl: 600 });
-                    planets.push({ ...p, details: detail.data });
+                    return { ...p, details: detail.data };
                 }
                 catch {
-                    planets.push(p);
+                    return p;
                 }
-            }
-            return planets;
+            });
         }
         return data;
     }
@@ -154,15 +209,22 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         if (stopped) return;
         const key = (character?.id || 0) + ':' + d.key;
         if (datasetSync.has(key)) return datasetSync.get(key);
-        const task = runDataset(character, m, d).finally(() => {
+        let notDue = false;
+        const task = runDataset(character, m, d).then(result => {
+            notDue = result === DATASET_NOT_DUE;
+            return result;
+        }).finally(() => {
             datasetSync.delete(key);
-            if (!stopped && protectionKeys.has(d.key)) refreshOPSEC();
+            if (!stopped && !notDue && protectionKeys.has(d.key)) refreshOPSEC();
         });
         datasetSync.set(key, task);
         return task;
     }
     async function runDataset(character, m, d) {
         const id = character?.id || 0;
+        const revision = auth.connectionRevision?.(id), key = id + ':' + d.key;
+        // Reuse admission identity for synchronous cache checks. Only work
+        // crossing an await needs the fresh ownership checks below.
         if (!enabled(m) || character?.needsReauth)
             return;
         const metadata = store.snapshotMetadata(id, d.key);
@@ -171,11 +233,24 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 store.saveSnapshot(id, d.key, { status: 'missing_scope', data: null, scope: d.scope });
             return;
         }
-        const key = id + ':' + d.key;
-        let ownerId;
+        let ownerId, obsoleteReason = DATASET_OBSOLETE;
+        function current() {
+            const active = id && auth.characters().find(c => c.id === id);
+            const valid = !id || active && !active.needsReauth && auth.connectionRevision?.(id) === revision &&
+                (!d.scope || active.scopes.includes(d.scope));
+            if (!valid || pausedModules.has(m.id)) {
+                nextRun.delete(key);
+                // A paused module ends only its own work. Lost connection
+                // ownership still stops the remaining pilot collection batches.
+                obsoleteReason = valid ? DATASET_PAUSED : DATASET_OBSOLETE;
+                return false;
+            }
+            return true;
+        }
         if (d.owner) {
             const pilot = catalog.find(m => m.id === 'pilot');
             await syncDataset(character, pilot, pilot.datasets.find(d => d.key === 'profile'));
+            if (!current()) return obsoleteReason;
             const profile = store.snapshot(id, 'profile');
             if (!enabled(pilot) || profile?.status !== 'ready') {
                 store.saveSnapshot(id, d.key, { status: 'waiting', data: null, error: 'Waiting for current corporation and alliance membership.' });
@@ -194,20 +269,41 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         let scheduled = nextRun.get(key) ?? (metadata?.status === 'ready' ? Date.parse(metadata.refreshAt) : Date.parse(metadata?.retryAt));
         if (protectionEvidence(d.key, id) && metadata?.status === 'ready') scheduled = Math.min(scheduled, Date.parse(metadata.expiresAt));
         if (!forced && scheduled > Date.now())
-            return;
+            // No evidence changed. The independent ticker and completed sync
+            // still evaluate elapsed protection deadlines; other exits and
+            // failures keep their immediate refresh.
+            return DATASET_NOT_DUE;
         const prior = store.snapshot(id, d.key);
         nextRun.set(key, Date.now() + 60000);
         try {
             const options = { characterId: d.scope ? id : 0, ttl: d.ttl, priority: protectionKeys.has(d.key) };
             const r = await (d.paged ? esi.paged : esi.request)(d.route.replaceAll('{id}', id).replaceAll('{owner}', ownerId), options);
-            const data = await enrich(d.key, r.data, id);
+            // Disconnect/reconnect and scope changes end collection ownership,
+            // even if an already dispatched ESI response still succeeds.
+            if (!current()) return obsoleteReason;
+            // Session ownership follows local fresh-response receipt, before
+            // optional display metadata or names can cross a session boundary.
+            const observation = !r.stale && ['location', 'ship', 'skills', 'jobs'].includes(d.key)
+                ? captureSessionObservation(store, { characterId: id, systemId: d.key === 'location' ? r.data?.solar_system_id : undefined }) : undefined;
+            // Composite private reads retain the admitted connection without
+            // rereading the complete roster for every detail. Full access and
+            // scope checks still enclose enrichment and its publication.
+            const sameConnection = auth.connectionRevision ? () => !pausedModules.has(m.id) && auth.connectionRevision(id) === revision : current;
+            const data = await enrich(d.key, r.data, id, sameConnection);
+            if (!current()) return obsoleteReason;
             if (d.key === 'sovereignty') await resolveNames(data.map(s => ({ alliance_id: s.alliance_id, corporation_id: s.corporation_id, faction_id: s.faction_id })), true);
-            else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts'].includes(d.key))
-                await resolveNames(data, protectionKeys.has(d.key));
+            else if (!['prices', 'kills', 'jumps', 'fw', 'contacts', 'corporation_contacts', 'alliance_contacts', 'industry_systems'].includes(d.key))
+                await resolveNames(d.key === 'implants' ? {implants: data} : data, protectionKeys.has(d.key), d.key);
+            if (!current()) return obsoleteReason;
             const snapshot = { ...r, data, status: r.stale ? 'stale' : 'ready', ...(d.owner ? { ownerId } : {}) };
+            snapshot.sourceModifiedAt = r.headers?.['last-modified'] || null;
             if (!r.stale) snapshot.refreshAt = new Date(refreshDeadline(pollingPolicy(d, id), r, d.key === 'queue' ? data : store.snapshot(id, 'queue')?.data)).toISOString();
             delete snapshot.headers;
             store.saveSnapshot(id, d.key, snapshot);
+            if (d.key === 'kills') universe.feeds.observeNpc();
+            if (d.key === 'sovereignty' && Array.isArray(r.data?.solar_systems))
+                store.saveSnapshot(0, 'sovereignty_structures', {...snapshot, data: sovereigntyStructures(data), derivedFrom: 'sovereignty'});
+            if (d.key === 'location' && !r.stale && store.get('module:universe', true)) universe.observeSelectedLocation(id);
             if(d.key==='loyalty'&&!r.stale)reconcileSessionLoyalty(store,id);
             goals.refresh(id,d.key);
             nextRun.set(key, r.stale ? retryDeadline(d, r.retryAt) : Math.max(Date.now() + 3000, Date.parse(snapshot.refreshAt)));
@@ -231,23 +327,29 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                     const pilot = catalog.find(m => m.id === 'pilot');
                     syncDataset(character, pilot, pilot.datasets.find(d => d.key === 'ship'))?.catch(() => {});
                 }
-                bus.emit({ type: 'data.' + d.key, characterId: id, payload: { current: data, previous: prior?.data } });
+                bus.emit({ type: 'data.' + d.key, characterId: id, payload: { current: data, previous: prior?.data, ...(observation ? { observation } : {}) } });
             }
         }
         catch (e) {
+            if (!current()) return obsoleteReason;
             const retained = d.owner && prior?.ownerId !== ownerId ? null : prior;
             const retryAt = new Date(retryDeadline(d, e.retryAt)).toISOString();
             store.saveSnapshot(id, d.key, { ...retained, data: retained?.data ?? null, status: retained?.data != null ? 'stale' : 'error', error: e.message, errorStatus: e.status, retryAt, ...(d.owner ? { ownerId } : {}) });
+            if (d.key === 'sovereignty') {
+                const hubs=store.snapshot(0,'sovereignty_structures');
+                if(hubs?.derivedFrom==='sovereignty') store.saveSnapshot(0,'sovereignty_structures',{...hubs,status:'stale',error:e.message,errorStatus:e.status,retryAt});
+            }
             nextRun.set(key, Date.parse(retryAt));
         }
-        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):store.snapshot(id, d.key), names: namesMap });
+        send('snapshot', { characterId: id, key: d.key, snapshot: d.key==='killmails'?combatSnapshot(id):uiSnapshot(id, d.key) });
     }
     function retryDeadline(dataset, retryAt) {
         return Math.max(Date.now() + (dataset.key === 'location' ? 3000 : 60000), Date.parse(retryAt) || 0);
     }
     function protectionEvidence(key, id) {
+        if (key === 'location' || !protectionKeys.has(key)) return false;
         const protectedId = protectedCharacter().id;
-        return key !== 'location' && protectionKeys.has(key) && !!protectedId && (id === 0 || id === protectedId);
+        return !!protectedId && (id === 0 || id === protectedId);
     }
     function pollingPolicy(dataset, id) {
         return { ...dataset, pollInterval: protectionEvidence(dataset.key, id) ? 0 : polling[dataset.key] ?? dataset.pollInterval };
@@ -273,20 +375,21 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
                 nextRun.set(id + ':' + d.key, due);
             }
         }
-        refreshOPSEC(); updateBindings(); send('changed', {});
+        refreshOPSEC(); updateBindings(); changed();
         return pollingSettings();
     }
     async function sync(id) { if (stopped || syncing.has(id))
         return; const character = auth.characters().find(c => c.id === id); if (id && !character)
-        return; const task = (async () => { const modules = id ? catalog.filter(m => m.id !== 'universe') : catalog.filter(m => m.id === 'universe'); const tasks = modules.filter(enabled).flatMap(m => m.datasets.map(d => () => syncDataset(character, m, d))); for (let i = 0; i < tasks.length; i += 3) {
-        if (stopped)
+        return; const revision = auth.connectionRevision?.(id); const task = (async () => { const modules = id ? catalog.filter(m => m.id !== 'universe') : catalog.filter(m => m.id === 'universe'); const tasks = modules.filter(enabled).flatMap(m => m.datasets.map(d => () => syncDataset(character, m, d))); for (let i = 0; i < tasks.length; i += 3) {
+        if (stopped || (id && auth.connectionRevision?.(id) !== revision))
             break;
-        await Promise.allSettled(tasks.slice(i, i + 3).map(f => f()));
+        const results = await Promise.allSettled(tasks.slice(i, i + 3).map(f => f()));
+        if (results.some(result => result.status === 'fulfilled' && result.value === DATASET_OBSOLETE)) break;
     } refreshOPSEC(); updateBindings(); })().finally(() => syncing.delete(id)); syncing.set(id, task); return task; }
     function snapshots(id, expire = true) { const data = {}; for (const m of catalog)
         for (const d of m.datasets) {
             const char = m.id === 'universe' ? 0 : id;
-            data[d.key] = enabled(m) ? store.snapshot(char, d.key) || { status: 'waiting', data: null } : { status: 'disabled', data: null };
+            data[d.key] = enabled(m) ? uiSnapshot(char, d.key) : { status: 'disabled', data: null, dataRevision:'disabled' };
             if(d.key==='killmails'&&enabled(m))data[d.key]=combatSnapshot(id);
             if (expire && data[d.key].status === 'ready' && !snapshotFresh(data[d.key]))
                 data[d.key] = { ...data[d.key], status: 'stale' };
@@ -301,7 +404,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         const next = { ...protection({ manual: settings.manual, location: s.location, system: s.location?.data?.system, constellation: s.location?.data?.constellation, region: s.location?.data?.region, fw: s.fw, sovereignty: s.sovereignty, contacts: s.contacts, corporation_contacts: s.corporation_contacts, alliance_contacts: s.alliance_contacts, profile: s.profile, settings, characterId: id, available: !!character && !character.needsReauth && character.scopes.includes('esi-location.read_location.v1') }), characterId: id };
         const previous = stream.getOPSEC();
-        next.standingSources = ['contacts', 'corporation_contacts', 'alliance_contacts'].map(key => ({ key, status: s[key]?.status || 'waiting', updatedAt: s[key]?.updatedAt, expiresAt: s[key]?.expiresAt, error: s[key]?.error, scope: catalog.find(m => m.id === 'opsec').datasets.find(d => d.key === key).scope, count: Array.isArray(s[key]?.data) ? s[key].data.filter(c => c.contact_type === 'alliance').length : 0 }));
+        next.standingSources = ['contacts', 'corporation_contacts', 'alliance_contacts'].map(key => ({ key, status: s[key]?.status || 'waiting', updatedAt: s[key]?.updatedAt, expiresAt: s[key]?.expiresAt, error: s[key]?.error, scope: datasets.get(key).dataset.scope, count: Array.isArray(s[key]?.data) ? s[key].data.filter(c => c.contact_type === 'alliance').length : 0 }));
         stream.setOPSEC(next); obs.setState(next.state);
         if (previous.state !== next.state || previous.reason !== next.reason || previous.characterId !== id || !!previous.pending !== !!next.pending || JSON.stringify(previous.standingSources) !== JSON.stringify(next.standingSources)) send('opsec', next);
     }
@@ -310,34 +413,91 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         if (stopped) return Promise.resolve();
         const tasks = [];
         for (const key of protectionKeys) {
-            const m = catalog.find(m => m.datasets.some(d => d.key === key));
+            const {module: m, dataset} = datasets.get(key);
             if (m.id !== 'universe' && (!character || character.needsReauth)) continue;
-            tasks.push(syncDataset(m.id === 'universe' ? undefined : character, m, m.datasets.find(d => d.key === key)));
+            tasks.push(syncDataset(m.id === 'universe' ? undefined : character, m, dataset));
         }
-        return Promise.allSettled(tasks);
+        return Promise.allSettled(tasks).then(results => {
+            if (!stopped) refreshOPSEC();
+            return results;
+        });
     }
-    function updateBindings(){stream.setBindings(Object.fromEntries(stream.config().elements.map(e=>[e.id,bindingProjection(store,auth,e)])));}
-    const ticker = setInterval(() => { if (!options.noSync) { syncProtection(); sync(0); for (const c of auth.characters())
-        if (!c.needsReauth){
-            sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
-        } } refreshOPSEC(); }, 3000);
-    ticker.unref();
-    const heartbeat = setInterval(() => { for (const c of [...uiClients, ...stream.clients]) {
-        if (c.destroyed || c.writableLength > 1000000)
-            c.destroy();
-        else
-            c.write(': heartbeat\n\n');
-    } updateBindings(); }, 10000);
-    heartbeat.unref();
-    refreshOPSEC();updateBindings();
-    return { bus, registry, stream, obs, combat, sessionCombat, goals, markets, uiClients, moduleList, snapshots, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
+    function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements.filter(element=>element.visible)));}
+    function refreshPolitics() {
+        if (!store.get('module:universe', true)) return;
+        try { universe.refreshPolitics(); } catch (error) { console.warn('Universe relationship refresh deferred:', error.message); }
+    }
+    function startTimers() {
+        ticker = setInterval(() => { if (!options.noSync) { universe.tick().catch(error => console.warn('Universe collection deferred:', error.message)); refreshPolitics(); syncProtection(); sync(0); for (const c of auth.characters())
+            if (!c.needsReauth){
+                sync(c.id);combat.syncPublic(c.id);sessionCombat.syncRecent(c.id);
+            } } refreshOPSEC(); }, 3000);
+        ticker.unref();
+        heartbeat = setInterval(() => {
+            for (const clients of [uiClients, stream.clients]) for (const client of clients)
+                if (!heartbeatSSE(client)) clients.delete(client);
+            updateBindings();
+        }, 10000);
+        heartbeat.unref();
+    }
+    function quiesce() { quiesceFailures ??= bus.health().failures; clearInterval(ticker); clearInterval(heartbeat); }
+    function close() {
+        if (closing) return closing;
+        stopped = true; quiesce();
+        const priorFailures = quiesceFailures;
+        closing = (async () => {
+            const errors = [];
+            async function finish(work) {
+                try { await work(); } catch (error) { errors.push(error); }
+            }
+            // Dataset enrichment can still call Universe and Combat after ESI
+            // resolves. Keep both dependencies and semantic listeners available.
+            while (syncing.size || datasetSync.size) {
+                const results = await Promise.allSettled([...syncing.values(), ...datasetSync.values()]);
+                errors.push(...results.filter(result => result.status === 'rejected').map(result => result.reason));
+            }
+            await finish(() => universe?.close());
+            await finish(() => markets?.close());
+            await finish(() => sessionCombat?.close());
+            await finish(() => publicFeedTransport?.close());
+            await finish(() => combat?.close());
+            await bus.drain();
+            await finish(() => registry?.close());
+            // Promise-returning module cleanup may publish final semantic work.
+            await bus.drain();
+            await finish(() => stopUniverseHistory?.());
+            await finish(() => stream?.close());
+            await finish(() => obs?.close());
+            await Promise.all([...uiClients].map(closeSSE));
+            uiClients.clear();
+            const events = await bus.close();
+            if (events.failures > priorFailures) errors.push(new Error(`Semantic event drain failed (${events.failures - priorFailures} listener errors).`));
+            if (errors.length) throw new AggregateError(errors, 'Kairo could not finish all accepted work.');
+        })();
+        return closing;
+    }
+    async function rollback(error) {
+        // Caller-owned Store and ESI remain open while accepted module work drains.
+        try { await close(); }
+        catch (cleanupError) {
+            // Preserve the original error/code even if it is frozen or primitive.
+            try { Object.defineProperty(error, 'cleanupErrors', {value: [...(error.cleanupErrors || []), cleanupError], configurable: true}); } catch {}
+        }
+        throw error;
+    }
+    try {
+        startTimers();
+        refreshOPSEC();updateBindings();
+        if (!options.noSync) refreshPolitics();
+    } catch (error) { return rollback(error); }
+    return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, connectUI, namesSnapshot, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
+            if (value) pausedModules.delete(id); else pausedModules.add(id);
         }
         else
-            registry.toggle(id, value); refreshOPSEC(); updateBindings(); send('changed', {}); }, requestSync(id) {
+            registry.toggle(id, value); if (id === 'universe') universe.tick().catch(() => {}); refreshOPSEC(); updateBindings(); changed(); }, requestSync(id) {
             for (const m of catalog) if ((m.id === 'universe') === (id === 0)) for (const d of m.datasets) requested.add(id + ':' + d.key);
             esi.clearAccessFailures?.(id);
             syncProtection(); return Promise.allSettled([sync(id), ...(!options.noSync && id ? [combat.syncPublic(id)] : [])]);
-        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health() }), async close() { stopped = true; clearInterval(ticker); clearInterval(heartbeat); registry.close();stream.close();await markets.close();await sessionCombat.close();await combat.close();await obs.close(); for (const c of uiClients)
-            c.end(); await Promise.allSettled([...syncing.values(), ...datasetSync.values()]); } };
+        }, health: () => ({ syncing: [...syncing.keys()], esi: esi.health(), events: bus.health() }), quiesce, close };
 }

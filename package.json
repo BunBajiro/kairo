@@ -1,6 +1,6 @@
 {
   "name": "kairo-capsuleer-operations",
-  "version": "0.7.3",
+  "version": "0.8.0-rc.17",
   "private": true,
   "engines": {
     "node": ">=24.0.0"
@@ -9,11 +9,11 @@
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
     "build": "bash scripts/build-verified.sh",
-    "start": "node server/index.mjs",
+    "start": "node server/start.mjs",
     "test": "node --test tests/kairo/*.test.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
-    "start:local": "node server/index.mjs --open",
+    "start:local": "node server/start.mjs --open",
     "test:kairo": "node --test tests/kairo/*.test.mjs",
     "check:kairo": "tsc -p tsconfig.kairo.json --noEmit",
     "test:scaffold": "npm run build && node --test tests/*.test.mjs"

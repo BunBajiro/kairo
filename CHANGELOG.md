@@ -4,6 +4,162 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ## Unreleased
 
+### Changed
+
+- Consolidates current user/developer documentation, adds the internal API and HTTP/event guides, and removes superseded research/review notes from the application docs while preserving their originals in the analysis archive.
+- Sends the dashboard name directory on connection and when it changes, with revision and reconnect guards, instead of repeating it in every dataset event.
+- Avoids a redundant Maps clock render after data refresh while preserving expiry deadlines, visibility refresh and clock corrections.
+- Reuses unchanged Session archive cards while retaining all loaded history, current duration labels and keyboard focus.
+
+### Fixed
+
+- Reserves item-icon space before image loading in market views and restores visibility when a failed icon subsequently loads.
+- Returns keyboard focus to the opening Session button after dismissing a report or cancelling the naming dialog, while respecting pilot changes and navigation.
+
+## 0.8.0-rc.17 — Optimisation and refactoring
+
+- Refactors shared work across Kairo, including existing services beyond the Universe sprint. The [performance review](https://github.com/BunBajiro/kairo/blob/perf/rc16-checkpoint-v0.8.0/analysis/rc17/PERFORMANCE-REVIEW-0.8.0.md) records accepted changes, retained first-use and ongoing costs, and the evidence limits. See [Validation](docs/VALIDATION.md) for release acceptance and the designated review build.
+- Loads the Maps library through compact summaries and the opened map through selected detail. Request-scoped reads share canonical links and operational records; signature bindings use one edge pass, and overlapping browser refreshes are coalesced.
+- Prepares route evidence and graph/spatial indexes once per itinerary, reuses them across legs and validates relevant evidence and connections again before saving the result.
+- Retires the standalone Journey log, lifetime visit counters, footprint preset and visit overlay. Sessions owns new operation travel, preserving reports, combat and replay. Discovery, ordinary activity and OBS notifications remain independent; existing records and exports are retained without a reset.
+- Adds independent K-space/J-space node sizes, collapsible geographic/custom display groups and **Focus-based map detail**, **off by default**, under **Universe settings → Mapper preferences**. Browser-local preferences and saved group membership preserve canonical map geometry and connections.
+- Shares source preparation across Goals and widget bindings, resolves repeated asset containment paths once per batch and avoids rewriting identical combat records. Unchanged widget projections no longer rebroadcast the same state.
+- Drains accepted requests, dataset enrichment, semantic subscribers and worker shutdown before releasing their dependencies. Session ownership is captured before slow metadata lookup, preventing delayed observations from moving into a later Session.
+- Handles large dashboard event frames with ordered, drain-aware writes and bounded waiting work. Blocked OBS clients fail closed when protection engages. SDE activation/recovery, OPSEC rules and shared ESI cache, priority and rate-limit policies remain in place.
+
+## 0.8.0-rc.16 — Automatic static-data updates
+
+- Checks CCP's SDE metadata at startup and hourly with conditional requests, cache deadlines and retry backoff. One updater serves the application; maps do not poll for SDE updates.
+- Prepares Universe, celestial details, market categories and NPC ownership from one official export in a background worker. No Python or extra runtime installation is required.
+- Activates a validated dataset through a controlled core restart, preserving browser sessions, open pages and unsaved forms. Update, rollback and ordinary disconnect notices are distinct.
+- Adds **Settings → Datasets** with versions, release/update dates, progress and manual controls. Bundled Wanderer and SMT references retain their own provenance.
+- Removes temporary downloads and failed staging files. Retires previous generations after successful activation; restores the prior dataset if startup fails. Concurrent launchers cannot disturb an update.
+- Preserves saved maps, notes, pilots and other user data.
+
+## 0.8.0-rc.13 — Reliable travel and clearer map entry
+
+- Fixes automatic K→J, J→J and J→K mapping with normal ESI cache refresh intervals. Both K-Space endpoints are displayed; new connections use 16h/Normal/L without resetting existing timers.
+- Restores a map landing with existing maps and Create New Map. The read-only Live source is available only through settings.
+- Uses one floating creation form for name, description, at least one tracked pilot and optional scope, including creation from the source. Tracking is automatic for selected pilots; source copies retain their remaining lifetime.
+- Separates Structures, Timers and Field reports, with distinct icons and counts. A structure with an attached schedule remains a structure.
+- Shows structure counts on system cards, hides zero-count indicators and removes the decorative chain icon from connection labels.
+- Prefills Observation time with current UTC for new records, preserving the original timestamp on ordinary edits. Expiry remains optional.
+- Consolidates system right-click detail shortcuts into one System details action, keeping distinct map and external actions separate.
+- Keeps recorded J-Space entrances, internal travel and exits visible in session replay, including rewind, using historical visits independently of live maps.
+- Restores current sovereignty shading in K-Space replay. The pilot-location readout shows ownership captured at the visit when available; older visits without a capture remain explicitly unrecorded.
+
+## 0.8.0-rc.12 — Independent maps and live tracking
+
+- Deletes expired, collapsed and manually removed wormhole connections immediately, including their connection notes, passage records, bound signatures, cached routes and undo copies. Connections have no archive or lock; system data and its 30-minute grace period remain.
+- Gives each J-Space map independent system annotations, signatures, intel and connections. Existing maps migrate into separate instances; new maps never import visited-system history.
+- Adds a per-map pilot roster with tracking enabled by default and explicit pause/resume. One tracking service distributes existing live location samples to subscribed maps, without additional ESI requests or per-map polling.
+- Adds a lightweight, read-only Live source for the active pilot. It records current observed topology without system notes, scanner records or passage history, using existing location samples without extra polling.
+- Configures map population by systems, K-Space constellations/regions, sovereign alliances/corporations and user-defined power blocs. Selections combine with OR; matching live chains populate independent map instances, including when a later exit establishes the match. This controls population, not visibility of saved cards.
+- Requires fresh, complete sovereignty for owner-based scope matches; inferred coalitions and manually assigned J-Space dominion never stand in for sovereignty.
+- Copies live source chains with independent default annotations and connection conditions, preserving their original observation age and remaining lifetime. Dead topology and visited-system history are never imported.
+- Keeps deleted connections and removed cards absent during unrelated backfill; fresh traversal can discover them again without retaining deleted connection records.
+- Adds effective-owner name search with alliance/corporation logos and EVE IDs in selectable results.
+- Keeps explicit Kairo/Wanderer imports and copies map-local; expired connection data is omitted rather than revived. Native exports preserve map reports and infrastructure with independent imported IDs, without exporting live pilot telemetry or replaying alerts.
+
+## 0.8.0-rc.11 — Clearer chain workflows
+
+- Uses lifetime presets 1h, 4h, 4.5h, 16h, 24h and 48h; mass Verge/Half/Normal; ship sizes S/M/L/H/XL. New links default to 16h, Normal and L while routing verification remains explicit.
+- Draws continuous solid connections, retaining lifetime borders and mass fill colours.
+- Unifies detailed system work in one System/Scanner/Reports/Notes/Navigate/Intel panel.
+- Archives unlocked disconnected cards after 30 minutes, preserving their user data and metadata for rediscovery. Unlocking or manually restoring a card grants a new 30-minute grace period.
+- Adds manually assigned alliance/corporation dominion to J-Space cards.
+- Keeps unexpired public Thera/Turnur reports visible during refresh, with stale status and stable positions; successful snapshots reconcile added, changed and removed reports.
+
+## 0.8.0-rc.10 — More room for the chain
+
+- Gives J-Space the available application viewport, with tighter gutters, compact pilot controls and a clear sidebar collapse/restore action.
+- Replaces split zoom-level card rendering with a single complete card, removing blank overlapping rectangles and abrupt loss of card content.
+- Adds observed lifetime bands (less than one day, eight hours or four hours) to connection quick menus and details. Life controls the outer line colour; mass controls the inner colour. These reports remain uncertain upper bounds, not exact disappearance times.
+- Tints system-card gradients by observed status and shows concise sovereignty on K-Space exit cards.
+- Adds direct system context links to zKillboard and to the K-Space atlas for known-space systems.
+- Preserves verification/access boundaries, existing data and the draft-only review workflow.
+
+## 0.8.0-rc.9 — J-Space at a glance
+
+- Puts system search directly in the chain toolbar, with one action to add a new card or frame an existing one.
+- Gives J-Space a stronger visual identity, with clearer class/static hierarchy, quieter cartographic depth, condition symbols and direct scanner/observation/note badges on cards.
+- Adds immediate observed-status, home/staging and connection mass/life controls beside the map. Ordinary condition updates preserve expiry and route trust.
+- Removes diagram cards and connections immediately with a scoped Undo action, including group removal. Shared routing disable and whole-map deletion remain separate deliberate operations.
+- Opens scanner paste and signature rows directly in J-Space. Valid partial scans update in one action; complete scans and diagnostics retain review. Removes K-Space Infrastructure tools from this notebook.
+- Consolidates repeated headers and gives shared tools a consistent Scanner/Navigate/Intel/System strip. Existing maps and history remain available without a reset; K-Space workflows are unchanged.
+
+## 0.8.0-rc.8 — Direct chain interaction
+
+- Makes card movement track the pointer directly, including connected lines, and queues release-time position saves so another drag does not wait for the previous response.
+- Adds visible drag-to-connect handles, live connection previews and keyboard connection creation. Drawn links start unconfirmed with unknown expiry and no route access.
+- Compacts system cards around class, name and static destination classes. Hole codes move to concise hover/focus detail; secondary information remains in the inspector.
+- Removes Journey and Ansiblex management tabs from J-Space, retaining the K-Space tools and shared notebook/navigation. Legacy J-Space tab state opens the chain.
+- Trims repeated explanatory copy and keeps decision-relevant trust, expiry and error states. Existing maps and history are retained; no data reset is required.
+
+## 0.8.0-rc.7 — J-Space chain workspace
+
+- Splits Universe into separate K-Space and J-Space navigation entries, with independent remembered workspace state and legacy link compatibility.
+- Replaces the live J-Space discovery canvas with readable system cards and editable named chains: class, statics, effects, saved layouts, locks, aliases, status and contextual actions.
+- Bundles attributed offline references for 2,604 wormhole systems and 100 hole types, including documented corrections against CCP data. Expected static types never become live routing edges.
+- Adds connection conditions and linked scanner signatures, manual and reviewed sampled passage ledgers, observations/timers, field notes, map activity, undo, duplication and Kairo/Wanderer version-1 import/export, with explicit format limits.
+- Extends scanner support to four languages and optional anomalies, configurable bookmark text and safe recently-deleted signature restoration.
+- Adds graph-based nearest exits and services using confirmation, expiry, vessel and routing restrictions. Preserves recorded ages and separates public reports from private confirmation.
+- Retains the existing K-Space political atlas, EVE-Scout integration, Sessions and replay. No local data reset is required. See the Wanderer coverage matrix for the local operational scope and remaining remote-collaboration differences.
+
+## 0.8.0-rc.6 — Connections on the map
+
+- Brings Thera and Turnur reports onto their actual map entrances with distinct symbols and source-aware network focus.
+- Adds contextual explanations for map symbols on hover and pinned details on click/tap, with keyboard access and direct system/destination actions.
+- Keeps map context and camera stable during inspection; network framing and selection use finite motion with reduced-motion support.
+- Presents J-Space through systems, wormhole classes and connections, removing internal region/constellation groupings from navigation, search, details and notebook context.
+- Retains exact expiry and source-age distinctions, keeps current reports out of replay, and preserves existing local data.
+
+## 0.8.0-rc.5 — Operational Universe
+
+- Integrates SMT-inspired intelligence, pilot/fleet context, signatures, infrastructure notes, tactical map projections, itinerary and capital planning into the normal Universe workspace.
+- Accepts unmodified SMT Ansiblex lists with comments, `0` structure IDs, directed entries and reciprocal endpoints; previews errors before atomic import and exports compatible lists.
+- Integrates EVE-Scout Thera/Turnur connections and wormhole type details, with source age, expiry, routing limits and explicit private confirmation. Uses its structured storm API instead of webpage scraping.
+- Adds attributed historical reference markers, public sovereignty campaign/development context, opt-in bounded public combat observations and correctly labeled NPC window changes.
+- Adds optional local EVE log ingestion, private alerts, scope-aware fleet collection and explicit EVE waypoint export. Replays and OBS output exclude current private operational overlays.
+- Adds smooth viewport-edge label fading and thinner rounded text halos, removing pointed outline artifacts over territory fills.
+- Preserves existing local history and settings. This remains a draft review candidate; detached tactical windows use browser capabilities, while native Windows tray/global-hotkey/click-through behavior is not duplicated.
+
+## 0.8.0-rc.4 — Explore the political atlas
+
+- Added an immersive map workspace, linked territory selection and richer regional context.
+- Made political territories directly explorable, with framing, regional holdings and neighbouring stargate connections.
+- Added fluid drag and touch navigation, a map overview and route framing while retaining bounded views and reduced-motion support.
+- Unified local search across systems, regions and political territories with keyboard navigation.
+- Preserved unique territory colours, configured membership precedence and the explicit uncertainty of inferred groups.
+
+## 0.8.0-rc.3 — Immersive Universe and distinct territories
+
+- Reshaped Universe around a larger map with a compact command area, clearer contrast, larger type and visual system/bloc cards.
+- Added smooth navigation and finite selection, view and replay-event transitions. Reduced-motion preferences are respected, and map rendering settles when idle.
+- Reserved Caldari blue, Gallente teal, Amarr gold and Minmatar rust for their factions. Distinct political territories receive unique colours; configured colour conflicts are flagged.
+- Kept crisp vector borders, actual sovereignty ownership, inferred-membership provenance and all existing routing, discovery and replay tools.
+
+## 0.8.0-rc.2 — Power blocs and Universe readability
+
+- Added user-configured power blocs in Settings → Universe, with named colours, alliance membership and explicit independence. Configured memberships take priority over inferred groups.
+- Added an evidence-based inferred fallback from locally collected combat records, showing coverage and uncertainty without changing standings, OPSEC or connection access.
+- Replaced the soft territory raster with crisp vector segments, removed per-system glows, and preserved territorial ownership when filtering visible systems.
+- Bounded zoom and panning to the active space, with separate K-Space and J-Space tabs.
+- Increased Universe and replay readability with larger text, clearer controls, visual summaries and political legends.
+- Removed routine system-entry and OPSEC events from replay presentation while retaining recorded movement and session history.
+
+## 0.8.0-rc.1 — Universe review build
+
+- Replaces the earlier New Eden lookup and Journey atlas with the full offline New Eden map, sovereignty territories, selected-pilot standings, configurable layers and saved views.
+- Adds local gate routing, pilot-specific imported/manual Ansiblex networks, confirmed expiring wormholes, persistent discoveries and physical XYZ jump planning.
+- Adds system details, static celestials/NPC stations, public sovereignty structures, structure visibility checks, incursions, industry/mining overlays and calendar-linked event pins with source status.
+- Keeps **Sessions** as its own workspace. Session reports can open a session-bound Universe replay with timeline scrubbing, event context and smooth follow-player panning.
+- Retains existing sessions, visits and notes while retiring the separate Journey module. Observed travel never becomes a routing connection automatically.
+- Bundles official SDE build 3503375, adds explicit data provenance, bounded lazy system detail loading and redraw-on-demand map rendering.
+- Ansiblex zone calculations are labelled as the announced 22 September model; ship-specific capacitor modelling is not included.
+
+This release candidate awaits human review. It is not merged into `main`.
+
 ## 0.7.3 — 2026-09-18
 
 ### Changed
@@ -20,7 +176,7 @@ Notable changes to Kairo, listed newest first. Completed changes for the next re
 
 ### Verification
 
-- 155 behaviour tests, full before/after response comparisons and 250 deterministic combat-matching cases pass. Repeated comparisons against clean v0.7.2 demonstrate lower idle CPU, faster session reports and faster imports after unrelated writes; see [the implementation and verification notes](docs/OPTIMISATION-v0.7.3.md).
+- 155 behaviour tests, full before/after response comparisons and 250 deterministic combat-matching cases pass. Repeated comparisons against clean v0.7.2 demonstrate lower idle CPU, faster session reports and faster imports after unrelated writes; see [the implementation and verification notes](https://github.com/BunBajiro/kairo/blob/a7b1bf97b0073695926c443e52d523638e59e48d/docs/OPTIMISATION-v0.7.3.md).
 - Approved for release after the user tested 0.7.3-rc.1 and confirmed it runs well. Stable 0.7.3 promotes that reviewed implementation with version labels and release documentation updated.
 
 ## 0.7.2 — 2026-09-14

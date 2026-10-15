@@ -1,6 +1,6 @@
-# Sessions — Kairo 0.7.2
+# Sessions
 
-Open **Journey → Sessions**, then choose a session. A full-width **Session summary** shows duration, systems and visits, separate personal/alliance kills and losses, wallet and LP changes, and the most active system. Missing records and delayed estimates keep their status labels. Activity cards align in pairs with shared heading, metric and footer heights. Opening a card reveals its detail in a full-width panel below the row. **Close details** returns keyboard focus to that card. On narrow screens, cards stack and LP balances use labelled per-corporation rows. **Start session** still records a named session; **End session** opens the completed overview. Names and debrief notes remain editable.
+Open **Sessions**, then choose a session. A full-width **Session summary** shows duration, systems and visits, separate personal/alliance kills and losses, wallet and LP changes, and the most active system. Missing records and delayed estimates keep their status labels. Activity cards align in pairs with shared heading, metric and footer heights. Opening a card reveals its detail in a full-width panel below the row. **Close details** returns keyboard focus to that card. On narrow screens, cards stack and LP balances use labelled per-corporation rows. **Start session** still records a named session; **End session** opens the completed overview. Names and debrief notes remain editable.
 
 The summary ranks systems by unique killmails in the report’s personal and alliance records. A killmail in both lists counts once **for this system ranking only**. The ranking leaves both sets of totals unchanged; your participation is never subtracted from alliance totals. Existing session times and qualifying visit buffers still decide which records are included. Combat ties use total observed time across all return visits, then system ID for a stable result. When no combat is recorded, the highlight is labelled **Most time observed**. No location or combat observations produces an explicit empty state.
 
@@ -51,6 +51,4 @@ If another session starts before the fresh end sample, or the new session's LP b
 
 The migration adds an alliance combat ledger without resetting sessions, settings, markets or existing history. Old sessions still show their observed visits/events; uncaptured alliance, LP and ship baselines remain unavailable. JSON history exports include the retained alliance ledger and the session snapshots.
 
-Battle Reports, engagements and public sharing are outside v0.7.1. The user reviewed the test build, accepted the legacy-session baseline limitation and approved merging on 13 September 2026.
-
-Version 0.7.2 refines the cards and summary, corrects alliance kill/loss classification, and adds the live/ended collection lifecycle above. It preserves visits, existing samples and personal participation in alliance totals. The user approved merging the reviewed feature-branch build on 14 September 2026. Battle Reports remain reserved for v0.8.
+Session reports and replay remain local. Historical approval and feature announcements are recorded in [CHANGELOG.md](../CHANGELOG.md); current release readiness is in [Validation](VALIDATION.md).

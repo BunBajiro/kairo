@@ -13,7 +13,9 @@ export type KairoContext = {
     refresh: () => Promise<void>;
     opsec: any;
     sessions: any[];
-    time: number;
+    activityRevision: string;
+    goalsRevision: string;
+    sessionsRevision: string;
 };
 export const Kairo = createContext<KairoContext | null>(null);
 export const useKairo = () => { const c = useContext(Kairo); if (!c)

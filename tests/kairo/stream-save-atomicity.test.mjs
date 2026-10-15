@@ -1,0 +1,41 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {EventEmitter} from 'node:events';
+import {mkdtemp, rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {openStore} from '../../server/store.mjs';
+import {createBus} from '../../server/bus.mjs';
+import {createStream, defaultStream} from '../../server/stream.mjs';
+import {bindingProjections} from '../../server/projections.mjs';
+
+test('a failed SQLite layout save cannot publish the rejected pilot bindings, and retry publishes them once saved', async t => {
+    const directory = await mkdtemp(join(tmpdir(), 'kairo-stream-save-')), store = openStore(directory);
+    const stream = createStream(store, createBus()), auth = {characters: () => [{id: 42}, {id: 43}]};
+    t.after(async () => { await stream.close(); store.close(); await rm(directory, {recursive: true, force: true}); });
+    const at = Date.now(), snapshot = data => ({status: 'ready', data, updatedAt: new Date(at).toISOString(), expiresAt: new Date(at + 60000).toISOString()});
+    store.saveSnapshot(42, 'wallet', snapshot(100)); store.saveSnapshot(43, 'wallet', snapshot(200));
+    const config = defaultStream();
+    config.elements = [{id: 'wallet', kind: 'text', name: 'Wallet', visible: true, binding: 'wallet.balance', characterId: 42}];
+    stream.save(config, bindingProjections(store, auth, config.elements));
+    const submitted = {...stream.config(), elements: stream.config().elements.map(element => ({...element, characterId: 43}))};
+    const submittedBindings = bindingProjections(store, auth, submitted.elements);
+    const version = stream.state().version;
+    store.db.exec('PRAGMA query_only=ON');
+    assert.throws(() => stream.save(submitted, submittedBindings), /readonly|read-only/i);
+    assert.equal(stream.config().elements[0].characterId, 42, 'SQLite retains the previously selected pilot.');
+    assert.equal(stream.state().version, version, 'A failed save does not publish a new layout version.');
+    assert.equal(stream.state().elements[0].text, '100 ISK', 'Public state must use the persisted layout pilot after failure.');
+
+    const messages = [], response = new EventEmitter();
+    response.write = frame => { messages.push(JSON.parse(frame.toString().split('data: ')[1])); return true; };
+    response.end = () => response.emit('finish'); stream.connect(response);
+    assert.equal(messages[0].elements[0].text, '100 ISK', 'A reconnect cannot disclose bindings from the rejected draft.');
+    store.db.exec('PRAGMA query_only=OFF');
+    stream.save(submitted, submittedBindings);
+    assert.equal(stream.config().elements[0].characterId, 43);
+    assert.equal(stream.state().elements[0].text, '200 ISK');
+    assert.equal(messages.length, 2, 'Successful retry publishes exactly one state update.');
+    assert.equal(messages[1].elements[0].text, '200 ISK');
+    assert.equal(messages[1].version, version + 1);
+});

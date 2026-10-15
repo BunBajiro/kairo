@@ -46,7 +46,12 @@ export function scenario({levels,quantity,price,duration,volume,daily,rates,sett
  const buy=purchaseQuote(levels,quantity);if(!buy.complete)return null;const unitsPerTrip=Math.floor((settings.cargo+1e-8)/volume),trips=Math.ceil(quantity/unitsPerTrip);if(trips>settings.maxTrips)return null;
  const revenue=price*quantity,brokerFee=Math.max(100,revenue*rates.broker),salesTax=revenue*rates.salesTax,relistReserve=settings.relistCount*Math.max(100,revenue*rates.broker*(1-rates.relistDiscount)),haul=trips*settings.haulPerTrip,upfront=buy.cost+brokerFee+haul,net=revenue-buy.cost-brokerFee-salesTax-relistReserve-haul,roi=net/upfront*100;
  const eta=daily>0?quantity/daily:null;
- return {strategy,quantity,price,duration,buy,revenue,brokerFee,salesTax,relistReserve,haul,upfront,net,roi,cargo:quantity*volume,unitVolume:volume,trips,eta,profitPerDay:eta?net/Math.max(1,eta):null,profitPerTrip:net/trips,budgetExceeded:upfront>settings.budget,durationShort:eta===null||eta>duration,crossesBuy:price<=localBuy,breakEven:marketPrice((buy.cost+haul+100*(1+settings.relistCount))/(quantity*(1-rates.salesTax-rates.broker*(1+settings.relistCount*(1-rates.relistDiscount)))),true)};
+ const saleShare=1-rates.salesTax,relistShare=rates.broker*(1-rates.relistDiscount),relistCount=settings.relistCount,margin=saleShare-rates.broker-relistCount*relistShare,cost=buy.cost+haul;
+ // Each fee is the greater of its minimum and percentage, never their sum.
+ // Satisfy all four fee combinations, then round up to the first market tick.
+ // Nonpositive proportional margin means no sale price can recover the cost.
+ const breakEven=margin<=0?null:marketPrice(Math.max((cost+100*(1+relistCount))/saleShare,(cost+100*relistCount)/(saleShare-rates.broker),(cost+100)/(saleShare-relistCount*relistShare),cost/margin)/quantity,true);
+ return {strategy,quantity,price,duration,buy,revenue,brokerFee,salesTax,relistReserve,haul,upfront,net,roi,cargo:quantity*volume,unitVolume:volume,trips,eta,profitPerDay:eta?net/Math.max(1,eta):null,profitPerTrip:net/trips,budgetExceeded:upfront>settings.budget,durationShort:eta===null||eta>duration,crossesBuy:price<=localBuy,breakEven};
 }
 export function buildOpportunity({typeId,name,category,volume,levels,localSell,localBuy,localSupply,history,rates,settings,now,detail=false}){
  const demand=demandEvidence(history,category,settings.demandShare,now);if(!demand.eligible||!levels.length||!Number.isFinite(volume)||volume<=0||volume>settings.cargo)return null;

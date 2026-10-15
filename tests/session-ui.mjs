@@ -29,7 +29,10 @@ store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start
 // wallet data alongside missing alliance/LP baselines, with long saved names.
 for(let i=0;i<30;i++)store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,7000+i%6,i%6===0?'A long saved system name for layout coverage':'Transit '+(i%6+1),at(-300+i*3));
 for(const [system,name] of [[1,'UALX-3'],[2,'Quiet transit'],[3,'C-J6MT']])store.db.prepare('INSERT INTO universe_systems(system_id,name,region_id,region_name,security) VALUES(?,?,?,?,?)').run(system,name,1000,'Example region',-.3);
-for(const [system,name,m] of [[2,'Quiet transit',15],[1,'UALX-3',25],[3,'C-J6MT',60]])store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,system,name,at(m));
+// Current reports use session-owned travel; the earlier fixture retains NULL legacy ownership.
+for(const [system,name,m] of [[2,'Quiet transit',15],[1,'UALX-3',25],[3,'C-J6MT',60]])store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42,system,name,at(m),'preview');
+// A neighbouring session's record must not enter this report just because its timestamp overlaps.
+store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42,9999,'Other session only',at(30),'legacy');
 const emit=(type,m,payload,summary=type)=>store.db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)').run(42,type,type.startsWith('killmail')?'combat':'journey',summary,JSON.stringify(payload),at(m));
 emit('ship.changed',-299,{ship_type_id:638,ship_id:400},'Changed ship to Raven');
 emit('wallet.entry',-210,{amount:-173609.61},'Paid market fees');
@@ -139,9 +142,9 @@ try{
  ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.addEventListener('open',resolve,{once:true});ws.addEventListener('error',reject,{once:true});});
  ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);if(m.error)p?.reject(new Error(JSON.stringify(m.error)));else p?.resolve(m.result);}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.exception?.description||m.params.exceptionDetails.text);});
  await call('Page.enable');await call('Runtime.enable');await call('Emulation.setDeviceMetricsOverride',{width:1600,height:1050,deviceScaleFactor:1,mobile:false});
- await call('Page.navigate',{url:app.origin+'/#journey'});
- // Journey data loads after its tabs mount and changes their screen position.
- await waitFor("document.querySelectorAll('.route-stop').length===7 && !!document.querySelector('.connection-status.online')");
+ await call('Page.navigate',{url:app.origin+'/#sessions'});
+ // The independent Sessions workspace loads its archive after bootstrap.
+ await waitFor("document.querySelectorAll('.session-card').length===3 && !!document.querySelector('.connection-status.online')");
  await clickElement("Array.from(document.querySelectorAll('[role=tab]')).find(e=>e.textContent==='Sessions')");
  await waitFor("document.querySelectorAll('.session-card').length===3");await click('.session-card');await waitFor("document.querySelectorAll('.session-detail-card').length===9");
  assert.equal(await evaluate("document.querySelector('.session-collection-status').textContent"),'Session ended · delayed zKill checks');
@@ -150,7 +153,7 @@ try{
  assert.ok(await evaluate("document.querySelector('.session-summary-activity').textContent.includes('Most active systemUALX-32 recorded killmails')"),'Highlight deduplicates personal and alliance records');
  for(const key of ['personal','alliance'])assert.deepEqual(await evaluate(`Array.from(document.querySelectorAll('.session-detail-card[data-card=${key}] .session-mini-metric>strong')).map(v=>v.textContent)`),['2','1'],'The '+key+' card retains both kills and the loss; personal participation is never subtracted from alliance totals');
  await alignment('populated desktop');await screenshot('sessions-desktop');
- await card('Route & visits');assert.equal(await evaluate("document.querySelectorAll('.session-route-list > li').length"),4);assert.equal(await evaluate("document.querySelectorAll('.session-buffer-badge').length"),3);assert.ok(await evaluate("document.querySelector('.session-route-list').textContent.includes('Quiet transit')"));
+ await card('Route & visits');assert.equal(await evaluate("document.querySelectorAll('.session-route-list > li').length"),4);assert.equal(await evaluate("document.querySelectorAll('.session-buffer-badge').length"),3);assert.ok(await evaluate("document.querySelector('.session-route-list').textContent.includes('Quiet transit')"));assert.equal(await evaluate("document.querySelector('.session-route-list').textContent.includes('Other session only')"),false,'Session travel is isolated by owner as well as time');
  await detailWidth();await alignment('expanded route');await screenshot('sessions-route');await click('.session-expanded-heading button');await waitFor("!document.querySelector('.session-expanded-panel')");assert.equal(await evaluate("document.activeElement?.getAttribute('data-card')"),'route');
  await card('Alliance combat');await detailWidth();assert.equal(await evaluate("document.querySelectorAll('.session-kill-list > a').length"),3);
  assert.ok(await evaluate("document.querySelector('.session-expanded-panel').textContent.includes('The live feed has stopped for this session')"));

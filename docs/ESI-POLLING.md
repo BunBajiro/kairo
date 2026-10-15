@@ -1,4 +1,4 @@
-# ESI collection policy — 0.6.0
+# ESI collection policy
 
 Kairo separates the application's routine schedule from ESI's cache expiry. The schedule is configurable in **Settings → ESI polling** and applies to all connected characters. Recommendations and allowed slider stops live in `server/polling.mjs`; the server validates the same values the interface displays. Saving only changes polling preferences, not scopes or module enablement. Resetting the draft requires Save to apply it.
 

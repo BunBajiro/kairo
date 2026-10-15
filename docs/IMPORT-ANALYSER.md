@@ -1,4 +1,4 @@
-# Import Analyser — Kairo 0.7.0
+# Import Analyser
 
 Import Analyser helps plan purchases at Jita for resale at a saved destination hub. Choose separate buying and selling characters, or use one pilot for both. It uses cached books and regional trading history, then applies your selling character’s fee profile, budget and cargo capacity. It never places, edits or cancels EVE market orders.
 

@@ -17,7 +17,7 @@ jobs:
   build:
     name: Build and verify downloadable ZIP
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Check out the feature branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -37,12 +37,280 @@ jobs:
         run: npm run check:kairo
 
       - name: Build the application
+        id: build
         run: npm run build
+
+      - name: Install isolated Firefox test tools
+        id: browser_tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/kairo-browser-tools" --ignore-scripts --no-audit --no-fund --save-exact playwright@1.62.1
+          node "$RUNNER_TEMP/kairo-browser-tools/node_modules/playwright/cli.js" install --with-deps firefox
+
+      - name: Verify operation item image resources in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-operation-icons
+        run: node tests/premerge-operation-icons-ui.mjs
+
+      - name: Upload operation item image resources checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: operation-icons-check
+          path: ${{ runner.temp }}/kairo-operation-icons/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass navigation and settings ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-navigation
+        run: node tests/premerge-pass4-navigation-ui.mjs
+
+      - name: Upload fourth-pass navigation and settings ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-navigation-check
+          path: ${{ runner.temp }}/kairo-pass4-navigation/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass Universe settings ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-universe-settings
+        run: node tests/premerge-pass4-universe-settings-ui.mjs
+
+      - name: Upload fourth-pass Universe settings ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-universe-settings-check
+          path: ${{ runner.temp }}/kairo-pass4-universe-settings/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass market recovery and settings ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-markets
+        run: node tests/premerge-pass4-markets-ui.mjs
+
+      - name: Upload fourth-pass market recovery and settings ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-markets-check
+          path: ${{ runner.temp }}/kairo-pass4-markets/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass shared settings and dialog ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-shared
+        run: node tests/premerge-pass4-shared-ui.mjs
+
+      - name: Upload fourth-pass shared settings and dialog ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-shared-check
+          path: ${{ runner.temp }}/kairo-pass4-shared/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify blueprint image resources in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-blueprint-icons
+        run: node tests/premerge-blueprint-icons-ui.mjs
+
+      - name: Upload cross-browser blueprint image checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-blueprint-icons-check
+          path: ${{ runner.temp }}/kairo-premerge-blueprint-icons/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify map connection hover positioning in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-map-hover
+        run: node tests/premerge-map-hover-ui.mjs
+
+      - name: Upload cross-browser map hover checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-map-hover-check
+          path: ${{ runner.temp }}/kairo-premerge-map-hover/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify Universe range navigation in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-navigation
+        run: node tests/premerge-navigation-ui.mjs
+
+      - name: Upload cross-browser navigation checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-navigation-check
+          path: ${{ runner.temp }}/kairo-premerge-navigation/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify import quote controls in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-imports
+        run: node tests/premerge-imports-ui.mjs
+
+      - name: Upload cross-browser import quote checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-imports-check
+          path: ${{ runner.temp }}/kairo-premerge-imports/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify Session timeline paging in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-sessions
+        run: node tests/premerge-sessions-ui.mjs
+
+      - name: Upload cross-browser Session paging checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-sessions-check
+          path: ${{ runner.temp }}/kairo-premerge-sessions/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify dashboard recovery and ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-dashboard
+        run: node tests/premerge-dashboard-ui.mjs
+
+      - name: Upload cross-browser dashboard checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-dashboard-check
+          path: ${{ runner.temp }}/kairo-premerge-dashboard/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify shared editors and session preference recovery in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-shared
+        run: node tests/premerge-shared-ui.mjs
+
+      - name: Upload cross-browser shared UI checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-shared-check
+          path: ${{ runner.temp }}/kairo-premerge-shared/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify category-first market icons in Firefox
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-market-icons-firefox
+        run: node tests/market-icons-firefox.mjs
+
+      - name: Upload Firefox market icon checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: market-icon-firefox-check
+          path: ${{ runner.temp }}/kairo-market-icons-firefox/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify market item icons in Chrome
+        env:
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-market-icons
+        run: node tests/market-icons-ui.mjs
+
+      - name: Upload market icon checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: market-icon-check
+          path: ${{ runner.temp }}/kairo-market-icons/
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Verify session cards in Chrome
         env:
           KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-session-ui
         run: node tests/session-ui.mjs
+
+      - name: Verify Universe and session replay in Chrome
+        env:
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-universe-ui
+        run: node tests/universe-ui.mjs
+
+      - name: Verify dataset updates and planned reconnects in Chrome
+        env:
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-datasets-ui
+        run: node tests/datasets-ui.mjs
+
+      - name: Upload dataset interface screenshots
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: datasets-interface-check
+          path: ${{ runner.temp }}/kairo-datasets-ui/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload Universe interface screenshots
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: universe-interface-check
+          path: ${{ runner.temp }}/kairo-universe-ui/
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Upload session interface screenshots
         if: always()

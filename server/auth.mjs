@@ -16,12 +16,48 @@ export function validateClaims(claims, clientId, now = Date.now() / 1000) {
 }
 export function createAuth(store, vault, { fetcher = fetch, origin }) {
     let metadata, keys, metaUntil = 0, keyUntil = 0;
+    let metadataFlight, keyFlight;
     const pending = new Map(), refreshing = new Map();
+    const connectionRevisions = new Map();
+    const connectionRevision = id => connectionRevisions.get(id) || 0;
+    const changedConnection = id => connectionRevisions.set(id, connectionRevision(id) + 1);
     const clientId = () => store.get('clientId', '');
-    async function getMetadata() { if (metadata && Date.now() < metaUntil)
-        return metadata; const r = await fetcher(DISCOVERY, { signal: AbortSignal.timeout(12000) }); if (!r.ok)
-        throw new Error('EVE SSO discovery is unavailable.'); metadata = await r.json(); ['authorization_endpoint', 'token_endpoint', 'jwks_uri', 'revocation_endpoint'].forEach(k => { if (metadata[k])
-        validEndpoint(metadata[k]); }); metaUntil = Date.now() + 3600000; return metadata; }
+    async function getMetadata() {
+        if (metadata && Date.now() < metaUntil)
+            return metadata;
+        if (!metadataFlight) {
+            metadataFlight = (async () => {
+                const r = await fetcher(DISCOVERY, { signal: AbortSignal.timeout(12000) });
+                if (!r.ok)
+                    throw new Error('EVE SSO discovery is unavailable.');
+                const next = await r.json();
+                ['authorization_endpoint', 'token_endpoint', 'jwks_uri', 'revocation_endpoint'].forEach(k => { if (next[k])
+                    validEndpoint(next[k]); });
+                metadata = next;
+                metaUntil = Date.now() + 3600000;
+                return metadata;
+            })().finally(() => { metadataFlight = undefined; });
+        }
+        return metadataFlight;
+    }
+    async function getKeys(m, force = false) {
+        if (!force && keys && Date.now() <= keyUntil)
+            return keys;
+        if (!keyFlight) {
+            keyFlight = (async () => {
+                const r = await fetcher(validEndpoint(m.jwks_uri), { signal: AbortSignal.timeout(12000) });
+                if (!r.ok)
+                    throw new Error('Unable to verify EVE identity.');
+                const next = (await r.json()).keys;
+                if (!Array.isArray(next))
+                    throw new Error('Unable to verify EVE identity.');
+                keys = next;
+                keyUntil = Date.now() + 3600000;
+                return keys;
+            })().finally(() => { keyFlight = undefined; });
+        }
+        return keyFlight;
+    }
     async function validate(token) {
         const parts = String(token).split('.');
         if (parts.length !== 3)
@@ -32,14 +68,8 @@ export function createAuth(store, vault, { fetcher = fetch, origin }) {
         const m = await getMetadata();
         let key;
         for (let i = 0; i < 2; i++) {
-            if (!keys || Date.now() > keyUntil || i === 1) {
-                const r = await fetcher(validEndpoint(m.jwks_uri), { signal: AbortSignal.timeout(12000) });
-                if (!r.ok)
-                    throw new Error('Unable to verify EVE identity.');
-                keys = (await r.json()).keys;
-                keyUntil = Date.now() + 3600000;
-            }
-            key = keys.find(k => k.kid === header.kid && k.kty === 'RSA' && (!k.alg || k.alg === 'RS256'));
+            const available = await getKeys(m, i === 1);
+            key = available.find(k => k.kid === header.kid && k.kty === 'RSA' && (!k.alg || k.alg === 'RS256'));
             if (key)
                 break;
         }
@@ -64,15 +94,16 @@ export function createAuth(store, vault, { fetcher = fetch, origin }) {
         throw new Error('EVE did not return a refresh token.'); const prior = store.db.prepare('SELECT owner FROM characters WHERE id=?').get(identity.id); if (prior && prior.owner && prior.owner !== identity.owner) {
         store.db.prepare('DELETE FROM snapshots WHERE character_id=?').run(identity.id);
         store.db.prepare('DELETE FROM cache WHERE key LIKE ?').run(identity.id + ':%');
-    } store.db.prepare('INSERT INTO characters(id,name,scopes,tokens,owner,reauth) VALUES(?,?,?,?,?,0) ON CONFLICT(id) DO UPDATE SET name=excluded.name,scopes=excluded.scopes,tokens=excluded.tokens,owner=excluded.owner,reauth=0').run(identity.id, identity.name, JSON.stringify(identity.scopes), vault.encrypt({ ...t, expires: identity.expires }), identity.owner); return identity; }
+    } store.db.prepare('INSERT INTO characters(id,name,scopes,tokens,owner,reauth) VALUES(?,?,?,?,?,0) ON CONFLICT(id) DO UPDATE SET name=excluded.name,scopes=excluded.scopes,tokens=excluded.tokens,owner=excluded.owner,reauth=0').run(identity.id, identity.name, JSON.stringify(identity.scopes), vault.encrypt({ ...t, expires: identity.expires }), identity.owner); changedConnection(identity.id); return identity; }
     async function access(id, force = false) {
-        if (refreshing.has(id))
-            return refreshing.get(id);
         const c = store.db.prepare('SELECT * FROM characters WHERE id=?').get(id);
         if (!c)
             throw new Error('Connect this character first.');
         if (c.reauth)
             throw new Error('Reconnect this character in Connections.');
+        const current = refreshing.get(id);
+        if (current?.tokens === c.tokens)
+            return current.task;
         const t = vault.decrypt(c.tokens);
         if (!force && t.expires > Date.now() + 90000)
             return t.access_token;
@@ -81,21 +112,30 @@ export function createAuth(store, vault, { fetcher = fetch, origin }) {
             const identity = await validate(n.access_token);
             if (identity.id !== id || (c.owner && identity.owner !== c.owner))
                 throw new Error('Character ownership changed. Reconnect this character.');
-            store.db.prepare('UPDATE characters SET tokens=?,scopes=?,reauth=0 WHERE id=?').run(vault.encrypt({ ...n, refresh_token: n.refresh_token || t.refresh_token, expires: identity.expires }), JSON.stringify(identity.scopes), id);
+            const updated = store.db.prepare('UPDATE characters SET tokens=?,scopes=?,reauth=0 WHERE id=? AND tokens=? AND reauth=0').run(vault.encrypt({ ...n, refresh_token: n.refresh_token || t.refresh_token, expires: identity.expires }), JSON.stringify(identity.scopes), id, c.tokens);
+            if (!updated.changes)
+                throw new Error('Character connection changed during token refresh.');
             return n.access_token;
         }
         catch (e) {
             if (e.invalidGrant)
-                store.db.prepare('UPDATE characters SET reauth=1 WHERE id=?').run(id);
+                store.db.prepare('UPDATE characters SET reauth=1 WHERE id=? AND tokens=?').run(id, c.tokens);
             throw e;
         }
         finally {
-            refreshing.delete(id);
+            if (refreshing.get(id)?.task === task)
+                refreshing.delete(id);
         } })();
-        refreshing.set(id, task);
+        refreshing.set(id, { tokens: c.tokens, task });
         return task;
     }
     async function disconnect(id) { const row = store.db.prepare('SELECT tokens FROM characters WHERE id=?').get(id); if (row) {
+        // Local ownership ends before best-effort network revocation. A fresh
+        // login during that await must not be removed by this older operation.
+        store.db.prepare('DELETE FROM characters WHERE id=?').run(id);
+        changedConnection(id);
+        store.db.prepare('DELETE FROM snapshots WHERE character_id=?').run(id);
+        store.db.prepare('DELETE FROM cache WHERE key LIKE ?').run(id + ':%');
         try {
             const m = await getMetadata();
             if (m.revocation_endpoint) {
@@ -104,9 +144,6 @@ export function createAuth(store, vault, { fetcher = fetch, origin }) {
             }
         }
         catch { }
-        store.db.prepare('DELETE FROM characters WHERE id=?').run(id);
-        store.db.prepare('DELETE FROM snapshots WHERE character_id=?').run(id);
-        store.db.prepare('DELETE FROM cache WHERE key LIKE ?').run(id + ':%');
     } }
-    return { authorize, callback, access, characters, disconnect };
+    return { authorize, callback, access, characters, disconnect, connectionRevision };
 }

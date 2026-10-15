@@ -1,0 +1,22 @@
+import type {UniverseSystem} from './universe-types';
+export type UniverseRouteEdge = {id?:string;kind:string;from_system_id:number;to_system_id:number;distance_ly?:number;source?:string;[key:string]:unknown};
+export type UniverseTacticalOptions = {
+ projection?:'physical'|'schematic'|'radar';centerSystemId?:number;hops?:number;
+ rangeOrigins?:{systemId:number;rangeLy:number;label?:string}[];
+ reachability?:{unionSystemIds:number[];overlapSystemIds:number[];limitations?:string[];[key:string]:unknown}|null;
+ operationsVisible?:boolean;pilotsVisible?:boolean;feedsVisible?:boolean;pointsVisible?:boolean;routeWatch?:boolean;
+};
+export type GateGraph = Map<number,number[]>;
+export type WatchDistance = {distance:number;nearestRouteSystemId:number;nextSystemId:number|null};
+export type OperationalSystem = {systemId:number;reports:any[];pilots:any[];fleet:any[];alerts:any[];signatures:any[];upgrades:any[]};
+export function buildGateGraph(gates:any[]):GateGraph;
+export function routeWatchDistances(graph:GateGraph,origins:number[],maxHops?:number):Map<number,WatchDistance>;
+export function tacticalLayout(systems:UniverseSystem[],graph:GateGraph,options?:{mode?:'radar'|'schematic';centerSystemId?:number;hops?:number;regionId?:number|null;constellationId?:number|null}):{points:{system:UniverseSystem;x:number;y:number}[];distances:Map<number,WatchDistance>;limited:boolean;total:number};
+export function observationAge(observation:any,now?:number):'fresh'|'recent'|'older'|'expired'|'unknown';
+export function ageLabel(value:string|number|undefined,now?:number):string;
+export function operationalSystems(operations:any,now?:number):Map<number,OperationalSystem>;
+export function projectedHull<T extends {x:number;y:number}>(points:T[]):T[];
+export function matchingReachability(origins:{systemId:number;rangeLy:number}[]|undefined,reachability:any):boolean;
+export function usablePublicConnections(feeds:any,now?:number):any[];
+export type FeedMarker = {kind:string;name:string;source:string;stale:boolean;at?:string;detail:string};
+export function feedSystems(feeds:any,now?:number):Map<number,FeedMarker[]>;

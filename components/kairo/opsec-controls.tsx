@@ -31,7 +31,13 @@ export function OPSEC() {
         setBusy(true);
         try {
             await api('/opsec','PUT',{...next,blueAlliances:blue.split(',').map(Number).filter(Boolean),hostileAlliances:hostile.split(',').map(Number).filter(Boolean)},boot.csrf);
-            setSettings(next); await reload(); await refresh(); toast.success('Broadcast protection updated.');
+            // A manual override submits one changed field immediately. Accept
+            // its saved value without replacing other edits made while saving.
+            setSettings((current:any)=>({...current,
+                manual:current.manual===settings.manual?next.manual:current.manual,
+                allowHighsec:current.allowHighsec===settings.allowHighsec?next.allowHighsec:current.allowHighsec,
+                characterId:current.characterId===settings.characterId?next.characterId:current.characterId,
+            })); await reload(); await refresh(); toast.success('Broadcast protection updated.');
         } catch(e:any) {toast.error(e.message);} finally {setBusy(false);}
     }
     return <>
