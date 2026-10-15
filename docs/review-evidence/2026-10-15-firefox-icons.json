@@ -1,0 +1,152 @@
+{
+  "reported_at": "2026-10-15",
+  "baseline_commit": "8225eda4ed1e9be21155adaadc6ab0fefbdff702",
+  "application_commit": "695c50ce7b095bf3e61d97ce97d12bcdee4a1746",
+  "finding": "PBR-58",
+  "state": "Reproduced blueprint image-resource defect; design independently reviewed; implementation and hosted browser validation pending",
+  "user_report": "Firefox category icons appear after restarting Kairo but not before.",
+  "screenshots": [
+    {
+      "filename": "image(1).png",
+      "sha256": "8f161bbe821a64459c7bd98bdb5ee51622efd2f5f5e3cd7f650e9efdc57c4048",
+      "bytes": 250291,
+      "observation": "Blueprints & Reactions > Ammunition & Charges > Bombs: six item rows and selected Shrapnel Bomb Blueprint detail show no icons."
+    },
+    {
+      "filename": "image(2).png",
+      "sha256": "f380870ae646c449be5fd5bc10705b3d701632b630bb571a5be09b31e373fafc",
+      "bytes": 247823,
+      "observation": "All items: visible item icons load."
+    },
+    {
+      "filename": "image(3).png",
+      "sha256": "65cea9c514c068e56af5e94217d71e4590bb5fd639664d6b8c0178f08fd0719e",
+      "bytes": 430167,
+      "observation": "Ordinary Ammunition & Charges > Bombs: seven item rows display icons after scan; this is a different category from screenshot1."
+    },
+    {
+      "filename": "image(4).png",
+      "path": "upload/image(4).png",
+      "sha256": "a74ae353c2b7a4790e40eab3045188bee3c6e7dbfecf9f77387a7d3d33f96838",
+      "bytes": 193001,
+      "observation": "Blueprints & Reactions > Drones: every visible blueprint row has an empty icon position; the category lists 81 cached items. No item is selected in the detail pane."
+    }
+  ],
+  "coverage_gap": "Prior Firefox coverage serves HTTP 200 for every image path and tests ordinary images; the Chrome load-reset probe manually changes src. Neither establishes blueprint resource correctness. The new provider-aware hosted baseline and fixed browser runs remain pending.",
+  "user_clarification": "The user confirmed the missing icons affect blueprints only. The fourth supplied screenshot shows the Blueprints & Reactions > Drones category with missing icons in every visible blueprint row.",
+  "reproduction": {
+    "owner": "components/kairo/ui.tsx ItemName selects /types/{id}/icon?size=32 for every type; onError hides a failed image and onLoad restores visibility.",
+    "provider_evidence": {
+      "path": "/workspace/scratch/a2b6c8fc6e85/pass3-markets-icon-provider-investigation.log",
+      "sha256": "f0ba9808e05c824fd5a31e2bbe42beb35efcf307b0cac989bc3ed7d718d6534d",
+      "observed_at": "2026-10-15T15:35:41.183309+00:00",
+      "method": "Read-only live GETs performed by pass3_markets.",
+      "responses": [
+        {
+          "url": "https://images.evetech.net/types/27917",
+          "status": 200,
+          "body": [
+            "bpc",
+            "bp"
+          ]
+        },
+        {
+          "url": "https://images.evetech.net/types/27917/icon?size=32",
+          "status": 400,
+          "body": "bad category or variation"
+        },
+        {
+          "url": "https://images.evetech.net/types/27917/bp?size=32",
+          "status": 200,
+          "content_type": "image/png"
+        },
+        {
+          "url": "https://images.evetech.net/types/27916",
+          "status": 200,
+          "body": [
+            "icon"
+          ]
+        },
+        {
+          "url": "https://images.evetech.net/types/46166",
+          "status": 200,
+          "body": [
+            "bpc",
+            "bp"
+          ]
+        },
+        {
+          "url": "https://images.evetech.net/types/2489",
+          "status": 200,
+          "body": [
+            "bpc",
+            "bp"
+          ]
+        }
+      ],
+      "scope": "Direct image-response proof is for blueprint 27917. Reaction 46166 and drone blueprint 2489 are additional metadata controls, not separately recorded image downloads."
+    },
+    "before_owner_regression": {
+      "test": "tests/kairo/market-blueprint-icons.test.mjs",
+      "log": "/workspace/scratch/a2b6c8fc6e85/pass3-markets-blueprint-before.log",
+      "sha256": "59d985b2b557defbd163eb69c0bae49861fb4e93acd442fc222f5950b243a932",
+      "owner": "Actual createMarkets/imports services and SQLite with cached data and denied external requests.",
+      "runner_counts": {
+        "tests": 16,
+        "passed": 3,
+        "failed": 13,
+        "specific_failed_assertions": 11,
+        "failed_parent_tests": 2
+      },
+      "failed_paths": [
+        "Blueprint-category browse",
+        "Mixed All items browse, including ordinary and unknown IDs",
+        "Selected item detail",
+        "Hub report",
+        "Import analysis cards",
+        "Import opportunity detail",
+        "Custom quote",
+        "Combined manifest quote",
+        "Newly saved plan",
+        "Reopened plan",
+        "Legacy plan read"
+      ],
+      "healthy_controls": [
+        "Existing market SQL counts remain browse=3, detail=5, report=7 with no external requests or database writes.",
+        "Import quantities and profit remain positive; an unknown type is excluded for missing cargo data.",
+        "Legacy plan identity, financial totals, packing, quote time and raw stored body remain unchanged, with no extra writes or external requests."
+      ],
+      "classification_controls": "Translated blueprint labels, ordinary names containing Blueprint, reaction/drone blueprints and unknown IDs prevent classification by display-name guessing.",
+      "limit": "These failures establish the missing server image-variation contract. Actual compiled UI URL selection and visible decoding still require the hosted browser baseline and fixed gates."
+    }
+  },
+  "design_review": {
+    "reviewer": "pass3_shared",
+    "source_owner": "pass3_markets",
+    "disposition": "Design accepted as a bounded correction; no implementation acceptance or browser closure claimed.",
+    "proposal": [
+      "Classify a known type from the existing server taxonomy ancestry: Blueprints & Reactions root 2 selects bp; ordinary and unknown types select icon.",
+      "Propagate one iconVariant scalar through existing bounded market browse/detail/report and import opportunity/detail/quote/plan responses.",
+      "Enrich legacy plan lines on read without rewriting stored plans or repricing their financial snapshot.",
+      "Make ItemName accept an optional typed variant defaulting to icon; market/import callers supply metadata while existing dimensions, lazy loading and load/error handlers remain unchanged."
+    ],
+    "cost_constraints": [
+      "Use existing prepared taxonomy lookups; no taxonomy shipment to the frontend, name guessing, per-image SQL or provider metadata requests.",
+      "Keep one image resource per rendered item, existing request/poll bounds and ordinary/unknown icon behavior.",
+      "No automatic retry, fallback resource, timer, new recovery policy or CSP change."
+    ],
+    "pending": [
+      "Independent review of the actual source diff and fixed owner regressions.",
+      "Hosted Chrome and Firefox at 1600px and 390px: cold blueprint category, ordinary category, mixed All items and selected detail with verified resource paths, decoded visible images and request bounds."
+    ]
+  },
+  "scope_limit": "The user clarification and provider responses establish a blueprint resource defect. The initial restart description does not establish identical-type before/after recovery; this correction does not introduce or claim an automatic retry policy.",
+  "historical_validation": "Build86 remains the verified package for PBR-1 through PBR-57 and its recorded 991 browser checks and 1,164 runtime tests. Those historical passing gates do not cover or close PBR-58.",
+  "bank_status": {
+    "banked_baseline_commit": "8225eda4ed1e9be21155adaadc6ab0fefbdff702",
+    "banked_application_commit": "695c50ce7b095bf3e61d97ce97d12bcdee4a1746",
+    "pbr58_evidence_and_tests": "Prepared workspace changes; test-only baseline bank pending.",
+    "pbr58_implementation": "Not yet banked; design review only.",
+    "fixed_hosted_package": "Pending; build86 validates only the previous 57 findings."
+  }
+}
