@@ -10,7 +10,10 @@ import {startKairo} from '../server/index.mjs';
 import {savePlaceNote} from '../server/places.mjs';
 import {studioSaveDraft,opsecSaveDraft} from './premerge-runtime-edit-scenarios.mjs';
 import {importSettingsDraft} from './premerge-market-edit-scenarios.mjs';
+import {importPlanOwnership} from './premerge-market-plan-scenarios.mjs';
 import {appearanceWriteOrder} from './premerge-appearance-scenarios.mjs';
+import {connectionClientDraft} from './premerge-connection-edit-scenarios.mjs';
+import {studioCapacity} from './premerge-studio-capacity-scenario.mjs';
 import {sessionReportErrorOwnership,deniedStorageReplay} from './premerge-session-edit-scenarios.mjs';
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
@@ -91,7 +94,7 @@ try{
  app=await startKairo({port,streamPort:port+1,dataDir:join(dir,'data'),noSync:true,fetcher:denyNetwork,datasets:{fetcher:denyNetwork},universe:{operations:{noSync:true,fetcher:denyNetwork},feeds:{noSync:true,fetcher:denyNetwork}}});
  for(const engine of (process.env.KAIRO_SHARED_BROWSERS||'chromium,firefox').split(',')){
   assert.ok(['chromium','firefox'].includes(engine));browser=await engines[engine].launch({headless:true,timeout:20000,...(engine==='chromium'&&process.env.KAIRO_CHROME_PATH?{executablePath:process.env.KAIRO_CHROME_PATH}:{})});
-  for(const width of [1600,390])for(const [scenario,run] of [['note-discard',noteDiscard],['atlas-storage',()=>deniedSessionStorage('universe-kspace')],['maps-storage',()=>deniedSessionStorage('universe-jspace')],['studio-save-draft',studioSaveDraft],['opsec-save-draft',opsecSaveDraft],['import-settings-draft',importSettingsDraft],['appearance-write-order',appearanceWriteOrder],['session-report-error',sessionReportErrorOwnership],['storage-replay',deniedStorageReplay]]){
+  for(const width of [1600,390])for(const [scenario,run] of [['note-discard',noteDiscard],['atlas-storage',()=>deniedSessionStorage('universe-kspace')],['maps-storage',()=>deniedSessionStorage('universe-jspace')],['studio-save-draft',studioSaveDraft],['opsec-save-draft',opsecSaveDraft],['import-settings-draft',importSettingsDraft],['import-plan-ownership',importPlanOwnership],['appearance-write-order',appearanceWriteOrder],['session-report-error',sessionReportErrorOwnership],['storage-replay',deniedStorageReplay],['connection-client-draft',connectionClientDraft],['studio-capacity',studioCapacity]]){
    if(process.env.KAIRO_SHARED_SCENARIOS&&!process.env.KAIRO_SHARED_SCENARIOS.split(',').includes(scenario))continue;
    meta={engine,version:browser.version(),width,scenario};held=null;failRead=false;
    context=await browser.newContext({viewport:{width,height:1100},serviceWorkers:'block'});context.setDefaultTimeout(10000);page=await context.newPage();

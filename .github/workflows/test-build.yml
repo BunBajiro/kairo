@@ -46,6 +46,23 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/kairo-browser-tools" --ignore-scripts --no-audit --no-fund --save-exact playwright@1.62.1
           node "$RUNNER_TEMP/kairo-browser-tools/node_modules/playwright/cli.js" install --with-deps firefox
 
+      - name: Verify map connection hover positioning in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-premerge-map-hover
+        run: node tests/premerge-map-hover-ui.mjs
+
+      - name: Upload cross-browser map hover checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: premerge-map-hover-check
+          path: ${{ runner.temp }}/kairo-premerge-map-hover/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify Universe range navigation in Chrome and Firefox
         if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
         env:

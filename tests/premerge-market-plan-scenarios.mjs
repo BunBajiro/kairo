@@ -1,0 +1,99 @@
+import assert from 'node:assert/strict';
+import {allScopes} from '../server/modules/catalog.mjs';
+import {DEFAULT_IMPORT_SETTINGS} from '../server/import-math.mjs';
+import {saveHistory,DAY} from '../server/market-history.mjs';
+
+// Real compiled manifest controls and real SQLite quotes/plans. Delay only the
+// response delivery so edits and closed/replaced dialogs retain their owner.
+export async function importPlanOwnership({page,app,check,frame,deferred}){
+ const hubId=60008494,jita=60003760,now=Date.now(),iso=n=>new Date(n).toISOString(),db=app.store.db;
+ const prefix='Plan ownership ',quotePath='/api/markets/imports/plan-quote',savePath='/api/markets/imports/plans';
+ const pilot=db.prepare('SELECT scopes FROM characters WHERE id=42').get(),gates=[];
+ const requests={quote:0,save:0};let held=null,failSave=false;
+ db.prepare('UPDATE characters SET scopes=? WHERE id=42').run(JSON.stringify(allScopes));
+ const sample=data=>({status:'ready',updatedAt:iso(now),expiresAt:iso(now+DAY),data});
+ app.store.saveSnapshot(42,'skills',sample({skills:[16622,3446,16597].map(skill_id=>({skill_id,active_skill_level:5,trained_skill_level:5}))}));
+ app.store.saveSnapshot(42,'standings',sample([]));app.store.saveSnapshot(42,'orders',sample([]));
+ app.store.set('market:owner:'+hubId,{corporationId:1000084,corporationName:'Amarr Navy',factionId:500003,expires:now+DAY});
+ app.store.set('market:imports:'+hubId,{...DEFAULT_IMPORT_SETTINGS,characterId:42,minProfit:0});
+ db.prepare("DELETE FROM market_import_plans WHERE hub_id=? AND json_extract(body,'$.name') LIKE ?").run(hubId,prefix+'%');
+ for(const [id,name] of [[1403,'Plan test repairer'],[519,'Plan test scrambler']]){
+  db.prepare('INSERT INTO market_types(type_id,name) VALUES(?,?) ON CONFLICT(type_id) DO UPDATE SET name=excluded.name').run(id,name);
+  for(const [hub,price,quantity] of [[jita,1000000,100],[hubId,3000000,5]]){
+   db.prepare('INSERT OR REPLACE INTO market_items VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').run(hub,id,500000,price,price,quantity,0,1,0,iso(now),iso(now+DAY),'plan-ownership');
+   db.prepare('INSERT OR REPLACE INTO market_orders VALUES(?,?,?,?,?,?,?,?,?,?)').run(hub,id,id,0,price,quantity,1,'station',iso(now-DAY),90);
+  }
+  saveHistory(app.store,10000043,id,Array.from({length:30},(_,i)=>({date:iso(now-(i+1)*DAY).slice(0,10),average:1800000,lowest:1400000,highest:2200000,volume:500,order_count:20})),iso(now),iso(now+DAY),'ESI',now);
+ }
+ const service=app.core.markets.imports,analysis=await service.analyse(hubId),items=analysis.groups.flatMap(group=>group.items);
+ assert.equal(items.length,2);const recipe=item=>({typeId:item.typeId,...item.best.profiteering});
+ const other=await service.savePlan(hubId,{name:prefix+'other saved plan',lines:[recipe(items[0])]});
+ const handler=async route=>{
+  const request=route.request(),path=new URL(request.url()).pathname;
+  if(request.method()!=='POST')return route.fallback();
+  requests[path===quotePath?'quote':'save']++;
+  if(path===savePath&&failSave){failSave=false;return route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'Synthetic import plan save failure'})});}
+  if(!held||held.path!==path)return route.continue();
+  const gate=held;held=null;gate.started=true;
+  try{const response=await route.fetch();assert.equal(response.status(),200);gate.body=await response.json();gate.seen.resolve();await gate.release.promise;await route.fulfill({response});}
+  finally{gate.done.resolve();}
+ };
+ const dialog=()=>page.locator('.import-plan-dialog'),manifest=()=>page.locator('.import-plan'),review=()=>manifest().getByRole('button',{name:'Review & save plan',exact:true});
+ const close=async()=>{await dialog().getByRole('button',{name:'Close',exact:true}).click();await dialog().waitFor({state:'detached'});};
+ const hold=path=>{const gate={path,seen:deferred(),release:deferred(),done:deferred()};held=gate;gates.push(gate);return gate;};
+ const seen=gate=>Promise.race([gate.seen.promise,page.waitForTimeout(10000).then(()=>{throw new Error('Import plan response did not reach its gate.');})]);
+ const release=async gate=>{const finished=page.waitForEvent('requestfinished',{predicate:request=>new URL(request.url()).pathname===gate.path&&request.method()==='POST'});gate.release.resolve();await gate.done.promise;await finished;await frame();};
+ const save=()=>dialog().getByRole('button',{name:'Save import plan',exact:true});
+ const persisted=id=>JSON.parse(db.prepare('SELECT body FROM market_import_plans WHERE id=?').get(id).body);
+ await page.route(app.origin+quotePath,handler);await page.route(app.origin+savePath,handler);
+ try{
+  await page.goto(app.origin+'/#markets',{waitUntil:'domcontentloaded',timeout:15000});
+  await page.locator('.connection-status.online').waitFor({state:'attached'});
+  await page.locator('.market-hub').filter({has:page.locator('strong',{hasText:'Amarr'})}).click();
+  await page.locator('.markets-module > [data-slot=tabs] > [role=tablist]').getByRole('tab',{name:'Import Analyser',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelectorAll('.import-card-open').length===2);
+  for(let index=0;index<2;index++){
+   await page.locator('.import-card-open').nth(index).click();const detail=page.locator('.import-detail-dialog');
+   await detail.getByLabel('Import quantity',{exact:true}).waitFor();
+   await detail.getByRole('button',{name:/Add (anchoring|profiteering) option to plan/}).click();await detail.waitFor({state:'detached'});
+  }
+  check('Import manifest starts with two real qualifying items',await manifest().locator('tbody tr').count(),2);
+  const removed=await manifest().locator('tbody tr').first().locator('td').first().innerText(),gate=hold(quotePath);
+  await review().click();await seen(gate);assert.equal(gate.body.lines.length,2);
+  await manifest().getByRole('button',{name:/^Remove .* from import plan$/}).first().click();
+  check('Removing an item updates the current manifest during review',await manifest().locator('tbody tr').count(),1);
+  await release(gate);
+  check('A quote for an edited manifest cannot open a stale review',await dialog().count(),0,{removed});
+  check('A delayed manifest quote cannot restore the removed draft item',await manifest().locator('tbody tr').count(),1);
+  if(await dialog().count())await close();
+  await review().click();await save().waitFor();
+  check('A current review contains exactly the retained manifest item',await dialog().locator('tbody tr').count(),1);
+  await dialog().getByLabel('Plan name',{exact:true}).fill(prefix+'current saved plan');
+  const savedResponse=page.waitForResponse(response=>new URL(response.url()).pathname===savePath&&response.request().method()==='POST');
+  await save().click();const current=await(await savedResponse).json();await dialog().getByRole('heading',{name:prefix+'current saved plan',exact:true}).waitFor();
+  check('Saving the current review persists exactly its retained item',persisted(current.id).lines.length,1);
+  await close();
+  await review().click();await save().waitFor();await dialog().getByLabel('Plan name',{exact:true}).fill(prefix+'delayed saved plan');
+  const delayed=hold(savePath);await save().click();await seen(delayed);
+  check('Delayed save reaches real persistence with its submitted name',persisted(current.id).name,prefix+'delayed saved plan');
+  await close();check('A pending save dialog can be closed',await dialog().count(),0);
+  await page.locator('.import-saved-plans button').filter({hasText:other.name}).click();
+  await dialog().getByRole('heading',{name:other.name,exact:true}).waitFor();await release(delayed);
+  check('An old save response preserves the newly selected saved plan',await dialog().getByLabel('Plan name',{exact:true}).inputValue(),other.name);
+  check('An old save response leaves the other persisted plan intact',persisted(other.id).name,other.name);
+  await close();
+  await review().click();await save().waitFor();await dialog().getByLabel('Plan name',{exact:true}).fill(prefix+'retry saved plan');
+  failSave=true;let response=page.waitForResponse(r=>new URL(r.url()).pathname===savePath&&r.request().method()==='POST');await save().click();assert.equal((await response).status(),503);await dialog().getByText('Synthetic import plan save failure',{exact:true}).waitFor();
+  check('A failed current save retains the editable plan name',await dialog().getByLabel('Plan name',{exact:true}).inputValue(),prefix+'retry saved plan');
+  check('A failed current save leaves its previous persisted version intact',persisted(current.id).name,prefix+'delayed saved plan');
+  response=page.waitForResponse(r=>new URL(r.url()).pathname===savePath&&r.request().method()==='POST');await save().click();const retried=await(await response).json();await dialog().getByRole('heading',{name:prefix+'retry saved plan',exact:true}).waitFor();
+  check('Retrying a failed plan save persists its current name',persisted(retried.id).name,prefix+'retry saved plan');
+  check('Import plan ownership keeps explicit request counts bounded',requests,{quote:4,save:4});
+  await close();
+ }finally{
+  for(const gate of gates)gate.release.resolve();await Promise.all(gates.filter(gate=>gate.started).map(gate=>gate.done.promise));
+  await page.unroute(app.origin+quotePath,handler);await page.unroute(app.origin+savePath,handler);
+  db.prepare('UPDATE characters SET scopes=? WHERE id=42').run(pilot.scopes);
+  db.prepare("DELETE FROM market_import_plans WHERE hub_id=? AND json_extract(body,'$.name') LIKE ?").run(hubId,prefix+'%');
+ }
+}
