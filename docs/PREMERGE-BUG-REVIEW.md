@@ -16,6 +16,8 @@ The user requested another complete pass on 15 October 2026. This pass begins at
 
 ### Resume from the banked checkpoint
 
+[Candidate90](https://github.com/BunBajiro/kairo/actions/runs/38771319785) is running against `5c55cbbbae6c935a86ad5dde71cc1899958fde62`. This is the next required verification; no result or package acceptance is claimed.
+
 The fourth pass is **unfinished**. Build88 is the latest completed hosted run and intentionally contains failing baselines for the newly confirmed UI findings. Build86 remains the last verified package under its original PBR-1–57 scope. Do not hand over later source checkpoints as validated packages.
 
 1. Retain the recorded source/test banks. PBR-64–73 now pass their complete build89 browser gates; their final combined/package acceptance remains pending.
