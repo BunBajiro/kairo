@@ -70,13 +70,16 @@ async function pointerSelection(root, name, minimumBuild, hashes = false) {
   return { directory, manifest, pending: name === 'pending' };
 }
 async function requireUnrejected(root, directory) {
-  // Presence is the rejection record. Never interpret unreadable/truncated marker
-  // contents as permission to retry this UUID. Payload files stay immutable.
-  try { await lstat(rejectionPath(root, directory)); }
+  // Presence always rejects this UUID. A readable cancellation disposition only
+  // permits preparing a fresh generation; unreadable/truncated records fail closed.
+  const marker = rejectionPath(root, directory);
+  try { await lstat(marker); }
   catch (cause) {
     if (cause.code === 'ENOENT') return;
     throw Object.assign(new Error(`Could not check dataset activation rejection: ${errorText(cause)}`, { cause }), { code: 'SDE_REJECTION_UNREADABLE' });
   }
+  const record = await optionalJson(marker).catch(() => null);
+  if (record?.disposition === 'cancelled') throw Object.assign(new Error('This dataset preparation was cancelled.'), { code: 'SDE_GENERATION_CANCELLED' });
   throw Object.assign(new Error('This dataset generation previously failed activation. A manual retry must prepare a fresh generation.'), { code: 'SDE_GENERATION_REJECTED' });
 }
 async function markFailed(root, build, error) {
@@ -148,7 +151,7 @@ export async function prepareDatasetRuntime(dataDir, maintenance = {}) {
   try { pending = await pointerSelection(root, 'pending', Math.max(minimumBuild, active?.manifest.build || 0), true); }
   catch (error) {
     const pointer = await optionalJson(join(root, 'pending.json'));
-    await markFailed(root, pointer?.build, error);
+    if (error.code !== 'SDE_GENERATION_CANCELLED') await markFailed(root, pointer?.build, error);
     pointerCleanup.push('pending.json');
   }
   if (pending && active && pending.manifest.build <= active.manifest.build) {
@@ -309,7 +312,7 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
   }
   async function download(candidate, signal) {
     const id = randomUUID(), archivePath = join(root, `download-${id}.zip`), outputDir = join(root, `staging-${id}`);
-    let finalDirectory;
+    let finalDirectory, pendingPublished = false;
     try {
       // Reserve the worst-case remaining archive/stage footprint before starting. This is
       // advisory against other writers; subsequent writes and ENOSPC still fail safely.
@@ -345,12 +348,20 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
       signal.throwIfAborted();
       finalDirectory = join(root, `build-${candidate.build}-${id}`);
       await rename(outputDir, finalDirectory);
+      signal.throwIfAborted();
       await atomicJson(join(root, 'pending.json'), { schema: 1, directory: basename(finalDirectory), build: candidate.build });
+      pendingPublished = true;
+      signal.throwIfAborted();
       readySelection = { directory: finalDirectory, manifest, pending: true };
       phase = 'ready'; progress = null; error = null; emit();
       // Never await the supervisor: it must be able to close this service before restarting the core.
       Promise.resolve().then(() => onReady(readySelection)).catch(cause => { void activationFailed(errorText(cause)).catch(() => {}); });
     } catch (cause) {
+      if (pendingPublished && cause?.name === 'AbortError') {
+        // A locked pointer/payload must not make a cancelled generation eligible
+        // on restart. The existing rejection record outlives partial cleanup.
+        await atomicJson(rejectionPath(root, finalDirectory), { schema: 1, build: candidate.build, disposition: 'cancelled' });
+      }
       if (phase === 'building' && cause?.name !== 'AbortError' && !closed) {
         cache.failedBuild = candidate.build;
         await persist().catch(() => {});
@@ -358,7 +369,7 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
       throw cause;
     } finally {
       // Worker cancellation has completed before build() rejects, so it cannot recreate deleted files.
-      cleanupWarning = await cleanup(root, [], { remove, now, paths: [basename(archivePath), basename(outputDir), ...(finalDirectory && phase !== 'ready' ? [basename(finalDirectory)] : [])] });
+      cleanupWarning = await cleanup(root, [], { remove, now, paths: [basename(archivePath), basename(outputDir), ...(finalDirectory && phase !== 'ready' ? [basename(finalDirectory)] : []), ...(pendingPublished && phase !== 'ready' ? ['pending.json'] : [])] });
     }
   }
   function check({ install = false, manual = false } = {}) {
@@ -411,7 +422,7 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
               if (!BUILD_DIRECTORY.test(pointer?.directory || '')) continue;
               try { await requireUnrejected(root, pointer.directory); keep.push(pointer.directory); }
               catch (cause) {
-                if (cause.code !== 'SDE_GENERATION_REJECTED') throw cause;
+                if (!['SDE_GENERATION_REJECTED', 'SDE_GENERATION_CANCELLED'].includes(cause.code)) throw cause;
                 rejectedPointers.push(`${names[index]}.json`);
               }
             }

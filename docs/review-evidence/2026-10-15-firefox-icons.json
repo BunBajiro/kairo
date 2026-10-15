@@ -3,7 +3,7 @@
   "baseline_commit": "8225eda4ed1e9be21155adaadc6ab0fefbdff702",
   "application_commit": "695c50ce7b095bf3e61d97ce97d12bcdee4a1746",
   "finding": "PBR-58",
-  "state": "Reproduced; original test-only baseline banked; independently reviewed implementation and additional Core regression in workspace; hosted acceptance pending",
+  "state": "Reproduced in provider and hosted partial baseline; independently reviewed source/tests banked; full fixed browser/package acceptance pending",
   "user_report": "Firefox category icons appear after restarting Kairo but not before.",
   "screenshots": [
     {
@@ -32,7 +32,7 @@
       "observation": "Blueprints & Reactions > Drones: every visible blueprint row has an empty icon position; the category lists 81 cached items. No item is selected in the detail pane."
     }
   ],
-  "coverage_gap": "Prior Firefox coverage serves HTTP 200 for every image path and tests ordinary images; the Chrome load-reset probe manually changes src. Neither establishes blueprint resource correctness. The new provider-aware hosted baseline and fixed browser runs remain pending.",
+  "coverage_gap": "Prior Firefox coverage serves HTTP 200 for every image path and tests ordinary images; the Chrome load-reset probe manually changes src. Neither establishes blueprint resource correctness. New build87 supplies actual wrong-resource and decoding failures for cold blueprint categories/detail in all four contexts, but a fixture ambiguity prevents its later healthy/import flows. Complete fixed hosted acceptance remains pending.",
   "user_clarification": "The user confirmed the missing icons affect blueprints only. The fourth supplied screenshot shows the Blueprints & Reactions > Drones category with missing icons in every visible blueprint row.",
   "reproduction": {
     "owner": "components/kairo/ui.tsx ItemName selects /types/{id}/icon?size=32 for every type; onError hides a failed image and onLoad restores visibility.",
@@ -117,7 +117,7 @@
         "Legacy plan identity, financial totals, packing, quote time and raw stored body remain unchanged, with no extra writes or external requests."
       ],
       "classification_controls": "Translated blueprint labels, ordinary names containing Blueprint, reaction/drone blueprints and unknown IDs prevent classification by display-name guessing.",
-      "limit": "These failures establish the missing server image-variation contract. Actual compiled UI URL selection and visible decoding still require the hosted browser baseline and fixed gates."
+      "limit": "Owner failures establish the missing server image-variation contract. Build87 separately establishes compiled UI wrong-resource and decoding failures for cold blueprint categories/detail; complete healthy/import and fixed browser acceptance remains pending."
     }
   },
   "design_review": {
@@ -137,8 +137,12 @@
       "No automatic retry, fallback resource, timer, new recovery policy or CSP change."
     ],
     "pending": [
-      "Hosted unchanged-source baseline and fixed Chrome/Firefox 1600px/390px acceptance for correct resource URLs, decoded visible images and request bounds.",
-      "Bank reviewed application changes and independently verify the resulting tested package."
+      "Complete fixed hosted Chrome/Firefox 1600px/390px acceptance for correct resource URLs, decoded visible images, healthy/failure controls and request bounds.",
+      "Independently verify the resulting successful tested package."
+    ],
+    "source_owners": [
+      "pass3_markets",
+      "pass4_core"
     ]
   },
   "scope_limit": "The user clarification and provider responses establish a blueprint resource defect. The initial restart description does not establish identical-type before/after recovery; this correction does not introduce or claim an automatic retry policy.",
@@ -147,14 +151,16 @@
     "banked_baseline_commit": "b25f3df59a13d247f90be5d5811227952a2ebfad",
     "baseline_url": "https://github.com/BunBajiro/kairo/commit/b25f3df59a13d247f90be5d5811227952a2ebfad",
     "banked_application_commit": "695c50ce7b095bf3e61d97ce97d12bcdee4a1746",
-    "pbr58_evidence_and_tests": "Original Markets/import owner tests, hosted browser harness and evidence banked in test-only b25f3df; no application source changed in that bank. Additional Core tests and this evidence update remain workspace changes.",
-    "pbr58_implementation": "Prepared workspace source independently reviewed by pass3_shared; not yet banked.",
+    "pbr58_evidence_and_tests": "Original tests/evidence banked at b25f3df; additional Core owner tests and implementation review banked at dad1d71.",
+    "pbr58_implementation": "Actual Markets/import/Core/operations correction independently reviewed by pass3_shared and banked at dad1d71 with [skip ci]; not a hosted/package acceptance result.",
     "hosted_baseline": "Build87 partial baseline retained: cold blueprint Bombs, selected detail and Drones reproduced in all four contexts; later ordinary/import workflows stop at a fixture selector ambiguity.",
-    "fixed_hosted_package": "Pending; build86 validates only the previous 57 findings."
+    "fixed_hosted_package": "Pending; build86 validates only the previous 57 findings.",
+    "implementation_commit": "dad1d71c576fefd716db82d8393f92ed29df98ce",
+    "implementation_url": "https://github.com/BunBajiro/kairo/commit/dad1d71c576fefd716db82d8393f92ed29df98ce"
   },
   "implementation_review": {
     "reviewer": "pass3_shared",
-    "state": "Workspace source reviewed; no source commit or package closure claimed.",
+    "state": "Actual source and owner regressions banked at dad1d71; full fixed browser/package acceptance pending.",
     "market_import_files": [
       "server/market-categories.mjs",
       "server/markets.mjs",

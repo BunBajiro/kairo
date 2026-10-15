@@ -17,7 +17,7 @@ jobs:
   build:
     name: Build and verify downloadable ZIP
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Check out the feature branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -45,6 +45,91 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/kairo-browser-tools" --ignore-scripts --no-audit --no-fund --save-exact playwright@1.62.1
           node "$RUNNER_TEMP/kairo-browser-tools/node_modules/playwright/cli.js" install --with-deps firefox
+
+      - name: Verify operation item image resources in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-operation-icons
+        run: node tests/premerge-operation-icons-ui.mjs
+
+      - name: Upload operation item image resources checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: operation-icons-check
+          path: ${{ runner.temp }}/kairo-operation-icons/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass navigation and settings ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-navigation
+        run: node tests/premerge-pass4-navigation-ui.mjs
+
+      - name: Upload fourth-pass navigation and settings ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-navigation-check
+          path: ${{ runner.temp }}/kairo-pass4-navigation/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass Universe settings ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-universe-settings
+        run: node tests/premerge-pass4-universe-settings-ui.mjs
+
+      - name: Upload fourth-pass Universe settings ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-universe-settings-check
+          path: ${{ runner.temp }}/kairo-pass4-universe-settings/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass market recovery and settings ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-markets
+        run: node tests/premerge-pass4-markets-ui.mjs
+
+      - name: Upload fourth-pass market recovery and settings ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-markets-check
+          path: ${{ runner.temp }}/kairo-pass4-markets/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Verify fourth-pass shared settings and dialog ownership in Chrome and Firefox
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
+        env:
+          KAIRO_PLAYWRIGHT_MODULE: ${{ runner.temp }}/kairo-browser-tools/node_modules/playwright/index.mjs
+          KAIRO_CHROME_PATH: /usr/bin/google-chrome
+          KAIRO_BROWSER_OUTPUT: ${{ runner.temp }}/kairo-pass4-shared
+        run: node tests/premerge-pass4-shared-ui.mjs
+
+      - name: Upload fourth-pass shared settings and dialog ownership checks
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pass4-shared-check
+          path: ${{ runner.temp }}/kairo-pass4-shared/
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Verify blueprint image resources in Chrome and Firefox
         if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.browser_tools.outcome == 'success' }}
