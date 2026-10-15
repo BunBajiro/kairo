@@ -246,10 +246,11 @@ async function coreFixture(t, { key = 'location', systemId = 32009999, stale = f
     store.saveSnapshot(42, 'profile', fresh({ character_id: 42, name: 'Pilot' }));
     store.saveSnapshot(42, 'location', { ...fresh({ solar_system_id: A, system: { name: 'Jita' } }), ...(key === 'location' ? { refreshAt: iso(now - 1) } : {}) });
     store.saveSnapshot(42, 'ship', { ...fresh({ ship_id: 100, ship_type_id: 588 }), ...(key === 'ship' ? { refreshAt: iso(now - 1) } : {}) });
-    const metadataStarted = deferred(), metadata = deferred(), namesStarted = deferred(), names = deferred();
+    const metadataStarted = deferred(), metadata = deferred(), namesStarted = deferred(), names = deferred(), requests = [];
     const core = await createCore(store, { characters: () => [{ id: 42, scopes: ['esi-location.read_location.v1', 'esi-location.read_ship_type.v1'] }] }, {
         health: () => ({}),
         async request(path) {
+            requests.push(path);
             if (path === '/characters/42/' + key) return { ...fresh(key === 'location' ? { solar_system_id: systemId } : { ship_id: 200, ship_type_id: 999999 }),
                 // Remote cache timestamps must never choose a session owner.
                 updatedAt: '2030-01-01T00:00:00.000Z', stale };
@@ -262,7 +263,7 @@ async function coreFixture(t, { key = 'location', systemId = 32009999, stale = f
         async names(ids) { namesStarted.resolve(ids); await names.promise; return Object.fromEntries(ids.map(id => [id, 'Resolved ' + id])); }
     }, f.dir, { noSync: true });
     f.beforeClose(async () => { metadata.resolve(); names.resolve(); await core.close(); });
-    return { ...f, core, fresh, metadataStarted, metadata, namesStarted, names };
+    return { ...f, core, fresh, metadataStarted, metadata, namesStarted, names, requests };
 }
 
 test('real Core captures location receipt before deferred metadata/names and never transfers it to a later session', { timeout: 5000 }, async t => {
@@ -403,15 +404,45 @@ test('first-ship projection respects earlier/equal transitions and excludes out-
 
 test('Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline', { timeout: 5000 }, async t => {
     const f = await coreFixture(t), { store, core } = f;
+    // The retained sample is already in this system, but is too stale to seed
+    // the Session. A paused response must not silently refresh that sample.
+    store.saveSnapshot(42, 'location', { ...f.fresh({ solar_system_id: 32009999 }), status: 'stale' });
+    const retained = store.snapshot(42, 'location');
     const active = changeSession(store, core.publish, 42, { action: 'start', label: 'Pause boundary' }).id;
     const work = core.sync(42); await f.metadataStarted.promise;
     core.toggle('pilot', false); f.metadata.resolve(); f.names.resolve(); await work; await core.bus.drain();
+    assert.deepEqual(store.snapshot(42, 'location'), retained);
     assert.equal(visits(store).length, 0); assert.deepEqual(discoveredSystemIds(store, 42), []);
     assert.equal(store.db.prepare("SELECT COUNT(*) n FROM events WHERE type='location.changed'").get().n, 0);
     core.toggle('pilot', true); await core.requestSync(42); await core.bus.drain();
     assert.equal(visits(store).length, 1); assert.equal(visits(store)[0].session_id, active);
     assert.equal(visits(store)[0].system_id, 32009999); assert.deepEqual(discoveredSystemIds(store, 42), [32009999]);
     assert.equal(store.db.prepare("SELECT COUNT(*) n FROM events WHERE type='location.changed'").get().n, 0, 'A same-system baseline is not a new transition');
+});
+
+test('Pilot pause during enrichment retains the prior system until a fresh resumed transition, without duplicate delivery', { timeout: 5000 }, async t => {
+    const f = await coreFixture(t), { store, core } = f;
+    const retained = store.snapshot(42, 'location');
+    const active = changeSession(store, core.publish, 42, { action: 'start', label: 'Resume transition' }).id;
+    const work = core.sync(42); await f.metadataStarted.promise;
+    core.toggle('pilot', false); f.metadata.resolve(); f.names.resolve(); await work; await core.bus.drain();
+    assert.deepEqual(store.snapshot(42, 'location'), retained, 'Paused enrichment cannot overwrite the last accepted system');
+    assert.equal(retained.data.solar_system_id, A);
+    assert.deepEqual(visits(store), []); assert.deepEqual(discoveredSystemIds(store, 42), []);
+    const transitions = () => store.db.prepare("SELECT * FROM events WHERE type='location.changed' ORDER BY id").all();
+    assert.deepEqual(transitions(), []);
+    const resumedAt = Date.now();
+    core.toggle('pilot', true); await core.requestSync(42); await core.bus.drain();
+    assert.equal(store.snapshot(42, 'location').data.solar_system_id, 32009999);
+    const recorded = visits(store), events = transitions();
+    assert.equal(recorded.length, 1); assert.equal(recorded[0].system_id, 32009999); assert.equal(recorded[0].session_id, active);
+    assert.equal(events.length, 1, 'The fresh sample differs from the last accepted system');
+    assert.equal(events[0].at, recorded[0].at); assert.ok(Date.parse(events[0].at) >= resumedAt);
+    assert.equal(JSON.parse(events[0].payload).system_id, 32009999); assert.equal(JSON.parse(events[0].payload).session_id, active);
+    assert.deepEqual(discoveredSystemIds(store, 42), [32009999]);
+    await core.requestSync(42); await core.bus.drain();
+    assert.deepEqual(visits(store), recorded); assert.deepEqual(transitions(), events);
+    assert.equal(f.requests.filter(path => path === '/characters/42/location').length, 3, 'Only the three explicitly requested samples reach ESI');
 });
 
 

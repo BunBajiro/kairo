@@ -21,6 +21,19 @@ function saveAppearance(theme: string, csrf: string) {
     appearanceWrite = write.catch(() => {});
     return write;
 }
+// The owner survives navigation. Connect joins the same queue so its selected
+// application stays current until auth/start has read it, even before reload.
+let clientIdWrite: Promise<unknown> = Promise.resolve();
+let persistedClientId: string | undefined;
+function withClientId<T>(work: () => Promise<T>) {
+    const write = clientIdWrite.then(work);
+    clientIdWrite = write.catch(() => {});
+    return write;
+}
+async function persistClientId(clientId: string, csrf: string) {
+    await api('/settings', 'PUT', { clientId }, csrf);
+    persistedClientId = clientId;
+}
 export function Connections() {
     const { boot, reload } = useKairo();
     const [clientId, setClientId] = useState(boot.clientId);
@@ -33,7 +46,7 @@ export function Connections() {
         if (clientDraftRevision.current === clientSavedRevision.current) setClientId(boot.clientId);
     }, [boot.clientId]);
     async function save() { const revision = clientDraftRevision.current; setBusy(true); try {
-        await api('/settings', 'PUT', { clientId }, boot.csrf);
+        await withClientId(() => persistClientId(clientId, boot.csrf));
         if (clientDraftRevision.current === revision) clientSavedRevision.current = revision;
         await reload();
         toast.success('EVE application saved.');
@@ -44,10 +57,12 @@ export function Connections() {
     finally {
         setBusy(false);
     } }
-    async function connect(requestedScopes = scopes) { setBusy(true); try {
-        if (clientId !== boot.clientId)
-            await api('/settings', 'PUT', { clientId }, boot.csrf);
-        const r = await api('/auth/start', 'POST', { scopes: requestedScopes }, boot.csrf);
+    async function connect(requestedScopes = scopes) { clientDraftRevision.current++; setBusy(true); try {
+        const r = await withClientId(async () => {
+            if (clientId !== boot.clientId || (persistedClientId !== undefined && clientId !== persistedClientId))
+                await persistClientId(clientId, boot.csrf);
+            return api('/auth/start', 'POST', { scopes: requestedScopes }, boot.csrf);
+        });
         window.location.assign(r.url);
     }
     catch (e: any) {

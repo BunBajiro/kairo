@@ -59,8 +59,62 @@ export async function clientIdNavigationOwnership(args){
  const input=()=>page.locator('#client-id'),save=()=>page.getByRole('button',{name:'Save',exact:true});
  try{await crossingSaves(args,{label:'Client ID',path:'/api/settings',field:'clientId',route:'connections',initial:'navigation-client-original',older:'navigation-client-older',newer:'navigation-client-newer',recovery:'navigation-client-recovered',
   open:()=>input().waitFor(),choose:value=>input().fill(value),save,stored:()=>app.store.get('clientId'),displayed:()=>input().inputValue(),
-  settled:()=>page.waitForFunction(()=>{const input=document.querySelector('#client-id');return input&&!input.parentElement.querySelector('button').disabled;})});}
+  settled:()=>page.waitForFunction(()=>{const input=document.querySelector('#client-id');return input&&!input.parentElement.querySelector('button').disabled;})});
+  await clientIdConnectOwnership(args);
+ }
  finally{app.store.set('clientId',original);for(const pilot of pilots){const keys=Object.keys(pilot);app.store.db.prepare('INSERT OR REPLACE INTO characters('+keys.join(',')+') VALUES('+keys.map(()=>'?').join(',')+')').run(...keys.map(key=>pilot[key]));}}
+}
+
+// Use the real ClientID store, but stop at auth/start admission: these tests
+// must never initiate real EVE SSO or depend on an external auth service.
+async function clientIdConnectOwnership({page,app,check,frame,deferred}){
+ const initial='connect-client-original',older='connect-client-older';
+ const input=()=>page.locator('#client-id'),save=()=>page.getByRole('button',{name:'Save',exact:true});
+ const connect=()=>page.getByRole('button',{name:'Log in with EVE Online',exact:true});
+ for(const mode of ['idle','write','bootstrap']){
+  app.store.set('clientId',initial);
+  const gate={seen:deferred(),release:deferred(),done:deferred()},auth={done:deferred(),ids:[]};let entered=false,holdBootstrap=false;
+  const wait=promise=>Promise.race([promise,page.waitForTimeout(10000).then(()=>{throw new Error('ClientID Connect '+mode+' gate did not finish.');})]);
+  const writeHandler=async route=>{
+   if(mode!=='write'||route.request().method()!=='PUT'||route.request().postDataJSON().clientId!==older)return route.fallback();
+   entered=true;gate.seen.resolve();
+   try{await gate.release.promise;const response=await route.fetch();assert.equal(response.status(),200);await route.fulfill({response});}finally{gate.done.resolve();}
+  };
+  const bootstrapHandler=async route=>{
+   if(!holdBootstrap)return route.fallback();holdBootstrap=false;entered=true;
+   try{const response=await route.fetch();assert.equal(response.status(),200);gate.seen.resolve();await gate.release.promise;await route.fulfill({response});}finally{gate.done.resolve();}
+  };
+  const authHandler=async route=>{
+   assert.equal(route.request().method(),'POST');assert.deepEqual(route.request().postDataJSON().scopes,[]);
+   auth.ids.push(app.store.get('clientId'));
+   try{await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'Synthetic auth admission stop'})});}finally{auth.done.resolve();}
+  };
+  await page.route(app.origin+'/api/settings',writeHandler);
+  await page.route(app.origin+'/api/bootstrap',bootstrapHandler);
+  await page.route(app.origin+'/api/auth/start',authHandler);
+  try{
+   // A real document navigation gives every case a fresh client-side owner.
+   await page.goto(app.origin+'/?pass4-connect='+mode+'#connections',{waitUntil:'domcontentloaded',timeout:15000});await input().waitFor();
+   if(mode!=='idle'){
+    holdBootstrap=mode==='bootstrap';await input().fill(older);await save().click();await wait(gate.seen.promise);
+    check('Client ID Connect '+mode+' boundary has the expected persisted state',app.store.get('clientId'),mode==='write'?initial:older);
+    await navigate(page,'overview');await page.getByRole('heading',{name:'Command centre',exact:true}).waitFor();
+    await navigate(page,'connections');await input().waitFor();
+    check('Client ID Connect '+mode+' remount retains the selected application',await input().inputValue(),initial);
+   }
+   await connect().click();await frame();gate.release.resolve();
+   if(entered)await wait(gate.done.promise);await wait(auth.done.promise);
+   await connect().waitFor();await frame();
+   check('Client ID Connect '+mode+' auth reads the selected application',auth.ids,[initial]);
+   check('Client ID Connect '+mode+' leaves the selected application persisted',app.store.get('clientId'),initial);
+   check('Client ID Connect '+mode+' retains the selected application after auth failure',await input().inputValue(),initial);
+   check('Client ID Connect '+mode+' keeps writes bounded',await page.evaluate(()=>window.__coreSettingsWrites.slice()),mode==='idle'?[]:[older,initial]);
+   check('Client ID Connect '+mode+' auth failure releases the action',await connect().isEnabled(),true);
+  }finally{
+   gate.release.resolve();if(entered)await wait(gate.done.promise);
+   await page.unroute(app.origin+'/api/settings',writeHandler);await page.unroute(app.origin+'/api/bootstrap',bootstrapHandler);await page.unroute(app.origin+'/api/auth/start',authHandler);
+  }
+ }
 }
 
 export async function pollingNavigationOwnership(args){
