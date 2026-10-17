@@ -136,7 +136,7 @@ Alternatively, select **Connect** and choose two mapped systems and a connection
 | Kind | What Kairo records |
 | --- | --- |
 | **Wormhole** | A temporary observation with signatures, type, conditions, expiry, confirmation and access. |
-| **Stargate** | A permanent link that must match an actual pair in the bundled atlas. |
+| **Stargate** | A permanent link that must match an actual pair in the active static atlas. |
 | **Ansiblex** | A reference to your configured network or an independent bridge private to this map. |
 
 Permanent links do not receive wormhole mass, lifetime or size settings. Access on a configured Ansiblex is managed in **Universe settings**. Removing that line from a map does not delete the configured network entry. Private map bridges remain isolated to their map.

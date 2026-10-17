@@ -8,7 +8,7 @@ On 17 October 2026, GitHub PR #12 and both the previous workspace and a fresh ch
 
 Build90 application source remains `5c55cbbbae6c935a86ad5dde71cc1899958fde62`. Its 1,215 runtime tests, 2,317 browser checks, downloaded-package identity and 74 closed findings are recorded in [the completed review](PREMERGE-BUG-REVIEW.md) and [Validation](VALIDATION.md). These are existing verified results, not tests rerun by this documentation phase. Preserve the ledger and raw `review-evidence/` files unchanged.
 
-Current source, configuration, tests and evidence are authoritative. Old plans, past chats and historical measurements do not establish current implementation or acceptance. All edits remain workspace-only until listed in a pushed checkpoint below.
+Current source, configuration, tests and evidence are authoritative. Old plans, past chats and historical measurements do not establish current implementation or acceptance. The integration checkpoint below is pushed; final completion and verification are recorded by this receipt commit. Working-tree state must still be checked on recovery.
 
 ## Inventory and authoritative homes
 
@@ -38,22 +38,27 @@ The starting tree contains 24 Markdown files: root README, AGENTS and changelog;
 | Work item | State |
 | --- | --- |
 | Recovery and initial inventory | Complete; checkpoint below records banking |
-| User setup, navigation, backup and troubleshooting | Draft complete; final independent review in progress |
-| Markets and Import Analyser | Draft complete; source review and independent review complete |
-| Universe and technical map references | Draft complete; source review and independent review complete |
-| Pilot workspace, Sessions and streaming | Draft complete; source review and independent review complete |
-| Architecture, internal API and HTTP/events | Draft complete; source review and independent review complete |
-| Auth, ESI, persistence and datasets | Draft complete; source review and independent review complete |
-| Independent documentation review | Topic reviews complete; final integrated review in progress |
-| Internal paths/anchors, commands/examples and change-scope verification | Pending integration |
+| User setup, navigation, backup and troubleshooting | Complete; source and independent review passed |
+| Markets and Import Analyser | Complete; source and independent review passed |
+| Universe and technical map references | Complete; source and independent review passed |
+| Pilot workspace, Sessions and streaming | Complete; source and independent review passed |
+| Architecture, internal API and HTTP/events | Complete; source and independent review passed |
+| Auth, ESI, persistence and datasets | Complete; source and independent review passed |
+| Independent documentation review | Complete; no remaining documentation blocker |
+| Internal paths/anchors, commands/examples and change-scope verification | Complete; see verification receipt |
 
-Use no new screenshots unless captured from the verified application and checked. Documentation changes require link/command/example validation; an application correction would need separate review and meaningful regression evidence. No application correction is currently planned.
+No application corrections or screenshots were introduced. Documentation links/anchors, commands and executable examples were checked; runtime/frontend source, package versions, the completed bug ledger and raw review evidence remain unchanged. The bundled-data importer’s obsolete help text was corrected; its executable Python AST is unchanged.
 
 ## Banked checkpoints
 
 - `8ecd684b22b2474538144476578af8034697a2cc`: recovery, inventory and documentation-phase instructions pushed and fetched back successfully.
-- User/developer guide integration: prepared for the next documentation-only bank; final link/example verification still pending.
+- `181bd272f8b0ef49fafc1eadf9920b52337d21fa`: complete user/developer guide integration pushed and fetched back with an identical Git tree.
+- Completion receipt: this commit records final documentation verification and handoff. No application build is associated with these skip-CI documentation commits.
 
-## Handoff
+## Verification and handoff
 
-Work remains in progress. The latest downloadable application remains build90, whose packaged documentation predates this phase. Do not describe newer source documentation as already included in that ZIP. No new runtime, browser, performance or environment result is claimed here.
+Documentation is complete for review. [Verification receipt](DOCUMENTATION-VERIFICATION.json) records the integrated link/anchor checks, shell syntax checks, actual isolated Registry/HTTP example execution, static-data examples and independent reviewer disposition. Auth guidance covers all 30 catalog scopes; the polling table covers all 38 catalog batches. Immutable performance/archive paths were verified against the retained Git objects.
+
+The guides separate implemented behaviour, limitations, historical plans and source-specific acceptance. No fresh full runtime/browser/performance gate was needed for documentation-only changes; build90 remains the verified application and its Windows/DPAPI, live EVE, actual OBS and extended-play limits remain unchanged.
+
+The latest downloadable application remains build90, whose packaged documentation predates this phase. The updated guides are available on the review branch; they are not already inside that ZIP. PR #12 remains draft, main remains `239794774320fcdebaa1d76ce8a77c5c25cfc48c`, and version remains `0.8.0-rc.17`. No merge, stable release or version bump was performed.

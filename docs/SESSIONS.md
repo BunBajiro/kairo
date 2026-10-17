@@ -71,7 +71,7 @@ Open **Sessions → Combat record** for **Recent kills & losses**. This page sho
 
 ## Ships and LP
 
-**Ships flown** groups observed time by hull and retains the ship-change order, including swaps between two ships of the same hull type. If the starting hull was not captured, the history begins with the first observed change.
+**Ships flown** groups observed time by hull and retains the ship-change order, including swaps between two ships of the same hull type. If the starting hull was not captured, the history begins with the first recorded hull observation or subsequent ship change.
 
 **Loyalty points** compares the character's balances per NPC corporation. It includes earned, spent and donated LP, so it is a net balance change, not gross earnings. It uses the existing `esi-characters.read_loyalty.v1` permission in the combat module. Enable that module and connect the permission before starting a session to establish its baseline.
 

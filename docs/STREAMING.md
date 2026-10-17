@@ -59,11 +59,13 @@ The editor displays **Unsaved changes** until **Save changes** succeeds. **Live 
 | **Wallet · balance** | That character's latest usable wallet balance. |
 | **Pilot · current hull** | Current hull name. |
 | **Training · current skill** / **current skill progress** | Current training title, timer or percentage, depending on widget. |
-| **Industry · next job** / **next job progress** | Next active job title, countdown or percentage. |
+| **Industry · next job** / **next job progress** | Earliest-ending active or ready job title, countdown or percentage; a ready job can remain at zero until delivered. |
 
 Available bindings depend on the template: countdowns accept training/jobs, progress bars accept goals/training/jobs, and text-like widgets accept the broader selection. EVE clocks, dividers and OPSEC covers have no private-data binding. **Refresh linked sources** updates the picker/preview when needed.
 
-Missing, stale, disabled or unauthorized sources show an unavailable state; an empty queue or no active session has an idle state. A lost event connection displays **Source disconnected** for bound widgets instead of keeping a live-looking value. Kairo does not stream raw snapshots, credential material, record IDs or private notes along with the displayed text.
+Wallet, hull, training and industry bindings require usable fresh snapshots and enabled source modules; otherwise they show an unavailable state. Goal and Session bindings use retained local records, so an automatic goal can still display its last confirmed progress while its underlying collector is stale or disabled. A selected character must remain connected with usable authorisation. An empty queue or no active Session has an idle state. A lost event connection displays **Source disconnected** for bound widgets instead of keeping a live-looking value.
+
+Kairo does not stream raw ESI snapshots, credentials or private notes. Explicitly selected notification fields can include a job ID (`{{job}}`) or killmail ID (`{{record}}`); review the saved wording before broadcasting.
 
 Binding a wallet, goal or session can intentionally reveal a financial value, objective title or session label. Saved custom text is also broadcast as written. OPSEC location-field redaction does not redact arbitrary text that you type into widgets.
 

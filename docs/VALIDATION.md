@@ -97,3 +97,9 @@ An isolated improvement does not automatically close an entire whitepaper findin
 Automated fixtures cannot establish the user's actual EVE SSO/scopes or structure permissions, Windows DPAPI under their login, rendered OBS/audio/scene/cover behavior, or long play-session coverage. The release handoff must identify which of these remain for in-app review. Missing provider observations, cache delays, incomplete public killmails and historical data gaps are product limits described in the user/domain guides.
 
 Historical version-by-version validation is retained in the [documentation archive](https://github.com/BunBajiro/kairo/tree/perf/rc16-checkpoint-v0.8.0/analysis/rc17/completion/c954-resumption/resumed/oct8/documentation-prune/originals/docs), with its original source/date limitations. It is not current RC17 acceptance.
+
+## Documentation phase verification
+
+The 0.8.0 documentation refresh is separate from build90 application acceptance. [The documentation receipt](DOCUMENTATION-VERIFICATION.json) records file/heading checks, shell syntax checks, executed local API/Registry examples, source/catalog checks and independent review. Runtime/frontend source, package versions, closed premerge findings and raw review evidence remain unchanged from the recovered baseline. The static-data importer has a documentation-only help correction, verified with unchanged executable Python AST.
+
+The guides are banked on the review branch. They are not retroactively included in the build90 download, and these documentation commits do not claim a new full runtime/browser/performance run. Historical measurements and environment-specific limits above retain their original meaning. Merge and release still require explicit approval.

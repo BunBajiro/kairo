@@ -2,8 +2,9 @@
 
 Usage: python scripts/import-universe.py /path/to/eve-online-static-data-BUILD-jsonl.zip
 An extracted JSONL directory is also accepted. No third-party Python packages needed.
-The archive's _sde record identifies its build and release date. Runtime never
-downloads this archive: a release includes the generated topology, detail shards and provenance.
+The archive's _sde record identifies its build and release date. This developer
+tool regenerates the bundled topology, detail shards and provenance. The standalone
+runtime uses its separate managed SDE updater; see docs/DATASETS.md.
 """
 import argparse
 import collections
