@@ -125,10 +125,10 @@ These are the calculations implemented in this candidate:
 | NPC station broker rate | 3% − 0.3 percentage points × Broker Relations level − 0.03 points × raw faction standing − 0.02 points × raw corporation standing |
 | Structure broker rate | Enter the actual total fee displayed in game, including the 0.5% SCC surcharge; NPC standings/Broker Relations do not reduce it |
 | Listing fee | Rate × listing value, with the 100 ISK minimum |
-| Repricing reserve | Chosen update count × the greater of 100 ISK and listing value × broker rate × (0.5 − 0.05 × Advanced Broker Relations level) |
+| Repricing reserve | Chosen update count × the greater of 100 ISK and listing value × broker rate × (0.5 − 0.06 × Advanced Broker Relations level) |
 | Hauling | Combined whole-item trips × the entered cost per round trip |
 
-The repricing allowance models same-price or downward updates. A future upward price change or additional updates can incur further fees. Sales tax is charged on sale; the initial capital figure includes purchases, listing fees and hauling. Estimated net additionally subtracts sales tax and the repricing reserve. Saved plans retain these assumptions with the quoted prices and timestamps.
+The repricing allowance models same-price or downward updates. Advanced Broker Relations raises the standard 50% relist discount by six percentage points per active skill level, reaching 80% at level V; CCP made this [permanent change in July 2021](https://www.eveonline.com/news/view/the-grand-heist-now-live). A future upward price change or additional updates can incur further fees. Sales tax is charged on sale; the initial capital figure includes purchases, listing fees and hauling. Estimated net additionally subtracts sales tax and the repricing reserve. Saved plans retain these assumptions with the quoted prices and timestamps; applying a corrected fee calculation does not rewrite an older saved quote. Use it as a draft and save again to obtain a current quote.
 
 ## Save and reuse plans
 

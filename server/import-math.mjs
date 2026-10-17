@@ -37,7 +37,9 @@ export function tradingRates({accounting,brokerRelations,advancedBrokerRelations
  for(const n of [accounting,brokerRelations,advancedBrokerRelations])if(!Number.isInteger(n)||n<0||n>5)throw new Error('Trading skill level is unavailable.');
  for(const n of [faction,corporation])if(!Number.isFinite(n)||n< -10||n>10)throw new Error('Trading standing is unavailable.');
  if(kind==='structure'&&(!Number.isFinite(structureBroker)||structureBroker<.5||structureBroker>50))throw new Error('Enter the total broker fee shown at this structure, including the SCC surcharge.');
- return {salesTax:.075*(1-.11*accounting),broker:kind==='structure'?structureBroker/100:.03-.003*brokerRelations-.0003*faction-.0002*corporation,relistDiscount:.5+.05*advancedBrokerRelations,buyTax:0};
+ // CCP's permanent 2021-07-27 change grants six discount points per level:
+ // https://www.eveonline.com/news/view/the-grand-heist-now-live
+ return {salesTax:.075*(1-.11*accounting),broker:kind==='structure'?structureBroker/100:.03-.003*brokerRelations-.0003*faction-.0002*corporation,relistDiscount:.5+.06*advancedBrokerRelations,buyTax:0};
 }
 // EVE prices have four significant figures, with a minimum tick of 0.01 ISK.
 export function marketPrice(value,up=false){if(!Number.isFinite(value)||value<=0)return 0;const tick=Math.max(.01,10**(Math.floor(Math.log10(value))-3));return Number(((up?Math.ceil(value/tick-1e-8):Math.floor(value/tick+1e-8))*tick).toFixed(2));}
