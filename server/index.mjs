@@ -28,6 +28,7 @@ import {getSystem,journeyData,savePlaceNote,setJourneyConnection} from './places
 import {listGoals,goalSourceOptions,lookupGoalType} from './goals.mjs';
 import {createDatasetService} from './datasets.mjs';
 import {activeDatasetDirectory, defaultDataDirectory} from './dataset-paths.mjs';
+import {assertSupportedRuntime} from './runtime-version.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** Exact loopback Host allowlist, including port; not a DNS-resolution check. */
 export function validHost(host, port) { return host === `127.0.0.1:${port}` || host === `localhost:${port}`; }
@@ -46,6 +47,7 @@ export function safeEqual(a, b) { return typeof a === 'string' && typeof b === '
  * The caller must await the returned idempotent close before replacing the runtime.
  */
 export async function startKairo(options = {}) {
+    assertSupportedRuntime();
     const port = options.port ?? Number(process.env.KAIRO_PORT || 4380);
     const streamPort = options.streamPort ?? Number(process.env.KAIRO_STREAM_PORT || port + 1);
     if (!Number.isInteger(port) || !Number.isInteger(streamPort) || port < 1024 || port > 65535 || streamPort < 1024 || streamPort > 65535 || port === streamPort)

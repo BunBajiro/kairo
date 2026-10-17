@@ -5,12 +5,12 @@ setlocal
 cd /d "%~dp0"
 where node >nul 2>nul
 if errorlevel 1 (
-  echo Kairo needs Node.js 24 or newer.
+  echo Kairo needs the current Node.js 24 LTS, version 24.21.0 or newer.
   echo Install the Windows LTS version from https://nodejs.org/ then run this file again.
   pause
   exit /b 1
 )
-node -e "if(Number(process.versions.node.split('.')[0])<24){console.error('Please install Node.js 24 or newer from https://nodejs.org/');process.exit(1)}"
+node -e "import('./server/runtime-version.mjs').then(m=>m.assertSupportedRuntime()).catch(e=>{console.error(e.message);process.exitCode=1})"
 if errorlevel 1 (
   pause
   exit /b 1

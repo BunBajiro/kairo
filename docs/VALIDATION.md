@@ -6,7 +6,7 @@ The completed [source documentation](SOURCE-DOCUMENTATION-WORK.md) and [manual r
 
 ## Reproduce source checks
 
-Use Node.js 24+ and the repository's locked toolchain. Source builds use Bash and GNU timeout (Linux/WSL); compiled packages need neither an install nor a build to run.
+Use current Node.js 24 LTS (24.21.0 minimum) and the repository's locked toolchain. Source builds use Bash and GNU timeout (Linux/WSL); compiled packages need neither an install nor a build to run.
 
 ```sh
 npm run install:ci

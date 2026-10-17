@@ -8,7 +8,7 @@ For **0.8.0-rc.17**, start with the visible state and the owning feature. Repeat
 
 | Symptom | Meaning and action |
 | --- | --- |
-| Launcher asks for Node.js | Install Node.js 24+ and reopen the launcher. Check `node --version` in a new terminal if an older installation remains on PATH. |
+| Launcher asks for Node.js | Install current Node.js 24 LTS (24.21.0 minimum) and reopen the launcher. Check `node --version` in a new terminal if an older installation remains on PATH. |
 | Missing page/compiled files after downloading source | Use the designated compiled ZIP, or follow [the source build workflow](DEVELOPMENT.md). Extract every package file into one folder. |
 | Browser did not open | Keep the launcher running and open `http://127.0.0.1:4380` (or your configured dashboard port). Read the launcher error if startup stopped. |
 | “Kairo is already running…” | Open the existing dashboard or stop its launcher before starting another instance. Another process may occupy a port. Do not delete `datasets/runtime-lock.sqlite`; its lease is released by process exit. |

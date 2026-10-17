@@ -6,7 +6,7 @@ This guide covers the **0.8.0 feature set in candidate `0.8.0-rc.17`**. Kairo ru
 
 ## Requirements and package choice
 
-- **Node.js 24 or newer**, available from [nodejs.org](https://nodejs.org/). The Windows launcher checks the installed version.
+- **Current Node.js 24 LTS** (24.21.0 minimum), available from [nodejs.org](https://nodejs.org/). Startup checks the installed runtime before opening your profile.
 - A fully extracted application folder and writable local data directory. Extract the complete package; do not run it inside the ZIP.
 - Windows is the primary platform. Linux/macOS can run the shell launcher, but use a local credential key rather than Windows account protection. Source development has a separate Linux/WSL toolchain described in [Development](DEVELOPMENT.md).
 - Chrome and Firefox are the required browser targets. Their actual automated coverage and environment limits are listed in [Validation](VALIDATION.md#browser-compatibility).

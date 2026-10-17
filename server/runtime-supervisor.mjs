@@ -8,6 +8,7 @@ import { fork, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { defaultDataDirectory } from './dataset-paths.mjs';
 import { acquireRuntimeLock } from './runtime-lock.mjs';
+import { assertSupportedRuntime } from './runtime-version.mjs';
 
 const childFile = fileURLToPath(new URL('./runtime-child.mjs', import.meta.url));
 function deferred() {
@@ -41,6 +42,7 @@ function launchBrowser(origin) {
  * by default and, when enabled, opens only on the first successful activation.
  */
 export async function runKairoSupervisor(options = {}) {
+    assertSupportedRuntime();
     const dataDir = options.dataDir || defaultDataDirectory();
     // Acquire before even inspecting pending data: a second launch must never
     // clean a download or a generation belonging to the running application.

@@ -1,0 +1,108 @@
+{
+  "status": "independently_accepted_pending_banking_and_combined_acceptance",
+  "issue": "GHSA-rfgv-xxqx-mfg5: actual loopback OBS client crashes affected Node embedded Undici on unrequested WebSocket protocol",
+  "sources": [
+    "https://github.com/nodejs/undici/security/advisories/GHSA-rfgv-xxqx-mfg5",
+    "https://nodejs.org/en/blog/release/v24.21.0"
+  ],
+  "baseline": {
+    "node": "24.19.0",
+    "undici": "7.29.0",
+    "tests": 3,
+    "pass": 0,
+    "fail": 3,
+    "source_scope": "Before runtime prerequisite guard changes; other final-audit workspace changes were present.",
+    "harness_note": "An earlier launcher probe used eval and inherited eval arguments in its child. The retained baseline uses the real launcher with a version-only import preload."
+  },
+  "fixed": {
+    "node": "24.21.0",
+    "undici": "7.29.1",
+    "command": "node --test tests/kairo/runtime-version.test.mjs tests/kairo/runtime-supervisor.test.mjs tests/kairo/startup-rollback.test.mjs tests/kairo/obs.test.mjs",
+    "tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "added_boundary_control": "One version-policy table test was added after the three initial regression controls."
+  },
+  "actual_obsolete_node_guard": {
+    "node": "24.19.0",
+    "undici": "7.29.0",
+    "exit_code": 1,
+    "profile_created": false,
+    "stderr": "Kairo needs Node.js 24.21.0 or newer with a patched WebSocket runtime. Install the current Node.js 24 LTS from https://nodejs.org/ (found Node 24.19.0, Undici 7.29.0).\n"
+  },
+  "node_binary": {
+    "source": "https://nodejs.org/dist/v24.21.0/node-v24.21.0-linux-x64.tar.xz",
+    "sha256": "fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6",
+    "checksum_source": "https://nodejs.org/dist/v24.21.0/SHASUMS256.txt",
+    "runtime": {
+      "node": "v24.21.0",
+      "undici": "7.29.1",
+      "execPath": "/workspace/scratch/2aef5a8d9ec4/node-runtime-review/node-v24.21.0-linux-x64/bin/node"
+    }
+  },
+  "files": [
+    {
+      "path": "server/runtime-version.mjs",
+      "sha256": "76322cf323720c204261d897d29cad49a3bf889523c19be8cc8de46cc3e70b39"
+    },
+    {
+      "path": "server/runtime-supervisor.mjs",
+      "sha256": "89b0f56a5b921e472da22b5e2b571e48d525707ffc77977c2eb60577da371b85"
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "04b2ce7df34dd5ec1ee19618ac1f38fa35353ee0f7bef0fd1bd72074a0790ea0"
+    },
+    {
+      "path": "START_KAIRO.bat",
+      "sha256": "0adfd1549c7c061a54e1d1f53d3e0f78336b520fc9f0ea2569fa9d224269c906"
+    },
+    {
+      "path": "tests/kairo/runtime-version.test.mjs",
+      "sha256": "14dedfe219169c27877c159103647e521372817c55aa6d70be49153611c872da"
+    },
+    {
+      "path": "start-kairo.sh",
+      "sha256": "71cd169f73466a36c053329f5ab39bef7ee13de85e08d1b96ce2166b54899148"
+    }
+  ],
+  "logs": [
+    {
+      "path": "docs/final-audit/evidence/runtime-version-before.txt",
+      "sha256": "8340428d762cbb67891b15ed7313bf2bd55343fee17d6f1c82e7c1d41a8e5fce"
+    },
+    {
+      "path": "docs/final-audit/evidence/runtime-version-fixed.txt",
+      "sha256": "4c327d9645da530e85a8ce949a9e60af6a45c08567b4a7c8f45048b931d01910"
+    }
+  ],
+  "limits": [
+    "Synthetic loopback OBS handshake; no live OBS application or Windows launcher execution.",
+    "No application WebSocket replacement or new runtime npm dependency.",
+    "Numeric Node floor and patched embedded Undici checked before lease/database access; newer Node majors with affected embedded versions reject.",
+    "Combined build/browser/package acceptance remains separate."
+  ],
+  "actual_obsolete_shell_launcher": {
+    "exit_code": 1,
+    "profile_created": false,
+    "stderr": "Kairo needs Node.js 24.21.0 or newer with a patched WebSocket runtime. Install the current Node.js 24 LTS from https://nodejs.org/ (found Node 24.19.0, Undici 7.29.0).\n"
+  },
+  "independent_review": {
+    "reviewer": "runtime_data",
+    "disposition": "accepted",
+    "tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "log_sha256": "71cf7e66a405081bb68fa86233fabaf459620f249b36f588faf3039596d108a1",
+    "checks": [
+      "Actual old-Node OBS child crash independently reproduced.",
+      "Actual old-Node Node entrypoint and POSIX launcher reject without profile creation.",
+      "Official Node tarball checksum independently verified.",
+      "Windows launcher source reviewed; not executed."
+    ]
+  }
+}
