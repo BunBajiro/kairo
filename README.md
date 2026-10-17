@@ -2,7 +2,7 @@
 
 Kairo is a local EVE Online workspace for connected pilots, market research, operations and streaming. It brings character snapshots, trade planning, maps, Session reports and personal goals together, with a separate transparent output for OBS.
 
-**This documentation describes the 0.8.0 feature set. The current candidate is `0.8.0-rc.17`, awaiting review; 0.8.0 has not been released.** [Verified build90 and download](docs/PREMERGE-BUG-REVIEW.md#current-verified-candidate) · [Validation and environment limits](docs/VALIDATION.md) · [Documentation work](docs/DOCUMENTATION-WORK.md).
+**This documentation describes the 0.8.0 feature set. The current candidate is `0.8.0-rc.17`, awaiting review; 0.8.0 has not been released.** [Verified review build and download](docs/REVIEW-BUILD.md) · [Validation and environment limits](docs/VALIDATION.md) · [Documentation work](docs/DOCUMENTATION-WORK.md).
 
 ## Start here
 

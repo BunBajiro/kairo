@@ -12,7 +12,7 @@ This guide covers the **0.8.0 feature set in candidate `0.8.0-rc.17`**. Kairo ru
 - Chrome and Firefox are the required browser targets. Their actual automated coverage and environment limits are listed in [Validation](VALIDATION.md#browser-compatibility).
 - OBS/Streamlabs is optional and needed only for broadcasting. Direct scene/input automation requires an OBS Studio-compatible WebSocket 5 server; a browser source alone needs no direct OBS connection.
 
-Use the [designated build90 download](PREMERGE-BUG-REVIEW.md#current-verified-candidate) for this review. That artifact is scheduled to expire on **14 November 2026**. The [test-build workflow](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml) can contain failed or intermediate builds; newest does not automatically mean accepted. [GitHub Releases](https://github.com/BunBajiro/kairo/releases) contains earlier stable releases, not a released 0.8.0.
+Use the [designated review build](REVIEW-BUILD.md) for this review. That handoff records the exact verified download and its expiry. The [test-build workflow](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml) can contain failed or intermediate builds; newest does not automatically mean accepted. [GitHub Releases](https://github.com/BunBajiro/kairo/releases) contains earlier stable releases, not a released 0.8.0.
 
 The compiled application ZIP includes the frontend and runtime. **No `npm install` or local build is needed to run it.** GitHub's source-code archives are different and require the developer workflow.
 

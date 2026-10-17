@@ -1,6 +1,6 @@
 # Kairo documentation
 
-These guides describe the **0.8.0 feature set in candidate `0.8.0-rc.17`**. They describe implemented behaviour, not a stable-release promise. For the exact tested download and outstanding environment checks, see [Validation](VALIDATION.md) and the [completed premerge review](PREMERGE-BUG-REVIEW.md#current-verified-candidate).
+These guides describe the **0.8.0 feature set in candidate `0.8.0-rc.17`**. They describe implemented behaviour, not a stable-release promise. For the exact tested download and outstanding environment checks, see the [current review build](REVIEW-BUILD.md) and [Validation](VALIDATION.md). The [completed premerge review](PREMERGE-BUG-REVIEW.md) preserves the original bug-review evidence.
 
 ## For users
 
@@ -49,4 +49,4 @@ Current source, configuration and behavioural tests define implementation. Docum
 - [Changelog](../CHANGELOG.md): release history, distinct from current operating instructions.
 - [Third-party notices](THIRD-PARTY-NOTICES.md): attribution and bundled reference terms.
 
-The build90 ZIP contains the documentation at its source commit. These updated guides are banked separately on the review branch until a later reviewed package includes them. Documentation completion does not change application version, runtime acceptance or merge/release authority.
+Build91 includes the refreshed guides and source comments at its tested source commit. The [current handoff](REVIEW-BUILD.md) records its exact package, verification and the distinction between packaged documentation and later branch updates. Documentation completion does not change application version or merge/release authority.

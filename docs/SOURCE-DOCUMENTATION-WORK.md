@@ -34,7 +34,7 @@ The checkpoints below distinguish pushed work from their validation state. Autho
 - `528663c164af47b0b406f0f182c6299f2fb2df40`: foundation contracts pushed and fetched back with identical Git tree; syntax/AST checks passed at banking, then independent review accepted with one later wording refinement.
 - `b24948b04828b73b7a47b703d6ff18f821aafeeb`: completed source pass, resolved independent reviews and verification receipt pushed; fetched tree `f4f2ce6e44c1da83e3947e1c414c355ac81d6753` matches the validated local tree exactly.
 
-No new runtime/browser/performance acceptance is claimed. Build90 remains the verified application download; neither the refreshed manuals nor this phase's comments are retroactively added to that ZIP. Windows/DPAPI, live EVE permissions/SSO, actual OBS output and extended play retain the limits in [Validation](VALIDATION.md).
+At completion of this documentation phase, no new runtime/browser/performance acceptance was claimed. Build90 remained the verified application download then; neither the refreshed manuals nor this phase's comments were retroactively added to that ZIP. Windows/DPAPI, live EVE permissions/SSO, actual OBS output and extended play retain the limits in [Validation](VALIDATION.md). Subsequent consolidation is recorded separately below.
 
 ## Coverage and independent review
 
@@ -52,4 +52,10 @@ The inventory accounts for all **575 baseline tracked paths**. It distinguishes 
 
 Parser preservation is independently reviewed too. It compares syntax trees and printed executable structure, plus parsed compiler directives and tooling-sensitive annotations; Python retains complete AST including docstrings, CSS uses PostCSS nodes, and shell/launcher changes preserve the exact original body with only header comments inserted. The [verification receipt](SOURCE-DOCUMENTATION-VERIFICATION.json) records final results and source identities. New prose examples are explanatory contracts; no new executable example or API was introduced.
 
-The existing type check and fresh build passed. Two focused existing helper/model/renderer sets passed (129 and 90 tests, 219 total); these are scoped Node checks, not new browser runs or a rerun of all 1,215 runtime tests. No timing comparison, new application package or broader acceptance claim was made.
+The existing type check and fresh build passed. Two focused existing helper/model/renderer sets passed (129 and 90 tests, 219 total); these are scoped Node checks, not new browser runs or a rerun of all 1,215 runtime tests. During this documentation phase, no timing comparison, new application package or broader acceptance claim was made.
+
+## Post-phase consolidated review build
+
+After this phase, Bun authorised Build91 to package the reviewed application together with the completed manuals and source comments. Its tested source is `99b8b0a19ab4e098cf34dcf051024ef7f97c6041`; the [current review handoff](REVIEW-BUILD.md) records the accepted download and separate verification. Hosted packaged-runtime and browser checks, followed by independent downloaded-package verification, belong to that build's evidence; they do not alter the original phase receipts above. No new performance measurement or separate full source-runtime run is claimed.
+
+Build91 includes documentation at its tested source commit. This post-build handoff update and the new Build91 receipt are branch records, not additions to the already-created ZIP. The completed bug-review ledger, raw review evidence and earlier phase receipts remain unchanged. PR #12 remains draft, version remains `0.8.0-rc.17`, and no merge or release was performed.

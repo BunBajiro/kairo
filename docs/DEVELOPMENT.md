@@ -6,7 +6,7 @@ The current application is **`0.8.0-rc.17`**. Follow [AGENTS.md](../AGENTS.md) a
 
 ## Recover before changing anything
 
-Compare the actual branch head, PR and local `git status` with the relevant handoff. Preserve and reconcile workspace changes; never overwrite them merely because GitHub is newer, or assume an old workspace contains the accepted build. The [documentation ledger](DOCUMENTATION-WORK.md) identifies this phase; [premerge review](PREMERGE-BUG-REVIEW.md#current-verified-candidate) identifies build90. Bank useful checkpoints and record what is committed versus workspace-only.
+Compare the actual branch head, PR and local `git status` with the relevant handoff. Preserve and reconcile workspace changes; never overwrite them merely because GitHub is newer, or assume an old workspace contains the accepted build. The [current review handoff](REVIEW-BUILD.md) identifies the verified download and tested source. The [manual](DOCUMENTATION-WORK.md) and [source documentation](SOURCE-DOCUMENTATION-WORK.md) ledgers preserve their completed phases; [premerge review](PREMERGE-BUG-REVIEW.md) preserves build90's original bug-review acceptance. Bank useful checkpoints and record what is committed versus workspace-only.
 
 ```sh
 git status --short
@@ -85,7 +85,7 @@ node tests/premerge-pass4-navigation-ui.mjs
 
 The Playwright path is a placeholder for an actual installation. The workflow pins its tooling version and installs the matching Firefox binary; do not add it to application dependencies just to run a harness. Browser execution also requires an environment that permits local listeners/browser processes. If that capability is unavailable, use the authorised hosted gates and report that limitation; do not claim local browser execution.
 
-[Validation](VALIDATION.md#browser-compatibility) owns exact build90 scope and counts. Windows DPAPI, live EVE SSO/permissions, actual OBS scene/audio output and extended play remain environment-specific checks.
+[Validation](VALIDATION.md#browser-compatibility) describes the required browser scope and historical build90 coverage; the [current review handoff](REVIEW-BUILD.md) records Build91's actual results and counts. Windows DPAPI, live EVE SSO/permissions, actual OBS scene/audio output and extended play remain environment-specific checks.
 
 ## Package and verify
 
