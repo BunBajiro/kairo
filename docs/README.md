@@ -43,6 +43,7 @@ Current source, configuration and behavioural tests define implementation. Docum
 
 ## Release status, evidence and history
 
+- [Source documentation ledger](SOURCE-DOCUMENTATION-WORK.md): source contracts, coverage, exclusions and verification.
 - [Documentation work ledger](DOCUMENTATION-WORK.md): inventory, decisions, checkpoints and documentation verification.
 - [History and evidence index](history/README.md): completed premerge review, failed baselines, original performance measurements and superseded plans.
 - [Changelog](../CHANGELOG.md): release history, distinct from current operating instructions.
