@@ -1,0 +1,27 @@
+FF
+======================================================================
+FAIL: test_uncovered_dependency_notice_is_rejected (__main__.PackageReleaseTests.test_uncovered_dependency_notice_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 155, in test_uncovered_dependency_notice_is_rejected
+    self.assert_rejected('Missing full bundled license')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 58, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-loitkgq2/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26360518, "files": 599}
+
+
+======================================================================
+FAIL: test_empty_generated_notice_inventory_is_rejected (__main__.PackageReleaseTests.test_empty_generated_notice_inventory_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 166, in test_empty_generated_notice_inventory_is_rejected
+    self.assert_rejected('No bundled dependency license entries')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 58, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-65f9laui/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26360473, "files": 599}
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.152s
+
+FAILED (failures=2)

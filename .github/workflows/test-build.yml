@@ -338,6 +338,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Verify package input boundaries
+        run: python3 tests/package-release.test.py
+
       - name: Package the test build
         run: python3 scripts/package-release.py "$RUNNER_TEMP/Kairo-test-build.zip"
 

@@ -1,0 +1,16 @@
+F
+======================================================================
+FAIL: test_missing_bundled_notices_is_rejected_before_destination_creation (__main__.PackageReleaseTests.test_missing_bundled_notices_is_rejected_before_destination_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 132, in test_missing_bundled_notices_is_rejected_before_destination_creation
+    self.assert_rejected('bundled license')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 56, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-krwb9u0h/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26324052, "files": 585}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.928s
+
+FAILED (failures=1)

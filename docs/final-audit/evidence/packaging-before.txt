@@ -1,0 +1,77 @@
+F.FFFFFF.
+======================================================================
+FAIL: test_changed_tracked_source_is_rejected_before_destination_creation (__main__.PackageReleaseTests.test_changed_tracked_source_is_rejected_before_destination_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 124, in test_changed_tracked_source_is_rejected_before_destination_creation
+    self.assert_rejected('tracked changes')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 54, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-i6tr_a_9/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26311010, "files": 581}
+
+
+======================================================================
+FAIL: test_compiled_directory_symlink_is_rejected (__main__.PackageReleaseTests.test_compiled_directory_symlink_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 119, in test_compiled_directory_symlink_is_rejected
+    self.assert_rejected('symlink')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 55, in assert_rejected
+    self.assertIn(expected, result.stderr)
+AssertionError: 'symlink' not found in 'Traceback (most recent call last):\n  File "/tmp/kairo-package-test-yzuvh02g/source/scripts/package-release.py", line 34, in <module>\n    assert \'Kairo/\'+name in archive.namelist(),name\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: dist/client/index.html\n'
+
+======================================================================
+FAIL: test_compiled_file_symlink_is_rejected (__main__.PackageReleaseTests.test_compiled_file_symlink_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 113, in test_compiled_file_symlink_is_rejected
+    self.assert_rejected('symlink')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 54, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-u1c_sr4c/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26311163, "files": 582}
+
+
+======================================================================
+FAIL: test_deleted_tracked_source_is_rejected_before_destination_creation (__main__.PackageReleaseTests.test_deleted_tracked_source_is_rejected_before_destination_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 101, in test_deleted_tracked_source_is_rejected_before_destination_creation
+    self.assert_rejected('tracked changes')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 55, in assert_rejected
+    self.assertIn(expected, result.stderr)
+AssertionError: 'tracked changes' not found in 'Traceback (most recent call last):\n  File "/tmp/kairo-package-test-r125xjia/source/scripts/package-release.py", line 34, in <module>\n    assert \'Kairo/\'+name in archive.namelist(),name\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: server/start.mjs\n'
+
+======================================================================
+FAIL: test_local_ignored_and_untracked_source_files_are_not_distributed (__main__.PackageReleaseTests.test_local_ignored_and_untracked_source_files_are_not_distributed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 80, in test_local_ignored_and_untracked_source_files_are_not_distributed
+    self.assertFalse('Kairo/' + name in archive.namelist(), f'Local input leaked into archive: {name}')
+AssertionError: True is not false : Local input leaked into archive: local-secret.pem
+
+======================================================================
+FAIL: test_source_archive_without_git_checkout_is_rejected (__main__.PackageReleaseTests.test_source_archive_without_git_checkout_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 130, in test_source_archive_without_git_checkout_is_rejected
+    self.assert_rejected('Git checkout')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 54, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-bdxkwl0g/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26310991, "files": 581}
+
+
+======================================================================
+FAIL: test_tracked_source_symlink_is_rejected (__main__.PackageReleaseTests.test_tracked_source_symlink_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 108, in test_tracked_source_symlink_is_rejected
+    self.assert_rejected('symlink')
+  File "/workspace/scratch/2aef5a8d9ec4/kairo/tests/package-release.test.py", line 54, in assert_rejected
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+AssertionError: 0 == 0 : {"file": "/tmp/kairo-package-test-vpivedbp/Kairo-test.zip", "version": "0.8.0-rc.17", "bytes": 26311135, "files": 582}
+
+
+----------------------------------------------------------------------
+Ran 9 tests in 21.088s
+
+FAILED (failures=7)

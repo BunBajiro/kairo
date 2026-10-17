@@ -1,5 +1,30 @@
 # Third-party notices
 
+## Compiled frontend dependencies
+
+Every fresh frontend build emits `dist/client/.vite/license.md` from the exact
+modules bundled by the locked Vite toolchain. The distribution includes that file
+with each dependency's name, version, license identifier and available license
+text. The [frontend license supplement](../vendor/frontend-license-supplement.json)
+retains full upstream notices for four published packages that omit their license
+files, the two imported CSS packages, and Victory's vendored D3 components. Its
+records identify locked versions, retrieval sources and text digests. Packaging
+rejects a missing/empty generated inventory, an entry without full text or its
+reviewed supplement, and a supplemental version/content mismatch.
+
+This generated inventory belongs
+to its compiled build; regenerate it with `npm run build` after dependency or
+frontend changes.
+
+Vendored source assets retain their own notices:
+
+- `server/vendor/seek-bzip/LICENSE` covers the local bzip2 decoder.
+- `vendor/shadcn-tailwind-4.13.0.LICENSE.md` covers the vendored stylesheet.
+
+The data/reference attributions below are separate from the generated client
+inventory. Package metadata and third-party notices do not choose a license for
+Kairo's first-party source.
+
 ## Slazanger’s EVE Map Tool (SMT)
 
 Universe’s operational feature design and compatible Ansiblex interchange were studied against [SMT](https://github.com/Slazanger/SMT), commit `6b3b4c6a213a349549ef737c89584fc3f048033b`. Attributed static landmark, ice and historical invasion data adapted from that repository retain their original provenance. Kairo uses its own application, storage, service and rendering implementation.

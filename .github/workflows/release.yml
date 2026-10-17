@@ -81,6 +81,9 @@ jobs:
       - name: Build the application
         run: npm run build
 
+      - name: Verify package input boundaries
+        run: python3 tests/package-release.test.py
+
       - name: Package and extract the release
         env:
           KAIRO_VERSION: ${{ steps.release.outputs.version }}

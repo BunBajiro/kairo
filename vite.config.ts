@@ -47,6 +47,8 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    // Ship the exact bundled dependency license texts with the compiled client.
+    build: { license: true },
     server: {
       host: "127.0.0.1",
       allowedHosts: ["terminal.local"],

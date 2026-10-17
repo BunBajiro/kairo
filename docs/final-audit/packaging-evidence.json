@@ -1,0 +1,93 @@
+{
+  "phase": "Final audit packaging input boundaries and frontend notices",
+  "status": "workspace_corrected_pending_banking_and_combined_acceptance",
+  "reviewer": "docs_tests",
+  "baseline_packager_blob": "e532a66ca7663b84d6f1dad1f78ce46d10331ec0",
+  "commands": {
+    "regressions": "python3 tests/package-release.test.py",
+    "compile": "npm run build"
+  },
+  "baseline": {
+    "input_boundary_controls": 9,
+    "pass": 2,
+    "fail": 7,
+    "missing_notice_fails": 1,
+    "uncovered_or_empty_inventory_fails": 2,
+    "unreadable_client_subtree_fails": 1
+  },
+  "fixed": {
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "duration_seconds": 23.709,
+    "fresh_build_exit_code": 0
+  },
+  "current_files": [
+    {
+      "path": "scripts/package-release.py",
+      "sha256": "4f99e79eda78a2fddc03b5a8a39538bd475d27bd548e8672c4507b6a9fa7df5d"
+    },
+    {
+      "path": "tests/package-release.test.py",
+      "sha256": "6934873bac7a2931769ac5dbd83e7493f0110bc9023bde70bb0a7263566125fa"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "85583043fe9af445c986d8463d92eda3ae7191d57eef9193cb4d39a8b07c4f35"
+    },
+    {
+      "path": "vendor/frontend-license-supplement.json",
+      "sha256": "735bf26dd782e4a1fa6897b0b3ab0e651bebd3242732ce05aa9e9bff3bd464cf"
+    }
+  ],
+  "generated_notices": {
+    "path": "dist/client/.vite/license.md",
+    "sha256": "38a763d77841708185fda5fe089af472e04f9044f931f7d3e8a1385319ec7d68",
+    "bytes": 98132,
+    "entries": 85,
+    "entries_with_text": 81,
+    "entries_covered_by_supplement": 4,
+    "supplemental_locked_packages": 6,
+    "nested_victory_notices": 13
+  },
+  "logs": [
+    {
+      "path": "docs/final-audit/evidence/packaging-before.txt",
+      "sha256": "3431c94252dd202f894de6947cb233e248eeacd850d04043fed8e1c4dfce67a9"
+    },
+    {
+      "path": "docs/final-audit/evidence/packaging-after.txt",
+      "sha256": "aef7cef5ba144998ad73623c5825a4b5a335f5a2182dc4e4c97c567110262a50"
+    },
+    {
+      "path": "docs/final-audit/evidence/packaging-unreadable-before.txt",
+      "sha256": "88a653062e516913eabf8ba8dd72b95bb5fd53ea30613600fff441110f3b9071"
+    },
+    {
+      "path": "docs/final-audit/evidence/notices-before.txt",
+      "sha256": "337fe02aee70f03ee5dd87823bebbe2634b1348a186daa01e43827a157c37655"
+    },
+    {
+      "path": "docs/final-audit/evidence/notices-incomplete-before.txt",
+      "sha256": "3f675383e827553c9d63d7fcdc3378b84f1f268a54ccc8526f4a51f0d2369369"
+    },
+    {
+      "path": "docs/final-audit/evidence/packaging-notices-after.txt",
+      "sha256": "8b4ec5cc1e8a9ccf58e28349c194fd6df94772941ab8229efa681481fe982be1"
+    },
+    {
+      "path": "docs/final-audit/evidence/packaging-final.txt",
+      "sha256": "dced6c890b0364cfd02b068621007a8423b3d9313ac090e12be825482bce4fe2"
+    },
+    {
+      "path": "docs/final-audit/evidence/notices-build.txt",
+      "sha256": "8e6b97ff52cc978445100b84765dcaaecc265e60d706480fee552e339d11b3df"
+    }
+  ],
+  "scope_limits": [
+    "Synthetic packaging fixtures do not establish runnable application acceptance.",
+    "Fresh compiled-output/source binding is still the build and exact-candidate verification procedure.",
+    "Stable workflow was not invoked and its triggers/publishing behavior were not changed.",
+    "This does not select a first-party license or establish live-provider/Windows/OBS acceptance."
+  ]
+}
