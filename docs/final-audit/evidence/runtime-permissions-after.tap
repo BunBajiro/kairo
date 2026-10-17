@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: the launcher creates a private data root before opening its lease and database
+ok 1 - the launcher creates a private data root before opening its lease and database
+  ---
+  duration_ms: 142.295021
+  type: 'test'
+  ...
+# Subtest: a fresh store in an existing shared-readable directory never creates readable WAL sidecars
+ok 2 - a fresh store in an existing shared-readable directory never creates readable WAL sidecars
+  ---
+  duration_ms: 159.862914
+  type: 'test'
+  ...
+# Subtest: startup restricts old database and crash-retained sidecars while preserving committed records
+ok 3 - startup restricts old database and crash-retained sidecars while preserving committed records
+  ---
+  duration_ms: 161.12651
+  type: 'test'
+  ...
+# Subtest: startup fails closed when fchmodSync cannot restrict a private file
+ok 4 - startup fails closed when fchmodSync cannot restrict a private file
+  ---
+  duration_ms: 111.307694
+  type: 'test'
+  ...
+# Subtest: startup fails closed when chmodSync cannot restrict a private file
+ok 5 - startup fails closed when chmodSync cannot restrict a private file
+  ---
+  duration_ms: 96.36301
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 798.222501

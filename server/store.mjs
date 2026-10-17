@@ -5,7 +5,7 @@
  * ownership and docs/DATA-RETENTION.md for replaceable versus durable records.
  */
 import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync, chmodSync } from 'node:fs';
+import { mkdirSync, chmodSync, openSync, fchmodSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { compactHistoryCache } from './market-history-store.mjs';
@@ -21,7 +21,19 @@ import { compactHistoryCache } from './market-history-store.mjs';
  */
 export function openStore(dir) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
-    const db = new DatabaseSync(join(dir, 'kairo.sqlite'));
+    const databasePath = join(dir, 'kairo.sqlite');
+    // SQLite inherits the database mode when creating WAL/SHM. Restrict the
+    // database before SQLite opens it, and repair crash-retained sidecars from
+    // older installations without changing unrelated files or parent directories.
+    // POSIX permission failures must stop startup; Windows modes do not set ACLs.
+    const file = openSync(databasePath, 'a', 0o600);
+    try { try { fchmodSync(file, 0o600); } catch (error) { if (process.platform !== 'win32') throw error; } }
+    finally { closeSync(file); }
+    for (const suffix of ['-wal', '-shm']) {
+        try { chmodSync(databasePath + suffix, 0o600); }
+        catch (error) { if (error.code !== 'ENOENT' && process.platform !== 'win32') throw error; }
+    }
+    const db = new DatabaseSync(databasePath);
     try {
     db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000;
  CREATE TABLE IF NOT EXISTS migrations(id TEXT PRIMARY KEY, applied_at TEXT NOT NULL);
@@ -148,10 +160,6 @@ export function openStore(dir) {
             CREATE INDEX idx_market_jobs_running ON market_jobs(json_extract(body,'$.status')) WHERE json_extract(body,'$.status')='running';
             INSERT INTO migrations VALUES('cache-retention-v080',datetime('now')); COMMIT;`);
     }
-    try {
-        chmodSync(join(dir, 'kairo.sqlite'), 0o600);
-    }
-    catch { }
     const setting = db.prepare('SELECT value FROM settings WHERE key=?');
     const saveSetting = db.prepare('INSERT INTO settings VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value');
     const snapshot = db.prepare('SELECT body FROM snapshots WHERE character_id=? AND key=?');

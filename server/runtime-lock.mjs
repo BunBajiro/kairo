@@ -14,8 +14,12 @@ import { join } from 'node:path';
  * to bypass a holder: deleting its pathname is not releasing that process's lease.
  */
 export function acquireRuntimeLock(dataDir) {
+    // The launcher reaches this owner before Store. Create its data root with
+    // private permissions now; a later recursive mkdir cannot tighten an already
+    // created directory. Never chmod an existing user-configured directory.
+    mkdirSync(dataDir, { recursive: true, mode: 0o700 });
     const directory = join(dataDir, 'datasets');
-    mkdirSync(directory, { recursive: true });
+    mkdirSync(directory, { recursive: true, mode: 0o700 });
     const db = new DatabaseSync(join(directory, 'runtime-lock.sqlite'));
     try {
         db.exec('PRAGMA busy_timeout = 0; BEGIN IMMEDIATE;');
