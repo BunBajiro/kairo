@@ -1,8 +1,24 @@
+/**
+ * Opens the shared local SQLite store and applies core migrations before any
+ * service receives its handle. Domain owners add their own tables/markers; this
+ * is not the retained web scaffold's database. See docs/PERSISTENCE.md for table
+ * ownership and docs/DATA-RETENTION.md for replaceable versus durable records.
+ */
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { compactHistoryCache } from './market-history-store.mjs';
+/**
+ * Synchronously open/create kairo.sqlite with WAL, foreign keys and a 3-second
+ * busy timeout. Construction/migration failure closes the untransferred handle
+ * and rethrows the original error, attaching cleanupErrors when needed.
+ *
+ * The caller owns close() after all accepted work drains. Returned db access is
+ * shared: use service invariants and savepoints for nested atomic writes, never
+ * keep a transaction open across an await. JSON read/write failures propagate;
+ * this layer does not turn corrupt persisted data into empty successful results.
+ */
 export function openStore(dir) {
     mkdirSync(dir, { recursive: true, mode: 0o700 });
     const db = new DatabaseSync(join(dir, 'kairo.sqlite'));
@@ -66,6 +82,8 @@ export function openStore(dir) {
         CREATE INDEX idx_market_import_plans_hub ON market_import_plans(hub_id,updated DESC);
         INSERT INTO migrations VALUES('core-v6',datetime('now')); COMMIT; PRAGMA optimize;`);
     }
+    // One-time retirement of the old market representation, not routine startup
+    // cleanup. Preserve prior scan intent in the upgrade queue before clearing it.
     if (!db.prepare("SELECT id FROM migrations WHERE id='market-rebuild-v6'").get()) {
         const oldHubs=db.prepare('SELECT * FROM market_hubs WHERE enabled=1 AND last_scan IS NOT NULL').all();
         const queue=oldHubs.map(h=>{const s=JSON.parse(h.last_scan);return {hubId:h.id,mode:h.last_full_scan?'full':'quick',characterId:s.characterId||0};});
@@ -108,6 +126,8 @@ export function openStore(dir) {
         ALTER TABLE visits ADD COLUMN sovereignty_at_visit TEXT;
         INSERT INTO migrations VALUES('visits-sovereignty-v080',datetime('now')); COMMIT;`);
     }
+    // Seed membership once from legacy visits. New movement belongs to Sessions;
+    // retaining this table must not restart the retired lifetime movement logger.
     if (!db.prepare("SELECT id FROM migrations WHERE id='session-travel-v080'").get()) {
         db.exec('BEGIN IMMEDIATE');
         db.exec(`ALTER TABLE visits ADD COLUMN session_id TEXT;
@@ -148,11 +168,18 @@ export function openStore(dir) {
     const snapshotEpoch = randomUUID(), snapshotVersions = new Map();
     return {
         db,
+        /** Read JSON by namespaced key; fallback applies only to a missing row. */
         get(key, fallback) { const row = setting.get(key); return row ? JSON.parse(row.value) : fallback; },
+        /** Replace one JSON setting synchronously; callers own validation/atomic grouping. */
         set: (key, value) => saveSetting.run(key, JSON.stringify(value)),
+        /** Decode one sample or return null; id 0 is the shared public collection owner. */
         snapshot(id, key) { const row = snapshot.get(id, key); return row ? JSON.parse(row.body) : null; },
+        /** Read current SQL scheduling metadata only; missing rows return null. */
         snapshotMetadata: (id, key) => metadata.get(id, key) || null,
+        /** Opaque UI delivery token, not persisted freshness or a transaction version. */
         snapshotRevision: (id, key) => `${snapshotEpoch}:${id}:${key}:${snapshotVersions.get(id + ':' + key) || 0}`,
+        // Advance only after SQL succeeds. A surrounding rollback can leave an
+        // extra UI revision, which is harmless; consumers read the actual row.
         saveSnapshot(id, key, value) { const result = saveSnapshot.run(id, key, JSON.stringify(value)); const entry = id + ':' + key; snapshotVersions.set(entry, (snapshotVersions.get(entry) || 0) + 1); return result; },
         close: () => db.close(),
     };

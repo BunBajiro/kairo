@@ -1,13 +1,31 @@
+/**
+ * Private IPC adapter between the supervisor and one runtime generation. Each
+ * child has isolated module/static-index caches and uses the same durable data
+ * directory; browser sessions cross replacements in memory over IPC only.
+ * Lifecycle ordering: docs/ARCHITECTURE.md and docs/DATASETS.md.
+ */
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
-/** Runtime generations never share module caches or credentials on disk. */
+/**
+ * Install one child's lifecycle handlers and return its stop entrypoint.
+ * `start` admits startup once; `ready` means listeners opened, while the later
+ * `activated` message permits automatic dataset work only after parent commit.
+ * Parent disconnect/SIGINT/SIGTERM all request shutdown.
+ *
+ * stop() drains accepted startup and app.close() before acknowledging `stopped`.
+ * An update transfers browser sessions only after that drain. shutdownTimeout is
+ * milliseconds (30 seconds by default); cleanup failure/deadline exits nonzero
+ * without a successful handoff. channel/loadRuntime/exit are injectable for tests.
+ */
 export function runRuntimeChild({ channel = process, loadRuntime = () => import('./index.mjs'), exit = code => process.exit(code), shutdownTimeout = 30_000 } = {}) {
     let app, starting = false, stopping = false, activated = false, startup;
     const send = (message, callback) => {
         if (!channel.connected || typeof channel.send !== 'function') return callback?.();
         try { channel.send(message, callback || (() => {})); } catch { callback?.(); }
     };
+    // The first stop owns the drain. Duplicate signals return promptly; the parent
+    // waits for acknowledgment AND process exit rather than awaiting this twice.
     async function stop(reason = 'shutdown') {
         if (stopping) return;
         stopping = true;

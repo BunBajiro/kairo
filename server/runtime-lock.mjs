@@ -1,8 +1,18 @@
+/**
+ * Exclusive launcher lease for one data directory. This separate SQLite database
+ * protects generation cleanup as well as the runtime, before application Store
+ * construction. See docs/DATASETS.md for selection/activation ordering.
+ */
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-/** A process-scoped lease, released by SQLite even after a crash. Never delete it. */
+/**
+ * Acquire BEGIN IMMEDIATE without waiting; return an idempotent close() owner.
+ * Another holder throws EADDRINUSE; unrelated I/O/SQLite errors propagate.
+ * SQLite releases the lease on close or crash. Never delete runtime-lock.sqlite
+ * to bypass a holder: deleting its pathname is not releasing that process's lease.
+ */
 export function acquireRuntimeLock(dataDir) {
     const directory = join(dataDir, 'datasets');
     mkdirSync(directory, { recursive: true });

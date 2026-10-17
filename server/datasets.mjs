@@ -1,3 +1,9 @@
+/**
+ * Managed SDE preparation and durable generation selection. The supervisor owns
+ * the data-directory lease and activation; one child service owns checking,
+ * download/conversion and readiness notification. Never mutate the generation
+ * used by live readers. Lifecycle, storage and resource policy: docs/DATASETS.md.
+ */
 import { createReadStream, createWriteStream } from 'node:fs';
 import { mkdir, readFile, writeFile, rename, readdir, rm, stat, lstat } from 'node:fs/promises';
 import { join, resolve, basename } from 'node:path';
@@ -22,6 +28,8 @@ const rejectionPath = (root, directory) => join(root, `activation-rejected-${bas
 const archiveUrl = build => `https://developers.eveonline.com/static-data/tranquility/eve-online-static-data-${build}-jsonl.zip`;
 const readJson = async file => JSON.parse(await readFile(file, 'utf8'));
 async function optionalJson(file) { try { return await readJson(file); } catch (error) { if (error.code === 'ENOENT' || error instanceof SyntaxError) return null; throw error; } }
+// Publish a whole JSON document by same-directory rename. Callers decide whether
+// publication is a commit boundary; failure after it may need a durable rejection.
 async function atomicJson(file, value) {
   await mkdir(resolve(file, '..'), { recursive: true });
   const temporary = `${file}.${randomUUID()}.tmp`;
@@ -34,10 +42,13 @@ async function sha256(file) {
   return hash.digest('hex');
 }
 let bundledBaseline;
+// Older bundled releases may mix component builds. Use the newest component as
+// the floor so an older coherent download cannot downgrade official static data.
 function baselineBuild() {
   return bundledBaseline ||= Promise.all(['universe-provenance.json', 'market-categories.json', 'npc-market-owners.json'].map(name => readJson(join(BUNDLED, name))))
     .then(rows => Math.max(...rows.map(row => Number(row.build))));
 }
+/** Validate inventory, sizes and coherent build identity; full file hashing is opt-in. */
 async function validateDirectory(directory, { hashes = false, minimumBuild = 0 } = {}) {
   const manifest = await readJson(join(directory, 'manifest.json'));
   if (manifest.schema !== 1 || !Number.isSafeInteger(manifest.build) || manifest.build < minimumBuild || !Array.isArray(manifest.files)) throw new Error('Invalid or outdated SDE generation');
@@ -91,6 +102,13 @@ async function readCleanupWarning(root, now = Date.now) {
   catch (cause) { return { message: 'Dataset cleanup status could not be read. Check file permissions; the installed dataset remains available.', failedAt: iso(now()), count: 1,
     failures: [{ path: 'cleanup.json', code: cause?.code || 'CLEANUP_STATUS_FAILED', message: errorText(cause) }] }; }
 }
+/**
+ * Remove owned temporary/retired files, preserving `keep` generation basenames.
+ * An omitted paths list scans known updater patterns; explicit paths retry only
+ * that operation's files. Return/persist a bounded warning instead of invalidating
+ * an already committed generation when housekeeping fails. Rejection markers
+ * survive partial payload removal so a leftover UUID cannot become selectable.
+ */
 async function cleanup(root, keep = [], { remove = rm, paths, extraPaths = [], now = Date.now } = {}) {
   const safe = new Set(keep.map(directory => basename(directory)));
   const previous = await optionalJson(join(root, 'cleanup.json')).catch(() => null);
@@ -137,7 +155,13 @@ async function cleanup(root, keep = [], { remove = rm, paths, extraPaths = [], n
   return warning;
 }
 
-/** Select a complete generation before starting any consumers. The supervisor owns the directory lease. */
+/**
+ * Select before importing static readers, while the caller holds the supervisor
+ * lease. Prefer a newer valid pending generation (including checksum validation),
+ * otherwise valid active data, otherwise null for bundled fallback. Invalid and
+ * abandoned files are retired; unreadable active rejection state fails closed.
+ * Returned {directory, manifest, pending} is a selection, not an activation commit.
+ */
 export async function prepareDatasetRuntime(dataDir, maintenance = {}) {
   const root = rootFor(dataDir), minimumBuild = await baselineBuild();
   await mkdir(root, { recursive: true });
@@ -161,7 +185,13 @@ export async function prepareDatasetRuntime(dataDir, maintenance = {}) {
   return pending || active;
 }
 
-/** Publish only after the replacement core has reported ready, then retire all other downloaded versions. */
+/**
+ * Commit after replacement readiness, under the supervisor lease. Validate the
+ * selected managed directory and atomically replace active.json, then retire other
+ * downloaded generations/pending.json. Null is a no-op (bundled fallback).
+ * Before publication failures reject; afterward housekeeping failures become
+ * cleanupWarning and must not cause rollback to a possibly retired generation.
+ */
 export async function commitDatasetRuntime(dataDir, selected, maintenance = {}) {
   if (!selected) return;
   const root = rootFor(dataDir), directory = resolve(selected.directory);
@@ -177,6 +207,12 @@ export async function commitDatasetRuntime(dataDir, selected, maintenance = {}) 
   return { cleanupWarning: await cleanup(root, [directory], { ...maintenance, extraPaths: ['pending.json'] }) };
 }
 
+/**
+ * Reject a failed pending UUID before changing any pointer, then select the prior
+ * active generation or null for bundled data. Failed rejection persistence throws
+ * without claiming recovery. The external marker protects locked/partial payloads;
+ * manual retry must prepare a new UUID, even when retrying the same source build.
+ */
 export async function rollbackDatasetRuntime(dataDir, selected, maintenance = {}) {
   const root = rootFor(dataDir), minimumBuild = await baselineBuild();
   const directory = typeof selected?.directory === 'string' ? resolve(selected.directory) : '';
@@ -213,6 +249,13 @@ async function inventory(directory, manifest) {
     reference('points', 'Landmarks & historical references', 'SMT', points.metadata?.revision)];
 }
 
+/**
+ * Run buildSde off the runtime event loop and resolve its manifest only after
+ * actual worker exit. Progress resets the idle watchdog, never the total budget.
+ * Abort/watchdog failure terminates once and waits for exit before rejecting, so
+ * the caller can safely remove staging files. Worker errors retain their code;
+ * the V8 old-generation cap is separate from tracked external-memory budgets.
+ */
 export function workerBuild(workerData, { signal, onProgress, createWorker = (url, options) => new Worker(url, options), setTimer = setTimeout, clearTimer = clearTimeout } = {}) {
   return new Promise((resolveResult, reject) => {
     const limits = sdeLimits(workerData.limits);
@@ -270,6 +313,22 @@ function retryDelay(header, time) {
   return Number.isFinite(delay) ? Math.min(86_400_000, Math.max(CACHE_MIN, delay)) : 0;
 }
 
+/**
+ * Construct one child's updater; await ready before using initialized inventory.
+ * start() enables one startup/hourly deadline when automatic is true. Explicit
+ * check()/install() remain available when automatic is false. Injected now/timers
+ * use milliseconds; activeDirectory is the immutable selection used by this child.
+ *
+ * check({install:false}) checks only availability; install() adds manual installation
+ * intent. Overlapping callers share a flight and combine intent. They resolve a
+ * status DTO for ordinary provider/build failures; inspect phase/error rather than
+ * treating resolution as installation success. Initialization failures can reject.
+ *
+ * onChange receives status copies. onReady receives a verified pending selection,
+ * not an active generation, and is deliberately not awaited: its owner may close
+ * this service to replace the process. Rejection triggers activationFailed rollback.
+ * No setting save or unrelated service owns this preparation's cancellation.
+ */
 export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now, setTimer = setTimeout, clearTimer = clearTimeout,
   onChange = () => {}, onReady = () => {}, automatic = true, activeDirectory, build = workerBuild,
   limits: limitOverrides, readAvailable = availableDatasetBytes, remove = rm } = {}) {
@@ -279,6 +338,8 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
   let cleanupWarning = null, maintenanceAt = now();
   let phase = 'idle', progress = null, error = null, available = null, timer, flight, activationFlight, controller, closed = false, started = false;
   let wantsInstall = false, wantsManual = false, nextCheck = null, readySelection = null, activeManifest = null, startFlight;
+  // Status is advisory UI state. ready/restartRequired means prepared for this
+  // process's activation owner, not proof that active.json has already committed.
   const status = () => ({ phase, busy: phase !== 'ready' && (!!flight || ['checking', 'downloading', 'building'].includes(phase)), datasets: datasets.map(value => ({ ...value })),
     available: available && { ...available }, lastCheckedAt: cache.lastCheckedAt || null, nextCheckAt: iso(nextCheck), error,
     cleanupWarning: cleanupWarning && structuredClone(cleanupWarning),
@@ -310,6 +371,12 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
     timer = setTimer(() => { timer = null; nextCheck = null; void check({ install: true }).catch(() => {}); }, Math.max(0, nextCheck - now()));
     timer?.unref?.();
   }
+  /**
+   * Own archive/staging/final UUID through publication. Abort fences must straddle
+   * both renames: cancellation may arrive while the filesystem operation is still
+   * pending. Readiness is emitted only after validated pending.json publication;
+   * a cancelled published UUID receives an external marker before cleanup.
+   */
   async function download(candidate, signal) {
     const id = randomUUID(), archivePath = join(root, `download-${id}.zip`), outputDir = join(root, `staging-${id}`);
     let finalDirectory, pendingPublished = false;
@@ -450,6 +517,7 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
     })().finally(() => { flight = null; wantsInstall = false; wantsManual = false; emit(); });
     return flight;
   }
+  /** Record refused activation and retire its pending selection; recovery failure still rejects. */
   function activationFailed(message) {
     if (activationFlight) return activationFlight;
     if (closed) return Promise.resolve();
@@ -480,6 +548,11 @@ export function createDatasetService({ dataDir, fetcher = fetch, now = Date.now,
       .catch(cause => { error = errorText(cause); phase = 'error'; emit(); });
     return startFlight;
   }
+  /**
+   * Stop admission/scheduling, abort incomplete preparation and await owned work.
+   * A generation completed before close remains pending for the next supervised
+   * start; shutting down is not a request to retract a completed installation.
+   */
   async function close() {
     closed = true; if (timer) clearTimer(timer); timer = null; nextCheck = null;
     controller?.abort();

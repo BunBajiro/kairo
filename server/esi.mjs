@@ -1,3 +1,9 @@
+/**
+ * One runtime's ESI transport: private/public cache identity, shared requests,
+ * four network slots, priority and persisted provider cooldowns. Core owns module
+ * and scope admission; this layer owns transport/connection safety. See
+ * docs/ESI-POLLING.md for scheduling versus provider freshness and retry policy.
+ */
 import { createHash } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { createCacheRetention } from './cache-retention.mjs';
@@ -9,6 +15,11 @@ const transportHeaders = { Accept: 'application/json', 'Accept-Language': 'en', 
 const pacingOwner = Symbol('pacingOwner'), pacingStage = Symbol('pacingStage'), admissionCheck = Symbol('admissionCheck');
 const connectionOwner = Symbol('connectionOwner');
 
+/**
+ * Share one instance across collectors and on-demand consumers. Store/Auth remain
+ * caller-owned and must outlive close(), which refuses new public work and drains
+ * accepted request chains (including later pages, names and cache writes).
+ */
 export function createESI(store, auth, { fetcher = fetch } = {}) {
     const limits = store.get('esi:limits', {});
     const retention = createCacheRetention(store);
@@ -30,6 +41,8 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         for (const [key, until] of blocks) if (until <= Date.now()) blocks.delete(key);
         store.set('esi:limits', { errorUntil, blocks: [...blocks], groups: Object.fromEntries(routeGroups) });
     }
+    // Release hands its slot directly to a waiter, so admission never exceeds four.
+    // Priority affects queued dispatch, not an already running provider request.
     async function slot(priority) {
         if (active >= 4) await new Promise(r => (priority ? priorityWaiters : waiters).push(r));
         else active++;
@@ -81,7 +94,8 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         catch (error) { store.db.exec('ROLLBACK TO esi_names; RELEASE esi_names'); throw error; }
     }
-    // Public names only. Private structure names retain character cache keys.
+    // Fresh public names only; misses are omitted and no network work occurs.
+    // Private structure names retain character cache keys.
     function cachedNames(ids) {
         const out = {};
         for (const id of ids) {
@@ -90,6 +104,18 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         return out;
     }
+    /**
+     * Read an ESI path, including read-style POSTs such as /universe/names.
+     * `characterId: 0` is public; private callers supply the admitting pilot.
+     * `ttl` defaults to 300 seconds only when provider cache headers supply no expiry.
+     *
+     * Returns {data, updatedAt, expiresAt, headers, cached}, with ISO timestamps.
+     * Fresh cache reads retain observation time; 304 revalidation advances it.
+     * A failed refresh returns last-good data with stale/error/errorStatus/retryAt
+     * when available, otherwise rejects. Connection replacement always rejects;
+     * it must never recreate a purged cache or make old data usable by a new grant.
+     * Use mutate() for commands: this path deliberately caches and coalesces reads.
+     */
     async function request(path, options = {}) {
         options = withConnection(options);
         let { characterId = 0, method = 'GET', body, ttl = 300, priority = false } = options;
@@ -212,7 +238,15 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         inflight.set(flightKey, task);
         return task;
     }
-    /** An explicit command. Never cached, coalesced, or replayed after an uncertain network failure. */
+    /**
+     * Send an explicit private POST/PUT/DELETE/PATCH command (POST, priority by
+     * default). Never cache/coalesce it or replay an uncertain outcome. Only an
+     * explicit 401 permits one token refresh and resend on the same connection.
+     * Returns {data, status, updatedAt, cached:false}; data is null for an empty
+     * body, parsed JSON or otherwise text. Failure throws and may carry status,
+     * retryAt or uncertain:true; uncertainty means the provider may have applied it.
+     * Callers must not turn that marker into an automatic retry.
+     */
     async function mutate(path, { characterId, method = 'POST', body, priority = true } = {}) {
         if (typeof path !== 'string' || !path.startsWith('/') || path.startsWith('//') || path.includes('\\')) throw new Error('Invalid ESI path.');
         method = method.toUpperCase();
@@ -253,6 +287,12 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
             throw error;
         } finally { release?.(); }
     }
+    /**
+     * Sequentially concatenate array pages, capped at 250, under one connection.
+     * Return the earliest page expiry, latest retry deadline and any stale failure;
+     * `truncated` flags a larger advertised page count. A page failure with no cached
+     * fallback rejects the aggregate. Supply a base path without a page parameter.
+     */
     async function paged(path, options = {}) {
         options = withConnection(options);
         const first = await request(path + (path.includes('?') ? '&' : '?') + 'page=1', options);
@@ -267,6 +307,12 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         return { ...first, data, expiresAt, stale, error, errorStatus, retryAt, truncated: Number(first.headers['x-pages'] || 1) > pages };
     }
+    /**
+     * Resolve valid public IDs to an ID-to-name object, omitting unavailable names.
+     * Deduplicate IDs across overlapping calls and issue batches of at most 500.
+     * Provider failure is tolerated as missing display enrichment; never put private
+     * structure names here or infer authoritative absence from a missing result.
+     */
     async function names(ids, options = {}) {
         const unique = [...new Set(ids.filter(validId))].sort((a, b) => a - b), out = cachedNames(unique);
         const missing = unique.filter(id => !out[id] && !nameFlights.has(id)), waiting = [];
@@ -302,6 +348,13 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     // keeps its private request chain alive until all cache writes complete.
     return {
         request: (...args) => own(request, args), mutate: (...args) => own(mutate, args),
+        /**
+         * Return (path, options, checkAdmission) with one courtesy queue per call
+         * to paced(). spacingMs is milliseconds (default 250); warm/shared reads
+         * bypass waiting. The optional synchronous guard may throw on cancellation
+         * or lost access and is rechecked after waiting, without poisoning a shared
+         * flight. Injected now/wait must use the same millisecond clock.
+         */
         paced({ spacingMs = 250, now = Date.now, wait = delay } = {}) {
             if (closing) throw closedError();
             if (!Number.isFinite(spacingMs) || spacingMs < 0) throw new Error('Choose a valid ESI request spacing.');
@@ -312,7 +365,9 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         paged: (...args) => own(paged, args), names: (...args) => own(names, args),
         cachedNames(ids) { if (closing) throw closedError(); return cachedNames(ids); },
         clearAccessFailures(id) { if (closing) throw closedError(); return clearAccessFailures(id); },
+        // Idempotent drain; request failures belong to their original callers.
         close() { return closing ||= Promise.allSettled([...accepted]).then(() => {}); },
+        // Counters attribute transport work, not elapsed performance or freshness.
         health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters })
     };
 }

@@ -1,3 +1,8 @@
+/**
+ * Bounded ZIP/JSONL reader for official SDE conversion. Reads selected members
+ * without filesystem extraction; names, bounds, CRC and expanded sizes remain
+ * untrusted until checked. Updater lifecycle/resource policy: docs/DATASETS.md.
+ */
 import { open } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -22,7 +27,16 @@ async function readAt(file, size, position) {
   return bytes;
 }
 
-/** Seek to selected ZIP members; never extract paths supplied by an archive. */
+/**
+ * Open a seekable archive and return {rows, hashes, members, close}. rows(name)
+ * is an async iterator of JSON objects; blank lines are skipped. Fully consuming
+ * a member verifies its size/CRC and records its uncompressed SHA256 in hashes.
+ * Early iterator exit cleans streams but does not establish member integrity.
+ *
+ * Caller owns close() after all iterators settle. Abort and malformed ZIP/JSONL
+ * reject; only stored/deflated single-disk entries within fixed bounds are accepted.
+ * No member path is extracted or used as an output filename.
+ */
 export async function openSdeArchive(path, { signal } = {}) {
   signal?.throwIfAborted();
   const file = await open(path, 'r');
@@ -67,6 +81,8 @@ export async function openSdeArchive(path, { signal } = {}) {
     }
     if (cursor !== directory.length) fail('unexpected ZIP directory data');
     const hashes = {};
+    // Stream one member through integrity checks; do not materialize a full
+    // decompressed table or let an untrusted expanded size bypass the bound.
     async function* chunks(name) {
       signal?.throwIfAborted();
       const member = members.get(name);

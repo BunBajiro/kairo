@@ -1,3 +1,9 @@
+/**
+ * Convert one official SDE archive into a coherent immutable generation. The worker
+ * owns CPU-heavy parsing/compression; runtime readers consume compact indexes and
+ * seekable detail shards. Format/projection: docs/UNIVERSE-DATA.md. Installation,
+ * failure budgets and activation: docs/DATASETS.md.
+ */
 import { createReadStream } from 'node:fs';
 import { open, readFile, mkdir, mkdtemp, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -21,6 +27,8 @@ function position(record) {
   const p = record.position ?? { x: 0, y: 0, z: 0 };
   return { x: number(p.x, `position ${record._key}`), y: number(p.y, `position ${record._key}`), z: number(p.z, `position ${record._key}`) };
 }
+// Keep physical metres alongside display light-years on the XZ plane. Static
+// position is geometry only; it does not establish wormhole or cynosural access.
 const projected = record => { const p = position(record); return { ...p, map_x: p.x / LY, map_y: -p.z / LY }; };
 function roman(input) {
   let value = number(input, 'celestial index'), out = '';
@@ -36,7 +44,18 @@ async function sha256(path, signal) {
   return digest.digest('hex');
 }
 
-/** Build one complete generation. Called in a worker, never the core event loop. */
+/**
+ * Build into a dedicated staging directory and return a verified manifest. The
+ * positive expectedBuild must match archive metadata; references, counts, spool
+ * integrity and output hashes are checked before success. Output names are fixed
+ * locally and created exclusively. This writes no active/pending selection pointer.
+ *
+ * Called in a worker, never the core event loop. onProgress reports stage/count
+ * data for the parent watchdog. Abort/resource/format/write errors reject; created
+ * partial files and spool are removed after handles close. Cleanup errors attach
+ * to the primary failure, or reject an otherwise successful conversion. The caller
+ * still owns the staging directory and archive after this function settles.
+ */
 export async function buildSde({ archivePath, outputDir, expectedBuild, onProgress = () => {}, signal,
   limits: limitOverrides, readAvailable = availableDatasetBytes, openFile = open, remove = rm, memoryUsage = process.memoryUsage }) {
   const limits = sdeLimits(limitOverrides);
@@ -131,9 +150,14 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
       expectedCounts.set(sid, { star: 0, celestials: 0, stations: 0, stargates: 0 });
       systems.set(sid, system);
     }
+    // Spool details by sorted system buckets so only one bounded group is decoded
+    // at a time. Both total disk use and buffered/per-bucket bytes have hard limits;
+    // loading every celestial into a global object would defeat worker bounds.
     const buckets = Array.from({ length: Math.ceil(systems.size / BUCKET_SYSTEMS) }, (_, index) => ({
       path: join(spoolDirectory, `${index}.jsonl`), buffer: [], buffered: 0, bytes: 0, digest: createHash('sha256'), rows: 0,
     }));
+    // Account only completed writes; retain the handle until datasync/stat/close
+    // finish so cancellation cleanup cannot race an outstanding spool writer.
     async function flush(bucket) {
       if (!bucket.buffered) return;
       await requireDatasetSpace(outputDir, limits.reserveBytes + bucket.buffered, readAvailable);
@@ -266,6 +290,8 @@ export async function buildSde({ archivePath, outputDir, expectedBuild, onProgre
         Object.assign(systems.get(sid), { planet_count: kindCounts.planet, moon_count: kindCounts.moon, belt_count: kindCounts.asteroid_belt, station_count: detail.stations.length, gate_count: detail.stargates.length });
         celestialCount += detail.celestials.length; stationCount += detail.stations.length; gateCount += detail.stargates.length;
         const compressed = gzip(detail);
+        // Offsets address the logical concatenation of fixed-size shards; a gzip
+        // member may cross a shard boundary. Readers must preserve that contract.
         detailIndex[sid] = [detailBytes, compressed.length]; detailBytes += compressed.length; detailDigest.update(compressed);
         for (let cursor = 0; cursor < compressed.length;) {
           const amount = Math.min(SHARD_BYTES - shardLength, compressed.length - cursor);

@@ -1,10 +1,23 @@
-// Replaceable transport data and scan summaries only. Durable evidence has its
-// own owners and must never be purged merely because this cache grows.
+/**
+ * Bounded, opportunistic retention for replaceable transport data and scan
+ * summaries. Durable evidence has its own owners and must never be purged merely
+ * because this cache grows. Policy and exclusions: docs/DATA-RETENTION.md.
+ */
 export const CACHE_RETENTION_DAYS = 90;
 export const CACHE_MAINTENANCE_BATCH = 200;
 const DAY = 86400000, HOUR = 3600000, KEY = 'retention:transport:v080';
 const owners = new WeakMap();
 const eligible = key => /^(?:\d+:(?:GET|POST):\/|esi-name:\d+$|esi-retry:\d+:(?:GET|POST):\/|zkill:(?:query:|character:\d+:page:\d+$))/.test(key);
+/**
+ * Return the shared maintenance owner for this SQLite handle (first clock wins).
+ * `now` returns epoch milliseconds. touch(key) records use of an existing cache
+ * row, coalescing writes by UTC day; maintain() scans at most 200 candidates per
+ * hourly opportunity and reports {scanned, deleted}. Both are synchronous.
+ *
+ * The persisted cursor and deletions commit together. Expired, eligible entries
+ * need 90 days of inactivity plus installation grace; active retries/cooldowns
+ * retain last-good data. This owner creates no background timer and closes no DB.
+ */
 export function createCacheRetention(store, { now = Date.now } = {}) {
     const db = store.db;
     if (owners.has(db)) return owners.get(db);
@@ -58,11 +71,15 @@ export function createCacheRetention(store, { now = Date.now } = {}) {
     }
     const owner = { touch, maintain }; owners.set(db,owner); return owner;
 }
+/**
+ * Delete at most 200 terminal job summaries and return the count. Preserve the
+ * newest eight regardless of age, and up to 100 from the last 30 days. `now` is
+ * epoch milliseconds. Published books, active jobs and resume intent are separate.
+ */
 export function pruneMarketJobs(db, now = Date.now()) {
     const terminal = 'terminal=1';
-    // Keep eight visible summaries regardless of age and up to 100 within 30
-    // days. Only bounded identity/candidate slices are materialized. Running
-    // jobs, completed books and durable upgrade/resume settings are untouched.
+    // Seek the terminal partial index and materialize only bounded identities;
+    // a large unrelated nonterminal backlog must not make cleanup scan every job.
     const recent = db.prepare('SELECT rowid FROM market_jobs WHERE ' + terminal + ' ORDER BY rowid DESC LIMIT 100').all();
     if (recent.length <= 8) return 0;
     return Number(db.prepare(`DELETE FROM market_jobs WHERE rowid IN (

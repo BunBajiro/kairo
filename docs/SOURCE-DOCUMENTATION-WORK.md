@@ -13,7 +13,7 @@ On 17 October 2026 the clean workspace, remote branch and GitHub PR #12 agreed o
 | Area / author | Principal contracts | State |
 | --- | --- | --- |
 | Core / root | Composition, HTTP guards, accepted request draining, catalog/Registry extension contracts, semantic bus and SSE backpressure | Inventory complete; source review in progress |
-| Foundation / source_foundation | Startup/replacement, Auth/Vault, ESI pacing/cache/pagination, Store/migrations, dataset preparation/cancellation/rollback | Inventory complete; source review in progress |
+| Foundation / source_foundation | Startup/replacement, Auth/Vault, ESI pacing/cache/pagination, Store/migrations, dataset preparation/cancellation/rollback | Documentation and syntax/AST checks complete; independent review in progress |
 | Domains / source_domains | Markets/import assumptions and saved plans, Sessions/replay, Goal accounting, Stream/OBS/OPSEC, shared transport | Inventory complete; source review in progress |
 | Universe backend / source_universe_server | Scope/expiry, observed/inferred information, navigation and operations, request-local preparation, geometry | Inventory complete; source review in progress |
 | Universe frontend / source_universe_ui | Pilot/map ownership, effects/cleanup, drafts/saves, workers, clock/camera and projection bounds | Inventory complete; source review in progress |
@@ -28,6 +28,7 @@ Planned verification: parse changed JavaScript/TypeScript/JSX and compare execut
 
 All source edits are workspace-only until a checkpoint below confirms they were pushed. Authors do not commit shared work independently. The integration owner banks reviewed useful batches and verifies the remote head/tree. Behaviour corrections, if needed, require separate review and regression evidence; none is currently proposed.
 
-- Initial inventory checkpoint: this commit establishes the phase ledger and inventory; source documentation and validation remain in progress.
+- `1038033c49e6e15dcc4d7b40abb06ec63c8cfa5a`: inventory and phase instructions pushed; fetched back with identical Git tree.
+- Foundation checkpoint: this commit banks Auth/ESI/Store/dataset/supervisor contracts. Syntax and executable-AST comparison pass; independent accuracy/coverage review remains in progress.
 
 No new runtime/browser/performance acceptance is claimed. Build90 remains the verified application download; neither the refreshed manuals nor this phase's comments are retroactively added to that ZIP. Windows/DPAPI, live EVE permissions/SSO, actual OBS output and extended play retain the limits in [Validation](VALIDATION.md).

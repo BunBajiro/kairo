@@ -1,3 +1,9 @@
+/**
+ * Lean process owner for the launcher: acquire the exclusive data lease, select
+ * immutable static data, start one child, and replace it only after accepted work
+ * drains. No Core/static indexes are imported here. Lifecycle: docs/ARCHITECTURE.md;
+ * generation publication and rollback: docs/DATASETS.md.
+ */
 import { fork, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { defaultDataDirectory } from './dataset-paths.mjs';
@@ -23,7 +29,17 @@ function launchBrowser(origin) {
     browser.unref();
 }
 
-/** Owns the one active runtime; only this process can select/clean a generation. */
+/**
+ * Start the runtime and resolve {close, done} after activation. close() is an
+ * idempotent awaited shutdown; done resolves 0 on orderly completion or rejects on
+ * lifecycle failure. Keep the supervisor alive while done is pending.
+ *
+ * options.dataDir defaults to the platform directory; runtimeOptions go to the
+ * child, while storage/forkRuntime/acquireLock are lifecycle test seams. Default
+ * startup/shutdown deadlines are 60/30 seconds (options are milliseconds).
+ * manageProcess:false leaves signal handling to the caller. openBrowser is false
+ * by default and, when enabled, opens only on the first successful activation.
+ */
 export async function runKairoSupervisor(options = {}) {
     const dataDir = options.dataDir || defaultDataDirectory();
     // Acquire before even inspecting pending data: a second launch must never
@@ -57,6 +73,8 @@ export async function runKairoSupervisor(options = {}) {
             if (error && !record.stopping) record.ready.reject(error);
         });
     }
+    // Set selection before child imports. Browser cookies/CSRF travel only through
+    // private IPC, never argv, environment variables, dataset files or log output.
     function spawnGeneration(selected, initialSessions, datasetRecovery) {
         const env = { ...process.env, KAIRO_DATA_DIR: dataDir, KAIRO_RUNTIME_CHILD: '1' };
         if (selected?.directory) env.KAIRO_SDE_DIRECTORY = selected.directory;
@@ -109,6 +127,9 @@ export async function runKairoSupervisor(options = {}) {
         if (record) record.stopPromise = stopping;
         return stopping;
     }
+    // A saved acknowledgment is insufficient if the process still owns resources.
+    // Require both acknowledgment and exit before another child can start; forced
+    // termination on deadline is a failed handoff, never a successful save.
     async function stopOnce(record, reason) {
         if (!record || record.exited) return record?.sessions || [];
         record.stopping = true;
@@ -119,6 +140,8 @@ export async function runKairoSupervisor(options = {}) {
             return sessions;
         } catch (error) { await terminate(record); throw error; }
     }
+    // Child readiness precedes the durable pointer commit. Automatic updater work
+    // starts only after commit, so it cannot clean or supersede its own activation.
     async function activate(selected, sessions = [], recovery = null) {
         const record = spawnGeneration(selected, sessions, recovery);
         let committed = false;
@@ -142,6 +165,8 @@ export async function runKairoSupervisor(options = {}) {
             await terminate(record); throw error;
         }
     }
+    // Exactly one fallback attempt for an uncommitted pending generation. Do not
+    // loop on unexpected exits or roll back after the old payload can be retired.
     async function activateWithRecovery(selected, sessions) {
         try { return await activate(selected, sessions); }
         catch (error) {
@@ -172,6 +197,8 @@ export async function runKairoSupervisor(options = {}) {
         })();
         return updateTask;
     }
+    // Stop promptly, then join startup/update ownership: either may have crossed
+    // an await and installed a different current child before observing closing.
     async function close() {
         if (closingPromise) return closingPromise;
         closing = true;
