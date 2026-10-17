@@ -86,3 +86,70 @@ export async function studioSavedNavigation({page,app,check,frame}){
   check('Navigation adds no speculative stream writes',writes.length,4);
  }finally{await page.unroute(app.origin+'/api/stream',handler);}
 }
+
+// Accepted layout ownership also crosses an in-flight acknowledgement and a
+// stale bootstrap. Unrelated bootstrap metadata must remain publishable.
+export async function studioAcceptedOwnership({page,app,check,frame,deferred}){
+ const config=defaultStream();config.elements=[{id:'audit-owner',kind:'text',name:'Audit owner',text:'Owner initial',label:'',x:80,y:80,width:400,height:100,fontSize:24,opacity:.7,color:'#97ebce',visible:true,binding:'none'}];app.core.stream.save(config);
+ const gates=new Set(),writes=[];let held=null,bootstrapHeld=null;
+ const wait=promise=>Promise.race([promise,page.waitForTimeout(10000).then(()=>{throw new Error('Studio accepted-owner gate did not complete.');})]);
+ const hold=(text,before=false)=>{const gate={text,before,seen:deferred(),release:deferred(),done:deferred(),entered:false};gates.add(gate);held=gate;return gate;};
+ const writeHandler=async route=>{
+  if(route.request().method()!=='PUT')return route.fallback();const body=route.request().postDataJSON();writes.push(body.elements[0].text);
+  const gate=held;if(!gate)return route.continue();held=null;gate.entered=true;
+  try{if(gate.before){gate.seen.resolve();await gate.release.promise;}const response=await route.fetch();assert.equal(response.status(),200);if(!gate.before){gate.seen.resolve();await gate.release.promise;}await route.fulfill({response});}
+  finally{gate.done.resolve();}
+ };
+ const bootstrapHandler=async route=>{
+  const gate=bootstrapHeld;if(!gate)return route.fallback();bootstrapHeld=null;gate.entered=true;
+  try{const response=await route.fetch();assert.equal(response.status(),200);gate.body=await response.json();gate.seen.resolve();await gate.release.promise;await route.fulfill({response});}
+  finally{gate.done.resolve();}
+ };
+ await page.route(app.origin+'/api/stream',writeHandler);await page.route(app.origin+'/api/bootstrap',bootstrapHandler);
+ const editor=page.locator('.inspector textarea'),save=page.locator('.studio-toolbar').getByRole('button',{name:/^Save changes$|^Saving…$/});
+ const open=async()=>{await navigate(page,'studio');await page.getByRole('button',{name:'Audit owner',exact:true}).click();await editor.waitFor();};
+ const away=async()=>{await navigate(page,'overview');await page.getByRole('heading',{name:'Command centre',exact:true}).waitFor();};
+ const settle=async()=>{await page.waitForFunction(()=>![...document.querySelectorAll('.studio-toolbar button')].some(button=>button.textContent==='Saving…'));await frame();};
+ const release=async gate=>{const finished=page.waitForEvent('requestfinished',{predicate:req=>new URL(req.url()).pathname==='/api/stream'&&req.method()==='PUT'&&req.postDataJSON().elements[0].text===gate.text});gate.release.resolve();await wait(gate.done.promise);await finished;await frame();};
+ try{
+  await ready(page,app,'studio');await page.getByRole('button',{name:'Audit owner',exact:true}).click();
+  await editor.fill('Accepted while editor away');const clean=hold('Accepted while editor away');await save.click();await wait(clean.seen.promise);
+  assert.equal(app.core.stream.config().elements[0].text,clean.text,'Held acknowledgement follows real persistence');
+  await away();await open();await release(clean);
+  check('An accepted earlier save refreshes a clean Studio remount',await editor.inputValue(),clean.text);
+  check('The clean remount acknowledgement remains clean',await save.isDisabled(),true);
+
+  await editor.fill('Accepted before newer remount draft');const dirty=hold('Accepted before newer remount draft');await save.click();await wait(dirty.seen.promise);
+  await away();await open();await editor.fill('Newer independent draft');await release(dirty);
+  check('An accepted earlier save cannot replace a dirty remount draft',await editor.inputValue(),'Newer independent draft');
+  check('The newer remount draft remains explicitly saveable',await save.isEnabled(),true);
+  let response=page.waitForResponse(value=>put(value,'stream'));await save.click();assert.equal((await response).status(),200);await settle();
+  check('Explicit save persists the independent newer draft',app.core.stream.config().elements[0].text,'Newer independent draft');
+
+  await editor.fill('Older accepted transport');const transport=hold('Older accepted transport',true);await save.click();await wait(transport.seen.promise);
+  check('A held Stream command has not crossed persistence',app.core.stream.config().elements[0].text,'Newer independent draft');
+  await away();await open();await editor.fill('Newest accepted transport');
+  const newest=page.waitForResponse(value=>put(value,'stream')&&value.request().postDataJSON().elements[0].text==='Newest accepted transport');await save.click();await frame();
+  // The old implementation may already have persisted the newer write; the
+  // corrected shell queues it. Neither branch requires sleeping for admission.
+  await release(transport);assert.equal((await newest).status(),200);await settle();
+  check('Accepted Stream writes retain order across remounts',app.core.stream.config().elements[0].text,'Newest accepted transport');
+  check('The active editor receives its newest accepted layout',await editor.inputValue(),'Newest accepted transport');
+
+  await navigate(page,'modules');const training=page.getByRole('switch',{name:'Enable Training & clones',exact:true});await training.waitFor();assert.equal(await training.getAttribute('aria-checked'),'true');
+  const bootstrap={seen:deferred(),release:deferred(),done:deferred(),entered:false};gates.add(bootstrap);bootstrapHeld=bootstrap;
+  await training.click();await wait(bootstrap.seen.promise);assert.equal(bootstrap.body.modules.find(module=>module.id==='training').enabled,false);
+  assert.equal(bootstrap.body.stream.elements[0].text,'Newest accepted transport');
+  await open();await editor.fill('Accepted after bootstrap began');response=page.waitForResponse(value=>put(value,'stream'));await save.click();assert.equal((await response).status(),200);await settle();
+  const finished=page.waitForEvent('requestfinished',{predicate:req=>new URL(req.url()).pathname==='/api/bootstrap'});bootstrap.release.resolve();await wait(bootstrap.done.promise);await finished;await frame();
+  check('A stale bootstrap stream field cannot roll back accepted Studio content',await editor.inputValue(),'Accepted after bootstrap began');
+  await navigate(page,'modules');await training.waitFor();
+  check('Stream acknowledgement preserves unrelated accepted bootstrap metadata',await training.getAttribute('aria-checked'),'false');
+  await open();
+  check('Saved layout remains current after the older bootstrap and another remount',await editor.inputValue(),'Accepted after bootstrap began');
+  check('Ownership guards add no speculative Stream writes',writes,['Accepted while editor away','Accepted before newer remount draft','Newer independent draft','Older accepted transport','Newest accepted transport','Accepted after bootstrap began']);
+ }finally{
+  for(const gate of gates)gate.release.resolve();await wait(Promise.all([...gates].filter(gate=>gate.entered).map(gate=>gate.done.promise)));
+  await page.unroute(app.origin+'/api/stream',writeHandler);await page.unroute(app.origin+'/api/bootstrap',bootstrapHandler);
+ }
+}

@@ -16,7 +16,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { routes, api, type Bootstrap, type ModuleState } from './model';
+import { routes, api, type Bootstrap, type ModuleState, type StreamConfig } from './model';
 import {resolveWorkspaceRoute, workspaceGroups, type WorkspaceRoute} from './workspace-navigation.mjs';
 import {setUniverseRequest} from './universe-requests.mjs';
 import { Kairo } from './context';
@@ -61,15 +61,34 @@ export default function Dashboard() {
     const datasetConnectionRef = useRef<ReturnType<typeof createDatasetConnection> | null>(null);
     const [namesOwner] = useState(createNameDirectoryState);
     const charRef = useRef(0), bootRef = useRef<Bootstrap | null>(null);
-    const bootstrapRead = useRef(0), bootstrapPublished = useRef(0);
-    const installBootstrap = useCallback((result: Bootstrap, generation: number) => {
+    const bootstrapRead = useRef(0), bootstrapPublished = useRef(0), streamSaved = useRef(0);
+    const installBootstrap = useCallback((result: Bootstrap, generation: number, observedStream: number) => {
         // Separate edits and reconnects may read concurrently. An older reply
         // cannot replace a newer roster, module setting or appearance choice.
         if (generation < bootstrapPublished.current) return false;
         bootstrapPublished.current = generation;
+        // A concurrent layout save only supersedes this field. Keep legitimate
+        // roster/settings changes from the same bootstrap response publishable.
+        if (observedStream !== streamSaved.current && bootRef.current) result = {...result, stream:bootRef.current.stream};
         bootRef.current = result; setBoot(result);
         document.documentElement.dataset.theme = result.settings.theme || 'mint';
         return true;
+    }, []);
+    // The shell owns accepted layouts across Studio unmounts. Keep write order
+    // and independently fence older bootstrap stream fields, so ordinary
+    // navigation cannot revive a layout that was already replaced.
+    const streamWrites = useRef<Promise<unknown>>(Promise.resolve());
+    const saveStream = useCallback((config: StreamConfig): Promise<StreamConfig> => {
+        const submitted = structuredClone(config), csrf = bootRef.current?.csrf;
+        if (!csrf) return Promise.reject(new Error('Kairo is not connected.'));
+        const write = streamWrites.current.then(async () => {
+            const saved: StreamConfig = await api('/stream', 'PUT', submitted, csrf);
+            streamSaved.current++;
+            if (bootRef.current) {const next = {...bootRef.current, stream:saved}; bootRef.current = next; setBoot(next);}
+            return saved;
+        });
+        streamWrites.current = write.catch(() => {});
+        return write;
     }, []);
     // These counters fence HTTP recovery independently: an SSE snapshot may be newer
     // without changing names or OPSEC. Capture before each read and merge only fields
@@ -107,9 +126,9 @@ export default function Dashboard() {
     }, [applyResourceRevisions, namesOwner]);
     const refresh = useCallback(async () => {await stateOwner.current?.request(); if (stateError.current) throw stateError.current;}, []);
     const reload = useCallback(async () => {
-        const generation = ++bootstrapRead.current;
+        const generation = ++bootstrapRead.current, observedStream = streamSaved.current;
         const result = await api('/bootstrap'), prior = bootRef.current?.characters;
-        if (!installBootstrap(result, generation)) return;
+        if (!installBootstrap(result, generation, observedStream)) return;
         const rosterChanged = retainValue(prior, result.characters) !== prior;
         if (charRef.current && !result.characters.some((c: any) => c.id === charRef.current)) setCharacter(result.characters[0]?.id || 0);
         if (rosterChanged) {
@@ -119,9 +138,9 @@ export default function Dashboard() {
         }
     }, [setCharacter, installBootstrap]);
     useEffect(() => { let alive = true; const initial = async () => { try {
-        const generation = ++bootstrapRead.current;
+        const generation = ++bootstrapRead.current, observedStream = streamSaved.current;
         const result = await api('/bootstrap');
-        if (!alive || !installBootstrap(result, generation))
+        if (!alive || !installBootstrap(result, generation, observedStream))
             return;
         let chosen = 0;
         try { chosen = Number(localStorage.getItem('kairo-character') || 0); } catch { }
@@ -179,11 +198,11 @@ export default function Dashboard() {
             seenRecovery: key => remembered.includes(key),
             rememberRecovery: key => { remembered = [...remembered.slice(-9), key]; try { sessionStorage.setItem(recoveryKey, JSON.stringify(remembered)); } catch { } },
             refresh: async (revision, isCurrent) => {
-                const generation = ++bootstrapRead.current;
+                const generation = ++bootstrapRead.current, observedStream = streamSaved.current;
                 const nextBoot = await api('/bootstrap');
                 if (!isCurrent()) return;
                 if (nextBoot.datasetRevision !== revision) throw new Error('Dataset generation changed while reconnecting.');
-                installBootstrap(nextBoot, generation);
+                installBootstrap(nextBoot, generation, observedStream);
                 const currentBoot = bootRef.current!;
                 const characterId = charRef.current;
                 if (characterId && !currentBoot.characters.some((pilot: any) => pilot.id === characterId)) setCharacter(currentBoot.characters[0]?.id || 0);
@@ -271,8 +290,8 @@ export default function Dashboard() {
     const activityRevision = `${recoveryRevision}:${resourceRevisions.activity || ''}`;
     const goalsRevision = `${recoveryRevision}:${resourceRevisions.goals || ''}:${goalInputRevision(data, goalClock || Date.now())}`;
     const sessionsRevision = `${recoveryRevision}:${resourceRevisions.sessions || ''}`;
-    const contextValue = useMemo(() => boot ? {boot,data,names,character,setCharacter,page,navigate,reload,refresh,opsec,sessions,activityRevision,goalsRevision,sessionsRevision} : null,
-        [boot,data,names,character,setCharacter,page,navigate,reload,refresh,opsec,sessions,activityRevision,goalsRevision,sessionsRevision]);
+    const contextValue = useMemo(() => boot ? {boot,data,names,character,setCharacter,page,navigate,reload,refresh,saveStream,opsec,sessions,activityRevision,goalsRevision,sessionsRevision} : null,
+        [boot,data,names,character,setCharacter,page,navigate,reload,refresh,saveStream,opsec,sessions,activityRevision,goalsRevision,sessionsRevision]);
     const customPages = (boot as any)?.pages || [];
     const navRoutes = [...routes, ...customPages.map((p: any) => ({ id: 'module:' + p.id, name: p.title, group: 'EXTENSIONS' }))];
     const current = navRoutes.find(r => r.id === page);

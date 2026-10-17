@@ -6,7 +6,7 @@
  * See ../../docs/INTERNAL-API.md for scope and invalidation ownership.
  */
 import { createContext, useContext } from 'react';
-import type { Bootstrap, ModuleState } from './model';
+import type { Bootstrap, ModuleState, StreamConfig } from './model';
 /**
  * `character` is the selected connected pilot ID, or zero when none is selected.
  * `reload` refreshes bootstrap/configuration; `refresh` rereads selected-pilot state
@@ -23,6 +23,8 @@ export type KairoContext = {
     navigate: (id: string) => void;
     reload: () => Promise<void>;
     refresh: () => Promise<void>;
+    /** Persist an accepted layout in order and update shell-owned saved state. */
+    saveStream: (config: StreamConfig) => Promise<StreamConfig>;
     opsec: any;
     sessions: any[];
     activityRevision: string;

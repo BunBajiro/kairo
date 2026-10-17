@@ -27,16 +27,25 @@ const descriptions: Record<string,string> = {
     unknown: 'Missing, outdated or unsupported context. Protection remains engaged.',
 };
 const sourceLabels: Record<string,string> = {contacts:'Personal contacts',corporation_contacts:'Corporation contacts',alliance_contacts:'Alliance contacts'};
+// Accepted policy/manual commands retain order even if navigation remounts the
+// editor. A rejected command releases the queue without hiding its caller error.
+let protectionWrite: Promise<unknown> = Promise.resolve();
+function saveProtection(value: any, csrf: string) {
+    const command = structuredClone(value);
+    const write = protectionWrite.then(() => api('/opsec', 'PUT', command, csrf));
+    protectionWrite = write.catch(() => {});
+    return write;
+}
 export function OPSEC() {
     const {boot,opsec,reload,refresh,navigate} = useKairo();
     const [settings,setSettings] = useState<any>(boot.settings.opsec);
     const [blue,setBlue] = useState((settings.blueAlliances||[]).join(', '));
     const [hostile,setHostile] = useState((settings.hostileAlliances||[]).join(', '));
     const [busy,setBusy] = useState(false);
-    async function save(next=settings) {
+    async function save(next=settings, manualOnly=false) {
         setBusy(true);
         try {
-            await api('/opsec','PUT',{...next,blueAlliances:blue.split(',').map(Number).filter(Boolean),hostileAlliances:hostile.split(',').map(Number).filter(Boolean)},boot.csrf);
+            await saveProtection(manualOnly ? {manual:next.manual} : {...next,blueAlliances:blue.split(',').map(Number).filter(Boolean),hostileAlliances:hostile.split(',').map(Number).filter(Boolean)},boot.csrf);
             // A manual override submits one changed field immediately. Accept
             // its saved value without replacing other edits made while saving.
             setSettings((current:any)=>({...current,
@@ -53,7 +62,7 @@ export function OPSEC() {
         </section>
         <div className="two-grid">
             <Panel title="Broadcast control">
-                <div className="setting-row"><div><h3>Force protection on</h3><p className="meta">Manual protection takes priority over every space category.</p></div><Switch checked={settings.manual} aria-label="Force protection on" disabled={busy} onCheckedChange={manual=>save({...settings,manual})}/></div>
+                <div className="setting-row"><div><h3>Force protection on</h3><p className="meta">Manual protection takes priority over every space category.</p></div><Switch checked={settings.manual} aria-label="Force protection on" disabled={busy} onCheckedChange={manual=>save({...settings,manual},true)}/></div>
                 <div className="setting-row"><div><h3>Release covers in High-Sec</h3><p className="meta">Applies to verified High-Sec outside faction warfare. OBS actions are configured below.</p></div><Switch checked={settings.allowHighsec} aria-label="Release covers in High-Sec" onCheckedChange={allowHighsec=>setSettings({...settings,allowHighsec})}/></div>
                 <label className="field-label mt-5">Character to protect<Choice label="Protected character" value={String(settings.characterId||0)} onChange={id=>setSettings({...settings,characterId:Number(id)})} options={[{value:'0',label:'First connected character'},...boot.characters.map(c=>({value:String(c.id),label:c.name}))]}/></label>
                 <Button className="mt-5" disabled={busy} onClick={()=>save()}>Save protection rules</Button>

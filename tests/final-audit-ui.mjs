@@ -8,7 +8,7 @@ import {pathToFileURL} from 'node:url';
 import {isDeepStrictEqual} from 'node:util';
 import {openStore} from '../server/store.mjs';
 import {startKairo} from '../server/index.mjs';
-import {opsecManualDraftIsolation,studioSavedNavigation} from './final-audit-stream-scenarios.mjs';
+import {opsecManualDraftIsolation,studioSavedNavigation,studioAcceptedOwnership} from './final-audit-stream-scenarios.mjs';
 import {importSettingsNavigationOwnership,importSettingsFailedFirstOwnership} from './final-audit-import-scenarios.mjs';
 import {tacticalScenarios,landmarkCategoryScenario} from './final-audit-tactical-scenarios.mjs';
 
@@ -17,7 +17,7 @@ if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MO
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-final-audit-ui-'));
 const output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';await mkdir(output,{recursive:true});
 const checks=[],errors=[],unexpectedNetwork=[],serverRequests=[],completed=[];
-const scenarios=[['opsec-manual-draft',opsecManualDraftIsolation],['studio-saved-navigation',studioSavedNavigation],['imports-navigation',importSettingsNavigationOwnership],['imports-failed-first',importSettingsFailedFirstOwnership],['tactical-ownership',tacticalScenarios],['landmark-category',landmarkCategoryScenario]];
+const scenarios=[['opsec-manual-draft',opsecManualDraftIsolation],['studio-saved-navigation',studioSavedNavigation],['studio-accepted-owner',studioAcceptedOwnership],['imports-navigation',importSettingsNavigationOwnership],['imports-failed-first',importSettingsFailedFirstOwnership],['tactical-ownership',tacticalScenarios],['landmark-category',landmarkCategoryScenario]];
 const selected=process.env.KAIRO_FINAL_AUDIT_SCENARIOS?.split(',');
 if(selected)for(const name of selected)assert.ok(scenarios.some(([id])=>id===name),'Unknown final-audit scenario: '+name);
 const chosen=scenarios.filter(([name])=>!selected||selected.includes(name));

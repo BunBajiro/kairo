@@ -157,8 +157,8 @@ When adding a similar command, decide which read models actually changed. If it 
 | Session archive and report pages | `session-archive.mjs`, `session-report-page.mjs`, `session-report.tsx` | Refresh the full loaded archive prefix; serialize head/tail work; preserve the report event snapshot while appending pages; fence old Session reads/saves. |
 | Administrative views | `administrative-refresh.mjs` | Schedule after completion, honor visibility and real retry cadence; OBS status events and unsaved config have separate generations. |
 | Maps workspace | `jspace-workspace.tsx`, `jspace-workspace-model.mjs`, `jspace-clock.mjs` | Scope by pilot and map; update compact library summaries separately from selected detail; keep expiry deadlines active. |
-| Studio preview and editor | `studio-work.mjs`, `studio.tsx` | Debounced/coalesced previews and source-aware invalidation; an old save cannot clear a newer edited draft. |
-| Accepted global saves | `connections.tsx`, `polling-settings.tsx` | Process-module queues retain accepted Client ID, appearance and polling write order across component unmount/remount. Failures release the queue. |
+| Studio preview and editor | `studio-work.mjs`, `studio.tsx`, `dashboard.tsx` | Debounced/coalesced previews and source-aware invalidation; an old save cannot clear a newer edited draft. The shell's `saveStream` queue updates accepted layout state across remounts; stale bootstrap stream fields cannot replace that state or discard unrelated metadata. |
+| Accepted global saves | `connections.tsx`, `polling-settings.tsx`, `opsec-controls.tsx` | Process-module queues retain accepted Client ID, appearance, polling and protection command order across component unmount/remount. Failures release the queue. Manual-only protection commands preserve the server's saved policy independently of editor drafts. |
 | Workspace handoffs | `universe-requests.mjs`, `workspace-navigation.mjs` | One-shot selection/replay requests and UI navigation; tolerate unavailable browser storage. |
 
 ### Asynchronous saves are different from reads

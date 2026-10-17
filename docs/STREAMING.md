@@ -91,7 +91,7 @@ Sound needs both the rule's **Sound** switch and **Sounds allowed**, plus browse
 
 1. In **Stream studio**, add an **OPSEC cover** for each EVE UI region you intend to conceal. Size/position it, leave **Visible** enabled, then **Save changes**. Default wording is `//Element Disabled` and `//IMPERIUM BROADCAST RULES`.
 2. Open **OPSEC control**. Set **Character to protect** explicitly, or use **First connected character**. This choice is independent of the dashboard's active pilot.
-3. Use **Force protection on** when immediate concealment is needed. This switch saves immediately and takes precedence over every category.
+3. Use **Force protection on** when immediate concealment is needed. This switch saves immediately and takes precedence over every category; it does not save other policy drafts. Releasing it resumes the last saved policy.
 4. Set optional **Blue alliance IDs** and **Hostile alliance IDs** as comma-separated numeric IDs. Leave **Release covers in High-Sec** off unless you intend verified non-FW high-sec to reveal those areas.
 5. Choose **Save protection rules** for the configured character, policy lists and high-sec setting. Check the current state/reason and **Standings access**.
 

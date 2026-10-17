@@ -15,7 +15,7 @@ async function navigate(page, route) {
 async function installWindowGate(page, mode) {
   await page.evaluate(mode => {
     const originalOpen = window.open, originalPip = Object.getOwnPropertyDescriptor(window, 'documentPictureInPicture');
-    const state = {mode, calls: 0, fallbackCalls: 0, children: [], pending: null,
+    const state = {mode, calls: 0, fallbackCalls: 0, children: [], pending: null, pendingRequests: [],
       canvas: document.querySelector('.universe-module canvas')};
     window.__finalAuditTactical = state;
     const createChild = () => {
@@ -33,14 +33,17 @@ async function installWindowGate(page, mode) {
           state.calls++;
           // Open synchronously during the real user click, retaining popup
           // permission, then hold only the PiP promise acknowledgement.
-          const child = mode === 'reject' ? null : createChild();
-          return new Promise((resolve, reject) => {state.pending = {resolve, reject, child};});
+          const child = state.mode === 'reject' ? null : createChild();
+          return new Promise((resolve, reject) => {
+            state.pending = {resolve, reject, child};
+            state.pendingRequests.push(state.pending);
+          });
         },
       }});
     state.dispose = () => {
       // Settled/rejected work has already been inspected before disposal. This
       // final guard prevents a failed fixture leaving a pending browser task.
-      state.pending?.reject(new Error('Tactical test fixture disposed'));
+      for (const pending of state.pendingRequests) pending.reject(new Error('Tactical test fixture disposed'));
       for (const child of state.children) if (!child.closed) child.close();
       window.open = originalOpen;
       if (originalPip) Object.defineProperty(window, 'documentPictureInPicture', originalPip);
@@ -121,6 +124,37 @@ export async function tacticalScenarios({page, app, check, frame, output, meta})
     check('Blocked attempt and explicit retry make exactly two popup attempts', await page.evaluate(() => window.__finalAuditTactical.fallbackCalls), 2);
     await navigate(page, 'universe-settings');
     check('Normal unmount closes an already adopted child', await page.evaluate(() => window.__finalAuditTactical.children.at(-1).closed), true);
+    await disposeWindowGate(page);
+
+    // Newer request ownership is separate from view lifetime: both opens can
+    // belong to the same mounted hook while their acknowledgements reorder.
+    for (const obsoleteResult of ['resolve', 'reject']) {
+      await enter(obsoleteResult);
+      await page.evaluate(() => {window.__finalAuditTactical.mode = 'resolve';});
+      await page.getByRole('button', {name: 'Open tactical window', exact: true}).click();
+      await page.bringToFront();
+      check('Two explicit pending opens admit two requests (' + obsoleteResult + ')', await page.evaluate(() => window.__finalAuditTactical.calls), 2);
+      await settle(true);
+      await page.waitForFunction(() => !!window.__finalAuditTactical.pending.child.document.querySelector('canvas'));
+      check('Newer PiP request adopts the existing renderer (' + obsoleteResult + ')', await page.evaluate(() => window.__finalAuditTactical.pending.child.document.querySelector('canvas') === window.__finalAuditTactical.canvas), true);
+      await page.evaluate(obsoleteResult => {
+        const previous = window.__finalAuditTactical.pendingRequests[0];
+        if (obsoleteResult === 'resolve') previous.resolve(previous.child);
+        else previous.reject(new Error('Synthetic superseded PiP request rejected'));
+      }, obsoleteResult);
+      await frame();
+      check('Obsolete PiP ' + obsoleteResult + ' preserves the newer adopted renderer', await page.evaluate(() => {
+        const state = window.__finalAuditTactical;
+        return !state.pending.child.closed && state.pending.child.document.querySelector('canvas') === state.canvas;
+      }), true);
+      if (obsoleteResult === 'resolve') check('Obsolete PiP success closes only its own child', await page.evaluate(() => window.__finalAuditTactical.pendingRequests[0].child.closed), true);
+      check('Obsolete PiP ' + obsoleteResult + ' cannot dispatch fallback work', await page.evaluate(() => window.__finalAuditTactical.fallbackCalls), 0);
+      await page.getByRole('button', {name: 'Return tactical map', exact: true}).click();
+      await frame();
+      check('Return after reordered opens restores the original renderer (' + obsoleteResult + ')', await page.evaluate(() => document.querySelector('.universe-module canvas') === window.__finalAuditTactical.canvas), true);
+      check('Return after reordered opens closes the current child (' + obsoleteResult + ')', await page.evaluate(() => window.__finalAuditTactical.pending.child.closed), true);
+      await disposeWindowGate(page);
+    }
   } finally {
     await disposeWindowGate(page);
   }

@@ -26,6 +26,23 @@ const duration=(d:number)=>({1:'Day',3:'3 Days',7:'Week',14:'2 Weeks',30:'Month'
 // from its cache when saving. duration is listing days and price is ISK per unit.
 const recipe=(l:any)=>({typeId:l.typeId,strategy:l.strategy,quantity:l.quantity,price:l.price,duration:l.duration});
 const strategyName=(s:string)=>s==='anchoring'?'Anchoring Price':'Profiteering Price';
+// Destination settings are shared across pilots and survive editor remounts.
+// Serialize accepted Applies per hub, including the optional trader refresh
+// that reads those settings. Rejection releases the next command; idle hubs
+// leave no retained queue. Draft/response presentation remains component-owned.
+const importSettingsWrites=new Map<number,Promise<void>>();
+function saveImportSettings(hubId:number,settings:any,csrf:string,refresh:boolean,acknowledge:(saved:any)=>void){
+ const submitted={...settings};
+ const write=(importSettingsWrites.get(hubId)||Promise.resolve()).then(async()=>{
+  const saved=await api('/markets/imports/settings','PUT',{hubId,settings:submitted},csrf);
+  acknowledge(saved);
+  if(refresh)await api('/markets/imports/refresh','POST',{hubId},csrf);
+  return saved;
+ });
+ const settled=write.then(()=>{},()=>{});importSettingsWrites.set(hubId,settled);
+ void settled.then(()=>{if(importSettingsWrites.get(hubId)===settled)importSettingsWrites.delete(hubId);});
+ return write;
+}
 function Numeric({label,value,onChange,min=0,max,step=1,help}:{label:string;value:any;onChange:(n:any)=>void;min?:number;max?:number;step?:number;help?:string}){return <label className="field-label">{label}<Input type="number" value={value??''} min={min} max={max} step={step} onChange={e=>onChange(e.target.value===''?null:Number(e.target.value))}/>{help&&<small>{help}</small>}</label>;}
 export function ImportAnalyser({hubId,revision,canScan,onHistory,onScan}:{hubId:number;revision:string;canScan:boolean;onHistory:()=>void;onScan:()=>void}){
  const {boot}=useKairo();const [state,setState]=useState<any>(null),[draft,setDraft]=useState<any>(null),[data,setData]=useState<any>(null),[category,setCategory]=useState('equipment'),[busy,setBusy]=useState(false),[error,setError]=useState(''),[selected,setSelected]=useState(0),[lines,setLines]=useState<any[]>([]),[planName,setPlanName]=useState(''),[planId,setPlanId]=useState(''),[review,setReview]=useState<any>(null);const alive=useRef(true),ticket=useRef(0),first=useRef(true),reviewTicket=useRef(0),manifest=useRef({lines,planName,planId}),shownReview=useRef(review);manifest.current={lines,planName,planId};shownReview.current=review;
@@ -36,10 +53,10 @@ export function ImportAnalyser({hubId,revision,canScan,onHistory,onScan}:{hubId:
  async function load(){const n=++ticket.current;try{const s=await api('/markets/imports?hub='+hubId);if(!alive.current||n!==ticket.current)return;setState(s);setDraft((v:any)=>v||s.settings);const a=await api('/markets/imports/analyse?hub='+hubId);if(!alive.current||n!==ticket.current)return;setData(a);setError('');if(first.current){setCategory(a.groups.find((g:any)=>g.items.length)?.id||'equipment');first.current=false;}}catch(error){if(alive.current&&n===ticket.current)throw error;}}
  useEffect(()=>{alive.current=true;load().catch(e=>{if(alive.current)setError(e.message);});return()=>{alive.current=false;ticket.current++;};},[hubId,revision]);
  async function run(fn:()=>Promise<void>){setBusy(true);setError('');try{await fn();}catch(e:any){if(alive.current)setError(e.message);}finally{if(alive.current)setBusy(false);}}
- async function apply(refresh=false){const submitted=draft;await run(async()=>{const s=await api('/markets/imports/settings','PUT',{hubId,settings:submitted},boot.csrf);setState(s);
+ async function apply(refresh=false){const submitted=draft;await run(async()=>{await saveImportSettings(hubId,submitted,boot.csrf,refresh,s=>{if(!alive.current)return;setState(s);
   // A saved response acknowledges the submitted draft; later edits still
   // belong to the user and remain unapplied until their own Apply completes.
-  setDraft((current:any)=>current===submitted?s.settings:current);if(refresh)await api('/markets/imports/refresh','POST',{hubId},boot.csrf);await load();});}
+  setDraft((current:any)=>current===submitted?s.settings:current);});if(alive.current)await load();});}
  const set=(key:string,value:any)=>setDraft((s:any)=>({...s,[key]:value}));const dirty=state&&JSON.stringify(draft)!==JSON.stringify(state.settings),fees=state?.fees,buyer=state?.buyer,active=data?.groups.find((g:any)=>g.id===category),plans=state?.plans||[];
  const characterOptions=(id:number)=>[...(id&&!boot.characters.some(c=>c.id===id)?[{value:String(id),label:'Disconnected character · choose another'}]:[]),...boot.characters.map(c=>({value:String(c.id),label:c.name+(c.needsReauth?' · reconnect':'')}))];
  function add(item:any,option:any){setLines(old=>[...old.filter(l=>l.typeId!==item.typeId),{...option,typeId:item.typeId,name:item.name,iconVariant:item.iconVariant}]);setSelected(0);toast.success(item.name+' added to the import plan.');}

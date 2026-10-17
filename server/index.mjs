@@ -261,7 +261,14 @@ export async function startKairo(options = {}) {
             return json(res, 200, { ok: emitted });
         }
         if (path === '/opsec' && req.method === 'PUT') {
-            const b = await body(req);
+            let b = await body(req);
+            // The immediate manual switch is a narrow command, independent of
+            // the policy editor's drafts. Read the accepted policy after receipt;
+            // ordinary multi-field PUTs retain full-replacement semantics.
+            if (Object.keys(b).length === 1 && Object.hasOwn(b, 'manual')) {
+                if (typeof b.manual !== 'boolean') throw new Error('Manual protection must be true or false.');
+                b = { ...store.get('opsec', {}), manual: b.manual };
+            }
             const ids = v => Array.isArray(v) ? v.map(Number).filter(n => Number.isSafeInteger(n) && n > 0).slice(0, 100) : [];
             const id = Number(b.characterId || 0);
             if (id && !auth.characters().some(c => c.id === id))

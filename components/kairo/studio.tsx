@@ -33,11 +33,14 @@ const StudioText = memo(function StudioText({kind,text,startedAt,endsAt,bindingS
     return <>{kind==='clock'?new Date(clock).toISOString().slice(11,19)+' EVE':text}</>;
 });
 export function Studio() {
-    const {boot,character,data,sessions}=useKairo();
+    const {boot,character,data,sessions,saveStream}=useKairo();
     const [config, setConfig] = useState<StreamConfig>(boot.stream), [selected, setSelected] = useState(''), [dirty, setDirty] = useState(false), [busy, setBusy] = useState(false), [preview, setPreview] = useState('canvas');
     // Geometry, text and binding edits advance the same draft generation. A save
     // acknowledges its submitted revision only; later edits keep their dirty state.
     const draftRevision=useRef(0);
+    // A save accepted by a previously mounted Studio also refreshes a clean
+    // remount. A current edited draft remains independent of the saved layout.
+    useEffect(()=>{if(!dirty)setConfig(boot.stream);},[boot.stream,dirty]);
     const [sources,setSources]=useState<any>(null),[projection,setProjection]=useState<{key:string;values:Record<string,any>}>({key:'',values:{}}),[previewRefresh,setPreviewRefresh]=useState(0);
     const projectionKey=studioProjectionKey(config.elements),projected=projection.key===projectionKey?projection.values:{};
     // Snapshot revisions and Session fields are source input, independent of the
@@ -61,7 +64,7 @@ export function Studio() {
     function update(id: string, part: Partial<StreamElement>) { draftRevision.current++; setConfig(c => ({ ...c, elements: c.elements.map(x => x.id === id ? { ...x, ...part } : x) })); setDirty(true); }
     function add(t: typeof templates[number]) { const element: StreamElement = { id: crypto.randomUUID(), kind: t.kind, name: t.name, text: t.text, label: t.label, x: 60 + config.elements.length * 16, y: 60 + config.elements.length * 16, width: t.width, height: t.height, fontSize: t.kind==='goal'?22:28, appearance: 'frame', opacity: t.kind === 'opsec' ? 1 : .7, color: '#97ebce', visible: true, endsAt: t.kind === 'countdown' ? Date.now() + 600000 : 0, value:0,binding:t.kind==='goal'?'goal.progress':'none',characterId:character,bindingDisplay:'both' }; change({ ...config, elements: [...config.elements, element] }); setSelected(element.id); setPreview('canvas'); }
     async function save() { const revision=draftRevision.current; setBusy(true); try {
-        const result = await api('/stream', 'PUT', config, boot.csrf);
+        const result = await saveStream(config);
         if(revision===draftRevision.current){setConfig(result);setDirty(false);}
         toast.success('Stream layout saved. OBS sources updated.');
     }
