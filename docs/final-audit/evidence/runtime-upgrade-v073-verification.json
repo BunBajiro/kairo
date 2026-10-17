@@ -1,0 +1,69 @@
+{
+  "purpose": "Test upgrade INTO current 0.8.0, using actual prior 0.7.3 only as synthetic data source.",
+  "status": "workspace-only; independently reviewed and accepted; pending banking",
+  "environment": {
+    "platform": "linux",
+    "node": "v24.19.0"
+  },
+  "prior_release": {
+    "version": "0.7.3",
+    "commit": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "tree": "e665ca3810f0ab3f0336643f30a2369be5cc73b1"
+  },
+  "fixture": {
+    "tables": 29,
+    "rows": 46,
+    "bytes": 18625,
+    "provider_calls": 0,
+    "credentials": "synthetic only; retained old AES envelopes"
+  },
+  "new_upgrade_cases": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0
+  },
+  "focused": {
+    "tests": 48,
+    "pass": 48,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 1351.811744,
+    "command": "node --test --test-reporter=tap tests/kairo/upgrade-v073.test.mjs tests/kairo/persistence-recovery.test.mjs tests/kairo/history-storage.test.mjs tests/kairo/session-travel.test.mjs tests/kairo/startup-rollback.test.mjs",
+    "raw_log_sha256": "961897820a7ccb3eceef25387d2b09cfdebc4483206691bfab811ec63baa04bb",
+    "raw_log_bytes": 12370
+  },
+  "file_sha256": {
+    "tests/kairo/upgrade-v073.test.mjs": "dbcecb627ca91c257470299d691e3243e8df1ccf4ab6cb5566c4412a03504386",
+    "tests/kairo/fixtures/generate-v073-upgrade.mjs": "00431568ae764ffa06dd5171d214d13b482fd2b161abde4226533fd61bcc8188",
+    "tests/kairo/fixtures/v073-upgrade.sql": "9b7f86e175d8b99f260f0572be3f017bbc4ae47dfd6aa1c5b3233328a741a3d7",
+    "tests/kairo/fixtures/v073-upgrade-provenance.json": "c4fa1e3b14103edd3e16dbee5c6fb00137f9e2ef591b50a3cfd26fab49228ef9"
+  },
+  "scope": [
+    "Current actual runtime upgrade and repeated startup",
+    "Exact representative durable records/settings/migration retention",
+    "Old synthetic Auth/Vault envelopes remain decryptable",
+    "Session report and saved import reader compatibility",
+    "One-time discovered-system backfill; legacy travel remains unowned",
+    "Retention installation grace and maximum200candidate work bound",
+    "Injected current migration marker failure rolls back its schema and releases lock; retry preserves data"
+  ],
+  "limits": [
+    "Representative synthetic data, not every possible previous installation",
+    "No other full historical release matrix",
+    "No foreign Windows DPAPI or downgrade compatibility claim",
+    "Current application code unchanged by this supplemental work"
+  ],
+  "independent_review": {
+    "reviewer": "universe",
+    "disposition": "accepted",
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "scope": "Independent previous-release source/schema provenance checks plus current upgrade and retention gates",
+    "archived_source_files_matched": 48,
+    "schema_objects_matched": 39,
+    "table_counts_matched": 29,
+    "limits": "Representative synthetic previous-release path; no historical-version or foreign-DPAPI guarantee"
+  }
+}
