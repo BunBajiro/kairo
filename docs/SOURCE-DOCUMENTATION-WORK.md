@@ -2,6 +2,8 @@
 
 This phase documents first-party source contracts and maintainability. The completed [manual documentation work](DOCUMENTATION-WORK.md), [74 closed premerge findings](PREMERGE-BUG-REVIEW.md) and raw review evidence retain their original scope. Version remains **0.8.0-rc.17**. No merge, release or version bump is authorised; PR #12 stays draft.
 
+**Complete for review.** All seven ownership areas and independent reviews are complete. The entire source pass is pushed at `b24948b04828b73b7a47b703d6ff18f821aafeeb`; its fetched Git tree exactly matches the validated local tree. This final receipt records completion without changing source or expanding the validation claims below.
+
 ## Recovery and scope
 
 On 17 October 2026 the clean workspace, remote branch and GitHub PR #12 agreed on `8c19913842c5770daa76b1d640d5960c1ef41e13`. PR #12 was open/draft on `review/0.8.0-rc-premerge-bug-review`; main was `239794774320fcdebaa1d76ce8a77c5c25cfc48c`. Build90 application source remains `5c55cbbbae6c935a86ad5dde71cc1899958fde62`. Recovery verified actual repository state before edits.
@@ -30,7 +32,7 @@ The checkpoints below distinguish pushed work from their validation state. Autho
 
 - `1038033c49e6e15dcc4d7b40abb06ec63c8cfa5a`: inventory and phase instructions pushed; fetched back with identical Git tree.
 - `528663c164af47b0b406f0f182c6299f2fb2df40`: foundation contracts pushed and fetched back with identical Git tree; syntax/AST checks passed at banking, then independent review accepted with one later wording refinement.
-- Integration checkpoint: this commit contains the completed source pass and resolved independent reviews. Final verification/banking receipt follows separately.
+- `b24948b04828b73b7a47b703d6ff18f821aafeeb`: completed source pass, resolved independent reviews and verification receipt pushed; fetched tree `f4f2ce6e44c1da83e3947e1c414c355ac81d6753` matches the validated local tree exactly.
 
 No new runtime/browser/performance acceptance is claimed. Build90 remains the verified application download; neither the refreshed manuals nor this phase's comments are retroactively added to that ZIP. Windows/DPAPI, live EVE permissions/SSO, actual OBS output and extended play retain the limits in [Validation](VALIDATION.md).
 
