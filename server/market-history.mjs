@@ -1,9 +1,20 @@
+/**
+ * Markets-owned EVE Ref daily archive importer for the four core hub regions.
+ * Successful days survive interrupted imports; bounded analysis projections are
+ * rebuilt from retained days, and custom hubs use Markets' ESI history path.
+ * See ../docs/MARKETS.md for source and calendar-window semantics.
+ */
 import {Worker} from 'node:worker_threads';
 import {setTimeout as delay} from 'node:timers/promises';
 import {DAY,saveHistories} from './market-history-store.mjs';
 export {DAY,historyWindow,historySummary,saveHistory} from './market-history-store.mjs';
 export const CORE_HUBS=new Set([60003760,60008494,60011866,60005686]);
 const iso=n=>new Date(n).toISOString(),date=n=>iso(n).slice(0,10),origin='https://data.everef.net/market-history/';
+/**
+ * Decode one compressed daily CSV in a bounded worker. Resolve {rows, records}
+ * only after native worker exit; reject malformed data, abort or timeout (ms).
+ * The caller must await rejection as well as success before releasing ownership.
+ */
 export function decodeArchive(bytes,date,{signal,timeoutMs=45000,createWorker=(url,options)=>new Worker(url,options)}={}){
  return new Promise((resolve,reject)=>{const worker=createWorker(new URL('./market-history-worker.mjs',import.meta.url),{workerData:{bytes,date},execArgv:[],resourceLimits:{maxOldGenerationSizeMb:128}});let outcome;
   const cleanup=()=>{clearTimeout(timer);signal?.removeEventListener('abort',abort);};
@@ -15,6 +26,11 @@ export function decodeArchive(bytes,date,{signal,timeoutMs=45000,createWorker=(u
   signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
  });
 }
+/**
+ * Own one cancellable update. check() must throw when the parent scan is no
+ * longer eligible; progress() publishes that parent's status. cancel() requests
+ * abort but is not a completion barrier: await the accepted update() promise.
+ */
 export function createHistoryArchive(store,{fetcher=fetch,now=()=>Date.now(),spacingMs=250,decode=decodeArchive}={}){
  let controller=null,lastRequest=0;const db=store.db;
  async function download(path,limit,signal){const cooldown=store.get('market:everef:retry',0);if(cooldown>now())throw new Error('EVE Ref asked us to wait. Retry after '+iso(cooldown)+'.');const wait=spacingMs-(now()-lastRequest);if(wait>0)await delay(wait,undefined,{signal});lastRequest=now();

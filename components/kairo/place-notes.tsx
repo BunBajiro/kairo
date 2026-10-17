@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Private entity annotations shared across local Kairo characters. The draft
+ * captures its place while dirty, so live location changes cannot retarget edits.
+ * Saving/discarding releases that capture; URL-scoped reads ignore late results.
+ * These place records are separate from the map-local notebook and broadcast data.
+ */
 import {useEffect,useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';

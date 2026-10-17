@@ -1,6 +1,17 @@
 // Coordinates the deliberate core restart without replacing the mounted workspace.
 // SSE announces intent before disconnect, then proves the entire data generation
 // after reconnect. An open socket by itself is not proof of a successful update.
+/**
+ * Coordinate UI recovery; this owner cannot install or restart the runtime.
+ * revision packets identify all three active static components. `refresh(revision,
+ * isCurrent)` must check isCurrent after awaits before publishing dependent views.
+ * A newer restart, disconnect, cancellation or dispose retires that refresh.
+ *
+ * The default 90,000 ms deadline changes notice state only; it does not cancel the
+ * update. retry re-arms the notice and still waits for revision evidence. Recovery
+ * notice persistence is delegated to seenRecovery/rememberRecovery; dispose clears
+ * timers and late publication. See ../../docs/DATASETS.md.
+ */
 export function createDatasetConnection({ revision: initialRevision = '', onState = () => {}, refresh, onComplete = () => {}, seenRecovery = () => false, rememberRecovery = () => {}, setTimer = setTimeout, clearTimer = clearTimeout, timeoutMs = 90_000 } = {}) {
     let revision = initialRevision, pending = null, connected = true, disconnected = false, refreshAfterReconnect = false;
     let state = { phase: 'idle', build: null, message: '' }, timer = null, generation = 0, disposed = false, refreshingRevision = null;

@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Private operational views over the dashboard's retained snapshots. Tabs derive
+ * only their mounted rows; resource reads use the selected-pilot refresh owner.
+ * Displayed balances, training and reference values retain source status rather
+ * than implying that unavailable data is a fresh zero. See
+ * ../../docs/PILOT-WORKSPACE.md and ../../docs/INTERNAL-API.md.
+ */
 import {protectionLabel} from '@/public/stream/protection.js';
 import { memo, useMemo, useState } from 'react';
 import { ArrowUpRight, ArrowDownLeft, ArrowRight, Clock, Orbit, MapPin, Radio, ShieldCheck, Target, Plus, ChevronRight, BookOpen, Factory, TrendingUp, Activity } from 'lucide-react';

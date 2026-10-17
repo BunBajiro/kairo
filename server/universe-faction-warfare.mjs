@@ -2,6 +2,9 @@
 // public FW occupancy snapshot and the bundled stargate graph, not sovereignty.
 // https://support.eveonline.com/hc/en-us/articles/203209072-Factional-Warfare
 const side = new Map([[500001,1],[500003,1],[500002,2],[500004,2]]);
+/** Return a system-ID Map derived from complete occupancy and real gate adjacency.
+ * fresh=false preserves rows as unknown/stale instead of deriving current fronts.
+ * Unknown faction sides remain unknown; alliance standings never affect the result. */
 export function factionWarfareContext(rows, neighbors, {fresh=true}={}) {
     const map=new Map(rows.map(row=>[row.solar_system_id,{...row,operational_state:'unknown',
         operational_state_source:'derived_gate_adjacency',operational_state_status:fresh?'ready':'stale',frontline_neighbors:[]}]));

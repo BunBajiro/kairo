@@ -11,6 +11,8 @@ import {atlasHover} from './premerge-atlas-hover-scenarios.mjs';
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
 const engines=await import(pathToFileURL(modulePath).href);
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const dir=await mkdtemp(join(tmpdir(),'kairo-premerge-map-hover-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';
 await mkdir(output,{recursive:true});
 const checks=[],errors=[],unexpectedNetwork=[],serverRequests=[],requests=[],maps=[],now=Date.now();

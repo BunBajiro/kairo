@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Studio controls for explicit widget bindings and toast context fields. Binding
+ * choices identify an owner/record; sample previews illustrate wording and location
+ * redaction, while server/projections.mjs and server/stream.mjs enforce the actual
+ * output contract. See ../../docs/STREAMING.md.
+ */
 import {Link2,Braces} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Switch} from '@/components/ui/switch';

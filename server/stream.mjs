@@ -1,3 +1,9 @@
+/**
+ * Core-owned broadcast configuration, sanitized output and bounded toast delivery.
+ * Private bindings are prepared by projections.mjs; state() is the public shape
+ * served by the separate Stream listener. This service owns subscriptions, toast
+ * timers and SSE clients until close(). See ../docs/STREAMING.md.
+ */
 import { randomUUID } from 'node:crypto';
 import {bindingKinds,toastContexts,renderToast} from './projections.mjs';
 import {sseEvent, writeSSE, closeSSE} from './sse.mjs';
@@ -7,12 +13,23 @@ export const defaultStream = () => ({ elements: [], rules: eventTemplates.map(([
 const num = (n, min, max, def) => Number.isFinite(Number(n)) ? Math.min(max, Math.max(min, Number(n))) : def;
 const str = (s, max = 200) => String(s ?? '').slice(0, max);
 export const kinds = ['panel', 'text', 'countdown', 'clock', 'progress', 'goal', 'opsec', 'divider', 'lower-third'];
+/**
+ * Normalize a private editor configuration: at most 50 elements, logical canvas
+ * pixels, epoch-ms countdown deadlines, percentage progress, and rule timing in
+ * seconds. state() separately removes private binding ownership fields.
+ */
 export function sanitizeConfig(input) {
     if (!input || !Array.isArray(input.elements) || input.elements.length > 50 || !Array.isArray(input.rules))
         throw new Error('Invalid stream configuration.');
     return { elements: input.elements.map(e => ({ id: /^[\w-]{1,80}$/.test(e.id) ? e.id : randomUUID(), kind: kinds.includes(e.kind) ? e.kind : 'panel', appearance: e.appearance === 'minimal' ? 'minimal' : 'frame', name: str(e.name, 80), text: str(e.text, 500), label: str(e.label, 100), x: num(e.x, 0, 1910, 40), y: num(e.y, 0, 1070, 40), width: num(e.width, 10, 1920, 400), height: num(e.height, 4, 1080, 120), fontSize: num(e.fontSize, 12, 120, 24), opacity: e.kind === 'opsec' ? 1 : num(e.opacity, 0, 1, .7), color: /^#[0-9a-f]{6}$/i.test(e.color) ? e.color : '#97ebce', visible: e.visible === true, endsAt: e.kind === 'countdown' ? num(e.endsAt, 0, Date.now() + 31536000000, 0) : 0, value: num(e.value, 0, 100, 0), binding: !['opsec','divider','clock'].includes(e.kind) && bindingKinds.includes(e.binding) ? e.binding : 'none', sourceId: str(e.sourceId,80), characterId: Number.isSafeInteger(e.characterId) && e.characterId>=0 ? e.characterId : undefined, bindingDisplay: ['title','numbers','both'].includes(e.bindingDisplay) ? e.bindingDisplay : 'both' })), rules: eventTemplates.map(([event, title, message]) => { const r = input.rules.find(r => r.event === event) || {}; return { event, title: str(r.title || title, 100), message: str(r.message || message, 240), enabled: r.enabled === true, duration: num(r.duration, 2, 30, 6), cooldown: num(r.cooldown, 0, 3600, 30), delay: num(r.delay, 0, 600, 0), sound: r.sound === true, characterId: Number.isSafeInteger(r.characterId) && r.characterId>0 ? r.characterId : 0, allowLocation: r.allowLocation === true }; }), position: ['top-right', 'top-left', 'bottom-right', 'bottom-left'].includes(input.position) ? input.position : 'top-right', muted: input.muted === true, paused: input.paused === true };
 }
 export { classifyOPSEC } from './opsec.mjs';
+/**
+ * Subscribe to nonhistorical semantic events and own at most ten retained toasts
+ * with their timers. save() persists before changing accepted bindings/output;
+ * pause/filter changes retire queued work. close() unsubscribes, clears deadlines
+ * and awaits client close; callers stop producing bindings before releasing Store.
+ */
 export function createStream(store, bus, publish = e=>bus.emit(e)) {
     const clients = new Set(), last = new Map(), timers = new Map();
     let version = 0, closed = false, closing, bindingKey = '{}';
@@ -29,7 +46,11 @@ export function createStream(store, bus, publish = e=>bus.emit(e)) {
         notifications = next;
     }
     const config = () => sanitizeConfig(store.get('stream', defaultStream()));
+    // Render against current rules/protection at delivery, retaining the accepted
+    // toast's original timing. A later location policy must affect pending output.
     function outputToast(n) {const rule=config().rules.find(r=>r.event===n.event.type)||n.rule;return {id:n.id,signal:signalFor(n.event.type),...renderToast(store,n.event,rule,opsec,n.test),duration:n.rule.duration,sound:rule.sound&&!config().muted,showAt:n.showAt,expiresAt:n.expiresAt};}
+    // Keep visual element IDs and approved wording/values. Omit private editor
+    // names, source/pilot IDs, binding definitions, event payloads and OPSEC reason.
     function state() {const c=config();return {version,serverTime:Date.now(),position:c.position,muted:c.muted,paused:c.paused,elements:c.elements.filter(e=>e.visible).map(e=>{const {binding,sourceId,characterId,bindingDisplay,name,...visual}=e;return {...visual,...(binding&&binding!=='none'?bindings[e.id]||bindings[binding]||{text:'Source unavailable',value:0,endsAt:0,detail:'',bindingStatus:'unavailable'}:{})};}),opsec:{state:opsec.state,hidden:opsec.hidden},toasts:notifications.filter(n=>n.showAt<=Date.now()&&n.expiresAt>Date.now()).map(outputToast)};}
     function broadcast(type = 'state', data, options) {
         if (closed || !clients.size) return;

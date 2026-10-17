@@ -24,6 +24,9 @@ async function until(predicate) {
         await turn();
     }
 }
+// Count real recurring timers and injected expiry handles across construction
+// failure. The caller retains Store ownership; failed Core cleanup must drain its
+// work and release its own resources without closing that caller-owned database.
 async function fixture(t) {
     const directory = await mkdtemp(join(tmpdir(), 'kairo-construction-')), modules = join(directory, 'modules');
     await mkdir(modules);
@@ -55,6 +58,7 @@ function assertReleased(h) {
 
 test('Core rolls back Universe expiry when the awaited Registry import fails', async t => {
     const h = await fixture(t);
+    // Malformed source is deliberate: import failure must unwind prior owners.
     await writeFile(join(h.modules, 'broken.mjs'), 'export default { invalid syntax');
     await assert.rejects(h.start(), SyntaxError);
     assertReleased(h);

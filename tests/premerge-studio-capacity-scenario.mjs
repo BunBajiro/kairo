@@ -1,3 +1,6 @@
+// Imported by the shared browser runner; seed actual Stream configuration near
+// its element limit, then use visible controls to test capacity and recovery.
+// The caller owns the disposable runtime/browser and collects check() results.
 import assert from 'node:assert/strict';
 import {defaultStream} from '../server/stream.mjs';
 

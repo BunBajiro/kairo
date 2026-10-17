@@ -1,3 +1,9 @@
+/**
+ * Persistent private Maps: revisioned diagram commands, observation projection,
+ * portable import/export and source-map tracking. Universe owns canonical links;
+ * Operations owns scanner/intel records. This service coordinates their writes
+ * on the shared Store. See docs/UNIVERSE.md and docs/INTERNAL-API.md.
+ */
 import { randomUUID } from 'node:crypto';
 import { getWormholeType } from './universe-wormholes.mjs';
 import { createJSpaceTracking } from './universe-jspace-tracking.mjs';
@@ -50,7 +56,17 @@ function conflict(revision) {
     error.status = 409; error.code = 'jspace_revision_conflict'; error.revision = revision; return error;
 }
 
-/** Private diagrams reference Universe links; diagram topology never independently authorises a route. */
+/**
+ * Create the Maps service after Universe/Operations schema initialization.
+ * Injected link methods must share this Store so commands/imports can roll back
+ * cross-service writes together. All work is synchronous; no private polling loop
+ * is created. Reads may reconcile link expiry, archive detached cards or create
+ * the pilot's source map, so they are not immutable table lookups.
+ *
+ * Writes require a connected nonzero owner. command/remove/duplicate require the
+ * current map revision; conflicts throw status 409 with code and current revision.
+ * Diagrams reference canonical links and never independently authorize a route.
+ */
 export function createUniverseJSpace(store, auth, options) {
     const { atlas, getLinks, readLinks, saveLink, deleteLink, validateLink, operations, getScopeContext = () => ({ atlas, politicsConfig: {} }), onChange = () => {} } = options;
     const now = options.now || Date.now, iso = () => new Date(now()).toISOString();
@@ -69,6 +85,8 @@ export function createUniverseJSpace(store, auth, options) {
         if (!scopeContexts.has(id)) scopeContexts.set(id, getScopeContext(id));
         return scopeContexts.get(id);
     };
+    /** Reuse scope evidence only for nested synchronous work. The finally block
+     * restores the previous owner; fn must not return work that crosses an await. */
     function withScopeContexts(fn) {
         const previous = scopeContexts; scopeContexts = previous || new Map();
         try { return fn(); } finally { scopeContexts = previous; }
@@ -136,6 +154,8 @@ export function createUniverseJSpace(store, auth, options) {
         const map = { ...blank({ name: 'Live source' }), id: key, kind: 'tracking_source', pilots: [{ character_id: id, tracking: true }] };
         write(id, 'jspace_map', map); tracking.syncMap(id, map); return map;
     }
+    /** Change the live source recorder and clear continuity baselines on both
+     * sides. Explicit pilot subscriptions on interactive maps remain independent. */
     function setActivePilot(characterId) {
         const id = pilot(characterId), previous = store.get('universe:jspace:active_pilot', auth.characters()[0]?.id || 0);
         if (previous !== id) { tracking.resetSourceBaseline?.(previous); tracking.resetSourceBaseline?.(id); }
@@ -235,6 +255,9 @@ export function createUniverseJSpace(store, auth, options) {
         map.activity = (map.activity || []).filter(row => !/^(connection|passage)\./.test(row.op));
         return JSON.stringify(map) !== before;
     }
+    /** Retire removed link identities from current maps and undo snapshots.
+     * Called inside Universe's canonical-link transaction, including for a stored
+     * owner who is now disconnected. Annotation undo must never revive dead links. */
     function forgetConnections(characterId, removed = []) {
         const id = Number(characterId);
         if (!Number.isSafeInteger(id) || id < 0) throw new Error('Invalid stored pilot.');
@@ -368,6 +391,9 @@ export function createUniverseJSpace(store, auth, options) {
         if (!Number.isSafeInteger(duration) || duration < 15 || duration > 3600) throw new Error('A ping lasts between 15 seconds and one hour.');
         return { id: randomUUID(), system_id: mapNode(map, input.system_id), label: clean(input.label, 120), created_at: iso(), expires_at: new Date(now() + duration * 1000).toISOString() };
     }
+    /** Request-local link/Operations preparation; reconcile canonical expiry
+     * before loading map documents so revisions and bound signatures agree.
+     * A selected map limits link scope; library reads reuse one context for all maps. */
     function projectionContext(id, mapId) {
         const operational = operations.readContext(id), links = readLinks(id, { mapId, operational });
         return { operational, canonical: (map, signatures = false) => new Map(links.forMap(map.id, signatures).map(row => [row.id, row])) };
@@ -455,6 +481,9 @@ export function createUniverseJSpace(store, auth, options) {
             node_count: map.nodes.length, connection_count: map.connections.length, pilot_count: (map.pilots || []).length,
             scope: map.scope || null, next_expiry_at: Number.isFinite(nextExpiry) ? new Date(nextExpiry).toISOString() : null };
     }
+    /** Return compact library descriptors without full operational/signature
+     * projections. Preserve this boundary as map count grows; selected map detail
+     * is fetched separately. Expiry reconciliation still precedes counts/revisions. */
     function summaries(characterId) {
         const id = pilot(characterId), context = libraryContext(id), maps = [];
         let source_map = null;
@@ -526,6 +555,11 @@ export function createUniverseJSpace(store, auth, options) {
         const copy = importMap(id, { document: exportMap(id, key), name: clean(input.name || (old.name.slice(0, 73) + ' copy'), 80) });
         return project(id, loaded(id, copy.id));
     }
+    /** Coordinate diagram membership with a canonical link. Existing endpoints
+     * and travel kind are immutable; configured global Ansiblex access cannot be
+     * changed through a diagram. New links default to unconfirmed/inaccessible;
+     * partial edits retain existing values. Returns the edge, or null after a
+     * terminal collapse removes its link. */
     function saveConnection(id, map, input) {
         if (!object(input)) throw new Error('Provide a connection observation.');
         const previous = input.id ? connection(map, input.id) : null;
@@ -607,6 +641,10 @@ export function createUniverseJSpace(store, auth, options) {
         }
         capacity(map);
     }
+    /** Apply one revision-matched command in a database transaction, then return
+     * a freshly projected map. Layout/annotation undo is capped at ten entries;
+     * connection, passage, scanner and roster commands clear it instead of making
+     * evidence reversible. Tracking subscriptions synchronize after commit. */
     function command(characterId, key, input = {}) {
         const id = pilot(characterId, true), op = clean(input.op, 60);
         getLinks(id, key);
@@ -739,6 +777,10 @@ export function createUniverseJSpace(store, auth, options) {
         tracking.syncMap(id, result); if (op === 'map.update' || op.startsWith('pilot.')) populateScopes(id, result.id); onChange(id); return project(id, loaded(id, result.id));
     }
 
+    /** Export private map content, omitting live pilot telemetry and source
+     * delivery watermarks. Native JSON retains historical observations; Wanderer
+     * v1 is deliberately lossy and omits unroutable connections. Export can first
+     * reconcile expiry and detached-card state. */
     function exportMap(characterId, key, format = 'kairo') {
         const id = pilot(characterId), map = project(id, loaded(id, key));
         if (format === 'wanderer') {
@@ -771,6 +813,10 @@ export function createUniverseJSpace(store, auth, options) {
         if (!native && (document.format || !object(document.map) || !Array.isArray(document.systems) || !Array.isArray(document.connections))) throw new Error('Use a Kairo J-Space or Wanderer version 1 map export.');
         return { document, native };
     }
+    /** Build a new bounded document without persisting it. Mint independent IDs,
+     * keep historical observation ages, omit dead connections, and demote new
+     * imported links to unconfirmed/inaccessible. Unknown expiry stays null;
+     * importing is neither a scan nor evidence of current transit permission. */
     function prepareImport(id, input) {
         const { document, native } = parseDocument(input), source = document.map;
         if (!object(source)) throw new Error('The map document is missing.');
@@ -908,12 +954,18 @@ export function createUniverseJSpace(store, auth, options) {
         if (signatureRows.length > 1000) throw new Error('This import would exceed the 1,000-signature limit.');
         return { map, links, signatures: signatureRows, operational_records, format: native ? 'kairo-jspace' : 'wanderer-v1', warnings: [...new Set(warnings)] };
     }
+    /** Return format/counts/warnings or valid:false with errors. Pilot validation
+     * still throws before document parsing; a successful preview reserves nothing
+     * and importMap revalidates the document at commit time. */
     function previewImport(characterId, input = {}) {
         const id = pilot(characterId, true);
         try { const prepared = prepareImport(id, input); return { valid: true, format: prepared.format, name: prepared.map.name,
             counts: { systems: prepared.map.nodes.length, connections: prepared.map.connections.length, signatures: prepared.signatures.length, observations: prepared.map.observations.length, passages: prepared.map.passages.length, comments: prepared.map.comments.length }, warnings: prepared.warnings, errors: [] }; }
         catch (error) { return { valid: false, format: null, name: null, counts: null, warnings: [], errors: [error.message] }; }
     }
+    /** Atomically create map, links and historical operational records. Scanner
+     * rows remain missing until observed again. Publish and index subscriptions
+     * after commit; a failed validation/storage write leaves no partial new map. */
     function importMap(characterId, input = {}) {
         const id = pilot(characterId, true);
         const map = atomic(() => {

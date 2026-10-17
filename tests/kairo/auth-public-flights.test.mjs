@@ -16,6 +16,8 @@ const discovery = {
     jwks_uri: 'https://login.eveonline.com/oauth/jwks',
     revocation_endpoint: 'https://login.eveonline.com/v2/oauth/revoke',
 };
+// Generate test-only keys so the real JWT verifier runs without provider secrets.
+// Discovery/JWKS URLs are inputs to the injected fetcher, never live SSO calls.
 const signingKeys = ['original', 'rotated'].map(kid => {
     const pair = generateKeyPairSync('rsa', { modulusLength: 2048 });
     return { ...pair, jwk: { ...pair.publicKey.export({ format: 'jwk' }), kid, alg: 'RS256' } };

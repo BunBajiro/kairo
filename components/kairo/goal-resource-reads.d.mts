@@ -1,3 +1,4 @@
+/** One fixed pilot; independent resource reads. Close on scope change; forced reads return drain waiters. */
 export function createGoalResourceReads(options: {
     character: number; read(path: string): Promise<any>; publishGoals(value: any): void;
     publishNotes(value: any): void; publishSources(value: any): void;

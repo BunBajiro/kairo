@@ -1,3 +1,4 @@
+/** Normalize local workspace restores and server-saved views to the currently supported Atlas controls. */
 import {universeTabForSpace} from './workspace-navigation.mjs';
 
 export const DEFAULT_UNIVERSE_VIEW = Object.freeze({background:'power_blocs',indicator:'none',space:'known',region:'all',standingFilter:'all',showConnections:true,showSpecialLinks:true});

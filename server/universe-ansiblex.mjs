@@ -19,7 +19,11 @@ function cells(line, separator) {
     values.push(clean(value)); return values;
 }
 
-/** Every non-comment entry is reported. Unknown endpoints and conflicts block import by default. */
+/** Preview SMT, EVE link, CSV/TSV or JSON input against the supplied atlas.
+ * Return entries/issues/stats and normalized links; row errors make valid=false,
+ * while oversized input or invalid JSON throws. The owner must reject an invalid
+ * preview before writing. Reciprocal reports merge only compatible directions;
+ * access defaults false and cannot be inferred from a visible structure ID. */
 export function parseAnsiblexImport(input, systems = []) {
     const options = typeof input === 'string' ? { text: input } : input || {};
     const catalogue = systems instanceof Map ? [...systems.values()] : systems.systems || systems;

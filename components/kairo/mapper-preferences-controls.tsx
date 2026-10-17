@@ -1,8 +1,11 @@
 "use client";
+
+/** Mapper display settings shared across a pilot's maps on this device, independent of backend records. */
 import {useEffect,useState} from 'react';
 import {useKairo} from './context';
 import {MAPPER_PREFERENCES_EVENT,mapperPreferencesKey,normalizeMapperPreferences,readMapperPreferences,type MapperPreferences} from './mapper-preferences.mjs';
 
+/** Normalize immediate local saves and reconcile other consumers; pilot switches cannot expose prior preferences. */
 export function useMapperPreferences(character:number) {
   const read=()=>{try{return readMapperPreferences(character,window.localStorage);}catch{return normalizeMapperPreferences(null);}};
   const [state,setState]=useState(()=>({character,value:read()}));

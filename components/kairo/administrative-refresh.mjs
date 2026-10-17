@@ -2,6 +2,13 @@ import {createScopedRefresh} from './scoped-refresh.mjs';
 
 // Mounted administrative reads only. Server polling and OBS sources have their
 // own lifetimes. Schedule from completion so a slow read cannot build a queue.
+/**
+ * Visible-page polling layered on the scoped reader. `period(lastPublished)` is
+ * milliseconds (30 seconds by default), armed only after requested work finishes.
+ * Visibility changes clear the timer; becoming visible requests recovery. Call close
+ * when leaving the view. Failure delivery and waiter semantics follow scoped-refresh.
+ * Injected timer methods must preserve their host receiver.
+ */
 export function createAdministrativeRefresh({read, publish, onError, visible = () => true,
     period = () => 30000,
     timers = {setTimeout: (run, ms) => globalThis.setTimeout(run, ms), clearTimeout: id => globalThis.clearTimeout(id)}}) {
@@ -29,6 +36,13 @@ export const marketRefreshPeriod = value => value?.job?.status === 'running' ? 2
 
 // A recovery read may finish after a newer stream event or a local edit. Keep
 // status and configuration generations separate so neither rolls the other back.
+/**
+ * Refresh OBS config initially/on reconnect, otherwise status only when supported.
+ * Capture snapshot before a save or status command. saved returns true only when
+ * its configuration still owns the editor; statusResponse independently fences
+ * later SSE status. edited must be called for every draft change. Use methods on
+ * the returned owner (saved calls its statusResponse method).
+ */
 export function createOBSControlRefresh({read, readStatus, publishConfig, publishStatus, onError, visible, timers}) {
     let edit = 0, status = 0, dirty = false, configWanted = true;
     const snapshot = () => ({edit, status});

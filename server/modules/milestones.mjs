@@ -1,7 +1,17 @@
+/**
+ * Registry extension translating fresh dataset transitions into durable events.
+ * The first snapshot establishes a baseline and emits no historical completions.
+ * Skill/job ownership uses receipt time captured by Core before awaited names;
+ * wallet entries instead use their provider occurrence date. Stable pilot/entity
+ * dedupe keys keep repeat observations from repeating timeline rows or toasts.
+ * See docs/INTERNAL-API.md for event ownership and Registry cleanup contracts.
+ */
 import {captureSessionObservation} from '../session-travel.mjs';
 
 export default {
     id: 'milestones', name: 'Milestone events', version: '1.0.0', description: 'Detects completed skill levels and industry jobs for the timeline and optional stream toasts.', scopes: [], datasets: [],
+    // Return asynchronous listener work to the bus, so accepted transitions
+    // finish before Registry/Store teardown. The disposer only removes listeners.
     register(ctx) {
         const off = [];
         off.push(ctx.on('data.skills', async e => {

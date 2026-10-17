@@ -1,4 +1,9 @@
-/** Current ESI sovereignty/systems combines ownership, development and hub windows. */
+/** Adapt current and legacy ESI sovereignty payloads into the shared snapshot
+ * schema. These functions describe observed ownership, never pilot access. */
+/** Accept a legacy row array or current {solar_systems} envelope. Return copied
+ * rows with normalized system/owner/development fields while retaining raw claim
+ * data. Invalid envelopes throw; invalid system IDs are dropped and [] is a valid
+ * complete replacement. Freshness/completeness belongs to the snapshot owner. */
 export function normalizeSovereignty(data) {
     const rows = Array.isArray(data) ? data : data?.solar_systems;
     if (!Array.isArray(rows)) throw new Error('ESI returned an invalid sovereignty snapshot.');
@@ -12,6 +17,8 @@ export function normalizeSovereignty(data) {
     });
 }
 
+/** Derive only reported Sovereignty Hubs from normalized rows. A missing window
+ * marks campaign state; null window endpoints must not be invented from timers. */
 export function sovereigntyStructures(rows) {
     return rows.flatMap(row => {
         const claim = row.claim?.alliance, hub = claim?.sovereignty_hub;

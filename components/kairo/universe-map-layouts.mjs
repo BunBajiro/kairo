@@ -1,7 +1,12 @@
 import {projectKnownSystems} from './universe-map-math.mjs';
 import {schematicLayout} from '../../lib/universe-schematic-layout.mjs';
 
-/** One owner per immutable Atlas systems revision; unselected layouts stay absent. */
+/**
+ * One lazy cache per immutable Atlas systems array; replace this owner when the
+ * dataset revision changes. `get()` returns the cached selected projection, so
+ * callers must not mutate it. Physical scale metadata does not allocate a layout;
+ * schematic work stays absent until selected. See docs/SCHEMATIC-GEOMETRY.md.
+ */
 export function createAtlasLayouts(systems) {
   let physical, schematic, firstSystemId;
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;

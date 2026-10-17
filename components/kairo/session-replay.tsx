@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Session-only playback and controls for the Universe map. A replay loads one
+ * bounded historical snapshot; no live tracking or map connection is created by
+ * playback. All playback offsets/durations are milliseconds, and map timestamps
+ * are UTC ISO strings. See ../../docs/SESSIONS.md for coverage and inference limits.
+ */
 
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Activity, ChevronLeft, ChevronRight, Crosshair, Factory, Film, GraduationCap, MapPin, Pause, Play, Rocket, RotateCcw, SkipBack, SkipForward, Skull, Square, Swords, Trophy, Wallet, X} from 'lucide-react';
@@ -18,6 +24,11 @@ export type SessionReplayData = {
   visits: ReplayVisit[]; events: ReplayEvent[]; systems: any[]; travel: ReplayTravel[];
   coverage: {totalEvents: number; returnedEvents: number; truncated: boolean; omittedEvents: number; suppressedRoutineEvents?: number; missingCoordinateSystemIds: number[]; unlocatedEvents: number; inferredVisitCount: number; gaps: {from: string; to: string; reason: string}[]; notes: string[]};
 };
+/**
+ * Historical frame handed to the map renderer. systemId=null means no locatable
+ * current visit; it is not permission to fall back to the live pilot position.
+ * focusKey distinguishes an explicit seek/follow action from ordinary ticks.
+ */
 export type ReplayMapFrame = {
   systemId: number | null; follow: boolean; smooth: boolean; focusKey: string;
   sovereigntyAtVisit?: ReplaySovereigntyOwner | null;
@@ -54,6 +65,14 @@ function eventPresentation(type: string) {
   return {Icon: Activity, tone: 'activity', label: 'Activity'};
 }
 
+/**
+ * Consume a one-shot Session handoff and own its fixed snapshot, playback clock
+ * and map frame. Reject a different pilot's request; cleanup fences delayed reads
+ * and clears playback timers. seek pauses and snaps; playing enables smooth camera
+ * transitions when following is enabled. A hidden tab advances no replay time.
+ * Consumers must keep replay data
+ * separate from live map topology and treat missing coordinates as a gap.
+ */
 export function useSessionReplay(characterId: number) {
   const [request, setRequest] = useState<ReplayRequest | null>(null), [data, setData] = useState<SessionReplayData | null>(null);
   const [loading, setLoading] = useState(false), [error, setError] = useState(''), [reload, setReload] = useState(0);

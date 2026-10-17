@@ -1,3 +1,4 @@
+/** Atlas gesture math: viewport coordinates are CSS pixels; durations/sample ages are milliseconds. */
 import {clampCamera, zoomCamera} from './universe-map-math.mjs';
 
 /** WheelEvent deltas use pixels, lines or pages depending on browser/device. */
@@ -17,7 +18,11 @@ export function pinchCamera(start, firstMidpoint, midpoint, firstDistance, dista
   return clampCamera({x: midpoint.x - (firstMidpoint.x - start.x) * ratio, y: midpoint.y - (firstMidpoint.y - start.y) * ratio, scale: start.scale * ratio}, bounds, size);
 }
 
-/** A finite release gesture, not an idle physics loop. Old/stationary samples do not coast. */
+/**
+ * Derive one finite coast target from CSS-pixels/ms velocity and ms sample age.
+ * Old/stationary samples or a fully constrained target return null. The renderer
+ * owns the returned animation duration; this helper schedules no ongoing physics.
+ */
 export function dragCoast(camera, velocity, sampleAge, bounds, size) {
   const speed = Math.hypot(velocity.x, velocity.y);
   if (sampleAge > 90 || speed < .08 || !Number.isFinite(speed)) return null;

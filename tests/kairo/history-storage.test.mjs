@@ -17,6 +17,9 @@ async function fixture(t){
     return {dir,store};
 }
 const stored=(store,id=1)=>store.db.prepare('SELECT h.*,m.source FROM market_history h LEFT JOIN market_history_meta m USING(region_id,type_id) WHERE h.region_id=? AND h.type_id=?').get(REGION,id);
+// Reconstruct the pre-migration cache shape and remove its migration marker.
+// Reopening the real Store must apply/rollback migration atomically; mocked SQL
+// would not establish that indexes, metadata and durable player rows survive.
 function legacy(store){
     saveHistory(store,REGION,1,history(),iso(NOW),iso(NOW+DAY),'EVE Ref',NOW);
     store.db.prepare('UPDATE market_history SET body=?').run(JSON.stringify(history()));

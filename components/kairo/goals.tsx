@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Selected-pilot objectives, source choices and private notes. Runtime Goals owns
+ * automatic progress and latched completion; this editor submits manual changes
+ * and reads separate progress/notes/source resources. Notes are private dashboard
+ * data, never input to public Stream rendering. See ../../docs/PILOT-WORKSPACE.md
+ * and ../../docs/INTERNAL-API.md for accounting and resource ownership.
+ */
 import {useEffect,useRef,useState} from 'react';
 import {Plus,Target,Trash2,Check,NotebookPen,ShieldCheck,RefreshCw,Link2,Search,Wallet,BookOpen,Package,Pickaxe,Factory,Swords} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -26,6 +33,9 @@ function saveProgress(id:string,path:string,value:number,csrf:string){
 export function Goals(){
  const {character,boot,goalsRevision,navigate}=useKairo();
  const [goals,setGoals]=useState<any[]>([]),[notes,setNotes]=useState<any[]>([]),[sources,setSources]=useState<any[]>([]),[types,setTypes]=useState<any[]>([]),[show,setShow]=useState(false),[title,setTitle]=useState(''),[target,setTarget]=useState('1'),[source,setSource]=useState('manual'),[typeName,setTypeName]=useState(''),[selectedType,setSelectedType]=useState<any>(null),[typeError,setTypeError]=useState(''),[looking,setLooking]=useState(false),[note,setNote]=useState(''),[busy,setBusy]=useState(false);
+ // Read owners, type lookups and creation dialogs retire independently. An accepted
+ // create may finish after the user opens a new editor; its result/error must not
+ // close or contaminate that later draft.
  const current=useRef(character);current.current=character;const lookup=useRef(0),editor=useRef(0),resource=useRef<ReturnType<typeof createGoalResourceReads>|null>(null),shown=useRef(show),seenRevision=useRef(goalsRevision);shown.current=show;
  const query='?character='+character;
  const load=()=>resource.current?.refresh()||Promise.resolve(),loadGoals=()=>resource.current?.progress()||Promise.resolve();

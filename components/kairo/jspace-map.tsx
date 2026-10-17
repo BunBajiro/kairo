@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * Interactive Maps diagram over a caller-owned saved map plus ephemeral overlays.
+ * React owns scene structure; camera/drag refs paint transforms and affected
+ * edges between commits. Commands and revision conflicts belong to the workspace.
+ * Positions are unscaled diagram units, never physical EVE coordinates.
+ */
+
 import {useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type PointerEvent as ReactPointerEvent} from 'react';
 import {ArrowUpRight, Building2, Check, CircleDot, Clock3, Compass, Crosshair, Expand, Flag, GitBranch, GripVertical, HelpCircle, Home, Link2, LockKeyhole, MapPin, MessageSquare, MoreHorizontal, MousePointer2, Navigation, NotebookPen, Orbit, Plus, Radio, Route, ScanLine, Settings2, ShieldQuestion, Sparkles, Trash2, UnlockKeyhole, Users, X, ZoomIn, ZoomOut} from 'lucide-react';
 import type {UniverseAtlas, UniverseOverlay, UniverseSystem} from './universe-types';
@@ -19,6 +26,11 @@ export type JSpaceMapNode = {displayScale?:number;displayDetail?:'full'|'compact
 export type JSpaceMapConnection = {id:string;link_id?:string;from_port?:ChainPort;to_port?:ChainPort;from_system_id:number;to_system_id:number;life_status?:'unknown'|'stable'|'eol'|'critical'|'collapsed';kind?:string;confirmed?:boolean;accessible?:boolean;active?:boolean;expired?:boolean;enabled?:boolean;mass?:string;wh_type?:string;from_signature?:string;to_signature?:string;max_ship_size?:string|null;expires_at?:string|null;[key:string]:any};
 export type JSpaceMapData = {id:string;name:string;revision:number;description?:string;nodes:JSpaceMapNode[];connections:JSpaceMapConnection[];[key:string]:any};
 export type JSpaceNodeAction = 'inspect'|'notebook'|'route'|'edit'|'remove'|'connect'|'lock'|'structures'|'timers'|'observations'|'comments'|'kspace';
+/**
+ * onMoveNodes/onConnectSystems submit user intent; returning a promise keeps the
+ * preview pending until settlement. allowDragWhileSaving is for the workspace's
+ * serialized layout queue only. `now` is Unix ms shared with expiry projections.
+ */
 export type JSpaceMapProps = {
   atlas:UniverseAtlas;map:JSpaceMapData;overlays?:UniverseOverlay[];characterId?:number;selectedSystemId:number|null;selectedConnectionId?:string|null;
   locationSystemId?:number|null;pilots?:any[];operations?:any;busy?:boolean;allowDragWhileSaving?:boolean;now?:number;fitRequest?:number;frameSystemRequest?:{systemId:number;requestId:number};
@@ -92,6 +104,8 @@ export function JSpaceMap({atlas,map,overlays=[],characterId=0,selectedSystemId,
   const limits=useMemo(()=>chainZoomLimits(cameraNodes,size),[cameraNodes,size]);
   const current=useRef({nodes:cameraNodes,allNodes,size,limits,mapId:map.id,busy,onMoveNodes,onSelectSystem,onSelectConnection,onNodeAction});
   current.current={nodes:cameraNodes,allNodes,size,limits,mapId:map.id,busy,onMoveNodes,onSelectSystem,onSelectConnection,onNodeAction};
+  // Reproject focus detail after 180 ms of settled camera motion; per-frame
+  // membership changes would force the whole dense scene through React again.
   const settleFocus=useRef(()=>{});
   settleFocus.current=()=>{if(focusTimer.current)clearTimeout(focusTimer.current);if(!mapper.focusDetail)return;focusTimer.current=setTimeout(()=>{focusTimer.current=null;if(gesture.current||animation.current)return;setFocusIds(old=>{const next=settledMapFocus(current.current.nodes,cameraRef.current,current.current.size,old);return next.length===old.length&&next.every((id,index)=>id===old[index])?old:next;});},180);};
   useEffect(()=>{settleFocus.current();return()=>{if(focusTimer.current)clearTimeout(focusTimer.current);};},[mapper.focusDetail,map.id,size]);
@@ -181,6 +195,9 @@ export function JSpaceMap({atlas,map,overlays=[],characterId=0,selectedSystemId,
 
   function syncPending(){setDraft(Object.fromEntries([...pendingPositions.current].map(([id,value])=>[id,value.position])));}
   function clearSettled(){const active=gesture.current;for(const [id,value] of pendingPositions.current)if(value.settled&&!(active?.kind==='node'&&active.originals.some(node=>node.system_id===id)))pendingPositions.current.delete(id);syncPending();}
+  // Keep newer pending drags visible while an older save settles. Per-node
+  // versions prevent that older completion from clearing a later preview; scope
+  // identity prevents an old map/pilot response touching the current scene.
   function persistPositions(positions:NodePosition[],version:number,scope=interactionScope.current){
     for(const position of positions)pendingPositions.current.set(position.system_id,{version,position,settled:false});syncPending();
     Promise.resolve().then(()=>interactionScope.current===scope?onMoveNodes(positions):null).catch(()=>null).finally(()=>{
@@ -188,6 +205,8 @@ export function JSpaceMap({atlas,map,overlays=[],characterId=0,selectedSystemId,
       for(const position of positions){const value=pendingPositions.current.get(position.system_id);if(value?.version===version)value.settled=true;}clearSettled();
     });
   }
+  // The gesture captures only moved cards and incident edges. Pointer moves
+  // touch that set, avoiding a full graph/layout/React pass for every event.
   function paintDrag(active:Extract<Gesture,{kind:'node'}>){
     const moved=new Map(active.positions.map(position=>[position.system_id,position]));
     for(const [id,element] of active.elements){const position=moved.get(id)!;element.style.translate=`${position.x-parseFloat(element.style.left||'0')}px ${position.y-parseFloat(element.style.top||'0')}px`;element.classList.add('is-dragging');}

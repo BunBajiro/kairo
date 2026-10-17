@@ -1,6 +1,9 @@
-// Enrichment is optional metadata over an already accepted dataset. Limit the
-// local fan-out; ESI remains the owner of global capacity, priority and caching.
-// Results follow input order even when independent requests finish out of order.
+/**
+ * Enrich an accepted dataset in input order with at most four visits in flight.
+ * ESI still owns global capacity, priority and caching. The first rejection
+ * stops new admission and is rethrown after in-flight siblings settle; callback
+ * side effects are not rolled back. Core must await the returned promise.
+ */
 export async function mapEnrichment(values, visit) {
     const results = new Array(values.length);
     let next = 0, failed = false, failure;

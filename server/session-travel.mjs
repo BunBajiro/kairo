@@ -1,3 +1,9 @@
+/**
+ * Session-owned observation capture and durable movement. Capture eligibility at
+ * local receipt before asynchronous enrichment, then retain that owner through
+ * publication; new unowned movement never enters the lifetime visits ledger.
+ * See ../docs/ARCHITECTURE.md and ../docs/SESSIONS.md.
+ */
 import { captureVisitSovereignty } from './visit-sovereignty.mjs';
 const validId = value => Number.isSafeInteger(value) && value > 0;
 
@@ -17,6 +23,7 @@ export function readSessionVisits(store, session, end, { inclusiveEnd = false } 
         .all(session.character_id, session.started, end, session.id);
 }
 
+/** Compatibility lookup only: the latest unowned visit at/before this Session start. */
 export function legacySessionStart(store, session) {
     return store.db.prepare(`SELECT * FROM visits WHERE character_id=? AND session_id IS NULL
         AND at<=? ORDER BY at DESC,id DESC LIMIT 1`).get(session.character_id, session.started);
@@ -55,8 +62,13 @@ export function recordSessionShipBaseline(store, characterId, ship, observation)
             observation.sessionId, characterId, observation.at, observation.at);
 }
 
-// Durable rows/start context reconstruct the baseline after restart. A delayed
-// accepted observation can belong to a now-ended session, never its successor.
+/**
+ * Durable rows/start context reconstruct the baseline after restart. A delayed
+ * accepted observation can belong to a now-ended Session, never its successor.
+ * Return the inserted {id, sessionId}, or null for invalid, unowned or unchanged
+ * movement. Omitted observation captures synchronously; asynchronous callers
+ * must pass their original capture rather than recalculate ownership after await.
+ */
 export function recordSessionObservation(store, { characterId, systemId, name, shipTypeId, at, sovereignty, observation }) {
     if (!validId(characterId) || !validId(systemId)) return null;
     const captured = observation || captureSessionObservation(store, { characterId, systemId, at });

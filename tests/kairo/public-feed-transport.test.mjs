@@ -22,6 +22,9 @@ const packet = (sequence, now) => ({ sequence_id: sequence, killmail_id: sequenc
     esi: { killmail_id: sequence, killmail_time: new Date(now - 1000).toISOString(), solar_system_id: 30000001,
         victim: { character_id: 99, ship_type_id: 587, alliance_id: 88 }, attackers: [{ character_id: 42, alliance_id: 77 }] },
     zkb: { hash: 'a'.repeat(40), totalValue: sequence * 1000 } });
+// Disable courtesy spacing for sharing/body-limit cases, then override it in
+// dedicated pacing cases. Request-count/buffer bounds are not elapsed benchmarks.
+// Returned Responses remain real one-shot bodies even though transport is injected.
 function transport(t, options = {}) {
     const value = createPublicFeedTransport({ spacingMs: 0, ...options });
     t.after(() => value.close()); return value;

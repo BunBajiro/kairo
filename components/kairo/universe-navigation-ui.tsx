@@ -1,4 +1,12 @@
 "use client";
+
+/**
+ * Edit a pilot/map itinerary, request plans and explicitly send accepted waypoints
+ * to EVE. Draft fields, saved revision and calculated plan are separate owners:
+ * changed input invalidates displayed/sendable results but does not undo a save
+ * already accepted by the server. Range values are light-years and ship mass kg.
+ * See docs/UNIVERSE-ROUTING-VALIDATION.md for the owning planner's rules.
+ */
 import {systemLocationLabel} from './universe-presentation.mjs';
 import {navigationPlanForDraft} from './universe-navigation-state.mjs';
 import {useEffect,useMemo,useRef,useState} from 'react';
@@ -28,6 +36,9 @@ export function UniverseNavigation({atlas,intel,mapId,draft,onDraftChange,onResu
  useEffect(()=>{if(mapId)void loadScope().catch(failure=>{if(alive.current)setError(message(failure));});},[mapId,character,intel?.navigation]);
  const previousDraft=useRef(draft.from+'|'+draft.to),ignoreDraft=useRef<string|null>(null);
  const resultItinerary=useRef<any>(null);
+ // Request IDs fence displayed results; calculation IDs separately own the
+ // busy state. Saved revisions still advance when an accepted save completes,
+ // even if a subsequent edit has made its calculated result obsolete.
  const revision=useRef<number|undefined>(undefined),initialized=useRef<string>(''),dirty=useRef(false),alive=useRef(true),requestId=useRef(0),calculationId=useRef(0),rangeRequest=useRef(0);
  const rangeKey=JSON.stringify([scopeKey,rangeRows,rangeDestination,hostile,avoidLow,avoidNull]);
  const rangeScope=useRef({key:rangeKey,revision:0});
@@ -47,6 +58,9 @@ export function UniverseNavigation({atlas,intel,mapId,draft,onDraftChange,onResu
  function updateStops(next:typeof stops){setStops(next);invalidate();}
  function addStop(){try{const system=resolve(draft.to);updateStops([...stops,{id:uniqueId(),systemId:system.system_id,label:system.name}]);onDraftChange({...draft,to:''});setError('');}catch(error){setError(message(error));}}
  function moveStop(index:number,direction:number){const next=[...stops],other=index+direction;if(other<0||other>=next.length)return;[next[index],next[other]]=[next[other],next[index]];updateStops(next);}
+ // Persist the captured itinerary before planning. A planning failure leaves
+ // the accepted itinerary intact; retry uses its returned revision. Sending to
+ // EVE is a separate explicit action against a currently matching plan.
  async function calculate(event?:React.FormEvent){event?.preventDefault();setError('');setBusy(true);const run=++requestId.current,calculation=++calculationId.current;try{const origin=resolve(draft.from),next=[...stops];if(draft.to.trim()){const destination=resolve(draft.to);next.push({id:uniqueId(),systemId:destination.system_id,label:destination.name});}if(!next.length)throw new Error('Add a destination or a waypoint.');const avoidSystemIds=avoids.split(',').filter(Boolean).map(name=>resolve(name).system_id);const payload={originId:origin.system_id,kind:tool==='jump'?'jump':'gate',stops:next,rangeLy:Number(range),followLocation,...(tool==='jump'&&shipClass!=='custom'&&shipPresets.some((row:any)=>row.id===shipClass)?{rangePreset:{shipClass,jumpDriveCalibration:Number(jdc)}}:{}),revision:revision.current,preferences:{mode,useAnsiblex:ansiblex,useWormholes:wormholes,avoidHostile:hostile,avoidLowsec:avoidLow,avoidNullsec:avoidNull,avoidSystemIds,ansiblexRules:rules,maxAnsiblexZone:Number(maxZone),ansiblexZones:zones,useThera:thera,useTurnur:turnur,useZarzakh:zarzakh,shipSize:shipSize==='unspecified'?null:shipSize,shipMassKg:shipMass?Number(shipMass):null,shipClass:tool==='jump'?shipClass:gateHull,allowUnknownWormholeSize:unknownSize}};const saved=await api('/universe/navigation/itinerary?character='+character,'PUT',payload,boot.csrf);revision.current=saved.itinerary?.revision??saved.revision;const planned=await api('/universe/navigation/plan?character='+character,'POST',tool==='jump'&&fuelEnabled?{fuel:{isotopeUnitsPerLy:Number(fuelRate),consumptionMultiplier:Number(fuelMultiplier),reservePercent:Number(fuelReserve),...(fuelVolume?{unitVolumeM3:Number(fuelVolume)}:{}),...(fuelPrice?{unitPriceISK:Number(fuelPrice)}:{}),isotope}}:{},boot.csrf);if(!alive.current||run!==requestId.current)return;setStops(next);ignoreDraft.current=draft.from+'|';onDraftChange({...draft,to:''});resultItinerary.current=saved.itinerary;setResult(planned.plan||planned);onResult(planned.plan||planned);dirty.current=false;setSendResult(null);await onReload();}catch(error){if(alive.current&&run===requestId.current)setError(message(error));}finally{if(alive.current&&calculation===calculationId.current)setBusy(false);}}
  async function clear(){const key=scopeKey;invalidate();setError('');setBusy(true);try{const cleared=await api('/universe/navigation/itinerary?character='+character,'DELETE',undefined,boot.csrf);if(!alive.current||activeScope.current!==key)return;setStops([]);revision.current=cleared.itinerary?.revision??cleared.revision;onDraftChange({...draft,to:''});await onReload();}catch(error){if(alive.current&&activeScope.current===key)setError(message(error));}finally{if(alive.current&&activeScope.current===key)setBusy(false);}}
  function routeText(format='text'){const result=activeResult;if(!result)return '';const ids=result.systemIds||[];if(format==='eve')return ids.map((id:number)=>'<url=showinfo:5//'+id+'>'+ (byId.get(id)?.name||id)+'</url>').join(' → ');return [tool==='jump'?'Kairo jump itinerary':'Kairo gate itinerary',...ids.map((id:number,index:number)=>{const edge=result.edges?.[index-1];return (byId.get(id)?.name||id)+(edge?' · '+edge.kind+(typeof edge.distance_ly==='number'?' · '+edge.distance_ly.toFixed(2)+' LY':''):'');}),...(result.warnings||[]).map((warning:string)=>'Note: '+warning)].join('\n');}

@@ -1,11 +1,24 @@
+/**
+ * Session collector for the public R2Z2 sequence feed. Core may inject its shared
+ * raw transport, but this owner retains its own durable cursor and retry policy.
+ * The accept callback verifies/persists relevant records before acknowledgment.
+ * See ../docs/SESSIONS.md for live versus settling collection.
+ */
 import {setTimeout as delay} from 'node:timers/promises';
 import {SESSION_LIVE_INTERVAL,SESSION_RECHECK_WINDOW} from './session-policy.mjs';
 
 const origin='https://r2z2.zkillboard.com/ephemeral/',key='session:live-feed';
 const iso=at=>new Date(at).toISOString(),validId=id=>Number.isSafeInteger(id)&&id>0;
 
-// One shared, bounded cursor for the installation. Unrelated public packets
-// are discarded by accept; they are never retained as a global killmail cache.
+/**
+ * One bounded cursor serves the installation. accept discards unrelated packets;
+ * they are never retained as a global killmail cache.
+ * getTargets builds current live owners only when due; isTargetActive rechecks
+ * them after awaits. accept must reject until matching records are durable, or
+ * the cursor advances. force bypasses cadence, never a persisted cooldown.
+ * One sync flight is shared; close aborts transport and awaits accepted work.
+ * maxItems and budgetMs bound each pass (budget checked between packet requests).
+ */
 export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,onCheck=()=>{},fetcher=fetch,now=Date.now,spacingMs=200,maxItems=300,budgetMs=45000}={}){
  let pending=null,closed=false,lastRequest=0;
  const controller=new AbortController();

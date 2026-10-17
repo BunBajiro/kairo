@@ -1,10 +1,18 @@
+/**
+ * Shared parameterized event membership for Session reports and replay. Keep
+ * boundary fixes here so both consumers agree; presentation and caps stay with
+ * each consumer. See ../docs/SESSIONS.md.
+ */
 import { sessionObservationOwnershipSql } from './session-travel.mjs';
 
-// Shared event membership only: reports own aggregation/pagination and replay
-// owns suppression, limits and its fixed snapshot. Killmails use occurrence
-// time; other events at an exact boundary use captured cursors. An owned end
-// event may arrive after the end cursor, as may accepted fresh observations.
-// A missing session_id is legacy evidence; explicit JSON null means unowned.
+/**
+ * Killmails use occurrence time; other events at an exact boundary use captured
+ * cursors. An owned end event or accepted observation may arrive after the end
+ * cursor. A missing session_id is legacy evidence; explicit JSON null is unowned.
+ * Return SQL where/params in matching placeholder order. prefix is a trusted
+ * internal column alias (for example 'e.'), never request input. eventCursor,
+ * when supplied, fences newly inserted events without changing boundary ownership.
+ */
 export function sessionEventWindow(session, start, finish, end, { prefix = '', eventCursor } = {}) {
     const column = name => prefix + name;
     const at = column('at'), id = column('id'), type = column('type'), payload = column('payload');

@@ -1,9 +1,21 @@
+/**
+ * Shared system metadata, private entity notes and cold legacy Journey adapters.
+ * Modern discovery and travel belong to discovery.mjs/session-travel.mjs; do not
+ * route routine Universe reads through the lifetime Journey aggregation below.
+ * See ../docs/ARCHITECTURE.md for the retained compatibility boundary.
+ */
 import { getUniverseSystem } from './universe-static.mjs';
+/** Persist coordinates in metres, preserving known coordinates/region fields when omitted. */
 export function rememberSystem(store, system, constellation, region) {
  if (!system?.system_id) return;
  const p=system.position||{};
  store.db.prepare(`INSERT INTO universe_systems VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(system_id) DO UPDATE SET name=excluded.name,constellation_id=excluded.constellation_id,constellation_name=COALESCE(excluded.constellation_name,constellation_name),region_id=COALESCE(excluded.region_id,region_id),region_name=COALESCE(excluded.region_name,region_name),security=excluded.security,x=COALESCE(excluded.x,x),y=COALESCE(excluded.y,y),z=COALESCE(excluded.z,z)`).run(system.system_id,system.name||String(system.system_id),system.constellation_id||null,constellation?.name||null,constellation?.region_id||region?.region_id||null,region?.name||null,system.security_status??null,p.x??null,p.y??null,p.z??null);
 }
+/**
+ * Prefer the process-selected static dataset, otherwise resolve ESI hierarchy.
+ * Both paths update local system metadata; network/ESI failure rejects unchanged
+ * through this helper rather than producing a fabricated system.
+ */
 export async function getSystem(store,esi,id) {
  const local=getUniverseSystem(id,{celestials:false});
  if(local){const result={...local,security_status:local.security,position:{x:local.x,y:local.y,z:local.z}};rememberSystem(store,result,local.constellation,local.region);return result;}
@@ -19,6 +31,7 @@ export function journeyData(store,characterId){
  return {visits,
  connections:visits.slice(0,-1).map((to,i)=>{const from=visits[i+1];return {id:to.id,from_visit_id:from.id,to_visit_id:to.id,from_system_id:from.system_id,to_system_id:to.system_id,from_name:from.name,to_name:to.name,at:to.at,hidden:hidden.has(from.id+':'+to.id)};}).filter(e=>e.from_system_id!==e.to_system_id),
  systems:store.db.prepare(`SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? AND session_id IS NULL GROUP BY v.system_id ORDER BY last DESC`).all(characterId).map(s=>({...s,tags:JSON.parse(s.tags||'[]')}))};}
+/** Hide/restore one existing pilot-owned legacy edge without deleting or joining visits. */
 export function setJourneyConnection(store,characterId,toVisitId,hidden){
  if(!Number.isSafeInteger(toVisitId)||toVisitId<1||typeof hidden!=='boolean')throw new Error('Choose a recorded connection to hide or restore.');
  const to=store.db.prepare('SELECT * FROM visits WHERE id=? AND character_id=? AND session_id IS NULL').get(toVisitId,characterId);
@@ -29,6 +42,10 @@ export function setJourneyConnection(store,characterId,toVisitId,hidden){
  else store.db.prepare('DELETE FROM journey_hidden_links WHERE character_id=? AND from_visit_id=? AND to_visit_id=?').run(characterId,from.id,to.id);
  return {id:to.id,hidden};
 }
+/**
+ * Upsert a private installation-wide entity annotation (not pilot-scoped).
+ * Invalid entity/kind throws; text/tags are bounded and unknown status becomes none.
+ */
 export function savePlaceNote(store,kind,entityId,input){
  if(!['system','constellation','region'].includes(kind)||!Number.isSafeInteger(entityId)||entityId<1)throw new Error('Choose a system, constellation or region.');
  const name=String(input.name||entityId).trim().slice(0,100),body=String(input.body||'').slice(0,12000),tags=[...new Set((Array.isArray(input.tags)?input.tags:[]).map(t=>String(t).trim().slice(0,32)).filter(Boolean))].slice(0,12),status=['none','home','staging','watch','avoid','opportunity'].includes(input.status)?input.status:'none',updated=new Date().toISOString();

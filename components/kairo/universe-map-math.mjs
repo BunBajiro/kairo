@@ -1,4 +1,9 @@
-/** Camera and political geometry are independent of filters, data refreshes and DOM. */
+/**
+ * Pure Atlas camera/territory math, independent of filters and DOM. Physical
+ * map_x/map_y are projected light-years; this projection normalizes the longest
+ * known-space extent to 1,000 world units. Camera translation and viewport sizes
+ * use CSS pixels, with `scale` pixels per world unit. See docs/UNIVERSE-DATA.md.
+ */
 export function projectKnownSystems(systems) {
   const known = systems.filter(system => system.space === 'known' && Number.isFinite(system.map_x) && Number.isFinite(system.map_y));
   if (!known.length) return [];
@@ -7,6 +12,7 @@ export function projectKnownSystems(systems) {
   return known.map(system => ({system, x: (system.map_x - bounds.minX) * scale, y: (system.map_y - bounds.minY) * scale}));
 }
 
+/** Extents for finite caller-supplied world points; empty input uses a finite 100-unit square. */
 export function pointBounds(points) {
   if (!points.length) return {minX: 0, minY: 0, maxX: 100, maxY: 100};
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -92,6 +98,7 @@ export function createTerritoryGeometry(points, radius = 24) {
   return {points, cells, buckets, radius};
 }
 
+/** Return the containing cell index for a world point, or -1 outside the clipped partition. */
 export function territoryOwnerAt(geometry, x, y) {
   const {radius, points, cells, buckets} = geometry, gx = Math.floor(x / radius), gy = Math.floor(y / radius);
   let best = -1, distance = Infinity;

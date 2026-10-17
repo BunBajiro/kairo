@@ -1,6 +1,16 @@
 // One read in flight and one retained invalidation for a mounted resource scope.
 // Busy/hidden owners keep invalidations until resume; explicit reads may force a
 // refresh (for example conflict recovery inside a mutation).
+/**
+ * Create a read owner; call close on unmount or identity change. `request` returns
+ * a drain waiter, not the read value: read/publish failures go to onError and do
+ * not reject it. A paused initial request waits for resume, force or close.
+ *
+ * One in-flight result may publish before its retained follow-up. Consumers needing
+ * stricter event/draft ordering must add their own fence. close suppresses callbacks
+ * and releases waiters but does not abort transport or cancel server-side work.
+ * See ../../docs/INTERNAL-API.md for read versus accepted-write ownership.
+ */
 export function createScopedRefresh({read, publish, canRead = () => true, onError = () => {}}) {
     let closed = false, running = false, dirty = false, forced = false, completion = null;
     function complete() {const waiting = completion; completion = null; waiting?.resolve();}

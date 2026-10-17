@@ -1,3 +1,6 @@
+/** Nearest-service/exit search for a selected private map. Shared routing rules
+ * decide eligible edges; the dated destination catalogue identifies candidates,
+ * never current services, docking rights or live NPC orders. */
 import {readFileSync} from 'node:fs';
 import {buildTravelGraph,wormholeShipRestriction} from './universe-routing.mjs';
 
@@ -8,6 +11,8 @@ export const DESTINATION_CATEGORIES = Object.freeze([
     {id:'thera',label:'Thera entrances'}, {id:'turnur',label:'Turnur entrances'},
 ].map(Object.freeze));
 let catalogue;
+/** Read the bundled reference once and return a detached copy. Disk/JSON failures
+ * throw; this supplementary catalogue is not refreshed by an official SDE update. */
 export function destinationCatalogue(){
     if(!catalogue)catalogue=JSON.parse(readFileSync(new URL('./data/universe-destinations.json',import.meta.url),'utf8'));
     return structuredClone(catalogue);
@@ -47,7 +52,12 @@ class Queue{
     pop(){const first=this.items[0],last=this.items.pop();if(this.items.length){let i=0;while(i*2+1<this.items.length){let c=i*2+1;if(c+1<this.items.length&&this.less(this.items[c+1],this.items[c]))c++;if(!this.less(this.items[c],last))break;this.items[i]=this.items[c];i=c;}this.items[i]=last;}return first;}
 }
 
-/** Pure read-only search. Callers supply server-owned pilot/chain/feed context. */
+/** Read-only search over server-owned pilot/map/feed context (now is epoch ms).
+ * Validate category/security and a result limit of 1–10, then run one Dijkstra
+ * traversal for all candidates. Return ok/no_route, exact route edges, reference
+ * provenance and up to 100 exclusion reasons; invalid requests throw. The default
+ * reference is loaded lazily from disk, but no network or database writes occur.
+ */
 export function findNearestDestinations({systems=[],gates=[],connections=[],feeds={},preferences={},originId,category='highsec',limit=5,security='any',now=Date.now(),reference=destinationCatalogue()}={}){
     if(!DESTINATION_CATEGORIES.some(row=>row.id===category))throw new Error('Choose a supported destination category.');
     if(!Number.isInteger(limit)||limit<1||limit>10)throw new Error('Choose between one and ten destination results.');

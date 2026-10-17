@@ -1,15 +1,30 @@
+/**
+ * Private Session commands, boundary snapshots and paginated reports. Session
+ * ownership is per pilot; travel, combat and LP projections retain their own
+ * evidence rules in the session-* helpers. See ../docs/SESSIONS.md.
+ */
 import {randomUUID} from 'node:crypto';
 import {snapshotFresh} from './polling.mjs';
 import {loyaltySample,reconcileSessionLoyalty,sessionDetails} from './session-details.mjs';
 import {captureVisitSovereignty} from './visit-sovereignty.mjs';
 import {readSessionVisits} from './session-travel.mjs';
 import {sessionEventWindow} from './session-event-window.mjs';
+/**
+ * Capture fresh enabled-source baselines and the current event cursor without
+ * collecting data. Missing values remain null with explicit coverage; do not
+ * backfill the baseline from a later snapshot.
+ */
 export function captureContext(store,characterId){
  const owners={wallet:'wallet',journal:'wallet',skills:'training',location:'pilot',ship:'pilot',profile:'pilot',loyalty:'combat',killmails:'combat',jobs:'industry'};
  const snap=key=>{const s=store.snapshot(characterId,key);return store.get('module:'+owners[key],true)&&snapshotFresh(s)?s:null;},wallet=snap('wallet'),skills=snap('skills'),location=snap('location'),ship=snap('ship'),profile=snap('profile');
  const capturedAt=new Date().toISOString();
  return {capturedAt,eventCursor:store.db.prepare('SELECT COALESCE(MAX(id),0) id FROM events').get().id,wallet:wallet?{value:wallet.data,sampledAt:wallet.updatedAt}:null,skillpoints:skills?.data?.total_sp??null,system:location?{id:location.data.solar_system_id,name:location.data.system?.name,sovereignty_at_visit:captureVisitSovereignty(store,location.data.solar_system_id,capturedAt)}:null,shipTypeId:ship?.data?.ship_type_id||null,ship:ship?{id:ship.data.ship_id,name:ship.data.ship_name,sampledAt:ship.updatedAt}:null,alliance:profile?.data?.alliance_id?{id:profile.data.alliance_id,name:profile.data.alliance?.name||store.get('names',{})[profile.data.alliance_id],sampledAt:profile.updatedAt}:null,loyalty:loyaltySample(snap('loyalty')),coverage:Object.fromEntries(['wallet','journal','skills','jobs','killmails','location','ship','profile','loyalty'].map(key=>[key,!store.get('module:'+owners[key],true)?'disabled':snap(key)?'ready':store.snapshot(characterId,key)?.status==='ready'?'stale':store.snapshot(characterId,key)?.status||'waiting']))};
 }
+/**
+ * Start/end one pilot's active Session, persist its boundary before publishing
+ * the semantic event, and return {id}. Duplicate starts, invalid actions and
+ * ending without an active Session throw. Caller owns pilot authorization.
+ */
 export function changeSession(store,publish,characterId,input){
  if(!characterId)throw new Error('Connect a character before starting a session.');const active=store.db.prepare('SELECT * FROM sessions WHERE character_id=? AND ended IS NULL').get(characterId),at=new Date().toISOString();
  if(input.action==='start'){
@@ -23,6 +38,12 @@ export function changeSession(store,publish,characterId,input){
  if(input.action==='end'&&active){store.db.prepare('UPDATE sessions SET ended=?,end_context=? WHERE id=?').run(at,JSON.stringify(captureContext(store,characterId)),active.id);publish({type:'session.ended',module:'sessions',characterId,at,summary:'Session ended: '+active.label,payload:{session_id:active.id,session_name:active.label,duration_minutes:Math.floor((Date.parse(at)-Date.parse(active.started))/60000)}});return {id:active.id};}
  throw new Error('There is no active session to end.');
 }
+/**
+ * Read an owned Session and 100 events at an offset. Reuse returned eventCursor
+ * and eventEnd on later pages to hold event membership stable; detail projections
+ * can still gain delayed evidence. Unknown ownership/invalid snapshot bounds throw.
+ * Report durations are seconds, wallet values ISK, and unavailable deltas null.
+ */
 export function sessionReport(store,id,characterId,offset=0,paging={}){
  const session=store.db.prepare('SELECT * FROM sessions WHERE id=? AND character_id=?').get(id,characterId);if(!session)throw new Error('Session not found for this character.');
  const currentEnd=session.ended||new Date().toISOString(),maxCursor=store.db.prepare('SELECT COALESCE(MAX(id),0) id FROM events').get().id;

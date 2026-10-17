@@ -1,3 +1,11 @@
+/**
+ * Pure card, connector and camera geometry for private Maps. Node positions, card
+ * dimensions and SVG paths use unscaled diagram units (CSS pixels at zoom 1).
+ * Camera x/y, gesture deltas, zoom anchors and viewport sizes use CSS pixels;
+ * connection hit-test/preview points use diagram units after inverse projection.
+ * None of these positions establish physical distance or navigable EVE routes.
+ * Shared schematic placement is described in docs/SCHEMATIC-GEOMETRY.md.
+ */
 export const CHAIN_NODE_WIDTH = 264;
 export const CHAIN_NODE_HEIGHT = 84;
 export const CHAIN_MAX_ZOOM = 1.8;
@@ -10,6 +18,7 @@ export function chainNodeSize(node) {
   return {width: CHAIN_NODE_WIDTH * scale, height: CHAIN_NODE_HEIGHT * scale};
 }
 
+/** Bounds include whole scaled cards; an empty scene retains a finite one-card envelope. */
 export function chainBounds(nodes) {
   const valid = (nodes || []).filter(node => finite(node.x) && finite(node.y));
   if (!valid.length) return {minX: 0, minY: 0, maxX: CHAIN_NODE_WIDTH, maxY: CHAIN_NODE_HEIGHT};
@@ -29,6 +38,7 @@ export function chainZoomLimits(nodes, viewport) {
   return {min: fitChainCamera(nodes, viewport).zoom, max: CHAIN_MAX_ZOOM};
 }
 
+/** Keep the world point under the viewport-local pointer fixed while clamping zoom. */
 export function zoomChainAt(camera, point, factor, limits = {min: .12, max: CHAIN_MAX_ZOOM}) {
   const zoom = clamp(camera.zoom * factor, limits.min, limits.max);
   const worldX = (point.x - camera.x) / camera.zoom, worldY = (point.y - camera.y) / camera.zoom;
@@ -98,7 +108,14 @@ export function placeChainEdgeLabels(edges, nodes) {
   });
 }
 
-/** A topology trace is deliberately separate from ship/access-aware travel planning. */
+/**
+ * Deterministic shortest-hop trace through recorded diagram edges. Disabled edges
+ * are excluded; gates/Ansiblexes are permanent and only directional edges are
+ * one-way. Wormholes with explicit expired/collapsed state or an elapsed expiry
+ * at `now` (Unix ms) are excluded; missing/unparseable expiry does not block a
+ * topology trace. Missing endpoints/no path return empty arrays. This does not evaluate
+ * ship size, mass, confirmation or access: navigation owns travel planning.
+ */
 export function traceChainPath(nodes, connections, fromId, toId, now = Date.now()) {
   const present = new Set(nodes.map(node => node.system_id));
   if (!present.has(fromId) || !present.has(toId)) return {nodes: [], edges: []};

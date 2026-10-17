@@ -1,8 +1,15 @@
+/** Event adapter from fresh Pilot observations to the independent Session,
+ * discovery and activity owners. See docs/SESSIONS.md for boundary attribution. */
 import { captureSessionObservation, recordSessionObservation, recordSessionShipBaseline } from './session-travel.mjs';
 import { recordDiscoveredSystem } from './discovery.mjs';
 
 // Fresh Pilot observations feed Sessions, discovery and activity independently.
 // Keep the registration name for Core; the retired lifetime log owns no writes.
+/** Register location/ship listeners and return their synchronous unsubscribe.
+ * Return enrichment promises to the bus so its drain retains Store/ESI ownership.
+ * Captured observation identity/time/session precede optional name lookup; no
+ * active Session means discovery/activity can advance without a new movement row.
+ * Unsubscribe prevents new delivery; the bus owner drains already accepted work. */
 export function registerUniverseHistory({ store, bus, esi, publish, now = Date.now }) {
     const off = [];
     off.push(bus.on('data.location', async e => {

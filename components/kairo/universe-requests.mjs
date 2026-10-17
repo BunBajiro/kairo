@@ -1,6 +1,11 @@
 const KEYS = new Set(['kairo-universe-tab', 'kairo-system-lookup', 'kairo-universe-settings-tab', 'kairo-universe-replay']);
 
-/** One-shot workspace handoffs remain usable when browser storage is unavailable. */
+/**
+ * Four fixed one-shot workspace handoff slots, backed by sessionStorage with an
+ * in-memory fallback. `set` replaces that slot; `take` consumes it and returns
+ * text or null. Unsupported keys/non-string values throw; storage errors do not.
+ * Requests are navigation intent, never authoritative map or saved-view records.
+ */
 export function createUniverseRequests(storage = () => globalThis.sessionStorage) {
   // At most four slots. A consumed null also prevents an old persisted request
   // returning if removeItem failed and storage subsequently becomes available.

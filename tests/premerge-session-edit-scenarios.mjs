@@ -1,3 +1,6 @@
+// Imported compiled-UI scenarios with real persisted Session rows. Delayed report
+// reads may lose UI ownership after navigation, while storage-denial fixtures test
+// the in-memory replay handoff. The parent owns browser/runtime teardown.
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 

@@ -1,3 +1,4 @@
+/** Frontend wire/display contracts for the static Atlas and private pilot intelligence; see docs/API-REFERENCE.md. */
 export type UniverseBackground = 'power_blocs' | 'sovereignty' | 'standings' | 'security' | 'activity' | 'none';
 export type UniverseIndicator = 'none' | 'ship_kills' | 'pod_kills' | 'npc_kills' | 'npc_delta' | 'adm' | 'jumps' | 'mining' | 'industry' | 'fw' | 'incursions';
 export type UniverseStandingFilter = 'all' | 'friendly' | 'hostile' | 'neutral' | 'unknown';
@@ -17,6 +18,12 @@ export type WormholeReference = {
  effect:{name:string;power:number;modifiers:{name:string;value:string|number;positive:boolean}[]}|null;
  source:string;sourceRevision:string;sdeBuild:string|number;referenceOnly:true;
 };
+/**
+ * x/y/z are physical metres. map_x/map_y are X/negative-Z projected light-years;
+ * schematic_x/y are CCP diagram coordinates scaled by the same distance constant,
+ * not physical jump distances. security_known=false preserves missing replay data.
+ * See docs/UNIVERSE-DATA.md and docs/SCHEMATIC-GEOMETRY.md.
+ */
 export type UniverseSystem = {
   system_id: number; name: string; constellation_id: number; constellation_name: string;
   region_id: number; region_name: string; security: number; security_known?:boolean; x: number; y: number; z: number;
@@ -31,6 +38,7 @@ export type UniverseAtlas = {
   constellations: {constellation_id:number;name:string;region_id:number;[key:string]:unknown}[];
   gates: any[];
 };
+/** Sparse observed overlays; absent/null activity is unavailable, not an observed zero. Consult source status/defaults. */
 export type UniverseOverlay = {
  system_id:number;
  power_bloc?: UniversePowerBlocMembership | null;
@@ -52,6 +60,7 @@ export type UniversePowerBlocMembership = {
  source:'configured'|'inferred'|'independent'|'unassigned';
  evidence?:Record<string,any>;[key:string]:any;
 };
+/** Pilot-scoped private read model. This may contain notes/location and must not be sent directly to OBS. */
 export type UniverseIntel = {
  character_id:number;location?:{system_id?:number;status?:string;updatedAt?:string;expiresAt?:string;source?:string};systems:UniverseOverlay[];
  sources:Record<string,UniverseSource>;links:UniverseLink[];link_lists:any[];pins:any[];views:UniverseView[];

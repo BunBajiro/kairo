@@ -1,3 +1,7 @@
+/** Pure graph and physical-range planners used by Universe/Navigation.
+ * Callers own observation freshness, pilot evidence and request lifetime. A route
+ * is a projection, never an EVE command or proof of safe passage. Contract and
+ * source ownership: docs/UNIVERSE-ROUTING-VALIDATION.md. */
 // Routing deliberately consumes physical coordinates and explicit travel settings.
 // Map projection, visible layers and journey trails are never graph inputs.
 // EVE's exact light-year differs from the scientific unit. Using the latter
@@ -34,6 +38,9 @@ export const JUMP_SHIP_PRESETS = Object.freeze([
     {id:'lancer',label:'Lancer dreadnought',baseRangeLy:4,source:'https://esi.evetech.net/universe/types/77283',verifiedAt:'2026-09-25'},
     {id:'custom',label:'Other hull / in-game range',baseRangeLy:null,source:null},
 ].map(Object.freeze));
+/** Resolve an unmodified hull/JDC range in EVE LY. custom uses rangeLy directly;
+ * other presets apply 20% per integer skill level (0–5). Throw for unknown hulls
+ * or an effective range outside (0,20]. Returned assumptions exclude other bonuses. */
 export function jumpRangeForShip({shipClass='custom',jumpDriveCalibration=5,rangeLy}={}) {
     const skill=Number(jumpDriveCalibration),preset=JUMP_SHIP_PRESETS.find(p=>p.id===shipClass);
     if(!Number.isInteger(skill)||skill<0||skill>5)throw new Error('Jump Drive Calibration must be between 0 and 5.');
@@ -42,6 +49,10 @@ export function jumpRangeForShip({shipClass='custom',jumpDriveCalibration=5,rang
     if(!Number.isFinite(range)||range<=0||range>20)throw new Error('Enter an effective jump range above 0 and no greater than 20 LY.');
     return {shipClass,baseRangeLy:preset.baseRangeLy,jumpDriveCalibration:skill,rangeLy:range,source:preset.source,assumption:'Unmodified hull and Jump Drive Calibration only; override with in-game effective range for special hulls or bonuses.'};
 }
+/** Estimate only kind=jump edges from explicit isotope units/LY and multiplier.
+ * Round units up per leg, then add/round reserve once. Optional m³/unit and ISK/unit
+ * yield null totals when unknown; invalid rates/reserve or jump distances throw.
+ * This excludes cyno fuel, fatigue and passengers rather than estimating them. */
 export function estimateJumpFuel(edges, {isotopeUnitsPerLy,consumptionMultiplier=1,reservePercent=0,unitVolumeM3,unitPriceISK,isotope='Isotopes'}={}) {
     const rate=Number(isotopeUnitsPerLy),multiplier=Number(consumptionMultiplier),reserve=Number(reservePercent);
     if(!Number.isFinite(rate)||rate<=0||rate>1e9||!Number.isFinite(multiplier)||multiplier<=0||multiplier>10||!Number.isFinite(reserve)||reserve<0||reserve>100)throw new Error('Enter a positive isotope rate/multiplier and a reserve from 0 to 100%.');
@@ -57,7 +68,9 @@ export function estimateJumpFuel(edges, {isotopeUnitsPerLy,consumptionMultiplier
 }
 const ANSIBLEX_BASE_TJ=Object.freeze({capsule:1,shuttle:1,hauler:1,freighter:1,jump_freighter:1,rorqual:19,frigate:4,destroyer:6,cruiser:10,battlecruiser:14.5,battleship:16.5,black_ops:18,marauder:19,subcapital:null});
 
-/** Nominal transit limits only. No source reports a dependable remaining mass budget. */
+/** Return a restriction reason or null when supplied nominal rules permit this
+ * ship. Mass is kg and comparable only with a ready type limit. requireKnownLimit
+ * tightens public-report admission; null is not proof of remaining mass or passage. */
 export function wormholeShipRestriction(connection,preferences={}, {requireKnownLimit=false}={}) {
     const source=connection.source||connection.reported_source;
     // CCP: https://www.eveonline.com/news/view/thera-and-the-shattered-wormholes
@@ -82,6 +95,8 @@ const byId = systems => new Map((systems instanceof Map ? [...systems.values()] 
 const get = (values, id) => values instanceof Map ? values.get(id) : values?.[id];
 const invalid = explanation => ({ status: 'invalid', systemIds: [], edges: [], hops: 0, cost: null, explanation, warnings: [], excluded: [] });
 
+/** Physical Euclidean XYZ distance, converting metres to EVE LY. Return null for
+ * absent/nonfinite coordinates; valid zero positions and zero distance are retained. */
 export function distanceLy(a, b) {
     if (!a || !b) return null;
     const values = [a.x, a.y, a.z, b.x, b.y, b.z].map(number);
@@ -89,6 +104,8 @@ export function distanceLy(a, b) {
     return Math.hypot(values[0] - values[3], values[1] - values[4], values[2] - values[5]) / LY_METRES;
 }
 
+/** Classify capital-to-destination EVE LY against inclusive zone maxima.
+ * Invalid/negative distance yields null; unknown is distinct from free zone 1. */
 export function ansiblexZone(distance) {
     if (!Number.isFinite(distance) || distance < 0) return null;
     // The published table rounds intervals to one decimal place (5.1, 10.1...).
@@ -133,7 +150,12 @@ function edgeCost(system, edge, prefs) {
     return 1 + securityPenalty + standingPenalty + activityPenalty + (edge.kind === 'wormhole' ? 3 : 0);
 }
 
-/** Build a directed graph. Static gate pairs are bidirectional; custom links retain per-direction metadata. */
+/** Build adjacency plus explicit exclusions/warnings from supplied evidence.
+ * Static gates are bidirectional unless marked directional; custom links retain
+ * endpoint-specific access/structure/owner metadata. now is epoch ms or a parseable
+ * date string; wormholes need future expiry. Disabled/ineligible edges are omitted,
+ * not errors. Hard exclusions filter destinations; costs rank admitted edges.
+ */
 export function buildTravelGraph({ systems = [], gates = [], connections = [], preferences = {}, now = Date.now() } = {}) {
     const lookup = byId(systems), prefs = settings(preferences), adjacency = new Map([...lookup.keys()].map(id => [id, []]));
     const edges = [], excluded = [], warnings = new Set(), seen = new Set();
@@ -291,11 +313,15 @@ function routeThroughGraph(graph, {originId, destinationId} = {}) {
     };
 }
 
-/** One request/itinerary owns the prepared graph; no state is reused across requests. */
+/** Prepare one graph and return plan({originId,destinationId}) for its legs.
+ * Results are ok, invalid or no_route with exact chosen edges; invalid endpoints
+ * do not throw. Reuse only within one request/itinerary: this closure does not
+ * observe later access, expiry or preference changes or validate acceptance. */
 export function createRoutePlanner(input = {}) {
     const graph = buildTravelGraph(input);
     return endpoints => routeThroughGraph(graph, endpoints);
 }
+/** One-shot form of createRoutePlanner: input carries both graph and endpoints. */
 export function planRoute(input = {}) { return createRoutePlanner(input)(input); }
 
 const NO_CYNO_REGIONS = new Set([10000004, 10000017, 10000019, 10000070, 10001000, 10001004]);
@@ -308,7 +334,11 @@ function jumpDestination(system) {
     return physicalSystem(system) && system.jump_eligible !== false && system.cyno_allowed !== false && security !== null && security < 0.45;
 }
 
-/** Physical jump-drive projection only. No stargate count, projected map coordinate, or Ansiblex edge is used. */
+/** Prepare a request-owned physical XYZ grid for an effective range in (0,20] LY.
+ * Return plan(endpoints) with ok/invalid/no_route and alternateMidpoints(endpoints).
+ * Highsec may be an origin but not a standard cyno destination; special-space
+ * exclusions apply independently of range. Reuse grid only for this calculation;
+ * no stargate count, schematic coordinate or Ansiblex edge is a range input. */
 export function createJumpPlanner({ systems = [], rangeLy, preferences = {} } = {}) {
     const lookup = byId(systems), range = number(rangeLy), prefs = settings(preferences), validRange = range !== null && range > 0 && range <= 20;
     const candidates = validRange ? [...lookup.values()].filter(s => jumpDestination(s) && !systemBlocked(s, prefs)) : [];
@@ -363,9 +393,13 @@ export function createJumpPlanner({ systems = [], rangeLy, preferences = {} } = 
     };
     return plan;
 }
+/** One-shot physical plan; input includes systems, rangeLy and endpoint IDs. */
 export function planJumpRoute(input = {}) { return createJumpPlanner(input)(input); }
 
-/** Range colouring is based on full physical XYZ and the same eligibility as the jump planner. */
+/** One-hop physical reach for 1–8 origins, each with its own effective rangeLy.
+ * Return union and all-origin intersection plus per-origin distances; invalid
+ * origins/ranges produce status invalid. Use the same destination eligibility as
+ * the jump planner; visual map coordinates never determine reachability. */
 export function jumpReachability({systems=[],origins=[],preferences={}}={}) {
     const lookup=byId(systems),prefs=settings(preferences),limitations=['Physical range only; cyno, docking, fuel, fatigue and access are not verified.','Overlap means reachable from every selected origin at its stated effective range.'];
     if(!Array.isArray(origins)||!origins.length||origins.length>8)return {status:'invalid',origins:[],unionSystemIds:[],overlapSystemIds:[],limitations,explanation:'Choose between one and eight jump origins.'};
@@ -382,4 +416,6 @@ export function jumpReachability({systems=[],origins=[],preferences={}}={}) {
     }
     return {status:'ok',origins:results,unionSystemIds:[...counts.keys()].sort((a,b)=>a-b),overlapSystemIds:[...counts].filter(([,n])=>n===origins.length).map(([id])=>id).sort((a,b)=>a-b),limitations};
 }
+/** Two-leg eligible midpoint candidates sorted by total physical LY then ID.
+ * Invalid endpoints/range return []; explicit itinerary stops are not replaced. */
 export function alternateJumpMidpoints(input={}) { return createJumpPlanner(input).alternateMidpoints(input); }

@@ -1,3 +1,4 @@
+/** Immutable private-resource identity helpers; detailed revision semantics live in resource-state.mjs. */
 export const goalSourceKeys: string[];
 export function sameValue(left: any, right: any): boolean;
 export function retainValue<T>(previous: T, next: T): T;

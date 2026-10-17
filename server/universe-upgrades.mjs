@@ -3,7 +3,10 @@
 const clean=value=>String(value??'').trim();
 const list=atlas=>atlas instanceof Map?[...atlas.values()]:Array.isArray(atlas)?atlas:atlas?.systems||[];
 
-/** Preview only. Consumers must reject the entire import when valid is false. */
+/** Preview SMT text or JSON observations against the supplied atlas. Return row
+ * diagnostics and normalized system/slot records without persistence. Slots are
+ * 1–100 and levels 0–5 (zero means no level); duplicate slots invalidate the batch.
+ * Consumers must reject the whole import when valid=false, not save its good rows. */
 export function parseUpgradeImport(input,atlas=[]) {
     const systems=list(atlas),byId=new Map(systems.map(s=>[Number(s.system_id),s])),byName=new Map(systems.map(s=>[s.name.toLowerCase(),s]));
     const resolve=value=>byId.get(Number(value))||byName.get(clean(value).toLowerCase());

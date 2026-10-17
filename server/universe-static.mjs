@@ -1,3 +1,7 @@
+/** Immutable process-generation Atlas reader with lazy celestial detail I/O.
+ * dataset-paths selects the active official generation before module loading;
+ * managed updates replace the runtime rather than mutating this cache in place.
+ * Format/provenance and coordinate units: docs/UNIVERSE-DATA.md. */
 import { closeSync, openSync, readFileSync, readSync, statSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { enrichWormholeSystem } from './universe-wormholes.mjs';
@@ -37,7 +41,10 @@ function readonlySet(set) {
     });
 }
 
-/** Load the bundled graph once. No ESI requests, network access or DB writes. */
+/** Load the selected generation's graph once and return shared immutable views.
+ * No ESI/network/DB writes. Malformed schema, manifest or topology throws; callers
+ * must not treat those failures as an empty successful universe. Physical XYZ is
+ * in metres; map/schematic coordinates remain distinct projections. */
 export function getUniverseStatic() {
     if (topology) return topology;
     const data = JSON.parse(gunzipSync(readFileSync(TOPOLOGY_FILE), { maxOutputLength: 24 * 1024 * 1024 }));
@@ -78,7 +85,9 @@ export function getUniverseStatic() {
     return topology;
 }
 
-/** Read only one system's celestial record; keep at most 48 detailed systems. */
+/** Return an immutable system or null for an unknown ID. celestials=false avoids
+ * detail I/O; otherwise read/inflate only this indexed record and retain at most
+ * 48 details in LRU order. Invalid/truncated shards or mismatched identity throw. */
 export function getUniverseSystem(id, { celestials = true } = {}) {
     const systemId = Number(id);
     const graph = getUniverseStatic();

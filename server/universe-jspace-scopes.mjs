@@ -1,3 +1,6 @@
+/** Map membership selectors shared by manual Maps and source-chain adoption.
+ * Geography and observed ownership are separate evidence; inferred coalitions,
+ * private annotations and historical visits never define an ownership scope. */
 const FIELDS = ['system_ids', 'constellation_ids', 'region_ids', 'alliance_ids', 'corporation_ids', 'power_bloc_ids'];
 const MAX_SELECTIONS = 2000;
 const positiveId = value => Number.isSafeInteger(value) && value > 0;
@@ -11,6 +14,10 @@ export function hasJSpaceScope(scope) {
     return !!scope && FIELDS.some(key => Array.isArray(scope[key]) && scope[key].length > 0);
 }
 
+/** Return sorted/deduplicated groups or null for unrestricted scope. Validate
+ * at most 2,000 selections per group against the atlas/configuration; unknown
+ * keys, J-Space area groups and inferred bloc IDs throw. Owner IDs need positive
+ * integer shape, not presence in the currently observed sovereignty snapshot. */
 export function validateJSpaceScope(input, {atlas, politicsConfig} = {}) {
     if (input == null) return null;
     if (typeof input !== 'object' || Array.isArray(input)) throw new Error('Map scope must contain lists of selected systems, areas or owners.');

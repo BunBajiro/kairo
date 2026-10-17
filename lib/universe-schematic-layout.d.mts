@@ -4,5 +4,10 @@ export type SchematicLayout<T extends SchematicSystem> = {
   bounds:{minX:number;maxX:number;minY:number;maxY:number;width:number;height:number};
   scale:number;source:'sde'|'physical'|'grid';
 };
-/** Centered CCP position2D geometry; card dimensions request a uniform, collision-safe scale. */
+/** Centered display geometry; input is not mutated and valid IDs are deduplicated.
+ * Dimensions/gap and output coordinates share display units, not physical LY.
+ * Select complete schematic positions, otherwise complete physical positions.
+ * Missing or coincident selected positions use one grid for the whole group.
+ * Positive width+height request uniform card separation;
+ * bounds enclose centres, not rectangles. See docs/SCHEMATIC-GEOMETRY.md. */
 export function schematicLayout<T extends SchematicSystem>(systems:readonly T[],options?:{nodeWidth?:number;nodeHeight?:number;gap?:number}):SchematicLayout<T>;

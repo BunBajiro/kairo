@@ -1,3 +1,8 @@
+/**
+ * Opt-in EVE log reader owned by Universe Operations. All filesystem access is
+ * read-only and per configured pilot/listener; discovery suggestions do not enable
+ * monitoring. No credentials, historical replay or ESI collection are involved.
+ */
 import {open, readdir, realpath, stat} from 'node:fs/promises';
 import {homedir} from 'node:os';
 import {join, basename} from 'node:path';
@@ -5,6 +10,8 @@ import {join, basename} from 'node:path';
 const MAX_FILES = 64, HEADER_BYTES = 16384, READ_BYTES = 65536, TICK_BYTES = 262144;
 const clean = value => String(value ?? '').trim();
 
+/** Decode a bounded header buffer using BOM-selected UTF-16 or default UTF-8.
+ * Missing Listener/Channel fields are empty strings; game identifies a Gamelog. */
 export function decodeLogHeader(bytes) {
     const encoding = bytes[0] === 0xff && bytes[1] === 0xfe ? 'utf-16le' : bytes[0] === 0xfe && bytes[1] === 0xff ? 'utf-16be' : 'utf-8';
     const header = new TextDecoder(encoding).decode(bytes);
@@ -12,7 +19,14 @@ export function decodeLogHeader(bytes) {
     return {encoding, listener: field('Listener'), channel: field('Channel Name'), game: /^\s*Gamelog\s*$/mi.test(header)};
 }
 
-/** Reads only explicitly selected EVE log directories, never deletes their files. */
+/**
+ * Create a manually ticked reader. configure replaces a pilot's baseline when its
+ * directory/listener/channel selection changes; matching existing files start at
+ * EOF. tick coalesces concurrent calls, rotates pilot priority and budgets 256 KiB
+ * of appended content, with 64 KiB reads and at most 64 candidate files per pilot.
+ * onLines may return a promise and is awaited; close fences delivery and drains it.
+ * now() supplies epoch ms. Source errors become status, not rejected tick work.
+ */
 export function createUniverseLogTail({now = Date.now, onLines = () => {}, onStatus = () => {}} = {}) {
     const pilots = new Map();
     let closed = false, flight = null, pilotCursor = 0;

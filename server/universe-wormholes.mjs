@@ -1,3 +1,6 @@
+/** Offline wormhole class/type/static/weather reference, independent of discovered
+ * travel links. Official active system weather can override supplemental weather;
+ * nominal statics never imply a current destination. See docs/UNIVERSE-DATA.md. */
 import { readFileSync } from 'node:fs';
 
 const FILE = new URL('./data/universe-wormholes.json', import.meta.url);
@@ -63,7 +66,8 @@ function load() {
     return cache;
 }
 
-/** Nominal class/type reference, not a discovered connection or a passage guarantee. */
+/** Return the shared frozen system reference, or null for unknown/non-J-Space IDs.
+ * Nominal class/type data is not a discovered link or a passage guarantee. */
 export function getWormholeReference(systemId) {
     return load().references.get(Number(systemId)) ?? null;
 }
@@ -87,7 +91,9 @@ export function enrichWormholeSystem(system) {
     }};
 }
 
-/** Type lookup retains unknown K162 values as null and genuine zero regeneration as zero. */
+/** Case-insensitive nominal type lookup, returning a frozen record or null.
+ * Mass fields use kg and lifetime hours. Unknown K162 values stay null and actual
+ * zero regeneration stays zero; neither value describes remaining connection mass. */
 export function getWormholeType(type) {
     return typeof type === 'string' ? load().types.get(type.trim().toUpperCase()) ?? null : null;
 }

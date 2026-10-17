@@ -1,4 +1,6 @@
 @echo off
+rem Start from the distribution root; the Node supervisor owns runtime locking,
+rem browser launch and shutdown. This launcher neither installs nor builds.
 setlocal
 cd /d "%~dp0"
 where node >nul 2>nul

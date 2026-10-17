@@ -1,3 +1,10 @@
+/**
+ * Pure Import Analyser calculations over caller-prepared order depth/history.
+ * Money is ISK, cargo/volume is cubic metres, durations/ETA are days, settings
+ * percentages are 0–100-style values and computed fee rates are fractions.
+ * These are planning assumptions, not execution or sales forecasts; see
+ * ../docs/IMPORT-ANALYSER.md for the user-facing interpretation.
+ */
 import {historyWindow} from './market-history.mjs';
 export const DURATIONS=[1,3,7,14,30,90];
 export const IMPORT_CATEGORIES=[
@@ -13,6 +20,7 @@ export const IMPORT_CATEGORIES=[
 export const importCategory=root=>IMPORT_CATEGORIES.find(g=>g.roots.includes(root))||IMPORT_CATEGORIES.at(-1);
 // A zero buyingCharacterId follows the seller, including settings saved before this field existed.
 export const DEFAULT_IMPORT_SETTINGS={characterId:0,buyingCharacterId:0,cargo:10000,budget:1000000000,maxTrips:3,turnoverDays:7,demandShare:10,minROI:15,minProfit:500000,haulPerTrip:0,relistCount:1,structureBroker:null};
+/** Merge defaults and reject unknown fields/non-finite or out-of-range values. */
 export function validateImportSettings(value){
  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!(k in DEFAULT_IMPORT_SETTINGS)))throw new Error('Invalid import settings.');
  const r={...DEFAULT_IMPORT_SETTINGS,...value};
@@ -20,6 +28,11 @@ export function validateImportSettings(value){
  for(const [key,[min,max]] of Object.entries(ranges)){if(key==='structureBroker'&&r[key]===null)continue;if(typeof r[key]!=='number'||!Number.isFinite(r[key])||r[key]<min||r[key]>max)throw new Error('Check the '+key+' value.');}
  for(const key of ['characterId','buyingCharacterId','maxTrips','turnoverDays','relistCount'])if(!Number.isSafeInteger(r[key]))throw new Error(key+' must be a whole number.');return r;
 }
+/**
+ * Resolve seller rates from active skill levels and unmodified NPC standings.
+ * structureBroker is a percentage including the SCC surcharge, not a fraction;
+ * null is allowed only for stations. Missing/invalid fee evidence throws.
+ */
 export function tradingRates({accounting,brokerRelations,advancedBrokerRelations=0,faction=0,corporation=0,kind='station',structureBroker=null}){
  for(const n of [accounting,brokerRelations,advancedBrokerRelations])if(!Number.isInteger(n)||n<0||n>5)throw new Error('Trading skill level is unavailable.');
  for(const n of [faction,corporation])if(!Number.isFinite(n)||n< -10||n>10)throw new Error('Trading standing is unavailable.');
@@ -29,9 +42,15 @@ export function tradingRates({accounting,brokerRelations,advancedBrokerRelations
 // EVE prices have four significant figures, with a minimum tick of 0.01 ISK.
 export function marketPrice(value,up=false){if(!Number.isFinite(value)||value<=0)return 0;const tick=Math.max(.01,10**(Math.floor(Math.log10(value))-3));return Number(((up?Math.ceil(value/tick-1e-8):Math.floor(value/tick+1e-8))*tick).toFixed(2));}
 export function undercut(price){const tick=Math.max(.01,10**(Math.floor(Math.log10(price*(1-1e-10)))-3));return marketPrice(price-tick);}
+/**
+ * Consume caller-sorted ascending sell levels (price in ISK, volume in units).
+ * An insufficient book returns a partial fill with complete=false; it does not
+ * extrapolate unavailable stock. Empty fills have null average/maxPrice.
+ */
 export function purchaseQuote(levels,quantity){let remaining=quantity,cost=0;const fills=[];for(const level of levels){if(remaining<=0)break;const n=Math.min(remaining,level.volume);if(n>0){cost+=n*level.price;fills.push({quantity:n,price:level.price,cost:n*level.price});remaining-=n;}}
  return {quantity:quantity-remaining,complete:remaining===0,cost,average:quantity>remaining?cost/(quantity-remaining):null,maxPrice:fills.at(-1)?.price||null,fills};
 }
+/** Estimate daily units from completed regional days and an assumed percentage share. */
 export function demandEvidence(rows,category,share,now){
  const windows=Object.fromEntries([1,3,7,30].map(d=>[d,historyWindow(rows,d,now)])),activeWindow=[1,3,7].find(d=>windows[d].volume*share/100>=category.minimum);
  const reliable=windows[7].active_days>=2&&windows[30].reported_days>=7&&windows[3].active_days>=1;
@@ -40,6 +59,13 @@ export function demandEvidence(rows,category,share,now){
  const daily=Math.min(windows[7].daily_volume,windows[30].daily_volume)*share/100;
  return {windows,activeWindow:activeWindow||null,eligible:!!activeWindow&&reliable&&daily>0,daily,share,confidence:windows[30].reported_days>=21&&windows[7].reported_days>=5?'higher':'limited'};
 }
+/**
+ * Quote a whole-unit lot against sorted depth and validated settings. Invalid
+ * quantity/price/duration throws; insufficient stock or cargo/trip capacity gives
+ * null. Budget, duration and buy-order crossing are returned flags, not rejection.
+ * upfront excludes future sales tax/relist reserve; net includes both. eta and
+ * profitPerDay are null without positive daily demand; breakEven can be null.
+ */
 export function scenario({levels,quantity,price,duration,volume,daily,rates,settings,strategy,localBuy=0}){
  if(!Number.isSafeInteger(quantity)||quantity<1||!Number.isFinite(price)||price<=0||!DURATIONS.includes(duration))throw new Error('Choose a valid quantity, listing price and duration.');
  if(volume>settings.cargo)return null;
@@ -53,6 +79,12 @@ export function scenario({levels,quantity,price,duration,volume,daily,rates,sett
  const breakEven=margin<=0?null:marketPrice(Math.max((cost+100*(1+relistCount))/saleShare,(cost+100*relistCount)/(saleShare-rates.broker),(cost+100)/(saleShare-relistCount*relistShare),cost/margin)/quantity,true);
  return {strategy,quantity,price,duration,buy,revenue,brokerFee,salesTax,relistReserve,haul,upfront,net,roi,cargo:quantity*volume,unitVolume:volume,trips,eta,profitPerDay:eta?net/Math.max(1,eta):null,profitPerTrip:net/trips,budgetExceeded:upfront>settings.budget,durationShort:eta===null||eta>duration,crossesBuy:price<=localBuy,breakEven};
 }
+/**
+ * Screen and rank bounded candidate lots, returning null when none qualifies.
+ * Anchoring requires a material reduction of an existing sell price; profiteering
+ * prioritizes return. detail adds depth, daily rows and up to 12 options/strategy;
+ * the default projection omits that bulk. Scores are relative planning ranks.
+ */
 export function buildOpportunity({typeId,name,category,volume,levels,localSell,localBuy,localSupply,history,rates,settings,now,detail=false}){
  const demand=demandEvidence(history,category,settings.demandShare,now);if(!demand.eligible||!levels.length||!Number.isFinite(volume)||volume<=0||volume>settings.cargo)return null;
  const jita=levels[0].price,premium=localSell?(localSell/jita-1)*100:null;
@@ -81,7 +113,12 @@ export function buildOpportunity({typeId,name,category,volume,levels,localSell,l
  const tier=[1000,500,200,100].find(t=>premium>=t)||null,quality=1+(demand.activeWindow===1?.4:demand.activeWindow===3?.2:0)+Math.min(1,demand.windows[7].volume*settings.demandShare/100/category.minimum/10)+ (scarcity.includes(3)?.5:scarcity.includes(7)?.25:0)+1/(1+localSupply/demand.daily);
  return {typeId,name,category:category.id,volume,jita,localSell,localBuy,localSupply,premium,tier,scarcity,demand:{...demand,windows:Object.fromEntries(Object.entries(demand.windows).map(([k,w])=>[k,{...w,days:detail?w.days:undefined}]))},jitaSupply:supply,best,score:Math.max(best.anchoring?.score||0,best.profiteering?.score||0)*quality,alternatives:detail?Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,v.slice(0,12)])):undefined,levels:detail?levels:undefined};
 }
-// Deterministic first-fit-decreasing packing; never split an individual hull.
+/**
+ * First-fit-decreasing packing of validated positive-volume, whole-unit lines;
+ * capacity is m³. Never split an item. This deterministic heuristic does not
+ * prove the fewest possible trips. Reject a
+ * single oversized item or plans exceeding 5,000 loads to bound allocation.
+ */
 export function packCargo(lines,capacity){const bins=[];let total=0;for(const l of [...lines].sort((a,b)=>b.unitVolume-a.unitVolume)){
  if(l.unitVolume>capacity)throw new Error('One item is larger than your cargo hold.');let q=l.quantity;total+=q*l.unitVolume;
  for(const b of bins){const n=Math.min(q,Math.floor((capacity-b.used+1e-7)/l.unitVolume));if(n>0){b.used+=n*l.unitVolume;b.items.push({typeId:l.typeId,quantity:n});q-=n;}if(!q)break;}

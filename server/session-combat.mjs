@@ -1,3 +1,9 @@
+/**
+ * Core-owned Session alliance evidence and live personal participation collection.
+ * Collection retains verified candidates; session-details.mjs decides whether
+ * presence qualifies them for report totals. Historical alliance identity comes
+ * from Session start, not today's profile. See ../docs/SESSIONS.md.
+ */
 import {allianceSides, COMBAT_BUFFER_MS, killValue, sessionRoute} from './session-details.mjs';
 import {sessionCollection} from './session-policy.mjs';
 import {createSessionLiveFeed} from './session-live.mjs';
@@ -16,6 +22,7 @@ export const SESSION_COMBAT_RECENT_SQL=`SELECT id FROM (
 // The current zKill API supports entity + system + calendar month + page.
 // Its retired startTime/endTime filters are deliberately not used. Precise
 // session/visit windows are applied locally to verified, retained killmails.
+/** Group buffered visits by system/UTC month; from/to are epoch milliseconds. */
 export function sessionCombatQueries(route) {
     const groups=new Map();
     for(const v of route){
@@ -31,6 +38,12 @@ export function sessionCombatQueries(route) {
     return [...groups.values()].sort((a,b)=>a.systemId-b.systemId||a.year-b.year||a.month-b.month);
 }
 
+/**
+ * Share one history flight per Session plus one installation-wide live feed.
+ * Live collection stops at Session end; history may settle for 24 hours after it.
+ * close() drains this owner before combat/ESI/Store close. Every history pass is
+ * bounded to six public pages and 100 new alliance verifications, resuming progress.
+ */
 export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=>{},onChange=()=>{},now=Date.now,feedFetcher=fetch,feedOptions={}}={}) {
     const pending=new Map();let closed=false;
     const active=id=>!closed&&store.get('module:combat',true)&&auth.characters().some(c=>c.id===id&&!c.needsReauth);

@@ -1,5 +1,14 @@
+/**
+ * Built-in collection descriptors consumed by Core, Connections and OAuth scope
+ * selection. Registry extensions are separate: see docs/INTERNAL-API.md.
+ * Universe datasets collect once under owner 0; other modules collect per pilot.
+ */
 import { pollIntervals } from '../polling.mjs';
 const module = (id, name, description, datasets) => ({ id, name, version: '1.0.0', description, datasets, scopes: [...new Set(datasets.map(d => d.scope).filter(Boolean))] });
+// ttl is the ESI fallback cache lifetime in seconds; pollInterval is the
+// application policy in seconds (0 follows provider cache expiry). paged means
+// X-Pages collection through ESI's bounded paging owner, not arbitrary cursors.
+// {owner} routes obtain corporation/alliance identity from a ready pilot profile.
 const d = (key, route, scope, ttl = 300, paged = false) => ({ key, route, scope, ttl, paged, pollInterval: pollIntervals[key] ?? 0 });
 export const catalog = [
     module('pilot', 'Pilot telemetry', 'Live location, current hull, online status and your local flight history.', [
@@ -37,4 +46,5 @@ export const catalog = [
 catalog.find(m => m.id === 'hangar').scopes.push('esi-universe.read_structures.v1');
 catalog.find(m => m.id === 'markets').scopes.push('esi-markets.structure_markets.v1','esi-universe.read_structures.v1','esi-location.read_location.v1');
 catalog.find(m => m.id === 'universe').scopes.push('esi-universe.read_structures.v1', 'esi-fleets.read_fleet.v1', 'esi-ui.write_waypoint.v1', 'esi-search.search_structures.v1');
+/** Built-in OAuth allowlist, including optional command/enrichment capabilities. */
 export const allScopes = [...new Set(catalog.flatMap(m => m.scopes))];

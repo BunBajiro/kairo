@@ -12,12 +12,16 @@ import {DATASET_TEST_BUILD,DATASET_TEST_RELEASE,DATASET_TEST_NOW,deferred,writeD
 
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(existsSync);
 if(!chrome)throw new Error('Chrome is required. Set KAIRO_CHROME_PATH.');
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const dir=await mkdtemp(join(tmpdir(),'kairo-datasets-ui-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-screenshots';
 await mkdir(output,{recursive:true});
 let app,proc,ws;const pending=new Map(),errors=[];let sequence=0;
 function call(method,params={}){const id=++sequence;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{pending.delete(id);reject(new Error('CDP timed out: '+method));},20000);pending.set(id,{resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});ws.send(JSON.stringify({id,method,params}));});}
 async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.text+': '+r.exceptionDetails.exception?.description);return r.result.value;}
 async function waitFor(expression){for(let i=0;i<200;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Condition not met: '+expression);}
+// Wait for stable, unobstructed layout before dispatching real pointer input.
+// DOM click() would bypass overlays/animation and could conceal unreachable UI.
 async function clickElement(expression){
  await waitFor('!!('+expression+')');
  const point=await evaluate(`(async()=>{

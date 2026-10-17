@@ -13,6 +13,9 @@ import {createMarketCategories} from '../../server/market-categories.mjs';
 import {allScopes} from '../../server/modules/catalog.mjs';
 import {startKairo} from '../../server/index.mjs';
 const NOW=Date.parse('2026-09-08T12:00:00Z'),AMARR=60008494,iso=n=>new Date(n).toISOString();
+// Hex-encoded bzip2 CSV fixtures contain two days, two item types and five
+// regions (including an unsupported control). Decode through the real worker;
+// frozen NOW makes calendar windows deterministic without provider downloads.
 const fixture=JSON.parse(readFileSync(new URL('./fixtures/market-history-archives.json',import.meta.url),'utf8'));
 const chars=[{id:42,name:'Main trader',scopes:allScopes},{id:43,name:'Market alt',scopes:allScopes}],auth={characters:()=>chars};
 const history=(volume=500,average=1800000)=>Array.from({length:30},(_,i)=>({date:iso(NOW-(i+1)*DAY).slice(0,10),average,lowest:average*.8,highest:average*1.2,volume,order_count:20}));

@@ -1,4 +1,6 @@
 "use client";
+
+/** Local map grouping controls; backend node membership, coordinates and connections are unchanged. */
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Settings2,X} from 'lucide-react';
 import {normalizeMapDisplayPrefs,type MapDisplayPrefs} from './map-display-model.mjs';
@@ -7,6 +9,11 @@ import type {MapperPreferences} from './mapper-preferences.mjs';
 import type {UniverseSystem} from './universe-types';
 
 const eventName='kairo-map-display-preferences';
+/**
+ * Own pilot/map-scoped localStorage preferences. Same-window events and storage
+ * events keep mounted consumers aligned; unavailable storage leaves local state
+ * usable. Return defaults during a key transition, never another map's groups.
+ */
 export function useMapDisplayPreferences(character:number,mapId:string) {
   const key=`kairo:mapper:groups:v1:${character}:${mapId}`;
   const read=()=>{try{return normalizeMapDisplayPrefs(JSON.parse(localStorage.getItem(key)||'null'));}catch{return normalizeMapDisplayPrefs(null);}};

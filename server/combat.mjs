@@ -1,15 +1,30 @@
+/**
+ * Core's durable personal combat ledger and cached public-reference collector.
+ * Public references discover candidates; ESI hash verification establishes the
+ * killmail, and recorded attacker/victim identity establishes participation.
+ * Source windows may expire without deleting accepted records. See ../docs/SESSIONS.md.
+ */
 import {setTimeout as wait} from 'node:timers/promises';
 import {killValue} from './session-details.mjs';
 import {createCacheRetention} from './cache-retention.mjs';
 
 const HOUR=3600000, DAY=24*HOUR;
 const validId=id=>Number.isSafeInteger(id)&&id>0;
-// Credit every recorded attacker, including zero-damage EWAR, independently of
-// the final_blow flag. Membership in the same fleet/corporation is insufficient.
+/**
+ * Return 'loss', 'kill' or null; victim identity wins if also listed as attacker.
+ * Every recorded attacker counts, including zero-damage EWAR, independently of
+ * final_blow. Fleet/corporation membership alone never establishes participation.
+ */
 export function participation(killmail,characterId){
  if(killmail?.victim?.character_id===characterId)return 'loss';
  return Array.isArray(killmail?.attackers)&&killmail.attackers.some(a=>a.character_id===characterId)?'kill':null;
 }
+/**
+ * Share per-pilot public syncs and paced public-page requests. Core/Session callers
+ * must await ingest() directly; close() drains the tracked public owners, not
+ * arbitrary caller promises. Keep Store/ESI available until all owners drain.
+ * spacingMs/now use milliseconds; onChange announces a changed durable batch.
+ */
 export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},onChange=()=>{},fetcher=fetch,now=Date.now,spacingMs=1100}={}){
  const retention=createCacheRetention(store);
  const pending=new Map(),publicPending=new Map();let nextRequest=0,closed=false,queue=Promise.resolve();
@@ -22,6 +37,9 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
  const put=store.db.prepare(`INSERT INTO combat_records VALUES(?,?,?,?,?,?) ON CONFLICT(character_id,killmail_id) DO UPDATE
   SET result=excluded.result,at=excluded.at,body=excluded.body,source=CASE WHEN source='esi' THEN source ELSE excluded.source END
   WHERE result<>excluded.result OR at<>excluded.at OR body<>excluded.body OR (source<>'esi' AND source<>excluded.source)`);
+ // Persist canonical occurrence time/provenance, preserve an existing valuation
+ // when a new reference lacks one, and publish with stable per-pilot dedupe.
+ // Historical events repair reports without becoming fresh Stream notifications.
  function record(id,raw,source){
   const result=participation(raw,id),time=Date.parse(raw?.killmail_time);
   if(!result||!validId(raw.killmail_id)||!validId(raw.solar_system_id)||!validId(raw.victim?.ship_type_id)||!Number.isFinite(time)||time>now()+60000)return false;
@@ -35,6 +53,11 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
   publish?.({type:'killmail.'+result,module:'combat',characterId:id,at:killmail.killmail_time,historical,summary:(result==='loss'?'Lost ':'Participated in kill: ')+(names[killmail.victim.ship_type_id]||'ship'),payload:{killmail_id:killmail.killmail_id,system_id:killmail.solar_system_id,system_name:names[killmail.solar_system_id],ship_type_id:killmail.victim.ship_type_id,hull_name:names[killmail.victim.ship_type_id],attackers:killmail.attackers?.length||0,damage_taken:killmail.victim.damage_taken,participation:result==='kill',source},dedupe:'killmail:'+id+':'+killmail.killmail_id});
   return changed;
  }
+ /**
+  * Verify up to 100 unseen references per call; return failed/pending counts so
+  * collectors can retry incomplete coverage. Ineligible pilots are a no-op.
+  * Retained records can receive value/source corrections without another fetch.
+  */
  async function ingest(id,refs,source='esi',{notify=notifyChanges}={}){
   if(!active(id)||!Array.isArray(refs))return {pending:0,failed:0};
   if(!store.get('combat.started:'+id,0))store.set('combat.started:'+id,now());

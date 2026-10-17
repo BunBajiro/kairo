@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * Private Maps editors and read-only reference panels. JSpaceWorkspace keys
+ * editors by their map/entity and owns revisioned commands, conflict reloads and
+ * selection. Local form drafts are not persisted until a command is accepted.
+ * Datetime-local fields here are explicitly interpreted as EVE/UTC, not host time.
+ */
+
 import {useEffect, useId, useState} from 'react';
 import {useKairo} from './context';
 import {Activity, ArrowDownUp, ArrowUpRight, Building2, Check, Clipboard, Clock3, Flag, Link2, LockKeyhole, MessageSquare, Plus, Radio, Save, ShieldQuestion, Sparkles, Trash2, Users} from 'lucide-react';
@@ -26,6 +33,7 @@ function EffectiveOwnerLogo({owner}: {owner: EffectiveOwner | OwnerResult}) {
   return <span className="jspace-owner-logo" data-logo-src={src} aria-hidden="true">{failedSource === src ? <Users size={21}/> : <img src={src} alt="" loading="lazy" onError={() => setFailedSource(src)}/>}</span>;
 }
 
+/** Resolve an alliance/corporation identity; typing a name alone is not an ownership assignment. */
 function EffectiveOwnerPicker({value, onChange}: {value: EffectiveOwner | null; onChange: (value: EffectiveOwner | null) => void}) {
   const {character} = useKairo(), listId = useId();
   const [lookup, setLookup] = useState<{key: string; rows: OwnerResult[]; pending: boolean; notice?: string; error?: string}>({key: '', rows: [], pending: false});
@@ -77,6 +85,11 @@ export function JSpaceNodeEditor({node, system, busy, command, onClose, onRemove
   </form><div className="jspace-panel-section"><button className="jspace-danger" disabled={busy || !!node.locked} onClick={() => {if (onRemove) void onRemove();else setRemove(true);}}><Trash2 size={17}/>Remove from this map</button>{node.locked && <p className="jspace-muted">Unlock to remove.</p>}{remove && <div className="jspace-confirm"><p>Remove {system.name} and its diagram connections?</p><div><button className="jspace-danger" disabled={busy} onClick={async () => {if (await command('node.remove', {system_id: system.system_id})) onClose();}}>Remove system</button><button onClick={() => setRemove(false)}>Keep system</button></div></div>}</div></>;
 }
 
+/**
+ * Preserve an existing observation's expiry precision through the payload helper.
+ * Permanent gate/bridge records omit wormhole conditions; a shared bridge's access
+ * remains owned by the navigation network rather than this diagram reference.
+ */
 export function JSpaceConnectionEditor({map, atlas, connection, fromSystemId, busy, command, onClose, onSaved, onRemove}: {map: JSpaceWorkspaceMap; atlas: UniverseAtlas; connection?: any; fromSystemId?: number | null; busy: boolean; command: JSpaceCommand; onClose: () => void; onSaved: (id: string) => void; onRemove?: () => Promise<void>}) {
   const defaults = {from_system_id: fromSystemId || map.nodes[0]?.system_id || 0, to_system_id: map.nodes.find(node => node.system_id !== (fromSystemId || map.nodes[0]?.system_id))?.system_id || 0, kind: 'wormhole', mass: 'stable', life_status: 'stable', duration_hours: 16, max_ship_size:'large', confirmed: false, accessible: false, enabled: true};
   const [draft, setDraft] = useState<any>({...defaults, ...connection, ...(connection ? {duration_hours:connection.duration_hours ?? null,max_ship_size:connection.max_ship_size ?? null} : {})}), [expiry, setExpiry] = useState(utcInput(connection?.expires_at)), [linkError, setLinkError] = useState(''), [signatureId, setSignatureId] = useState('');
@@ -117,6 +130,7 @@ export function JSpaceObservations({map, systemId, busy, command, now, initialKi
   </>;
 }
 
+/** Passage masses are reported kg, summed only when known; the total cannot establish remaining wormhole mass. */
 export function JSpacePassages({map, connection, atlas, busy, command}: {map: JSpaceWorkspaceMap; connection: any; atlas: UniverseAtlas; busy: boolean; command: JSpaceCommand}) {
   const [reverse, setReverse] = useState(false), [pilot, setPilot] = useState(''), [ship, setShip] = useState(''), [mass, setMass] = useState(''), [time, setTime] = useState(utcInput(new Date().toISOString())), [notes, setNotes] = useState(''), [editing, setEditing] = useState<string|null>(null);
   const byId = new Map(atlas.systems.map(system => [system.system_id, system]));const from = reverse ? connection.to_system_id : connection.from_system_id, to = reverse ? connection.from_system_id : connection.to_system_id;
@@ -132,6 +146,7 @@ export function JSpaceReference({system, onInspect, onShowKnownSpace}: {system: 
   return <div className="jspace-reference"><div className="jspace-system-summary"><span className="jspace-class-mark">{reference?.classLabel || (system.space === 'wormhole' ? 'J' : 'K')}</span><div><h4>{system.name}</h4><p>{systemLocationLabel(system)}</p></div></div>{reference && <><div className="jspace-badges">{reference.className && <span>{reference.className}</span>}{reference.shattered && <span>Shattered</span>}{reference.frigateOnly && <span>Small-ship connections</span>}{reference.drifter && <span>Drifter system</span>}{reference.hub && <span>Hub</span>}</div>{reference.statics?.length > 0 && <section className="jspace-panel-section"><h4><Link2 size={19}/>Expected static types</h4><p className="jspace-muted">Expected types; current connections appear on the chain.</p>{reference.statics.map((row: any) => <article key={row.type} className="jspace-static-reference"><header><strong>{row.type}</strong><span>→ {(row.destinationClasses || []).map((value: any) => value.label || value.name).join(' / ') || 'Destination class unknown'}</span></header><dl><dt>Nominal jump mass</dt><dd>{number(row.maxJumpMassKg)}{row.maxJumpMassKg != null ? ' kg' : ''}</dd><dt>Nominal total mass</dt><dd>{number(row.totalMassKg)}{row.totalMassKg != null ? ' kg' : ''}</dd><dt>Nominal lifetime</dt><dd>{number(row.lifetimeHours)}{row.lifetimeHours != null ? ' hours' : ''}</dd><dt>Mass regeneration</dt><dd>{number(row.massRegenerationKg)}{row.massRegenerationKg != null ? ' kg' : ''}</dd></dl></article>)}</section>}{reference.effect && <section className="jspace-panel-section"><h4><Sparkles size={20}/>{reference.effect.name}</h4><p className="jspace-muted">System effect · power {reference.effect.power ?? 'unknown'}</p><dl className="jspace-effect-list">{(reference.effect.modifiers || []).map((value: any, index: number) => <div key={value.name + index}><dt>{value.name}</dt><dd className={value.positive ? 'is-positive' : 'is-caution'}>{value.value}</dd></div>)}</dl></section>}<p className="jspace-reference-source"><Radio size={15}/>{reference.source || 'CCP static universe reference'}{reference.sdeBuild ? ' · SDE ' + reference.sdeBuild : ''}</p></>}{!reference && <p className="jspace-muted">Static system information is available in the system inspector.</p>}<div className="jspace-action-row">{onInspect&&<button onClick={onInspect}><ArrowUpRight size={17}/>Full system details</button>}{onShowKnownSpace && <button onClick={onShowKnownSpace}><ArrowUpRight size={17}/>Show in K-Space</button>}<button onClick={async () => {try {await navigator.clipboard.writeText(system.name);setCopied(true);} catch {setCopied(false);}}}><Clipboard size={17}/>{copied ? 'System name copied' : 'Copy system name'}</button></div></div>;
 }
 
+/** Save selected observations in order; stop at first rejection and leave unsaved rows selected for review. */
 function DScanImport({systemId,busy,command}:{systemId:number;busy:boolean;command:JSpaceCommand}) {
   const [text,setText]=useState(''),[preview,setPreview]=useState<ReturnType<typeof previewStructureScan>|null>(null),[selected,setSelected]=useState<number[]>([]),[importing,setImporting]=useState(false),[result,setResult]=useState('');
   async function importRows(){if(!preview||importing)return;setImporting(true);let saved=0;const chosen=preview.rows.filter(row=>selected.includes(row.line));for(const row of chosen){const {line,type_id,...observation}=row;if(!await command('observation.save',{observation:{...observation,system_id:systemId,observed_at:new Date().toISOString()}}))break;saved++;}setResult(`${saved} of ${chosen.length} structure observations recorded.${saved<chosen.length?' The remaining rows were not saved. Review the error before retrying.':''}`);if(saved){const savedLines=new Set(chosen.slice(0,saved).map(row=>row.line));setSelected(current=>current.filter(line=>!savedLines.has(line)));}setImporting(false);}

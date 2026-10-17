@@ -1,3 +1,7 @@
+// Exercise IPC/lifecycle ordering with an injected channel and exit callback.
+// Mock timers advance only failure deadlines; until() yields event-loop turns
+// for promise work. Intentionally unresolved startup/drain promises must produce
+// failure without a stopped acknowledgment or exported session handoff.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';

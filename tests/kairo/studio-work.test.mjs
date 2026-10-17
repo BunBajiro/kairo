@@ -6,6 +6,8 @@ import {sanitizeConfig} from '../../server/stream.mjs';
 const widget={id:'one',kind:'text',binding:'wallet.balance',characterId:42,sourceId:'',bindingDisplay:'both',x:40,y:40,width:500,height:100};
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {resolve,reject,promise};};
+// flush runs one captured batch only: jobs queued by callbacks wait for the
+// next flush, matching a later frame/debounce turn rather than recursive delivery.
 function timers(){let seq=0;const jobs=new Map();return {schedule:fn=>{jobs.set(++seq,fn);return seq;},cancel:id=>jobs.delete(id),flush(){const now=[...jobs.values()];jobs.clear();for(const fn of now)fn();},get size(){return jobs.size;}};}
 
 test('geometry/wording/style edits preserve the actual endpoint projection input; binding and pilot edits invalidate it',()=>{

@@ -1,6 +1,6 @@
 # Validation and release readiness
 
-The active work is [documentation modernisation](DOCUMENTATION-WORK.md), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Documentation validation does not rerun or relabel the application results below.
+The active work is [source documentation](SOURCE-DOCUMENTATION-WORK.md), following the completed [manual refresh](DOCUMENTATION-WORK.md), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Documentation validation does not rerun or relabel the application results below.
 
 **Use the exact build designated in the [Premerge Bug Review handoff](PREMERGE-BUG-REVIEW.md).** It records the application commit, verified package/download, active branch/PR and bug ledger. The completed [performance acceptance record](https://github.com/BunBajiro/kairo/blob/568ce3e29213e4132a535340c1321e28c46a83cc/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) preserves prior gates. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn; PR #12 owns the current phase. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
 
@@ -103,3 +103,9 @@ Historical version-by-version validation is retained in the [documentation archi
 The 0.8.0 documentation refresh is separate from build90 application acceptance. [The documentation receipt](DOCUMENTATION-VERIFICATION.json) records file/heading checks, shell syntax checks, executed local API/Registry examples, source/catalog checks and independent review. Runtime/frontend source, package versions, closed premerge findings and raw review evidence remain unchanged from the recovered baseline. The static-data importer has a documentation-only help correction, verified with unchanged executable Python AST.
 
 The guides are banked on the review branch. They are not retroactively included in the build90 download, and these documentation commits do not claim a new full runtime/browser/performance run. Historical measurements and environment-specific limits above retain their original meaning. Merge and release still require explicit approval.
+
+## Source documentation verification
+
+The source documentation phase records coverage and independent accuracy review in [its own ledger](SOURCE-DOCUMENTATION-WORK.md) and [verification receipt](SOURCE-DOCUMENTATION-VERIFICATION.json). Comments/JSDoc/TSDoc explain current contracts; executable structure, SQL, defaults, declaration signatures and assertion behavior are preserved against `8c19913`. Protected package/workflow/data/vendor files, completed review evidence and the prior manual-phase receipts remain byte-identical.
+
+Types, a fresh build, parser-based preservation and 219 focused Node helper/model/renderer tests passed. This is not a new full runtime/browser/performance gate or a new downloadable application. Build90 remains the verified download with the environment limits above; its source comments and packaged manuals predate these documentation phases.

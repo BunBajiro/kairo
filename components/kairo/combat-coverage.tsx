@@ -1,4 +1,9 @@
 "use client";
+/**
+ * Shared explanation of personal killmail evidence in operation and Session views.
+ * Coverage describes collected public evidence, not complete fleet participation;
+ * the runtime owns collection deadlines. See ../../docs/SESSIONS.md.
+ */
 import {stamp} from './model';
 const labels:Record<string,string>={ready:'Collected',partial:'Collecting remaining records',waiting:'Waiting for first collection',stale:'Retrying public source',error:'Public source unavailable',disabled:'Paused'};
 export function CombatCoverage({coverage,sessionPhase}:{coverage:any;sessionPhase?:string}){

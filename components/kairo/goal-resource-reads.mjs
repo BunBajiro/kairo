@@ -2,6 +2,13 @@ import {createScopedRefresh} from './scoped-refresh.mjs';
 
 // Progress, private notes and creation choices have independent invalidations.
 // A pilot owns these readers; disposing it fences every pending publication.
+/**
+ * Own progress, notes and source-choice reads for one fixed numeric pilot ID.
+ * Source metadata loads once, then only while its editor is visible unless forced.
+ * progress also invalidates metadata; it never refreshes private notes. refresh,
+ * notes and metadata force explicit reads; resume releases visibility-held work.
+ * Close when the pilot/view retires. Errors use onError, not rejected drain waiters.
+ */
 export function createGoalResourceReads({character, read, publishGoals, publishNotes, publishSources,
     visible = () => true, metadataVisible = () => false, onError}) {
     const query = '?character=' + character;

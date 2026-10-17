@@ -43,6 +43,9 @@ function fixture({ systemCount = 3, moons = 2 } = {}) {
   return rows;
 }
 
+// Construct a minimal real ZIP without another archive library. corruptCrc alters
+// only the central-directory checksum; extraMember exercises member validation.
+// Production ZIP parsing/decompression and converter bounds remain under test.
 function zip(rows, { corruptCrc, extraMember } = {}) {
   const entries = Object.entries(rows).map(([name, records]) => [name, Buffer.from(records.map(r => JSON.stringify(r)).join('\n') + '\n')]);
   if (extraMember) entries.push([extraMember, Buffer.from('x')]);

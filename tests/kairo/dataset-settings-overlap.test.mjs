@@ -1,3 +1,7 @@
+// Reproduce the reported overlap through real local HTTP/SQLite. Separate stream
+// and build gates prove which phase still owns unfinished work while Client ID
+// saves complete; until() only bounds eventual publication after explicit release.
+// All provider traffic is synthetic. This does not identify every live UI timing.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp, readFile, rm} from 'node:fs/promises';

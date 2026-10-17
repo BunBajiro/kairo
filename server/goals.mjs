@@ -1,3 +1,9 @@
+/**
+ * Automatic goal availability, type resolution and durable progress accounting.
+ * Core refreshes affected goals after accepted source updates; this service does
+ * not poll ESI. Completion is latched, while unmet absolute-value goals can fall.
+ * Source/retention contracts are described in ../docs/PILOT-WORKSPACE.md.
+ */
 import {randomUUID} from 'node:crypto';
 import {catalog} from './modules/catalog.mjs';
 import {snapshotFresh} from './polling.mjs';
@@ -58,6 +64,7 @@ function prepareGoalInputs(store, auth, characterId, now = Date.now()) {
         prepare(key, build) { if (!prepared.has(key)) prepared.set(key, build()); return prepared.get(key); } };
 }
 
+/** Read current availability and up to 400 known type choices; no ESI lookup occurs. */
 export function goalSourceOptions(store, auth, characterId) {
     const inputs = prepareGoalInputs(store, auth, characterId), names = inputs.names(), types = new Map();
     for (const [key, idField] of [['assets', 'type_id'], ['mining', 'type_id'], ['jobs', 'product_type_id'], ['queue', 'skill_id']])
@@ -70,6 +77,11 @@ export function goalSourceOptions(store, auth, characterId) {
     }), types: [...types.values()].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 400) };
 }
 
+/**
+ * Resolve a numeric type ID or exact name, including its inventory category.
+ * Reject absent/invalid matches and network failures. Successful names go through
+ * rememberNames when supplied; otherwise this helper persists the names setting.
+ */
 export async function lookupGoalType(store, esi, input, rememberNames) {
     const name = String(input.name || '').trim().slice(0, 100); let id = Number(input.typeId || 0);
     if (!id) {
@@ -85,6 +97,7 @@ export async function lookupGoalType(store, esi, input, rememberNames) {
     return { id, name: type.name, categoryId: group.category_id };
 }
 
+/** Project persisted progress with current source availability, without recalculating it. */
 export function listGoals(store, auth, characterId) {
     const inputs = prepareGoalInputs(store, auth, characterId);
     return store.db.prepare(`SELECT g.*,t.goal_id tracking_id,t.source tracking_source,t.type_id tracking_type_id,
@@ -148,6 +161,12 @@ function accountingTransaction(store, update) {
     catch (error) { store.db.exec('ROLLBACK TO ' + name); store.db.exec('RELEASE ' + name); throw error; }
 }
 
+/**
+ * Return synchronous create/refresh commands over this Store. Refresh batches
+ * ledger/progress/status writes in one savepoint and publishes completion after
+ * that savepoint succeeds; an outer caller transaction still owns final commit.
+ * Disabled/unavailable sources retain progress, and completed goals are not reevaluated.
+ */
 export function createGoals(store, auth, publish) {
     const entries = store.db.prepare('SELECT observed,credited FROM goal_progress_entries WHERE goal_id=? AND entry_key=?');
     const put = store.db.prepare(`INSERT INTO goal_progress_entries VALUES(?,?,?,?) ON CONFLICT(goal_id,entry_key)
@@ -167,6 +186,9 @@ export function createGoals(store, auth, publish) {
         }
         const entry = affected.get(changedKey); return entry ? entry.query.all(characterId, ...entry.ids) : [];
     }
+    // Per-entry high-water marks prevent duplicate credit and retain earned units
+    // after rolling ESI windows drop an entry. Mining's first sample seeds observed
+    // values without credit; later decreases never subtract previously earned units.
     function accumulate(goal, rows, baseline = false) {
         for (const [key, quantity] of rows) {
             if (!Number.isFinite(quantity) || quantity < 0) continue;
@@ -176,6 +198,11 @@ export function createGoals(store, auth, publish) {
         }
         return total.get(goal.id).value;
     }
+    /**
+     * Recompute active goals for one pilot; changedKey narrows work to dependent
+     * sources. Return the count with changed progress/completion, not status-only
+     * writes. Shared source preparation must stay per-refresh, never per-goal scans.
+     */
     function refresh(characterId, changedKey) {
         const goals = activeGoals(characterId, changedKey);
         if (!goals.length) return 0;
@@ -218,6 +245,13 @@ export function createGoals(store, auth, publish) {
         for (const event of completed) publish(event);
         return changed;
     }
+    /**
+     * Validate and persist a goal, then perform its first refresh. Type-based
+     * sources require a lookupGoalType result matching input.typeId; callers own
+     * authorization for the chosen pilot. A current sample may complete it now.
+     * Creation's savepoint finishes before publication/refresh; an error in those
+     * later steps does not itself undo the inserted goal.
+     */
     function create(characterId, input, verifiedType) {
         const source = sourceFor(input.source || 'manual'), title = String(input.title || '').trim().slice(0, 160), target = Number(input.target ?? 1);
         if (!title) throw new Error('Give your goal a title.');

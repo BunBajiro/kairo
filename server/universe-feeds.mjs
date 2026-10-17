@@ -1,3 +1,8 @@
+/**
+ * Public, timestamped Universe feed cache and expiry owner. Provider payloads
+ * remain attributed observations; no pilot credentials are sent and reports do
+ * not become private route confirmation. See docs/UNIVERSE.md for source limits.
+ */
 import { readFileSync } from 'node:fs';
 import { FEED_URLS, normalizeConnections, normalizeObservations, normalizeManualStorms, normalizeCampaigns,
     normalizeDevelopment, normalizeKill, normalizeWormholeTypes, npcSample, npcDeltas } from './universe-feed-model.mjs';
@@ -26,7 +31,14 @@ function metadata(sample, key, now) {
         updated_at: updated, expires_at: expires, retry_at: sample?.retry_at || sample?.retryAt || null,
         error: sample?.error || null, notice: sample?.notice || base.notice, attribution: base.attribution, url: base.url, count: 0 };
 }
-/** Public operational feeds are independent of personal session combat collection. */
+/**
+ * Create shared feed state over Store and the static atlas. Core calls tick();
+ * explicit refresh still respects provider freshness/backoff. noSync disables
+ * scheduled fetching but not expiry. deferExpiry lets the composition root finish
+ * construction before startExpiry arms a timer. close aborts and drains flights.
+ * now() and timer delays use milliseconds; stored observation dates are ISO UTC.
+ * Public combat collection remains independent of personal Session collection.
+ */
 export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetcher = fetch, noSync = false, onChange = () => {}, onForgetConnections = () => {}, points = bundledPoints,
     setExpiryTimer = setTimeout, clearExpiryTimer = clearTimeout, deferExpiry = false } = {}) {
     if (!atlas?.systems || !atlas?.gates) throw new Error('Universe feeds need the bundled atlas.');
@@ -81,6 +93,10 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         if (input?.kind && input.kind !== 'storms') throw new Error('Only storm observations can be imported into public feeds.');
         return saveStorms(Array.isArray(input) ? input : input?.items || input?.storms);
     }
+    /** Bounded credential-free provider transport: fixed endpoints, redirects
+     * rejected, 12s deadline and 2 MiB response cap. Revalidation retains prior data;
+     * cache lifetime uses provider max-age minus Age, floored by this source's TTL
+     * and capped at one day. */
     async function request(url, source, previous) {
         // No user-controlled host, route, redirects or credentials reach external providers.
         if (!Object.values(FEED_URLS).includes(url) && !/^https:\/\/r2z2\.zkillboard\.com\/ephemeral\/[1-9][0-9]{0,14}\.json$/.test(url))
@@ -187,6 +203,9 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
         if (record.current.identity === current.identity || Date.parse(record.current.at) >= Date.parse(current.at)) return;
         save('npc-windows', { previous: record.current, current });
     }
+    /** Project cached evidence without fetching. Prune canonical public links
+     * first and notify dependent route owners; stale observations may display but
+     * retain stale status. Nominal type mass is never remaining wormhole mass. */
     function state(_characterId = 0) {
         pruneExpired();
         const time = now(), on = enabled();

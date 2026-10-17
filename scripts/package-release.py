@@ -1,4 +1,10 @@
 """Package the standalone Kairo runtime, compiled UI and source without local data."""
+# This script executes immediately: optional argv[1] selects the ZIP destination;
+# otherwise it writes beside the checkout using package.json's existing version.
+# Run only after a fresh build and the required gates (docs/DEVELOPMENT.md).
+# Existing destinations are overwritten; failure can leave a partial ZIP.
+# The exclusions below remove known private/runtime artifacts, not arbitrary
+# secrets in source files. Review the input tree before producing a distribution.
 from pathlib import Path
 import json, os, sys, zipfile
 root=Path(__file__).resolve().parents[1]
@@ -18,6 +24,8 @@ with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
             if name.startswith('.env') or name in {'.git','vault.key','vault.dpapi'} or p.suffix in skip_suffixes or p==out:
                 continue
             archive.write(p,'Kairo/'+p.relative_to(root).as_posix())
+# CRC and required-path checks establish package structure, not test acceptance.
+# They do not replace the independent extracted-package checks in docs/VALIDATION.md.
 with zipfile.ZipFile(out) as archive:
     assert archive.testzip() is None
     assert 'Kairo/server/import-cache.mjs' in archive.namelist()

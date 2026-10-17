@@ -11,6 +11,8 @@ import {marketSettingsOwnership} from './premerge-pass4-market-settings.mjs';
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-market-retry-'));
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';await mkdir(output,{recursive:true});
 const now=Date.now(),checks=[],requests=[],errors=[],unexpectedNetwork=[],serverRequests=[];
 const image='<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="#97ebce"/></svg>';

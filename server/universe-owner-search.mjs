@@ -1,3 +1,6 @@
+/** Private map owner selectors: resolve verified alliance/corporation identities
+ * through shared ESI transport. A resolved name supplies identity only, never
+ * sovereignty evidence or membership. The owning Universe service drains close(). */
 export const OWNER_SEARCH_SCOPE = 'esi-search.search_structures.v1';
 const validId = value => Number.isSafeInteger(value) && value > 0 && value < 2147483647;
 const LIMIT = 20;
@@ -14,6 +17,12 @@ export function createUniverseOwnerSearch(store, auth, esi, {now = Date.now} = {
     function cached(kind, query) {
         return cacheRows.all(now(),kind,query).flatMap(row => { try {const found=identity(JSON.parse(row.body),kind);return found?[found]:[];} catch{return [];} });
     }
+    /** Resolve input.kind plus a 3–100 character q for a connected pilot. With
+     * search scope use partial lookup; otherwise exact names/IDs use public ESI.
+     * Hydrate at most 20 IDs, dropping mismatched identities and rejecting stale
+     * provider responses. Matching in-flight queries coalesce; verified local names
+     * can survive provider failure. Returns results/mode/truncated/notice; validation
+     * or provider failure without fallback rejects. Valid empty results resolve. */
     function search(characterId, input = {}) {
         if (closed) return Promise.reject(new Error('Owner search is stopping.'));
         const id=Number(characterId), pilot=auth.characters().find(row=>row.id===id), kind=input.kind;

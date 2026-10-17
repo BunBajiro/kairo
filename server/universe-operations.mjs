@@ -1,3 +1,9 @@
+/**
+ * Private operational observations: intel, alerts, scanner signatures, upgrade
+ * notes, selected location and optional fleet/log collection. Canonical records
+ * are pilot-owned and optionally map-owned; they do not establish OPSEC or access.
+ * See docs/UNIVERSE.md and docs/API-REFERENCE.md for user and HTTP boundaries.
+ */
 import { createHash, randomUUID } from 'node:crypto';
 import { isAbsolute } from 'node:path';
 import { createIntelParser, gateDistances, parseSignatureClipboard } from './universe-intel.mjs';
@@ -17,6 +23,13 @@ const hash = value => createHash('sha256').update(value).digest('hex').slice(0, 
 const finiteDate = value => Number.isFinite(Date.parse(value));
 const clone = value => JSON.parse(JSON.stringify(value));
 
+/**
+ * Construct local schema/readers and a log-tail owner; no network read occurs in
+ * state(). Core drives tick(), and must await close() before closing Store/ESI.
+ * now() is epoch milliseconds. noSync skips scheduled fleet reads, while explicit
+ * refreshFleet still follows connection ownership and its polling deadline.
+ * Mutations validate pilot/map scope and throw; map writes reject source maps.
+ */
 export function createUniverseOperations(store, auth, esi, options = {}) {
     const { atlas, publish = () => {}, onChange = () => {} } = options, now = options.now || Date.now;
     if (!atlas?.systems) throw new Error('Universe operations require a static atlas.');
@@ -121,6 +134,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
             alerts: rows(id, scopedKind('alert', mapId)).filter(item => intelIds.has(item.intel_id)).map(item => pick('alert', item)),
             upgrades: rows(id, scopedKind('upgrade', mapId)).map(item => pick('upgrade', item)) };
     }
+    /** Validate portable historical observations before any writes. Alert IDs
+     * must reference imported intel with the same expiry; limits are per map.
+     * Missing input is an empty version-1 payload, not a request to copy live data. */
     function validateMapScopeImport(input) {
         if (input == null) return { version: 1, intel: [], alerts: [], upgrades: [] };
         const object = value => value && typeof value === 'object' && !Array.isArray(value);
@@ -253,6 +269,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         tail.configure(id, { enabled: store.get('module:universe', true) && !!pilot && !pilot.needsReauth && cfg.enabled && cfg.logs_enabled,
             directory: cfg.log_directory, channels: cfg.location_source === 'esi' ? cfg.intel_channels : [...new Set([...cfg.intel_channels, 'Local'])], characterName: pilot?.name || '' });
     }
+    /** Replace settings against defaults (not a patch), then reconfigure logs.
+     * Persisted durations use the units in their field names; saving does not
+     * refresh observations or turn old logs into new location evidence. */
     function saveConfig(characterId, input) {
         const id = pilotId(characterId), cfg = validateConfig(id, input), old = config(id);
         store.set('universe:operations:config:' + id, cfg); configureLogs(id, cfg);
@@ -262,6 +281,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
     function fresh(sample) {
         return sample?.status === 'ready' && sample.stale !== true && finiteDate(sample.updatedAt) && Date.parse(sample.updatedAt) <= now() + 1000 && Date.parse(sample.expiresAt) > now();
     }
+    /** Select ESI, logs, or fresh ESI with log fallback according to configuration.
+     * Keep source timestamps/status: stale data can display a position but cannot
+     * authorize tracking. This read never fetches or rewrites the Pilot snapshot. */
     function location(id, roster) {
         const pilot = character(id, roster), cfg = config(id, roster);
         const empty = (status, source = 'esi') => ({ system_id: null, system_name: null, status, source, updated_at: null, expires_at: null });
@@ -339,6 +361,10 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         publish({ type: 'universe.operational_alert', module: 'universe', characterId: id, summary: reason,
             payload: { private: true, alert_id: alert.id, kind: item.kind, system_ids: item.system_ids, distance }, at: alert.created_at });
     }
+    /** The entry point chooses trustedSource; callers cannot claim a game-log
+     * origin through input. Deduplicate within this pilot/map, retain source-time
+     * expiry, and publish only private alerts. Ignored input returns a reason;
+     * malformed commands throw. A received old report is not made fresh. */
     function ingest(characterId, input, trustedSource = 'manual') {
         const id = pilotId(characterId), mapId = mapScope(id, input?.map_id, true), cfg = config(id);
         if (!cfg.enabled || !store.get('module:universe', true)) throw new Error('Universe operations are disabled for this pilot.');
@@ -373,6 +399,11 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         if (!alert) throw new Error('Alert not found for this pilot.');
         alert.acknowledged_at ||= iso(); put(id, alertKind, alert, 250); changed(id); return alert;
     }
+    /** Upsert a scanner observation by UUID or system/code within one map scope.
+     * options.observed=false preserves existing last_seen_at/missing during label
+     * or binding edits; true records a rescan. Otherwise a new record or explicit
+     * missing=false counts as observation. Bookmark indexes include trash history
+     * so deleting a row does not silently reuse its sequence number. */
     function saveSignature(characterId, input, options = {}) {
         const id = pilotId(characterId), mapId = mapScope(id, input.map_id, true), signatureKind = scopedKind('signature', mapId), deletedKind = scopedKind('signature_deleted', mapId), previous = input.id ? row(id, signatureKind, input.id) : null;
         if (input.id && !previous) throw new Error('Signature not found for this pilot.');
@@ -408,6 +439,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         if (!old && rows(id, signatureKind).length >= 1000) throw new Error('Remove old signatures before adding more than 1,000.');
         put(id, signatureKind, value); changed(id); return value;
     }
+    /** Pure scanner diff; malformed rows produce diagnostics. Only a valid,
+     * explicitly complete scan proposes missing rows. Skipped anomalies cannot
+     * make existing anomaly observations missing unless inclusion is enabled. */
     function previewSignatures(characterId, input) {
         const id = pilotId(characterId), mapId = mapScope(id, input.map_id), signatureKind = scopedKind('signature', mapId), system = observationSystem(input.system_id, mapId);
         if (typeof input.text !== 'string' || input.text.length > 200000) throw new Error('Paste at most 200,000 characters of probe scanner results.');
@@ -423,6 +457,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         return { ...(mapId ? { map_id: mapId } : {}), system_id: system, valid, ignored, diagnostics, added, updated, signature_ids: [...incoming], complete_scan: input.complete_scan === true,
             missing: input.complete_scan === true && valid ? before.filter(item => !incoming.has(item.signature_id) && (input.include_anomalies === true || item.kind !== 'Cosmic Anomaly')).map(({ id, signature_id, name, type }) => ({ id, signature_id, name, type })) : [] };
     }
+    /** Apply usable scanner rows as observations. Diagnostics can accompany a
+     * partial import; complete-scan missing detection requires preview.valid.
+     * This differs from infrastructure imports, which reject any invalid preview. */
     function importSignatures(characterId, input) {
         const id = pilotId(characterId), mapId = mapScope(id, input.map_id, true), signatureKind = scopedKind('signature', mapId), preview = previewSignatures(id, input), system = preview.system_id;
         if (rows(id, signatureKind).length + preview.added.length > 1000) throw new Error('Remove old signatures before adding more than 1,000.');
@@ -433,6 +470,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         changed(id); return { added: preview.added.length, updated: preview.updated.length, missing: preview.missing.length, ignored: preview.ignored,
             diagnostics: preview.diagnostics, complete_scan_applied: preview.valid && preview.complete_scan, signatures: rows(id, signatureKind).filter(item => item.system_id === system) };
     }
+    /** Move an observation atomically to bounded trash (100 rows, 24-hour undo).
+     * The deletion gets its own revision; restoring requires that exact revision
+     * and never overwrites a newer live observation with the same scanner code. */
     function removeSignature(characterId, key, scope = null) {
         const id = pilotId(characterId), mapId = mapScope(id, scope, true), signatureKind = scopedKind('signature', mapId), deletedKind = scopedKind('signature_deleted', mapId), signature = row(id, signatureKind, key);
         if (!signature) return { removed: false };
@@ -488,6 +528,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         }
         return { ...preview, added, updated: preview.upgrades.length - added };
     }
+    /** Merge a fully valid preview by system/slot in one savepoint. SMT lacks
+     * notes, so preserve existing notes for that format; JSON supplies them.
+     * Notify readers only after the savepoint succeeds. */
     function importUpgrades(characterId, input) {
         const id = pilotId(characterId), mapId = mapScope(id, input.map_id, true), upgradeKind = scopedKind('upgrade', mapId), preview = previewUpgrades(id, input);
         if (!preview.valid) throw new Error('Infrastructure import needs correction: ' + preview.issues.map(issue => issue.message).slice(0, 3).join(' '));
@@ -507,6 +550,10 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         return formatUpgradeExport(rows(id, upgradeKind).filter(row => system == null || row.system_id === system), atlas, { format: input.format || 'smt' });
     }
     function removeRecord(characterId, kind, key, scope = null) { const id = pilotId(characterId), mapId = mapScope(id, scope, true); delRow.run(id, scopedKind(kind, mapId), String(key)); changed(id); return { removed: true }; }
+    /** One pilot connection owns membership, roster and name hydration through
+     * every await. Recheck scope/config/revision before saving. Commander role loss
+     * or revoked access clears roster visibility; transient failures may retain
+     * stale data only for the same fleet. Roster hydration is capped at 256 rows. */
     async function fetchFleet(id) {
         if (closed || fleetBusy.has(id)) return;
         const pilot = character(id), cfg = config(id);
@@ -562,6 +609,9 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
             if (!connectionCurrent()) fleetNext.delete(id);
         }
     }
+    /** Join a same-pilot flight, then retry ownership admission if its login was
+     * replaced. Explicit refresh respects the 60-second/provider retry deadline;
+     * it is not permission to bypass ESI pacing or return the old login's result. */
     async function refreshFleet(characterId) {
         const id = pilotId(characterId);
         if (!closed && store.get('module:universe', true)) {
@@ -635,6 +685,8 @@ export function createUniverseOperations(store, auth, esi, options = {}) {
         return { state, signatures, character: id => character(id, readRoster()), config: id => config(id, readRoster()) };
     }
     function state(characterId, scope = null) { return readContext(characterId).state(scope); }
+    /** Bound each scheduler pass to one eligible fleet refresh after log-tail
+     * work. The rotating cursor prevents a busy pilot from starving other owners. */
     async function runTick() {
         if (closed || ticking) return;
         if (!store.get('module:universe', true)) {

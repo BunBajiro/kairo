@@ -12,6 +12,8 @@ import {seedMarketIcons} from './helpers/market-icon-fixture.mjs';
 
 const chrome=process.env.KAIRO_CHROME_PATH||['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium','/usr/bin/chromium-browser'].find(existsSync);
 if(!chrome)throw new Error('Chrome is required. Set KAIRO_CHROME_PATH.');
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const dir=await mkdtemp(join(tmpdir(),'kairo-market-icons-ui-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';
 await mkdir(output,{recursive:true});
 const now=Date.now();
@@ -39,6 +41,8 @@ async function waitFor(expression){
  for(let i=0;i<160;i++){if(errors.length)throw new Error(errors.join('\n'));if(await evaluate(expression))return;await delay(50);}
  throw new Error('Condition not met: '+expression);
 }
+// Wait for stable, unobstructed layout before dispatching real pointer input.
+// DOM click() would bypass overlays/animation and could conceal unreachable UI.
 async function clickElement(expression){
  await waitFor('!!('+expression+')');
  const point=await evaluate(`(async()=>{

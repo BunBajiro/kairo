@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Request destination candidates for one pilot/map/origin and a complete set of
+ * travel preferences. Editing any search input invalidates the prior result;
+ * expiry disables reuse even if no new server response has arrived. The planner
+ * owns route/access decisions, while this component owns query and timer cleanup.
+ */
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {ArrowRight,Building2,Compass,Copy,LocateFixed,Navigation,Route,ShieldCheck} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -23,6 +30,8 @@ export function JSpaceDestinations({atlas,originId,chainId,onSelectSystem,onRout
  const [wormholes,setWormholes]=useState(true),[thera,setThera]=useState(false),[turnur,setTurnur]=useState(false),[critical,setCritical]=useState(false),[eol,setEol]=useState(false),[unknown,setUnknown]=useState(false),[avoidHostile,setAvoidHostile]=useState(false),[avoidLow,setAvoidLow]=useState(false),[avoidNull,setAvoidNull]=useState(false);
  const [result,setResult]=useState<SearchResult|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[expired,setExpired]=useState(false),[copyText,setCopyText]=useState(''),[notice,setNotice]=useState('');
  const request=useRef(0),alive=useRef(true),byId=useMemo(()=>new Map(atlas.systems.map(system=>[system.system_id,system])),[atlas]);
+ // A sequence alone cannot distinguish a completed request from edits made
+ // while it was pending; the submitted full input key must still match.
  const key=JSON.stringify([character,chainId,originId,category,security,mode,limit,shipSize,shipClass,shipMass,avoids,wormholes,thera,turnur,critical,eol,unknown,avoidHostile,avoidLow,avoidNull]);
  const currentKey=useRef(key);currentKey.current=key;
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;request.current++;};},[]);

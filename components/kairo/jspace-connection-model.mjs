@@ -29,6 +29,7 @@ export function connectionLifeTone(connection) {
   if (connectionLifeBand(connection) !== 'unknown') return byBand.get(connection.life_band).tone;
   return ['stable','eol','critical'].includes(connection?.life_status) ? connection.life_status : 'unknown';
 }
+/** Build a narrow quick-action patch; unknown fields/values throw instead of changing another condition. */
 export function connectionConditionPatch(field, value) {
   if (field === 'duration_hours' && LIFETIME_PRESETS.some(row=>row.value===Number(value))) return {duration_hours:Number(value)};
   if (field === 'max_ship_size' && SHIP_SIZES.some(row=>row.value===value)) return {max_ship_size:value};
@@ -37,7 +38,14 @@ export function connectionConditionPatch(field, value) {
   throw new Error('Choose a valid observed connection condition.');
 }
 
-/** Recording a band can shorten the routing bound, but can never renew a hole. */
+/**
+ * Reconcile qualitative lifetime evidence without mutating either record. `now`
+ * is Unix ms; `expiresAt` is the expiry already resolved by the command owner.
+ * A duration edit keeps that resolved expiry; this helper does not add hours.
+ * A new qualitative band can only shorten prior/explicit expiry. Echoed unchanged
+ * observation fields do not restamp evidence. Invalid bands or observation times
+ * over five minutes in the future throw; unknown evidence may retain null expiry.
+ */
 export function observedLife(input, previous = {}, now = Date.now(), expiresAt = previous.expires_at ?? null) {
   if (input.duration_hours != null) return {life_band:'unknown',life_observed_at:new Date(now).toISOString(),life_status:input.life_status==='collapsed'?'collapsed':Number(input.duration_hours)<=4.5?'eol':'stable',expires_at:expiresAt};
   // Other Universe editors echo complete records. An unchanged band + timestamp

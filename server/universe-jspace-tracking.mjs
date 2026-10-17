@@ -1,10 +1,21 @@
+/**
+ * Incremental map subscriptions over the selected location stream. Source maps
+ * carry live topology; interactive maps retain their own annotations and consent.
+ * Source generation/coverage watermarks prevent rediscovery from replaying a
+ * deliberately removed connection. No lifetime movement history is consumed.
+ */
 const LOCATION_SCOPE = 'esi-location.read_location.v1';
 const MAX_SAMPLE_AGE_MS = 30000;
 const MAX_TRANSITION_MS = 90000;
 const MAX_PILOTS = 100;
 const iso = value => new Date(value).toISOString();
 
-/** One subscriber dispatcher for the existing location stream; it never polls ESI. */
+/**
+ * Create a synchronous dispatcher; the owning Maps service supplies canonical
+ * writes and controls transaction boundaries. No timers or ESI polling are added.
+ * syncMap must follow committed roster edits, and forgetMap removes subscriptions.
+ * now() is epoch ms; accepted samples are ready, unexpired and at most 30s old.
+ */
 export function createJSpaceTracking(store, auth, options) {
     const { atlas, operations, addSystem, saveConnection, writeMap, recordPassage = () => false, onChange = () => {},
         hasScope = map => !!map.scope && Object.values(map.scope).some(values => Array.isArray(values) && values.length),
@@ -259,6 +270,11 @@ export function createJSpaceTracking(store, auth, options) {
         }
         return false;
     }
+    /** Consume one selected-source sample and update subscribed maps atomically
+     * per map. Only same-source undocked transitions within 90s, without recent
+     * pod-loss evidence, may infer a J-Space edge. Such edges start unconfirmed
+     * with a 16-hour estimate; observed movement never proves mass or access.
+     * Source maps run first so scoped subscribers can receive the resulting chain. */
     function observeLocation(travelPilot, input) {
         const id = Number(travelPilot), current = sample(id, input);
         if (!current) return { maps: 0, connections: 0, passages: 0 };

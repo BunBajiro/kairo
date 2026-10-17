@@ -21,6 +21,9 @@ async function storage(t) {
     t.after(async () => { store.close(); await rm(dir, { recursive: true, force: true }); });
     return { dir, store };
 }
+// Advance observation time explicitly and pump real collectors with noSync set.
+// This measures cache/deadline request counts, not elapsed speed or real ESI age.
+// Restart preserves SQLite while replacing Core, so warm-start reuse is observable.
 async function scheduler(t) {
     const dir = await mkdtemp(join(tmpdir(), 'kairo-schedule-')), store = openStore(dir), epoch = Date.now();
     let clock = epoch, core;

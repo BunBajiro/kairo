@@ -13,12 +13,14 @@ export const BOOKMARK_MAPPINGS = Object.freeze([
 ].map(([key,label,value]) => Object.freeze({key,label,value})));
 const mappingDefaults = Object.fromEntries(BOOKMARK_MAPPINGS.map(row => [row.key, row.value]));
 const printable = value => typeof value === 'string' && !/[\u0000-\u001f\u007f]/.test(value);
+/** Validate 1–240 printable characters and supported balanced tokens; return the original text or throw. */
 export function validateBookmarkTemplate(value) {
     if (!printable(value) || !value.trim() || value.length > 240) throw new Error('Use a bookmark template of 1–240 printable characters.');
     for (const match of value.matchAll(/\{([^{}]*)\}/g)) if (!BOOKMARK_TOKENS.includes(match[1])) throw new Error('Unknown bookmark token {' + match[1] + '}.');
     if (/[{}]/.test(value.replace(/\{[^{}]*\}/g, ''))) throw new Error('Close every bookmark token with a matching brace.');
     return value;
 }
+/** Accept only known labels, each at most 32 printable characters; return a fresh partial mapping or throw. */
 export function validateBookmarkMapping(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length > BOOKMARK_MAPPINGS.length) throw new Error('Use a valid bookmark label mapping.');
     const result = {};
@@ -46,6 +48,14 @@ function destinationFor(signature, system, destination) {
     const labels = typeFor(signature, system)?.destinationClasses?.map(row => ({'High-sec':'HS','Low-sec':'LS','Null-sec':'NS'}[row.label] || row.label));
     return destinationLabel(destination) || labels?.join('/') || '';
 }
+/**
+ * Produce at most 240 characters of plain bookmark text; never create an EVE
+ * bookmark or route. Template/mapping errors throw. Nominal type mass is formatted
+ * in billions of kg, while live mass/lifetime labels require the caller's exact
+ * linked connection. `options.now` is Unix ms and defaults to Date.now(). Missing
+ * evidence produces blank tokens rather than a guessed condition; explicit chain
+ * labels stay user-owned.
+ */
 export function formatSignatureBookmark(template, signature, system, destination, options = {}) {
     validateBookmarkTemplate(template);
     const mapping = {...mappingDefaults, ...validateBookmarkMapping(options.mapping || {})};

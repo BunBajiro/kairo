@@ -1,7 +1,13 @@
 import {schematicLayout} from '../../lib/universe-schematic-layout.mjs';
 import {CHAIN_NODE_WIDTH, CHAIN_NODE_HEIGHT} from './jspace-map-geometry.mjs';
 
-/** Provisional only: the command validates membership and creates authoritative links. */
+/**
+ * Stage absent known-space members in a region/constellation, using diagram units
+ * and the shared schematic layout. The existing map is not modified. Reject an
+ * unknown group or a result over the 600-node limit. Connections are preview-only
+ * gates/shared bridges between newly staged nodes; group.add revalidates membership
+ * and creates authoritative links. See docs/SCHEMATIC-GEOMETRY.md.
+ */
 export function prepareMapGroup(atlas, map, links, kind, id) {
   const field = kind + '_id';
   const group = atlas[kind === 'region' ? 'regions' : 'constellations'].find(row => row[field] === id);

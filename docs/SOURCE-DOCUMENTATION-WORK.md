@@ -12,23 +12,42 @@ On 17 October 2026 the clean workspace, remote branch and GitHub PR #12 agreed o
 
 | Area / author | Principal contracts | State |
 | --- | --- | --- |
-| Core / root | Composition, HTTP guards, accepted request draining, catalog/Registry extension contracts, semantic bus and SSE backpressure | Inventory complete; source review in progress |
-| Foundation / source_foundation | Startup/replacement, Auth/Vault, ESI pacing/cache/pagination, Store/migrations, dataset preparation/cancellation/rollback | Documentation and syntax/AST checks complete; independent review in progress |
-| Domains / source_domains | Markets/import assumptions and saved plans, Sessions/replay, Goal accounting, Stream/OBS/OPSEC, shared transport | Inventory complete; source review in progress |
-| Universe backend / source_universe_server | Scope/expiry, observed/inferred information, navigation and operations, request-local preparation, geometry | Inventory complete; source review in progress |
-| Universe frontend / source_universe_ui | Pilot/map ownership, effects/cleanup, drafts/saves, workers, clock/camera and projection bounds | Inventory complete; source review in progress |
-| Dashboard and broadcast / source_dashboard_ui | Resource identities, async refresh, global save queues, domain editors, public renderer privacy/recovery | Inventory complete; source review in progress |
-| Tooling/tests / source_tooling_tests | Offline generators, packaging, fixture isolation, timing barriers, intentional failures and retained scaffold | Inventory complete; source review in progress |
+| Core / root | Composition, HTTP guards, accepted request draining, catalog/Registry extension contracts, semantic bus and SSE backpressure | Complete; independently reviewed |
+| Foundation / source_foundation | Startup/replacement, Auth/Vault, ESI pacing/cache/pagination, Store/migrations, dataset preparation/cancellation/rollback | Complete; independently reviewed |
+| Domains / source_domains | Markets/import assumptions and saved plans, Sessions/replay, Goal accounting, Stream/OBS/OPSEC, shared transport | Complete; independently reviewed |
+| Universe backend / source_universe_server | Scope/expiry, observed/inferred information, navigation and operations, request-local preparation, geometry | Complete; independently reviewed |
+| Universe frontend / source_universe_ui | Pilot/map ownership, effects/cleanup, drafts/saves, workers, clock/camera and projection bounds | Complete; independently reviewed |
+| Dashboard and broadcast / source_dashboard_ui | Resource identities, async refresh, global save queues, domain editors, public renderer privacy/recovery | Complete; independently reviewed |
+| Tooling/tests / source_tooling_tests | Offline generators, packaging, fixture isolation, timing barriers, intentional failures and retained scaffold | Complete; independently reviewed |
 
 Initial assessment: useful comments already explain several hard-won race/performance constraints, but module/API contracts are uneven. Preserve those explanations, correct stale statements only after checking implementation, and add nearby contracts at meaningful boundaries. A header alone does not establish coverage.
 
 ## Verification and banking
 
-Planned verification: parse changed JavaScript/TypeScript/JSX and compare executable structure with the recovered baseline; compare Python executable AST and syntax where changed; inspect shell/HTML/CSS changes with appropriate parsers or exact non-comment preservation; run the existing type/build gates where annotations affect tooling; verify links/examples. Do not use naive regular-expression comment stripping. Independent review will inspect accuracy and coverage separately from parser checks.
+Integrated verification passed: 235 JavaScript/TypeScript/JSX files preserve parsed structure and tooling annotations; six Python files preserve complete AST; three stylesheets preserve PostCSS structure; five shell/launcher files preserve their complete original bodies with only header comments inserted. Shell syntax, types and a fresh build pass. All 551 local links (60 heading fragments) across 34 Markdown files and 159 source references to 24 guides resolve. No naive regular-expression comment stripping was used. Independent review checked accuracy and coverage separately from parser checks; all findings were documentation refinements and are resolved.
 
-All source edits are workspace-only until a checkpoint below confirms they were pushed. Authors do not commit shared work independently. The integration owner banks reviewed useful batches and verifies the remote head/tree. Behaviour corrections, if needed, require separate review and regression evidence; none is currently proposed.
+The checkpoints below distinguish pushed work from their validation state. Authors did not commit shared work independently. The integration owner banks reviewed batches and verifies the remote head/tree. No application correction was required or introduced.
 
 - `1038033c49e6e15dcc4d7b40abb06ec63c8cfa5a`: inventory and phase instructions pushed; fetched back with identical Git tree.
-- Foundation checkpoint: this commit banks Auth/ESI/Store/dataset/supervisor contracts. Syntax and executable-AST comparison pass; independent accuracy/coverage review remains in progress.
+- `528663c164af47b0b406f0f182c6299f2fb2df40`: foundation contracts pushed and fetched back with identical Git tree; syntax/AST checks passed at banking, then independent review accepted with one later wording refinement.
+- Integration checkpoint: this commit contains the completed source pass and resolved independent reviews. Final verification/banking receipt follows separately.
 
 No new runtime/browser/performance acceptance is claimed. Build90 remains the verified application download; neither the refreshed manuals nor this phase's comments are retroactively added to that ZIP. Windows/DPAPI, live EVE permissions/SSO, actual OBS output and extended play retain the limits in [Validation](VALIDATION.md).
+
+## Coverage and independent review
+
+The inventory accounts for all **575 baseline tracked paths**. It distinguishes 249 comment-edited source/tooling/test files, reviewed unchanged helpers/declarations/styles/tests, 62 retained upstream UI/hook files, and 73 manual/evidence/data/vendor/configuration paths outside source scope (including three supporting phase/navigation edits). Generated topology/detail shards, reference JSON, binary assets, lockfiles and fixture payloads are not comment targets; their contracts live at readers/builders. Existing clear names, types, tests and comments are retained where further prose would duplicate them.
+
+| Area | Independent reviewer | Disposition |
+| --- | --- | --- |
+| Core/HTTP/bus/Registry/SSE | source_foundation | Accepted; clarified skipped-heartbeat return semantics. |
+| Auth/ESI/Store/datasets/lifecycle | source_domains | Accepted; clarified that close refuses new API calls, including private reads. |
+| Markets/Sessions/Goals/Stream/OBS | source_universe_server | Accepted; refined pagination/worker counts, toast-family and retained-visual semantics; removed duplicate prose. |
+| Universe backend/shared geometry | source_tooling_tests | Accepted; refined timestamp tolerances, partial reports/saves, nullable reference values, cache bounds, geometry fallback, disabled refresh and lookup outcomes. |
+| Universe/Maps frontend | source_dashboard_ui | Accepted; refined coordinate spaces, missing-expiry tracing, clock visibility, geometry identity, optional clocks and plan checks. |
+| Dashboard/domain editors/broadcast | source_universe_ui | Accepted; clarified replay smoothing versus follow ownership. |
+| Tooling/scaffold/test harnesses | root | Accepted; checked units, output/publication order, real versus injected boundaries, cleanup and unchanged-path exclusions. |
+
+Parser preservation is independently reviewed too. It compares syntax trees and printed executable structure, plus parsed compiler directives and tooling-sensitive annotations; Python retains complete AST including docstrings, CSS uses PostCSS nodes, and shell/launcher changes preserve the exact original body with only header comments inserted. The [verification receipt](SOURCE-DOCUMENTATION-VERIFICATION.json) records final results and source identities. New prose examples are explanatory contracts; no new executable example or API was introduced.
+
+The existing type check and fresh build passed. Two focused existing helper/model/renderer sets passed (129 and 90 tests, 219 total); these are scoped Node checks, not new browser runs or a rerun of all 1,215 runtime tests. No timing comparison, new application package or broader acceptance claim was made.

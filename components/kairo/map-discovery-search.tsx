@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * Maps search controls: library results come from the bounded server search;
+ * add/placement suggestions use the already-loaded Atlas. The workspace owns
+ * selection and writes. Geographic group choices stage a preview, not a save.
+ */
+
 import {useEffect, useId, useMemo, useRef, useState, type KeyboardEvent} from 'react';
 import {ArrowUpRight, Layers3, MessageSquare, Plus, Search, X} from 'lucide-react';
 import type {UniverseAtlas, UniverseSystem} from './universe-types';
@@ -20,6 +26,7 @@ function navigateResults(event:KeyboardEvent<HTMLInputElement>, open:boolean, co
   } else if (event.key === 'Enter' && open && count) {event.preventDefault(); choose(Math.min(active, count - 1));}
 }
 
+/** Debounce reads and discard results after query/kind/owner changes; revision invalidates saved-map search context. */
 export function MapLibrarySearch({request,revision,onOpen}:{request:(path:string)=>Promise<any>;revision?:string;onOpen:(mapId:string,systemId:number|null,connectionId?:string|null,notes?:boolean)=>void}) {
   const [query,setQuery] = useState(''), [open,setOpen] = useState(false), [active,setActive] = useState(0), [kind,setKind] = useState<'systems'|'notes'>('systems');
   const input = useRef<HTMLInputElement>(null), listId = useId();

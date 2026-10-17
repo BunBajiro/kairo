@@ -11,6 +11,9 @@ import { runKairoSupervisor } from '../../server/runtime-supervisor.mjs';
 import { acquireRuntimeLock } from '../../server/runtime-lock.mjs';
 
 const quiet = { log() {}, error() {} };
+// Most cases simulate child IPC in microtasks while keeping the actual runtime
+// lock. The final case forks real Node children and uses local HTTP/SQLite.
+// Short injected deadlines establish failure ordering, not production latency.
 function fixture(t) {
     const dataDir = mkdtempSync(join(tmpdir(), 'kairo-supervisor-'));
     t.after(() => rmSync(dataDir, { recursive: true, force: true }));

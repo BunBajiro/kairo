@@ -1,7 +1,12 @@
-// Operational map models stay separate from political ownership and physical routing.
+/**
+ * Pure operational display models over cached observations. Graph proximity and
+ * projected hulls are context, not route/access authorization. Callers own memoized
+ * graphs, wall-clock refreshes and display scope; these helpers perform no I/O.
+ */
 import {schematicLayout} from '../../lib/universe-schematic-layout.mjs';
 const id = value => Number.isSafeInteger(Number(value)) && Number(value) > 0 ? Number(value) : null;
 const date = value => typeof value === 'number' ? value : Date.parse(value || '');
+/** Build sorted, undirected gate adjacency, discarding invalid IDs, self-links and explicit non-gates. */
 export function buildGateGraph(gates = []) {
   const graph = new Map();
   for (const gate of gates) {
@@ -14,7 +19,11 @@ export function buildGateGraph(gates = []) {
   }
   return new Map([...graph].sort(([a], [b]) => a - b).map(([key, values]) => [key, [...values].sort((a, b) => a - b)]));
 }
-/** One multi-source BFS, cached by the caller. Only real stargates enter this graph. */
+/**
+ * Multi-source shortest gate-hop distances; maxHops defaults to 6 and is clamped
+ * to 0–12. Origins tie-break deterministically by ID. nextSystemId points toward
+ * the nearest origin, not away from it. Cache by graph/origins outside animation.
+ */
 export function routeWatchDistances(graph, origins, maxHops = 6) {
   const result = new Map(), queue = [...new Set(origins.map(id).filter(Boolean))].sort((a, b) => a - b);
   for (const origin of queue) result.set(origin, {distance: 0, nearestRouteSystemId: origin, nextSystemId: null});
@@ -65,6 +74,7 @@ export function tacticalLayout(systems, graph, {mode = 'radar', centerSystemId, 
   return {points, distances, limited: total > chosen.length, total};
 }
 
+/** Classify at Unix-ms now: expiry wins; missing or >60-second-future observations remain unknown. */
 export function observationAge(observation, now = Date.now()) {
   const at = date(observation.observed_at || observation.updated_at), expires = date(observation.expires_at);
   if (observation.expired || Number.isFinite(expires) && expires <= now) return 'expired';
@@ -77,6 +87,12 @@ export function ageLabel(value, now = Date.now()) {
   const seconds = Math.max(0, Math.floor((now - at) / 1000));
   return seconds < 60 ? `${seconds}s ago` : seconds < 3600 ? `${Math.floor(seconds / 60)}m ago` : `${Math.floor(seconds / 3600)}h ago`;
 }
+/**
+ * Group current observations by system, retaining stale presence as labelled data.
+ * The freshest pilot/fleet position wins per character; each source/channel keeps
+ * its newest report, including a clear. Disabling operations hides live reports,
+ * presence and alerts but retains notebook signatures and infrastructure records.
+ */
 export function operationalSystems(operations, now = Date.now()) {
   const grouped = new Map();
   const enabled = operations?.config?.enabled !== false;
@@ -116,6 +132,7 @@ export function operationalSystems(operations, now = Date.now()) {
   return grouped;
 }
 
+/** Convex outline of projected points; the enclosed area does not establish three-dimensional jump reach. */
 export function projectedHull(points) {
   const sorted = [...new Map(points.map(point => [`${point.x}:${point.y}`, point])).values()].sort((a, b) => a.x - b.x || a.y - b.y);
   if (sorted.length < 3) return sorted;
@@ -125,6 +142,7 @@ export function projectedHull(points) {
   return lower.slice(0, -1).concat(upper.slice(0, -1));
 }
 
+/** Verify origin/range identity (light-years rounded to six decimals), independent of request order. */
 export function matchingReachability(origins, reachability) {
   if (reachability?.status !== 'ok' || !Array.isArray(reachability.origins) || !origins?.length || reachability.origins.length !== origins.length) return false;
   const key = origin => `${Number(origin.systemId)}:${Number(origin.rangeLy).toFixed(6)}`;
@@ -132,6 +150,11 @@ export function matchingReachability(origins, reachability) {
   return requested.every((value, index) => value === supplied[index]);
 }
 
+/**
+ * Select completed, reported, unexpired rows with a fresh source when supplied.
+ * This freshness predicate does not validate route_eligible, hull or private
+ * access; the portal model and route planner impose their own additional checks.
+ */
 export function usablePublicConnections(feeds, now = Date.now()) {
   return (feeds?.connections || []).filter(row => {
     const source = feeds?.sources?.[row.source];

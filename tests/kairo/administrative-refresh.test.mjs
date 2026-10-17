@@ -18,6 +18,9 @@ test('default administrative timers keep the Window receiver when scheduling, re
     assert.deepEqual(calls, [['set', true, 2000], ['set', true, 2000], ['clear', true, 2]]);
 });
 
+// Advance deadline time in milliseconds and drain promise continuations after
+// each callback so rearming starts at completed-read time. No real wait decides
+// request counts; held reads remain controlled separately by deferred promises.
 function clock() {
     let now = 0, id = 0; const jobs = new Map();
     return {setTimeout(run, delay) {jobs.set(++id, {at: now + delay, run}); return id;}, clearTimeout(id) {jobs.delete(id);},

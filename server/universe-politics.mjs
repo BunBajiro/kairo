@@ -1,3 +1,6 @@
+/** Module-wide configured blocs plus conservative cooperation inference from
+ * local verified combat ledgers. Output is attributed, incomplete context, never
+ * access/standing/OPSEC authority. See docs/UNIVERSE.md for interpretation. */
 import { createHash, randomUUID } from 'node:crypto';
 import { allocateTerritoryColours, territoryColourEntities, configuredTerritoryColourConflict } from '../lib/universe-territory-colours.mjs';
 
@@ -58,7 +61,9 @@ export function validatePoliticsConfig(input, previous = defaultConfig(), now = 
     return { version: 1, revision: previous.revision + 1, updated_at: iso(now), inference_enabled: input.inference_enabled ?? previous.inference_enabled, blocs, independent_alliance_ids };
 }
 
-/** Compact only verified cache records; never infer participants from system kill totals. */
+/** Compact a verified killmail to alliance evidence, or null if unusable/outside
+ * the 60-day window. now/at use epoch ms. Reject more than 32 attacking alliances
+ * to bound pair expansion; aggregate system kill totals are never participants. */
 export function compactPoliticsKillmail(raw, now = Date.now()) {
     const at = Date.parse(raw?.killmail_time), system_id = raw?.solar_system_id;
     if (!validId(raw?.killmail_id) || !validId(system_id) || !Number.isFinite(at) || at > now + 60000 || at < now - WINDOW || !Array.isArray(raw.attackers)) return null;
@@ -70,7 +75,11 @@ export function compactPoliticsKillmail(raw, now = Date.now()) {
     return { killmail_id: raw.killmail_id, at, system_id, attacker_alliance_ids, victim_alliance_id };
 }
 
-/** Conservative signed graph. Every pair in a core must have sustained direct support. */
+/** Pure inference over compact observations, deduplicated by killmail and then
+ * six-hour system encounter. Every pair in a core needs sustained direct support;
+ * territory adjacency is context only. Configured/independent members are excluded
+ * from fallback. Graph caps withhold unsupported inference and mark coverage;
+ * previous can preserve group identity, not establish new evidence. */
 export function inferPolitics(events, { now = Date.now(), config = defaultConfig(), names = {}, sovereignty = [], gates = [], previous = null, coverage = {} } = {}) {
     const excluded = new Set([...config.independent_alliance_ids, ...config.blocs.flatMap(row => row.alliance_ids)]);
     const uniqueEvents = new Map();
@@ -204,7 +213,12 @@ export function inferPolitics(events, { now = Date.now(), config = defaultConfig
         generated_at: iso(now), expires_at: iso(now + 6 * 3600000) };
 }
 
-/** Module-wide config and observed evidence. Private standings/access never enter this resolver. */
+/** Create schema/triggers and retain resolved configuration/inference state.
+ * Core invokes refresh; reads never drain ingestion queues or initiate network I/O.
+ * refresh processes at most 1,000 queued/replay rows per pass, retains at most
+ * 20,000 compact events, and reports coverage gaps. Disabled inference preserves
+ * authoritative ledgers plus a replay marker instead of growing duplicate queues.
+ * Private standings/access never enter this resolver. now() is epoch ms. */
 export function createUniversePolitics(store, auth, { now = Date.now, atlas = { gates: [] } } = {}) {
     store.db.exec(`CREATE TABLE IF NOT EXISTS universe_politics_events(killmail_id INTEGER PRIMARY KEY,at INTEGER NOT NULL,body TEXT NOT NULL,source TEXT NOT NULL DEFAULT '',owner_id INTEGER NOT NULL DEFAULT 0,row_id INTEGER NOT NULL DEFAULT 0);
         CREATE INDEX IF NOT EXISTS idx_universe_politics_events_at ON universe_politics_events(at);
@@ -265,6 +279,9 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
             store.set(RESCAN_KEY, { pending: true }); store.db.exec('DELETE FROM universe_politics_queue');
         }
     }
+    /** Resume a bounded rowid replay up to captured per-ledger end cursors.
+     * Persist progress after each pass; live triggers separately queue subsequent
+     * corrections. Return true while rebuilding so readers withhold old membership. */
     function replayEvidence(budget, ingest) {
         let state = store.get(RESCAN_KEY, null);
         if (!store.get('universe:politics:bootstrap', null) && !state) state = { pending: true };
@@ -310,6 +327,10 @@ export function createUniversePolitics(store, auth, { now = Date.now, atlas = { 
             sources.every(row => row.fresh) ? 'current' : 'partial' : 'stale';
         return { collection_status, character_count: characters.length, sources };
     }
+    /** Advance ingestion/inference when due; force bypasses only the local
+     * refresh deadline, never module/inference policy or work caps. Transaction
+     * failures roll back and surface in read().error while retaining prior data;
+     * return null for skipped or disabled non-forced work, otherwise the resolved view. */
     function refresh({ force = false } = {}) {
         if (!force && now() < nextRefresh) return null;
         if (!store.get('module:universe', true) || !config.inference_enabled) { deferEvidence(); nextRefresh = now() + REFRESH; return force ? read() : null; }

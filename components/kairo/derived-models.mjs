@@ -3,6 +3,11 @@ export const EMPTY_ROWS = Object.freeze([]);
 export const rowTitle = value => String(value || '').replaceAll('_', ' ').replace(/\b\w/g, x => x.toUpperCase());
 const namedKinds = new Set(['skills', 'implants', 'transactions', 'orders', 'loyalty', 'standings', 'fittings', 'jobs', 'planets', 'mining', 'blueprints', 'assets']);
 export function rowModelUsesNames(kind) { return namedKinds.has(kind); }
+/**
+ * Derive labels and asset reference estimates without mutating source rows.
+ * Unknown kinds retain the source array; absent prices produce null per-row asset
+ * estimates (an unknown valuation), while missing names fall back to IDs.
+ */
 export function operationRows(source, names, kind, prices) {
   const name = id => names?.[id] || String(id || '—');
   switch (kind) {
@@ -39,6 +44,12 @@ function operationNameIds(source, kind) {
   }
   return [...ids];
 }
+/**
+ * Create one mounted table's cache. Inputs must use immutable source/name/price
+ * identities. Only referenced names invalidate derived rows, so unrelated directory
+ * updates do not rebuild a large table; only Assets depends on the price map.
+ * Do not share this single-entry owner across tabs or pilots.
+ */
 export function createOperationRowsModel(kind, derive = operationRows) {
   let previousSource, previousNames, previousPrices, nameIds = [], result;
   return (source, names, prices) => {
@@ -54,13 +65,29 @@ export function createOperationRowsModel(kind, derive = operationRows) {
     return result;
   };
 }
+/**
+ * Map ESI average reference prices by type ID; absent/zero averages become zero,
+ * and the last duplicate type wins. These are not executable market quotes.
+ */
 export function priceMap(rows) { return new Map(rows.map(p => [p.type_id, p.average_price || 0])); }
+/**
+ * Sum quantity × reference ISK price; missing prices contribute zero to this
+ * partial estimate. Per-row rendering separately distinguishes unknown prices.
+ */
 export function assetReferenceTotal(rows, prices) { return rows.reduce((total, a) => total + ((prices.get(a.type_id) || 0) * a.quantity || 0), 0); }
+/**
+ * Render at most the first 80 balance-bearing journal rows in reverse order.
+ * The source's newest-first order is assumed; this helper does not sort or fetch.
+ */
 export function walletGraph(rows) {
   return rows.filter(x => typeof x.balance === 'number').slice(0, 80).reverse().map(x => ({date: new Date(x.date).toLocaleDateString('en-GB', {day: 'numeric', month: 'short'}), value: x.balance}));
 }
 
 const identityFields = ['id', 'item_id', 'job_id', 'transaction_id', 'order_id', 'skill_id', 'event_id', 'notification_id', 'mail_id', 'fitting_id', 'contract_id', 'jump_clone_id', 'planet_id'];
+/**
+ * Choose a domain ID/composite key, falling back to the original source index.
+ * Call before sorting/filtering so React row identity survives page changes.
+ */
 export function tableRowIdentity(row, index) {
   for (const field of identityFields) if (row[field] !== undefined && row[field] !== null) return `${field}:${row[field]}`;
   if (row.date !== undefined && row.type_id !== undefined && row.solar_system_id !== undefined) return `mining:${row.date}:${row.type_id}:${row.solar_system_id}`;
@@ -74,6 +101,12 @@ export function compareTableRows(a, b, key, asc) {
   const av = a[key] ?? '', bv = b[key] ?? '';
   return (typeof av === 'number' && typeof bv === 'number' ? av - bv : String(av).localeCompare(String(bv))) * (asc ? 1 : -1);
 }
+/**
+ * Cache search normalization and filter/sort output for one immutable rows array.
+ * Returns `{row,key}` entries, leaving the source untouched; slicing pages must
+ * happen afterward so pagination never rebuilds the search index or sorted result.
+ * An empty query avoids normalization altogether. See ../../docs/INTERNAL-API.md.
+ */
 export function createTableModel({normalize = searchableRow, compare = compareTableRows} = {}) {
   let source, entries, texts, previousQuery, previousKey, previousAsc, result;
   /** @param {any[]} rows @param {string} query @param {{key:string, asc:boolean} | null} sort */
@@ -94,6 +127,10 @@ export function createTableModel({normalize = searchableRow, compare = compareTa
     return result;
   };
 }
+/**
+ * Clamp a zero-based requested page to a row count; empty tables still have one
+ * page. size is a positive row count (default 30); end is an exclusive slice bound.
+ */
 export function tablePage(length, requested, size = 30) {
   const pages = Math.max(1, Math.ceil(length / size));
   const page = Math.max(0, Math.min(requested, pages - 1));

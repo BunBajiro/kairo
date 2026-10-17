@@ -1,5 +1,10 @@
 // Fixed, lazy formatters avoid per-cell constructors without an import-time Intl cost.
 let decimal, compact, eveTime;
+/**
+ * Format a numeric ISK/reference value in en-GB, without a currency suffix.
+ * Missing/non-number values show an em dash; default rounds to whole units,
+ * abbreviated uses compact notation with at most two fractional digits.
+ */
 export function isk(n, abbreviated = false) {
   if (typeof n !== 'number') return '—';
   if (abbreviated) {
@@ -9,6 +14,10 @@ export function isk(n, abbreviated = false) {
   decimal ||= new Intl.NumberFormat('en-GB', {maximumFractionDigits: 0, notation: 'standard'});
   return decimal.format(n);
 }
+/**
+ * Format a Date-compatible value in UTC (EVE time). Falsy values show "Awaiting
+ * data"; malformed dates retain the explicit "Invalid Date EVE" fallback.
+ */
 export function stamp(value) {
   if (!value) return 'Awaiting data';
   const date = new Date(value);

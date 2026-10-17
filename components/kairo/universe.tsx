@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Private Universe page owner: load the static Atlas by dataset revision and
+ * pilot intelligence separately, restore pilot/space workspace intent, and
+ * compose Atlas, Maps, inspectors and Session replay. Child renderers do not own
+ * ESI collection. See docs/ARCHITECTURE.md and docs/UNIVERSE.md for boundaries.
+ */
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {Activity, ArrowLeft, ArrowRight, Check, CircleDot, ChevronRight, Database, Eye, Globe2, Layers, Link2, MapPin, Navigation, PanelRightClose, PanelRightOpen, Plus, Radio, RefreshCw, Route, Save, Search, Settings2, Shield, Sparkles, Swords, Target, Trash2, Users, Waypoints, X} from 'lucide-react';
@@ -77,6 +84,8 @@ export function Universe({space='known'}:{space?:'known'|'wormhole'}){
  function closeSharedDock(){setInspectorOpen(false);if(sharedDockTrigger.current?.isConnected)sharedDockTrigger.current.focus({preventScroll:true});}
  const jspaceRouteScope=useRef('');
  const changeJSpaceMap=useCallback((id:string)=>{const next=character+':'+id;if(jspaceRouteScope.current&&jspaceRouteScope.current!==next){setRouteResult(null);setRouteDraft({from:'',to:''});}jspaceRouteScope.current=next;},[character]);
+ // The sequence rejects superseded reads within a pilot; the pilot ref also
+ // rejects a response arriving after selection changed but before effect cleanup.
  const request=useRef(0),characterRef=useRef(character);characterRef.current=character;
  const load=useCallback(async()=>{const sequence=++request.current;const result=await api('/universe?character='+character);if(sequence===request.current&&characterRef.current===character){setIntel(result);setError('');}return result;},[character]);
  useEffect(()=>{let live=true;api('/universe/static?v='+encodeURIComponent(boot.datasetRevision || boot.version)).then(result=>{if(live){setAtlas(result);setAtlasError('');}}).catch(e=>{if(live)setAtlasError(errorMessage(e));}).finally(()=>{if(live)setLoading(false);});return()=>{live=false;};},[boot.datasetRevision]);
@@ -89,6 +98,9 @@ export function Universe({space='known'}:{space?:'known'|'wormhole'}){
  const priorRevision=useRef(snapshotRevision);useEffect(()=>{if(priorRevision.current!==snapshotRevision){priorRevision.current=snapshotRevision;if(!replay.active)load().catch(()=>{});}},[snapshotRevision,load]);
  const byId=useMemo(()=>new Map(atlas?.systems.map(s=>[s.system_id,s])||[]),[atlas]);
  useEffect(()=>{if(!atlas)return;setSelected(current=>view.space==='known'&&current&&byId.get(current)?.space!==view.space?null:current);if(view.space==='wormhole')setInspector(current=>current==='blocs'?'system':current);},[view.space,byId]);
+ // Replay may supply recorded systems absent from today's dataset. Use only
+ // complete recorded coordinates; current sovereignty is a labelled backdrop,
+ // not a reconstruction of historical control.
  const replayAtlas=useMemo<UniverseAtlas|null>(()=>{if(!atlas||!replay.active||!replay.data)return atlas;const known=new Set(atlas.systems.map(system=>system.system_id));const recorded=replay.data.systems.filter(system=>!known.has(system.system_id)&&system.coordinates_available&&[system.x,system.y,system.z,system.map_x,system.map_y].every(value=>typeof value==='number'&&Number.isFinite(value))).map(system=>({...system,constellation_id:system.constellation_id||0,constellation_name:system.constellation_name||'Constellation not recorded',region_id:system.region_id||0,region_name:system.region_name||'Region not recorded',security:typeof system.security==='number'&&Number.isFinite(system.security)?system.security:0,security_known:typeof system.security==='number'&&Number.isFinite(system.security)}));return recorded.length?{...atlas,systems:[...atlas.systems,...recorded]}:atlas;},[atlas,replay.active,replay.data]);
  const replayById=useMemo(()=>new Map(replayAtlas?.systems.map(system=>[system.system_id,system])||[]),[replayAtlas]);
  const replayWasActive=useRef(false);useEffect(()=>{if(replay.active){replayWasActive.current=true;setTab('atlas');}else if(replayWasActive.current){replayWasActive.current=false;load().catch(e=>setError(errorMessage(e)));}},[replay.active,load]);

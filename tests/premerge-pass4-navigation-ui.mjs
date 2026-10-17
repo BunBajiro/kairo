@@ -9,6 +9,8 @@ import {startKairo} from '../server/index.mjs';
 
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-pass4-navigation-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';
 await mkdir(output,{recursive:true});
 const checks=[],errors=[],unexpected=[],serverRequests=[],versions={},gates=new Set();
@@ -19,6 +21,9 @@ function check(label,actual,expected,extra={}){const pass=JSON.stringify(actual)
 const frame=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 const pathOf=request=>new URL(request.url()).pathname;
 const responseFor=path=>response=>new URL(response.url()).pathname==='/api/universe/navigation/'+path&&response.request().method()==='POST';
+// A gate controls selected response delivery, not route/range computation. Await
+// both delivery and a render opportunity before inspecting the current draft.
+// All gates are released in finally so an assertion cannot strand runtime close.
 async function gateSeen(gate){await Promise.race([gate.seen.promise,page.waitForTimeout(10000).then(()=>{throw new Error('Navigation response did not reach its gate.');})]);}
 async function release(gate){const done=page.waitForEvent('requestfinished',{predicate:request=>pathOf(request)===gate.path&&request.method()==='POST'});gate.release.resolve();await gate.done.promise;await done;await frame();gates.delete(gate);}
 async function openTool(tool){

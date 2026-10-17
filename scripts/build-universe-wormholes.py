@@ -37,6 +37,11 @@ def number(value):
     return int(result) if result.is_integer() else result
 
 
+# Read hash-pinned local inputs and reconcile them with the bundled official
+# atlas. Invalid units, missing coverage or identity mismatches that cannot be
+# normalized explicitly abort before the CLI overwrites its output file.
+# Result limits use kg/hours; null is unknown. This is reference data, not observed
+# remaining mass, expiry or active connections. See docs/UNIVERSE-DATA.md.
 def build(source):
     inputs = {}
     for filename, expected in SOURCE_FILES.items():

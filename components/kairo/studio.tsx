@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Private editor for the saved Stream layout and toast rules. Draft geometry and
+ * wording are local until Save; preview requests resolve binding values without
+ * persisting the draft. The separate public renderer consumes only server-approved
+ * projections, never this dashboard Context. See ../../docs/STREAMING.md and
+ * ../../docs/INTERNAL-API.md for the broadcast boundary and source ownership.
+ */
 import {memo,useEffect,useRef,useState} from 'react';
 import {createStudioDrag,createStudioPreview,studioDragPoint,studioProjectionKey,studioSourceChanged,studioSourceRevision} from './studio-work.mjs';
 import {StreamBinding,ToastContextControls} from './stream-data';
@@ -28,6 +35,8 @@ const StudioText = memo(function StudioText({kind,text,startedAt,endsAt,bindingS
 export function Studio() {
     const {boot,character,data,sessions}=useKairo();
     const [config, setConfig] = useState<StreamConfig>(boot.stream), [selected, setSelected] = useState(''), [dirty, setDirty] = useState(false), [busy, setBusy] = useState(false), [preview, setPreview] = useState('canvas');
+    // Geometry, text and binding edits advance the same draft generation. A save
+    // acknowledges its submitted revision only; later edits keep their dirty state.
     const draftRevision=useRef(0);
     const [sources,setSources]=useState<any>(null),[projection,setProjection]=useState<{key:string;values:Record<string,any>}>({key:'',values:{}}),[previewRefresh,setPreviewRefresh]=useState(0);
     const projectionKey=studioProjectionKey(config.elements),projected=projection.key===projectionKey?projection.values:{};

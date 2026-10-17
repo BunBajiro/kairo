@@ -1,3 +1,6 @@
+// The shared runner supplies a fresh browser context and real local Goal owner.
+// Blur and Complete are distinct accepted intents. Hold the first before HTTP
+// admission, then verify persistence and UI ordering, including failed-queue release.
 import assert from 'node:assert/strict';
 
 export async function goalProgressOrder({page,context,app,check,frame,deferred}){

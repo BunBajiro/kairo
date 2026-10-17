@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Private protection-policy editor and current classified status. This UI does not
+ * classify space: server/opsec.mjs owns precedence, freshness and continuity, and
+ * server/obs.mjs owns ordered OBS actions. Manual protection submits immediately;
+ * other policy fields remain drafts until saved. See ../../docs/STREAMING.md.
+ */
 import {useState} from 'react';
 import {ArrowUpRight, ShieldCheck, Link2, CheckCircle2, CircleDashed} from 'lucide-react';
 import {Button} from '@/components/ui/button';

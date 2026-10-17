@@ -1,8 +1,19 @@
+/**
+ * Core-owned local OBS WebSocket 5 client and protection-state action executor.
+ * Rules target a saved scene collection; credentials stay in the private vault.
+ * Browser-source covers are a separate owner and still matter during disconnect.
+ * See ../docs/STREAMING.md for target identity and operator-visible behavior.
+ */
 import {createHash,randomUUID} from 'node:crypto';
 import { protectionStates, upgradeProtectionRules } from '../public/stream/protection.js';
 export { protectionStates } from '../public/stream/protection.js';
 export const defaultOBS=()=>({enabled:false,automation:false,port:4455,collection:'',rules:Object.fromEntries(protectionStates.map(s=>[s,[]]))});
 const text=(v,n=200)=>String(v||'').trim().slice(0,n);
+/**
+ * Normalize persisted action rules and reject invalid targets/duplicates before
+ * writing. Source identity is scene/group + item ID + name, not source name alone.
+ * Passwords are deliberately excluded; the save command handles them separately.
+ */
 export function sanitizeOBS(input){
  const port=Number(input.port??4455);if(!Number.isInteger(port)||port<1024||port>65535)throw new Error('Enter the local OBS WebSocket port.');
  const upgraded=upgradeProtectionRules(input.rules);
@@ -14,7 +25,14 @@ export function sanitizeOBS(input){
  for(const actions of Object.values(rules)){const keys=actions.map(a=>a.kind==='scene'?'scene':a.kind==='source'?JSON.stringify([a.kind,a.sceneName,a.sceneItemId]):JSON.stringify([a.kind,a.sourceName,a.kind==='filter'?a.filterName:'']));if(new Set(keys).size!==keys.length)throw new Error('A state can set each OBS target once. Remove duplicate actions.');}
  const r={enabled:input.enabled===true,automation:input.automation===true,port,collection:text(input.collection),rules};if(r.automation&&!r.collection)throw new Error('Read OBS targets and choose the scene collection before enabling automatic actions.');return r;
 }
+/** OBS v5 challenge response; the caller owns storage and must not publish this value. */
 export function obsAuthentication(password,{salt,challenge}){const hash=s=>createHash('sha256').update(s).digest('base64');return hash(hash(password+salt)+challenge);}
+/**
+ * Own reconnect/application timers, socket lifetimes and pending requests.
+ * Durations are milliseconds. setState schedules the latest desired state;
+ * save persists before connection/apply, so later connection failure does not
+ * roll back accepted settings. close is idempotent and rejects incomplete teardown.
+ */
 export function createOBS(store,vault,{WebSocketClass=globalThis.WebSocket,requestTimeout=6000,reconnectDelay=5000,closeTimeout=6000,onChange=()=>{}}={}){
  if(!Number.isFinite(closeTimeout)||closeTimeout<1||closeTimeout>15000)throw new Error('Choose an OBS close timeout between 1 and 15000 milliseconds.');
  const saved=store.get('obs',null);if(saved&&!store.get('obs.space-categories-v3',false)){
@@ -49,6 +67,9 @@ export function createOBS(store,vault,{WebSocketClass=globalThis.WebSocket,reque
   async function addScene(sceneName,group=false){const r=await request(group?'GetGroupSceneItemList':'GetSceneItemList',{sceneName});const items=(r.sceneItems||[]).map(i=>({sceneItemId:i.sceneItemId,sourceName:i.sourceName,isGroup:i.isGroup===true,enabled:i.sceneItemEnabled===true}));scenes.push({sceneName,group,items});for(const i of items)if(i.isGroup&&!groups.has(i.sourceName)){groups.add(i.sourceName);await addScene(i.sourceName,true);}}
   for(const s of sceneList.scenes||[])await addScene(s.sceneName);return {collection:collections.currentSceneCollectionName,scenes,inputs:(inputList.inputs||[]).map(i=>({name:i.inputName,kind:i.inputKind})),currentScene:sceneList.currentProgramSceneName};
  }
+ // Hide/mute first; after a protective failure still attempt other protections,
+ // then block filters/reveals/program switches. Unlisted targets keep their state.
+ // Revision checks prevent obsolete work after awaits; reconnect applies latest.
  const priority=a=>['source','audio'].includes(a.kind)&&!a.enabled?0:a.kind==='filter'?1:a.kind==='scene'?3:2;
  async function apply(){
   if(running||!ready||changing||!config().automation||closed)return;running=true;const currentRevision=revision,target=desired,c=config(),current=()=>ready&&!closed&&!changing&&config().automation&&revision===currentRevision;

@@ -1,6 +1,14 @@
+/**
+ * Pure Maps projections and command payload preparation. Public overlays are
+ * ephemeral, saved map records remain authoritative, and layout queue ownership
+ * is scoped by the workspace. See docs/UNIVERSE.md for the user-facing model.
+ */
 import {buildPortalNetworks} from './universe-map-portals.mjs';
 
-/** Unknown lifetimes stay unconfirmed; explicit expiry or collapse ends the entity. */
+/**
+ * Test an explicit end at Unix-ms `now`, including the exact expiry boundary.
+ * Missing/invalid expiry alone does not end a record or establish route access.
+ */
 export function connectionHasEnded(connection, now = Date.now()) {
   return connection.life_status === 'collapsed' || connection.expired === true || !!connection.expires_at && Number.isFinite(Date.parse(connection.expires_at)) && Date.parse(connection.expires_at) <= now;
 }
@@ -36,7 +44,13 @@ export function publicChainScene(map, feeds, systems, selectedSources = {}, now 
   return {...map,nodes,connections};
 }
 
-/** Keep observation timestamps exact when an editor only changes other fields. */
+/**
+ * Convert a details draft to a command payload without renewing unchanged lifetime
+ * evidence. `expiryInput` is a UTC minute string (YYYY-MM-DDTHH:mm), despite the
+ * datetime-local control; a changed invalid date throws during ISO conversion.
+ * Explicit expiry wins over duration, and an unchanged displayed minute preserves
+ * the original seconds/milliseconds. Shared bridge references omit access fields.
+ */
 export function connectionEditorPayload(draft, expiryInput, original = null) {
   if (draft.kind === 'gate' || draft.kind === 'ansiblex') {
     // A diagram reference must never overwrite the shared Ansiblex network.
@@ -67,7 +81,11 @@ export function drawnConnectionPayload(fromSystemId, toSystemId) {
   return {kind:'wormhole',from_system_id:fromSystemId,to_system_id:toSystemId,confirmed:false,accessible:false,reverse_accessible:false,enabled:true,mass:'stable',life_status:'stable',duration_hours:16,max_ship_size:'large'};
 }
 
-/** Each layout gesture saves against the revision accepted by the previous gesture. */
+/**
+ * Serialize save callbacks, which must read the current accepted revision when
+ * invoked, not when enqueued. Each caller receives its own result/rejection; a
+ * rejected save does not poison the queue tail. Scope invalidation is separate.
+ */
 export function createLayoutSaveQueue() {
   let tail = Promise.resolve();
   return function enqueue(save) {
@@ -77,7 +95,14 @@ export function createLayoutSaveQueue() {
   };
 }
 
-/** A pilot/map switch invalidates queued gestures without affecting the next workspace. */
+/**
+ * Own a serial layout queue for one pilot/map key. `cancel()` permanently closes
+ * this scope; it skips queued callbacks but cannot abort a save already started.
+ * A falsy result or rejection invalidates gestures queued behind that save, since
+ * they assumed its revision. A later newly submitted gesture may retry. `pending`
+ * includes queued/in-flight work until each returned promise settles; skipped
+ * work resolves null. The caller separately fences publication after switches.
+ */
 export function createLayoutSaveScope(key) {
   const enqueue = createLayoutSaveQueue();let closed=false,generation=0,pending=0;
   return {
@@ -101,6 +126,12 @@ export function createLayoutSaveScope(key) {
 // Names/types are references only: a scan does not establish power, ownership or access.
 const STRUCTURES = Object.freeze({35825:'Raitaru',35826:'Azbel',35827:'Sotiyo',35832:'Astrahus',35833:'Fortizar',35834:'Keepstar',35835:'Athanor',35836:'Tatara',40340:'Upwell Palatine Keepstar',47512:"'Moreau' Fortizar",47513:"'Draccous' Fortizar",47514:"'Horizon' Fortizar",47515:"'Marginis' Fortizar",47516:"'Prometheus' Fortizar"});
 
+/**
+ * Parse a bounded D-scan paste or three-line UTC structure timer snippet for
+ * review. No persistence occurs. Return rows, ignored line diagnostics and a
+ * validity/error result; the 2,000-line/512,000-character guard precedes parsing.
+ * Numeric type references identify structures, never their owner, power or access.
+ */
 export function previewStructureScan(text) {
   const rows = [], ignored = [], seen = new Set();
   const lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/);

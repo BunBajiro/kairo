@@ -1,4 +1,14 @@
 'use strict';
+/**
+ * Independent read-only OBS renderer served by the Stream listener. `/events`
+ * supplies server-approved display projections; never fetch private `/api`
+ * snapshots or import dashboard Context here. All text enters through textContent.
+ *
+ * One document owns the EventSource, timer and DOM maps until unload. Geometry
+ * uses the saved 1920 × 1080 canvas; timestamps are epoch milliseconds. Only
+ * received/saved cover geometry can be restored on disconnect. See
+ * ../../docs/STREAMING.md for the security boundary and real-OBS limits.
+ */
 const stage=document.getElementById('stage'),toastLane=document.getElementById('toasts');
 let current={elements:[],opsec:{state:'unknown',hidden:true},paused:false,position:'top-right',toasts:[]},connected=false;
 const seen=new Set(),active=new Map(),widgets=new Map(),timeWidgets=new Map();
@@ -21,6 +31,9 @@ function makeWidget(e){
     const label=part('span','widget-label',node),content=part('div','content widget-value',node),detail=part('div','widget-detail',node),bar=part('div','widget-bar',node),fill=part('div','widget-fill',bar);
     return {node,label,content,detail,bar,fill};
 }
+// Reconcile by widget ID/kind instead of rebuilding the stage. Clock work is
+// limited to eligible visible widgets; paused output still retains OPSEC covers.
+// Disconnection always treats received cover geometry as Unknown/hidden.
 function render(){
     const opsec=connected?current.opsec:{state:'unknown',hidden:true},visible=new Set();
     timeWidgets.clear();
@@ -53,6 +66,9 @@ function playSound(){try{const ctx=new (window.AudioContext||window.webkitAudioC
 const signals={notification:['SIGNAL','+','info'],training:['TRAINING COMPLETE','↑','info'],industry:['INDUSTRY READY','▦','info'],objective:['OBJECTIVE COMPLETE','✓','success'],session:['FLIGHT LOG','↗','info'],kill:['KILL CONFIRMED','+','success'],loss:['LOSS RECORDED','−','danger'],navigation:['SYSTEM ENTERED','↗','info'],protection:['PROTECTION','!','warning']};
 // Older rules with an empty message can still use their saved wording.
 const toastText=t=>t.message?.trim()||t.title||'';
+// Server delivery determines showAt; expiry is enforced again locally. Keep at
+// most three visible toasts and 500 recently seen IDs to bound replay/DOM costs.
+// Timeouts own removal only; state reconciliation may remove the node earlier.
 function showToast(t){
     if(onlyOpsec||widgetId||current.paused||t.expiresAt<=Date.now())return;
     if(active.has(t.id)){setText(active.get(t.id).querySelector('.toast-message'),toastText(t));return;}
@@ -76,6 +92,9 @@ function recoveryLayout(state){return {position:state.position,muted:state.muted
 })};}
 function persistLayout(){try{const next=JSON.stringify(recoveryLayout(current));if(next!==savedLayout){localStorage.setItem('kairo-safe-layout',next);savedLayout=next;}}catch{}}
 try{const saved=JSON.parse(localStorage.getItem('kairo-safe-layout')||'null');if(saved?.elements){current={...current,...saved,toasts:[],opsec:{state:'unknown',hidden:true}};savedLayout=JSON.stringify(recoveryLayout(current));render();}}catch{}
+// A successful state packet, not socket-open alone, establishes output authority.
+// Disconnect clears notifications and marks bound text disconnected; saved cover
+// geometry remains available independently of live source authority.
 const events=new EventSource('/events');
 // Render protection immediately. Storage denial/quota failures must never block it.
 events.addEventListener('state',e=>{try{current=JSON.parse(e.data);connected=true;render();persistLayout();}catch{}});

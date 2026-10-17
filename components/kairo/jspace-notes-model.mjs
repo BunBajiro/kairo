@@ -1,3 +1,4 @@
+/** Private map-note presentation/search; source maps and departed connection notes stay out of results. */
 import {connectionHasEnded} from './jspace-workspace-model.mjs';
 
 /** Map-local notes only. This deliberately has no dependency on Journey history. */
@@ -6,6 +7,7 @@ export function noteAuthor(note) {
   return {id: Number.isSafeInteger(id) && id > 0 ? id : null, name: typeof note?.author_name === 'string' && note.author_name.trim() ? note.author_name.trim() : 'Pilot unavailable'};
 }
 
+/** Use elapsed minutes for the first hour, then UTC/EVE time; invalid input is explicitly undated. */
 export function noteTimestamp(value, now = Date.now()) {
   const time = Date.parse(value);
   if (!Number.isFinite(time)) return {label: 'Time unavailable', exact: '', date: 'undated'};
@@ -20,6 +22,12 @@ export function noteDateHeading(date, now = Date.now()) {
   return date === today ? 'Today · EVE' : date === yesterday ? 'Yesterday · EVE' : date;
 }
 
+/**
+ * Match every query term across body, author and canonical/aliased location.
+ * Return newest-first copies, marking a retained note on a missing node archived;
+ * notes attached to ended/missing connections are omitted. `now` is Unix ms and
+ * `limit` bounds returned rows, not the input scan. Input maps are not modified.
+ */
 export function searchMapNotes(maps, query = '', {systemName = id => String(id), limit = Infinity, now = Date.now()} = {}) {
   const terms = query.trim().toLocaleLowerCase('en-GB').split(/\s+/).filter(Boolean), results = [];
   for (const map of maps || []) {

@@ -65,6 +65,8 @@ def position(record):
     return {k: p[k] for k in ("x", "y", "z")}
 
 
+# Preserve physical x/y/z in metres; map coordinates are the XZ plane in EVE
+# light-years with inverted Z. This projection does not establish jump access.
 def projected(record):
     p = position(record)
     return {**p, "map_x": p["x"] / LIGHT_YEAR, "map_y": -p["z"] / LIGHT_YEAR}
@@ -89,6 +91,8 @@ def main():
     files = set(archive.namelist()) if archive else {p.name for p in args.source.iterdir()}
     consumed = {}
 
+    # Hash exact input bytes while parsing rows; provenance is committed only
+    # once the iterator is exhausted, so callers must consume every required file.
     def rows(filename):
         if filename not in files:
             raise ValueError(f"Required official SDE file is missing: {filename}")
@@ -199,6 +203,9 @@ def main():
         edges.add(tuple(sorted([sid, destination["solarSystemID"]])))
 
     args.output.mkdir(parents=True, exist_ok=True)
+    # Each system is an independent gzip member. Offsets/lengths index the logical
+    # concatenation in bytes, even when a member crosses an 8 MiB physical shard.
+    # Readers must not interpret a shard boundary as a system-record boundary.
     detail_index = {}
     detail_digest = hashlib.sha256()
     detail_tmp = args.output / "universe-details.bin.tmp"
@@ -248,6 +255,10 @@ def main():
                 "detailIndex": detail_index}
     topology_tmp = args.output / "universe.json.gz.tmp"
     topology_tmp.write_bytes(compressed(snapshot))
+    # Publish prepared shards before their referring topology, then provenance.
+    # These are per-file replacements, not an atomic dataset generation switch;
+    # use an offline output directory. The runtime updater owns live activation
+    # and rollback separately (docs/DATASETS.md). Prune obsolete shards afterward.
     for part in detail_files:
         (args.output / (part["name"] + ".tmp")).replace(args.output / part["name"])
     topology_tmp.replace(args.output / "universe.json.gz")

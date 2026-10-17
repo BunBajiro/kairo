@@ -89,6 +89,12 @@ export function createPublicFeedTransport({ now = Date.now, spacingMs = 110, cac
             throw error;
         } finally { signal.removeEventListener('abort', cancel); reader.releaseLock(); }
     }
+    /**
+     * Return a fetch-shaped wrapper for public feed GETs. Each subscriber retains
+     * its own byte limit and AbortSignal; abort upstream only when none remain.
+     * Requests outside the allowlist pass through and stay caller-owned, including
+     * their shutdown. maximum counts decoded bytes, not compressed transfer size.
+     */
     function wrap(fetcher = fetch, { maximum = MAX_BODY, checkContentLength = false,
         sizeError = 'Live killmail packet exceeds the size limit.' } = {}) {
         if (!Number.isSafeInteger(maximum) || maximum < 1 || maximum > MAX_BODY) throw new Error('Invalid public feed body limit.');
@@ -156,6 +162,7 @@ export function createPublicFeedTransport({ now = Date.now, spacingMs = 110, cac
             });
         };
     }
+    /** Reject new shared work, abort waiters and await all accepted transport tasks. */
     function close() {
         if (closing) return closing;
         closed = true;

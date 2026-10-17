@@ -1,3 +1,7 @@
+/**
+ * Merge by Session ID in display order. The first occurrence wins: prepend lets
+ * an authoritative incoming head replace older copies without duplicating cards.
+ */
 export function mergeSessionRows(previous, incoming, prepend = false) {
     const rows = [], seen = new Set();
     for (const row of prepend ? [...incoming, ...previous] : [...previous, ...incoming]) {
@@ -9,6 +13,14 @@ export function mergeSessionRows(previous, incoming, prepend = false) {
 // One mounted pilot owns archive transport. Refreshes supersede in-flight pages;
 // a requested next page survives that invalidation and runs after the refresh.
 // The loaded prefix is refreshed in full so renamed older rows stay correct.
+/**
+ * Own one pilot's archive with offset-based `read(offset) -> {items,more}` pages.
+ * Refresh rereads at least the first page and the entire previously loaded prefix;
+ * loadMore intent survives an intervening refresh. Failures retain rows/intent for
+ * explicit retry and report through onError without rejecting drain waiters.
+ * close releases waiters and fences late callbacks, not transport. See
+ * ../../docs/INTERNAL-API.md for the archive/report distinction.
+ */
 export function createSessionArchive({read, publish, onError = () => {}, onBusy = () => {}}) {
     let closed = false, running = false, refreshPending = false, morePending = false, generation = 0;
     let rows = [], more = false, completion = null;

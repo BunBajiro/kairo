@@ -1,6 +1,11 @@
+// Studio/OPSEC scenarios for the shared compiled-app runner. Keep submitted
+// persistent settings distinct from newer drafts while a successful reply waits.
+// The injected 503 path never reaches persistence; retry uses the real owner.
 import assert from 'node:assert/strict';
 import {defaultStream} from '../server/stream.mjs';
 
+// seen means the real PUT already succeeded; release permits its acknowledgement.
+// The scenario owns close(), which releases held replies and removes interception.
 async function saveGate({page,app,deferred},path) {
  let held=null,fail=false;
  const handler=async route=>{

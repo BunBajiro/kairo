@@ -7,6 +7,7 @@ export type UniverseTacticalOptions = {
  operationsVisible?:boolean;pilotsVisible?:boolean;feedsVisible?:boolean;pointsVisible?:boolean;routeWatch?:boolean;
 };
 export type GateGraph = Map<number,number[]>;
+/** Gate-hop distance; nextSystemId points toward nearestRouteSystemId and is null at an origin. */
 export type WatchDistance = {distance:number;nearestRouteSystemId:number;nextSystemId:number|null};
 export type OperationalSystem = {systemId:number;reports:any[];pilots:any[];fleet:any[];alerts:any[];signatures:any[];upgrades:any[]};
 export function buildGateGraph(gates:any[]):GateGraph;

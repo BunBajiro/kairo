@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Shared Kairo presentation helpers for status-aware empty states, tables, choices
+ * and EVE type images. These components render private dashboard data; they do not
+ * collect ESI or infer broadcast permission. Snapshot ownership and identity are
+ * defined in ../../docs/INTERNAL-API.md.
+ */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowUpRight, Search, ChevronLeft, ChevronRight, Database, LockKeyhole, Clock, TriangleAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,6 +15,10 @@ import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyMedia } from '@/
 import { useKairo } from './context';
 import { stamp, type ModuleState } from './model';
 import { createTableModel, tablePage } from './derived-models.mjs';
+/**
+ * Controlled string choice. Values must be nonempty and unique, including any
+ * placeholder; callers encode provider names when they could collide with sentinels.
+ */
 export function Choice({ value, onChange, options, label, className = '' }: {
     value: string;
     onChange: (v: string) => void;
@@ -40,6 +50,12 @@ export type Column = {
     label: string;
     render?: (r: any) => ReactNode;
 };
+/**
+ * Local filtering/sorting of already collected rows, paged 30 at a time. Supply
+ * immutable rows; the per-mounted-table model caches normalization and ordering.
+ * Renderers affect cells only, not sort/search values. Collection truncation and
+ * snapshot status remain visible independently of the local page.
+ */
 export function DataTable({ rows, columns, state, searchable = true, emptyTitle, emptyDescription }: {
     rows: any[];
     columns: Column[];
@@ -54,6 +70,12 @@ export function DataTable({ rows, columns, state, searchable = true, emptyTitle,
     // Persist a clamp when a resource shrinks, so later growth cannot revive an obsolete page.
     useEffect(() => { if (page !== actual) setPage(actual); }, [page, actual]); if (!rows.length)
     return <NoData state={state} title={emptyTitle} description={emptyDescription}/>; return <><div className="table-toolbar">{searchable && <div className="search-field"><Search size={15}/><Input value={query} aria-label="Filter records" onChange={e => { setQuery(e.target.value); setPage(0); }} placeholder="Filter records…"/></div>}<span className="meta">{filtered.length.toLocaleString()} records {state?.truncated ? '· collection capped' : ''}</span></div><Table><TableHeader><TableRow>{columns.map(c => <TableHead key={c.key}><button className="sort-label" onClick={() => setSort({ key: c.key, asc: sort?.key === c.key ? !sort.asc : true })}>{c.label}{sort?.key === c.key ? (sort.asc ? ' ↑' : ' ↓') : ''}</button></TableHead>)}</TableRow></TableHeader><TableBody>{filtered.slice(start, end).map(({ row: r, key }: { row: any; key: string }) => <TableRow key={key}>{columns.map(c => <TableCell key={c.key}>{c.render ? c.render(r) : String(r[c.key] ?? '—')}</TableCell>)}</TableRow>)}</TableBody></Table>{!filtered.length && <p className="muted p-6">No matching records.</p>}{pages > 1 && <div className="pagination"><span className="meta">Page {actual + 1} of {pages}</span><Button size="icon" variant="outline" aria-label="Previous page" disabled={actual === 0} onClick={() => setPage(actual - 1)}><ChevronLeft size={15}/></Button><Button size="icon" variant="outline" aria-label="Next page" disabled={actual === pages - 1} onClick={() => setPage(actual + 1)}><ChevronRight size={15}/></Button></div>}<p className="sync-stamp"><Clock size={12}/> {stamp(state?.updatedAt)}</p></>; }
+/**
+ * Use the type's provider image variant (`bp` for blueprints, otherwise `icon`).
+ * Metadata must come from the owning resource, avoiding a taxonomy lookup per row.
+ * A failed decorative image is hidden without losing the name; a later load restores
+ * visibility, including when React reuses the element for a different type.
+ */
 export function ItemName({ id, name, iconVariant = 'icon' }: {
     id: number;
     name: string;

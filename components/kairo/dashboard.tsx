@@ -1,4 +1,13 @@
 "use client";
+/**
+ * Private application shell and owner of bootstrap, selected-pilot snapshots and
+ * one dashboard EventSource. Page consumers use Context and scoped invalidations;
+ * they must not create parallel collectors or treat display state as broadcast-safe.
+ *
+ * HTTP recovery and SSE publication have independent pilot, resource and names
+ * fences. Closing a reader retires its UI publication, not an accepted server save.
+ * See ../../docs/INTERNAL-API.md and ../../docs/API-REFERENCE.md for these protocols.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ShoppingCart, LayoutDashboard, Link2, ShieldCheck, RefreshCw, Orbit, BrainCircuit, Wallet, Boxes, Factory, Route, Globe, Waypoints, Target, Monitor, Blocks, ChevronRight, Search, Command as CommandIcon, Settings2, ExternalLink, PanelLeftClose, PanelLeftOpen, AlertTriangle, X } from 'lucide-react';
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset, useSidebar } from '@/components/ui/sidebar';
@@ -62,11 +71,16 @@ export default function Dashboard() {
         document.documentElement.dataset.theme = result.settings.theme || 'mint';
         return true;
     }, []);
+    // These counters fence HTTP recovery independently: an SSE snapshot may be newer
+    // without changing names or OPSEC. Capture before each read and merge only fields
+    // whose event generation still matches; never discard the whole newer state.
     const snapshotEvents = useRef<Record<string,number>>({}), resourceEvents = useRef<Record<string,number>>({}), ancillaryEvents = useRef({names:0,opsec:0}), stateError = useRef<unknown>(null);
     const stateOwner = useRef<ReturnType<typeof createScopedRefresh> | null>(null);
     const [resourceRevisions, setResourceRevisions] = useState<Record<string,string>>({}), resourceRef = useRef<Record<string,string>>({});
     const [stateReady, setStateReady] = useState(false), stateHasPublished = useRef(false);
     const [recoveryRevision, setRecoveryRevision] = useState(0), [goalClock, setGoalClock] = useState(0);
+    // Retire the previous reader synchronously, before the new React effect runs.
+    // The global names directory remains shared; pilot data and resource tokens reset.
     const setCharacter = useCallback((id: number) => { if (charRef.current !== id) {stateOwner.current?.close(); stateOwner.current = null; stateHasPublished.current = false; setErr(''); setStateReady(false); setData({}); setSessions([]); snapshotEvents.current = {}; resourceEvents.current = {}; stateError.current = null; resourceRef.current = {}; setResourceRevisions({});} charRef.current = id; setCharacterState(id); try {
         localStorage.setItem('kairo-character', String(id));
     }
@@ -141,6 +155,8 @@ export default function Dashboard() {
         e.preventDefault();
         setSearch(v => !v);
     } }; window.addEventListener('keydown', hotkey); return () => { alive = false; window.removeEventListener('hashchange', hash);window.removeEventListener('kairo:workspace-traverse',traverseWorkspace); window.removeEventListener('keydown', hotkey); }; }, [refresh, installBootstrap]);
+    // Tracking selection writes are accepted intents and retain order across pilot
+    // switches. A failed earlier write releases the queue so the newest choice proceeds.
     const activePilotSync=useRef<Promise<unknown>>(Promise.resolve());
     useEffect(() => {if(boot?.csrf&&character&&boot.characters.some(pilot=>pilot.id===character))activePilotSync.current=activePilotSync.current.catch(()=>{}).then(()=>api('/universe/jspace/tracking/active','PUT',{character_id:character},boot.csrf)).catch(()=>{});},[character,boot?.csrf]);
     useEffect(() => {
@@ -180,6 +196,9 @@ export default function Dashboard() {
             onComplete: () => toast.success('Static datasets updated. Your workspace is ready.'),
         });
         datasetConnectionRef.current = connection;
+        // One connection lives for the mounted dashboard, not the selected pilot. Route
+        // private packets using charRef and notify resource owners; use reconnect recovery
+        // for missed events rather than adding one EventSource per page.
         const events = new EventSource('/api/events');
         let timer: ReturnType<typeof setTimeout> | null = null, reloadRoster = false;
         let hasConnected = false;
@@ -226,6 +245,8 @@ export default function Dashboard() {
             reloadRoster ||= !!detail.resources?.includes('roster');
             if ((changeNeedsState(detail) || reloadRoster) && !timer) timer = setTimeout(() => {timer = null; const task = reloadRoster ? reload().then(refresh) : refresh(); reloadRoster = false; void task.catch(() => {});}, 1500);
         });
+        // The 30-second fallback recovers private snapshots through the coalescing owner.
+        // It is not an ESI collection interval and must not become an unbounded read queue.
         const poll = setInterval(() => refresh().catch(() => {}), 30000);
         return () => { connection.dispose(); datasetConnectionRef.current = null; events.close(); if (timer) clearTimeout(timer); clearInterval(poll); };
     }, [!!boot, refresh, reload, applyResourceRevisions, namesOwner, installBootstrap]);

@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Private import-planning UI over shared cached market books. The runtime owns
+ * fees, demand assumptions, order depth and whole-item cargo packing; displayed
+ * quotes are scenarios, and saving a plan never places an EVE order. Applied
+ * settings, editable assumptions, a manifest recipe and a quoted/saved review are
+ * distinct states. See ../../docs/IMPORT-ANALYSER.md for units and model limits.
+ */
 import {useEffect,useRef,useState} from 'react';
 import {Anchor,TrendingUp,Package,Truck,Activity,ArrowUpRight,RefreshCw,Settings2,Plus,X,Check,Clock,ChevronRight,Save,Route,Info} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -15,11 +22,15 @@ const isk=(n:any)=>typeof n==='number'?n.toLocaleString('en-GB',{maximumFraction
 const compact=(n:any)=>typeof n==='number'?Intl.NumberFormat('en-GB',{notation:'compact',maximumFractionDigits:2}).format(n):'—';
 const count=(n:any)=>typeof n==='number'?n.toLocaleString('en-GB',{maximumFractionDigits:1}):'—';
 const duration=(d:number)=>({1:'Day',3:'3 Days',7:'Week',14:'2 Weeks',30:'Month',90:'3 Months'}[d]||d+' days');
+// Persist recipes, not rendered estimates: the server requotes price/fees/packing
+// from its cache when saving. duration is listing days and price is ISK per unit.
 const recipe=(l:any)=>({typeId:l.typeId,strategy:l.strategy,quantity:l.quantity,price:l.price,duration:l.duration});
 const strategyName=(s:string)=>s==='anchoring'?'Anchoring Price':'Profiteering Price';
 function Numeric({label,value,onChange,min=0,max,step=1,help}:{label:string;value:any;onChange:(n:any)=>void;min?:number;max?:number;step?:number;help?:string}){return <label className="field-label">{label}<Input type="number" value={value??''} min={min} max={max} step={step} onChange={e=>onChange(e.target.value===''?null:Number(e.target.value))}/>{help&&<small>{help}</small>}</label>;}
 export function ImportAnalyser({hubId,revision,canScan,onHistory,onScan}:{hubId:number;revision:string;canScan:boolean;onHistory:()=>void;onScan:()=>void}){
  const {boot}=useKairo();const [state,setState]=useState<any>(null),[draft,setDraft]=useState<any>(null),[data,setData]=useState<any>(null),[category,setCategory]=useState('equipment'),[busy,setBusy]=useState(false),[error,setError]=useState(''),[selected,setSelected]=useState(0),[lines,setLines]=useState<any[]>([]),[planName,setPlanName]=useState(''),[planId,setPlanId]=useState(''),[review,setReview]=useState<any>(null);const alive=useRef(true),ticket=useRef(0),first=useRef(true),reviewTicket=useRef(0),manifest=useRef({lines,planName,planId}),shownReview=useRef(review);manifest.current={lines,planName,planId};shownReview.current=review;
+ // A review response belongs to the exact manifest lines, name and durable ID
+ // submitted. Retiring it suppresses presentation, not a plan save already accepted.
  const currentManifest=(submitted:typeof manifest.current)=>manifest.current.lines===submitted.lines&&manifest.current.planName===submitted.planName&&manifest.current.planId===submitted.planId;
  function closeReview(){reviewTicket.current++;setReview(null);}
  async function load(){const n=++ticket.current;try{const s=await api('/markets/imports?hub='+hubId);if(!alive.current||n!==ticket.current)return;setState(s);setDraft((v:any)=>v||s.settings);const a=await api('/markets/imports/analyse?hub='+hubId);if(!alive.current||n!==ticket.current)return;setData(a);setError('');if(first.current){setCategory(a.groups.find((g:any)=>g.items.length)?.id||'equipment');first.current=false;}}catch(error){if(alive.current&&n===ticket.current)throw error;}}

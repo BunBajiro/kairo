@@ -17,7 +17,7 @@ const connectionOwner = Symbol('connectionOwner');
 
 /**
  * Share one instance across collectors and on-demand consumers. Store/Auth remain
- * caller-owned and must outlive close(), which refuses new public work and drains
+ * caller-owned and must outlive close(), which refuses new API calls and drains
  * accepted request chains (including later pages, names and cache writes).
  */
 export function createESI(store, auth, { fetcher = fetch } = {}) {

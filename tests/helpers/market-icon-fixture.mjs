@@ -6,6 +6,12 @@ import {saveHistory,DAY} from '../../server/market-history.mjs';
 import {DEFAULT_IMPORT_SETTINGS} from '../../server/import-math.mjs';
 const iso=n=>new Date(n).toISOString(),AMARR=60008494;
 const items=[{id:1403,name:'Domination Large Armor Repairer with an extended market item name'},{id:519,name:'Compact Warp Scrambler with a deliberately long item label'}];
+/**
+ * Seed a new disposable database with two tradable items, pilot 42 and fresh
+ * 30-day histories. now is epoch milliseconds; denyNetwork must reject provider
+ * calls. Own and close the temporary Store/Markets handles before the harness
+ * starts its runtime. This is fixture creation, not an idempotent reseed API.
+ */
 export async function seedMarketIcons(dataDir,{now,denyNetwork}){
  const store=openStore(dataDir);let markets;
  try{

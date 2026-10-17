@@ -14,6 +14,8 @@ const playwright=await import(pathToFileURL(modulePath).href);
 const browsers=(process.env.KAIRO_NAVIGATION_BROWSERS||'chromium,firefox').split(',');
 assert.ok(browsers.length&&browsers.every(name=>['chromium','firefox'].includes(name)),'Use chromium and/or firefox.');
 const dir=await mkdtemp(join(tmpdir(),'kairo-premerge-navigation-'));
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';
 await mkdir(output,{recursive:true});
 const checks=[],errors=[],external=[],serverRequests=[],versions={};

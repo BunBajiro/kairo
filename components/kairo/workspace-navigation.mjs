@@ -19,6 +19,9 @@ export const workspaceRoutes = [
 
 export const workspaceGroups = ['OPERATIONS', 'UNIVERSE', 'INTELLIGENCE', 'BROADCAST', 'SYSTEM'];
 
+/**
+ * Map the exact wormhole space key to Maps; all other values open Atlas.
+ */
 export function universeRouteForSpace(space) {
   return space === 'wormhole' ? 'universe-jspace' : 'universe-kspace';
 }
@@ -49,6 +52,12 @@ function installWorkspaceHistoryGuard(routeIds) {
   }, true);
 }
 
+/**
+ * Serialize the early history listener for app/layout's inline head script.
+ * The serialized function must remain self-contained: module-closure references
+ * would not exist at execution. It claims only recognized hashes in this document,
+ * preserving framework handling of other navigation. See ../../docs/ARCHITECTURE.md.
+ */
 export function workspaceHistoryBootstrap() {
   return '(' + installWorkspaceHistoryGuard.toString() + ')(' + JSON.stringify([...workspaceRoutes.map(route => route.id), 'universe', 'journey']) + ');';
 }

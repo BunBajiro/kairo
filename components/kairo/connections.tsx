@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Private EVE application/scopes editor and global Settings tabs. Credentials stay
+ * in the runtime: the browser handles the public Client ID, requested scopes and
+ * local CSRF token, then follows the server-issued SSO URL. Disconnect commands
+ * remove a connection without making this view the owner of retained history.
+ * See ../../docs/AUTH-AND-SECURITY.md and ../../docs/ESI-POLLING.md.
+ */
 import { useEffect, useRef, useState } from 'react';
 import { Link2, ShieldCheck, ExternalLink, KeyRound, Check, Unplug, Copy, Blocks } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -37,6 +44,8 @@ async function persistClientId(clientId: string, csrf: string) {
 export function Connections() {
     const { boot, reload } = useKairo();
     const [clientId, setClientId] = useState(boot.clientId);
+    // A bootstrap reload acknowledges only an unchanged editor. Saving an earlier
+    // Client ID must not replace text typed while that request was in flight.
     const clientDraftRevision = useRef(0), clientSavedRevision = useRef(0);
     const [scopes, setScopes] = useState<string[]>([]);
     const [busy, setBusy] = useState(false);

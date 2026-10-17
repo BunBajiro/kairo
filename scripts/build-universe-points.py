@@ -16,6 +16,10 @@ FILES = ['POI.csv', 'iceSystems.csv', 'JoveSystems.csv', 'trigInvasionSystems.cs
 ROOT = Path(__file__).resolve().parents[1]
 
 
+# Return markers plus provenance/unmatched names; only the CLI writes output.
+# REVISION states the required checkout, while file hashes record what was read
+# (unlike the Wanderer importers, this tool does not compare pinned input hashes).
+# Unknown historical systems are reported and skipped, not invented in the atlas.
 def build(source):
     atlas = json.loads(gzip.decompress((ROOT / 'server/data/universe.json.gz').read_bytes()))
     by_name = {row['name']: row for row in atlas['systems']}

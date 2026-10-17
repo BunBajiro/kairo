@@ -1,3 +1,7 @@
+// Standalone compiled Assets/Wallet/Industry icon regression in both engines.
+// Synthetic snapshots omit derived icon variants: Core must supply them. Image
+// transport validates provider resource choices; no live EVE account is exercised.
+// See docs/VALIDATION.md for evidence scope and remaining environment checks.
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -9,6 +13,8 @@ import {seedOperationIcons} from './helpers/operation-icon-fixture.mjs';
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-operation-icons-'));
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';await mkdir(output,{recursive:true});
 const checks=[],requests=[],errors=[],unexpectedNetwork=[],serverRequests=[],now=Date.now();
 const expectedVariants=new Map([[27917,'bp'],[1403,'icon'],[1,'icon']]);

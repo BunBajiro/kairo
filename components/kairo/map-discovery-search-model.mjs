@@ -12,6 +12,7 @@ export function mapSystemIndex(maps, systems) {
     }));
 }
 
+/** All terms must match; exact/prefix names rank first. Empty queries return no rows and limit bounds output. */
 export function searchMapSystems(index, query, limit = 8) {
   const text = normalise(query), terms = termsFor(query);
   if (!terms.length) return [];

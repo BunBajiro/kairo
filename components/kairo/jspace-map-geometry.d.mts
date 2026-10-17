@@ -1,8 +1,10 @@
 export const CHAIN_NODE_WIDTH: number;
 export const CHAIN_NODE_HEIGHT: number;
 export const CHAIN_MAX_ZOOM: number;
+/** x/y translate viewport CSS pixels; zoom multiplies unscaled diagram coordinates. */
 export type ChainCamera = {x:number;y:number;zoom:number};
 export type ChainPoint = {x:number;y:number};
+/** Diagram coordinates; displayScale changes the whole card envelope, not its stored position. */
 export type ChainDisplayPoint = ChainPoint & {displayScale?:number};
 export type ChainViewport = {width:number;height:number};
 export type ChainGeometryNode = ChainDisplayPoint & {system_id:number};

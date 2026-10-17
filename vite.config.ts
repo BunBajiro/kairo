@@ -1,3 +1,6 @@
+// Frontend development/compilation retains the Sites Worker scaffold. The shipped
+// local application serves dist/client through server/index.mjs, without a Worker
+// or D1 database. See docs/DEVELOPMENT.md and docs/ARCHITECTURE.md.
 import vinext from "vinext";
 import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";

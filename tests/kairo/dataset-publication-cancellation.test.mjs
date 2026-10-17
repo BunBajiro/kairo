@@ -1,3 +1,7 @@
+// Filesystem publication races use real generation/pointer files with a held
+// fs.rename, not elapsed sleeps. syncBuiltinESMExports reaches the service's
+// named import; restore the global hook in finally and keep these cases serial.
+// Injected EPERM models locked cleanup for recovery policy, not Windows testing.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -10,6 +14,8 @@ import {createDatasetService, prepareDatasetRuntime} from '../../server/datasets
 
 const base = JSON.parse(await fs.readFile(new URL('../../server/data/universe-provenance.json', import.meta.url))).build;
 function deferred() { let resolve; const promise = new Promise(done => { resolve = done; }); return {promise, resolve}; }
+// Minimal hash-consistent publication fixture, deliberately not a usable atlas.
+// Full data-reader/converter coverage belongs to dataset-fixture and sde-build.
 async function generation({outputDir, expectedBuild}) {
     await fs.mkdir(outputDir, {recursive: true});
     const payloads = {

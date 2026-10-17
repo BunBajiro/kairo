@@ -1,3 +1,8 @@
+/**
+ * Pilot/map-scoped itinerary persistence and explicit EVE waypoint export.
+ * Planning uses server-owned Universe evidence; it never acts on a browser's
+ * supplied graph. See docs/UNIVERSE-ROUTING-VALIDATION.md for route semantics.
+ */
 import {randomUUID} from 'node:crypto';
 import {getUniverseStatic} from './universe-static.mjs';
 import {JUMP_SHIP_PRESETS,jumpRangeForShip,jumpReachability,alternateJumpMidpoints,createJumpPlanner,estimateJumpFuel,wormholeShipRestriction} from './universe-routing.mjs';
@@ -12,7 +17,13 @@ const failure=message=>({status:'invalid',systemIds:[],edges:[],hops:0,cost:null
 const PREFERENCES=['mode','useAnsiblex','useWormholes','maxAnsiblexZone','ansiblexZones','avoidSystemIds','avoidHostile','ansiblexRules','shipClass','highSecOnly','avoidLowsec','avoidNullsec','useThera','useTurnur','useZarzakh','shipSize','shipMassKg','allowUnknownWormholeSize'];
 const BOOLS=new Set(['useAnsiblex','useWormholes','avoidHostile','highSecOnly','avoidLowsec','avoidNullsec','useThera','useTurnur','useZarzakh','allowUnknownWormholeSize']);
 
-/** Local itinerary state. Planning and observing never execute EVE commands. */
+/**
+ * Create navigation over shared Store/Auth/ESI. Injected preparePlan provides one
+ * request-owned graph and acceptance check; fallback planRoute/planJump callbacks
+ * support isolated integrations. now() is epoch ms. Planning/observation are local;
+ * only sendWaypoints mutates EVE. Await close() to drain admitted waypoint/search
+ * flights; the owner prevents remaining queued commands from starting on shutdown.
+ */
 export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic(),now=Date.now,planRoute,planJump,preparePlan=null,getOperations=null,getFeeds=()=>null,getRouteSystems=()=>atlas.systems,getMap=null,isConnectionCurrent=null,publish=()=>{},onChange=()=>{}}={}) {
     const systems=atlas.systems,lookup=atlas.bySystemName&&atlas.bySystemId||new Map(systems.map(s=>[s.system_id,s])),names=atlas.bySystemName||new Map(systems.map(s=>[s.name.toLowerCase(),s])),queues=new Map(),searches=new Map();
     let closed=false;
@@ -76,6 +87,10 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         if(out.shipClass!==undefined&&(typeof out.shipClass!=='string'||out.shipClass.length>40))throw new Error('Invalid ship class.');
         return out;
     }
+    /** Merge an accepted draft into durable pilot/map state and clear its plan.
+     * Optional revision is optimistic concurrency (409 on mismatch). Stop UUIDs
+     * distinguish repeated visits to one system; preserve progress only for UUIDs
+     * whose system is unchanged. At most 50 ordered stops; ranges are EVE LY. */
     function saveItinerary(characterId,input={}){
         assertOpen();const id=pilot(characterId),mapId=mapScope(id,input.map_id),value=read(id,mapId);checkRevision(value,input);const old=value.itinerary;
         if(input.stops!==undefined&&(!Array.isArray(input.stops)||input.stops.length>50))throw new Error('Choose no more than 50 ordered stops.');
@@ -112,6 +127,11 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         }
         return {links,omitted};
     }
+    /** Calculate remaining stops with one prepared graph/grid, then save only if
+     * itinerary and route evidence still match. Incomplete legs return invalid or
+     * no_route with segment diagnostics; they are not a successful partial route.
+     * Revisions/evidence changing during awaits reject with 409. followLocation
+     * requires a fresh selected source, never durable progress as current position. */
     async function plan(characterId,input={}){
         assertOpen();const id=pilot(characterId),mapId=mapScope(id,input.map_id),value=read(id,mapId);checkRevision(value,input);const itinerary=value.itinerary,revision=itinerary.revision;
         const pending=itinerary.stops.filter(s=>!itinerary.progress.completedStopIds.includes(s.id));
@@ -170,6 +190,9 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         itinerary.revision++;if(reached||itinerary.followLocation)value.plan=null;itinerary.updatedAt=iso(now());
         return save(id,value,true);
     }
+    /** Advance only the next stop occurrence on subscribed maps. Wormhole
+     * positions stay map-scoped and never update the K-Space itinerary. This emits
+     * invalidation through onChange without producing navigation activity events. */
     function observeAllLocations(characterId,location) {
         const id=pilot(characterId),scopes=store.db.prepare("SELECT key FROM settings WHERE key LIKE 'universe:navigation:%'").all().map(row=>parseKey(row.key)).filter(scope=>scope.id===id);
         for(const scope of scopes) {
@@ -191,6 +214,12 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         if(!targets.length&&result.systemIds.length)add(result.systemIds.at(-1),result.systemIds.at(-1),'system');
         return targets;
     }
+    /** Queue an explicit append/replace batch per pilot, never coalescing sends.
+     * Capture login ownership at admission; replan and recheck itinerary/scope
+     * before commands. Only the first dispatch in replace mode clears
+     * existing waypoints. A failed dispatch stops the batch and returns sent count,
+     * partial/error status and uncertain where ESI cannot establish acceptance;
+     * no automatic retry can safely assume that a mutation did not happen. */
     function sendWaypoints(characterId,input={}){
         assertOpen();const id=pilot(characterId,true),mapId=mapScope(id,input.map_id);if(typeof input.replace!=='boolean')throw new Error('Explicitly choose append or replace for EVE waypoints.');
         const connection=auth.connectionRevision?.(id)??0;
@@ -223,6 +252,10 @@ export function createUniverseNavigation(store,auth,esi,{atlas=getUniverseStatic
         if(result.status==='ok'&&input.destinationId&&origins.length)result.alternateMidpoints=alternateJumpMidpoints({systems:routeSystems,originId:origins[0].systemId,destinationId:resolve(input.destinationId),rangeLy:origins[0].rangeLy,preferences:prefs});
         return result;
     }
+    /** Resolve at most 100 visible Ansiblex candidates, serially through ESI.
+     * Same query/login requests share work; stale visibility or connection changes
+     * cannot confirm access. Return an import preview with per-structure issues;
+     * candidates remain inaccessible until the user confirms the connection. */
     async function discoverBridges(characterId,{query=' » '}={}){
         assertOpen();const id=pilot(characterId,true),c=capability(id,[BRIDGE_SEARCH_SCOPE,STRUCTURE_SCOPE]);if(!c.available)throw new Error(c.reason);
         if(typeof query!=='string'||query.length<3||query.length>100)throw new Error('Bridge search must contain between 3 and 100 characters.');

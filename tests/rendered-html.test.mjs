@@ -1,3 +1,5 @@
+// Retained Sites scaffold acceptance: import the compiled Worker, so build first.
+// This checks preview metadata, not the standalone Node runtime or EVE login.
 import assert from "node:assert/strict";
 import test from "node:test";
 

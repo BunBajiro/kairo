@@ -1,3 +1,8 @@
+/**
+ * Explicit display projections from private records into Stream widgets/toasts.
+ * Only approved scalar values cross this boundary; never spread a snapshot,
+ * event payload or private record into output. See ../docs/STREAMING.md.
+ */
 import {protectionLabel} from '../public/stream/protection.js';
 import {snapshotFresh} from './polling.mjs';
 let numberFormat;
@@ -16,6 +21,7 @@ export const toastContexts={
  'location.changed':{fields:['system','region','ship'],title:'System entered',message:'{{system}} · {{region}}',sample:{system:'Example system',region:'Example region',ship:'Stiletto'}},
  'opsec.changed':{fields:['state','previous','reason'],title:'Broadcast protection · {{state}}',message:'{{previous}} → {{state}} · {{reason}}',sample:{state:'MANUAL',previous:'UNKNOWN',reason:'Manual protection is engaged.'}}
 };
+/** Build scalar template fields for recognized event families. */
 export function eventContext(store,e){
  const p=e.payload||{},names=store.get('names',{}),name=(id,f)=>names[id]||f;
  if(e.type==='test.toast')return {message:'Your broadcast surface is connected.'};
@@ -27,6 +33,11 @@ export function eventContext(store,e){
  if(e.type==='location.changed')return {system:p.system_name||name(p.system_id,'Unknown system'),region:p.region_name||'Unknown region',ship:p.ship_name||name(p.ship_type_id,'Unknown hull')};
  if(e.type==='opsec.changed')return {state:protectionLabel(p.state).toUpperCase(),previous:protectionLabel(p.previous).toUpperCase(),reason:p.reason||'Protection context updated.'};return {};
 }
+/**
+ * Interpolate allowlisted scalar fields into bounded plain text. system/region
+ * are redacted under protection unless the saved rule explicitly allows location;
+ * test=true uses schema samples. The renderer owns safe text-node insertion.
+ */
 export function renderToast(store,event,rule,opsec,test=false){
  const schema=toastContexts[event.type],context=test?schema?.sample||{}:eventContext(store,event);
  const interpolate=(template,max)=>String(template||'').replace(/\{\{\s*([\w]+)\s*\}\}/g,(_,key)=>{if(!schema?.fields.includes(key))return '—';if(['system','region'].includes(key)&&opsec.hidden&&!rule.allowLocation)return 'Protected location';const v=context[key];return ['string','number'].includes(typeof v)?String(v).slice(0,160):'—';}).slice(0,max);
@@ -50,6 +61,7 @@ function projectionInputs(store, auth) {
  };
 }
 
+/** Share reads/results within one update only; return display values keyed by element ID. */
 export function bindingProjections(store,auth,elements) {
  const input=projectionInputs(store,auth), results=new Map();
  return Object.fromEntries(elements.map(element=>{
@@ -58,6 +70,12 @@ export function bindingProjections(store,auth,elements) {
   return [element.id,results.get(key)];
  }));
 }
+/**
+ * Project one selected record/pilot into display fields. Missing/disconnected or
+ * stale sources yield unavailable, while valid empty work yields idle. Progress
+ * value is 0–100; endsAt/startedAt are epoch ms. characterId=0 explicitly selects
+ * local records; an omitted ID follows the protected or first connected pilot.
+ */
 export function bindingProjection(store,auth,e,input=projectionInputs(store,auth)){
  const fallback={text:'Source unavailable',detail:'',value:0,endsAt:0,startedAt:0,bindingStatus:'unavailable'};if(!e.binding||e.binding==='none')return {};
  const id=e.characterId??(input.setting('opsec',{}).characterId||input.characters()[0]?.id||0);if(id&&!input.characters().some(c=>c.id===id&&!c.needsReauth))return fallback;

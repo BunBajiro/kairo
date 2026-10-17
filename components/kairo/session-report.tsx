@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Pilot/session-owned report dialog. Report refresh replaces a snapshot; event
+ * pagination appends to its fixed cursor/end without replacing summary projections.
+ * Label/notes edits remain local until saved. The runtime owns reconciliation and
+ * combat boundaries; see ../../docs/SESSIONS.md and ../../docs/API-REFERENCE.md.
+ */
 import {setUniverseRequest} from './universe-requests.mjs';
 import {Children,isValidElement,useEffect,useId,useRef,useState,type ReactNode} from 'react';
 import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle} from '@/components/ui/dialog';
@@ -67,6 +73,9 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
  useEffect(()=>{
   const g=++generation.current;let running=false;
   setReport(null);reportRef.current=null;setError('');setName('');setNotes('');setBusy(false);setRefreshing(false);setLoadingMore(false);requestingMore.current=false;
+  // Keep report polling bounded: static sessions, hidden tabs and an expanded event
+  // archive need no recurring full read. Only the first read initializes editable
+  // label/notes; subsequent snapshots must not replace an unsaved debrief.
   async function read(initial=false){
    if(running||requestingMore.current||(!initial&&(document.hidden||reportRef.current?.collection?.phase==='static'))||(!initial&&(reportRef.current?.events.length||0)>100))return;
    running=true;const request=++requestVersion.current;
@@ -83,6 +92,8 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
   catch(e:any){if(g===generation.current&&request===requestVersion.current)setError(e.message);}
   finally{if(g===generation.current)setRefreshing(false);}
  }
+ // The PUT is allowed to finish for its captured Session. Closing/switching the
+ // dialog retires acknowledgement UI through generation, not the accepted write.
  async function save(){
   const g=generation.current;setBusy(true);
   try{await api(url,'PUT',{label:name,notes},boot.csrf);if(g===generation.current){onSaved();toast.success('Session details saved.');}}

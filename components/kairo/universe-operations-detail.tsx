@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Public-feed inspection/adoption and the private exploration notebook. A feed
+ * row or signature destination is evidence, not a saved navigable connection;
+ * adoption is an explicit map command. The notebook fences async scan review by
+ * pilot/map/system and exact pasted input. See docs/UNIVERSE.md.
+ */
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {Activity,ArrowUpRight,Check,Clipboard,Cloud,Copy,Crosshair,Database,Eye,EyeOff,Flag,Gem,Layers,Link2,MapPin,Mountain,Orbit,Pencil,Plus,Radar,Save,Search,Signal,Sparkles,Trash2,Undo2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -50,6 +57,8 @@ export function ExplorationNotebook({space='known',mapId,atlas,intel,systemId,on
  useEffect(()=>{setPreview(null);setReview(false);},[scan,complete,includeAnomalies]);
  const scanKey=JSON.stringify([scopeKey,scan,complete,includeAnomalies]),activeScan=useRef(scanKey),scanPending=useRef(false),mounted=useRef(true);activeScan.current=scanKey;
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
+ // A preview authorizes only this captured input in this scope. Editing a
+ // paste/complete-scan flag during the request must require a fresh review.
  async function previewScan(updatePartial=false){
   if(jspace&&!mapId){setError('Open a map to save scanner observations.');return;}
   if(scanPending.current)return;scanPending.current=true;setPreviewBusy(true);setError('');setResult(null);
@@ -79,6 +88,8 @@ export function ExplorationNotebook({space='known',mapId,atlas,intel,systemId,on
  async function clipboard(){const context=scopeKey,request=scanKey;try{const value=await navigator.clipboard.readText();if(mounted.current&&activeScope.current===context&&activeScan.current===request){setScan(value);setReview(false);}}catch{if(mounted.current&&activeScope.current===context)setError('Clipboard access was unavailable. Paste scanner text into the field.');}}
  async function copySignatures(){try{await navigator.clipboard.writeText(signatures.map((row:any)=>[row.signature_id,row.kind||'Cosmic Signature',row.type||'',row.name||'','',''].join('\t')).join('\n'));setResult({copied:true});}catch{setError('Clipboard access was unavailable.');}}
  async function saveSignature(event:React.FormEvent){event.preventDefault();setError('');const destination=destinationName.trim()?atlas.systems.find(system=>system.name.toLowerCase()===destinationName.trim().toLowerCase()):null;if(signatureType==='Wormhole'&&destinationName.trim()&&!destination){setError('Choose a known destination system, or leave it blank.');return;}const response=await mutate('/universe/signatures','POST',{...(editingId?{id:editingId}:{}),system_id:systemId,signature_id:signature,kind:signatureKind,type:signatureType,name:signatureName,notes,wh_type:signatureType==='Wormhole'?holeType:'',...(bookmarkIndex!==''?{bookmark_index:Number(bookmarkIndex)}:{}),bookmark_chain:bookmarkChain,bookmark_chain_letters:bookmarkChainLetters,temporary_name:temporaryName,is_return_hole:returnHole,destination_system_id:signatureType==='Wormhole'?destination?.system_id??null:null});if(response){setSignature('');setSignatureName('');setNotes('');setHoleType('');setDestinationName('');setBookmarkIndex('');setBookmarkChain('');setBookmarkChainLetters('');setTemporaryName('');setReturnHole(false);setEditingId(null);}}
+ // Conditions may be borrowed only from one exact linked observation; an
+ // ambiguous pair or a destination name alone cannot supply live mass/lifetime.
  function formatBookmark(row:any){const links=(intel?.links||[]).filter((link:any)=>link.kind==='wormhole'&&['from','to'].some(side=>link[side+'_system_id']===row.system_id&&(link[side+'_signature_record_id']?link[side+'_signature_record_id']===row.id:link[side+'_signature']===row.signature_id))),connection=links.length===1?links[0]:undefined;const destinationId=connection?(connection.from_system_id===row.system_id?connection.to_system_id:connection.from_system_id):row.destination_system_id;return formatSignatureBookmark(bookmarkTemplate,row,selected,atlas.systems.find(system=>system.system_id===destinationId),{mapping:bookmarkMapping,returnSymbol:bookmarkReturnSymbol,startAtZero:bookmarkStartZero,connection,signatures,systems:notebookSystems});}
  async function copyBookmarkSelection(){const value=signatures.filter((row:any)=>selectedIds.includes(row.id)).map(formatBookmark).filter(Boolean).join('\n');setTransferText(value);try{await navigator.clipboard.writeText(value);setResult({notice:'Selected bookmark names copied.'});}catch{setResult({notice:'Bookmark names are ready to copy below.'});}}
  async function copyBookmark(row:any){setError('');try{const value=formatBookmark(row);if(!value)throw new Error('This bookmark format produces an empty name.');setTransferText(value);try{await navigator.clipboard.writeText(value);setResult({notice:'Bookmark name copied. Paste it into an EVE bookmark name.'});}catch{setResult({notice:'Bookmark name is ready to copy below.'});}}catch(e){setError(e instanceof Error?e.message:'Bookmark name could not be formatted.');}}

@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Atlas canvas renderer. React owns scene inputs and controls; refs own camera
+ * frames, paint/hit-test buffers and cached territory geometry. CSS-pixel camera
+ * coordinates stay independent of the DPR-scaled canvas backing store. Static
+ * geometry is prepared when projected point geometry changes, never on a pointer frame.
+ * See docs/SCHEMATIC-GEOMETRY.md for physical versus schematic coordinates.
+ */
+
 import {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react';
 import {ChevronDown, Crosshair, Flag, Focus, HelpCircle, LocateFixed, Map as MapIcon, Maximize2, Minus, Plus, Route, Shapes, Type, X} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -178,6 +186,12 @@ function createTerritories(geometry: Geometry, styles: TerritoryStyle[]) {
   return {geometry, styles, groups: [...groups.values()], labels: territoryComponents(geometry, styles)};
 }
 
+/**
+ * Render caller-supplied cached data; this component performs no service reads or
+ * saves. `workspaceKey` scopes camera memory, while `surfaceKey` changes when the
+ * same portal host moves documents. Replay owns follow motion until manual input
+ * cancels it; data/presentation changes must not take ownership of user gestures.
+ */
 export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, background, indicator, routeSystemIds = EMPTY, routeEdges = EMPTY_EDGES, tactical = DEFAULT_TACTICAL, surfaceKey = 0, workspaceKey, showConnections = true, showSpecialLinks = true, focusedRegionId, space = 'known', standingFilter = 'all', replay = null, onReplayManualPan, territoryFocus = null, onInspectTerritory, onClearTerritoryFocus, onFrameTerritory, onRouteToSystem, onOpenNotebook}: MapProps) {
   const helpId = useId(), wrapper = useRef<HTMLDivElement>(null), canvas = useRef<HTMLCanvasElement>(null);
   const view = useRef<View>({x: 0, y: 0, scale: 1}), dimensions = useRef({width: 900, height: 570, dpr: 1});
@@ -187,6 +201,8 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const atmosphere = useRef<HTMLDivElement>(null), acquisition = useRef<HTMLDivElement>(null);
   const sceneAnimation = useRef<Animation | null>(null);
   const sizeInitialized = useRef(false);
+  // Use the host document for visibility, frame timing and pointer coordinates.
+  // A detached tactical window must keep painting while the dashboard is hidden.
   const surface = useCallback(() => wrapper.current?.ownerDocument || document, []);
   const frameWindow = useRef<Window | null>(null);
   const requestFrame = useCallback((callback: FrameRequestCallback) => {const owner = surface().defaultView || window; frameWindow.current = owner; return owner.requestAnimationFrame(callback);}, [surface]);
@@ -275,6 +291,8 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   const feedIndicatorValues = useMemo(() => new Map<number, number>((indicator === 'npc_delta' ? intel?.feeds?.npc_deltas || [] : indicator === 'adm' ? intel?.feeds?.development || [] : []).filter((row: any) => Number.isFinite(indicator === 'adm' ? row.adm : row.delta)).map((row: any) => [row.system_id, indicator === 'adm' ? row.adm : row.delta])), [indicator, intel?.feeds]);
   const indicatorMax = useMemo(() => Math.max(1, ...points.map(point => Math.abs(feedIndicatorValues.get(point.system.system_id) ?? indicatorValue(overlays.get(point.system.system_id), indicator)))), [points, overlays, indicator, feedIndicatorValues]);
 
+  // Coalesce dirty paints to one frame. Camera animation paints its own frames,
+  // so data refreshes must not start a second continuous render loop.
   const redraw = useCallback(() => {
     if (surface().hidden || pendingFrame.current !== null || cameraFrame.current !== null) return;
     pendingFrame.current = requestFrame(() => {pendingFrame.current = null; paintRef.current();});
@@ -467,6 +485,8 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
     if (lastTerritoryKey.current === territoryKey) return;
     // Keep the last complete generation visible while preparing the replacement.
     // Ownership cells survive layer/filter/standing changes and unrelated ESI refreshes.
+    // Each effect owns exactly one preparation attempt. Cleanup terminates its
+    // worker and fences late results; failure falls back to the same pure math.
     let cancelled = false, worker: Worker | null = null;
     const publish = (geometry: Geometry) => {
       if (cancelled) return;
@@ -542,6 +562,8 @@ export function UniverseMap({atlas, intel, selectedSystemId, onSelectSystem, bac
   }, [zoomAt]);
   useEffect(() => () => {if (pendingFrame.current !== null) cancelFrame(pendingFrame.current); cancelCameraMotion();}, [cancelCameraMotion, cancelFrame]);
 
+  // Rebuild screen-space hit regions with the paint they describe. Do not reuse
+  // stale screen positions after camera motion or apply DPR to logical pointers.
   paintRef.current = () => {
     if (surface().hidden) return;
     const context = canvas.current?.getContext('2d'); if (!context) return;

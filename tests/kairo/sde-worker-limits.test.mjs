@@ -4,6 +4,9 @@ import { EventEmitter } from 'node:events';
 import { Worker } from 'node:worker_threads';
 import { workerBuild } from '../../server/datasets.mjs';
 
+// Timer callbacks are manually fired in milliseconds. terminate() intentionally
+// does not emit exit: ownership must remain held until the test releases exit.
+// The final case separately exercises an actual blocked worker thread.
 function running(signal) {
   const worker = new EventEmitter(), timers = new Map();
   let nextTimer = 0, terminations = 0, settled = false;

@@ -1,10 +1,28 @@
+/**
+ * Trusted local extension discovery and lifecycle, separate from built-in ESI
+ * collectors. Descriptors and the executable example live in docs/INTERNAL-API.md.
+ */
 import { readdir } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
+/**
+ * Import .mjs defaults from directory and activate enabled descriptors. Context
+ * contains shared Store/DB/ESI/bus owners; modules are not sandboxed. register(ctx)
+ * and migrate(db) must be synchronous; register may return an async disposer.
+ * ctx.on subscriptions are removed on disable, failed registration and close.
+ *
+ * Migrations run once per module ID/version, only for activating register hooks;
+ * modules own any required SQL transaction. Descriptor scopes/datasets are
+ * metadata, not additions to Core collectors or the OAuth allowlist. Discovery
+ * or activation errors reject; completed activations are cleaned up on failure.
+ */
 export async function createRegistry(directory, context) {
     const modules = [], disposers = new Map(), pending = new Set(), cleanupErrors = [];
     let closed = false, closing, failures = 0;
     function failed(error) { failures++; cleanupErrors.push(error); if (cleanupErrors.length > 20) cleanupErrors.shift(); }
+    // Disable removes subscriptions immediately; returned cleanup is retained
+    // until close. Re-enable need not await an earlier disposer, so extensions
+    // must retain ownership of their own retiring resources.
     function dispose(id) {
         const stop = disposers.get(id);
         if (!stop) return;
@@ -14,6 +32,7 @@ export async function createRegistry(directory, context) {
             pending.add(task);
         } catch (error) { failed(error); }
     }
+    /** Stop activation, dispose once, drain all cleanup, then report failures. */
     function close() {
         if (!closing) {
             closed = true;
@@ -59,6 +78,9 @@ export async function createRegistry(directory, context) {
         }
         throw error;
     }
+    // toggle persists the preference before activation and is not an async
+    // cleanup barrier. pages reflects current preferences; read is invoked by
+    // the private HTTP dispatcher, with the selected pilot passed explicitly.
     return { modules, enabled, toggle(id, value) { if (closed) throw new Error('The module registry is closed.'); const m = modules.find(m => m.id === id); if (!m)
             throw new Error('Module not found.'); context.store.set('module:' + id, value); if (value)
             activate(m);

@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Edit the shared local politics configuration as one revisioned draft. Manual
+ * memberships and explicit independence override inferred relationships; the
+ * server owns inference. Save replaces the accepted baseline only on success,
+ * while reload is an explicit discard action. See docs/UNIVERSE.md.
+ */
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { ArrowRight, Check, ChevronRight, Flag, Globe2, Network, Plus, RefreshCw, RotateCcw, Save, Search, ShieldCheck, Sparkles, Trash2, Users, X } from 'lucide-react';
@@ -77,6 +84,8 @@ export function PowerBlocSettings() {
         setDraft(value => value && ({ ...value, blocs: [...value.blocs, { id, name: '', color: suggestTerritoryColour(id, value.blocs), alliance_ids: [] }] }));
         select(id); setError('');
     }
+    // An alliance has one configured owner: assigning it removes membership
+    // from every other bloc and the explicit-independent list in the same draft.
     function assign(alliance: Alliance, target: string) {
         setDraft(value => value && ({ ...value,
             blocs: value.blocs.map(bloc => ({ ...bloc, alliance_ids: [...bloc.alliance_ids.filter(id => id !== alliance.alliance_id), ...(bloc.id === target ? [alliance.alliance_id] : [])] })),

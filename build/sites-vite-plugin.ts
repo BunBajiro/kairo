@@ -1,3 +1,8 @@
+/**
+ * Retained Sites build integration; it does not package Kairo's Node runtime.
+ * Only dist/.openai is replaced here. scripts/package-release.py owns the local
+ * application ZIP. See docs/DEVELOPMENT.md for the two build boundaries.
+ */
 import { access, cp, mkdir, rm } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { Plugin } from "vite";
@@ -14,7 +19,11 @@ async function exists(path: string): Promise<boolean> {
   }
 }
 
-// Packages Sites metadata and migrations after Vite finishes compiling.
+/**
+ * Copy optional hosting metadata and Drizzle migrations after compilation.
+ * Missing inputs are allowed; permission/copy failures reject the build hook.
+ * The resolved Vite root, rather than the caller's cwd, owns all output paths.
+ */
 export function sites(): Plugin {
   let root = process.cwd();
 

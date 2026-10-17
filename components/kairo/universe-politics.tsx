@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * Present configured/inferred political membership and observed sovereign holdings.
+ * Keep source and freshness distinct: inference is an estimate, not sovereignty
+ * or access evidence. Aggregation belongs to lib/universe-political-atlas.mjs.
+ */
 import {useMemo, useState} from 'react';
 import type {CSSProperties} from 'react';
 import {Activity, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, Clock, Focus, Globe2, HelpCircle, MapPin, Plus, Search, Settings2, Shield, Swords, TriangleAlert, Users, Waypoints, X} from 'lucide-react';
@@ -16,6 +22,7 @@ const activityNumber=(n:number|null)=>n===null?'—':n.toLocaleString('en-GB',{n
 const entryStyle=(index:number)=>({'--bloc-entry-delay':Math.min(index,5)*35+'ms'} as CSSProperties);
 function sourceLabel(source:string){return source==='configured'?'User configured':source==='inferred'?'Inferred':source==='independent'?'Kept independent':'Unassigned';}
 type Assessment = {status?:string;inference_enabled?:boolean;generated_at?:string|null;groups?:{source:string}[]};
+/** Return no notice for healthy/absent assessments; retained stale inference never changes configured memberships. */
 export function inferenceAssessmentNotice(politics?:Assessment){
  if(!politics)return null;
  if(politics.inference_enabled===false||politics.status==='disabled')return {kind:'disabled',title:'Inferred fallback is off',detail:'Configured blocs still apply. Other alliances stay separate.',when:null};

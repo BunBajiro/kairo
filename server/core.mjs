@@ -1,3 +1,9 @@
+/**
+ * Runtime composition and collection owner over caller-owned Store/Auth/ESI.
+ * Coordinates domain services, fresh observations, private UI delivery and safe
+ * Stream projections; it does not create another database or transport cache.
+ * See docs/ARCHITECTURE.md and docs/INTERNAL-API.md for service/API ownership.
+ */
 import {randomUUID} from 'node:crypto';
 import { createUniverse } from './universe.mjs';
 import { enrichAssetLocations } from './asset-locations.mjs';
@@ -29,6 +35,12 @@ const DATASET_OBSOLETE = Symbol('dataset-obsolete');
 const DATASET_PAUSED = Symbol('dataset-paused');
 const itemImageDatasets = new Set(['assets', 'transactions', 'orders', 'jobs']);
 const itemImages = createMarketCategories();
+/**
+ * Build services and timers, rolling back constructed owners on failure. noSync
+ * suppresses automatic provider collection, not protection/binding heartbeats or
+ * explicit commands. Injection options belong to the respective service owners.
+ * Await close before closing Store/ESI; failures reject with cleanup diagnostics.
+ */
 export async function createCore(store, auth, esi, moduleDir, options={}) {
     const bus = createBus(), uiClients = new Set();
     let stopped = false, closing, quiesceFailures;
@@ -43,6 +55,8 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     let polling = pollingValues(store.get('esi:polling', {}));
     const protection = createProtectionTracker();
     const uiVersions = createUIResourceVersions(), combatVersions = new Map();
+    // Encode only when an audience needs a new directory; one client's bootstrap
+    // must not acknowledge delivery for older connections or another process.
     function sendNames(clients = uiClients) {
         const revision = namesRevision(); let frame;
         for (const client of clients) {
@@ -52,6 +66,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             else uiClients.delete(client);
         }
     }
+    /** Admit a private SSE response and its names bootstrap; false means closed. */
     function connectUI(client) {
         if (stopped) { client.end(); return false; }
         if (uiClients.has(client)) return true;
@@ -70,11 +85,17 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         const frame = sseEvent(type, data);
         for (const client of uiClients) if (!writeSSE(client, frame)) uiClients.delete(client);
     }
+    /** Invalidate views without creating history; omitted resources means all. */
     function changed(detail = {}) {
         const resources = detail.resources;
         const resourceRevisions = uiVersions.changed(detail.characterId, resources);
         send('changed', {...detail, resourceRevisions});
     }
+    /**
+     * Persist before dispatch. Duplicate dedupe keys produce neither a bus event
+     * nor UI invalidation. Listener promises belong to bus.drain, not this return;
+     * callers retain responsibility for any surrounding domain transaction.
+     */
     function publish(e) { const at = e.at || new Date().toISOString(); const result = store.db.prepare('INSERT OR IGNORE INTO events(character_id,type,module,summary,payload,at,dedupe) VALUES(?,?,?,?,?,?,?)').run(e.characterId || null, e.type, e.module || 'core', e.summary || e.type, JSON.stringify(e.payload || {}), at, e.dedupe || null); if (result.changes) {
         bus.emit({ ...e, at });
         changed({characterId: e.characterId, type: e.type, module: e.module || 'core', resources: eventResources(e)});
@@ -115,6 +136,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
     function combatSnapshot(id){const s=uiSnapshot(id,'killmails'),records=combat.recent(id);return {...s,dataRevision:s.dataRevision===undefined?undefined:s.dataRevision+':combat:'+(combatVersions.get(id)||0),data:records.length?records:s.data,participation:combat.coverage(id)};}
     function enabled(m) { return store.get('module:' + m.id, true); }
     const moduleList = () => [...catalog, ...registry.modules].map(m => ({ id: m.id, name: m.name, description: m.description, scopes: m.scopes || [], datasets: (m.datasets || []).map(d => d.key), enabled: enabled(m), version: m.version }));
+    /** Persist validated directory changes; publication waits for a UI boundary. */
     function rememberNames(names) {
         let changed = false;
         for (const [id, name] of Object.entries(names)) {
@@ -124,6 +146,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         if (changed) { namesVersion++; store.set('names', namesMap); }
     }
+    /** Resolve supported entity fields (plus mail/implant special cases), not arbitrary numbers. */
     async function resolveNames(data, priority = false, datasetKey) { const ids = []; function walk(x) { if (Array.isArray(x)) {
         x.forEach(walk);
     }
@@ -205,6 +228,8 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }
         return data;
     }
+    // One flight per pilot/dataset is shared by normal sync and protection sync.
+    // The flight includes enrichment/publication, not merely its network request.
     function syncDataset(character, m, d) {
         if (stopped) return;
         const key = (character?.id || 0) + ':' + d.key;
@@ -220,6 +245,12 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         datasetSync.set(key, task);
         return task;
     }
+    /**
+     * Sample one due source under its admitted connection/module identity. Missing
+     * scope and inapplicable organization are explicit states, not empty success.
+     * Provider/enrichment failures retain applicable last-good data with retryAt;
+     * obsolete work must not publish either a success or an error into a new owner.
+     */
     async function runDataset(character, m, d) {
         const id = character?.id || 0;
         const revision = auth.connectionRevision?.(id), key = id + ':' + d.key;
@@ -378,6 +409,11 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         refreshOPSEC(); updateBindings(); changed();
         return pollingSettings();
     }
+    /**
+     * Collect enabled datasets for a pilot (0 means shared Universe) in batches
+     * of three. Busy/stopped/missing pilots return without starting another run;
+     * this is not a barrier for independently active domain-service work.
+     */
     async function sync(id) { if (stopped || syncing.has(id))
         return; const character = auth.characters().find(c => c.id === id); if (id && !character)
         return; const revision = auth.connectionRevision?.(id); const task = (async () => { const modules = id ? catalog.filter(m => m.id !== 'universe') : catalog.filter(m => m.id === 'universe'); const tasks = modules.filter(enabled).flatMap(m => m.datasets.map(d => () => syncDataset(character, m, d))); for (let i = 0; i < tasks.length; i += 3) {
@@ -386,6 +422,7 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         const results = await Promise.allSettled(tasks.slice(i, i + 3).map(f => f()));
         if (results.some(result => result.status === 'fulfilled' && result.value === DATASET_OBSOLETE)) break;
     } refreshOPSEC(); updateBindings(); })().finally(() => syncing.delete(id)); syncing.set(id, task); return task; }
+    /** Read projections, marking expired ready samples stale unless expire=false. */
     function snapshots(id, expire = true) { const data = {}; for (const m of catalog)
         for (const d of m.datasets) {
             const char = m.id === 'universe' ? 0 : id;
@@ -422,6 +459,8 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
             return results;
         });
     }
+    // Routine projection shares update-local inputs and evaluates visible saved
+    // widgets only. Explicit preview/save still validates its requested elements.
     function updateBindings(){stream.setBindings(bindingProjections(store,auth,stream.config().elements.filter(element=>element.visible)));}
     function refreshPolitics() {
         if (!store.get('module:universe', true)) return;
@@ -440,7 +479,13 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         }, 10000);
         heartbeat.unref();
     }
+    /** Stop recurring producers while keeping admitted handlers/services usable. */
     function quiesce() { quiesceFailures ??= bus.health().failures; clearInterval(ticker); clearInterval(heartbeat); }
+    /**
+     * Stop admission and share one ordered drain. Keep dependencies and listeners
+     * alive through accepted work; aggregate cleanup failures after other owners
+     * finish. A failed drain must not be reported as successful dataset handoff.
+     */
     function close() {
         if (closing) return closing;
         stopped = true; quiesce();
@@ -490,6 +535,9 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         refreshOPSEC();updateBindings();
         if (!options.noSync) refreshPolitics();
     } catch (error) { return rollback(error); }
+    // Facade returns live owned services and the shared read-only names map.
+    // toggle pauses publication without deleting records. requestSync marks due
+    // work and clears access failures; it does not bypass scope or ESI cache rules.
     return { bus, registry, universe, stream, obs, combat, sessionCombat, goals, markets, uiClients, connectUI, namesSnapshot, moduleList, snapshots, resourceRevisions:uiVersions.current, changed, sync, syncProtection, publish, pollingSettings, savePolling, names: () => namesMap, rememberNames, resolveNames, refreshOPSEC, updateBindings, toggle(id, value) { if (catalog.some(m => m.id === id)) {
             store.set('module:' + id, value);
             if (value) pausedModules.delete(id); else pausedModules.add(id);

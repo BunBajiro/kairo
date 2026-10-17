@@ -3,6 +3,9 @@ import {openStore} from '../../server/store.mjs';
 import {saveHistory,DAY} from '../../server/market-history.mjs';
 import {seedMarketIcons} from './market-icon-fixture.mjs';
 export const BLUEPRINT_ITEMS=[{id:27917,name:'Electron Bomb Blueprint'},{id:27925,name:'Shrapnel Bomb Blueprint'},{id:2204,name:'Acolyte I Blueprint'}];
+// Call once on an unseeded test directory; seedMarketIcons owns the base pilot.
+// Add type IDs/prices only: runtime taxonomy must derive blueprint icon variants,
+// so seeding those derived fields would bypass the contract under test.
 export async function seedMarketBlueprints(dataDir,options){
  await seedMarketIcons(dataDir,options);
  const store=openStore(dataDir),{now}=options,iso=n=>new Date(n).toISOString();

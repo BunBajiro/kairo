@@ -1,3 +1,7 @@
+/** Pure provider adapters for Universe feeds. now arguments are epoch ms; emitted
+ * dates are ISO UTC, masses kg, durations use named minute/hour fields. Normalizers
+ * validate bounded provider envelopes, discard unusable rows, and retain unknown
+ * values as null instead of inferring confirmation, access or remaining capacity. */
 const array = value => Array.isArray(value) ? value : [];
 const id = value => Number.isSafeInteger(value) && value > 0;
 const clean = (value, max = 160) => String(value ?? '').trim().slice(0, max);
@@ -10,6 +14,10 @@ export const FEED_URLS = Object.freeze({
     wormhole_types: 'https://api.eve-scout.com/v2/public/wormholetypes',
     combat: 'https://r2z2.zkillboard.com/ephemeral/sequence.json',
 });
+/** Normalize up to 1,000 Thera/Turnur reports, deduplicated by source/report ID.
+ * Keep only complete, unexpired atlas-matched endpoints from the expected hub.
+ * Drop unmatched rows; throw on malformed input or when no output matches despite
+ * current complete reports. Return [] when no live complete reports remain. */
 export function normalizeConnections(rows, source, atlas, now) {
     if (!Array.isArray(rows) || rows.length > 1000) throw new Error('The wormhole provider returned an unexpected response.');
     const systems = atlas.bySystemId || new Map(atlas.systems.map(s => [s.system_id, s]));
@@ -37,6 +45,9 @@ export function normalizeConnections(rows, source, atlas, now) {
         throw new Error('Current wormhole reports could not be matched to the bundled universe.');
     return [...out.values()];
 }
+/** Map provider nominal limits by type identifier. Nonpositive mass/lifetime
+ * limits become null; regeneration retains any finite reported number, including
+ * zero. Neither field describes remaining connection mass. */
 export function normalizeWormholeTypes(rows) {
     if (!Array.isArray(rows) || rows.length > 1000) throw new Error('The wormhole type provider returned an unexpected response.');
     const result = new Map();
@@ -60,6 +71,8 @@ function neighbours(atlas) {
     }
     return result;
 }
+/** Derive strong centre/one-hop and weak two/three-hop storm areas over stargates.
+ * Callers validate the centre; special travel links never extend this footprint. */
 export function stormArea(systemId, atlas) {
     const graph = neighbours(atlas), seen = new Set([systemId]), strong = [systemId], weak = [];
     let frontier = [systemId];
@@ -72,6 +85,10 @@ export function stormArea(systemId, atlas) {
     }
     return { strong_system_ids: strong, weak_system_ids: weak };
 }
+/** Separate bounded public storm and space-oddity reports. Unknown systems and
+ * timestamps over five minutes in the future are ignored; storm centres require
+ * known nullsec. Reports
+ * older than a day remain explicitly stale rather than becoming fresh on import. */
 export function normalizeObservations(rows, atlas, now) {
     if (!Array.isArray(rows) || rows.length > 1000) throw new Error('The observation provider returned an unexpected response.');
     const systems = atlas.bySystemId || new Map(atlas.systems.map(s => [s.system_id, s]));
@@ -93,6 +110,9 @@ export function normalizeObservations(rows, atlas, now) {
         throw new Error('Storm observations could not be matched to the bundled universe.');
     return { storms, points };
 }
+/** Validate an entire manual replacement (array or {items}, at most 32 reports).
+ * Each report needs distinct identity, nullsec centre and an observation/expiry
+ * span no longer than seven days. Throw before the feed owner persists anything. */
 export function normalizeManualStorms(input, atlas, now) {
     const rows = Array.isArray(input) ? input : input?.items;
     if (!Array.isArray(rows) || rows.length > 32) throw new Error('Import at most 32 storm reports.');
@@ -111,6 +131,8 @@ export function normalizeManualStorms(input, atlas, now) {
             observed_at: observed, expires_at: expires, source: 'manual', reported: true, ...stormArea(system.system_id, atlas) };
     });
 }
+/** Project valid atlas-matched ESI campaigns; scheduled/active compares start time
+ * with now, not a prediction that the campaign has actually begun or completed. */
 export function normalizeCampaigns(rows, atlas, now) {
     const known = new Set(atlas.systems.map(s => s.system_id));
     return array(rows).filter(row => id(row.campaign_id) && known.has(row.solar_system_id) && date(row.start_time)).map(row => ({
@@ -120,6 +142,8 @@ export function normalizeCampaigns(rows, atlas, now) {
         defender_score: number(row.defender_score), status: Date.parse(row.start_time) > now ? 'scheduled' : 'active',
     }));
 }
+/** Project reported alliance development/hub windows; missing numeric indices
+ * remain null. Faction/unclaimed systems do not acquire inferred development. */
 export function normalizeDevelopment(value, atlas) {
     const known = new Set(atlas.systems.map(s => s.system_id));
     return array(value?.solar_systems || value).flatMap(row => {
@@ -133,6 +157,9 @@ export function normalizeDevelopment(value, atlas) {
             active_campaign: !!claim.sovereignty_hub && !window }];
     });
 }
+/** Compact one public R2Z2 kill for map display, or null for invalid/unknown-system
+ * evidence or timestamps over five minutes in the future. total_value is the
+ * provider's ISK estimate, not Session accounting. */
 export function normalizeKill(row, atlas, now) {
     const esi = row?.esi, killId = row?.killmail_id || esi?.killmail_id, timestamp = date(esi?.killmail_time);
     if (!id(killId) || !timestamp || Date.parse(timestamp) > now + 300000 || !atlas.systems.some(s => s.system_id === esi?.solar_system_id)) return null;
@@ -141,6 +168,9 @@ export function normalizeKill(row, atlas, now) {
         victim_alliance_id: id(esi.victim?.alliance_id) ? esi.victim.alliance_id : null,
         total_value: number(row.zkb?.totalValue), source: 'zkillboard' };
 }
+/** Extract a complete rolling NPC-count snapshot or null. Provider modified time
+ * identifies a window when available; otherwise use observed update time. Repeated
+ * receipt of the same identity must not manufacture a new comparison window. */
 export function npcSample(snapshot) {
     if (!snapshot || !['ready', 'stale'].includes(snapshot.status) || !Array.isArray(snapshot.data) || snapshot.truncated) return null;
     const at = date(snapshot.sourceModifiedAt || snapshot.headers?.['last-modified'] || snapshot.updatedAt);
@@ -150,6 +180,9 @@ export function npcSample(snapshot) {
         rows: snapshot.data.filter(row => id(row.system_id) && number(row.npc_kills) !== null && row.npc_kills >= 0)
             .map(row => ({ system_id: row.system_id, npc_kills: row.npc_kills })) };
 }
+/** Compare two ordered complete rolling-hour totals. Absent systems mean zero
+ * only within those complete samples; negative deltas are valid and are not a
+ * count of kills between samples. Missing/out-of-order windows yield []. */
 export function npcDeltas(previous, current, atlas) {
     if (!previous || !current || Date.parse(previous.at) >= Date.parse(current.at)) return [];
     const before = new Map(previous.rows.map(row => [row.system_id, row.npc_kills])), after = new Map(current.rows.map(row => [row.system_id, row.npc_kills]));

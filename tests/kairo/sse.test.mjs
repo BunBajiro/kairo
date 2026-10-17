@@ -1,3 +1,7 @@
+// Use real loopback sockets and deliberately paused readers to reach Node write
+// backpressure. Large payloads exceed socket buffers; reducing them to convenient
+// tiny fixtures would stop exercising queued bytes, drain timeouts and protection.
+// The one EventEmitter case isolates a close deadline despite repeated progress.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer, get} from 'node:http';

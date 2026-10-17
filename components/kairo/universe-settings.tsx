@@ -27,6 +27,8 @@ function initialSection(): SettingsSection {
 export function UniverseSettings() {
   const {character, boot, navigate} = useKairo();
   const [section, setSection] = useState<SettingsSection>(initialSection);
+  // Mount on first visit, then hide rather than unmount. This keeps unfinished
+  // forms intact without paying for every tab's initial reads up front.
   const [visited, setVisited] = useState(() => new Set<SettingsSection>([section]));
   const [atlas, setAtlas] = useState<UniverseAtlas | null>(null);
   const [intel, setIntel] = useState<UniverseIntel | null>(null);

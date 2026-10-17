@@ -19,6 +19,9 @@ HASHES = {
     'trade_hubs.json': 'c25b929c416f743f0a9ac86cb809abc443b5b4879331b6cdcc28d9950525e5d4',
 }
 
+# Read only hash-pinned local reference inputs and return the normalized value.
+# The CLI below writes the bundled file after validation; no live access check or
+# network request occurs. See docs/WANDERER-DESTINATIONS-NOTICE.md for provenance.
 def build(source):
     categories, hashes = {}, {}
     for category, name in FILES.items():

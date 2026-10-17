@@ -1,3 +1,9 @@
+/**
+ * Markets-owned private import analysis, trader settings and saved plan quotes.
+ * Analysis reads cached books/history and authorized local snapshots; only
+ * explicit refresh requests collect trader data. Plans never place EVE orders.
+ * See ../docs/IMPORT-ANALYSER.md for assumptions and stale-data presentation.
+ */
 import {readFileSync} from 'node:fs';
 import {datasetFile} from './dataset-paths.mjs';
 import {randomUUID} from 'node:crypto';
@@ -9,6 +15,11 @@ import {IMPORT_CATEGORIES,DEFAULT_IMPORT_SETTINGS,validateImportSettings,trading
 const owners=JSON.parse(readFileSync(datasetFile('npc-market-owners.json'),'utf8')).corporations;
 const taxonomy=createMarketCategories(),JITA=60003760,iso=n=>new Date(n).toISOString();
 const privateKeys={skills:['training','esi-skills.read_skills.v1'],standings:['combat','esi-characters.read_standings.v1'],orders:['wallet','esi-markets.read_character_orders.v1']};
+/**
+ * Own one analysis memo/flight and trader-refresh flights for this Markets owner.
+ * close() drains accepted calculations/refreshes; the caller stops admission
+ * first and keeps Store/Auth/request dependencies alive until the drain completes.
+ */
 export function createImports(store,auth,{now=()=>Date.now(),request,refreshCharacter}={}){
  const db=store.db,refreshFlights=new Map();let memo=null,flight=null;
  const revision=importRevision(db);
@@ -17,6 +28,8 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
  const settings=(id,roster)=>({...DEFAULT_IMPORT_SETTINGS,characterId:roster[0]?.id||0,...store.get('market:imports:'+id,{})});
  function snapshot(c,key){const [module,scope]=privateKeys[key];if(!c||c.needsReauth||!c.scopes.includes(scope)||!store.get('module:'+module,true))return null;return store.snapshot(c.id,key);}
  function fresh(s){return s?.status==='ready'&&Date.parse(s.refreshAt||s.expiresAt)>now();}
+ // Availability and freshness are distinct: retained usable snapshots can quote
+ // with stale flags, while disconnected/missing-scope/module-disabled inputs cannot.
  function state(id,roster=auth.characters()){const h=hub(id),s=settings(h.id,roster),c=roster.find(c=>c.id===s.characterId),skills=snapshot(c,'skills'),standings=snapshot(c,'standings'),owner=store.get('market:owner:'+h.id,null),issues=[];
   const skillsOK=Array.isArray(skills?.data?.skills),level=key=>skillsOK?(skills.data.skills.find(s=>s.skill_id===key)?.active_skill_level??0):null;
   if(!skillsOK)issues.push('Update the selling character’s skills, or enable Training & clones and its skills scope.');
@@ -51,6 +64,8 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
    memo=null;return state(id);
   })().finally(()=>{refreshFlights.delete(key);});refreshFlights.set(key,task);return task;
  }
+ // Exclude known own orders across all connected alts, not merely the seller.
+ // Retained authorized order samples still prevent self-purchases when stale.
  function ownership(id,roster){const ownIds=new Set(),ownTypes=new Set();for(const c of roster){const sample=snapshot(c,'orders');if(!Array.isArray(sample?.data))continue;for(const o of sample.data){if(Number.isSafeInteger(o.order_id))ownIds.add(o.order_id);if(o.location_id===id&&!o.is_buy_order&&o.volume_remain>0&&Date.parse(o.issued)+o.duration*DAY>now())ownTypes.add(o.type_id);}}return {ownIds,ownTypes};}
  function levelMap(id,typeIds,ownIds,expires){const map=new Map();if(!typeIds.length)return map;const rows=db.prepare('SELECT type_id,order_id,price,volume,issued,duration FROM market_orders WHERE hub_id=? AND buy=0 AND volume>0 AND type_id IN (SELECT value FROM json_each(?)) ORDER BY type_id,price,order_id').all(id,JSON.stringify(typeIds));
   for(const r of rows){const end=Date.parse(r.issued)+r.duration*DAY;expires(end);if(ownIds.has(r.order_id)||end<=now())continue;if(!map.has(r.type_id))map.set(r.type_id,[]);const levels=map.get(r.type_id),last=levels.at(-1);if(last?.price===r.price)last.volume+=r.volume;else levels.push({price:r.price,volume:r.volume});}return map;
@@ -78,6 +93,11 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
   const groups=context.categories.map(g=>{const items=all.get(g.id).sort((a,b)=>b.score-a.score||a.typeId-b.typeId);return {...g,qualified:items.length,items:items.slice(0,10)};});
   return {result:{...context,groups,screened:rows.length,excluded,generatedAt:iso(now()),dataStamp:{local:h.last_scan?JSON.parse(h.last_scan).observed:null,jita:db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA)?.last_scan?JSON.parse(db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA).last_scan).observed:null},reason:!rows.length?'Scan this hub and Jita to build a comparison.':null},models,until};
  }
+ /**
+  * Share one calculation, fenced by SQL revision, roster/access and the earliest
+  * relevant expiry (also UTC midnight and a 30-second ceiling). Returned memo
+  * objects are shared read projections; callers must not mutate them.
+  */
  async function cached(id){
   id=Number(id);
   for(;;){
@@ -100,7 +120,13 @@ export function createImports(store,auth,{now=()=>Date.now(),request,refreshChar
   const d=found.item.demand,reference=d.windows[7].average||d.windows[30].average||found.item.jita,daily=d.daily*Math.min(1,(reference/input.price)**2),option=scenario({...found.model,...{quantity:input.quantity,price:input.price,duration:input.duration,strategy:input.strategy},daily});if(!option)throw new Error('This quantity exceeds the cached Jita stock or your hauling limits.');return {...option,typeId:found.item.typeId,name:found.item.name,iconVariant:found.item.iconVariant,localObserved:found.item.localObserved,jitaObserved:found.item.jitaObserved,historyUpdated:found.item.historyUpdated,historySource:found.item.historySource,feeProfile:cache.result.fees,buyer:cache.result.buyer};
  }
  async function quote(id,input){return quoteFrom(await cached(id),input);}
+ /** Re-quote each unique line from one cache, then charge hauling for combined loads. */
  async function planQuote(id,input){if(!Array.isArray(input.lines)||!input.lines.length||input.lines.length>100)throw new Error('An import plan needs 1–100 items.');if(new Set(input.lines.map(l=>Number(l.typeId))).size!==input.lines.length)throw new Error('Keep one import line per item.');const cache=await cached(id),s=cache.result.settings,lines=input.lines.map(line=>quoteFrom(cache,line));const packing=packCargo(lines,s.cargo),sum=k=>lines.reduce((n,l)=>n+l[k],0),haul=packing.trips*s.haulPerTrip,upfront=sum('upfront')-sum('haul')+haul,net=sum('net')+sum('haul')-haul;return {lines,packing,buyer:cache.result.buyer,feeProfile:cache.result.fees,totals:{purchase:lines.reduce((n,l)=>n+l.buy.cost,0),revenue:sum('revenue'),brokerFee:sum('brokerFee'),salesTax:sum('salesTax'),relistReserve:sum('relistReserve'),haul,upfront,net,roi:net/upfront*100,budget:s.budget,budgetExceeded:upfront>s.budget,maxEta:Math.max(...lines.map(l=>l.eta||0))},settings:s,quotedAt:iso(now())};}
+ /**
+  * Persist the server quote, trader profiles and assumptions at acceptance time.
+  * Caller-supplied totals are ignored. Reads retain that historical quote; saving
+  * again re-quotes under current settings rather than reserving market stock.
+  */
  async function savePlan(id,input){const h=hub(id);if(typeof input.name!=='string'||!input.name.trim()||input.name.length>100)throw new Error('Name the import plan (up to 100 characters).');
   const checkSlot=()=>{const prior=input.id?db.prepare('SELECT id FROM market_import_plans WHERE id=? AND hub_id=?').get(input.id,h.id):null;if(input.id&&!prior)throw new Error('Import plan not found.');if(!prior&&db.prepare('SELECT COUNT(*) n FROM market_import_plans WHERE hub_id=?').get(h.id).n>=100)throw new Error('Keep up to 100 plans per hub.');return prior;};
   checkSlot();const quote=await planQuote(id,input);

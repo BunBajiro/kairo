@@ -17,6 +17,9 @@ async function freePort() {
     await new Promise(resolve => server.close(resolve));
     return port;
 }
+// Replace only direct imports of one uniquely addressed index.mjs instance.
+// The real HTTP listeners remain active so staged bind/unwind ordering is tested;
+// per-test factories and the loader hook are removed by the registered cleanup.
 async function startupFixture(t, failAt, {cleanupGate, cleanupFailure} = {}) {
     const id = randomUUID(), key = '__kairo_startup_' + id, calls = [], servers = [];
     const fault = Object.assign(new Error('Injected ' + failAt), {code: failAt.startsWith('listen') ? 'EADDRINUSE' : 'EFAULT'});

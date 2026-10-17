@@ -1,3 +1,7 @@
+// Imported by the fourth-pass Markets runner. Synthetic cache rows avoid live
+// ESI while actual lookup/save owners and SQLite remain in use. Gates delay only
+// successful response delivery; injected 503s reject before persistence. Cleanup
+// releases every started gate before removing its route handlers and listener.
 import {createHash} from 'node:crypto';
 
 let fixtureNumber=0;

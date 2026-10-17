@@ -4,6 +4,8 @@ import {EventEmitter} from 'node:events';
 import {setImmediate as turn} from 'node:timers/promises';
 import {decodeArchive} from '../../server/market-history.mjs';
 
+// Separate receipt of a result, requested termination and actual worker exit.
+// Resolving terminate early would hide the decoder's accepted-work drain contract.
 function controlledWorker(){
  const worker=new EventEmitter();let terminated=0,resolveExit;
  const exit=new Promise(resolve=>{resolveExit=resolve;});

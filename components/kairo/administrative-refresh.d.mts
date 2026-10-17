@@ -2,6 +2,7 @@ type Refresh = {request(options?: {force?: boolean}): Promise<void>; visibilityC
 type Options<T> = {read(): Promise<T>; publish(value: T): void; onError?(error: unknown): void;
     visible?(): boolean; period?(value: T | undefined): number;
     timers?: {setTimeout(callback: () => void, delay: number): any; clearTimeout(timer: any): void}};
+/** Visible-page read owner; period returns milliseconds. close fences late reads. */
 export function createAdministrativeRefresh<T>(options: Options<T>): Refresh;
 export function marketRefreshPeriod(value: any): number;
 type Generation = {edit: number; status: number};

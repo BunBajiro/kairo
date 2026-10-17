@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Configure private Ansiblex networks/import lists and known-space pins. Discovery
+ * and import previews do not themselves save a network or prove passage access.
+ * Mutations reload the caller's intelligence after acceptance; Maps owns private
+ * wormhole editing. See docs/UNIVERSE.md for network and observation semantics.
+ */
 import {useMemo, useState} from 'react';
 import {ArrowRight, Check, Link2, MapPin, Plus, Settings2, Trash2} from 'lucide-react';
 import {Button} from '@/components/ui/button';

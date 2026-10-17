@@ -14,6 +14,8 @@ import {clientIdNavigationOwnership,pollingNavigationOwnership} from './premerge
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-pass4-shared-'));
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';await mkdir(output,{recursive:true});
 const checks=[],errors=[],unexpectedNetwork=[],serverRequests=[],now=Date.now();
 const denyNetwork=async url=>{serverRequests.push(String(url));throw new Error('Unexpected external request: '+url);};
@@ -22,6 +24,9 @@ let app,browser,context,page,meta;
 function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};}
 function check(label,actual,expected,extra={}){const pass=JSON.stringify(actual)===JSON.stringify(expected);checks.push({...meta,label,pass,actual,expected,...extra});console.log(JSON.stringify(checks.at(-1)));}
 async function frame(){await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
+// Keep incomplete-run artifacts too; check rows preserve failures before later
+// recovery controls. A saved artifact alone is not acceptance: the final aggregate
+// assertion must pass. This runner owns browser/runtime/temp-data cleanup.
 async function artifact(name){await writeFile(join(output,name),JSON.stringify({ok:checks.length>0&&checks.every(c=>c.pass),scope:'Actual compiled Goals create/editor ownership, OBS scene/audio/filter names, Session dialog/replay cancellation and ClientID/polling saves across navigation; Chrome/Firefox at desktop/narrow widths, real local HTTP and disposable SQLite.',checks,errors,unexpectedNetwork,serverRequests},null,2));}
 try{
  const store=openStore(join(dir,'data'));

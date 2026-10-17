@@ -4,6 +4,15 @@ import {mergeResourceNames, retainValue} from './resource-state.mjs';
 // event/connection fence; a later names event or reconnect makes that read stale.
 // The first names event on a connection establishes its process epoch. Counters
 // are ordered only within that epoch, never across process restart/reset.
+/**
+ * Return the private global directory reconciler (not a per-pilot cache). Capture
+ * before HTTP; pass that fence to fromState on completion. Versioned state/events
+ * replace the whole directory, while legacy snapshots merge partial names.
+ *
+ * Publication methods return a replacement map or null for no accepted change;
+ * revision is undefined after legacy input. connect/disconnect report whether they
+ * invalidate pending state evidence. See ../../docs/API-REFERENCE.md for SSE epochs.
+ */
 export function createNameDirectoryState() {
     let current = null, connection = 0, events = 0, awaitingBootstrap = true, legacy = false, opened = false, disconnected = false;
     function packet(value) {

@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * Atlas symbol inspection cards over renderer-supplied evidence. Anchors/viewport
+ * dimensions are CSS pixels; `now` is Unix ms supplied by the map's freshness
+ * clock. This layer presents source/expiry and delegates navigation actions; it
+ * does not turn a fresh public report into verified route or access information.
+ */
+
 import {useCallback, useEffect, useLayoutEffect, useRef, type CSSProperties, type Ref} from 'react';
 import {Activity, ArrowRight, ArrowUpRight, CircleDot, Clock3, Compass, Flag, Link2, MapPin, Navigation, NotebookPen, Radio, ShieldQuestion, Sparkles, Swords, Users, Waypoints, X} from 'lucide-react';
 import type {PortalEndpoint, PortalNetwork} from './universe-map-portals.mjs';

@@ -4,7 +4,12 @@ const kinds=['custom','constellation','region'];
 export const MAP_DISPLAY_GROUP_LIMIT=32;
 export const MAP_DISPLAY_MEMBER_LIMIT=600;
 
-/** Local display preferences only. IDs and membership stay stable across reloads. */
+/**
+ * Normalize untrusted browser preferences without mutating input: at most 32
+ * groups and 600 candidate members per group, unique IDs, and scales in [0.5,1.5].
+ * Invalid entries are dropped; absent scale defaults to 1. These preferences
+ * never remove canonical nodes or persist changes to backend map membership.
+ */
 export function normalizeMapDisplayPrefs(raw){
   const value=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{},seen=new Set(),groups=[];
   for(const input of (Array.isArray(value.groups)?value.groups:[]).slice(0,MAP_DISPLAY_GROUP_LIMIT)){

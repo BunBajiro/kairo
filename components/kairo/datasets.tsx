@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Settings view of the supervisor-owned dataset lifecycle. Status events supersede
+ * older reads; these controls request check/install work but do not activate data
+ * or decide that a reconnect succeeded. Dashboard's dataset-connection owner handles
+ * that handoff. See ../../docs/DATASETS.md for generation and rollback semantics.
+ */
 import { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Check, Clock3, Database, Download, Globe, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,6 +30,8 @@ function date(value: string | null) {
 export function SettingsDatasets() {
     const { boot } = useKairo();
     const [status, setStatus] = useState<DatasetStatus | null>(null), [error, setError] = useState(''), [action, setAction] = useState('');
+    // Read/action responses and SSE status share a publication epoch. Receiving newer
+    // status retires a pending response without cancelling the supervisor-owned work.
     const epoch = useRef(0), live = useRef(false), readInFlight = useRef<number | null>(null);
     async function load() {
         if (readInFlight.current !== null) return;

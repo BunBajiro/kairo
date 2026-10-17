@@ -1,3 +1,9 @@
+/**
+ * Local runtime HTTP boundary: private dashboard/control plane and separate
+ * read-only broadcast listener. Domain services own data validation and mutations;
+ * this file owns session/Origin/Host/CSRF guards, dispatch and accepted-request drain.
+ * Exact routes and envelopes: docs/API-REFERENCE.md. Lifecycle: docs/ARCHITECTURE.md.
+ */
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
@@ -23,8 +29,22 @@ import {listGoals,goalSourceOptions,lookupGoalType} from './goals.mjs';
 import {createDatasetService} from './datasets.mjs';
 import {activeDatasetDirectory, defaultDataDirectory} from './dataset-paths.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** Exact loopback Host allowlist, including port; not a DNS-resolution check. */
 export function validHost(host, port) { return host === `127.0.0.1:${port}` || host === `localhost:${port}`; }
+/** Reject nonstrings/unequal byte lengths before timing-safe secret comparison. */
 export function safeEqual(a, b) { return typeof a === 'string' && typeof b === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b)); }
+/**
+ * Open the local owners and bind two distinct loopback ports (defaults 4380/4381).
+ * Resolves only after both listen; failed startup drains constructed owners and
+ * rethrows the primary failure, attaching cleanup diagnostics when possible.
+ *
+ * options.dataDir/clientDir select private persistence and compiled assets.
+ * noSync disables automatic collection; injected fetchers/services support tests.
+ * Managed replacement requires onDatasetsReady plus the supervisor's activation
+ * protocol; direct embedding does not acquire the supervisor's directory lease.
+ * initialSessions/exportSessions contain live session secrets for trusted IPC only.
+ * The caller must await the returned idempotent close before replacing the runtime.
+ */
 export async function startKairo(options = {}) {
     const port = options.port ?? Number(process.env.KAIRO_PORT || 4380);
     const streamPort = options.streamPort ?? Number(process.env.KAIRO_STREAM_PORT || port + 1);
@@ -35,6 +55,8 @@ export async function startKairo(options = {}) {
     let store, vault, auth, esi, core, datasets, dashboard, broadcast;
     let stopping = false, applyingDataset = false, closing, restartTimer;
     const requests = new Set();
+    // New handlers see stopping immediately. Retain dependencies until accepted
+    // handlers finish even if their sockets vanished; a disconnect cannot undo a save.
     function close() {
         if (closing) return closing;
         stopping = true; clearTimeout(restartTimer);
@@ -106,6 +128,7 @@ export async function startKairo(options = {}) {
     function establish(res) { for (const [key, s] of sessions)
         if (s.expires < Date.now())
             sessions.delete(key); const key = randomBytes(32).toString('base64url'); sessions.set(key, { csrf: randomBytes(32).toString('base64url'), expires: Date.now() + 86400000 }); res.setHeader('Set-Cookie', `kairo_session=${key}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400`); }
+    /** Count raw bytes, decode split UTF-8 safely, then parse JSON; throws on invalid input. */
     async function body(req, maximum = 150000) { if (!req.headers['content-type']?.startsWith('application/json'))
         throw new Error('JSON is required.'); let size = 0, out = ''; const decoder = new StringDecoder('utf8'); for await (const part of req) {
         size += part.length;
@@ -115,8 +138,13 @@ export async function startKairo(options = {}) {
     } return JSON.parse((out + decoder.end()) || '{}'); }
     const isOwn = req => (!req.headers.origin || req.headers.origin === origin) && req.headers['sec-fetch-site'] !== 'cross-site';
     const pageHeaders = res => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.evetech.net https://web.ccpgamescdn.com; connect-src 'self'; font-src 'self' data:; frame-src ${streamOrigin}; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://login.eveonline.com`); };
+    // Selector validation is not full domain authorization: services still enforce
+    // current connection/scope/map ownership. Owner 0 remains a domain-specific case.
     const checkedChar = url => { const id = Number(url.searchParams.get('character') || 0); if (!Number.isSafeInteger(id) || id < 0) throw new Error('Choose a valid character.'); if (id && !auth.characters().some(c => c.id === id))
         throw new Error('This character is not connected.'); return id; };
+    // Dispatch order matters for exact special routes before legacy prefixes.
+    // Every non-GET method passes CSRF; unsupported methods generally fall through
+    // to 404. Do not infer static-file HEAD/OPTIONS semantics for these handlers.
     async function api(req, res, url, s) {
         const path = url.pathname.slice(4);
         const read = req.method === 'GET';
@@ -325,6 +353,8 @@ export async function startKairo(options = {}) {
         if(/^\/sessions\/[^/]+\/replay$/.test(path) && read) return json(res,200,sessionReplay(store,decodeURIComponent(path.split('/')[2]),checkedChar(url)));
         if(path.startsWith('/sessions/')){const id=path.split('/')[2],characterId=checkedChar(url);if(read){const paging={};if(url.searchParams.has('eventCursor'))paging.eventCursor=Number(url.searchParams.get('eventCursor'));if(url.searchParams.has('eventEnd'))paging.eventEnd=url.searchParams.get('eventEnd');const report=sessionReport(store,id,characterId,Math.max(0,Math.min(100000,Math.floor(Number(url.searchParams.get('offset'))||0))),paging);if(!options.noSync)core.sessionCombat.sync(id,characterId).catch(()=>{});const coverage=store.get('session:combat:'+id,null);if(coverage&&store.get('module:combat',true))report.allianceCombat.coverage=coverage;return json(res,200,report);}
             if(req.method==='PUT'){const b=await body(req),label=String(b.label||'').trim().slice(0,100);if(!label)throw new Error('Give this session a name.');const r=store.db.prepare('UPDATE sessions SET label=?,notes=? WHERE id=? AND character_id=?').run(label,String(b.notes||'').slice(0,12000),id,characterId);if(!r.changes)throw new Error('Session not found for this character.');core.changed({characterId,resources:['sessions']});core.updateBindings();return json(res,200,{ok:true});}}
+        // This runtime's static generation is immutable. Cache its encoding once;
+        // dataset activation replaces the process rather than mutating this body.
         if (path === '/universe/static' && read) {
             if (!universeAtlasResponse) {
                 const raw=Buffer.from(JSON.stringify(core.universe.static()));
@@ -441,6 +471,8 @@ export async function startKairo(options = {}) {
             if (path === '/universe/' + collection && req.method === 'POST') return json(res, 200, core.universe[save](checkedChar(url), await body(req, collection==='link-lists'?2_000_000:150000)));
             if (path.startsWith('/universe/' + collection + '/') && req.method === 'DELETE') return json(res, 200, core.universe[remove](checkedChar(url), decodeURIComponent(path.split('/')[3])));
         }
+        // Explicit user-data export, not a database/vault backup. Keep credentials
+        // out of this DTO; extending a private table does not automatically export it.
         if (path === '/export' && read) {
             res.setHeader('Content-Disposition', 'attachment; filename="kairo-history.json"');
             return json(res, 200, { exportedAt: new Date().toISOString(), version:9,discoveredSystems:store.db.prepare('SELECT character_id,system_id FROM discovered_systems ORDER BY character_id,system_id').all(),universe:core.universe.exportUserData(),allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),hiddenJourneyLinks:store.db.prepare('SELECT * FROM journey_hidden_links').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
@@ -467,6 +499,8 @@ export async function startKairo(options = {}) {
         }
         catch { }
     } return json(res, 404, { error: 'Page not found.' }); }
+    // Private errors expose only a message; 409 is the sole mapped domain status.
+    // A failed HTTP response does not prove that an accepted mutation was rolled back.
     const handleDashboard = async (req, res) => {
         pageHeaders(res);
         if (stopping) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Kairo is reconnecting after a dataset update.'});}
@@ -523,6 +557,8 @@ export async function startKairo(options = {}) {
         requests.add(work);
         work.then(() => requests.delete(work), () => requests.delete(work));
     });
+    // No dashboard session is required here: only approved display state and this
+    // fixed asset allowlist may cross the broadcast boundary. Never reuse api().
     broadcast = createServer(async (req, res) => { res.setHeader('Referrer-Policy', 'no-referrer'); res.setHeader('X-Content-Type-Options', 'nosniff'); res.setHeader('Content-Security-Policy', `default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors ${origin}; base-uri 'none'; form-action 'none'`); try {
         if (stopping) {res.setHeader('Retry-After', '2'); return json(res, 503, {error: 'Kairo is reconnecting after a dataset update.'});}
         if (!validHost(req.headers.host, streamPort))
@@ -558,6 +594,8 @@ export async function startKairo(options = {}) {
             if (!c.needsReauth) core.sync(c.id);
     }
     if (!options.deferDatasetStart) datasets.start();
+    // Dataset startup is deferred by the child until the supervisor commits its
+    // active generation. Session export is in-memory handoff, not durable storage.
     return {origin, streamOrigin, store, core, auth, dashboard, broadcast, datasets,
         startDatasetUpdates: () => datasets.start(), cancelDatasetRestart,
         exportSessions: () => [...sessions].filter(([, value]) => value.expires > Date.now()),

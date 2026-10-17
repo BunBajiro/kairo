@@ -1,6 +1,14 @@
 "use client";
 import {useEffect,useRef,useState,type RefObject} from 'react';
-/** Move a stable portal host, keeping the same renderer and camera alive. */
+/**
+ * Move one stable React portal host between the dashboard slot and a private
+ * picture-in-picture/popup document, preserving renderer/camera identity. This
+ * owns the child window, copied styles, listeners and host cleanup. `surfaceKey`
+ * tells consumers to rebind document-specific visibility/timing after a move.
+ * restore() returns the host before closing the child; unmount removes the host
+ * and closes the child window.
+ * This is the private dashboard surface, never the sanitized OBS stream renderer.
+ */
 export function useTacticalWindow(slot:RefObject<HTMLDivElement|null>){const [host,setHost]=useState<HTMLDivElement|null>(null),[detached,setDetached]=useState(false),[surfaceKey,setSurfaceKey]=useState(0),[notice,setNotice]=useState('');const target=useRef<Window|null>(null),cleanup=useRef<(()=>void)|null>(null),alive=useRef(true);
  useEffect(()=>{alive.current=true;const element=document.createElement('div');element.className='universe-tactical-host';setHost(element);return()=>{alive.current=false;cleanup.current?.();cleanup.current=null;target.current?.close();target.current=null;element.remove();};},[]);
  useEffect(()=>{if(host&&slot.current&&!detached&&host.parentElement!==slot.current)slot.current.appendChild(host);});

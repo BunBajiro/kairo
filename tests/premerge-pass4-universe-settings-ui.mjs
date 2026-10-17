@@ -8,6 +8,8 @@ import {openStore} from '../server/store.mjs';
 import {startKairo} from '../server/index.mjs';
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to an isolated absolute Playwright path.');
+// Keep evidence outside the disposable runtime/profile directory: finally removes
+// test state, while KAIRO_BROWSER_OUTPUT (or the sibling default) retains artifacts.
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-pass4-universe-settings-')),output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';await mkdir(output,{recursive:true});
 const checks=[],errors=[],external=[],serverRequests=[],versions={},gates=new Set();
 const deny=async url=>{serverRequests.push(String(url));throw new Error('Unexpected external request');};
@@ -17,6 +19,9 @@ const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;})
 function check(label,actual,expected){const pass=JSON.stringify(actual)===JSON.stringify(expected);checks.push({...meta,label,pass,actual,expected});console.log(JSON.stringify(checks.at(-1)));}
 const frame=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 const matches=(response,path,method)=>new URL(response.url()).pathname===path&&response.request().method()===method;
+// A held reply has already passed real persistence; failNext instead returns a
+// synthetic 503 before admission. Waiting for requestfinished plus two frames
+// observes delivered UI work, while 10-second waits only bound harness failure.
 function hold(path,method='POST'){const gate={path,method,seen:deferred(),release:deferred(),done:deferred()};held=gate;gates.add(gate);return gate;}
 async function seen(gate){await Promise.race([gate.seen.promise,page.waitForTimeout(10000).then(()=>{throw new Error('Save did not reach response gate');})]);assert.equal(gate.error,undefined,'Response gate failed: '+gate.error);}
 async function release(gate){const finished=page.waitForEvent('requestfinished',{predicate:r=>new URL(r.url()).pathname===gate.path&&r.method()===gate.method});gate.release.resolve();await gate.done.promise;await finished;await frame();gates.delete(gate);}

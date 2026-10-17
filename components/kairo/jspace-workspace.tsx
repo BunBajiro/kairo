@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Own private Maps reads, optimistic revisions, commands and selected-map UI.
+ * The library fetches compact summaries plus only the selected map's detail;
+ * renderers receive a derived scene and return intent through callbacks. Public
+ * source/report overlays are inspected separately from writable saved maps.
+ * See docs/INTERNAL-API.md and docs/UNIVERSE.md for command and scope contracts.
+ */
+
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode} from 'react';
 import {Activity, ArrowDownToLine, ArrowUpRight, Building2, Check, ChevronDown, Clock3, Compass, CircleHelp, Eye, Home, FileUp, Flag, Link2, LoaderCircle, LockKeyhole, MapPin, MessageSquare, Navigation, NotebookPen, Plus, Radio, RefreshCw, Search, Settings2, ShieldQuestion, Sparkles, Trash2, Undo2, Users, Waypoints, X} from 'lucide-react';
 import type {UniverseAtlas, UniverseIntel, UniverseSystem} from './universe-types';
@@ -18,6 +26,7 @@ import {prepareMapGroup, type MapGroupPlacement} from './map-group-placement.mjs
 import './jspace-workspace.css';
 
 export type JSpaceWorkspaceMap = JSpaceMapData & {description?: string; revision: number; passages?: any[]; observations?: any[]; comments?: any[]; activity?: any[]; signatures?: any[]; pings?: any[]; can_undo?: boolean; [key: string]: any};
+/** Return the accepted map, or null for inapplicable/rejected work; the workspace owns error presentation. */
 export type JSpaceCommand = (op: string, payload?: Record<string, unknown>) => Promise<JSpaceWorkspaceMap | null>;
 export type JSpaceMapSummary = {id:string;name:string;description?:string;kind?:string|null;revision:number;created_at?:string;updated_at?:string;read_only?:boolean;node_count:number;connection_count:number;pilot_count:number;scope?:unknown;next_expiry_at?:string|null};
 type WorkspaceState = {character_id: number; generated_at?: string; maps: JSpaceMapSummary[]; source_map?:JSpaceMapSummary|null; limits?: Record<string, number>};
@@ -83,6 +92,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
     return data;
   }, [character, csrf]);
   const refreshScope=useRef<ReturnType<typeof createScopedRefresh>|null>(null);
+  // Epoch, pilot and selected-map identity fence both stages. Do not replace
+  // this bounded read with the full library payload when refreshing one map.
   const readWorkspace=useCallback(async()=>{
     const epoch=++requestEpoch.current,pilot=character,wanted=selectedMapRef.current;
     try {
@@ -146,12 +157,16 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
   useEffect(() => {if (scene && selectedSystemId && !SYSTEM_PANELS.includes(panel||'') && !scene.nodes.some(value => value.system_id === selectedSystemId)) {setSelectedSystemId(null);if(['node','observations','comments'].includes(panel||''))setPanel(null);}if (scene && selectedConnectionId && !scene.connections.some(value => value.id === selectedConnectionId)) {setSelectedConnectionId(null);if(['connection','passages','comments'].includes(panel||''))setPanel(null);}}, [scene, selectedSystemId, selectedConnectionId,panel]);
   useEffect(() => {if (!map || state?.character_id !== character || loading || !requestedSystemId || handledRequest.current === requestedSystemId || !byId.has(requestedSystemId)) return;handledRequest.current = requestedSystemId;setSelectedSystemId(requestedSystemId);setSelectedConnectionId(null);if (scene?.nodes.some(value => value.system_id === requestedSystemId)) setFrameSystemRequest({systemId:requestedSystemId,requestId:Date.now()});else if(!externalPanelOpen) setPanel('reference');}, [requestedSystemId, loading, map?.id, scene?.nodes, byId, externalPanelOpen,state?.character_id,character]);
   useEffect(() => {if (!map || state?.character_id !== character || !externalPanelOpen || !requestedSystemId || !byId.has(requestedSystemId)) return;setSelectedSystemId(requestedSystemId);setSelectedConnectionId(null);setPanel(externalPanelTool==='explore'?'scanner':externalPanelTool==='route'||externalPanelTool==='jump'?'navigate':externalPanelTool==='intel'?'intel':'reference');dismissExternalPanel.current?.();}, [externalPanelOpen,externalPanelTool,requestedSystemId,byId,state?.character_id,character,map?.id]);
+  // Publish the returned revision synchronously to mapRef as well as React;
+  // the next queued gesture must submit against this accepted revision.
   function acceptMap(next:JSpaceWorkspaceMap,select=false){
     const summary=mapSummary(next);
     setState(current=>({...current,character_id:character,maps:current?.maps.some(value=>value.id===next.id)?current.maps.map(value=>value.id===next.id?summary:value):[...(current?.maps||[]),summary]}));
     if(select){selectedMapRef.current=next.id;setMapId(next.id);setSelectedSystemId(null);setSelectedConnectionId(null);setFitRequest(value=>value+1);}
     if(selectedMapRef.current===next.id){mapRef.current=next;setSelectedMap(next);}
   }
+  // Accepted HTTP work may finish after navigation. Suppress stale publication,
+  // not server execution; a 409 reloads current state without replaying the draft.
   async function perform(action: () => Promise<any>, success?: string) {
     if (busyRef.current) return null;
     busyRef.current = true;requestEpoch.current++;setBusy(true);setLoading(false);setError('');const pilot = character, scope=mutationScope.current, target=selectedMapRef.current;
@@ -166,6 +181,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
     if (next) {acceptMap(next);if (['connection.save', 'connection.remove', 'nodes.remove', 'signature.save','group.add'].includes(op)) void onChanged?.();if (['connection.remove','nodes.remove'].includes(op)) void reload(true);}
     return next;
   };
+  // Queue position intent, then resolve current revision only when its turn
+  // starts. Scope failure cancels dependent gestures rather than blind retries.
   function moveNodes(positions: {system_id:number;x:number;y:number}[]) {
     const targetMap = mapRef.current?.id, pilot = character, scope=layoutScope.current;
     if (!canWrite || !targetMap || scope.key!==pilot+':'+targetMap || scope.closed || busyRef.current && !scope.pending) return Promise.resolve(null);
@@ -229,6 +246,8 @@ export function JSpaceWorkspace({atlas, intel, character, csrf, onInspectSystem,
     try {const next=prepareMapGroup(atlas,map,intel?.links,kind,id);setPanel(null);setSelectedSystemId(null);setSelectedConnectionId(null);setError('');setPlacement({...next,id:map.id+':'+Date.now(),mapId:map.id,pilot:character,revision:map.revision});}
     catch(failure){setError(failure instanceof Error?failure.message:'This group could not be placed.');}
   }
+  // A preview is tied to the exact map revision it was staged from. The server
+  // still validates group membership and creates links when the command commits.
   async function confirmPlacement() {
     if(!placement||busy)return;
     if(placement.mapId!==map?.id||placement.pilot!==character||placement.revision!==map.revision){setPlacement(null);setError('The map changed during placement. Choose the group again to use its current layout.');return;}

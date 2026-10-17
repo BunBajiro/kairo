@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * Aggregate the visible Atlas scope from supplied snapshots. Missing activity is
+ * null, distinct from observed zero; J-space counts use discovered/current public
+ * knowledge, not every SDE wormhole system. No polling or ownership inference here.
+ */
 import {useMemo, useState} from 'react';
 import {Activity, ArrowUpRight, ChevronRight, Compass, Globe2, Link2, Shield, Swords, Users, Waypoints} from 'lucide-react';
 import type {PoliticalAtlas} from '@/lib/universe-political-atlas.mjs';

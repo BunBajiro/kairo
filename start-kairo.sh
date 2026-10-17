@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+# Start from the distribution root; exec gives the supervisor signal ownership.
+# Node 24 supplies the runtime APIs, so no dependency installation is needed here.
 set -eu
 cd "$(dirname "$0")"
 if ! command -v node >/dev/null 2>&1; then

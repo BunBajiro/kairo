@@ -16,6 +16,9 @@ function deferred() {
     const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
     return {promise, resolve, reject};
 }
+// release() belongs to test cleanup: open held provider/listener gates before
+// Core.close(), then close SQLite only after accepted work has drained. Assertions
+// inside each case establish ordering; cleanup must not become a second deadlock.
 async function fixture(t, {esi = {}, characters = [], prepare = () => {}, release = () => {}, modules = true} = {}) {
     const directory = await mkdtemp(join(tmpdir(), 'kairo-lifecycle-')), store = openStore(directory);
     prepare(store);

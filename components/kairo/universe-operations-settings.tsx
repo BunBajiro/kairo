@@ -1,4 +1,11 @@
 "use client";
+
+/**
+ * Operational source drafts are saved through backend configuration APIs; alert
+ * sound/desktop preferences apply immediately in this browser for the pilot.
+ * The two backend saves run in order and are not an atomic cross-service update.
+ * A failed second save can leave the first accepted; keep the draft for retry.
+ */
 import {useEffect,useRef,useState} from 'react';
 import {Bell,Check,FolderOpen,Radio,RefreshCw,Save,Shield,Volume2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -10,6 +17,7 @@ import {api} from './model';
 import './universe-operations-settings.css';
 export const operationalAlertKey=(character:number)=>'kairo-universe-alerts:'+character;
 export function readAlertPreferences(character:number){try{return {sound:false,desktop:false,volume:.35,...JSON.parse(localStorage.getItem(operationalAlertKey(character))||'{}')};}catch{return {sound:false,desktop:false,volume:.35};}}
+/** Own one short oscillator and close its AudioContext on completion; volume is a 0–1 gain preference. */
 export function playOperationalSound(volume:number){const audio=new AudioContext(),tone=audio.createOscillator(),gain=audio.createGain();tone.type='sine';tone.frequency.setValueAtTime(540,audio.currentTime);tone.frequency.exponentialRampToValueAtTime(760,audio.currentTime+.16);gain.gain.setValueAtTime(0,audio.currentTime);gain.gain.linearRampToValueAtTime(Math.max(0,Math.min(1,volume))*.15,audio.currentTime+.03);gain.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+.38);tone.connect(gain);gain.connect(audio.destination);tone.start();tone.stop(audio.currentTime+.4);tone.onended=()=>void audio.close();}
 const fail=(error:unknown)=>error instanceof Error?error.message:'The settings could not be saved.';
 function Switch({label,checked,onChange,detail}:{label:string;checked:boolean;onChange:(checked:boolean)=>void;detail?:string}){return <label className="universe-settings-switch"><input type="checkbox" checked={checked} onChange={event=>onChange(event.target.checked)}/><span><strong>{label}</strong>{detail&&<small>{detail}</small>}</span></label>;}
@@ -19,6 +27,8 @@ export function UniverseOperationsSettings(){const {character,boot}=useKairo();c
  function update(patch:any){markDirty();setConfig((value:any)=>({...value,...patch}));}
  function updateFeeds(patch:any){markDirty();setFeedConfig((value:any)=>({...value,...patch}));}
  function local(patch:any){const value={...preferences,...patch};setPreferences(value);localStorage.setItem(operationalAlertKey(character),JSON.stringify(value));window.dispatchEvent(new Event('kairo-operational-alert-preferences'));}
+ // Only mark this submitted revision saved. Edits made while awaiting either
+ // response remain dirty and must not inherit an older success/error state.
  async function save(event:React.FormEvent){event.preventDefault();const revision=draftRevision.current;setBusy(true);setSaved(false);setError('');try{const ids=watchIds.split(',').map(value=>value.trim()).filter(Boolean).map(Number);if(ids.some(id=>!Number.isInteger(id)||id<=0))throw new Error('Watched systems must be positive system IDs, separated by commas.');await api('/universe/operations/config?character='+character,'PUT',{...config,watched_system_ids:ids},boot.csrf);await api('/universe/feeds/config?character='+character,'PUT',feedConfig,boot.csrf);setSaved(draftRevision.current===revision);}catch(error){if(draftRevision.current===revision)setError(fail(error));}finally{setBusy(false);}}
  async function enableDesktop(){try{if(!('Notification'in window))throw new Error('Desktop notifications are unavailable in this browser.');const permission=await Notification.requestPermission();local({desktop:permission==='granted'});if(permission!=='granted')setError('Desktop notifications were not enabled. You can still use the private alert inbox.');}catch(error){setError(fail(error));}}
  if(!config)return <section className="universe-operations-settings"><h3>Operational sources & alerts</h3><p role={error?'alert':'status'}>{error||'Loading operational settings…'}</p></section>;

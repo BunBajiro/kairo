@@ -3,6 +3,9 @@ import {allScopes} from '../../server/modules/catalog.mjs';
 
 // Persist the pre-fix provider representation: no iconVariant is seeded. The
 // actual Core HTTP projection must supply it to the compiled operation tables.
+// dataDir must be disposable and unseeded; now is epoch milliseconds. Fresh
+// snapshots suppress unrelated collection while retaining real HTTP projection.
+// The fixture owns and closes its Store; the later runtime opens its own handle.
 export function seedOperationIcons(dataDir, now) {
  const store=openStore(dataDir),at=new Date(now).toISOString(),future=new Date(now+3600000).toISOString();
  try {

@@ -1,7 +1,15 @@
+/**
+ * Collector-side asset containment and optional location names. Asset rows remain
+ * usable when station/structure metadata is unavailable; Core owns the accepted
+ * sample and connection lifetime. See ../docs/ESI-POLLING.md.
+ */
 import {mapEnrichment} from './enrichment.mjs';
 
-// Resolve containment once per sample. A cycle retains the first repeated ID,
-// matching the collector's previous bounded walk instead of inventing a station.
+/**
+ * Resolve containment once per sample and return copied rows plus unique root
+ * IDs without mutating ESI rows. A cycle retains the first repeated ID instead
+ * of inventing a station; shared ancestry is traversed only once.
+ */
 export function prepareAssetLocations(assets) {
     const entries=new Map(assets.map(asset=>[asset.item_id,asset])), resolved=new Map();
     function root(location) {
@@ -24,6 +32,12 @@ export function prepareAssetLocations(assets) {
     return {rows,locations:[...new Set(rows.map(asset=>asset.root_location_id))]};
 }
 
+/**
+ * rememberNames must update the shared names directory used for final labels.
+ * current() guards private structure work across connection changes. Individual
+ * metadata failures keep numeric labels; failure of the initial bulk names call
+ * still rejects the owning enrichment task.
+ */
 export async function enrichAssetLocations(assets,{names,rememberNames,esi,characterId,canReadStructures,current=()=>true}) {
     const {rows,locations}=prepareAssetLocations(assets);
     rememberNames(await esi.names(locations.filter(id=>id<2147483647&&!names[id])));

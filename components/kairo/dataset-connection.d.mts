@@ -1,5 +1,6 @@
 export type DatasetConnectionState = { phase: 'idle' | 'restarting' | 'refreshing' | 'delayed' | 'warning'; build: number | null; message: string };
 export type DatasetRevision = { revision: string; recovery?: { message: string; failedBuild?: number } | null };
+/** UI handoff owner; refresh must honor isCurrent after awaits. timeoutMs is a notice deadline. */
 export function createDatasetConnection(options: {
     revision?: string;
     onState?: (state: DatasetConnectionState) => void;

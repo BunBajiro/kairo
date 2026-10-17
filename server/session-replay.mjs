@@ -1,3 +1,8 @@
+/**
+ * Private, fixed Session replay projection for Universe. Reads retained visits,
+ * events and coordinates without collecting data or modifying live Maps records.
+ * See ../docs/SESSIONS.md for replay coverage and inference labels.
+ */
 import { sessionRoute } from './session-details.mjs';
 import { sessionEventWindow } from './session-event-window.mjs';
 import { getUniverseStatic, LIGHT_YEAR_METRES } from './universe-static.mjs';
@@ -15,6 +20,10 @@ const parse = value => {
  * sessionReport (which calculates report aggregates) or any live collector.
  * sessionRoute supplies the exact report visit sequence, including loops and
  * legacy inferred starts. An observed transition is never a confirmed gate hop.
+ *
+ * now accepts an epoch-ms value or clock function; eventLimit is clamped to
+ * 1–10,000. Visits remain uncapped and durationMs is milliseconds. Missing pilot
+ * ownership/invalid boundaries throw; unavailable coordinates remain explicit.
  */
 export function sessionReplay(store, id, characterId, { now = Date.now, eventLimit = SESSION_REPLAY_EVENT_LIMIT } = {}) {
     if (!validId(characterId)) throw new Error('Session not found for this character.');

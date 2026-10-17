@@ -1,5 +1,10 @@
-// Camera owns only transforms and its controls. React owns the map scene.
-// Keeping these references explicit also supports a surface in another window.
+/**
+ * Paint the supplied Maps DOM surface without reconciling React's scene. Camera
+ * translation and viewport size are CSS pixels; zoom maps card/world units to
+ * those pixels. Missing controls are allowed (for example a collapsed minimap).
+ * References belong to the caller's document, which may be a detached window.
+ * This helper changes styles, attributes and the zoom text, but owns no timers.
+ */
 export function paintChainCamera(surface, camera, size, limits) {
     const {x, y, zoom} = camera;
     if (surface.root) {

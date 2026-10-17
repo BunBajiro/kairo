@@ -1,3 +1,6 @@
+// Imported by the shared browser runner. Hold admission before route.fetch() to
+// expose crossing durable writes; holding only the response cannot test ordering.
+// Baseline recovery steps follow recorded failures and do not erase those checks.
 import assert from 'node:assert/strict';
 
 export async function appearanceWriteOrder({page,context,app,check,frame,deferred}){

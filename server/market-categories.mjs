@@ -1,3 +1,8 @@
+/**
+ * Offline market-group ancestry, packaged volumes and image variants shared by
+ * Market Browser and Import Analyser. Dataset generation is selected at process
+ * startup; refreshing it requires a new runtime. See ../docs/DATASETS.md.
+ */
 import {readFileSync} from 'node:fs';
 import {datasetFile} from './dataset-paths.mjs';
 let bundledIndex;
@@ -12,8 +17,13 @@ const bundled=Object.freeze({
  imageVariant:id=>defaultIndex().imageVariant(id),
 });
 
-// CCP market groups are separate from inventory groups. Keep their full ancestry
-// and type assignments, so existing order books need no re-scan or per-item ESI call.
+/**
+ * CCP market groups differ from inventory groups. Retained ancestry/type IDs
+ * let existing books use categories without a re-scan or per-item ESI call.
+ * Return an index whose ids()/known are JSON arrays for SQLite json_each, not JS
+ * arrays. type() exposes nullable packaged m³ and leaf-to-root ancestry. Unknown
+ * types retain a generic icon; invalid category IDs or malformed ancestry throw.
+ */
 export function createMarketCategories(catalog){
  if(catalog===undefined)return bundled;
  // Explicit catalogs have separate ownership; mutation by their caller cannot

@@ -1,3 +1,9 @@
+/**
+ * Historical sovereignty evidence attached to Session start/visit observations.
+ * Missing evidence remains null; today's ownership cannot fill a past gap.
+ * The returned owner is a captured ESI observation, not proof of continuous rule.
+ * See ../docs/SESSIONS.md.
+ */
 const validId = value => Number.isSafeInteger(value) && value > 0;
 const knownSpace = id => validId(id) && id >= 30000000 && id < 31000000;
 

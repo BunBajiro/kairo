@@ -1,3 +1,9 @@
+/**
+ * Read projections for Session routes, ships, LP and personal/alliance combat.
+ * Reconciliation explicitly writes its first eligible delayed LP sample; other
+ * helpers project retained evidence without requesting fresh data. Time strings
+ * are UTC ISO timestamps and route/ship durations are seconds. See ../docs/SESSIONS.md.
+ */
 import {snapshotFresh} from './polling.mjs';
 import {sessionCollection} from './session-policy.mjs';
 import {recordedVisitSovereignty} from './visit-sovereignty.mjs';
@@ -6,8 +12,10 @@ import {readSessionVisits,legacySessionStart,sessionObservationOwnershipSql} fro
 export const COMBAT_BUFFER_MS = 10 * 60 * 1000;
 const iso = at => new Date(at).toISOString();
 const validId = id => Number.isSafeInteger(id) && id > 0;
+/** A missing/invalid zKill valuation is null; a verified zero-ISK value remains zero. */
 export const killValue = k => typeof k?.zkb?.totalValue === 'number' && Number.isFinite(k.zkb.totalValue) && k.zkb.totalValue >= 0 ? k.zkb.totalValue : null;
 
+/** Copy a fresh valid LP balance sample; unavailable/malformed evidence returns null. */
 export function loyaltySample(snapshot) {
     if (!snapshotFresh(snapshot) || !Array.isArray(snapshot.data) || !Number.isFinite(Date.parse(snapshot.updatedAt))) return null;
     if (snapshot.data.some(r => !validId(r.corporation_id) || !Number.isSafeInteger(r.loyalty_points) || r.loyalty_points < 0)) return null;
@@ -30,6 +38,11 @@ export function reconcileSessionLoyalty(store, characterId) {
     }
 }
 
+/**
+ * LP is a per-corporation NET balance difference, including spending/removals.
+ * A delayed sample is an estimate and overlap/pending remain explicit statuses;
+ * absent baselines yield delta=null rather than invented zero earnings.
+ */
 export function loyaltyReport(start, finish, ended, names={}) {
     const a = start.loyalty, reconciliation = finish.loyaltyReconciliation;
     const b = reconciliation?.status === 'delayed' ? reconciliation.sample : finish.loyalty;
@@ -41,6 +54,11 @@ export function loyaltyReport(start, finish, ended, names={}) {
     return {status, rows, delta:rows.reduce((n,r)=>n+r.delta,0), startSampledAt:a.sampledAt, endSampledAt:b.sampledAt, sameSample:a.sampledAt===b.sampledAt, scope:'esi-characters.read_loyalty.v1'};
 }
 
+/**
+ * Preserve ordered visits and loops clipped to [Session start, end). New Sessions
+ * use only captured starts; only legacy contexts may infer a prior visit. Optional
+ * preparedVisits must be ordered as readSessionVisits returns them.
+ */
 export function sessionRoute(store, session, start, end, names=store.get('names',{}), preparedVisits) {
     const from = Date.parse(session.started), to = Date.parse(end);
     // Reports already read the inclusive compatibility list. Reuse its bounded
@@ -67,6 +85,7 @@ export function sessionRoute(store, session, start, end, names=store.get('names'
     });
 }
 
+/** Preserve individual ship changes even for the same hull type; aggregate hull seconds. */
 export function sessionShips(store, session, start, end, names) {
     const rows = store.db.prepare(`SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) AND ${sessionObservationOwnershipSql()} ORDER BY at,id`).all(session.character_id,session.started,end,session.started,start.eventCursor??0,session.id);
     const first = start.firstShip, firstAt = Date.parse(first?.at);
@@ -96,6 +115,7 @@ export function allianceSides(k, allianceId) {
     return {kill:!!allianceId && !loss && !!k.attackers?.some(a=>a.alliance_id===allianceId),loss};
 }
 
+/** Merge touching/overlapping windows only within the same system; retain visit IDs. */
 export function mergeCombatWindows(windows) {
     const merged = [];
     for (const w of [...windows].sort((a,b)=>a.systemId-b.systemId||Date.parse(a.from)-Date.parse(b.from))) {
@@ -108,6 +128,12 @@ export function mergeCombatWindows(windows) {
     return merged;
 }
 
+/**
+ * Qualify visits with alliance combat during [entered, exited), then apply a
+ * fixed ten-minute buffer on each side. Personal participation is not subtracted
+ * from alliance totals; consumers must not sum both as disjoint categories.
+ * Valuations are ISK with separate missing-value counts, not zero-price estimates.
+ */
 export function allianceSummary(route, records, allianceId, now=Date.now()) {
     const relevant = [...new Map(records.filter(k=>{const s=allianceSides(k,allianceId);return s.kill||s.loss;}).map(k=>[k.killmail_id,k])).values()];
     const indexed = relevant.map(record=>({record,at:Date.parse(record.killmail_time)}));
@@ -148,6 +174,7 @@ export function allianceSummary(route, records, allianceId, now=Date.now()) {
     return {allianceId,visits,windows,items,kills,losses,destroyed,lost,missingDestroyed,missingLost,combatVisits:visits.filter(v=>v.combatActive).length};
 }
 
+/** Compose bounded Session evidence; no HTTP collection or loyalty reconciliation here. */
 export function sessionDetails(store, session, start, finish, end, preparedVisits) {
     const names=store.get('names',{}),route=sessionRoute(store,session,start,end,names,preparedVisits);
     // The alliance current at session start stays attached to the historical

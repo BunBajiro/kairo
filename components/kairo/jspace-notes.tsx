@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * Paginated private map notebook. The parent keys this editor by map/location;
+ * command acceptance owns persistence and the supplied clock drives UTC grouping.
+ * Retained notes may be read after their system card leaves the map, but composing
+ * a location note requires that context to remain present.
+ */
+
 import {useMemo, useState} from 'react';
 import {ArrowUpRight, ChevronLeft, ChevronRight, MessageSquare, Search, Trash2, UserRound} from 'lucide-react';
 import type {UniverseSystem} from './universe-types';

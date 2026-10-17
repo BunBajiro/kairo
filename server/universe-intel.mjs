@@ -1,5 +1,9 @@
 /** Local observations are unverified reports. Parsing never changes standings or OPSEC. */
 const clean = (value, limit = 4000) => String(value ?? '').replace(/<[^>]*>/g, '').trim().slice(0, limit);
+/** Preindex atlas names once; return parse(input, receivedAtEpochMs). Manual text
+ * may omit observation time; logs require a source timestamp. Invalid/unusable
+ * lines return null, ambiguous abbreviations remain unresolved, and parsing never
+ * persists data. The caller, not input.source alone, establishes trusted origin. */
 export function createIntelParser(atlas) {
     const sharedNames = atlas.bySystemName;
     const exact = sharedNames || new Map(), prefixes = new Map();
@@ -78,7 +82,9 @@ export function createIntelParser(atlas) {
     };
 }
 
-/** Unweighted real-gate distance; disconnected and unknown systems remain unknown. */
+/** Breadth-first stargate distance in hops, inclusive of limit. Origins seed zero;
+ * callers validate them against the atlas. Unreachable non-origins are absent,
+ * not infinitely distant or reachable through geometric proximity. */
 export function gateDistances(atlas, origins, limit = 20) {
     const neighbors = atlas.neighbors || new Map();
     if (!atlas.neighbors) for (const edge of atlas.gates || []) {
@@ -114,6 +120,10 @@ const SCANNER_TYPES = new Map([
     ['', 'Cosmic Signature', 'Kosmische Signatur (gruppe)', 'Signature cosmique (groupe)', 'Скрытый сигнал'],
 ].flatMap(([type, ...labels]) => [type, ...labels].map(label => [label.toLocaleLowerCase(), type])));
 
+/** Parse at most 1,000 six-column tab-separated scanner rows. Return usable rows,
+ * ignored count and line diagnostics rather than throwing for malformed lines.
+ * Normalize supported category translations, preserve site names, and deduplicate
+ * scanner codes. The owner must gate complete-scan deletion on diagnostics. */
 export function parseSignatureClipboard(text, { includeAnomalies = false } = {}) {
     const rows = [], seen = new Set(), diagnostics = []; let ignored = 0;
     const lines = String(text || '').split(/\r?\n/);

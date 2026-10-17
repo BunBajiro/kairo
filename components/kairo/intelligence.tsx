@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Sessions workspace: pilot-owned archive, start/end commands and report dialogs.
+ * The dashboard supplies active-session snapshots; the archive owner maintains its
+ * loaded prefix independently. Dialog focus and late publication belong to the
+ * pilot/opener that created them. See ../../docs/SESSIONS.md for observed coverage.
+ */
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { NotebookPen, Play, Square, ChevronRight, Route, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,6 +36,8 @@ export function SessionsPage() {
     const [busy, setBusy] = useState(false), [loading, setLoading] = useState(false), [error, setError] = useState('');
     const archive = useRef<ReturnType<typeof createSessionArchive> | null>(null);
     const mounted = useRef(false);
+    // Focus returns only to the exact still-mounted opener for the same pilot. A
+    // previous dialog dismissal cannot steal focus from a newly opened report.
     const reportOpener = useRef<{character:number;button:HTMLButtonElement} | null>(null);
     const reportFocusOwner = reportOpener.current;
     const namingOpener = useRef<{character:number;button:HTMLButtonElement} | null>(null);

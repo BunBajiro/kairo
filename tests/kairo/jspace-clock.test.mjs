@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createJSpaceClock} from '../../components/kairo/jspace-clock.mjs';
 
+// advance(ms) executes due callbacks in deadline order, including rescheduled
+// repeats; setWallTime changes the clock without firing timers to model rollback.
+// This separates visibility/expiry semantics from wall-clock execution speed.
 function fixture(){
  let now=Date.parse('2026-09-25T12:00:00Z'),id=0,visible=true;const timers=new Map(),ticks=[];
  const schedule=(fn,delay,period=0)=>{timers.set(++id,{fn,at:now+delay,period});return id;};

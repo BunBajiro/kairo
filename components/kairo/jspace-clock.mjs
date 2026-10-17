@@ -1,4 +1,12 @@
-/** Wall-clock freshness survives frequent data refreshes and never requires an animation loop. */
+/**
+ * Own the Maps freshness cadence and nearest absolute expiry, without an animation
+ * loop. Times are Unix milliseconds; records carry parseable `expires_at` strings.
+ * `refresh` replaces the full deadline set. Pass the time already consumed by the
+ * render to avoid a redundant tick; omitting it publishes current time immediately
+ * when visible.
+ * The owner forwards visibility changes to `visible()` and calls `close()` on
+ * disposal. Injected clocks/timers must share one time basis (also used by tests).
+ */
 export function createJSpaceClock({onTick,readNow=Date.now,isVisible=()=>true,setRepeating=setInterval,clearRepeating=clearInterval,setDeadline=setTimeout,clearDeadline=clearTimeout}) {
   let records=[],deadline=null,closed=false;
   function scheduleExpiry(instant,renderedAt=instant) {

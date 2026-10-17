@@ -1,3 +1,9 @@
+/**
+ * Core-owned composition root for Atlas data, private Maps and operational tools.
+ * Public snapshots belong to owner 0; saved links/views/pins belong to a pilot,
+ * and wormholes additionally belong to one map. No lifetime visit scan belongs
+ * on these read or planning paths. See docs/ARCHITECTURE.md and docs/UNIVERSE.md.
+ */
 import { randomUUID } from 'node:crypto';
 import { factionWarfareContext } from './universe-faction-warfare.mjs';
 import { discoveredSystemIds } from './discovery.mjs';
@@ -38,6 +44,13 @@ const eveDate = value => {
     return new Date(date).toISOString();
 };
 
+/**
+ * Project snapshot freshness at an epoch-millisecond clock without changing it.
+ * A ready sample with missing dates, an update over one second in the future,
+ * elapsed expiry or truncation is stale. Missing snapshot/status defaults to
+ * waiting; a missing data body alone does not change status. Count describes
+ * retained data, not usable evidence.
+ */
 export function sourceMetadata(snapshot, now = Date.now()) {
     const updated = Date.parse(snapshot?.updatedAt), expires = Date.parse(snapshot?.expiresAt);
     const stale = snapshot?.status === 'stale' || snapshot?.stale === true || snapshot?.status === 'ready' &&
@@ -75,7 +88,18 @@ export function standingForAlliance(allianceId, snapshots, now = Date.now()) {
     return readable ? { value: 0, label: 'neutral', source: 'none', status: 'ready', reason: 'No standing in the available contact lists.' } : unknown('Connect contact scopes to show pilot standings.');
 }
 
-/** Universe owns private map records; Sessions own movement and discovery owns membership. */
+/**
+ * Create the Universe owner around shared Store/Auth/ESI dependencies.
+ * Construction creates/migrates domain tables and reconciles expired links before
+ * arming expiry timers. Core drives tick(); close() stops producers and drains
+ * owned async work before the caller closes ESI or Store. now() returns epoch ms;
+ * noSync suppresses scheduled collection, not canonical expiry maintenance.
+ *
+ * Methods validate pilot ownership (0 permits supported guest reads/manual data),
+ * throw on invalid commands, and expose private dashboard DTOs, not broadcast
+ * projections. State/detail/export reads can reconcile expiry or calendar pins.
+ * Sessions own movement records; discovery owns visited-system membership.
+ */
 export function createUniverse(store, auth, esi, options = {}) {
     const now = options.now || Date.now;
     const atlas = options.staticData || getUniverseStatic();
@@ -160,6 +184,9 @@ export function createUniverse(store, auth, esi, options = {}) {
         expiryTimer = setExpiryTimer(() => { expiryTimer = null; scheduledExpiryAt = null; cleanupExpired(); }, Math.max(1, Math.min(2147483647, expiry - now())));
         expiryTimer?.unref?.();
     }
+    /** Remove canonical links and dependent signature bindings/map/route copies
+     * in one savepoint. System annotations survive; only exact bound signature
+     * UUIDs are owned by the removed link, not a later reused scanner code. */
     function forgetLinks(id, removedLinks) {
         if (!removedLinks.length) return;
         store.db.exec('SAVEPOINT universe_forget_links');
@@ -375,6 +402,10 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (!remove.run(id, kind, String(key)).changes) throw new Error('Saved ' + kind + ' not found for this pilot.');
         return { id: String(key), deleted: true };
     }
+    /** Normalize a partial link edit without writing. Existing map ownership and
+     * observation times survive unrelated edits. A new manual wormhole defaults
+     * to 16 hours; explicit null expiry means unknown and forbids confirmation or
+     * access. Diagram/import callers may supply an unsaved scopeMap for validation. */
     function normalizeLink(id, input, previous = null, listId = undefined, scopeMap = null) {
         const old = previous || {}, kind = input.kind || old.kind || 'ansiblex';
         if (!['wormhole', 'ansiblex'].includes(kind)) throw new Error('Choose a wormhole or Ansiblex connection.');
@@ -478,6 +509,9 @@ export function createUniverse(store, auth, esi, options = {}) {
         if (!record(id, 'list', key)) throw new Error('Connection list not found for this pilot.');
         return exportAnsiblexSMT(links(id).filter(link => link.list_id === key), atlas.systems);
     }
+    /** Save list metadata, or atomically replace its links when text/links is
+     * present. Validate the entire preview first; reciprocal endpoint identity is
+     * retained so reordering an import cannot reverse existing diagram ports. */
     function saveLinkList(characterId, input = {}) {
         const id = pilotId(characterId), old = saved(id, 'list', input), name = text(input.name || old?.name, 80);
         if (!name) throw new Error('Give the connection list a name.');
@@ -560,6 +594,10 @@ export function createUniverse(store, auth, esi, options = {}) {
         return { ...value, ...meta, verified: meta.status === 'ready', access_note: 'ESI visibility does not prove docking, transit rights, fuel or online state.' };
     }
     const structureFlights = new Map();
+    /** Check ESI visibility for one connected pilot, sharing flights only within
+     * that connection revision. Cache success or failure with its retry deadline;
+     * reject a superseded login with 409 before any persistence. Visibility does
+     * not grant docking/transit access. close() drains admitted lookups. */
     async function verifyStructure(characterId, structureId) {
         if (lifecycleClosed) throw new Error('Universe structure verification is stopping.');
         const id = pilotId(characterId), structure = Number(structureId), character = auth.characters().find(c => c.id === id);
@@ -613,6 +651,10 @@ export function createUniverse(store, auth, esi, options = {}) {
             structures: [...context.overlay(system).structures, ...structures], events: [...events, ...pins.filter(pin => pin.event_at)],
             pins, links: links(id).filter(link => link.from_system_id === system || link.to_system_id === system) };
     }
+    /** Prepare server-owned standings/activity once for a calculation. Only
+     * computational snapshots are decoded; display badges use SQL metadata.
+     * Caller preferences cannot replace evidence. validate() rejects changed
+     * snapshots, access policy or freshness after an await; never cache this context. */
     function routeContext(id, input) {
         // Routes need six computational snapshots. Other source badges retain
         // exact metadata/counts without decoding their potentially large bodies.
@@ -650,6 +692,11 @@ export function createUniverse(store, auth, esi, options = {}) {
         };
         return { context:{samples,sources,standingBySystem}, preferences, systems, validate };
     }
+    /** One request owns one graph/spatial grid across all itinerary legs and
+     * midpoint searches. Public links are admitted only from the checked internal
+     * navigation path. With validateAcceptance, validate(result) must run before
+     * saving: used links/lists/feed records and source freshness must still match,
+     * otherwise it throws status 409. Unrelated display writes do not invalidate. */
     function prepareRoutePlan(id,input={},allowPublicConnections=false,validateAcceptance=false){
         const {context,preferences,systems,validate:validateSources}=routeContext(id,input),jumping=input.kind==='jump';
         const publicLinks = allowPublicConnections && Array.isArray(input.extraConnections) ? input.extraConnections : [];
@@ -727,6 +774,9 @@ export function createUniverse(store, auth, esi, options = {}) {
     function pruneExpired(characterId) {
         return cleanupExpired(pilotId(characterId));
     }
+    /** Export private persisted data after expiry reconciliation. null/undefined
+     * selects all owners plus module-wide settings/history; a pilot selects only
+     * that owner's records. This backup DTO must never reach the stream listener. */
     function exportUserData(characterId) {
         cleanupExpired(characterId == null ? null : pilotId(characterId)); feeds.pruneExpired();
         const rows = characterId == null ? store.db.prepare('SELECT character_id,kind,id,body FROM universe_records ORDER BY character_id,kind,id').all() :

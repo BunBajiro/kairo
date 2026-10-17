@@ -4,6 +4,17 @@ const lowerBound=(rows,key,time)=>{let low=0,high=rows.length;while(low<high){co
 const upperBound=(rows,key,time)=>{let low=0,high=rows.length;while(low<high){const mid=(low+high)>>>1;if(rows[mid][key]<=time)low=mid+1;else high=mid;}return low;};
 const visible=event=>!['system.entered','location.changed'].includes(event.type)&&!event.type.startsWith('opsec.')&&event.module!=='opsec';
 
+/**
+ * Index an immutable replay snapshot once. Input dates are UTC ISO strings;
+ * start/end and at(time) use epoch milliseconds. Null input yields empty indexes.
+ *
+ * Visits use [start,end) except the overall final instant is inclusive. At equal
+ * starts, the last matching visit wins, including overlapping legacy rows. Trails
+ * and travel preserve bounded prefix identity until their boundary changes; the
+ * five most recent visible events and at most 120 timeline ticks are presentation
+ * limits. This historical view must not consume current tracking state.
+ * See ../../docs/SESSIONS.md for suppression and coverage semantics.
+ */
 export function prepareReplayTimeline(data){
  const start=data?Date.parse(data.startedAt):0,end=data?Date.parse(data.endedAt):0;
  const visits=(data?.visits||[]).map(visit=>({...visit,start:Date.parse(visit.entered),end:visit.exited?Date.parse(visit.exited):end})).sort((a,b)=>a.start-b.start);

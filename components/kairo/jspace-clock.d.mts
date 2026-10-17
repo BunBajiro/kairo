@@ -1,1 +1,2 @@
+/** Times are Unix ms. Replace deadlines with refresh; forward visibility to visible; close releases both timers. */
 export function createJSpaceClock(options:{onTick:(now:number)=>void;readNow?:()=>number;isVisible?:()=>boolean;setRepeating?:typeof setInterval;clearRepeating?:typeof clearInterval;setDeadline?:typeof setTimeout;clearDeadline?:typeof clearTimeout}):{refresh:(records?:{expires_at?:string|null}[],renderedAt?:number)=>void;visible:()=>void;close:()=>void};

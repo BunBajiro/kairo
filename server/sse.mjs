@@ -1,3 +1,8 @@
+/**
+ * Ordered, bounded SSE transport shared by private dashboard and broadcast output.
+ * Frames have no replay IDs: reconnecting clients recover authoritative state.
+ * See docs/API-REFERENCE.md for the two distinct event/payload contracts.
+ */
 // A response may contain one large snapshot without being a slow consumer.
 // Keep writes small, respect drain, and bound only the work waiting behind it.
 const writers = new WeakMap();
@@ -5,6 +10,7 @@ const chunkBytes = 64 * 1024;
 const defaults = {maxQueuedBytes: 16 * 1024 * 1024, maxQueuedFrames: 128, stallTimeoutMs: 15_000};
 export const sseHeartbeat = Buffer.from(': heartbeat\n\n');
 export const sseConnected = Buffer.from(': connected\n\n');
+/** Encode trusted event type and JSON-serializable data once for all recipients. */
 export function sseEvent(type, data) { return Buffer.from(`event: ${type}\ndata: ${JSON.stringify(data)}\n\n`); }
 
 function writer(response, options) {
@@ -85,6 +91,16 @@ function writer(response, options) {
     return result;
 }
 
+/**
+ * Admit a frame to this response's writer. True means it remains usable, not
+ * that delivery occurred: a backlogged heartbeat is deliberately skipped.
+ * Buffers are shared and must not be mutated after admission. Limits are captured
+ * when the response's writer is first created (bytes, frames, milliseconds).
+ * requireImmediate disconnects a backlogged client; heartbeat skips queued work.
+ * Overflow, write failure or stall closes this client without throwing upstream.
+ */
 export function writeSSE(response, frame, options) { return writer(response, options).write(frame, options); }
+/** Keep an idle connection alive without adding traffic behind real frames. */
 export function heartbeatSSE(response) { return writer(response).write(sseHeartbeat, {heartbeat: true}); }
+/** Refuse new frames and share a deadline-bounded drain/close promise. */
 export function closeSSE(response) { return writer(response).close(); }
