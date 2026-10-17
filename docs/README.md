@@ -43,6 +43,7 @@ Current source, configuration and behavioural tests define implementation. Docum
 
 ## Release status, evidence and history
 
+- [Final release/baseline audit](FINAL-AUDIT.md): current scope, new findings, banked checkpoints and remaining acceptance/approval boundaries.
 - [Source documentation ledger](SOURCE-DOCUMENTATION-WORK.md): source contracts, coverage, exclusions and verification.
 - [Documentation work ledger](DOCUMENTATION-WORK.md): inventory, decisions, checkpoints and documentation verification.
 - [History and evidence index](history/README.md): completed premerge review, failed baselines, original performance measurements and superseded plans.

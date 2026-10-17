@@ -1,5 +1,7 @@
 # Current review build
 
+The [final release/baseline audit](FINAL-AUDIT.md) is in progress. Build91 remains the previous verified download; it does **not** contain subsequent audit corrections, and its results are not acceptance of those changes. A new combined candidate must pass the blocking workflow and independent download verification before it replaces this handoff.
+
 **Build91 is the verified consolidated review download for `0.8.0-rc.17`.** It combines the reviewed application, refreshed user/developer manuals and completed in-source documentation. It supersedes Build90 for the current handover; the [original bug-review evidence](PREMERGE-BUG-REVIEW.md) remains intact. PR #12 stays draft. No merge, stable release or version bump was performed.
 
 [Download Kairo-test-build.zip — Build91](https://github.com/BunBajiro/kairo/actions/runs/39076551873/artifacts/12117353379) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/39076551873) · [Verification receipt](BUILD91-VERIFICATION.json)
