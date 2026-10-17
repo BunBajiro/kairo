@@ -1,13 +1,58 @@
 # Universe schematic geometry
 
-The Atlas 2D view and region/constellation placement in Maps use CCP's `mapSolarSystems.position2D` from Kairo's bundled official SDE. The existing importer retains these as `schematic_x = position2D.x / LIGHT_YEAR` and `schematic_y = -position2D.y / LIGHT_YEAR`. All 5,485 known-space systems in the bundled build have unique, finite 2D coordinates. No additional third-party map dataset is needed.
+[Documentation index](README.md) · [Universe user guide](UNIVERSE.md) · [Static data](UNIVERSE-DATA.md) · [Routing](UNIVERSE-ROUTING-VALIDATION.md)
 
-CCP's [Map Data documentation](https://developers.eveonline.com/docs/guides/map-data/#2d-schematic-map) identifies `position2D` as the in-game 2D map layout and specifies the axis convention. The screen's downward Y axis requires negating the source Y coordinate. These are diagram positions; physical jump calculations continue to use the original 3D system coordinates.
+This is the implemented geometry contract for the **0.8.0 feature set, candidate `0.8.0-rc.17`**. Atlas 2D and known-space region/constellation placement in Maps use the same source positions. Physical jump reach uses a separate coordinate model.
 
-The previous regional schematic incorrectly reused the local radar's hop bands. Every band containing one system placed that system at the same angle, creating a tall column with unrelated systems squeezed together. The correction separates the two geometries: radar retains hop-distance rings, while Atlas schematic uses the full CCP layout and shares ordinary region framing, zoom and political layers with the physical projection. Selecting a different pilot or system cannot rearrange the schematic.
+## Coordinate source
 
-`lib/universe-schematic-layout.mjs` is shared by Atlas and staged group placement. It applies only translation and one uniform scale to the source positions. Card placement can supply node dimensions and padding; the helper finds sufficient uniform spacing without changing relative angles or stretching one axis. Each system remains an independent node after placement. Graph edges are supplied separately from actual stargates and configured Ansiblexes; geometry never invents connections.
+The importer preserves CCP's `mapSolarSystems.position2D` as:
 
-For a future or incomplete group with missing 2D positions, the helper reports `source: physical` if all physical coordinates exist, otherwise `source: grid`. Coincident positions also use the deterministic grid fallback. It never combines physical and schematic coordinate spaces or silently loses members. The complete bundled known-space dataset does not use either fallback.
+```text
+schematic_x = position2D.x / LIGHT_YEAR
+schematic_y = -position2D.y / LIGHT_YEAR
+```
 
-Tests cover the Tenerifis reference geometry, full-galaxy/region/constellation membership, centre-independent ordering, uniform collision-free card spacing, explicit fallbacks, and empty/single-system input.
+`LIGHT_YEAR` is `9460000000000000` metres. The screen's downward Y axis requires the negation. These are diagram positions; the divisor does not make their distances usable for jump-drive planning. The source reference is CCP's [2D schematic map documentation](https://developers.eveonline.com/docs/guides/map-data/#2d-schematic-map).
+
+All 5,485 known-space systems in bundled build 3503375 have unique finite 2D positions. This is a checked-in baseline fact, validated by the existing tests, rather than a guarantee about all future datasets. No separate third-party layout dataset is required.
+
+## Shared layout helper
+
+[`lib/universe-schematic-layout.mjs`](../lib/universe-schematic-layout.mjs) exports:
+
+```js
+schematicLayout(systems, {nodeWidth = 0, nodeHeight = 0, gap = 32} = {})
+```
+
+The result is `{points, bounds, scale, source}`. Points retain their source system and calculated `x`/`y`; `source` is `sde`, `physical` or `grid`.
+
+The helper deduplicates valid system IDs, sorts them deterministically, recentres the group and applies one uniform scale. It preserves relative geometry and angles; there is no separate X/Y stretch or pilot-centred gate-hop layout. For card placement, positive node dimensions plus padding determine sufficient spacing. This pairwise spacing work occurs when preparing the bounded group preview, not as a continuous map-animation task.
+
+Atlas and Maps supply edges separately from real stargates and configured Ansiblexes. Geometric proximity does not create a connection. After placement, every card is an independent map node.
+
+## Fallbacks
+
+| Available positions | Result |
+| --- | --- |
+| Complete finite schematic positions | `source: 'sde'` |
+| Missing schematic positions but complete finite `map_x`/`map_y` | `source: 'physical'` |
+| Neither complete coordinate set, or coincident chosen positions | `source: 'grid'` with deterministic placement |
+
+A group uses one coordinate space; the helper never mixes physical and schematic positions or silently discards a member due to a missing coordinate. Invalid IDs are filtered before layout. Empty input returns an empty finite layout. The current bundled known-space data does not require the physical/grid fallback.
+
+## Validation
+
+Run from the repository root when changing this contract:
+
+```sh
+node --test tests/kairo/universe-schematic-layout.test.mjs tests/kairo/map-group-placement.test.mjs
+```
+
+The tests cover Tenerifis reference geometry, complete galaxy/region/constellation membership, centre-independent ordering, uniform collision-free card spacing, explicit fallbacks and empty/single-system input. For changes to user interaction, add the relevant Chrome and Firefox flow coverage described in [Validation](VALIDATION.md).
+
+## Historical context
+
+An earlier regional schematic reused local-radar hop bands, causing single-system bands to align into an artificial column. That investigation explains the separation of radar and schematic geometry; it is not a remaining issue or a user workaround. Radar still represents hop-distance topology, while Atlas schematic uses CCP's full layout with ordinary framing and political layers. Changing the selected pilot/system does not rearrange that layout.
+
+Historical investigations and their original records remain under [documentation history](history/README.md). Current application acceptance belongs to [Validation](VALIDATION.md).

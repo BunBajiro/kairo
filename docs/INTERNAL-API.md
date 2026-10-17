@@ -1,6 +1,6 @@
 # Kairo internal API: architecture and feature development
 
-This guide describes the accepted 0.8.0 development source. Read [Validation](VALIDATION.md) for release status. Update this guide and the [API reference](API-REFERENCE.md) together when a contract changes.
+This guide explains module interoperability and safe feature development for the **0.8.0 feature set at `0.8.0-rc.17`**. These are internal candidate interfaces, not a stable public SDK. Use [Architecture](ARCHITECTURE.md) to find an owner, [Development](DEVELOPMENT.md) for setup/commands, [API reference](API-REFERENCE.md) for wire contracts, and [Validation](VALIDATION.md) for release status.
 
 Kairo's backbone is a set of Node services over one local SQLite store, exposed to the React dashboard through a private HTTP API and a small set of event streams. The dashboard reads projections of the authoritative records and asks services to perform commands. Services own validation, pilot access, durable writes, refresh scheduling and lifecycle. New features should join those existing owners rather than create another collector or independent copy of the same data.
 
@@ -95,11 +95,7 @@ The common dataset view is `ModuleState`: `status`, `data`, and applicable obser
 
 [`resource-state.mjs`](../components/kairo/resource-state.mjs) retains unchanged snapshot data and small metadata identities. The Assets view passes complete relevant snapshots to a memoized boundary so metadata-only changes still render. Stable identity is an optimization contract, not permission to mutate a shared object in place.
 
-Names have one Core owner and one dashboard owner. `/state` supplies the complete authoritative `{names,namesRevision}` pair. Each private `/events` connection also receives a global `names` event with that pair. Before a later snapshot publication, Core sends a full directory only to connections whose delivered revision is behind; the following snapshot carries `namesRevision` and omits the name body. Several `rememberNames` calls before that boundary are batched. Zero clients cause no UI directory encoding; a later connection still receives the full current map. Bootstrap adds a full-map event alongside the initial HTTP read.
-
-[`name-directory-state.mjs`](../components/kairo/name-directory-state.mjs) processes global names independently of the selected pilot. It retains the map identity when a revision is unchanged, replaces changed authoritative maps including empty/reset/removal cases, and compares counters only within a process epoch. Captured connection/event fences prevent an older HTTP read from replacing a newer directory. Disconnect fences pending reads while allowing fresh HTTP recovery; reconnect establishes the new process epoch through its bootstrap. Keep the existing snapshot, resource, pilot and dataset fences alongside this names owner.
-
-The dashboard deliberately accepts legacy unversioned inputs: full HTTP names replace the directory, while snapshot names merge through `mergeResourceNames` and retain omitted keys. Legacy input disables revision-only reuse until authoritative versioned state recovers it. This is frontend compatibility behavior; current Core snapshot envelopes use the separate names event. Do not turn authoritative full maps into deltas or filter global names events by the selected pilot.
+The global names directory has one Core owner and one dashboard owner, independent of the selected pilot. Let [`name-directory-state.mjs`](../components/kairo/name-directory-state.mjs) reconcile names revisions, authoritative replacements, process-epoch changes and delayed HTTP reads. Keep names, snapshot, resource, pilot and dataset fences separate. The full protocol and legacy fallback rules have one home in [Dashboard SSE](API-REFERENCE.md#dashboard-sse-and-client-invalidation).
 
 ## Three kinds of event
 
@@ -152,19 +148,36 @@ The dashboard receives `changed`; the Session owner refreshes its read model. Th
 
 When adding a similar command, decide which read models actually changed. If it also creates a meaningful timeline event, use the domain's semantic publication path; if only a view changed, explicit invalidation can be sufficient. Do not add a resource name solely to an event and assume it automatically receives a token: extend `ui-resources.mjs` and its consumers when a new versioned resource is required.
 
-Use the specialized owners where their semantics differ: Session archive refresh republishes the full loaded prefix and serializes head/tail work; administrative polling respects visible/running state and real recovery deadlines; Studio preview has debouncing, generation fences and source-aware invalidation. A generic interval must not replace those contracts.
+### Existing frontend owners
+
+| Behavior | Owner | Contract to preserve |
+| --- | --- | --- |
+| Shared dashboard reads and events | `dashboard.tsx`, `resource-state.mjs`, `name-directory-state.mjs` | One selected-pilot/event owner; independent fences for source snapshots, resource tokens and global names. |
+| Coalesced scoped reads | `use-resource-refresh.ts`, `scoped-refresh.mjs` | One active read plus one retained invalidation; close an old scope before its result can publish. |
+| Session archive and report pages | `session-archive.mjs`, `session-report-page.mjs`, `session-report.tsx` | Refresh the full loaded archive prefix; serialize head/tail work; preserve the report event snapshot while appending pages; fence old Session reads/saves. |
+| Administrative views | `administrative-refresh.mjs` | Schedule after completion, honor visibility and real retry cadence; OBS status events and unsaved config have separate generations. |
+| Maps workspace | `jspace-workspace.tsx`, `jspace-workspace-model.mjs`, `jspace-clock.mjs` | Scope by pilot and map; update compact library summaries separately from selected detail; keep expiry deadlines active. |
+| Studio preview and editor | `studio-work.mjs`, `studio.tsx` | Debounced/coalesced previews and source-aware invalidation; an old save cannot clear a newer edited draft. |
+| Accepted global saves | `connections.tsx`, `polling-settings.tsx` | Process-module queues retain accepted Client ID, appearance and polling write order across component unmount/remount. Failures release the queue. |
+| Workspace handoffs | `universe-requests.mjs`, `workspace-navigation.mjs` | One-shot selection/replay requests and UI navigation; tolerate unavailable browser storage. |
+
+### Asynchronous saves are different from reads
+
+For a read, closing its UI scope prevents obsolete publication; it does not necessarily abort the underlying request. For a command, the server may already have accepted a durable write. Leaving a page, changing pilot or losing the HTTP response is not evidence that the write was cancelled. An uncertain mutation must be reconciled with current state before deciding whether to repeat it.
+
+Capture the pilot/record and submitted value when accepting a save. Keep later edits distinct from that submitted draft. Apply the returned view, success/error UI and dirty-state changes only if the corresponding scope/draft generation still owns them. Global replacement settings also need ordered accepted writes: an old request that arrives late must not overwrite a newer accepted choice. Use the existing queue for its topic; do not create a component-local queue that vanishes on navigation.
+
+Revisioned services provide a second boundary. Maps commands carry the last read map `revision`; mismatches return HTTP 409. Canonical expiry or another accepted command can advance it. Refresh and reconcile the user's draft against the new record rather than automatically resubmitting a stale destructive command. The HTTP error envelope currently contains the message only, even when the in-process error has more metadata. [API examples](API-REFERENCE.md#worked-requests) show the exact command envelope.
+
+These policies describe distinct existing owners, not a universal save hook. A new form must deliberately choose its read scope, write ordering and draft reconciliation behavior. Do not replace them with a generic interval or assume every current endpoint supports optimistic revision checks.
 
 ## Storage and service lifetimes
 
-SQLite holds authoritative Maps, Session/evidence, configuration and accounting records. Replaceable HTTP/book caches and derived indexes have different retention rules; see [DATA-RETENTION.md](DATA-RETENTION.md). Do not delete authoritative history to make a query faster or reinterpret a cache hit as fresh protected evidence.
+[Persistence](PERSISTENCE.md) owns schema, migration and data ownership guidance; [Data retention](DATA-RETENTION.md) owns cleanup limits. Use a domain's mutation methods rather than writing its tables from another service: direct writes can bypass revisions, validation, canonical links, events, accounting or invalidation. Some reads reconcile due canonical expiry, so a method reached from GET is not necessarily a side-effect-free table lookup.
 
-Keep mutable read preparation local to a request/update wherever possible. Current Maps projection shares one response-local Auth roster and link/projection context, while widget bindings share source reads within one update. New awaits or later operations must recheck current authorization/freshness. Shared process-owned static Atlas/taxonomy indexes are explicitly bounded/read-only exceptions, not a pattern for caching arbitrary pilot records.
+Keep mutable preparation local to one request/update. Maps shares a response-local Auth roster and projection context; widget bindings share source reads within one update. Later operations and work crossing an await must recheck current access/freshness. Process-owned static Atlas/taxonomy indexes are explicit bounded/read-only exceptions, not a pattern for retaining arbitrary pilot records.
 
-Use the owning service's mutation method. Writing its tables directly from a UI route can bypass revisions, validation, canonical links, events, accounting or cache invalidation. Some read services reconcile due canonical expiry before returning a projection, so do not assume that every service called from GET is a side-effect-free table lookup.
-
-Startup acquires Store, Vault, Auth, ESI, Core/services and listeners in owned stages. Shutdown stops new admission and recurring producers, drains accepted handlers and their nested work, closes service/Registry/Stream/OBS owners, then closes dependencies and Store. A disconnected HTTP client does not cancel an already accepted write by itself. Worker ownership ends on actual exit, not on merely sending cancellation.
-
-The supervisor replaces the runtime child during a managed dataset activation. A failed generation is durably rejected before best-effort cleanup, and valid prior data remains selectable. Dataset generation changes require browser recovery rather than continued use of stale static/module instances. See [DATASETS.md](DATASETS.md) and the runtime supervisor/child tests.
+[Architecture](ARCHITECTURE.md#startup-shutdown-and-replacement) owns startup/drain order. A new service must stop admitting work, stop producers and await its accepted work before its dependencies close. Return listener promises and cleanup promises. Worker ownership ends on actual exit, not on sending cancellation. [Datasets](DATASETS.md) covers managed generation replacement and browser recovery.
 
 ## Add a feature through the existing backbone
 
@@ -178,7 +191,24 @@ The supervisor replaces the runtime child during a managed dataset activation. A
 
 Dynamic modules are trusted local `.mjs` files discovered at startup. The Registry supplies `store`, `db`, `esi`, `on`, namespaced `get/set` and `publish`; it tracks subscriptions and cleanup. Keep `register` synchronous and return cleanup explicitly. Its versioned migration hook runs during activation of a registering module; it is not an automatic transaction around arbitrary asynchronous setup. Use the established examples in [`modules/milestones.mjs`](../server/modules/milestones.mjs) and [ARCHITECTURE.md](ARCHITECTURE.md).
 
-Adding dataset names to a dynamic descriptor does not extend Core's built-in collection loop: the catalog owns that scheduling. Likewise, a dynamic private page does not grant arbitrary HTML or code execution in the Stream renderer.
+### Registry descriptor and context
+
+| Member | Implemented contract |
+| --- | --- |
+| `id` | Unique among discovered Registry modules; must match `^[a-z][\w-]*$`. Use a distinct ID that also avoids built-in catalog names. |
+| `name`, `description`, `version`, `scopes`, `datasets` | Metadata exposed through the module list. Use a stable version when the migration has not changed. |
+| `page` | Enabled page metadata appears in bootstrap; `page.title` supplies the Extensions label. |
+| `register(ctx)` | Synchronous registration; return a function for disable/shutdown cleanup. That function may return a promise. |
+| `migrate(db)` | Runs on activation of a module with `register`, once per migration ID `module:<id>:<version>`. The Registry records success afterward; it does not wrap the migration in a transaction. Make multi-step migrations atomic in their own implementation. |
+| `ctx.store`, `ctx.db`, `ctx.esi`, `ctx.bus` | Shared trusted in-process owners, not isolated capabilities or a sandbox. Prefer `ctx.on` to direct bus subscription so cleanup is tracked. |
+| `ctx.on(type, listener)` | Register a listener and return its unsubscribe function; Registry also removes these subscriptions on disable/close and failed registration. Return asynchronous listener work. |
+| `ctx.publish(event)` | Calls Core publication with the module ID supplied by the Registry. Core deduplicates, persists, emits and invalidates. |
+| `ctx.get(key, fallback)` / `ctx.set(key, value)` | JSON key/value storage in `module_data`, namespaced by module ID. Include pilot identity in the key when the value is pilot-specific. |
+| `read({db,store,characterId})` | Optional private read operation; may return a promise. The generic page accepts `{title,columns,rows}`. It receives no automatic ESI collector or write command. |
+
+Adding `datasets` metadata to a Registry descriptor does not extend Core's collection loop. Adding `scopes` does not extend the `/auth/start` allowlist either: that list is derived from the built-in catalog. A new ESI integration must deliberately update its catalog/polling/auth ownership and tests. Registry code is trusted local code with database access; it is not a remotely installable or sandboxed plugin protocol.
+
+The current generic Extension page loads on mount or when its module/pilot changes. It is not a live subscription to every semantic event. Add a scoped refresh/invalidation integration if a page must update while open. A Registry page also does not grant arbitrary HTML or code execution in the Stream renderer.
 
 For a feature touching existing state, first identify its authority and lifecycle owner. Add the service operation and focused behavioral tests. Expose a route through existing request guards, then connect its read model to a scoped UI owner and precise invalidation. Add Stream projection only if the feature actually needs broadcast output. Finally verify a compiled end-to-end path and realistic changed/unchanged costs for any performance-sensitive claim.
 
@@ -222,16 +252,10 @@ The example should add its own tables and page without editing Session travel or
 
 This example demonstrates the Registry registration/read DTO. A live page also needs its own scoped refresh/invalidation owner; a new descriptor does not automatically create a new versioned UI resource.
 
-## Development and release records
+## Verification and maintenance
 
-The retained React/Vinext Sites scaffold supports source development. The shipped product is a local Node runtime; do not deploy this private API design to a public host.
+Choose evidence for the contract changed: pilot/scope/record ownership, stale or disabled evidence, exact expiry, failed-provider retry, delayed HTTP after newer events, revision conflict, accepted old-scope saves, reconnect, shutdown with pending work, and rollback. [Development](DEVELOPMENT.md) is authoritative for executable build/test commands; [Validation](VALIDATION.md) owns current gates and environment-specific limits.
 
-Record completed user-visible changes under **Unreleased** in [CHANGELOG.md](../CHANGELOG.md), using Added/Changed/Fixed/Removed/Security as appropriate. At release, move those entries under the version and `YYYY-MM-DD`, then begin a fresh Unreleased section. Planned work belongs in the investigation record. A completed implementation entry is not release approval; follow [AGENTS.md](../AGENTS.md).
+Useful source tests include [lifecycle](../tests/kairo/lifecycle.test.mjs), [startup rollback](../tests/kairo/core-construction-rollback.test.mjs), [connection ownership](../tests/kairo/core-connection-ownership.test.mjs), [module disable](../tests/kairo/core-module-disable.test.mjs), [scoped refresh](../tests/kairo/scoped-refresh.test.mjs), [resource identity](../tests/kairo/resource-state.test.mjs), [name delivery](../tests/kairo/core-name-directory.test.mjs), [administrative refresh](../tests/kairo/administrative-refresh.test.mjs), [Maps HTTP](../tests/kairo/universe-jspace-http.test.mjs) and [Session HTTP ownership](../tests/kairo/session-http-ownership.test.mjs). These are navigation aids, not a substitute for choosing the relevant behavior and running its gate.
 
-## Tests that define the contract
-
-Choose tests for the behavior being changed: wrong pilot/scope/record, stale or disabled evidence, exact expiry, failed provider and retry, old HTTP result after newer events, revision conflict, accepted old-scope saves, reconnect, shutdown with pending work, rollback and replay ownership. Use real source paths and complete outputs; a request count alone is not a speed comparison.
-
-Run `npm run check:kairo`, a fresh `npm run build`, and the affected `tests/kairo` tests. Build before HTTP tests that require compiled entrypoints. The final combined gate includes the full suite and compiled browser/service comparisons. When optimizing, record the source/build and harness identities, keep ordinary timing separate from counters/profiles/forced collection, retain adverse small cases and first-use costs, and verify complete output/freshness equality. A passing ordinary test-build workflow does not replace that final matrix.
-
-Keep this guide, the route reference and existing domain documentation synchronized with an accepted API change. Document who owns the state, how a caller learns it changed, and how pending work finishes; those three answers make subsequent features easier to build without bypassing the refactor's guarantees.
+Keep one authoritative home for each contract: architecture for owners/lifetimes, this guide for in-process integration and frontend ownership, the API reference for wire details, and each domain reference for its data policy. Update callers and the owning documentation together when a contract changes. Follow [AGENTS.md](../AGENTS.md) for review, checkpoints and release authorization.

@@ -1,10 +1,25 @@
 # HTTP and event reference
 
-This reference describes the accepted 0.8.0 development source. For feature design, read [Internal API](INTERNAL-API.md); for release readiness, read [Validation](VALIDATION.md). Update both API documents when an accepted change alters these contracts.
+This reference describes the **0.8.0 feature set in candidate `0.8.0-rc.17`**. It is the authoritative documentation for local HTTP and SSE contracts. For in-process integration, use [Internal API](INTERNAL-API.md); for security rationale, [Authentication and security](AUTH-AND-SECURITY.md); for candidate evidence, [Validation](VALIDATION.md).
 
-Initial source audit: `a7b1bf97`, 8 October 2026. The [audit receipt](https://github.com/BunBajiro/kairo/blob/27516e5c6e1d73e5118835c798ed3420a30c2b0d/analysis/rc17/completion/c954-resumption/resumed/oct8/internal-api-docs/HTTP-SOURCE-NOTES.json) pins source files and dispatcher conditions. Later accepted API changes must update this reference.
+The original source audit was `a7b1bf97`, 8 October 2026. Its historical [audit receipt](https://github.com/BunBajiro/kairo/blob/27516e5c6e1d73e5118835c798ed3420a30c2b0d/analysis/rc17/completion/c954-resumption/resumed/oct8/internal-api-docs/HTTP-SOURCE-NOTES.json) pins that earlier source and its dispatcher conditions. This documentation pass checked the current dispatcher and owners against the build90 source carried by checkpoint `42c00e6`; the historical receipt is not current release acceptance.
 
 The route dispatcher is `server/index.mjs`. Unless a row says otherwise, dashboard routes below are relative to **`/api`**, return JSON with HTTP **200**, and set `Cache-Control: no-store`. Service names identify the authoritative implementation and return value; they do not imply an additional response envelope. The API does not have a generated schema or versioned public compatibility promise.
+
+The tables inventory current route families and their owners. They are not a complete JSON Schema for every nested record. Where a row names a domain input/projection, follow the linked owner below; do not assume an omitted property is accepted or required. [Worked requests](#worked-requests) show exact envelopes for common integration patterns.
+
+| Find | Contract home |
+| --- | --- |
+| Session, Host/Origin, CSRF, error and body rules | [Listener and request boundary](#listener-and-request-boundary) |
+| Bootstrap, snapshots, settings, EVE login, modules and export | [Core routes](#bootstrap-data-configuration-and-authentication) |
+| Scans, cache reads and import plans | [Markets](#markets-and-import-planning) |
+| Private stream configuration, OBS commands and protection | [Studio, OBS and OPSEC](#studio-obs-and-opsec) |
+| Timeline, legacy Journey, annotations, Goals and Sessions | [Local records](#timeline-journey-places-goals-notes-and-sessions) |
+| Atlas, Maps, operations, feeds, navigation and politics | [Universe](#universe-maps-and-operations) |
+| Private delivery and reconnect | [Dashboard SSE](#dashboard-sse-and-client-invalidation) |
+| Public-to-OBS display DTO | [Browser-source API](#read-only-browser-source-api) |
+
+Nested validators/DTO owners: [Goals](../server/goals.mjs), [Markets](../server/markets.mjs), [Import Analyser](../server/imports.mjs), [Sessions/report](../server/history.mjs), [replay](../server/session-replay.mjs), [Stream config](../server/stream.mjs), [OBS](../server/obs.mjs), [Universe](../server/universe.mjs), [Maps commands](../server/universe-jspace.mjs), [operations](../server/universe-operations.mjs), [navigation](../server/universe-navigation.mjs), [feeds](../server/universe-feeds.mjs), and [politics](../server/universe-politics.mjs).
 
 ## Listener and request boundary
 
@@ -59,13 +74,13 @@ These endpoints share the local market cache; they are not selected-pilot scoped
 | POST `/markets/defaults` | No parsed body | Updated overview from `restoreDefaults`. |
 | POST `/markets/discover` | Discovery input (current pilot location or system name, access pilot) | `discover(body)` result. |
 | PUT `/markets/quick` | Add exact `name`, or `remove` / `removeName` | Updated overview from `quickChange`. |
-| POST `/markets/scan` | `hubId`, mode, optional type/access-pilot/Jita comparison fields |202 job from `markets.start(body)`; later overview exposes progress. |
+| POST `/markets/scan` | `{hubId,mode,characterId?,typeId?,compareJita?}`; mode `quick`/`full`/`item`/`history` |202 job from `markets.start(body)`; later overview exposes progress. One active scan; repeated identical active input can return its existing job. |
 | POST `/markets/upgrade` | No parsed body | `resumeUpgrade(true)` overview. |
 | POST `/markets/cancel` | No parsed body | `cancel()` current job/result. |
 | GET `/markets/categories` | `hub` | `categories(Number(hub))`. |
-| GET `/markets/browse` | `hub`; all query fields forwarded, including category/query/filter/sort/page | `browse(hub, query)` paged market rows. |
+| GET `/markets/browse` | `hub`, `category`, `query`, `filter`, `sort`, zero-based `page` | `browse(hub, query)` → `{rows,total,page,pages,hub}`; up to 60 rows. Filters `all`/`quick`/`sell`/`empty`; sorts `name`/`sell`/`premium`/`quantity`. |
 | GET `/markets/item` | `hub`, `type`; additional query e.g. side/page | `detail(hub,type,query)`. |
-| GET `/markets/report` | `hub`; report query fields | `report(hub,query)`. |
+| GET `/markets/report` | `hub`, `signal` (`premium`/`undersupply`/`bargain`/`spread`), `threshold`, `cover`, zero-based `page` | `report(hub,query)` includes rows/total/page/pages/counts, thresholds and generation time; up to 40 rows. |
 | POST `/markets/type` | `{typeId}` | Verified/enriched type from `enrichType`. |
 | GET `/markets/imports` | `hub` | `imports.state(hub)`: settings/fees/buyer/watched pilots/categories/saved-plan summaries. |
 | PUT `/markets/imports/settings` | `{hubId,settings}` | `saveSettings(hubId,settings)`. |
@@ -121,13 +136,13 @@ These are private control-plane routes. Only the separate source listener carrie
 | GET `/notes` | C | Latest 100 notes, descending created. |
 | POST `/notes` | C; `{body}` trimmed/max 5000/nonempty |201 `{id}`; publishes `note.created`. |
 | DELETE `/notes/:id` | Optional C ownership check if note exists | `{ok:true}`; invalidates owning pilot notes when found. |
-| POST `/session` | C; `changeSession` input (action start/end, label where applicable) | Session result from `history.mjs`; updates bindings and can request Session combat refresh. |
+| POST `/session` | C; `{action:"start",label?}` or `{action:"end"}` | `{id}` from `history.mjs`; end targets this pilot’s active Session. Updates bindings and can request Session combat refresh. |
 | GET `/sessions` | C; `offset` integer-clamped 0..100000 | `{items,more}`; 30 rows from 31 fetched, descending `(started,id)`. |
 | GET `/sessions/:id/replay` | C; URI-decoded single-segment ID | `sessionReplay` fixed snapshot: session/times/visits/events/systems/travel/coverage. Pilot ownership, event-cap/gap/inferred metadata belong to `server/session-replay.mjs`. |
 | GET `/sessions/:id` | C; report `offset` clamped 0..100000; optional `eventCursor` nonnegative safe integer and `eventEnd` valid time within the Session's current interval | `sessionReport`: start/finish, activity/route/combat/economic detail, 100 events +more/offset, and `eventCursor`/`eventEnd`. Pass both snapshot fields for later pages to retain event membership/counts despite delayed inserts. Source projections can change independently; the UI appends only events/more and retains its original summary/details. Existing Refresh acquires a new snapshot. May asynchronously refresh Session combat when syncing is enabled. |
 | PUT `/sessions/:id` | C; `{label,notes}` | `{ok:true}`; nonempty trimmed label≤100; notes≤12000; selected-pilot ownership required; invalidate Sessions/update bindings. |
 
-Do not infer a universal REST ID parser: some legacy routes use prefix matching and raw `split('/')` segments, while newer routes use exact regexes and `decodeURIComponent`. The exact pattern inventory below records this deliberately. Clients should use the canonical routes shown, not rely on extra suffixes accepted by prefix dispatch.
+Do not infer a universal REST ID parser: some legacy routes use prefix matching and raw `split('/')` segments, while newer routes use exact regexes and `decodeURIComponent`. The [dynamic dispatch inventory](#exact-dynamic-dispatch-patterns) records this deliberately. Clients should use the canonical routes shown, not rely on extra suffixes accepted by prefix dispatch.
 
 ## Universe, Maps and operations
 
@@ -207,6 +222,97 @@ Unless a row explicitly says **global**, these routes use C. The Universe servic
 | POST `/universe/politics` | Global; no parsed body | `universe.refreshPolitics({force:true})` result. |
 | GET `/universe/politics/alliances` | Global; `q`≤150 | `{items}` from `politicsAlliances`. |
 | POST `/universe/politics/alliances/resolve` | Global; `{query}` exact alliance name/ID, 1–150 chars | Known match or ESI-verified `{alliance_id,name,ticker}`; rejects stale/unverified result and remembers verified name. |
+
+## Worked requests
+
+These examples run **inside the local dashboard application** with its existing session. They use the real [`api`](../components/kairo/model.ts) helper, whose path is relative to `/api`. `character` is the current connected pilot ID; `boot` is the current bootstrap object. The snippets demonstrate operations individually, not a script to run against a user's live data.
+
+### Read a snapshot and request synchronization
+
+```ts
+const state = await api(`/state?character=${character}`);
+const wallet = state.data.wallet;
+// Inspect wallet.status and timestamps before interpreting wallet.data.
+const accepted = await api('/sync', 'POST', {character}, boot.csrf);
+// accepted is {ok: true}; HTTP 202 is queue acceptance, not data completion.
+```
+
+A common snapshot is `{status,data,updatedAt?,expiresAt?,refreshAt?,retryAt?,error?,dataRevision?}` with further per-source metadata. Missing, stale, disabled and zero data are different states. Full freshness/identity semantics are in [Internal API](INTERNAL-API.md#read-models-freshness-and-identity).
+
+### Create a private note
+
+```ts
+const created = await api(
+  `/notes?character=${character}`,
+  'POST',
+  {body: 'Prepare probes before the next session.'},
+  boot.csrf,
+);
+// HTTP 201; created is {id: '<generated UUID>'}.
+const notes = await api(`/notes?character=${character}`); // An array, not {data: ...}.
+```
+
+The server trims note text, rejects an empty result and limits it to 5,000 characters. Read-model invalidation follows `note.created`; it is not the note body broadcast as an SSE payload.
+
+### Edit a revisioned private map
+
+```ts
+const mapPath = `/universe/jspace/maps/${encodeURIComponent(mapId)}`;
+const map = await api(`${mapPath}?character=${character}`);
+const updated = await api(
+  `${mapPath}/commands?character=${character}`,
+  'POST',
+  {revision: map.revision, op: 'map.update', name: 'Expedition chain'},
+  boot.csrf,
+);
+// updated is the full projected map, including its new revision.
+```
+
+Both pilot ownership and map writability are checked. The command envelope is `{revision,op,...operationFields}`; it is not `{command:{...}}`. A stale or missing revision produces HTTP 409 `{error: message}`. The dispatcher does not serialize the in-process error's `code` or `revision`, so fetch the current map to reconcile. The `api` helper throws a plain `Error(message)` and does not preserve HTTP status; a caller needing status must explicitly retain the response.
+
+The command switch currently recognizes `map.update`, `group.add`, `node.save`, `nodes.position`, `node.remove`, `nodes.remove`, `connection.save`, `connection.remove`, `pilot.add`, `pilot.tracking`, `pilot.remove`, `passage.add`, `passage.save`, `passage.remove`, `observation.save`, `observation.remove`, `comment.add`, `comment.remove`, `ping.add`, `ping.remove`, `signature.save`, `signature.remove` and `undo`. Each operation has its own validator and undo policy in [`universe-jspace.mjs`](../server/universe-jspace.mjs); the names alone do not define its body schema. Canonical expiry can advance a revision during a read.
+
+### Page a Session report without changing its event snapshot
+
+```ts
+const path = `/sessions/${encodeURIComponent(sessionId)}?character=${character}`;
+const first = await api(path);
+if (first.more) {
+  const query = new URLSearchParams({
+    offset: String(first.events.length),
+    eventCursor: String(first.eventCursor),
+    eventEnd: first.eventEnd,
+  });
+  const next = await api(`${path}&${query}`);
+  // Append next.events; retain first's summary/details and snapshot fields.
+}
+```
+
+Use [`loadSessionReportPage`](../components/kairo/session-report-page.mjs) in the product UI: it supplies the existing ownership and merge behavior. The cursor/end freeze event membership; they do not freeze independently updated combat/source projections. A deliberate Refresh starts a new report snapshot.
+
+### Read a saved market book
+
+```ts
+const query = new URLSearchParams({
+  hub: String(hubId), category: 'all', filter: 'sell', sort: 'name', page: '0',
+});
+const book = await api(`/markets/browse?${query}`);
+// book is {rows,total,page,pages,hub}; rows come from the local saved scan.
+```
+
+`hubId` is a saved hub ID from `/markets`. Browsing does not start a scan. A scan is an explicit POST, for example `{hubId,mode:'quick',characterId,compareJita:false}` to `/markets/scan`; its HTTP 202 job is followed through `/markets`. Structure access, catalog/type validity and scan admission remain server responsibilities.
+
+### Preview and save Stream configuration
+
+```ts
+const config = await api('/stream');
+const preview = await api('/stream/preview', 'POST', config, boot.csrf);
+// preview is an element-ID-to-binding-projection map; it does not save config.
+const saved = await api('/stream', 'PUT', config, boot.csrf);
+// saved is sanitized configuration. The separate source receives projected state.
+```
+
+`PUT /stream` is a whole-configuration save, not a JSON patch. A minimal example must still include `elements` and `rules` arrays. Real Studio editing should use its existing draft and preview owners so a late save cannot overwrite a newer draft. Never send raw snapshots to the source listener.
 
 ## Exact dynamic dispatch patterns
 

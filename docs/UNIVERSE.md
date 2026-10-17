@@ -1,171 +1,421 @@
-# Universe
+# Universe: Atlas, Maps and navigation
 
-Universe is a sidebar category with **Atlas**, **Maps** and **Universe settings**. Atlas explores New Eden; Maps maintains your own layouts of known-space systems, wormhole chains and permanent travel networks. The former K-Space and J-Space workflows remain available under these names. **Sessions remains a separate workspace** for starting and ending operations, reviewing reports and reading combat records. Sessions owns recorded operation travel and replay. The standalone Journey visit log, lifetime counters and footprint views are retired; discovery and ordinary activity remain available.
+[Documentation index](README.md) · [Setup and data care](USER-GUIDE.md) · [Sessions](SESSIONS.md) · [Troubleshooting](TROUBLESHOOTING.md)
+
+This guide describes the **0.8.0 feature set in candidate `0.8.0-rc.17`**. It is not a stable-release announcement. Current review evidence and environment-specific limits are recorded in [Validation](VALIDATION.md).
+
+Universe has three sidebar entries:
+
+| Workspace | Use it for |
+| --- | --- |
+| **Atlas** | Explore New Eden, inspect systems and political territory, compare activity, and plan travel. |
+| **Maps** | Keep private layouts of wormhole chains, known-space systems and permanent travel networks, with independent observations and notes. |
+| **Universe settings** | Manage Ansiblex networks, pins, power blocs, map display preferences, operational sources and alerts. |
+
+[Sessions](SESSIONS.md) remains a separate workspace. Its **Show on Map** action opens a recording inside Universe; it does not turn that recording into a live chain map. The former standalone Journey visit log and lifetime counters are retired.
+
+## Choose a task
+
+- [Explore Atlas](#explore-the-atlas), [read political territory](#power-blocs-and-inferred-coalitions) or [read public reports](#eve-scout-thera-turnur-and-storms).
+- [Create a map](#create-and-open-a-map), [add and arrange systems](#add-and-arrange-systems) or [configure tracking and scope](#tracking-and-map-scope).
+- [Record a connection](#record-and-maintain-connections), [use Scanner](#scanner-and-bookmarks), [record reports](#reports-ownership-and-notes) or [log passages](#passage-ledger).
+- [Plan a route](#routes-and-special-connections), [compare jump range](#jump-routes-and-range) or [find an exit or service](#find-an-exit-or-service).
+- [Import or export a map](#import-export-and-duplicate-maps), [import Ansiblexes](#ansiblex-lists-and-smt-migration) or [configure sources and alerts](#operational-sources-and-alerts).
+- [Understand cleanup](#expiry-removal-and-undo), [settings and saving](#universe-settings-and-saving), [data scope](#data-and-privacy) or [unexpected results](#common-questions-and-troubleshooting).
 
 ## Explore the atlas
 
-Atlas has a direct **3D / 2D** projection switch. **3D** is the flattened X–Z view of physical space; **2D** uses CCP’s in-game schematic positions from the bundled SDE. The choice is remembered across page changes, reloads and zoom. The full-universe and regional schematic use the same geometry, so selecting a different system does not rearrange a region. The local radar remains a separate hop-distance tool. Both Atlas projections retain political shading and region framing. Physical jump calculations still use all three physical coordinates. See [schematic geometry and the regional layout correction](SCHEMATIC-GEOMETRY.md).
+1. Open **Universe → Atlas**. The bundled static map is available without connecting an EVE pilot. Connect and select a pilot for personal standings and permission-dependent observations.
+2. Search for a system, known-space region or political territory. Press **/** to focus search; use the arrow keys and Enter to choose a result. A region selection frames that region; a territory selection opens its intelligence and observed holdings.
+3. Drag to pan and use the wheel or zoom controls. **Map key & controls** opens navigation help and the legend. Touch supports pinch zoom. The overview inset helps recover your position at close zoom.
+4. Select a system to inspect its security, hierarchy, activity, known structures, celestials and stargates. Use **Details** to show or collapse the dock. Its **Operations** selector switches between **System**, **Politics**, **Navigate**, **Live intel** and **Exploration**.
+5. Choose a background from the territory strip, or open **Layers & views** for indicators, filters and saved configurations. Named views are saved per pilot.
 
-Drag to pan, wheel or use the buttons to zoom, and search or select a system to inspect it. Zooming out stops at the active space or selected region with a small margin. Maps diagrams show recorded or deliberately placed connections; their spacing is not physical distance or proof of access. Wormhole systems retain their class, static and weather reference. Their internal region and constellation identifiers remain underlying organisational data, not front-facing navigation or bulk-placement groups.
+The **3D / 2D** switch selects two map projections:
 
-Atlas and opened Maps use a workspace that fills the available application viewport. Its compact command area and collapsible details dock keep the map central; there is no separate immersive mode to enter. The scope overview shows geography, reported ownership and activity for the selected region or space.
+| Projection or view | Meaning |
+| --- | --- |
+| **3D** | A flattened X–Z projection of physical space. Its scale shows projected distance; vertical separation still matters to jump reach. |
+| **2D** | CCP's schematic map positions. Region framing uses the same layout as the full universe. |
+| Local radar | A separate gate-hop view, not a physical-distance map. |
+| Saved Maps | A diagram you arrange. Card spacing does not measure travel distance or establish a connection. |
 
-Search systems, known-space regions and political territories from the same field. Press **/** to focus search, use arrow keys to choose a result and Enter to open it. Selecting a region frames it; selecting a political territory opens its intelligence and frames its observed holdings.
+The projection is remembered across navigation and reloads. Jump calculations always use full physical X, Y and Z coordinates, regardless of the visible projection. Motion settles when idle and respects the operating system's reduced-motion preference.
 
-Selecting a system, zooming and fitting the map use smooth camera movement. Dragging has a short bounded coast, touch supports pinch zoom, and an overview inset helps you navigate at close zoom. The Atlas physical scale represents projected distance; the Atlas 2D view and saved Maps are schematic. A brief targeting cue identifies a selection; panels and replay events enter with finite transitions. The quiet background moves only with the camera. Motion settles when idle and respects the operating system's reduced-motion preference. **Map key & controls** expands the legend and navigation help.
+### Layers, activity and inspection
 
-**Layers & views** separates the territory background from system indicators. Choose power blocs, sovereignty, selected-pilot standings, security or activity as the background. Indicators include ship, pod and NPC kills, gate traffic, faction warfare, incursions, manufacturing cost index and personal mining. Save named configurations per pilot or start from the supplied presets. Map filters do not change route preferences or move territory borders. Borders use cached vector geometry and quiet flat fills; individual systems no longer have influence glows. Map labels fade across a 44-pixel boundary zone, and rounded screen-space text halos avoid sharp joins over territory fills.
+Backgrounds include power blocs, sovereignty, selected-pilot standings, security and ship/pod kill activity. Indicators include ship, pod and NPC kills, gate traffic, faction warfare, incursions, manufacturing cost index and personal mining. View filters affect presentation; they do not change route restrictions or territory boundaries.
 
-## Maps workspace
+Use **Data sources** beneath the map to inspect the timing and availability of changing data. Missing or unavailable activity is different from a reported zero. NPC change compares two rolling one-hour totals; it is not the number killed since the previous refresh. Kairo does not provide a verified pilots-in-space count or camp detector.
 
-Use **Hide sidebar** in the top bar to give the map the full available width; the choice is remembered. Maps fills the remaining window with compact controls and minimal outer padding.
+Structure visibility is partial. Public sovereignty structures are not a complete Upwell inventory. A known player structure ID can be checked with a pilot holding `esi-universe.read_structures.v1`; visibility does not establish docking or bridge access.
 
-Open **Universe → Maps** to the map landing. Open one of your existing maps, create a new one, or explicitly import a Kairo/Wanderer version-1 export. Every new-map entry opens the same floating form for a name, description, at least one connected pilot and optional scope. Selected pilots track automatically; there is no tracking opt-in. New maps never seed previously visited systems. Ansiblex lists and other module-wide configuration live in **Universe → Universe settings**; shared notebook and navigation tools remain beside either map. Maps are private to the selected connected pilot. Each map owns independent instances of its systems, scanner records, notes, ownership, intel and private connections. Static SDE/Wanderer reference data and explicitly configured Ansiblex-network references are shared. The full system catalogue and reference data remain readable without a pilot; saving operational observations requires one.
+Selected-system actions also support field notes and known-space pins. A dated pin can reference a calendar entry, retaining its actual title and EVE time. Confirm the system and event type yourself: a calendar header does not reliably identify a solar system or moon extraction. Manually entered timers remain manual records.
 
-Compact cards show the system class, real name and expected static destination classes, with optional alias and small state/effect indicators. For example, **C4 J225111** displays **C1 · C3**; hover or focus those badges for **P060** and **C247**. Full reference information lives in system intelligence. The bundled reference covers 2,604 wormhole systems and 100 hole types. Static badges are recurring type expectations, not scanned signatures or current destinations. System intelligence provides nominal mass/lifetime and effect modifiers with provenance; unknown values stay unknown. J-Space has no region-based navigation or physical distance scale.
+The tactical-window control detaches the map into browser picture-in-picture where available, or a normal popup otherwise. The operations dock stays in the main window. Use **Return map to workspace** to restore it. This is a private map view; use [Stream Studio](STREAMING.md) for broadcast output. A normal popup cannot guarantee operating-system always-on-top or click-through behavior.
 
-On the landing, **Search map…** finds system instances in your existing maps, including their aliases. Each result names its map; selecting it opens that map, frames the system and opens its details. The **Notes** search category finds map-local notes by text, pilot or system. Landing search never opens an unowned catalogue detail or creates a system.
+## Create and open a map
 
-Inside a map, the always-visible add/search field can add a system or frame an existing card. Select **Constellation** or **Region** to stage a known-space group. Its systems use the same CCP schematic geometry as Atlas 2D, uniformly spaced for readable cards, with internal stargates and configured Ansiblexes. Drag the whole preview to the desired position, then **Confirm placement** or **Cancel placement**. Nothing is saved until confirmation. Existing cards retain their positions and metadata, and duplicate links are not added. After confirmation, the new systems are ordinary independent cards. You can separately create a collapsible display group without changing those records.
+1. Select a connected pilot and open **Universe → Maps**.
+2. Choose **Create your first map** or **Create new map**. Enter a name and optional description.
+3. Choose at least one connected **Tracked pilot**. The current pilot is preselected. The chosen pilots start tracking automatically.
+4. Optionally set a [map scope](#tracking-and-map-scope). Leave it empty to accept eligible live chains throughout the universe.
+5. Select **Create map**. Add systems manually or let new eligible travel observations populate it.
 
-Drag a card to arrange your map. Cards and connected lines track the pointer directly; coordinates save on release, and another drag remains available while the previous save completes. Positions, aliases, labels, status, tags and locks are saved per map. Shift/Ctrl-select or drag a selection rectangle to move several unlocked systems together. The overview inset recentres the chain, and compact labels preserve readability when zoomed out. Card badges open scanning, observations and notes directly. Selecting a card exposes observed-status and home/staging controls, concise context counts and navigation actions. Shared Scanner, Navigate, Intel and System tools use one dock; selecting another map item returns to its map context. Fit, frame and follow controls recover orientation; keyboard controls and reduced-motion support are available in the map help. Atlas retains its workspace context; each saved map retains its own camera when reopened from the landing.
+Maps belong to the selected connected pilot. Each map has independent system instances, scanner data, notes, observed ownership, reports and private connections. Static reference data and explicitly configured Ansiblex references are shared. Creating a map does not populate it from old visit history.
 
-**Universe → Universe settings → Mapper preferences** controls independent **K-space node size** and **J-space node size** from 50% to 150%, both initially 100%. **Focus-based map detail is off by default.** When enabled, selected systems and the settled centre of the view stay detailed while surrounding cards become smaller and quieter after you finish moving the map. These choices save immediately for the selected pilot in this browser; the map's **Display** panel provides the same controls.
+The landing page lists your maps. **Search map…** searches existing map systems, including aliases; a result names its map and opens the matching card. The **Notes** search category searches map-local notes by text, author pilot or system. Landing search does not create cards.
 
-The **Display** panel also creates collapsible region, constellation or custom groups. Geographic groups capture the matching systems already present on that map; custom groups capture your current selection. Choose a real anchor system, such as your home or a Drifter system. Membership is a saved snapshot, so later additions are not enrolled automatically. A map supports up to 32 display groups with up to 600 saved members each. Groups and collapse state are stored locally per pilot and map, separately from the map's transferable records.
+Use the map picker to change maps and **Maps** to return to the landing. Each saved map retains its own camera. **Hide sidebar** in the application top bar gives the workspace more width and remembers that choice.
 
-Collapsing keeps the anchor, real entry/exit systems, current pilots, selected systems and route context visible. Search can reveal and frame a hidden member. Expand from the group label or **Display** list. Hidden cards retain their positions and records; grouping never merges systems, creates substitute connections or changes route access and expiry. K-space and J-space sizing applies to connection handles, selection and framing as well as the cards.
+### Read a system card
 
-**Live source** is the lightweight, read-only view of the active pilot’s currently observed chain. It uses the same existing live location samples as the rest of Kairo. Changing the active pilot resets the movement baseline, so the switch cannot invent a transit. Source maps do not collect system notes, scanner records, editable ownership, activity logs or passage ledgers, and their observation APIs reject edits. Open it explicitly through the Maps settings control; it is excluded from the normal map picker and never opens by default. Its topology is loaded only when opened. **Create New Map** opens the same creation form and copies eligible live topology for the chosen pilots, preserving the original connection expiry. There is no separate source polling loop or global visited-system notebook.
+A card identifies the real system, its class, optional alias, status and reference indicators. For example, the bundled reference identifies **C4 J225111** with expected **C1 · C3** static destinations; hovering or focusing those badges reveals **P060** and **C247**. Static badges describe recurring type expectations, not scanned signatures or the current destination of a hole.
 
-**Map scope** configures which observed chains populate an interactive map. Choose any combination of individual systems, K-Space constellations, K-Space regions, sovereign alliances, sovereign corporations and user-defined power blocs. Selections within and across all six groups use **OR**: one matching system admits its connected live wormhole chain. An empty scope means the whole universe. J-Space’s organisational regions and constellations are deliberately absent.
+Select a card or choose **System details** from its context menu. The dock provides **System**, **Scanner**, **Reports**, **Notes**, **Navigate** and **Intel**. Signature, structure, timer, report and note badges open the corresponding context and appear only for positive counts. Known-space cards offer **View in Atlas**; system menus also offer **Open zKillboard**.
 
-Scope is a population rule, not a display filter: changing it does not hide or erase already saved cards, notes or connections. Alliance/corporation/bloc matching requires fresh, complete sovereignty. Missing or stale ownership cannot establish a match; only explicitly configured power-bloc memberships qualify, never inferred coalitions, NPC station ownership or manually assigned J-Space dominion.
+Full system intelligence includes class, statics, weather/effect modifiers and nominal wormhole properties with provenance. Unknown values stay unknown. J-Space's underlying region and constellation IDs are not navigation groups or physical-distance references.
 
-A matching chain can be added when a later discovered exit establishes its scope, retaining earlier still-live portions of that chain. Copied systems start with independent default annotations; connection conditions start at defaults and remain unconfirmed without route access. Original observation times and remaining lifetimes are preserved rather than restarted. Existing cards and connections on the target map keep their edits. Only live topology from eligible tracked pilots is considered; deleted/expired links and historical visits never backfill a map.
+## Add and arrange systems
 
-**Map pilots** lists this map’s subscribed pilots. Creation preselects the current pilot, and you can choose any nonempty set of connected pilots. Only those selected pilots are subscribed, all with tracking enabled; adding another connected pilot also enables tracking by default. Pause/resume is per pilot and per map. One shared tracking service consumes Kairo’s existing ESI/log location updates and distributes each accepted sample only to subscribed maps. It adds fresh current J-Space positions and automatically connects observed K→J, J→J and J→K travel with 16h/Normal/L defaults. Both K-Space entrance and exit systems stay visible on the chain. HTTP cache expiry does not discard an otherwise fresh, continuous traversal; old visits never seed a map. Paused, stale, out-of-order or disconnected samples do not invent connections, and resuming starts a new baseline. Observed transitions are unconfirmed evidence, not proof of wormhole type or route access. No extra ESI polling is introduced per map.
+Use the map's add/search field to find a system by name or ID. Selecting an existing card frames it; selecting a new system adds it. Placing a card alone does not create a connection.
 
-Small connection tabs sit behind each card on its left, right, top and bottom. Drag from a tab to another private card to draw an observed connection; the saved line keeps those chosen attachment sides. A live preview follows the pointer; Escape cancels. Keyboard users can activate a handle and then a destination handle. New drawn links start unconfirmed with the 16h/Normal/L defaults and no route access. Selecting an existing live pair reuses it. **Connect** also provides a detailed form for recording a link between two mapped systems. Choose **Wormhole**, **Stargate** or **Ansiblex**. Stargates must match a real pair in the bundled atlas. Ansiblexes may reference your configured network or be private to this map. Permanent links have their own line styles, labels and controls; they never receive wormhole mass, lifetime or ship-size settings. A configured bridge retains its central access settings, and removing its line from one map does not delete the shared network entry. Private map bridges remain isolated to that map.
+To place a known-space group:
 
-For a wormhole, record the endpoint signatures, hole type, observed life/mass, ship-size limit and expiry. Confirmation and route access are explicit choices. Ordinary edits preserve the recorded expiry. Only systems can be locked; connections cannot be locked or kept after expiry. Selecting or right-clicking an edge exposes lifetime presets **1h, 4h, 4.5h, 16h, 24h, 48h**, mass **Verge / Half / Normal**, and ship sizes **S / M / L / H / XL**. New links default to **16h / Normal / L** while remaining unconfirmed and inaccessible to routing. H represents freighters and XL capital ships. The continuous outer stroke shows lifetime and inner fill shows mass. A deliberate lifetime selection records a new expiry from now; unrelated edits preserve the recorded expiry. Exact expiry remains optional under **Manual expiry**. Deleting a connection immediately deletes its canonical map-owned record, connection notes, passages, bound wormhole signatures and cached routes. There is no connection archive or Undo. Expiry and collapse perform the same cleanup at the lifetime boundary, including when the map is closed. Removing system cards retains their own metadata and can be undone, but cannot resurrect deleted connections.
+1. Select **Constellation** or **Region** in add/search and choose the group.
+2. Review the staged layout. It uses the same CCP schematic geometry as Atlas 2D, spaced for cards, with internal stargates and configured Ansiblexes.
+3. Drag the preview to the desired location.
+4. Choose **Confirm placement** or **Cancel placement**. The preview is not saved before confirmation.
 
-Right-click a system and choose **System details** to open the single panel with **System, Scanner, Reports, Notes, Navigate and Intel** tabs. The context menu keeps one detail entry alongside distinct map and external actions. System combines card controls and reference information. To assign an effective owner to a J-Space system, choose Alliance or Corporation and search by name. Select a result showing the entity name, logo and EVE ID; the chosen identity supplies the saved owner fields. The card shows its name/logo as observed local dominion, without changing formal sovereignty, standings, ownership-based map scopes or route access.
+Existing cards keep their positions and annotations; duplicate links are not added. Once confirmed, every new system is an independently movable card.
 
-Unlocked systems leave the diagram 30 minutes after their last connection expires or is deleted. Locks prevent this cleanup. Unlocking or manually restoring a card starts a fresh 30-minute grace period. Never-connected standalone cards remain. Cleanup archives system membership and metadata within that map; system notes, unrelated signatures, reports and owner assignments remain available when that system is restored or rediscovered in the same map. Data does not transfer to other maps.
+Drag a card to move it. Position saves on release; another drag can begin while the previous position save completes. Shift/Ctrl-select cards or use a selection rectangle to move multiple unlocked systems. Use fit, frame, follow and overview-inset controls to recover orientation. Locks protect systems from movement and automatic disconnected-card cleanup. Aliases, labels, tags, status and home/staging roles belong to that map.
 
-System status tints the whole card gradient. Known-space cards show available sovereignty names and owner symbols; their menu offers **View in Atlas**, and every system menu includes **Open zKillboard**. Structure, signature, timer, report and note badges show only positive counts; zero-count indicators are hidden. Connection labels show their type and conditions without a decorative chain icon. Entire cards scale together when zooming, preserving their name, static badges and footer.
+### Display preferences and groups
 
-**Scanner** opens the existing exploration notebook for the selected system. Paste English, German, French or Russian scanner rows into the visible composer. **Update scan** validates and imports a clean partial scan in one action. An explicitly complete scan still reviews missing observations before import, and row diagnostics remain visible for review. Signature rows and type counts remain directly visible; nullsec Infrastructure management remains available through Atlas. Anomalies are optional; malformed input cannot prove a signature disappeared. Signatures can carry observed hole types, destinations and configurable bookmark text. Bookmark conventions support Wanderer token spellings and custom labels, explicit branch indices and return-hole markers. Branch naming remains a deliberate observation; automatic tree numbering is not inferred. Copying a bookmark name does not create an EVE bookmark. Recently deleted signatures can be restored for 24 hours, preserving their original observation times and protecting newer records from overwrite. Link a saved scanner signature to the exact mapped connection in **Connection conditions**.
+Open **Display** on a map, or **Universe settings → Mapper preferences**, for independent **K-space node size** and **J-space node size** controls. Both begin at 100% and allow 50–150%. **Focus-based map detail** is off by default. When enabled, selected systems and the settled view centre remain detailed while surrounding cards become smaller after movement stops. These preferences save immediately for the selected pilot in this browser.
 
-**Passages** records the pilot, hull, direction, time and estimated mass of known transits. Correcting or removing a record updates the observed total. Map settings can opt into fresh sampled ESI transitions across a unique confirmed mapped connection. These retain sampled provenance, require review and start with unknown mass; they never create or confirm a connection. The ledger is incomplete traffic evidence: fittings, propulsion and unseen pilots can change the real mass consumed, so Kairo never presents subtraction from nominal mass as verified remaining mass.
+To make a collapsible display group, open **Display**, choose a region, constellation or **Selected systems**, give it a name and select a real anchor system. Geographic groups capture matching cards already on the map; custom groups capture the current selection. Choose **Create collapsed group**. Use **Expand**, **Collapse** or the remove control in the group list afterward.
 
-**Reports** separates **Structures**, **Timers** and **Field reports**, with distinct counts, icons and forms. A structure remains a structure when it has an optional schedule attached. Observation time defaults to current UTC/EVE time on new records, while editing preserves the original timestamp unless explicitly changed or reobserved. Observation expiry remains optional. Reaching an entered timer does not prove that a structure changed state. D-scan and three-line timer snippets have a preview before creating observations; a paste never assumes a structure is powered or silently matches ambiguous names. Field notes and local rally context remain private operational records. **Live intel** opens Kairo’s existing reports, public combat signals and observed pilot context.
+A group is a saved membership snapshot: adding more cards later does not enroll them automatically. Up to 32 groups with 600 saved members each are supported. Group definitions and collapse state are stored in this browser per pilot and map; they are not included in transferable map records.
 
-**Notes** show the author pilot’s name and portrait. New notes use the selected connected pilot’s trusted identity. Saved notes show elapsed minutes for the first hour, then their dated EVE/UTC time; hover the time for the precise timestamp. Unknown older authors stay **Pilot unavailable**, while imported known attribution is preserved. Delete is a compact, subdued control with keyboard focus support. Search within the current system or connection, or choose **Entire map** to search all its notes and open a matching location. UTC date groups and pages of 12 keep long notebooks manageable. Retained notes for off-map systems remain searchable without silently restoring the card. Connection notes disappear immediately with a deleted, collapsed or expired connection.
+Collapsed groups retain the anchor, real entry/exit systems, current pilots, selections and route context. Search can reveal a hidden member. Hidden cards keep their positions and records; collapsing a group does not merge systems, add travel links or suspend connection expiry.
 
-**Find an exit or service** searches the eligible travel graph for high-/low-sec exits, trade hubs, blue-/red-loot buyers, security-status services and current public Thera/Turnur entrances. It uses the selected chain, confirmation/expiry, vessel limits and chosen exclusions. Public shortcuts require an explicit choice. Service locations are dated references; docking and current NPC services or buy orders are not verified. Route planning never sends EVE waypoints automatically.
+## Tracking and map scope
 
-Thera and Turnur can be toggled directly onto the chain as attributed public overlays. Their temporary cards are read-only. Unexpired cached reports remain visible during refresh and failed updates, marked stale and unavailable for public routing; a successful snapshot reconciles changes, removals and additions while preserving surviving card positions. Adopting a report requires an explicit action and preserves its original expiry. Route access requires separate verification.
+**Pilots** opens the map's subscribed roster. Add connected pilots or pause/resume an individual pilot for this map. Tracking uses Kairo's existing location observations; adding maps does not add an ESI polling loop for each map.
 
-Map settings hold the scope and pilot roster alongside rename, description, duplication, deletion, native export and a Wanderer-compatible export. Wanderer’s portable format cannot carry all local history or trust state, so its export omits unconfirmed, inactive, expired and collapsed links and explains the omitted context. Import preview is read-only and reports supported contents. Kairo imports its own format and Wanderer version 1; imported observations retain their age and do not inherit trust or route access. A duplicate has independent layout, system records, scanner data, intel, infrastructure observations and connections. Changing or deleting the copy does not modify the source map.
+Fresh continuous observations can add current J-Space positions and record K→J, J→J and J→K transitions. Known-space entrances and exits remain part of the chain. Automatically recorded wormholes begin **unconfirmed**, without route access, using the default **16h / Normal / L** conditions. Observed movement is not proof of a wormhole's type, true lifetime or access.
 
-This local workspace does not provide Wanderer's remote shared-map accounts, corporation/alliance ACLs, invitations, external map tokens or signed webhooks.
+Paused, stale, disconnected and out-of-order samples do not establish a traversal. Resuming tracking starts a new baseline. Switching the active pilot also resets the live source's baseline; it does not invent travel between different pilots' locations. Old visits are never used to seed a new chain.
 
-## Operational workspace
+### Choose which chains populate a map
 
-The **Operations tool** selector keeps inspection, politics, navigation, live intel and exploration beside the same map. Atlas remembers the chosen physical or schematic projection. Local radar shows hop-distance topology; diagram layouts do not represent jump-drive distance. A private detachable tactical window uses browser picture-in-picture where available and a normal popup otherwise. It is not an OBS source; a normal popup cannot promise operating-system always-on-top or click-through.
+Set **Scope** when creating a map or in **Map settings**. Supported selections are individual systems, known-space constellations, known-space regions, sovereign alliances, sovereign corporations and configured power blocs.
 
-**Live intel** combines explicit pasted reports, optional EVE chat/game logs, connected pilot positions and the selected pilot’s authorized fleet. Reports retain timestamps, channels, resolved systems and clear/question/hostile classification. Alerts have expiry, cooldowns and acknowledgment. Enable log monitoring and select a local EVE log folder in **Universe → Universe settings → Sources & alerts**; Kairo starts from the current end of each eligible file, matches the pilot’s listener and never edits the originals. Location can use ESI, local logs or fresh ESI with a log fallback. Operational positions do not replace OPSEC evidence.
+Selections use **OR**, both within and across categories: one matching system admits its connected eligible live wormhole chain. Empty scope means the whole universe. A later discovered exit can make an earlier, still-live chain eligible without restarting its connection lifetimes.
 
-Sound and desktop notifications are opt-in device choices. Fleet collection needs the fleet scope and appropriate EVE role; an empty, unavailable or stale roster is labeled accordingly. Missing permission does not turn into an empty confirmed fleet.
+Scope controls population, not visibility. Changing it does not hide or delete saved cards, notes or connections. Sovereign alliance/corporation/bloc matching needs fresh complete sovereignty. Inferred coalitions, NPC station ownership and manually assigned J-Space dominion do not establish those scope matches. J-Space's organisational regions and constellations are deliberately absent.
 
-**Exploration** includes system signatures, scanner clipboard import, private infrastructure notes and attributed public observations. A partial scan preserves existing signatures; only an explicitly complete, valid scan can mark missing signatures. Saved map annotations remain after a temporary connection disappears.
+Copied systems start with independent annotations; copied connections start at default conditions, unconfirmed and inaccessible. Existing target-map edits are preserved. Only eligible subscribed pilots' live topology is considered, not deleted connections or historical visits.
 
-## EVE-Scout: Thera, Turnur and storms
+### Inspect the live source
 
-Thera and Turnur reports are collected from the documented EVE-Scout public API and refreshed with its five-minute cache. Connection details preserve both endpoint signatures, wormhole type, observation time, expiry, ship-size limit and source. Nominal type data uses the separately cached wormhole-types API. Nominal jump/total mass and lifetime are not remaining mass or a guarantee that a connection is still passable.
+Open **Maps settings → View live source** to see the active pilot's lightweight, read-only observed chain. It is not in the normal map picker and never opens by default. **Create new map** from this view opens the normal creation form and copies eligible live topology for the chosen pilots, preserving connection ages.
 
-Reported hub entrances have distinct Thera/Turnur symbols on the map at every zoom level. Map hub controls frame their entrances within the current scope. Hover a symbol for its meaning, then click or tap to pin its details; keyboard users can open the map symbol list. Pinned context connects directly to an entrance destination or its exploration notebook. These actions retain the map workspace, and setting a destination does not calculate a route or send EVE waypoints. Thera has no invented physical K-Space position; its shared-hub connections are represented at the reported entrances and in the J-Space discovery graph. Public shortcuts can be explicitly enabled in navigation. Routes pass through the actual Thera or Turnur system; two exits are two legs. Expired, incomplete and stale reports cannot become active route edges. Ship limits are applied before planning. Saving a connection as your own verified observation is explicit and preserves the reported expiry and provenance.
+The source does not hold editable system notes, scanner records, ownership, activity logs or passage ledgers. Use a named map for operational work.
 
-Storms use EVE-Scout’s structured observations API. Strong and weak footprints follow actual gate hops. Public combat reports are separately opt-in, deduplicated and bounded to 500 observations in a configurable 5–120-minute display window. Campaigns, development and vulnerability context come from the existing central ESI snapshot. NPC change is a signed comparison of two rolling one-hour totals, not kills since the preceding refresh. Reference ice, observatory, invasion and point-of-interest markers are historical, attributed data rather than confirmed current availability.
+## Record and maintain connections
 
-## Itineraries and SMT migration
+### Draw or add a connection
 
-Navigation saves an ordered itinerary per pilot, with accessible reorder/remove controls, route restrictions, typed connection legs and exclusions. Capital planning uses physical XYZ distances, hull/skill presets, alternate midpoints and range intersections. Route planning and copying remain local. **Send to EVE** explicitly appends or replaces client waypoints and requires `esi-ui.write_waypoint.v1`; partial failures show which steps were sent.
+Drag a connection tab from the left, right, top or bottom of one card to another card. The preview follows the pointer; press Escape to cancel. Keyboard users can activate an origin handle and then a destination handle. The saved line retains those attachment sides. Drawing an already recorded live pair reuses it.
 
-Paste an existing SMT Ansiblex list unchanged into the connection import. Kairo accepts comments, blank lines, repeated whitespace and lines such as `0 UALX-3 --> IL-YTR`. A zero means that the structure ID is unknown. Each line is directed; reciprocal entries merge while preserving each endpoint’s structure/access/owner metadata. Preview reports malformed or unknown systems before an atomic import. Lists export back to SMT text, and each list can be disabled independently. Importing or discovering a visible structure does not prove fuel, online state or access.
+Alternatively, select **Connect** and choose two mapped systems and a connection kind:
 
-Source attribution and data licenses are retained in [third-party notices](THIRD-PARTY-NOTICES.md). Historical source comparisons are linked from the [documentation map](README.md#history-and-investigation).
+| Kind | What Kairo records |
+| --- | --- |
+| **Wormhole** | A temporary observation with signatures, type, conditions, expiry, confirmation and access. |
+| **Stargate** | A permanent link that must match an actual pair in the bundled atlas. |
+| **Ansiblex** | A reference to your configured network or an independent bridge private to this map. |
 
-## Power blocs and inferred coalitions
+Permanent links do not receive wormhole mass, lifetime or size settings. Access on a configured Ansiblex is managed in **Universe settings**. Removing that line from a map does not delete the configured network entry. Private map bridges remain isolated to their map.
 
-Open **Universe → Universe settings → Power blocs** to create a named bloc, choose its colour and add alliances by known name or verified alliance ID. Changes remain a draft until saved. Membership is exclusive: moving an alliance requires an explicit action. Mark an alliance **Keep independent** to exclude it from the inferred fallback. These settings apply across the local Universe module; pilot standings and private travel records retain their existing scope.
+### Verify a wormhole before routing
 
-Configured membership is authoritative. Alliances without a configured membership can appear in **Inferred Coalitions**, unless kept independent or inference is disabled. Solid borders identify configured groups; dashed borders identify inferred groups. System dots and detail cards retain the actual sovereignty owner. The bloc inspector shows member alliances, provenance, evidence and coverage. Removing a configured membership returns that alliance to fallback eligibility.
+Select the edge and open **Connection conditions**. Record what you observed: endpoint signatures, hole type, life, mass and size limit. Link existing scanner signatures to the exact connection where appropriate. Confirmation and route access are explicit choices; neither drawing a line nor importing a report grants them.
 
-The political palette assigns a distinct colour to every alliance, corporation, faction and bloc in the complete ownership roster before region or standings filters apply. Caldari blue, Gallente teal, Amarr gold and Minmatar rust are reserved for their factions. Settings flag duplicate or reserved bloc colours and offer an available alternative. Older conflicting configurations remain loadable and receive distinct display colours until corrected. Colour works alongside names, outlines and membership-source labels; a dense map cannot rely on colour alone. Security, activity and standings retain their category-based legends.
+The quick condition controls offer:
 
-Political borders are interactive. Select a territory to spotlight it and open its holdings, or use **Frame territory** to bring all its observed systems into view. The political atlas includes factions and separate alliance owners alongside blocs. Its share bars count observed owned systems, never map area. Regional holdings lead into the relevant region; stargate frontiers list actual gate crossings to neighbouring owners and let you inspect their endpoints. Gate adjacency describes geography, not diplomatic relations or hostility. Activity totals describe events in those systems, not actions attributed to their owner. Missing coverage remains unavailable rather than becoming zero.
+| Field | Choices and meaning |
+| --- | --- |
+| Lifetime | **1h, 4h, 4.5h, 16h, 24h, 48h**. Deliberately choosing a lifetime sets expiry from now. **Manual expiry** accepts an exact time. |
+| Mass | **Verge / Half / Normal**: observed condition, not a calculated remaining-mass meter. |
+| Ship size | **S / M / L / H / XL**; H represents freighters and XL capitals in the connection display. Routing also considers vessel class and nominal single-transit limits. |
 
-Inference is an assessment, not a declaration of diplomacy. It uses combat records already collected by this Kairo installation: repeated cooperation across distinct days is the main signal, direct fighting provides counterevidence, and shared opponents and neighbouring sovereignty provide supporting context. Neighbouring territory alone cannot establish a coalition. Groups require agreement between their members, preventing a single connecting alliance from joining unrelated blocs. Kairo uses a bounded 60-day local evidence window with age weighting and freshness limits, and records assessment/configuration snapshots. Missing evidence stays unresolved. It does not download a complete New Eden combat dataset or claim global coverage.
+New drawn links default to **16h / Normal / L**, unconfirmed and without route access. Ordinary condition edits preserve the existing expiry; selecting a new lifetime deliberately changes it. The outer stroke represents lifetime and the inner fill mass. Only system cards can be locked; a connection cannot be locked past its expiry.
 
-The inspector labels incomplete collection and stale assessments. An outage can retain a clearly marked previous assessment while its supporting evidence remains valid; expired evidence is withheld. Inference never rewrites configured memberships, establishes transit access, changes standings, or controls OPSEC.
+Imported observations can have an unknown lifetime. Supply observed lifetime evidence, confirmation and access before expecting them in a route. Nominal type properties and size labels do not prove current passability.
 
-Selected system cards show security, hierarchy, activity, known structures, static celestials, connected gates and field notes. Structure visibility is partial: public sovereignty structures are not a complete Upwell inventory. You can verify a known player structure ID using a connected pilot with `esi-universe.read_structures.v1`. ESI visibility does not prove docking or transit access.
+### Expiry, removal and Undo
 
-The selected pilot's own alliance and personal, corporation and alliance contacts inform standings. Personal contacts take precedence over corporation and alliance entries; explicit Neutral is respected. Missing, stale or wrong-membership evidence stays Unknown. OPSEC remains governed by its existing protection policy.
+Deleting, collapsing or expiring a wormhole removes the canonical connection and its connection notes, passages, bound wormhole signatures and cached route references. There is no connection archive or Undo. Expiry is reconciled while Kairo runs even if the map is closed; reopening does not restart an expired connection's lifetime.
 
-Calendar headers do not reliably identify a solar system or a moon extraction. A selected-system event pin can be linked to a specific calendar entry; Kairo uses the event's actual title and EVE time. Confirm the system and event kind yourself. A manually entered timer is labelled as a manual record.
+System cards have a different lifecycle:
+
+- A disconnected, unlocked system leaves the diagram 30 minutes after its last connection disappears. Never-connected standalone cards remain.
+- Locking prevents that automatic cleanup. Unlocking or manually restoring a card gives it a fresh 30-minute grace period.
+- Removed/pruned system membership and metadata remain associated with that map. Restoring or rediscovering the system restores its own records, including notes, unrelated signatures, reports and observed ownership.
+- **Undo map edit** handles supported layout/annotation changes. Restoring a system cannot resurrect a deleted connection or its deleted records.
+
+Use a native export before deliberately removing a whole map if you want a transferable copy. Removing the map removes its private records; other maps remain independent.
+
+## Scanner and bookmarks
+
+1. Select a system and open **Scanner**.
+2. Paste scan rows into the composer. English, German, French and Russian scanner labels are supported.
+3. Use **Update scan** for a clean partial scan. Review any row diagnostics.
+4. Mark a scan complete only when it really is complete. Kairo reviews missing observations before importing a complete scan; partial or malformed input cannot prove a signature disappeared.
+
+Anomalies are optional. Signature rows and counts remain visible in the notebook. Add observed hole type/destination information to a saved signature, and use **Connection conditions** to bind it to the correct mapped connection.
+
+Bookmark naming supports Wanderer token spellings, custom labels, explicit branch indices and return-hole markers. Branch naming is deliberate; Kairo does not infer automatic tree numbering. Copying a bookmark name copies text only and does not create an EVE bookmark.
+
+Recently deleted signatures can be restored for 24 hours, preserving original observation times without overwriting a newer record. Selected signature deletion reports partial failures if only some individual deletions succeed.
+
+Atlas **Exploration** exposes the system notebook and infrastructure tools outside a saved map. A saved map's notebook is independent of Atlas and other maps.
+
+### Infrastructure observations
+
+In Atlas, select a system and open **Exploration → Infrastructure**. Enter an upgrade slot, name, level, reported online state and observation notes, then choose **Save infrastructure record**. These are user observations; they do not establish current structure status or access.
+
+**Import or export infrastructure** accepts SMT text or JSON. Paste the data, choose **Preview infrastructure import**, and inspect all listed systems and slots before **Import infrastructure observations**. Existing records in matching slots are updated. Copy/download exports are available in both formats; choose JSON when you need to retain Kairo notes, because SMT text cannot carry them.
+
+## Reports, ownership and notes
+
+### Reports
+
+Choose **Reports** in system details. **Structures**, **Timers** and **Field reports** have separate forms and counts. A structure with an attached schedule remains a structure.
+
+New observation times default to current UTC/EVE time. Editing preserves the original time unless you change it or explicitly reobserve. Observation expiry is optional. A timer reaching its scheduled time does not establish that a structure actually changed state.
+
+D-scan and three-line timer pastes show a preview before creating observations. Review resolved systems, names and times. A paste does not silently resolve an ambiguous name or establish that a structure is powered.
+
+### Observed J-Space ownership
+
+In a wormhole system's **System** details, choose Alliance or Corporation and search by name. Select the result with the intended name, logo and EVE ID. The card displays this as local observed dominion. It does not change formal sovereignty, standings, ownership-based map scope or route access.
+
+### Notes
+
+Open **Notes** on a system or connection. New notes use the selected connected pilot's trusted identity and show that pilot's name and portrait. Imported known attribution is preserved; unknown older authors show **Pilot unavailable**.
+
+Search the current location or select **Entire map** to search its complete notebook. Results open the relevant location. Retained notes for off-map systems remain searchable without restoring the card automatically. Notes use UTC date groups and pages of 12; recent notes show elapsed minutes, with a precise timestamp available on hover.
+
+Deleting a connection deletes its notes. System notes survive card removal within their map. Atlas field notes have a separate, locally shared scope; see [data and privacy](#data-and-privacy).
+
+## Passage ledger
+
+Select a wormhole and open **Passages**. Record the pilot, hull, direction, occurrence time and estimated mass of a known transit. Editing or deleting a passage adjusts the observed total.
+
+To collect sampled passages, enable **Map settings → Passage logging → Log sampled passages**, then **Save map details**. Fresh sampled ESI transitions must correspond to a unique confirmed mapped connection. They retain sampled provenance, begin with unknown mass and require review; they do not create or confirm a connection.
+
+The ledger is incomplete traffic evidence. Fittings, propulsion and unseen pilots affect real mass consumption. Kairo does not subtract this total from nominal hole mass and present it as verified remaining mass.
 
 ## Routes and special connections
 
-**Navigate → Gate route** calculates locally from the bundled stargate graph. Choose shortest, prefer high security or prefer low security, list systems to avoid, and optionally include enabled Ansiblexes and confirmed, unexpired private wormholes. Fresh public Thera and Turnur reports have separate opt-ins and remain identified as reports. The high-security preference also considers standings and reported destruction; it cannot establish that a route is safe. The exact connection type appears on every leg.
+### Plan a gate itinerary
 
-System details offer origin and destination shortcuts. **Fit route** frames the route's systems in the active space; a route spanning both spaces remains split across the K-space and J-space views.
+1. Open **Navigate → Gate route** beside Atlas or a saved map. System details provide origin/destination shortcuts.
+2. Enter **Route origin** and **Route destination**. Use **Add waypoint** for multiple ordered stops; move or remove stops with their controls.
+3. Choose **Shortest route**, **Prefer high security** or **Prefer low security**.
+4. Choose whether to use enabled accessible Ansiblexes and confirmed unexpired wormholes. Saved-map navigation uses that map's connection context.
+5. Open **Public shortcuts & vessel limits** to opt into fresh Thera/Turnur reports or allow Zarzakh transit. Enter vessel size, class and fitted mass when relevant.
+6. Set standings, security and system exclusions in the route controls, then choose **Calculate route**.
+7. Review the route briefing, each leg's connection type, warnings and any incomplete-route explanation. Use **Fit route** to frame it, or copy/download the itinerary.
 
-Open **Universe → Universe settings → Connections & pins** to manage Ansiblex lists, pins and access. **Power blocs**, **Sources & alerts** and **Mapper preferences** share this dedicated settings page. Switching its tabs preserves unfinished form edits. Map-specific name, scope, pilots and export remain in each map’s own settings.
+A high-security preference is a weighted preference, including available standings and destruction evidence. It does not guarantee safety. Map filters and projection do not alter the route's preferences. Stale, expired, inaccessible, disabled or unconfirmed special links cannot establish an eligible route.
 
-Connection behavior:
+Itineraries are saved per pilot, with independent saved-map context. **Advance origin with fresh pilot location** follows accepted fresh location observations. Changing the draft requires recalculation before it can be sent to EVE.
 
-- Add individual Ansiblexes or import a CSV/TSV list of origin system, destination system and optional label. Confirm the pilot's access separately.
-- Enable or disable individual entries or entire imports, and remove either without affecting the other lists.
-- Record wormholes inside a named map with a default 16-hour lifetime. Presets are 1h, 4h, 4.5h, 16h, 24h and 48h; mass state is editable.
-- Consecutive fresh observations involving wormhole space can suggest a connection. Such observations require confirmation before routing and are not proof of a wormhole. Known pod-loss evidence suppresses the suggestion.
-- Expired links and their associated data are deleted immediately. Disconnected system instances keep their own notes and follow the map’s system-pruning grace period.
+### Send waypoints to EVE
 
-Ansiblex planning defaults to **Live rules (22 Sep)**, verified for this build on 25 September 2026. It requires the pilot's alliance to match the starting system's reported sovereign alliance and separately requires recorded bridge access. Legacy and pre-release rules are labelled comparison models. Zone distance is directional, from the recorded owning-alliance capital to the destination; an unknown capital cannot bypass a selected zone limit. Known vessel classes receive nominal capacitor-cost estimates when the zone is known. Live capacitor availability, fuel and online state are not established by those estimates.
+Planning, copying and downloading are local. **Send to EVE** is explicit and requires `esi-ui.write_waypoint.v1`. Review whether to append to the client's existing waypoints or replace them before sending. Partial failures report which steps were sent; inspect that result before retrying. Calculating a route or selecting a public entrance never sends waypoints automatically. EVE waypoints do not execute wormhole or jump-drive travel; follow those legs manually. A single send is limited to 500 waypoint targets, so split a larger itinerary.
 
-**Navigate → Jump route / Range** uses full physical X, Y and Z positions and EVE's exact light-year of 9.46 × 10¹⁵ metres. Choose a hull/JDC preset or enter the effective in-game range; compare multiple origins or select alternate midpoints. Each destination must be an eligible low/null system; highsec destinations, wormhole space, Jove, Pochven, Zarzakh and Exordium are excluded. Optional fuel planning uses your supplied consumption values. The result remains a physical range plan: actual fuel, fatigue, cynos, jammers, ship suitability and docking must be checked in game.
+### Jump routes and range
+
+**Navigate → Jump route** plans from physical XYZ distance. Choose a hull/JDC range profile or enter your effective in-game range. Add intermediate stops as needed and calculate the jump route. Alternate midpoint candidates can be added and recalculated.
+
+Eligible arrivals are low/null systems. Highsec destinations, wormhole space, Jove, Pochven, Zarzakh and Exordium are excluded; a high-security origin may jump outward. The result does not verify cynos, fuel, fatigue, jammers, docking or every ship-specific eligibility condition.
+
+**Fuel planning** uses your supplied isotope rate, effective multiplier, reserve and optional unit price/volume. It rounds consumption up per jump and excludes cyno fuel, conduit passengers and fatigue. Use actual hull/skill values.
+
+For a reach comparison, open **Range**, enter up to four origins and their radii, and select **Show reachable systems**. The result distinguishes the union of reachable systems from systems within every entered range. An optional **Alternate midpoint destination** finds intersection candidates. Physical-map circles are projected outer bounds; highlighted systems use exact XYZ distances. Schematic positions never enter range calculations.
+
+### Ansiblex rules in this candidate
+
+The default **Live rules (22 Sep)** model is the implementation pinned to an effective date of 22 September 2026 and a source verification date of 25 September 2026. These dates describe the candidate's stored model, not a new check of live game rules.
+
+It requires the pilot's alliance to match the starting system's reported sovereign alliance and separately requires recorded bridge access. Owner/capital data and vessel eligibility are used where required. Zones are directional, from the recorded owning alliance's capital to the destination; an unknown capital cannot bypass a restrictive zone selection. Known hulls can receive nominal capacitor estimates, but actual available capacitor, fuel and online state are not reported.
+
+**Legacy rules · comparison only** and **Pre-release model · comparison only** are distinct historical models. They are not aliases for current game rules. See the [technical routing contract](UNIVERSE-ROUTING-VALIDATION.md) for implementation and source ownership.
+
+### Find an exit or service
+
+In a map, open **Find an exit or service** to search the eligible graph for high-/low-sec exits, trade hubs, blue-/red-loot buyers, security-status services and fresh public Thera/Turnur entrances. Results use the selected chain's confirmation, expiry, vessel limits and exclusions. Public shortcuts require an explicit choice.
+
+Service locations are dated references. Docking, current NPC services and buy orders are not verified. A suggested destination remains a plan, not a waypoint command to EVE.
+
+## EVE-Scout: Thera, Turnur and storms
+
+Thera and Turnur entrances come from EVE-Scout's public reports, with source attribution, endpoint signatures, hole type, observation time, expiry and size limit. The feed uses a five-minute cache. Nominal type data is separate from current conditions and does not establish remaining mass.
+
+On Atlas, entrance symbols remain visible at every zoom level. Hover for their meaning or click/tap to pin details; keyboard users can open the map symbol list. Hub controls frame reported entrances in the active scope. Entrance actions can set a destination or open its exploration notebook without leaving the workspace.
+
+On saved Maps, toggle Thera/Turnur overlays to show temporary, read-only public cards. An unexpired cached report can remain visible during a failed refresh, marked stale and excluded from public routing. A successful snapshot reconciles additions and removals while preserving surviving overlay positions. Adopting a report as your own connection is explicit, preserves its reported expiry, and still requires verification for route access.
+
+Routes use the actual Thera/Turnur system: two entrances form two legs. There is no invented physical K-Space position for Thera. Expired, incomplete and stale reports are not active public route edges. Vessel restrictions apply before planning, and nominal mass is not remaining mass.
+
+Storm footprints use EVE-Scout's structured observations and real gate hops for strong/weak ranges. Reference ice, observatory, invasion and point-of-interest markers are attributed historical data, not confirmed current availability. Campaign, development and vulnerability context comes from central ESI snapshots.
+
+## Ansiblex lists and SMT migration
+
+Open **Universe settings → Connections & pins**. For an individual bridge, choose **Ansiblex**, enter origin/destination and optional label, record access and any known owner alliance/capital, then **Save connection**.
+
+For a list:
+
+1. Choose **Import** and give the list a name.
+2. Paste an SMT list, EVE bridge links or CSV/TSV, or load a text file smaller than 2 MB.
+3. Set access only if you have verified it. Imported visibility is not proof of access.
+4. Choose **Preview bridge list**, resolve reported line/system issues, then **Import bridge list**.
+
+An SMT line can look like:
+
+```text
+0 UALX-3 --> IL-YTR
+```
+
+Here `0` means the structure ID is unknown. Each line is directional. Reciprocal entries merge while retaining each endpoint's structure/access/owner information. Blank lines, comments and repeated whitespace are accepted. Preview validates before the atomic import.
+
+Use **Export SMT** to download a list. Individual bridges and whole lists can be disabled independently. Deleting an imported list removes its bridges without deleting unrelated lists. **Discover visible Ansiblex structures** can prepare candidates if the pilot has the required search/structure permissions; review pairing and access before importing.
+
+Kairo does not watch SMT preferences automatically or replicate native overlays, global hotkeys, tray controls or every SMT display option. Attribution and licenses remain in [third-party notices](THIRD-PARTY-NOTICES.md).
+
+## Power blocs and inferred coalitions
+
+Open **Universe settings → Power blocs** to create a named bloc, choose a colour and add alliances by name or verified alliance ID. Changes remain a draft until **Save changes**. **Revert** returns to saved settings. Membership is exclusive; moving an alliance between blocs is an explicit action. Mark an alliance **Keep independent** to exclude it from inferred fallback.
+
+Configured memberships are authoritative. With inference enabled, unassigned alliances can appear in **Inferred Coalitions** unless kept independent. Solid borders identify configured groups; dashed borders identify inferred ones. System dots and details retain actual sovereign owners.
+
+Select a political territory to open its inspector and use **Frame territory** to frame observed holdings. Member lists explain provenance and coverage; regional holdings navigate to the corresponding region. Share bars count observed owned systems, not map area. Frontiers list actual stargate crossings to neighbouring owners. Adjacency does not imply diplomatic relations, and activity in owned systems is not activity attributed to their owner.
+
+The palette reserves Caldari blue, Gallente teal, Amarr gold and Minmatar rust. Duplicate or reserved bloc colours are flagged with alternatives. Existing conflicting settings remain loadable and receive distinct display colours. Names, outlines and source labels remain useful where colour alone is ambiguous.
+
+Inference uses this installation's collected combat evidence over a bounded 60-day window. Repeated cooperation across days is the primary signal, direct fighting is counterevidence, and shared opponents/adjacency provide supporting context. Neighbouring territory alone cannot establish a coalition. Missing evidence stays unresolved; collection is not a complete global combat dataset.
+
+Stale or incomplete assessments are labelled. Inference does not overwrite configured memberships, set standings, authorize transit or control OPSEC. Personal, corporation and alliance contacts inform the selected pilot's standings; personal contacts take precedence and explicit Neutral is respected. Stale, missing or wrong-membership evidence remains Unknown.
+
+## Operational sources and alerts
+
+**Live intel** combines explicit pasted reports, optional local EVE chat/game logs, connected pilot positions and an authorized fleet. Reports retain source, channel, time, resolved systems and clear/question/hostile classification. Alerts support expiry, cooldown and acknowledgement.
+
+Open **Reports → Add an observation**, paste/write an intel message, add a source label and choose **Record report**. The selected system provides context while named systems in the message are also resolved. Filter by all observations, the selected system or the planned route; **Include history** includes older reports. Unresolved names remain unresolved.
+
+**Signals** provides source-labelled public connections, campaigns, storms, combat, development, NPC changes and points of interest, with scope/search controls. **Pilots** shows connected pilot positions and the fleet's collection status; selecting an available position frames that system. Use the acknowledgement control on an alert once reviewed.
+
+To configure collection:
+
+1. Open **Universe settings → Sources & alerts** and enable the sources you want.
+2. For logs, enable **Monitor EVE chat and game logs**, select or enter the local folder containing `Chatlogs` and `Gamelogs`, and enter channel matches one per line.
+3. Choose **ESI telemetry**, **Local chat log observations**, or **Prefer ESI, fall back to logs** as the operational location source.
+4. Optionally enable fleet reads or public combat reports. Set the combat observation window (5–120 minutes).
+5. Configure watch range, report lifetime, cooldown, keywords and watched system IDs as needed.
+6. Choose **Save operational settings**. Collection and watch rules are not applied merely by editing them.
+
+The log reader starts from the current end of eligible files, matches the pilot's listener and never edits originals. Log-derived locations expire after five minutes and do not change ESI telemetry or OPSEC policy. Fleet collection needs fleet permission and the appropriate EVE role. Missing permission, a stale roster and a confirmed empty roster remain distinct states.
+
+Public combat collection is opt-in and bounded to 500 observations. Incomplete coverage does not mean no activity. Clear reports and questions do not create hostile alerts; ignored text is excluded before alert rules.
+
+Sound and desktop notifications are separate opt-in browser/device choices and save immediately. Use **Test sound** to check audio. Desktop notifications require browser permission and may contain pilot/system names. The private alert inbox remains usable when notifications are unavailable or denied.
+
+## Universe settings and saving
+
+| Location | What belongs there | How changes apply |
+| --- | --- | --- |
+| **Universe settings → Connections & pins** | Shared configured Ansiblex networks/imports and known-space pins | Explicit add/import actions; individual toggles/removals save when used. |
+| **Universe settings → Power blocs** | Configured alliance membership, colours, independence and inference | **Save changes** applies the draft. |
+| **Universe settings → Mapper preferences** | K/J-space card sizes and focus detail | Immediately, per pilot in this browser. |
+| **Universe settings → Sources & alerts** | Operational collection, logs, fleet, public combat and watch rules | **Save operational settings**; device sound/notifications save immediately. |
+| **Map settings** on a named map | Name, description, scope, sampled passage logging, export/duplicate/removal | **Save map details** applies the form. Transfer/removal use separate actions. |
+| **Pilots** on a named map | Its tracked pilot roster and pause/resume | Explicit roster actions apply to that map. |
+| **Display** on a named map | Card preferences and collapsible groups | Immediately in this browser; group state is per pilot and map. |
+
+Changing Universe settings tabs preserves unfinished form edits. Leaving the workspace or reloading is not a substitute for an explicit Save. Read any failure or conflict message before assuming a change was stored.
+
+Dataset updates and ESI polling live in the application's main Settings, not Universe settings. See [Datasets](DATASETS.md) and [ESI polling](ESI-POLLING.md).
+
+## Import, export and duplicate maps
+
+Open a named map's **Map settings**:
+
+- **Export map** downloads the native `.kairo-map.json` representation of recorded context.
+- **Export for Wanderer** downloads a portable version-1 `.wanderer-map.json` containing supported systems, connections and signatures. It omits private notes, observations and passage history, and cannot carry full expiry/trust/observation-age context. Unconfirmed, inactive, expired and collapsed links are omitted.
+- **Duplicate map** makes independent layout, system, scanner, intel, infrastructure and connection records. Changes to the copy do not modify the original.
+- **Remove map** asks you to confirm removal of that map and its private records.
+
+To import, use **Import a map** on the landing or toolbar. Select a JSON file smaller than 4 MB or paste JSON, choose **Preview import**, and review counts, warnings and errors. **Import as a new map** creates a separate map only after a valid preview. Kairo accepts its own version-1 format and compatible Wanderer version 1.
+
+Imports preserve observation age where the format supplies it; they do not inherit route trust or access. Missing lifetime evidence remains unknown rather than becoming a fresh hole. Review imported connections before routing. A native export is a map transfer, not a complete application backup: browser display groups, camera/device choices and other application data need the separate [backup procedure](USER-GUIDE.md).
+
+Kairo's Maps are local private workspaces. They do not provide hosted collaboration, remote map-user accounts, corporation/alliance ACL inheritance, invitations, external map tokens or signed webhooks.
 
 ## Sessions and map replay
 
-Open **Sessions** to start recording an operation and review its report. New movement records belong to the active Session; travelling outside a Session still updates live location, discovered-system membership and ordinary activity without maintaining a lifetime visit log. **Show on Map** opens a replay bound to that session inside Universe. Playback, speed, timeline scrubbing, event context and follow-player controls exist only in this view. Follow mode pans smoothly; scrubbing moves directly to the requested point. Exit the replay to return to the ordinary atlas; Sessions remains available in the main navigation.
+Start/end operations and review their reports in [Sessions](SESSIONS.md). **Show on Map** opens that Session's fixed replay snapshot inside Universe. Playback, speed, scrubbing, event context and follow-player controls exist only in this view. Follow pans smoothly; scrubbing moves to the requested point. Exit replay to return to Atlas.
 
-Recorded J-Space movement uses a schematic chain that includes its known-space entrance and exit visits. Later travel solely within K-Space returns to Atlas using the remembered physical or schematic projection. Rewinding selects the corresponding view. These lines represent recorded movement and never recreate expired or deleted live wormhole connections or populate a live map.
+Recorded J-Space movement is a schematic chain including its known-space entrances/exits. Later K-Space-only travel returns to the remembered Atlas projection, and rewinding chooses the matching view. Replay does not recreate expired connections or populate a live map.
 
-K-Space replay shades current cached alliance/faction sovereignty and labels its cache time. The bottom-left pilot location adds **At visit** ownership when it was captured from a fresh ESI sovereignty response at recording time. Older visits without that capture show **not recorded**; current ownership is never substituted for historical ownership. Capturing this small visit annotation uses existing cached data, with no additional ESI polling. Live activity, private links, pins and operational reports remain hidden during replay.
+The background uses current cached sovereignty with its cache time. **At visit** ownership is shown only when captured from fresh sovereignty at recording time; older visits without it show **not recorded**. The replay does not reconstruct missed gates or an exact flight path from a straight line. Event positions retain explicit/combat-derived/contemporaneous-visit/unavailable provenance.
 
-Replay uses recorded visits and occurrence timestamps. Routine “Entered system” and OPSEC policy events are omitted from its event cards, markers and stepping controls; recorded travel and camera movement remain intact. It does not reconstruct missed gates, infer an actual flight path from a straight map line or show current sovereignty as historical sovereignty. Event locations are marked as explicit, combat-derived, inferred from a contemporaneous visit, or unavailable. The replay includes up to 10,000 relevant events, with explicit coverage metadata when that limit is reached; all visits remain present. Sessions can contain gaps or legacy records with no usable coordinates. Live sessions replay a fixed snapshot, avoiding a moving end time during playback.
+Routine entered-system and OPSEC events are omitted from replay event cards and stepping while recorded travel remains intact. Up to 10,000 relevant events are included with coverage metadata when the limit is reached; all visits remain present. Live sessions replay a fixed snapshot, and older data can contain gaps or unusable coordinates. See the Sessions guide for report and recording limits.
 
 ## Data and privacy
 
-The official static snapshot is bundled, so browsing and static gate/range planning work without ESI or a connected pilot. Static coordinates, hierarchy, gates, celestial bodies and NPC stations are read locally. ESI and the explicitly identified public feeds supply changing state, retaining source timing and availability. Dynamic route options need their respective observations and permissions. Blank/unavailable activity is distinct from a reported zero. Kairo does not invent pilots-in-space counts, camp detection or a complete public structure inventory.
+Static browsing and gate/range planning work from the bundled official snapshot without ESI or a connected pilot. Official data can later be updated through [Datasets](DATASETS.md). Dynamic sovereignty, activity, standings, feeds and permission-dependent observations retain their own timing and availability.
 
-Views, pins and connection lists are scoped to the selected pilot, with a separate guest workspace before sign-in. Atlas field notes keep their existing locally shared scope; user-created map records live only inside their independent maps. Universe and replay APIs require the local Kairo session, mutations require CSRF, and none of this private map state is exposed by the OBS server.
+| Data | Scope |
+| --- | --- |
+| Static system/reference data | Shared across the installation. |
+| Views, pins, connection lists and ordinary navigation | Selected pilot, with a separate guest workspace before connection. |
+| Configured power blocs | Local Universe configuration shared across pilots. |
+| Atlas field notes | Locally shared Atlas scope. |
+| Named-map systems, private links, scanner, reports and notes | Independent records in the selected pilot's map. |
+| Mapper preferences, display groups, sound and notifications | Browser/device storage with pilot/map scope as described above. |
+| Session travel/replay | Owned by the Session recording. |
 
-Existing visits, Sessions, notes and settings are retained. The standalone Journey page, lifetime visit counters, footprint preset and visit indicator are retired; legacy `#journey` links open Atlas. Older saved visit overlays restore with no indicator while preserving other view choices. Session reports/replay and the ordinary activity timeline remain available. Historical observation edges are never imported as routing connections. No reset is required.
+Universe/replay APIs require the local Kairo session; mutations require CSRF protection. Private map state is not served by the OBS output server. See [Authentication and security](AUTH-AND-SECURITY.md), [data retention](DATA-RETENTION.md) and [backup guidance](USER-GUIDE.md) for the wider installation.
 
-## Imports and platform limits
+Travelling outside a Session still updates live location, discovered-system membership and ordinary activity, without maintaining the retired lifetime Journey log. Existing historical visits and Sessions remain readable; old `#journey` links open Atlas. Historical observation edges are not imported as live routing connections.
 
-Kairo is a local browser workspace. It does not provide hosted map collaboration, remote map-user administration, corporation/alliance role inheritance, invitations, external map tokens, public map-scoped event feeds or signed webhook/bot delivery. Private imports transfer data without authorizing outbound sharing.
+## Common questions and troubleshooting
 
-SMT-compatible infrastructure and connection data uses explicit preview/import/export. Kairo does not automatically watch SMT preferences, reproduce native docked overlays/global hotkeys/tray controls, or copy every presentation setting. Browser notifications depend on permission and browser support. Signature clipboard compatibility covers the verified English, German, French and Russian labels; selected signature deletion performs bounded individual mutations and reports partial failures.
+| Symptom or state | What to check |
+| --- | --- |
+| **Create map** is unavailable | Select or connect a pilot; creation also requires a name and at least one tracked pilot. Static Atlas remains usable as a guest. |
+| A new map is empty | Historical visits do not seed maps. Add a system, observe fresh eligible travel, or explicitly create from the live source. Check scope and tracked pilots. |
+| A visible wormhole is absent from routing | Check confirmation, access, expiry, vessel restrictions and selected map. A public cached report can be visible yet stale and ineligible. |
+| A route cannot be completed | Inspect the explanation and current exclusions. Check each special link's evidence and access; a drawn line does not itself establish transit. |
+| A disconnected system disappeared | Unlocked cards prune after the 30-minute grace period. Search/add the system in that same map to restore its retained system records. Deleted connection records do not return. |
+| A collapsed group appears to have lost cards | Expand it from **Display** or search for a member. Grouping does not delete cards or their connections. |
+| A scan would mark signatures missing | Verify that the input is a genuinely complete valid scan. Use a partial scan when coverage is incomplete. |
+| **This map changed in another window** | Kairo loaded the latest revision. Review the refreshed state and reapply/save the intended change. |
+| A map edit fails | Read the error and confirm that the pilot/map is still selected. Do not assume an optimistic position or unsaved form draft has persisted. |
+| Fleet, activity or standings is unavailable | Inspect source status, freshness and character permissions. Unknown/unavailable is not a confirmed empty or neutral result. |
+| Desktop alerts are absent | Enable device notifications and browser permission. Review the private alert inbox and saved watch rules; source collection and device notification choices are separate. |
 
-Log-derived location is an explicitly selected, short-lived observation; it does not override ESI or OPSEC. Public connections and nominal wormhole properties do not prove current mass, hull fit, access, docking or safety. Recorded passages are observations, not a remaining-mass meter.
+For startup, core disconnection, dataset update, authentication and general browser issues, use [Troubleshooting](TROUBLESHOOTING.md).
 
-## Implementation contract
+## Implementation references
 
-Use [Internal API](INTERNAL-API.md) for service/refresh/lifecycle ownership and [API reference](API-REFERENCE.md#universe-maps-and-operations) for the complete HTTP and event contracts. [Architecture](ARCHITECTURE.md#current-ownership-and-execution) explains Session-owned movement and cold Journey compatibility. [Static data](UNIVERSE-DATA.md), [schematic geometry](SCHEMATIC-GEOMETRY.md) and [routing rules](UNIVERSE-ROUTING-VALIDATION.md) cover the technical inputs and limits.
+User workflows above are derived from the current Universe UI and owning services, particularly `components/kairo/universe.tsx`, `jspace-workspace.tsx`, `jspace-workspace-panels.tsx`, `universe-navigation-ui.tsx`, `universe-connections.tsx`, `universe-operations-settings.tsx` and `server/universe*.mjs`.
 
-Server behavior is implemented in `server/universe*.mjs`; the Maps UI starts in `components/kairo/jspace-workspace.tsx`. Service and HTTP tests cover private persistence, pilot/scope/revision checks, expiry, import preview/rollback, native round trips and separation from Stream output. Current execution evidence and remaining release gates live in [Validation](VALIDATION.md).
+Developers should start with [Architecture](ARCHITECTURE.md), [Internal API](INTERNAL-API.md) and the [HTTP/event reference](API-REFERENCE.md). Specialized contracts are in [static Universe data](UNIVERSE-DATA.md), [schematic geometry](SCHEMATIC-GEOMETRY.md) and [routing](UNIVERSE-ROUTING-VALIDATION.md). Service/HTTP tests cover ownership, revisions, expiry, import rollback, native round trips and OBS isolation. Browser coverage and remaining environment-specific gates belong to [Validation](VALIDATION.md); older investigations belong to [history](history/README.md).

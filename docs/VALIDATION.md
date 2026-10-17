@@ -1,5 +1,7 @@
 # Validation and release readiness
 
+The active work is [documentation modernisation](DOCUMENTATION-WORK.md), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Documentation validation does not rerun or relabel the application results below.
+
 **Use the exact build designated in the [Premerge Bug Review handoff](PREMERGE-BUG-REVIEW.md).** It records the application commit, verified package/download, active branch/PR and bug ledger. The completed [performance acceptance record](https://github.com/BunBajiro/kairo/blob/568ce3e29213e4132a535340c1321e28c46a83cc/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) preserves prior gates. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn; PR #12 owns the current phase. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
 
 ## Reproduce source checks

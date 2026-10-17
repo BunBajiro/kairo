@@ -38,20 +38,21 @@ The starting tree contains 24 Markdown files: root README, AGENTS and changelog;
 | Work item | State |
 | --- | --- |
 | Recovery and initial inventory | Complete; checkpoint below records banking |
-| User setup, navigation, backup and troubleshooting | In progress |
-| Markets and Import Analyser | In progress; source review assigned |
-| Universe and technical map references | In progress; source review assigned |
-| Pilot workspace, Sessions and streaming | In progress; source review assigned |
-| Architecture, internal API and HTTP/events | In progress; source review assigned |
-| Auth, ESI, persistence and datasets | In progress; source review assigned |
-| Independent documentation review | In progress |
+| User setup, navigation, backup and troubleshooting | Draft complete; final independent review in progress |
+| Markets and Import Analyser | Draft complete; source review and independent review complete |
+| Universe and technical map references | Draft complete; source review and independent review complete |
+| Pilot workspace, Sessions and streaming | Draft complete; source review and independent review complete |
+| Architecture, internal API and HTTP/events | Draft complete; source review and independent review complete |
+| Auth, ESI, persistence and datasets | Draft complete; source review and independent review complete |
+| Independent documentation review | Topic reviews complete; final integrated review in progress |
 | Internal paths/anchors, commands/examples and change-scope verification | Pending integration |
 
 Use no new screenshots unless captured from the verified application and checked. Documentation changes require link/command/example validation; an application correction would need separate review and meaningful regression evidence. No application correction is currently planned.
 
 ## Banked checkpoints
 
-- Recovery/inventory checkpoint: this ledger and the phase instruction are prepared for the first documentation-only commit. Later checkpoints will record its verified SHA after push.
+- `8ecd684b22b2474538144476578af8034697a2cc`: recovery, inventory and documentation-phase instructions pushed and fetched back successfully.
+- User/developer guide integration: prepared for the next documentation-only bank; final link/example verification still pending.
 
 ## Handoff
 

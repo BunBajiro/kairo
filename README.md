@@ -1,42 +1,46 @@
 # Kairo — Capsuleer operations
 
-A local EVE Online workspace for pilot data, Markets, Sessions, maps and a separate transparent OBS output. Windows is the primary platform. No cloud deployment or AI service is required.
+Kairo is a local EVE Online workspace for connected pilots, market research, operations and streaming. It brings character snapshots, trade planning, maps, Session reports and personal goals together, with a separate transparent output for OBS.
 
-**0.8.0-rc.17 · Premerge Bug Review.** Performance and refactoring work is complete. Start with the [current review handoff](docs/PREMERGE-BUG-REVIEW.md) for the exact tested build and next phase. Merge and stable release still require approval after review.
+**This documentation describes the 0.8.0 feature set. The current candidate is `0.8.0-rc.17`, awaiting review; 0.8.0 has not been released.** [Verified build90 and download](docs/PREMERGE-BUG-REVIEW.md#current-verified-candidate) · [Validation and environment limits](docs/VALIDATION.md) · [Documentation work](docs/DOCUMENTATION-WORK.md).
 
-## Install and run
+## Start here
 
-Use an approved package from [GitHub Releases](https://github.com/BunBajiro/kairo/releases/latest). Feature-branch artifacts are available through [Kairo test build](https://github.com/BunBajiro/kairo/actions/workflows/test-build.yml); use the exact build designated for your review, rather than assuming the newest artifact is a clean candidate. Source ZIP downloads do not contain the compiled application.
+1. Install **Node.js 24 or newer**.
+2. Download the compiled package designated for your review, then extract the whole ZIP into a new folder. GitHub's **Source code** ZIP is not a ready-to-run application.
+3. Stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`.
+4. Keep the launcher window open. Open [the dashboard](http://127.0.0.1:4380) if the browser does not open automatically; press **Ctrl+C** in the launcher to stop cleanly.
 
-1. Install Node.js 24 or newer.
-2. Extract the complete package into a new folder and stop any running Kairo instance.
-3. Open `Kairo/START_KAIRO.bat` (or `START_KAIRO.bat` inside the extracted Kairo folder).
-4. Keep the launcher window open; press Ctrl+C there to stop cleanly.
+The compiled package needs no dependency installation or local build. Windows is the primary platform; Linux/macOS can run `./start-kairo.sh` with the credential limits described in [installation and first run](docs/USER-GUIDE.md). Older stable packages are on [GitHub Releases](https://github.com/BunBajiro/kairo/releases); they do not include the unreleased 0.8.0 feature set.
 
-The compiled package needs no npm install or local build. Linux/macOS can use `./start-kairo.sh`; see the platform and credential limits in the [user guide](docs/USER-GUIDE.md).
+Open **Connections** to register your EVE application, copy Kairo's exact callback address and save its Client ID. Kairo uses PKCE and does not need your Client Secret. Public Atlas and NPC station markets work without EVE sign-in; private character data requires the relevant permissions.
 
-- Dashboard: <http://127.0.0.1:4380>
-- OBS canvas: <http://127.0.0.1:4381/stream>
+## What you can do
 
-Connect a character through **Connections** using your own EVE application's Client ID and the exact callback shown by Kairo. PKCE does not require a Client Secret. Public atlas/routing can be used before character authorization.
-
-## Use Kairo
-
-| Task | Guide |
+| Workspace | Use it for |
 | --- | --- |
-| Setup, upgrades, Markets, Goals, Stream Studio, OBS, OPSEC and privacy | [User guide](docs/USER-GUIDE.md) |
-| Atlas, private Maps, intel, routes and replay | [Universe](docs/UNIVERSE.md) |
-| Record an operation and understand report coverage | [Sessions](docs/SESSIONS.md) |
-| Compare and save hauling plans | [Import Analyser](docs/IMPORT-ANALYSER.md) |
-| Tune collection or manage static data | [ESI polling](docs/ESI-POLLING.md) · [Dataset updates](docs/DATASETS.md) |
-| Find all maintained documentation | [Documentation map](docs/README.md) |
+| [Pilot workspace](docs/PILOT-WORKSPACE.md) | Review training, wallet, assets, industry and planets; keep goals and private notes. |
+| [Markets](docs/MARKETS.md) | Scan shared local order books, browse categories and compare hubs with Jita. |
+| [Import Analyser](docs/IMPORT-ANALYSER.md) | Compare demand assumptions, fees, price tiers, cargo and trips; save hauling plans. |
+| [Atlas and Maps](docs/UNIVERSE.md) | Explore New Eden, plan routes and jump ranges, maintain private wormhole maps and operational records. |
+| [Sessions](docs/SESSIONS.md) | Record an operation, inspect reports and replay observed travel on the map. |
+| [Stream studio and OPSEC](docs/STREAMING.md) | Compose widgets and notifications, configure protection covers and optional OBS state actions. |
 
-Local data normally lives in `%LOCALAPPDATA%\Kairo`. Upgrading uses the same data directory; run only one Kairo instance at a time. Stop Kairo before a full directory backup. Exported history is private and is not a full credential/database backup.
+These features share authorised snapshots and local services. A market scan made with an alt is available to other local pilots; goals can feed Studio widgets; a Session can open its map replay. Data freshness, permissions and observation gaps remain visible. Kairo does not trade automatically or fly your ship. Sending route waypoints to EVE is an explicit action.
 
-OPSEC uses polled observations. Set up and test saved covers in the actual OBS scene, and use manual protection when immediate concealment is required. The [user guide](docs/USER-GUIDE.md#opsec-behaviour) explains freshness and disconnect behavior.
+## Keep your data and output under control
 
-## Develop Kairo
+Kairo runs on loopback addresses and stores data locally, normally in `%LOCALAPPDATA%\Kairo` on Windows. EVE credentials and the OBS password are encrypted; the whole activity database is not. Back up the **complete data directory while Kairo is stopped**. See [backup, upgrade and recovery](docs/USER-GUIDE.md#upgrade-backup-and-restore) and [privacy](docs/AUTH-AND-SECURITY.md).
 
-Start with the [source and ownership map](docs/ARCHITECTURE.md), [internal API development guide](docs/INTERNAL-API.md) and [HTTP/event reference](docs/API-REFERENCE.md). [Validation](docs/VALIDATION.md) explains reproducible checks and their limits. Human and AI contributors follow [AGENTS.md](AGENTS.md): feature branch, draft PR, human review before merge.
+The separate [OBS canvas](http://127.0.0.1:4381/stream) starts empty and transparent. Configure and test saved covers in your actual OBS scene. OPSEC relies on polled observations; use manual protection when immediate concealment is required. See [streaming and protection](docs/STREAMING.md).
 
-Release history belongs in [CHANGELOG.md](CHANGELOG.md); current usage belongs in the guides. Kairo is an independent, unofficial companion. EVE Online and its assets belong to their owners; see [third-party notices](docs/THIRD-PARTY-NOTICES.md).
+## Documentation and development
+
+- [Documentation index](docs/README.md): user tasks, developer references and history.
+- [Troubleshooting](docs/TROUBLESHOOTING.md): visible states, connection problems and supported recovery.
+- [Developer setup](docs/DEVELOPMENT.md): local commands, testing, packaging and review procedure.
+- [Architecture](docs/ARCHITECTURE.md), [internal API](docs/INTERNAL-API.md) and [HTTP/event reference](docs/API-REFERENCE.md).
+
+Contributors follow [AGENTS.md](AGENTS.md): work on a feature/review branch, verify changes and obtain explicit approval before merge or release. The completed review's 74 findings and historical performance evidence remain in the [evidence index](docs/history/README.md).
+
+Kairo is an independent, unofficial companion. EVE Online and its assets belong to their owners. [Release history](CHANGELOG.md) · [Third-party notices](docs/THIRD-PARTY-NOTICES.md).
