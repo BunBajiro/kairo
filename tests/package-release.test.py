@@ -22,6 +22,7 @@ class PackageReleaseTests(unittest.TestCase):
         cls.source_archive = subprocess.check_output(['git', 'archive', 'HEAD'], cwd=ROOT)
         cls.packager = (ROOT / 'scripts/package-release.py').read_bytes()
         cls.supplement = (ROOT / 'vendor/frontend-license-supplement.json').read_bytes()
+        cls.package_metadata = {name: (ROOT / name).read_bytes() for name in ['package.json', 'package-lock.json']}
 
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix='kairo-package-test-')
@@ -33,6 +34,8 @@ class PackageReleaseTests(unittest.TestCase):
             archive.extractall(self.source, filter='data')
         (self.source / 'scripts/package-release.py').write_bytes(self.packager)
         (self.source / 'vendor/frontend-license-supplement.json').write_bytes(self.supplement)
+        for name, content in self.package_metadata.items():
+            (self.source / name).write_bytes(content)
         self.git('init', '-q')
         self.git('add', '.')
         self.commit()
@@ -156,7 +159,8 @@ runpy.run_path(sys.argv[0], run_name='__main__')
         self.assert_rejected('Missing full bundled license')
 
     def test_reviewed_supplement_covers_omitted_npm_license_text(self):
-        (self.source / 'dist/client/.vite/license.md').write_text('# Licenses\n\n## @vitejs/plugin-rsc - 0.5.26 (MIT)\n')
+        entry = json.loads(self.supplement)['packages'][0]
+        (self.source / 'dist/client/.vite/license.md').write_text(f"# Licenses\n\n## {entry['name']} - {entry['version']} (MIT)\n")
         result = self.package()
         self.assertEqual(result.returncode, 0, result.stderr)
         with zipfile.ZipFile(self.output) as archive:
