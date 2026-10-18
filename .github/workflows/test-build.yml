@@ -28,6 +28,7 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '24'
+          check-latest: true
           cache: npm
 
       - name: Install locked dependencies
@@ -371,7 +372,7 @@ jobs:
               f"[Download Kairo-test-build.zip]({os.environ['KAIRO_ARTIFACT_URL']})\n\n"
               "Sign into GitHub, download the ZIP and extract it into a new folder. "
               "Stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. "
-              "Node.js 24 or newer is required; no npm install or local build is needed.\n\n"
+              "Current Node.js 24 LTS (24.21.0 minimum) is required; no npm install or local build is needed.\n\n"
               "This is a test build awaiting review. It does not merge into main or publish a release.\n"
           )
           with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as summary:

@@ -2,7 +2,7 @@
 
 [Documentation index](README.md) · [Architecture](ARCHITECTURE.md) · [Validation](VALIDATION.md)
 
-The current application is **`0.8.0-rc.17`**. Follow [AGENTS.md](../AGENTS.md) and keep changes on a feature/review branch. The current documentation phase uses `review/0.8.0-rc-premerge-bug-review`, draft PR #12. No version bump, merge or stable release is authorised by documentation completion.
+The current application is **`0.8.0-rc.17`**. Follow [AGENTS.md](../AGENTS.md) and keep changes on a feature/review branch. The [final release/baseline audit](FINAL-AUDIT.md) uses `review/0.8.0-rc-premerge-bug-review`, draft PR #12. Audit or documentation completion does not authorize a version bump, merge or stable release.
 
 ## Recover before changing anything
 
@@ -20,7 +20,9 @@ Fetching is not reconciliation: inspect any difference before switching, rebasin
 
 ## Toolchain and first build
 
-Use **Node.js 24+** and npm with the checked-in lockfile. The supported source workflow uses Linux/WSL, matching the Ubuntu Actions runner. The install helper requires **Bash, Linux `flock`, GNU `timeout`, `curl`, `sha256sum` and `/proc` process inspection**. Packaging needs **Python 3**. Running a compiled package on Windows is a separate supported path and does not require these build tools.
+Use **current Node.js 24 LTS** (24.21.0 minimum) and npm with the checked-in lockfile. The supported source workflow uses Linux/WSL, matching the Ubuntu Actions runner. The install helper requires **Bash, Linux `flock`, GNU `timeout`, `curl`, `sha256sum` and `/proc` process inspection**. Packaging and its input-boundary regression gate need **Git and Python 3.12+**. Running a compiled package on Windows is a separate supported path and does not require these build tools.
+
+Startup also checks Node's embedded Undici, which owns the OBS WebSocket client: patched branches begin at 6.28.1, 7.29.1 and 8.10.2. A numerically newer Node release with an affected embedded version is rejected before profile access. An npm dependency override cannot update this built-in component; install a patched Node release. See the [dependency review](final-audit/dependencies.md).
 
 From the repository root:
 
@@ -83,13 +85,15 @@ KAIRO_BROWSER_OUTPUT=/tmp/kairo-navigation-check \
 node tests/premerge-pass4-navigation-ui.mjs
 ```
 
-The Playwright path is a placeholder for an actual installation. The workflow pins its tooling version and installs the matching Firefox binary; do not add it to application dependencies just to run a harness. Browser execution also requires an environment that permits local listeners/browser processes. If that capability is unavailable, use the authorised hosted gates and report that limitation; do not claim local browser execution.
+The Playwright path is a placeholder for an actual installation. The workflow pins its tooling version and installs the matching Firefox binary; do not add it to application dependencies just to run a harness. Run the browser harnesses one at a time, as Actions does: some share fixed ports even though their temporary profiles are separate. Browser execution also requires an environment that permits local listeners/browser processes. If that capability is unavailable, use the authorised hosted gates and report that limitation; do not claim local browser execution.
 
 [Validation](VALIDATION.md#browser-compatibility) describes the required browser scope and historical build90 coverage; the [current review handoff](REVIEW-BUILD.md) records Build91's actual results and counts. Windows DPAPI, live EVE SSO/permissions, actual OBS scene/audio output and extended play remain environment-specific checks.
 
 ## Package and verify
 
-Use a clean source checkout at the intended commit with a fresh build. The packager includes source/docs/tests broadly, not a handpicked application allowlist; inspect the tree for private exports, screenshots and ad hoc files first. Do not package a working profile or arbitrary notes. [package-release.py](../scripts/package-release.py) excludes dependencies, Git/Actions directories, performance output/harnesses, known credentials and database/log/archive suffixes, but filename filtering is not a privacy audit.
+Use a clean Git checkout at the intended commit with a fresh build. [package-release.py](../scripts/package-release.py) includes eligible tracked source/docs/tests plus generated `dist/client`; untracked and ignored local files cannot become source inputs. It rejects tracked modifications and eligible symlinks before opening the output ZIP. A source archive or extracted application without Git is not a packaging checkout. Commit reviewed changes before packaging; inspect committed content for private exports or credentials, since tracking a file does not make it safe to distribute.
+
+Existing exclusions still remove dependencies, Git/Actions directories, performance output/harnesses and known credential/database/log/archive paths. The generated client license inventory is required. These checks establish input boundaries, not frontend freshness or acceptance: always build the intended source, then test and independently verify the artifact. The build-host-only packager regression runs before packaging in both workflows; it is separate from the extracted Node runtime suite.
 
 Run from the repository root:
 
@@ -97,6 +101,7 @@ Run from the repository root:
 npm run check:kairo
 npm run build
 npm run test:kairo
+python3 tests/package-release.test.py
 python3 scripts/package-release.py ../Kairo-review.zip
 python3 -m zipfile -t ../Kairo-review.zip
 python3 -m zipfile -e ../Kairo-review.zip ../kairo-package-check
@@ -109,7 +114,7 @@ cd ../kairo-package-check/Kairo
 npm run test:kairo
 ```
 
-The compiled package needs Node 24+, not `node_modules`. Record SHA256, ZIP CRC, packaged source identity and compiled asset presence; compare source files to the exact tested commit, not a later worktree. A local package is not an independently downloaded Actions artifact. Do not relabel it as the hosted download.
+The compiled package needs the supported Node runtime, not `node_modules`. Record SHA256, ZIP CRC, packaged source identity and compiled asset presence; compare source files to the exact tested commit, not a later worktree. A local package is not an independently downloaded Actions artifact. Do not relabel it as the hosted download.
 
 ## Review and release procedure
 
@@ -121,6 +126,10 @@ The compiled package needs Node 24+, not `node_modules`. Record SHA256, ZIP CRC,
 6. Merge/version/release actions require Bun's separate explicit approval. Do not infer that approval from closed bugs, finished documentation or a successful build.
 
 The existing [release workflow](../.github/workflows/release.yml) is restricted to `main`; it runs on a `package.json` change there or a manual dispatch. It requires a stable `x.y.z` version, matching package/lock versions and a matching changelog section, then builds, packages, tests the extracted runtime and publishes a GitHub release with a checksum. **It does not itself repeat the feature-branch browser suite.** Review acceptance must already cover the exact proposed application changes; the workflow is not approval to skip those gates. The current `0.8.0-rc.17` intentionally fails its stable-version requirement.
+
+Before a later approved stable release, prepare the stable package/lock/changelog change on the review branch, rerun the complete blocking review workflow for that proposed source and independently verify its downloaded artifact. Record the accepted source/tree and confirm that the proposed main tree contains that accepted application and packaging configuration; investigate any difference before merging. Evidence-only updates must be identified separately, not treated as executable acceptance. A successful older RC does not accept a changed stable candidate. Approving a stable-version merge must explicitly account for the release workflow's automatic publication trigger. A manual dispatch is also a publishing action, never a validation-only command.
+
+Current upgrade/recovery support and the proposed stable preservation contract have one home in [Persistence](PERSISTENCE.md#production-baseline-and-version-compatibility); remaining product/environment decisions belong in the current audit/handoff.
 
 Preserve the completed [performance evidence](history/README.md) and bounded ownership contracts. Do not restart historical benchmark/refactor work merely to validate prose.
 
