@@ -79,6 +79,8 @@ Preserve durable user data. Support the tested 0.7.3→0.8.0 upgrade with a comp
 
 ## Continuation checkpoint — 18 October 2026
 
+Completed source checkpoint: **`763960b5a764f6791fa1de410ebaa1f8360ddfa3`**, Git tree **`adab42709ffb6def3bebbc27cfde8918fd38b946`**. [Build93 / run 39081321026](https://github.com/BunBajiro/kairo/actions/runs/39081321026) is running the blocking workflow for that exact source. This subsequent ledger-only update does not change its executable/package inputs apart from this handoff file. All six subagents are completed; the source checkout was clean and matched GitHub before this metadata update. Re-check the run result after resuming; no success or downloadable-package acceptance is claimed yet.
+
 **This is a resumable source checkpoint, not final release acceptance.** All corrections are complete, independently reviewed and banked. No agent has unfinished edits or an ongoing install/build. The only remaining source changes at checkpoint preparation are the finished CI Node-selection/prerequisite text and documentation integration committed with this ledger. Final combined hosted/download acceptance is the next task, not interrupted implementation.
 
 The target remains the **0.8.0 build**, currently `0.8.0-rc.17`; 0.7.3 exists only as real prior-release upgrade fixture data. User instructions remain: follow the original final-audit handoff, keep docs lean, bank as you go, keep PR #12 draft, main/version unchanged, no merge/tag/stable-release invocation. Preserve the 74 closed findings and earlier completed evidence. The five detailed owner reports were cut from 8,413 to 3,808 words; use existing manuals as authority.
