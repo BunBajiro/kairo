@@ -50,4 +50,4 @@ Current source, configuration and behavioural tests define implementation. Docum
 - [Changelog](../CHANGELOG.md): release history, distinct from current operating instructions.
 - [Third-party notices](THIRD-PARTY-NOTICES.md): attribution and bundled reference terms.
 
-The [current handoff](REVIEW-BUILD.md) records the verified package and distinguishes its tested source from later documentation updates. Release progression is paused: the [audit-planning handoff](AUDIT-PLANNING-HANDOFF.md) carries the next chat’s scope and execution boundary. Historical audit completion does not authorize merge or release.
+The [current handoff](REVIEW-BUILD.md) records the verified package and distinguishes its tested source from later documentation updates. Release progression is paused. The [comprehensive audit plan](COMPREHENSIVE-AUDIT-PLAN.md) and [coverage ledger](AUDIT-LEDGER.md) are prepared; the audit has not begun. Use the [execution handoff](AUDIT-EXECUTION-HANDOFF.md) for the separate later execution chat. Historical audit completion does not authorize merge or release.

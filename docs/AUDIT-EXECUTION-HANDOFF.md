@@ -1,0 +1,44 @@
+# Comprehensive audit: execution handoff
+
+**Prepared by the planning-only chat. No comprehensive audit, product tests or implementation were performed.** Use this in the separate later chat when Bun asks to execute the plan. Release progression remains paused.
+
+## Recover exact state
+
+- Repository: `BunBajiro/kairo`; branch `review/0.8.0-rc-premerge-bug-review`; [PR #12](https://github.com/BunBajiro/kairo/pull/12) remains open/draft.
+- **Exact plan/start bank: [`4a2f6b2d023b776fa19bf4841224dae8801fce71`](https://github.com/BunBajiro/kairo/commit/4a2f6b2d023b776fa19bf4841224dae8801fce71).** It contains the independently reviewed [plan](https://github.com/BunBajiro/kairo/blob/4a2f6b2d023b776fa19bf4841224dae8801fce71/docs/COMPREHENSIVE-AUDIT-PLAN.md) and initial [ledger](https://github.com/BunBajiro/kairo/blob/4a2f6b2d023b776fa19bf4841224dae8801fce71/docs/AUDIT-LEDGER.md).
+- That bank descends directly from completed continuation bank `814710ba9e16f18ecb0524c745347842650f7684`. This handoff and current navigation pointers are a subsequent **documentation-only continuation**, identified by the immutable commit in its handover link. Retain them when working from the review branch; do not reset away later work.
+- **Build97 executable source remains `0eece9d7d5f60f0246dbfda89b5cb4f55e576979`; executable tree `3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10`.** Neither planning bank is a new tested executable.
+- Version `0.8.0-rc.17`; last verified main `239794774320fcdebaa1d76ce8a77c5c25cfc48c`.
+
+Recover from GitHub, not a surviving workspace. Read current branch/main/PR first and compare any advance from the exact plan bank. Confirm the expected handoff/pointer delta is documentation-only; inspect other advances before choosing the execution base. Record the resulting exact continuation SHA in the ledger. Never overwrite an advanced branch or assume an inherited workspace is newer.
+
+Read `AGENTS.md`, the [original requirements handoff](AUDIT-PLANNING-HANDOFF.md), [audit plan](COMPREHENSIVE-AUDIT-PLAN.md), [ledger](AUDIT-LEDGER.md), [focused recovery ledger](MARKET-RECOVERY.md), [current build](REVIEW-BUILD.md) and [Build97 receipt](BUILD97-VERIFICATION.json). Restate checkpoint/scope in chat and require **every subagent** to read the same handoff and constraints.
+
+## Execute in bounded units
+
+Follow plan P0–P6: recover/map/baseline; shared safety boundaries; domain/algorithm waves; commands/UI integration; diagnostics/toast implementation; cross-owner faults/performance; integrated review candidate. The plan owns priorities, owner entry points, fault schedules, acceptance and gates; do not duplicate it or turn the work into a one-shot pass.
+
+**First bounded unit is P0.** Expand C01–C16 into a complete current file/feature/API/collector/command denominator, assign named owners and different reviewers, record meaningful existing proof and missing coverage, classify command commit/ack/reconciliation boundaries, finalize diagnostics/toast inventory and measure affected baseline workloads. Set numerical budgets before the corresponding implementation. Bank this reviewable unit before broad implementation; do not require all later native/live checks to start deterministic work.
+
+For each subsequent defect: retain failing-before reproduction and healthy controls, fix in the owning boundary, verify actual data/intent and resource cost, independently review, then bank exact source/evidence. New features use requirement acceptance tests. Parallelize disjoint owners after shared contracts settle; one writer per shared file. Update coverage even when no defect is found. A green subset or pushed-but-unverified correction is not completion.
+
+Required implementation outcomes are robust performant recovery, configurable Off/Normal/Detailed reporting, Settings **Logging** with useful copy/export, optional flood-controlled error toasts, and one integrated application-toast interface using existing delivery ownership. These are **not implemented by Build97**. Preserve valid data, cancellation/cooldowns and user intent; reconcile uncertain mutations without blind resubmission. Stream toasts are excluded from consolidation; native desktop/audio consent remains unchanged. Diagnostics are local and redacted; no automatic telemetry.
+
+## Decisions and acceptance still open
+
+- Proposed defaults: Normal capture on, Detailed/error toasts off; the plan's finite caps are starting proposals to measure, not verified costs or Bun's explicit approval. At P0 settle persistence versus memory, supervisor crash-report ownership, clear/export races, previous-report retention and safe cross-tab settings. Temporary detail restores prior Off/Normal choice, respecting newer user choices.
+- Determine authoritative order/conflict/read-back semantics per command; Build97's OBS/Session ordering covers one dashboard lifetime, not cross-tab/restart or all lost acknowledgments.
+- Bun must still approve durable-data policy and the 0.7.3→0.8.0/full stopped-profile recovery boundary. Preserve data; historical alpha-discard permission does not apply.
+- Native Windows/DPAPI, live EVE SSO/scopes/structures, actual OBS output, native PiP and extended play remain environment limits. Automated fixtures cannot certify them.
+
+Preserve the 74 closed findings, completed final audit, MR/EC receipts and historical performance evidence. Reopen only with new evidence. Unresolved confirmed defects, missing feature acceptance or blocked automated coverage prevent comprehensive-completion claims; scope reductions require Bun's recorded decision.
+
+Use plan G1–G5 for later verification: owning tests, affected integration, both browser engines, matched costs, full blocking candidate workflow, then independent exact-artifact download/source checks and extracted-runtime tests. Browser harnesses sharing ports run serially. Build97 counts remain historical proof; no requirement to rerun or reproduce them merely to read this handoff. If its artifact expires, any rebuilt artifact needs a new identity and receipt.
+
+## Planning bank receipt and continuation discipline
+
+`4a2f6b2d023b776fa19bf4841224dae8801fce71` was read back from GitHub: both files matched the reviewed local text; comparison against `814710b…` showed exactly two new documentation files. Eighteen relative documentation targets and all sixteen coverage IDs were checked. Independent review: `plan_review`, with `plan_review/diagnostic_contract_review`; gate/source feasibility: `verification_plan`. All delegates followed the mandatory handoff. No product findings or runtime evidence were generated. `[skip ci]` intentionally avoided an unnecessary executable build.
+
+The separate handoff, ledger receipt and current-pointer changes were independently accepted by `plan_review`; 66 relative documentation links in that continuation were checked. This remains documentation verification only.
+
+For every next bank record commit, executable source/tree versus evidence bank, gates actually run, reviewer/disposition, limits and next bounded action. Read back remote state. Interrupted/local-only work is not a safe bank point. Keep PR #12 draft and version/main unchanged. **No main push, merge, version bump, tag, publication or PR-ready action is authorized.**
