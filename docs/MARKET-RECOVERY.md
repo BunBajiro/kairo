@@ -1,6 +1,6 @@
 # Market scan recovery follow-up
 
-Status: **market correction banked; Build94 running; additional edge-case pass in progress**. This is the Jita full-scan follow-up reported after [Build93](BUILD93-VERIFICATION.json), not a reopening of the completed [final audit](FINAL-AUDIT.md). Work stays on `review/0.8.0-rc-premerge-bug-review`, draft PR #12, version `0.8.0-rc.17`. No main push, merge or publication is authorized.
+Status: **backend corrections banked; Build94 hosted gates passed; UI-baseline and combined acceptance pending**. This is the Jita full-scan follow-up reported after [Build93](BUILD93-VERIFICATION.json), not a reopening of the completed [final audit](FINAL-AUDIT.md). Work stays on `review/0.8.0-rc-premerge-bug-review`, draft PR #12, version `0.8.0-rc.17`. No main push, merge or publication is authorized.
 
 | Finding | Evidence and correction | Acceptance |
 | --- | --- | --- |
@@ -18,10 +18,10 @@ Recovery is limited to two extra order-page attempts across the entire job, incl
 | Checkpoint | State and next action |
 | --- | --- |
 | `02646da850cda876ebe5d06931b94e6338082a07` | Verified starting head; Build93 remains the last accepted download and does not contain this follow-up. |
-| `cde4723e47cbf7cf43be7eb4ce7885771d99103c` | Complete reviewed MR-01/02 correction and evidence bank. Tree `129ccde0bee552b531d7524bb107bf3f70dd5d41`; [Build94](https://github.com/BunBajiro/kairo/actions/runs/39524490519) is running. Hosted/package acceptance is pending. |
+| `cde4723e47cbf7cf43be7eb4ce7885771d99103c` | Complete reviewed MR-01/02 correction and evidence bank. Tree `129ccde0bee552b531d7524bb107bf3f70dd5d41`; [Build94](https://github.com/BunBajiro/kairo/actions/runs/39524490519) passed all hosted gates; independent package verification is pending. |
 | `5ee71a7c7aa22fffc19788492e8370f551bfcebf` | Complete independently reviewed EC-02 correction and evidence. Combined acceptance remains pending. |
 | `0289e83ef1c1ea5d6362c5e2cf0b76a03f6cd375` | Complete reviewed EC-01/03/04 corrections and four Markets/Imports recovery controls. Combined hosted/package verification remains pending. |
-| Session and UI-baseline checkpoint | EC-05 complete and independently reviewed; three UI probes fully prepared against unchanged product UI. Wait for Build94 to finish before triggering the hosted baseline, to avoid cancelling its package verification. |
+| `1f0a11c4a627b1c7dc2a0ad21897b47cab215828` | Complete reviewed EC-05 correction and three UI probes against unchanged product UI. [Combined runtime](market-recovery-evidence/combined-runtime.json) passes 1,336/1,336; compiled-client fixture scope is explicit. |
 
 Owners: root integrates Markets recovery and banks checkpoints; markets_sessions owns MR-01; runtime_data owns ESI validation; docs_tests and universe independently review owner boundaries; frontend_stream verifies real scan recovery in Chrome/Firefox; packaging_ci independently verifies the new download. Preserve prior receipts and raw evidence. Update existing manuals only for changed user/developer contracts.
 
@@ -41,4 +41,6 @@ Bun requested another pass on 21 October after this failure. Coverage is assigne
 
 [Runtime evidence](market-recovery-evidence/runtime-edge-verification.json) binds EC-01/03/04 to source, tests and before/fixed/independent logs. [Four added Markets/Imports controls](market-recovery-evidence/market-imports-review.json) independently pass; that owner pass found no further defect. Existing runtime/lifecycle controls pass 93/93. Launcher probes against unchanged Build93 owners pass partial-start rollback, duplicate supervisor rejection and restart from paths with spaces/non-ASCII characters; native Windows/DPAPI remains a human check.
 
-[EC-05 evidence](market-recovery-evidence/session-owner/review.json) preserves both failing boundaries, exact source equivalence and the final independent disposition. All five confirmed edge-pass backend corrections are complete; the remaining technical work is hosted UI-baseline disposition, any reproduced UI corrections, and fresh combined/package acceptance. Build94’s downloaded browser evidence already passes 40 cases / 600 checks, including 12 new recovery cases / 204 checks; its remaining package gates are still running.
+[EC-05 evidence](market-recovery-evidence/session-owner/review.json) preserves both failing boundaries, exact source equivalence and the final independent disposition. All five confirmed edge-pass backend corrections are complete; the remaining technical work is hosted UI-baseline disposition, any reproduced UI corrections, and fresh combined/package acceptance. Build94’s downloaded browser evidence already passes 40 cases / 600 checks, including 12 new recovery cases / 204 checks; its hosted package/runtime gates also passed; independent download verification is pending.
+
+This CI checkpoint triggers the three save/navigation probes in the existing Chrome/Firefox runner after Build94’s successful completion. Capture the hosted baseline before changing product UI; independently review any established correction, then verify one fresh combined build and downloaded package.
