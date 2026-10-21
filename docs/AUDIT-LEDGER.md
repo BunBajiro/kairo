@@ -1,12 +1,12 @@
 # Comprehensive audit coverage and continuation ledger
 
-Owner: execution coordinator. Plan: [COMPREHENSIVE-AUDIT-PLAN.md](COMPREHENSIVE-AUDIT-PLAN.md). **Planning-only initialization; no new product findings, tests or audited coverage.** Historical [74 findings](PREMERGE-BUG-REVIEW.md), [final audit](FINAL-AUDIT.md) and [MR/EC checkpoint](MARKET-RECOVERY.md) remain closed and unchanged.
+Owner: execution coordinator. Plan: [COMPREHENSIVE-AUDIT-PLAN.md](COMPREHENSIVE-AUDIT-PLAN.md). **P0 execution begun: current inventory independently reviewed; no new product findings, product tests or behavioral acceptance.** Historical [74 findings](PREMERGE-BUG-REVIEW.md), [final audit](FINAL-AUDIT.md) and [MR/EC checkpoint](MARKET-RECOVERY.md) remain closed and unchanged.
 
 ## Checkpoint identities
 
 | Identity | Value / meaning |
 | --- | --- |
-| Recovered bank | `814710ba9e16f18ecb0524c745347842650f7684` — documentation/evidence after Build97 |
+| Recovered bank | `fa56b0824133da6f07393d9b04beb9ad6b242de3` — recovered and checked against GitHub on 21 October 2026; documentation/evidence after Build97 |
 | Verified executable | `0eece9d7d5f60f0246dbfda89b5cb4f55e576979` |
 | Executable tree | `3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10` |
 | Main / PR | `239794774320fcdebaa1d76ce8a77c5c25cfc48c` / #12 open, draft |
@@ -15,26 +15,26 @@ Owner: execution coordinator. Plan: [COMPREHENSIVE-AUDIT-PLAN.md](COMPREHENSIVE-
 
 ## Coverage denominator
 
-Entry points and scenario families are in the plan. P0 must expand this table into file/feature/command units against the actual Git tree, assign named agents, and record assessed source/evidence. Roles below are proposed work owners, **not assigned persistent agents**. All rows currently have `source=not assessed`, `evidence=none`, `reviewer=pending assignment`.
+The [P0-01 inventory](audit-p0/README.md) expands all C01–C16 rows into 76 bounded owner units plus ten catalog-family slices, an exact 719-file/blob denominator, and 194 HTTP/command entries. All 38 catalog collectors and application notification publishers are mapped. Source assessed for inventory: `fa56b0824133da6f07393d9b04beb9ad6b242de3`; behavior remains **not yet assessed**. Existing proof and missing proof are linked per unit. Inventory owners/reviewers below are actual session assignments; future behavior units must activate their own live pair before starting.
 
-| Row | Area | Lead / independent review discipline | Phase | Status / next action |
+| Row | Area | Inventory author / independent reviewer | Later behavior phase | Status / next action |
 | --- | --- | --- | --- | --- |
-| C01 | Auth, private HTTP, secrets | Runtime / security boundary reviewer | P1 | Planned — enumerate endpoints and identities |
-| C02 | Transport, admission, scheduling | Transport / consuming domain reviewer | P1 | Planned — map requests, queues and command classes |
-| C03 | Core, catalog, events, enrichment | Runtime / domain-publication reviewer | P1 | Planned — expand every catalog family |
-| C04 | Persistence, migration, retention | Persistence / recovery reviewer | P1 | Planned — map tables and commit/publication boundaries |
-| C05 | Lifecycle, datasets, workers | Runtime-data / lifecycle reviewer | P1 | Planned — enumerate durable restart transitions |
-| C06 | Markets and histories | Markets / recovery reviewer | P2 | Planned — page/staging/archive invariants |
-| C07 | Import algorithms and plans | Markets / arithmetic reviewer | P2 | Planned — small numeric oracles and plan ownership |
-| C08 | Sessions, combat, goals | History / time-accounting reviewer | P2 | Planned — ownership/event/accounting subunits |
-| C09 | Universe ingest and observations | Universe-data / provenance reviewer | P2 | Planned — source/parser/retention subunits |
-| C10 | Canonical Maps, operations, commands | Universe-data / navigation reviewer | P2–P3 | Planned — revisions and command outcomes |
-| C11 | Route and display algorithms | Algorithms / independent-oracle reviewer | P2 | Planned — objective/geometry/scaling contracts |
-| C12 | Frontend reads, drafts and saves | Frontend / runtime + browser reviewers | P3 | Planned — resource/editor/publisher inventory |
-| C13 | OPSEC, OBS and stream correctness | Output / protection reviewer | P1–P3 | Planned — priority protection paths; no toast migration |
-| C14 | Diagnostics and Logging UI | Runtime + frontend / privacy-cost reviewer | P4 | Planned — contract/default/cap decisions at P0 |
-| C15 | Integrated app toasts | Frontend / browser-lifecycle reviewer | P4 | Planned — all transient publishers/actions inventory |
-| C16 | Tests, packaging, docs and delivery | Verification / artifact verifier | P0, P5–P6 | Planned — denominator and current gate map |
+| C01 | Auth, private HTTP, secrets | `runtime_inventory` / `algorithms_inventory` | P1 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C02 | Transport, admission, scheduling | `runtime_inventory` / `algorithms_inventory` | P1 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C03 | Core, catalog, events, enrichment | `runtime_inventory` / `algorithms_inventory` | P1 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C04 | Persistence, migration, retention | `runtime_inventory` / `algorithms_inventory` | P1 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C05 | Lifecycle, datasets, workers | `runtime_inventory` / `algorithms_inventory` | P1 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C06 | Markets and histories | `domain_inventory` / `runtime_inventory` | P2 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C07 | Import algorithms and plans | `domain_inventory` / `runtime_inventory` | P2 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C08 | Sessions, combat, goals | `domain_inventory` / `runtime_inventory` | P2 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C09 | Universe ingest and observations | `domain_inventory` / `runtime_inventory` | P2 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C10 | Canonical Maps, operations, commands | `domain_inventory` / `runtime_inventory` | P2–P3 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C11 | Route and display algorithms | `algorithms_inventory` / `domain_inventory` | P2 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C12 | Frontend reads, drafts and saves | `algorithms_inventory` / `domain_inventory` | P3 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C13 | OPSEC, OBS and stream correctness | `algorithms_inventory` / `domain_inventory` | P1–P3 | Inventory reviewed; P0-02 contracts then owning behavior units |
+| C14 | Diagnostics and Logging UI | `algorithms_inventory` / `domain_inventory` | P4 | Inventory reviewed; P0-03 decisions and P0-04 budgets; features absent |
+| C15 | Integrated app toasts | `algorithms_inventory` / `domain_inventory` | P4 | Inventory reviewed; P0-03 decisions and P0-04 budgets; features absent |
+| C16 | Tests, packaging, docs and delivery | `root` / `inventory_review` | P0, P5–P6 | Inventory reviewed; P0-04 fixture/budget work; candidate gates pending |
 
 Coverage status: `planned → inspecting → evidence pending → independently reviewed → verified/banked`; `reviewed/no finding`, `blocked`, or `not applicable (reason)` are explicit dispositions. No-finding coverage still needs assessed source, applicable-class review and reviewer evidence. A reviewed implementation is not verified until its required gates pass. Track code state separately as `workspace-only`, `banked/unverified` or `verified/banked`.
 
@@ -57,7 +57,7 @@ Finding status: `hypothesis → reproduced → corrected/unverified → reviewed
 
 | ID | Owner | Decision / boundary | Status |
 | --- | --- | --- | --- |
-| D01 | Bun | Durable-data policy and 0.7.3→0.8.0/full stopped-profile recovery scope | Human approval outstanding; preserve current data |
+| D01 | Bun | Clean-slate 0.8.0 baseline; standard durable policy resumes from finalized 0.8.0 onward | **Approved 21 October 2026.** Assume no existing data. Storage redesign/reset and destructive changes are authorized without pre-final preservation/migration/recovery/legacy-handling obligations. See [policy](PERSISTENCE.md#production-baseline-and-version-compatibility). Historical receipts remain intact. |
 | D02 | Coordinator + diagnostics owner; Bun reviews defaults | Off/Normal/Detailed defaults, retention and all hard caps; performance budgets | Proposed in plan; settle and record at P0 before implementation |
 | D03 | Domain command owners + reviewers | Cross-tab/restart ordering/conflict and uncertain-outcome reconciliation | Inventory at P0, decide before corresponding change |
 | D04 | Verification owner + Bun for live checks | Native/live/extended-use evidence availability | Outside automated acceptance; keep exact limits |
@@ -75,4 +75,14 @@ Planning document review: `plan_review` independently reviewed the plan/ledger, 
 | [`4a2f6b2d023b776fa19bf4841224dae8801fce71`](https://github.com/BunBajiro/kairo/commit/4a2f6b2d023b776fa19bf4841224dae8801fce71) | Reviewed plan and initial ledger. Exact remote text read-back; two-document-only diff; 18 relative targets/16 coverage IDs checked. CI intentionally skipped, no executable change. |
 | [`89ce971f3d18f899f31fed03820db14f4a6e0841`](https://github.com/BunBajiro/kairo/commit/89ce971f3d18f899f31fed03820db14f4a6e0841) | Independently reviewed execution handoff, bank receipt and current pointers. Exact remote text read-back; combined two-bank diff limited to five documentation files; main unchanged and PR #12 open/draft. CI intentionally skipped. |
 
-The [execution handoff](AUDIT-EXECUTION-HANDOFF.md) includes Bun's subsequent clarification that execution may span as many sessions as needed. Its latest documentation-only continuation is identified by the immutable handover permalink. In the later execution chat, recover that remote state and record its SHA before P0. All product coverage remains planned; next execution unit is a bounded P0 coverage/owner inventory. Resume through later units across sessions, retaining pending verification and completed evidence.
+## P0 session continuation
+
+| Unit | Actual completion / limits | Status |
+| --- | --- | --- |
+| P0-01 coverage/owner inventory | Source-grounded runtime/domain/UI-output/delivery units, exact tracked path/blob and route manifests; existing proof/missing proof, collectors/commands/browser storage/sinks/publishers and reasoned scaffold/generated/vendor boundaries. Independent review corrected route ownership, Stream method and toast count; [receipt](audit-p0/verification.json) records static checks and review. | Reviewed; pending remote banking/read-back. No product tests, performance measurements, implementation or behavioral closure. |
+| P0 policy update (D01) | Bun's explicit clean-slate decision and clarification recorded in current policy/handoffs; legacy data preservation/migration/recovery does not constrain this audit. | Documentation review with P0-01; no data deletion or automatic reset implementation. |
+| P0-02 | Authoritative command acceptance/commit/publication/ack/read-back; unknown outcomes, cancellation and cross-tab/restart conflicts. | **Next bounded unit**. Start with shared settings/OBS/Session writes as a small command family; enumerate the remaining families from the manifest, not a one-shot all-command pass. Assign live owner/reviewer. |
+| P0-03 | Diagnostics runtime/supervisor/browser ownership; local capture/clear/export/restart/retention/default/cap decisions and final transient-notice dispositions. | Pending; proposed defaults/caps remain unsettled. |
+| P0-04 | Affected baseline workloads, reproducible fixtures and measured numerical budgets. | Pending; no corresponding implementation before reviewed budgets. |
+
+Resume from this bank after checking GitHub branch/main/PR and changes since the exact source. Review [P0 continuation](audit-p0/README.md) and the command manifest; do not repeat the completed inventory unless source changes require a delta. P0 is incomplete and may span sessions. Required logging/toast/recovery implementation remains outstanding. Build97 is still the verified executable; the new bank contains only documentation/metadata. Chrome/Firefox, native/live and performance results have not been extended by this unit. Release pause, unchanged version/main and draft PR #12 remain mandatory.

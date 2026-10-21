@@ -1,6 +1,6 @@
 # Comprehensive audit: execution handoff
 
-**Prepared by the planning-only chat. No comprehensive audit, product tests or implementation were performed.** Use this in the separate later chat when Bun asks to execute the plan. Release progression remains paused.
+**Staged execution has begun with P0 inventory.** Recover from the current [ledger](AUDIT-LEDGER.md) and [P0 continuation](audit-p0/README.md); the original planning checkpoints below remain historical. Inventory is not behavioral acceptance, baseline measurement or implementation. Release progression remains paused.
 
 ## Recover exact state
 
@@ -20,7 +20,7 @@ Follow plan P0–P6: recover/map/baseline; shared safety boundaries; domain/algo
 
 **Bun explicitly confirmed that execution need not finish in one shot or one chat.** Use as many sessions as needed; a phase, including P0, may span several. At each session boundary bank completed reviewable units, state incomplete gates accurately and give the next concrete action. Each new session verifies GitHub state and resumes the ledger without repeating completed work or rushing acceptance to fit remaining context/time/usage.
 
-**First phase is P0; start with a bounded coverage/owner-inventory unit.** Expand C01–C16 into a complete current file/feature/API/collector/command denominator, assign named owners and different reviewers, record meaningful existing proof and missing coverage, classify command commit/ack/reconciliation boundaries, finalize diagnostics/toast inventory and measure affected baseline workloads. Set numerical budgets before the corresponding implementation. Bank these reviewable units before broad implementation; do not require all later native/live checks to start deterministic work.
+**First phase is P0; its reviewed inventory is in [P0-01](audit-p0/README.md). Resume the next bounded unit from the ledger.** Expand C01–C16 into a complete current file/feature/API/collector/command denominator, assign named owners and different reviewers, record meaningful existing proof and missing coverage, classify command commit/ack/reconciliation boundaries, finalize diagnostics/toast inventory and measure affected baseline workloads. Set numerical budgets before the corresponding implementation. Bank these reviewable units before broad implementation; do not require all later native/live checks to start deterministic work.
 
 For each subsequent defect: retain failing-before reproduction and healthy controls, fix in the owning boundary, verify actual data/intent and resource cost, independently review, then bank exact source/evidence. New features use requirement acceptance tests. Parallelize disjoint owners after shared contracts settle; one writer per shared file. Update coverage even when no defect is found. A green subset or pushed-but-unverified correction is not completion.
 
@@ -30,7 +30,7 @@ Required implementation outcomes are robust performant recovery, configurable Of
 
 - Proposed defaults: Normal capture on, Detailed/error toasts off; the plan's finite caps are starting proposals to measure, not verified costs or Bun's explicit approval. At P0 settle persistence versus memory, supervisor crash-report ownership, clear/export races, previous-report retention and safe cross-tab settings. Temporary detail restores prior Off/Normal choice, respecting newer user choices.
 - Determine authoritative order/conflict/read-back semantics per command; Build97's OBS/Session ordering covers one dashboard lifetime, not cross-tab/restart or all lost acknowledgments.
-- Bun must still approve durable-data policy and the 0.7.3→0.8.0/full stopped-profile recovery boundary. Preserve data; historical alpha-discard permission does not apply.
+- Bun approved the [fresh-data 0.8.0 policy](PERSISTENCE.md#production-baseline-and-version-compatibility) on 21 October: expect no prior-version data carryover; destructive prior-version incompatibility is authorized until finalization. 0.7.3 compatibility is no longer owed. The audit assumes no existing data, allowing storage redesign/reset without legacy preservation, migration, recovery or handling gates. Standard durable-data policy resumes from finalized 0.8.0 onward; use fresh synthetic profiles to verify intended behavior.
 - Native Windows/DPAPI, live EVE SSO/scopes/structures, actual OBS output, native PiP and extended play remain environment limits. Automated fixtures cannot certify them.
 
 Preserve the 74 closed findings, completed final audit, MR/EC receipts and historical performance evidence. Reopen only with new evidence. Unresolved confirmed defects, missing feature acceptance or blocked automated coverage prevent comprehensive-completion claims; scope reductions require Bun's recorded decision.

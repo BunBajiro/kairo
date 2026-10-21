@@ -95,14 +95,16 @@ Dataset updates are separate from application upgrades. A successful data instal
 
 ## Upgrade, backup and restore
 
-### Upgrade the application
+### Start 0.8.0 with fresh data
 
-1. Stop Kairo normally and make a complete backup before trying another candidate.
+**0.8.0 is a fresh-data release baseline. Users are expected not to carry data from prior versions into it.** Pre-finalization candidates may make destructive compatibility changes; upgrading 0.7.3 or an earlier profile is not a supported requirement.
+
+1. Stop Kairo normally. Keep an old profile together with its matching package if you want to retain it for separate use.
 2. Extract the new compiled package into a **new installation folder**.
-3. Use the same operating-system account and data-directory setting, then launch the new package.
-4. Refresh the dashboard and OBS browser sources; check that your characters, records and saved output are present.
+3. Select a fresh, empty data directory with `KAIRO_DATA_DIR`, or move the old default data directory aside before launching. Installing into a new application folder alone does not reset data stored elsewhere.
+4. Launch Kairo and configure/reconnect your characters and output for the fresh profile.
 
-Data normally lives outside the installation folder, so installing into a new folder does not itself reset it. Schema changes run on startup. This candidate remains preproduction; there is no promise that an older application can read data after a newer version has changed it. Do not run old/new versions simultaneously against the same data directory. [Persistence](PERSISTENCE.md) documents migrations and ownership; [Changelog](../CHANGELOG.md) holds historical version-specific changes.
+This policy does not add an automatic reset to Build97. Do not mix old/new packages against one data directory or restore an old profile into the 0.8.0 baseline. Backup/restore below describes recovery with a matching application build, not cross-version transfer. [Persistence](PERSISTENCE.md) owns the policy and current implementation boundaries; [Changelog](../CHANGELOG.md) retains historical changes.
 
 ### Locate and back up your data
 

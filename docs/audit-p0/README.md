@@ -1,0 +1,32 @@
+# P0-01: current coverage and owner inventory
+
+Assessed inventory source: `fa56b0824133da6f07393d9b04beb9ad6b242de3`, tree `44182c73ea44053cc55942b2d737360d332f446b`. Recovered from GitHub on 21 October 2026; branch/main/PR matched the execution handoff. Build97 executable remains `0eece9d7d5f60f0246dbfda89b5cb4f55e576979`, tree `3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10`. The sixteen-path intervening delta is documentation/evidence only.
+
+This unit starts P0 execution with **inventory, not behavioral acceptance**. No new product findings, product tests, baseline measurements or implementation are claimed. Existing proof is a starting point with its original source and limits. The [plan](../COMPREHENSIVE-AUDIT-PLAN.md) remains the scope authority and the [ledger](../AUDIT-LEDGER.md) records completion/banking. Release progression remains paused.
+
+## Denominators and assignments
+
+| Surface | Inventory | Primary inventory owner | Independent inventory reviewer |
+| --- | --- | --- | --- |
+| C01–C05 | [Runtime, catalog, persistence and lifecycle](runtime-inventory.md) | `runtime_inventory` | `algorithms_inventory` |
+| C06–C10 | [Markets, Sessions and Universe data/commands](domain-inventory.md) | `domain_inventory` | `runtime_inventory` |
+| C11–C15 | [Algorithms, UI, output, diagnostics and app notifications](ui-output-inventory.md) | `algorithms_inventory` | `domain_inventory` |
+| C16 | [Delivery, gates, scaffold and documentation](delivery-inventory.md) | `root` | `inventory_review` |
+| Every tracked path | [Path/blob/coverage manifest](tracked-files.tsv) | `root` | `inventory_review` |
+| HTTP branches and commands | [Route manifest](http-surface.tsv) and [reading guide](http-surface.md) | `api_inventory` | `inventory_review` |
+
+Assignments apply to **this inventory unit**, including its subunits. Before a later behavior unit starts, the coordinator must assign a live implementer and a different live reviewer and record them in the ledger. These names are session identities, not a claim that agents persist across chats. One writer per shared file; cross-cutting files have one primary coverage row and related rows in the manifest. Domain behavior owners retain their mutations even where C01 owns authentication and HTTP admission.
+
+`tracked-files.tsv` enumerates all **719 tracked paths** at the assessed source, once each, with immutable Git blob, primary C row, related rows and boundary disposition. It is a source snapshot; these newly authored inventory documents are deliberately not retroactively part of that denominator. Future units reconcile added/deleted/changed paths against this snapshot and register their own evidence files under C16. A row assignment does not assert that every behavior in the file was inspected.
+
+Coverage includes first-party runtime/client code, declarations/styles, commands, build tools, tests and retained compatibility paths. Generated static data is covered through parser/provenance/generation integration; vendored internals through dependency and integration controls; scaffold through build/preview boundaries. These are reasoned boundaries, not blanket omissions of shipped files. Existing evidence is preserved as historical evidence, not re-audited or treated as future acceptance. Untracked generated `dist/client` is the separate C16 artifact denominator; a fresh build/receipt must enumerate it later.
+
+Each domain table records bounded feature units, source entry points, existing proof and missing proof. All applicable plan classes remain owed: timing/ownership; validation/authorization; numeric/identity/calendar/graph correctness; persistence/atomicity; recovery; resource bounds; UI/accessibility; delivery/documentation. A domain-only exclusion delegates to the relevant shared row rather than waiving that class. Documentation inventory checks cannot close those classes. New logging/toast acceptance is tracked under C14/C15 and will become `REQ-LOG`/`REQ-TOAST` units before implementation.
+
+## Remaining P0 units, in order
+
+1. **P0-02 commands:** start with the route manifest plus browser-local actions and background producers. Trace admission → dispatch → validation → commit → publication → acknowledgment for each bounded command family. Record authoritative read-back/revisions, cancellation, accepted-but-unknown outcomes, cross-tab/restart conflict rules and external EVE/OBS limitations. Existing per-dashboard queues are not cross-process guarantees. Bank independently reviewed contracts before implementation.
+2. **P0-03 diagnostics/toasts:** use the C14/C15 inventory to decide the runtime/supervisor/browser contract, persistence versus memory, crash-tail ownership, defaults, every finite cap, cross-tab settings, detail expiry, clear/export races and retention. Distinguish transient application feedback from inline validation, durable jobs, operational inbox/native/audio and excluded Stream-toast consolidation. No proposed default is silently accepted by this inventory.
+3. **P0-04 baselines and budgets:** use the affected workload map in the delivery inventory to select reproducible fixtures, measure repeated fresh-process baseline runs and set numerical budgets **before corresponding implementation**. Resolve fixture/environment gaps and independently review costs. No historical percentage or green test count substitutes for these measurements.
+
+P0 exits only when these remaining units and any necessary splits are reviewed/banked. A phase can span sessions. P1 starts only for the bounded owners whose prerequisite contracts/budgets have settled; this inventory alone does not authorize broad implementation. Bun has approved a fresh-data 0.8.0 baseline and destructive prior-version incompatibility until finalization; see [Persistence](../PERSISTENCE.md#production-baseline-and-version-compatibility). No 0.7.3 compatibility obligation remains. No existing data is assumed and no pre-final preservation/migration/recovery/handling gate may constrain storage design. Standard durable-data policy resumes from finalized 0.8.0 onward; fresh synthetic profiles establish intended behavior. Native Windows/DPAPI, live EVE/OBS and extended-use checks remain outside automated evidence.

@@ -1,10 +1,10 @@
 # Current verified checkpoint
 
-**Build97 is the verified 0.8.0 checkpoint, version `0.8.0-rc.17`. Release progression is paused.** It includes the completed [Jita recovery and focused edge-case pass](MARKET-RECOVERY.md), together with the earlier final-audit corrections, manuals, source comments and CI gates. It supersedes Build93/94 for current testing. PR #12 remains draft; main and the version are unchanged. The next chat uses the [audit-planning handoff](AUDIT-PLANNING-HANDOFF.md); this checkpoint does not establish release readiness.
+**Build97 is the verified 0.8.0 checkpoint, version `0.8.0-rc.17`. Release progression is paused.** It includes the completed [Jita recovery and focused edge-case pass](MARKET-RECOVERY.md), together with the earlier final-audit corrections, manuals, source comments and CI gates. It supersedes Build93/94 for current testing. PR #12 remains draft; main and the version are unchanged. Staged execution now follows the [audit ledger](AUDIT-LEDGER.md); this checkpoint does not establish release readiness.
 
 [Download Kairo-test-build.zip — Build97](https://github.com/BunBajiro/kairo/actions/runs/39529421954/artifacts/12315426986) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/39529421954) · [Verification receipt](BUILD97-VERIFICATION.json)
 
-The artifact expires on **20 November 2026 at 02:12 UTC**. Sign into GitHub to download it. Use **Node.js 24 LTS, at least 24.21.0**. Stop Kairo and make a complete profile backup before upgrading; extract the full ZIP into a new folder and open `Kairo/START_KAIRO.bat`. No npm install or local build is needed. The [user guide](USER-GUIDE.md) and [recovery policy](PERSISTENCE.md#production-baseline-and-version-compatibility) own startup, data locations and restore details.
+The artifact expires on **20 November 2026 at 02:12 UTC**. Sign into GitHub to download it. Use **Node.js 24 LTS, at least 24.21.0**. Follow the [fresh-data setup policy](USER-GUIDE.md#start-080-with-fresh-data): stop Kairo, select a fresh data directory, extract the full ZIP into a new folder and open `Kairo/START_KAIRO.bat`. Build97 does not automatically reset an old profile. No npm install or local build is needed. The [user guide](USER-GUIDE.md) and [recovery policy](PERSISTENCE.md#production-baseline-and-version-compatibility) own startup, data locations and restore details.
 
 ## Exact package identity
 
@@ -27,4 +27,4 @@ Real Windows/DPAPI under the actual login, live EVE SSO/scopes and structure per
 
 This page, verification receipt and planning handoff were written after the tested build. The ZIP contains documentation at its exact source commit, including then-pending verification pointers; use this page for current acceptance. Historical receipts and raw evidence remain intact.
 
-The future audit must precede renewed release progression. Bun's final approval must also cover the durable-data policy and 0.7.3→0.8.0 upgrade/full stopped-profile recovery boundary. No main push, merge, version bump, tag or publication has been performed. Stable version/lock/changelog preparation requires approval and verification on the review branch; merging a stable package version can trigger automatic publication.
+The future audit must precede renewed release progression. Bun has approved a fresh-data 0.8.0 baseline with no prior-version carryover requirement; [Persistence](PERSISTENCE.md#production-baseline-and-version-compatibility) records the policy and remaining current-build recovery evidence. No main push, merge, version bump, tag or publication has been performed. Stable version/lock/changelog preparation requires approval and verification on the review branch; merging a stable package version can trigger automatic publication.

@@ -1,5 +1,7 @@
 # Kairo comprehensive audit: planning handoff
 
+Historical requirements record. Execution has now begun; the [current ledger](AUDIT-LEDGER.md) and [approved fresh-data policy](PERSISTENCE.md#production-baseline-and-version-compatibility) supersede its planning-only timing and pending prior-version compatibility approval below.
+
 Bun has paused release progression after repeated timing and recovery defects during 0.8.0 review. **The next chat plans the audit; a separate later chat executes it.** Do not start implementation, declare release readiness or turn this into a one-shot audit. First repeat this handoff into the new chat and ensure every delegated agent follows it.
 
 ## Recover the checkpoint

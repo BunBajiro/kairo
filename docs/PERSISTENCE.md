@@ -64,22 +64,26 @@ Not every schema owner is centralized in `store.mjs`: Universe and operational s
 When changing persistence:
 
 1. Read the owning schema and all readers/writers, including export, delete and migration paths.
-2. Use a new stable migration identity; never edit the meaning of an already applied migration.
+2. For a supported durable baseline, use a new stable migration identity rather than changing an applied migration. During the clean-slate 0.8.0 audit, schema/migration history may be redesigned or replaced under the policy below; no existing profile compatibility is owed.
 3. Make data changes and completion markers atomic. Use a savepoint when a nested transaction boundary is needed; do not hold a synchronous SQLite transaction across an asynchronous network wait.
 4. Preserve foreign-key behavior, indexes, deterministic ordering and bounded reads. Query only the metadata or slice needed.
-5. Test upgrade from the relevant previous schema, failure rollback and a repeated startup. Match [validation](VALIDATION.md) to the actual change.
+5. Test fresh-profile initialization, failure rollback and repeated startup. Test an upgrade only where that transition is intentionally supported; prior-version compatibility is not required for the fresh-data 0.8.0 baseline below. Match [validation](VALIDATION.md) to the actual change.
 
 The old `market-rebuild-v6` migration deliberately invalidates pre-0.6 market books once and queues fresh scans for previously scanned hubs; this is not an instruction to reset market data on each launch.
 
 ### Production baseline and version compatibility
 
-The final audit treats preservation of durable user data as a requirement. Earlier alpha permission to discard data does not authorize a stable upgrade to erase sessions, notes, goals, saved plans or other durable work. A future destructive transition requires an explicit product decision and a reviewed migration/recovery plan. Replaceable caches, derived indexes and intentionally expiring operational data retain their documented [retention rules](DATA-RETENTION.md).
+**Bun's decision, 21 October 2026: 0.8.0 is a fresh-data baseline. Users are expected not to carry data from prior versions into 0.8.0.** Until a finalized 0.8.0 build, destructive changes that invalidate prior-version data are authorized; there is no obligation to maintain 0.7.3 or earlier compatibility. This supersedes the earlier proposed preceding-release upgrade requirement. It is a policy decision, not a claim that an automatic reset or profile-format guard has been implemented.
 
-Migration rollback is scoped to the failed transaction/savepoint. Earlier successfully committed migration steps may remain after a later startup step fails; there is no single transaction spanning every service's startup. Preserve the failed profile for diagnosis, then retry with a corrected candidate or restore a complete stopped checkpoint and its matching package. Do not reset the database or edit migration markers as a routine recovery technique.
+Bun further clarified that this audit must assume **no existing data** and must not be constrained by any pre-0.8.0 durable-data policy. Storage/schema redesign, replacement and reset are authorized throughout this work. There is no requirement to preserve, migrate or recover any pre-finalization profile, nor to implement a legacy-profile compatibility/restore/handling path as an audit gate. Standard durable-data policy resumes from finalized 0.8.0 onward.
+
+Record deliberate storage changes and verify fresh-start behavior. Existing compatibility code/tests may be retained, changed or retired through reviewed units; preserve historical receipts and record the changed requirement instead of presenting removed assertions as newly passing evidence. Recovery tests should use fresh synthetic profiles to prove the intended 0.8.0 behavior, including valid-data/user-intent handling during ordinary failures. Such tests do not constrain schema choices or require preserving data across pre-final builds. Replaceable caches, derived indexes and intentionally expiring operational data retain their documented [retention rules](DATA-RETENTION.md).
+
+**Current implementation/recovery behavior (may change under the clean-slate policy):** migration rollback is scoped to the failed transaction/savepoint. Earlier successfully committed migration steps may remain after a later startup step fails; there is no single transaction spanning every service's startup. Preserve the failed profile for diagnosis, then retry with a corrected candidate or restore a complete stopped checkpoint and its matching package. Do not reset the database or edit migration markers as a routine recovery technique.
 
 Current recovery is a manual full-directory backup and same-machine/account restore, with the displaced profile retained separately until recovery is verified. There is no automatic pre-upgrade backup, general history importer, portable Windows DPAPI guarantee or supported in-place downgrade. Never run an older executable over a database already changed by a newer version as a rollback strategy. Browser-only preferences and unsaved drafts are outside the server backup.
 
-The [final audit](FINAL-AUDIT.md) tests 0.7.3→0.8.0 using data generated by the archived 0.7.3 runtime, plus same-version restore and migration rollback/retry. This supports the proposed preceding-release upgrade boundary; it does not establish every historical alpha upgrade or future schema compatibility. The final release decision must approve that support boundary and the recovery limits above.
+The [completed final audit](FINAL-AUDIT.md) tested 0.7.3→0.8.0 using archived-runtime fixtures, plus same-version restore and migration rollback/retry. Preserve those receipts with their original scope; they no longer create a prior-version compatibility obligation. Recovery for the finalized baseline is tested with fresh synthetic profiles; recovery of pre-finalization profiles is not an obligation. Native Windows/DPAPI and live-environment limits remain separate. Release progression remains paused.
 
 ## Cache, snapshots and records are different
 

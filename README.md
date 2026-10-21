@@ -8,7 +8,7 @@ Kairo is a local EVE Online workspace for connected pilots, market research, ope
 
 1. Install the **current Node.js 24 LTS** (24.21.0 minimum).
 2. Download the compiled package designated for your review, then extract the whole ZIP into a new folder. GitHub's **Source code** ZIP is not a ready-to-run application.
-3. Stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`.
+3. Stop any running Kairo instance and use a [fresh data directory for 0.8.0](docs/USER-GUIDE.md#start-080-with-fresh-data), then open `Kairo/START_KAIRO.bat`.
 4. Keep the launcher window open. Open [the dashboard](http://127.0.0.1:4380) if the browser does not open automatically; press **Ctrl+C** in the launcher to stop cleanly.
 
 The compiled package needs no dependency installation or local build. Windows is the primary platform; Linux/macOS can run `./start-kairo.sh` with the credential limits described in [installation and first run](docs/USER-GUIDE.md). Older stable packages are on [GitHub Releases](https://github.com/BunBajiro/kairo/releases); they do not include the unreleased 0.8.0 feature set.

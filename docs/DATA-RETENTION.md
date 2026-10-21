@@ -2,6 +2,8 @@
 
 This is the retention policy implemented in **0.8.0-rc.17**. Kairo separates user-owned records from replaceable transport data. Routine maintenance does not reset the database. For file locations, schema ownership and export scope, see [Persistence](PERSISTENCE.md); for backup procedures see the [user guide](USER-GUIDE.md).
 
+The [fresh-data 0.8.0 release policy](PERSISTENCE.md#production-baseline-and-version-compatibility) separately permits intentional prior-version incompatibility before finalization. The rules below describe ordinary operation within a supported build; they do not promise prior-version data transfer.
+
 ## Retained records
 
 Sessions and their travel, semantic events, personal/alliance combat evidence, notes, goals, import plans and imported daily market archives remain stored. Disabling a market hub retains its last complete book. Market analysis retains its existing 30-day working projection without deleting older daily archive rows.

@@ -1,0 +1,80 @@
+{
+  "unit": "P0-01",
+  "status": "Independently reviewed static inventory; remote bank/read-back pending. Not behavioral audit acceptance.",
+  "assessed_source": "fa56b0824133da6f07393d9b04beb9ad6b242de3",
+  "assessed_tree": "44182c73ea44053cc55942b2d737360d332f446b",
+  "verified_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "verified_executable_tree": "3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10",
+  "version": "0.8.0-rc.17",
+  "main_at_recovery": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "pr": {
+    "number": 12,
+    "state": "open",
+    "draft": true
+  },
+  "static_checks": {
+    "tracked_paths_exactly_once_with_matching_blob_and_mode": 719,
+    "bounded_units": {
+      "runtime-inventory.md": 18,
+      "domain-inventory.md": 22,
+      "ui-output-inventory.md": 29,
+      "delivery-inventory.md": 7
+    },
+    "bounded_unit_total": 76,
+    "catalog_families": 10,
+    "catalog_collectors": 38,
+    "http_manifest_entries": 194,
+    "private_method_predicates": 146,
+    "nested_command_selectors": 28,
+    "sonner_publisher_files": 15,
+    "sonner_lexical_calls": 68,
+    "product_and_packaging_files_changed": false,
+    "historical_receipts_and_closed_ledgers_changed": false,
+    "relative_documentation_links_and_fragments": 401,
+    "relative_link_errors": 0,
+    "whitespace_check": "Initial staged check flagged empty final TSV notes cells as trailing tabs; changed those cells to an em dash with all other fields unchanged, then rechecked."
+  },
+  "reviews": [
+    {
+      "scope": "C01-C05",
+      "author": "runtime_inventory",
+      "reviewer": "algorithms_inventory",
+      "disposition": "Accepted source/collector/API/evidence mapping; HTTP callback method precision corrected with inventory_review."
+    },
+    {
+      "scope": "C06-C10",
+      "author": "domain_inventory",
+      "reviewer": "runtime_inventory",
+      "disposition": "Accepted source/API/23 J-Space variants/evidence; notes versus timeline mapping clarified."
+    },
+    {
+      "scope": "C11-C15",
+      "author": "algorithms_inventory",
+      "reviewer": "domain_inventory",
+      "disposition": "Accepted after public Stream GET-only and 15 files/68 Sonner calls corrections."
+    },
+    {
+      "scope": "C16, manifests, integrated ledger/policy/handoffs and final minor wording changes",
+      "author": "root; api_inventory for HTTP manifest",
+      "reviewer": "inventory_review",
+      "disposition": "Accepted integrated inventory, exact manifests, ledger/handoffs and clean-slate policy; no behavioral acceptance."
+    }
+  ],
+  "runtime_tests_run": [],
+  "browser_tests_run": [],
+  "performance_measurements": [],
+  "new_findings": [],
+  "policy_decision": "Bun explicitly requires a clean slate with no existing data for 0.8.0. Pre-final storage redesign/reset is unconstrained by prior durable-data policy; no preservation/migration/recovery/legacy-handling obligation. Standard durable-data policy resumes from finalized 0.8.0 onward. No data deletion or reset implementation in this unit.",
+  "next_unit": "P0-02 bounded command contracts; P0-03 diagnostics/toast decisions and P0-04 measured budgets remain pending.",
+  "release_actions_authorized": false,
+  "reviewed_inventory_sha256": {
+    "README.md": "7973e483d075baf5df01ba11c0e31091b277e42e58655206f4e7a09653f08714",
+    "delivery-inventory.md": "815e723d8faf5b7d43868630c247d9a3ee5a68e190b7e57118b0091ea44395e8",
+    "domain-inventory.md": "48bf25eefa85ea2021ba2d1b94e889bcc2a3166daccee6e5045a33d8fc1f33cf",
+    "http-surface.md": "b0f14cfc7c91ffe5774b5c03f90a0323efce345178d3bd079017559e4a0c02c8",
+    "http-surface.tsv": "483b27cdac153a9d18797f85cdb6bec9c6f1eb7e580257f372cb384071596ae3",
+    "runtime-inventory.md": "8b88069905aa2a47bbc805a520279222d2c88a97785a8bbd7dfe7d9d04770127",
+    "tracked-files.tsv": "eed849f63475d951b585fd1c45f09c815c4e3eee084ac0aa9193347ed103f361",
+    "ui-output-inventory.md": "a410a65d8a490db248230d4caf64b728cef019552cbb175b00f5963716c18029"
+  }
+}
