@@ -15,6 +15,8 @@ Recovery is limited to two extra order-page attempts across the entire job, incl
 
 ## Continuation ledger
 
+Bun's 21 October direction supersedes release progression: complete this focused run first, then prepare a handoff for a separate comprehensive timing/programming/algorithm audit-planning chat. Its plan and execution handoff go to a third chat. The broader audit is not part of this run; this run ends at a verified checkpoint, not release approval.
+
 | Checkpoint | State and next action |
 | --- | --- |
 | `02646da850cda876ebe5d06931b94e6338082a07` | Verified starting head; Build93 remains the last accepted download and does not contain this follow-up. |
