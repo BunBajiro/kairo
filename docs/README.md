@@ -50,4 +50,4 @@ Current source, configuration and behavioural tests define implementation. Docum
 - [Changelog](../CHANGELOG.md): release history, distinct from current operating instructions.
 - [Third-party notices](THIRD-PARTY-NOTICES.md): attribution and bundled reference terms.
 
-Build93 consolidates the final audit's corrections with the refreshed guides and source comments. The [current handoff](REVIEW-BUILD.md) records its exact package, verification and the distinction between packaged documentation and later branch updates. Audit completion does not change application version or merge/release authority.
+The [current handoff](REVIEW-BUILD.md) records the verified package and distinguishes its tested source from later documentation updates. Release progression is paused: the [audit-planning handoff](AUDIT-PLANNING-HANDOFF.md) carries the next chat’s scope and execution boundary. Historical audit completion does not authorize merge or release.

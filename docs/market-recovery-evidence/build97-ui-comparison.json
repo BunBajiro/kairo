@@ -1,0 +1,247 @@
+{
+  "reviewer": "root, independent comparison of downloaded hosted evidence",
+  "testedSource": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "rawChecksSha256": {
+    "95": "f0f7627e272a0b7306dfc00988e6d4cf596ec7da6de4cbeed5cda2c50272920e",
+    "96": "96f5cf676322b5016ba58dad0e5aad16c9b635132e566023ff34667a937c8c4b",
+    "97": "2b3c7cc704c39f36e178619ca468fc49ef3c4a0521c77030545ebe54977691f0"
+  },
+  "final": {
+    "cases": 72,
+    "checks": 864,
+    "passing": 864,
+    "browserErrors": 0,
+    "unexpectedBrowserRequests": 0,
+    "externalServerRequests": 0
+  },
+  "comparison": {
+    "build96ScenarioKeysRetained": 804,
+    "newScenarioChecks": 56,
+    "globalChecks": 4,
+    "unchangedExpectedValues": 756,
+    "expectedValueVariations": {
+      "generated_job_identity": 24,
+      "fixture_timestamps": 20,
+      "unchanged_failure_assertion_snapshots_current_durable_state": 4
+    },
+    "build95ProductFailuresNowPassing": 16,
+    "build96ProductFailuresNowPassing": 16,
+    "build95ExcludedFixtureStops": 4
+  },
+  "sourceReview": {
+    "byteUnchangedScenarioFiles": [
+      "tests/market-scan-recovery-scenarios.mjs",
+      "tests/focused-session-ownership-scenarios.mjs",
+      "tests/focused-response-recovery-scenarios.mjs"
+    ],
+    "opsecChanges": "Existing accepted path keeps the same six checks and expected results; explicit rejected/unreadable manual acknowledgement variants add seven checks each per context. Runner adds only these two registrations."
+  },
+  "globalReview": "All selected72 scenarios complete; no browser errors, unexpected browser requests or external server requests. Completion count intentionally changes64 to72; global checks carry final scenario metadata.",
+  "expectedVariationReview": "No weakened expectations. Market fixtures retain within-run exact timestamp and job-identity equality. Session failure assertion snapshots beforeFailure; its prior durable state changes from the old overwritten details to the correctly latest accepted details. The independent ordering assertion requires latest details in both runs.",
+  "baselineFailuresNowPassing": {
+    "95": [
+      [
+        "chromium",
+        1600,
+        "opsec-accepted-navigation",
+        "Accepted manual acknowledgement synchronizes a clean OPSEC remount"
+      ],
+      [
+        "chromium",
+        1600,
+        "opsec-accepted-navigation",
+        "Saving another policy field after remount retains accepted manual protection"
+      ],
+      [
+        "chromium",
+        1600,
+        "opsec-accepted-navigation",
+        "An unrelated policy save cannot release accepted manual covers"
+      ],
+      [
+        "chromium",
+        1600,
+        "obs-accepted-navigation",
+        "Accepted OBS writes retain order across editor remounts"
+      ],
+      [
+        "chromium",
+        390,
+        "opsec-accepted-navigation",
+        "Accepted manual acknowledgement synchronizes a clean OPSEC remount"
+      ],
+      [
+        "chromium",
+        390,
+        "opsec-accepted-navigation",
+        "Saving another policy field after remount retains accepted manual protection"
+      ],
+      [
+        "chromium",
+        390,
+        "opsec-accepted-navigation",
+        "An unrelated policy save cannot release accepted manual covers"
+      ],
+      [
+        "chromium",
+        390,
+        "obs-accepted-navigation",
+        "Accepted OBS writes retain order across editor remounts"
+      ],
+      [
+        "firefox",
+        1600,
+        "opsec-accepted-navigation",
+        "Accepted manual acknowledgement synchronizes a clean OPSEC remount"
+      ],
+      [
+        "firefox",
+        1600,
+        "opsec-accepted-navigation",
+        "Saving another policy field after remount retains accepted manual protection"
+      ],
+      [
+        "firefox",
+        1600,
+        "opsec-accepted-navigation",
+        "An unrelated policy save cannot release accepted manual covers"
+      ],
+      [
+        "firefox",
+        1600,
+        "obs-accepted-navigation",
+        "Accepted OBS writes retain order across editor remounts"
+      ],
+      [
+        "firefox",
+        390,
+        "opsec-accepted-navigation",
+        "Accepted manual acknowledgement synchronizes a clean OPSEC remount"
+      ],
+      [
+        "firefox",
+        390,
+        "opsec-accepted-navigation",
+        "Saving another policy field after remount retains accepted manual protection"
+      ],
+      [
+        "firefox",
+        390,
+        "opsec-accepted-navigation",
+        "An unrelated policy save cannot release accepted manual covers"
+      ],
+      [
+        "firefox",
+        390,
+        "obs-accepted-navigation",
+        "Accepted OBS writes retain order across editor remounts"
+      ]
+    ],
+    "96": [
+      [
+        "chromium",
+        1600,
+        "session-accepted-navigation",
+        "Accepted Session writes retain order across dialog remounts"
+      ],
+      [
+        "chromium",
+        1600,
+        "opsec-queued-policy-navigation",
+        "A policy submitted before manual acknowledgement preserves accepted protection"
+      ],
+      [
+        "chromium",
+        1600,
+        "opsec-queued-policy-navigation",
+        "A queued policy save cannot release manually protected broadcast output"
+      ],
+      [
+        "chromium",
+        1600,
+        "opsec-queued-policy-navigation",
+        "The current editor agrees with the accepted manual and policy state"
+      ],
+      [
+        "chromium",
+        390,
+        "session-accepted-navigation",
+        "Accepted Session writes retain order across dialog remounts"
+      ],
+      [
+        "chromium",
+        390,
+        "opsec-queued-policy-navigation",
+        "A policy submitted before manual acknowledgement preserves accepted protection"
+      ],
+      [
+        "chromium",
+        390,
+        "opsec-queued-policy-navigation",
+        "A queued policy save cannot release manually protected broadcast output"
+      ],
+      [
+        "chromium",
+        390,
+        "opsec-queued-policy-navigation",
+        "The current editor agrees with the accepted manual and policy state"
+      ],
+      [
+        "firefox",
+        1600,
+        "session-accepted-navigation",
+        "Accepted Session writes retain order across dialog remounts"
+      ],
+      [
+        "firefox",
+        1600,
+        "opsec-queued-policy-navigation",
+        "A policy submitted before manual acknowledgement preserves accepted protection"
+      ],
+      [
+        "firefox",
+        1600,
+        "opsec-queued-policy-navigation",
+        "A queued policy save cannot release manually protected broadcast output"
+      ],
+      [
+        "firefox",
+        1600,
+        "opsec-queued-policy-navigation",
+        "The current editor agrees with the accepted manual and policy state"
+      ],
+      [
+        "firefox",
+        390,
+        "session-accepted-navigation",
+        "Accepted Session writes retain order across dialog remounts"
+      ],
+      [
+        "firefox",
+        390,
+        "opsec-queued-policy-navigation",
+        "A policy submitted before manual acknowledgement preserves accepted protection"
+      ],
+      [
+        "firefox",
+        390,
+        "opsec-queued-policy-navigation",
+        "A queued policy save cannot release manually protected broadcast output"
+      ],
+      [
+        "firefox",
+        390,
+        "opsec-queued-policy-navigation",
+        "The current editor agrees with the accepted manual and policy state"
+      ]
+    ]
+  },
+  "visualInspection": {
+    "files": [
+      "chromium-1600-opsec-queued-policy-navigation.png",
+      "firefox-390-session-accepted-navigation.png"
+    ],
+    "scope": "Representative final frames inspected; assertions establish behavior. Frames include scroll/transition states and do not certify broad visual, responsive or native-platform usability."
+  },
+  "disposition": "Accepted for the focused checkpoint; broader audit and release progression remain separate."
+}

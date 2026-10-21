@@ -1,6 +1,6 @@
 # Validation and release readiness
 
-The completed [final release/baseline audit](FINAL-AUDIT.md), [source documentation](SOURCE-DOCUMENTATION-WORK.md) and [manual refresh](DOCUMENTATION-WORK.md) are consolidated in [Build93](REVIEW-BUILD.md), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Earlier phase and build verification records retain their separate source identities and scope.
+The completed [final release/baseline audit](FINAL-AUDIT.md), [source documentation](SOURCE-DOCUMENTATION-WORK.md) and [manual refresh](DOCUMENTATION-WORK.md) were consolidated in [Build93](BUILD93-VERIFICATION.json), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Earlier phase and build verification records retain their separate source identities and scope.
 
 **Use the exact build designated in the [current review handoff](REVIEW-BUILD.md).** It records the tested source, verified package/download, actual checks and remaining environment limits. The [completed premerge review](PREMERGE-BUG-REVIEW.md) preserves build90's acceptance and closed bug ledger. The completed [performance acceptance record](https://github.com/BunBajiro/kairo/blob/568ce3e29213e4132a535340c1321e28c46a83cc/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) preserves prior gates. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn; PR #12 owns the current phase. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
 
@@ -41,7 +41,7 @@ Chrome (Blink) and Firefox (Gecko) are required targets for future review and re
 
 Exercise the affected flow from a fresh page/context as well as after normal navigation. Include delayed or failed resource recovery and desktop/narrow layout where relevant. Keep lazy-loaded offscreen resources distinct from missing visible content. Save useful failures, screenshots and results through the existing Actions artifacts; report the exact tested commit and browser scope.
 
-The browser scope established by the completed bug review is explicit below. Build90's results remain historical; the [current handoff](REVIEW-BUILD.md) records Build93's rerun results and added final-audit coverage.
+The browser scope established by the completed bug review is explicit below. Build90's results remain historical; the [current handoff](REVIEW-BUILD.md) records the latest rerun results and additional ownership/recovery coverage.
 
 | Browser | Existing compiled checks |
 | --- | --- |
@@ -64,9 +64,9 @@ The Firefox market regression is a required baseline, not full cross-browser cov
 
 Build #90 passed the coverage table above at its recorded source. Historical build #69 passed the original market/session/Universe/dataset scopes, and Bun confirmed its category-first icon fix in Firefox on 13 October 2026. That closes the reported icon finding; it is not blanket approval of every UI flow or authorization to merge/release.
 
-## Current consolidated review build
+## Current verification boundary
 
-Build93 consolidates the final audit's corrections, refreshed manuals and source comments at its tested source commit. It passed the blocking test-build workflow, including the added final-audit browser and packaging controls, and independent downloaded-package verification. The [current handoff](REVIEW-BUILD.md) and [Build93 receipt](BUILD93-VERIFICATION.json) record the exact source, artifact, browser/runtime results and download checks. These correctness gates do not claim new elapsed-performance measurements. Windows/DPAPI, live EVE, actual OBS and extended-play limits remain as described below. PR #12 stays draft; merge, release and version changes require separate approval.
+The [current handoff](REVIEW-BUILD.md) records the latest verified checkpoint, exact source, package and results; [Build93](BUILD93-VERIFICATION.json) remains historical final-audit evidence. Correctness gates do not claim new elapsed-performance measurements or native/live-environment acceptance. Release progression is paused for the staged [comprehensive audit](AUDIT-PLANNING-HANDOFF.md). PR #12 stays draft; merge, release and version changes require separate approval.
 
 ## Completed bug-review acceptance (historical Build90)
 
