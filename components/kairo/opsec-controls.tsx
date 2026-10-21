@@ -5,7 +5,7 @@
  * server/obs.mjs owns ordered OBS actions. Manual protection submits immediately;
  * other policy fields remain drafts until saved. See ../../docs/STREAMING.md.
  */
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {ArrowUpRight, ShieldCheck, Link2, CheckCircle2, CircleDashed} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
@@ -42,6 +42,11 @@ export function OPSEC() {
     const [blue,setBlue] = useState((settings.blueAlliances||[]).join(', '));
     const [hostile,setHostile] = useState((settings.hostileAlliances||[]).join(', '));
     const [busy,setBusy] = useState(false);
+    // Manual protection is an immediate command, including one acknowledged
+    // after navigation. Policy fields remain this editor's unsaved drafts.
+    useEffect(()=>{
+        setSettings((current:any)=>current.manual===boot.settings.opsec.manual?current:{...current,manual:boot.settings.opsec.manual});
+    },[boot.settings.opsec.manual]);
     async function save(next=settings, manualOnly=false) {
         setBusy(true);
         try {

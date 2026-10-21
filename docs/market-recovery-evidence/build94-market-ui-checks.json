@@ -1,0 +1,3075 @@
+{
+  "scope": "Retained new MR assertions plus four global controls from the complete downloaded Build94 checks.json; existing 392 passing assertions are referenced by the unchanged Build93 record instead of copied again.",
+  "source": "cde4723e47cbf7cf43be7eb4ce7885771d99103c",
+  "artifact_id": 12311639716,
+  "artifact_sha256": "439f2dcb2c5bb02ebd126930c65ac817eb85f08e565a577c2705896f99368cdc",
+  "complete_raw_checks_sha256": "9c7fbc9c976ee87b04ecd96af3c62b1335f97085dd87a45b91512199bd2640a4",
+  "complete_case_count": 40,
+  "complete_check_count": 600,
+  "new_market_cases": 12,
+  "new_market_assertions": 204,
+  "prior_case_assertions_compared_and_unchanged": 392,
+  "completed": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted"
+    }
+  ],
+  "checks": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "28832ca9-e04d-4407-a2aa-7599aefae8c9",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "28832ca9-e04d-4407-a2aa-7599aefae8c9",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:22.154Z\",\"observed\":\"2026-10-20T00:59:22.154Z\",\"expires\":\"2026-10-22T00:59:22.154Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:22.154Z\",\"observed\":\"2026-10-20T00:59:22.154Z\",\"expires\":\"2026-10-22T00:59:22.154Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "28832ca9-e04d-4407-a2aa-7599aefae8c9",
+      "expected": "28832ca9-e04d-4407-a2aa-7599aefae8c9"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN COMPLETE",
+      "expected": "SCAN COMPLETE"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered scan promotes the complete replacement book",
+      "pass": true,
+      "actual": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "expected": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered completion counts each accepted page once",
+      "pass": true,
+      "actual": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered UI shows the completed book without a stale failure",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "2c312129-52d3-4495-bbf0-638143dc1c45",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "2c312129-52d3-4495-bbf0-638143dc1c45",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:24.238Z\",\"observed\":\"2026-10-20T00:59:24.238Z\",\"expires\":\"2026-10-22T00:59:24.238Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:24.238Z\",\"observed\":\"2026-10-20T00:59:24.238Z\",\"expires\":\"2026-10-22T00:59:24.238Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancel acknowledges stopping while the admitted response is held",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "2c312129-52d3-4495-bbf0-638143dc1c45",
+      "expected": "2c312129-52d3-4495-bbf0-638143dc1c45"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "CANCELLED",
+      "expected": "CANCELLED"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation prevents retry-response publication",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:24.238Z\",\"observed\":\"2026-10-20T00:59:24.238Z\",\"expires\":\"2026-10-22T00:59:24.238Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:24.238Z\",\"observed\":\"2026-10-20T00:59:24.238Z\",\"expires\":\"2026-10-22T00:59:24.238Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation leaves no partial completed book",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation adds no further recovery attempt",
+      "pass": true,
+      "actual": {
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ],
+      "expected": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "0bad30ea-9054-4d80-969e-da3a02b5b47f",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "0bad30ea-9054-4d80-969e-da3a02b5b47f",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:26.242Z\",\"observed\":\"2026-10-20T00:59:26.242Z\",\"expires\":\"2026-10-22T00:59:26.242Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:26.242Z\",\"observed\":\"2026-10-20T00:59:26.242Z\",\"expires\":\"2026-10-22T00:59:26.242Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "0bad30ea-9054-4d80-969e-da3a02b5b47f",
+      "expected": "0bad30ea-9054-4d80-969e-da3a02b5b47f"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN STOPPED",
+      "expected": "SCAN STOPPED"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted recovery reports the original failure and explicit outcome",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry preserves the earlier completed hub",
+      "pass": true,
+      "actual": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      },
+      "expected": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry retains the previous reference book",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:26.242Z\",\"observed\":\"2026-10-20T00:59:26.242Z\",\"expires\":\"2026-10-22T00:59:26.242Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T00:59:26.242Z\",\"observed\":\"2026-10-20T00:59:26.242Z\",\"expires\":\"2026-10-22T00:59:26.242Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Stopped scan keeps completed-book context visible",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery is capped at two extra provider attempts",
+      "pass": true,
+      "actual": {
+        "retries": 2,
+        "requests": 5
+      },
+      "expected": {
+        "retries": 2,
+        "requests": 5
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "472384f5-aa2a-4c99-a339-92fd4eafe03a",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "472384f5-aa2a-4c99-a339-92fd4eafe03a",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:17.141Z\",\"observed\":\"2026-10-20T01:00:17.141Z\",\"expires\":\"2026-10-22T01:00:17.141Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:17.141Z\",\"observed\":\"2026-10-20T01:00:17.141Z\",\"expires\":\"2026-10-22T01:00:17.141Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "472384f5-aa2a-4c99-a339-92fd4eafe03a",
+      "expected": "472384f5-aa2a-4c99-a339-92fd4eafe03a"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN COMPLETE",
+      "expected": "SCAN COMPLETE"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered scan promotes the complete replacement book",
+      "pass": true,
+      "actual": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "expected": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered completion counts each accepted page once",
+      "pass": true,
+      "actual": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered UI shows the completed book without a stale failure",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "58798f9b-7047-4f48-80be-3a4cf14d02aa",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "58798f9b-7047-4f48-80be-3a4cf14d02aa",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:18.922Z\",\"observed\":\"2026-10-20T01:00:18.922Z\",\"expires\":\"2026-10-22T01:00:18.922Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:18.922Z\",\"observed\":\"2026-10-20T01:00:18.922Z\",\"expires\":\"2026-10-22T01:00:18.922Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancel acknowledges stopping while the admitted response is held",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "58798f9b-7047-4f48-80be-3a4cf14d02aa",
+      "expected": "58798f9b-7047-4f48-80be-3a4cf14d02aa"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "CANCELLED",
+      "expected": "CANCELLED"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation prevents retry-response publication",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:18.922Z\",\"observed\":\"2026-10-20T01:00:18.922Z\",\"expires\":\"2026-10-22T01:00:18.922Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:18.922Z\",\"observed\":\"2026-10-20T01:00:18.922Z\",\"expires\":\"2026-10-22T01:00:18.922Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation leaves no partial completed book",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation adds no further recovery attempt",
+      "pass": true,
+      "actual": {
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ],
+      "expected": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "d300a4b1-4871-4d00-ad56-a3d6afe8015f",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "d300a4b1-4871-4d00-ad56-a3d6afe8015f",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:20.789Z\",\"observed\":\"2026-10-20T01:00:20.789Z\",\"expires\":\"2026-10-22T01:00:20.789Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:20.789Z\",\"observed\":\"2026-10-20T01:00:20.789Z\",\"expires\":\"2026-10-22T01:00:20.789Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "d300a4b1-4871-4d00-ad56-a3d6afe8015f",
+      "expected": "d300a4b1-4871-4d00-ad56-a3d6afe8015f"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN STOPPED",
+      "expected": "SCAN STOPPED"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted recovery reports the original failure and explicit outcome",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry preserves the earlier completed hub",
+      "pass": true,
+      "actual": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      },
+      "expected": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry retains the previous reference book",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:20.789Z\",\"observed\":\"2026-10-20T01:00:20.789Z\",\"expires\":\"2026-10-22T01:00:20.789Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:20.789Z\",\"observed\":\"2026-10-20T01:00:20.789Z\",\"expires\":\"2026-10-22T01:00:20.789Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Stopped scan keeps completed-book context visible",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery is capped at two extra provider attempts",
+      "pass": true,
+      "actual": {
+        "retries": 2,
+        "requests": 5
+      },
+      "expected": {
+        "retries": 2,
+        "requests": 5
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "6b00e1ae-827e-430b-80c5-f7a9076955d1",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "6b00e1ae-827e-430b-80c5-f7a9076955d1",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:44.869Z\",\"observed\":\"2026-10-20T01:00:44.869Z\",\"expires\":\"2026-10-22T01:00:44.869Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:44.869Z\",\"observed\":\"2026-10-20T01:00:44.869Z\",\"expires\":\"2026-10-22T01:00:44.869Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "6b00e1ae-827e-430b-80c5-f7a9076955d1",
+      "expected": "6b00e1ae-827e-430b-80c5-f7a9076955d1"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN COMPLETE",
+      "expected": "SCAN COMPLETE"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered scan promotes the complete replacement book",
+      "pass": true,
+      "actual": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "expected": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered completion counts each accepted page once",
+      "pass": true,
+      "actual": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered UI shows the completed book without a stale failure",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-recovered",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "fd9f03e5-c8fb-4e61-adb3-53ee4f69d8a8",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "fd9f03e5-c8fb-4e61-adb3-53ee4f69d8a8",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:46.707Z\",\"observed\":\"2026-10-20T01:00:46.707Z\",\"expires\":\"2026-10-22T01:00:46.707Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:46.707Z\",\"observed\":\"2026-10-20T01:00:46.707Z\",\"expires\":\"2026-10-22T01:00:46.707Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancel acknowledges stopping while the admitted response is held",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "fd9f03e5-c8fb-4e61-adb3-53ee4f69d8a8",
+      "expected": "fd9f03e5-c8fb-4e61-adb3-53ee4f69d8a8"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "CANCELLED",
+      "expected": "CANCELLED"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation prevents retry-response publication",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:46.707Z\",\"observed\":\"2026-10-20T01:00:46.707Z\",\"expires\":\"2026-10-22T01:00:46.707Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:46.707Z\",\"observed\":\"2026-10-20T01:00:46.707Z\",\"expires\":\"2026-10-22T01:00:46.707Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation leaves no partial completed book",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation adds no further recovery attempt",
+      "pass": true,
+      "actual": {
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ],
+      "expected": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-cancel",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "5e869bf1-90b9-4637-8103-32ce69996e2a",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "5e869bf1-90b9-4637-8103-32ce69996e2a",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:48.623Z\",\"observed\":\"2026-10-20T01:00:48.623Z\",\"expires\":\"2026-10-22T01:00:48.623Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:48.623Z\",\"observed\":\"2026-10-20T01:00:48.623Z\",\"expires\":\"2026-10-22T01:00:48.623Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "5e869bf1-90b9-4637-8103-32ce69996e2a",
+      "expected": "5e869bf1-90b9-4637-8103-32ce69996e2a"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN STOPPED",
+      "expected": "SCAN STOPPED"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted recovery reports the original failure and explicit outcome",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry preserves the earlier completed hub",
+      "pass": true,
+      "actual": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      },
+      "expected": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry retains the previous reference book",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:48.623Z\",\"observed\":\"2026-10-20T01:00:48.623Z\",\"expires\":\"2026-10-22T01:00:48.623Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:00:48.623Z\",\"observed\":\"2026-10-20T01:00:48.623Z\",\"expires\":\"2026-10-22T01:00:48.623Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Stopped scan keeps completed-book context visible",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery is capped at two extra provider attempts",
+      "pass": true,
+      "actual": {
+        "retries": 2,
+        "requests": 5
+      },
+      "expected": {
+        "retries": 2,
+        "requests": 5
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "market-scan-exhausted",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "2712982e-de4a-4a03-97ed-1d464046e62e",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "2712982e-de4a-4a03-97ed-1d464046e62e",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:42.200Z\",\"observed\":\"2026-10-20T01:01:42.200Z\",\"expires\":\"2026-10-22T01:01:42.200Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:42.200Z\",\"observed\":\"2026-10-20T01:01:42.200Z\",\"expires\":\"2026-10-22T01:01:42.200Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "2712982e-de4a-4a03-97ed-1d464046e62e",
+      "expected": "2712982e-de4a-4a03-97ed-1d464046e62e"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN COMPLETE",
+      "expected": "SCAN COMPLETE"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered scan promotes the complete replacement book",
+      "pass": true,
+      "actual": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "expected": {
+        "books": [
+          60003760
+        ],
+        "prices": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered completion counts each accepted page once",
+      "pass": true,
+      "actual": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "pages": 8,
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovered UI shows the completed book without a stale failure",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-recovered",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "6dbd4d29-9c3a-4320-973d-95f179bf0d99",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "6dbd4d29-9c3a-4320-973d-95f179bf0d99",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 8 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 7,
+      "expected": 7
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:43.958Z\",\"observed\":\"2026-10-20T01:01:43.958Z\",\"expires\":\"2026-10-22T01:01:43.958Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:43.958Z\",\"observed\":\"2026-10-20T01:01:43.958Z\",\"expires\":\"2026-10-22T01:01:43.958Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancel acknowledges stopping while the admitted response is held",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "6dbd4d29-9c3a-4320-973d-95f179bf0d99",
+      "expected": "6dbd4d29-9c3a-4320-973d-95f179bf0d99"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "CANCELLED",
+      "expected": "CANCELLED"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation prevents retry-response publication",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:43.958Z\",\"observed\":\"2026-10-20T01:01:43.958Z\",\"expires\":\"2026-10-22T01:01:43.958Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:43.958Z\",\"observed\":\"2026-10-20T01:01:43.958Z\",\"expires\":\"2026-10-22T01:01:43.958Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation leaves no partial completed book",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Cancellation adds no further recovery attempt",
+      "pass": true,
+      "actual": {
+        "retries": 1,
+        "requests": 9
+      },
+      "expected": {
+        "retries": 1,
+        "requests": 9
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ],
+      "expected": [
+        "/api/markets/scan",
+        "/api/markets/cancel"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-cancel",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The cold market book contains the prior complete prices",
+      "pass": true,
+      "actual": [
+        100
+      ],
+      "expected": [
+        100
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery remains the same running order-scan job",
+      "pass": true,
+      "actual": {
+        "id": "1a89d546-8f29-444e-a8d6-3ffcba800182",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      },
+      "expected": {
+        "id": "1a89d546-8f29-444e-a8d6-3ffcba800182",
+        "status": "running",
+        "phase": "orders",
+        "retries": 1
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing progress panel shows the bounded recovery attempt",
+      "pass": true,
+      "actual": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s",
+      "expected": "Jita \u00b7 page 2 \u00b7 retry 1/2 in 1s"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery keeps the existing Cancel control usable",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery prevents another scan from the current controls",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "A recovery attempt does not count the malformed page as accepted",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The previous Jita book remains complete during recovery",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:45.914Z\",\"observed\":\"2026-10-20T01:01:45.914Z\",\"expires\":\"2026-10-22T01:01:45.914Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:45.914Z\",\"observed\":\"2026-10-20T01:01:45.914Z\",\"expires\":\"2026-10-22T01:01:45.914Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Completed-book context remains visible during recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery settles without replacing the accepted job identity",
+      "pass": true,
+      "actual": "1a89d546-8f29-444e-a8d6-3ffcba800182",
+      "expected": "1a89d546-8f29-444e-a8d6-3ffcba800182"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "The existing scan heading reflects the terminal outcome",
+      "pass": true,
+      "actual": "SCAN STOPPED",
+      "expected": "SCAN STOPPED"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "A settled scan removes Cancel and restores Full scan",
+      "pass": true,
+      "actual": {
+        "cancel": 0,
+        "enabled": true
+      },
+      "expected": {
+        "cancel": 0,
+        "enabled": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted recovery reports the original failure and explicit outcome",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry preserves the earlier completed hub",
+      "pass": true,
+      "actual": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      },
+      "expected": {
+        "books": [
+          60008494
+        ],
+        "prices": [
+          300
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Exhausted retry retains the previous reference book",
+      "pass": true,
+      "actual": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:45.914Z\",\"observed\":\"2026-10-20T01:01:45.914Z\",\"expires\":\"2026-10-22T01:01:45.914Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      },
+      "expected": {
+        "orders": [
+          {
+            "order_id": 60003760,
+            "price": 100,
+            "volume": 5
+          }
+        ],
+        "scan": "{\"at\":\"2026-10-20T01:01:45.914Z\",\"observed\":\"2026-10-20T01:01:45.914Z\",\"expires\":\"2026-10-22T01:01:45.914Z\",\"mode\":\"full\",\"jobId\":\"prior-complete-book\",\"items\":1,\"pages\":1}"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Stopped scan keeps completed-book context visible",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery is capped at two extra provider attempts",
+      "pass": true,
+      "actual": {
+        "retries": 2,
+        "requests": 5
+      },
+      "expected": {
+        "retries": 2,
+        "requests": 5
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Recovery adds no implicit browser scan commands",
+      "pass": true,
+      "actual": [
+        "/api/markets/scan"
+      ],
+      "expected": [
+        "/api/markets/scan"
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Terminal recovery clears temporary staging",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "Every selected scenario completed",
+      "pass": true,
+      "actual": 40,
+      "expected": 40
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "No uncaught browser errors",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "No unexpected browser requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "market-scan-exhausted",
+      "label": "No external server requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    }
+  ],
+  "errors": [],
+  "unexpectedNetwork": [],
+  "serverRequests": []
+}

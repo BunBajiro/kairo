@@ -1,0 +1,31 @@
+{
+  "status": "reviewed correction/probe checkpoint; hosted acceptance pending",
+  "EC-07": {
+    "reviewer": "session_save_review and root",
+    "accepted": "Manual-only boot sync fixes displayed stale state without touching policy drafts. Original 12 failures remain in the retained baseline.",
+    "open": "Policy Save accepted before old manual acknowledgement may still capture stale manual state; new probe must establish/dispose this before acceptance."
+  },
+  "EC-08": {
+    "reviewer": "session_save_review and root",
+    "accepted": "Module-lifetime cloned configuration queue preserves accepted order across remounts; queue rejection releases later callers; original owner generations/errors unchanged; no automatic retries or extra requests."
+  },
+  "probes": {
+    "reviewer": "root",
+    "Session": "Two selector changes only; assertions and persistence ordering unchanged. No product claim until hosted baseline.",
+    "dirty_remount": "Checks manual synchronization preserves later draft; original clean-case checks unchanged.",
+    "queued_policy": "Real persistence before held acknowledgement, later policy Save waits in existing queue; asserts durable manual/output/editor state and two explicit commands.",
+    "response_selector": "Identify policy response by any non-manual key, so the probe asserts behavior independently of future policy payload shape."
+  },
+  "next_hosted": {
+    "contexts": 4,
+    "scenarios": 64,
+    "checks_expected": 808
+  },
+  "sha256": {
+    "components/kairo/opsec-controls.tsx": "8c4ea7d0a271232edc13cc823b47bc34ea7d9972cf67b09be8badda1b4eb64e6",
+    "components/kairo/obs-controls.tsx": "2f6fad0ac1d70f021c95a3818305ae5b555c90684e1e7b0374891617345f60a9",
+    "tests/focused-ui-ownership-scenarios.mjs": "c6151ae7bc712fb3a87effd67aed6c8fdc2dbf2013939c16562fcd8f3a25aa96",
+    "tests/focused-session-ownership-scenarios.mjs": "c541563017d29d379af0b2f854c82a35c237b64b88fc8a2188273d46895bde69",
+    "tests/final-audit-ui.mjs": "f57d1a67591b81c8c4431c9a61080ad1aa28b0ffd6fca0b0b36a8a833a3726c7"
+  }
+}

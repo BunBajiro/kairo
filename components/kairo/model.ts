@@ -116,9 +116,9 @@ export const remaining = (v?: string | number) => { if (!v)
  * Read/write a private path relative to `/api`, with JSON when a body is supplied.
  * Mutations pass bootstrap's CSRF token. Fetch uses the same-origin session; no
  * credential is placed in the URL. Non-2xx responses reject with the server's error
- * message; transport errors propagate. A malformed success body returns the local
- * error envelope. No retry or cancellation is implied: scope owners decide whether
+ * message; transport and JSON parse errors reject. No retry or cancellation is
+ * implied: scope owners decide whether
  * a result may publish, and callers must reconcile an uncertain accepted write.
  */
-export async function api(path: string, method = 'GET', body?: any, csrf?: string) { const r = await fetch('/api' + path, { method, headers: { ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}), ...(csrf ? { 'X-Kairo-CSRF': csrf } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) }); const d = await r.json().catch(() => ({ error: 'Kairo could not read the response.' })); if (!r.ok)
+export async function api(path: string, method = 'GET', body?: any, csrf?: string) { const r = await fetch('/api' + path, { method, headers: { ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}), ...(csrf ? { 'X-Kairo-CSRF': csrf } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) }); const d = await r.json().catch(() => {throw new Error('Kairo could not read the response.');}); if (!r.ok)
     throw new Error(d.error || 'Request failed.'); return d; }

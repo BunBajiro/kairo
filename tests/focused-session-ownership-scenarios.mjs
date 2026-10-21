@@ -26,8 +26,8 @@ export async function sessionAcceptedNavigation({page,context,app,check,frame,de
  const responseFor=label=>response=>new URL(response.url()).pathname===path&&response.request().method()==='PUT'&&response.request().postDataJSON().label===label;
  const open=async()=>{await page.locator('.session-card').first().click();const dialog=page.locator('.session-report-dialog');await dialog.locator('.session-summary').waitFor();return dialog;};
  const close=async dialog=>{await dialog.getByRole('button',{name:'Close',exact:true}).click();await dialog.waitFor({state:'detached'});};
- const fill=async(dialog,values)=>{await dialog.getByLabel('Session name',{exact:true}).fill(values.label);await dialog.getByLabel('Debrief & notes',{exact:true}).fill(values.notes);};
- const draft=async dialog=>({label:await dialog.getByLabel('Session name',{exact:true}).inputValue(),notes:await dialog.getByLabel('Debrief & notes',{exact:true}).inputValue()});
+ const fill=async(dialog,values)=>{await dialog.getByLabel('Session name',{exact:true}).fill(values.label);await dialog.locator('.session-debrief textarea').fill(values.notes);};
+ const draft=async dialog=>({label:await dialog.getByLabel('Session name',{exact:true}).inputValue(),notes:await dialog.locator('.session-debrief textarea').inputValue()});
  const save=dialog=>dialog.getByRole('button',{name:'Save session details',exact:true});
  const settle=async dialog=>{await save(dialog).waitFor();assert.equal(await save(dialog).isEnabled(),true);await frame();};
  const send=async(dialog,values,status=200)=>{await fill(dialog,values);const pending=page.waitForResponse(responseFor(values.label));await save(dialog).click();const response=await pending;assert.equal(response.status(),status);await response.finished();await settle(dialog);};
