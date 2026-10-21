@@ -129,7 +129,7 @@ export function createUniverseFeeds(store, _esi, { atlas, now = Date.now, fetche
             const age = Math.max(0, Number(response.headers.get('age')) || 0);
             const ttl = Math.max(PROVIDERS[source].ttl, maxAge ? Math.max(1, Number(maxAge[1]) - age) * 1000 : 0);
             return { data: response.status === 304 ? previous?.data : JSON.parse(body), status: response.status,
-                etag: response.headers.get('etag') || previous?.etag || null, expires_at: ISO(now() + Math.min(DAY, ttl)),
+                etag: response.headers.get('etag') || (response.status === 304 ? previous?.etag : null) || null, expires_at: ISO(now() + Math.min(DAY, ttl)),
                 scout_last_interaction: response.headers.get('x-last-signaleer-hub-interaction') || null };
         } finally { clearTimeout(timer); controllers.delete(controller); }
     }
