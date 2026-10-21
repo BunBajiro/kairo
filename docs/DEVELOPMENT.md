@@ -2,7 +2,7 @@
 
 [Documentation index](README.md) · [Architecture](ARCHITECTURE.md) · [Validation](VALIDATION.md)
 
-The current application is **`0.8.0-rc.17`**. Follow [AGENTS.md](../AGENTS.md) and keep changes on a feature/review branch. The [final release/baseline audit](FINAL-AUDIT.md) uses `review/0.8.0-rc-premerge-bug-review`, draft PR #12. Audit or documentation completion does not authorize a version bump, merge or stable release.
+The current application is **`0.8.0-rc.17`**. Follow [AGENTS.md](../AGENTS.md) and keep changes on a feature/review branch. The completed [final release/baseline audit](FINAL-AUDIT.md) is consolidated in [Build93](REVIEW-BUILD.md) on `review/0.8.0-rc-premerge-bug-review`, draft PR #12. Audit or documentation completion does not authorize a version bump, merge or stable release.
 
 ## Recover before changing anything
 
@@ -87,7 +87,7 @@ node tests/premerge-pass4-navigation-ui.mjs
 
 The Playwright path is a placeholder for an actual installation. The workflow pins its tooling version and installs the matching Firefox binary; do not add it to application dependencies just to run a harness. Run the browser harnesses one at a time, as Actions does: some share fixed ports even though their temporary profiles are separate. Browser execution also requires an environment that permits local listeners/browser processes. If that capability is unavailable, use the authorised hosted gates and report that limitation; do not claim local browser execution.
 
-[Validation](VALIDATION.md#browser-compatibility) describes the required browser scope and historical build90 coverage; the [current review handoff](REVIEW-BUILD.md) records Build91's actual results and counts. Windows DPAPI, live EVE SSO/permissions, actual OBS scene/audio output and extended play remain environment-specific checks.
+[Validation](VALIDATION.md#browser-compatibility) describes the required browser scope and historical build90 coverage; the [current review handoff](REVIEW-BUILD.md) records Build93's actual results and counts. Windows DPAPI, live EVE SSO/permissions, actual OBS scene/audio output and extended play remain environment-specific checks.
 
 ## Package and verify
 

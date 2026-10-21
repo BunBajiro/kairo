@@ -8,8 +8,8 @@ This page separates completed investigations from current operating and developm
 
 | Record | What it establishes |
 | --- | --- |
-| [Final release/baseline audit](../FINAL-AUDIT.md) | Current audit scope, distinct new findings and correction/review/validation checkpoints; preserves all earlier evidence. |
-| [Current review build](../REVIEW-BUILD.md) | Build91's exact tested source, consolidated package, actual checks and remaining environment limits; links its separate verification receipt. |
+| [Final release/baseline audit](../FINAL-AUDIT.md) | Completed scope, corrections, independent reviews and combined validation; preserves all earlier evidence. |
+| [Current review build](../REVIEW-BUILD.md) | Build93's exact tested source, consolidated package, actual checks and remaining environment limits; links its separate verification receipt. |
 | [Completed premerge bug review](../PREMERGE-BUG-REVIEW.md) | Four completed passes, 74 closed findings, their before/fixed evidence and historical build90 identity. The ledger remains preserved intact. |
 | [Validation](../VALIDATION.md) | Scope of source, Chrome/Firefox, extracted-package and environment-specific checks. |
 | [Fourth-pass evidence](../review-evidence/2026-10-15-fourth-pass.json) | Failed/partial builds87–89, owner and independent review results, final build90 and recovered package verification. |

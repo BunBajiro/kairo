@@ -43,11 +43,11 @@ Current source, configuration and behavioural tests define implementation. Docum
 
 ## Release status, evidence and history
 
-- [Final release/baseline audit](FINAL-AUDIT.md): current scope, new findings, banked checkpoints and remaining acceptance/approval boundaries.
+- [Final release/baseline audit](FINAL-AUDIT.md): completed scope, corrections, independent reviews and remaining environment/approval boundaries.
 - [Source documentation ledger](SOURCE-DOCUMENTATION-WORK.md): source contracts, coverage, exclusions and verification.
 - [Documentation work ledger](DOCUMENTATION-WORK.md): inventory, decisions, checkpoints and documentation verification.
 - [History and evidence index](history/README.md): completed premerge review, failed baselines, original performance measurements and superseded plans.
 - [Changelog](../CHANGELOG.md): release history, distinct from current operating instructions.
 - [Third-party notices](THIRD-PARTY-NOTICES.md): attribution and bundled reference terms.
 
-Build91 includes the refreshed guides and source comments at its tested source commit. The [current handoff](REVIEW-BUILD.md) records its exact package, verification and the distinction between packaged documentation and later branch updates. Documentation completion does not change application version or merge/release authority.
+Build93 consolidates the final audit's corrections with the refreshed guides and source comments. The [current handoff](REVIEW-BUILD.md) records its exact package, verification and the distinction between packaged documentation and later branch updates. Audit completion does not change application version or merge/release authority.

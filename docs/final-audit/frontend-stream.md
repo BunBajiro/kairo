@@ -32,7 +32,7 @@ The immutable [Build92 baseline receipt](evidence/build92-baseline-verification.
 | Focused existing owner/helper checks | Initial **103/103**, then **109/109** with the native regression; typecheck passes. [Initial log](evidence/frontend-owner-checks-initial.txt), [fixed log](evidence/frontend-owner-checks-fixed.txt). Workspace checks, not exact combined-candidate acceptance. |
 | Independent review | Universe reviewer accepted source and harness changes and independently reran native policy tests **6/6**. No extra polling, background collector or provider request is introduced. |
 
-`tests/final-audit-ui.mjs` isolates each scenario in a fresh actual runtime/SQLite profile and browser context. It rejects unexpected network access and incomplete aggregates, retains failed/partial artifacts, and exercises Chromium/Firefox at 1600/390 pixels. The added Studio case expands the candidate matrix from 24 to **28** cases. Fixed hosted results belong in the central ledger.
+`tests/final-audit-ui.mjs` isolates each scenario in a fresh actual runtime/SQLite profile and browser context. It rejects unexpected network access and incomplete aggregates, retains failed/partial artifacts, and exercises Chromium/Firefox at 1600/390 pixels. [Build93](../BUILD93-VERIFICATION.json) passes **28 cases/396 checks**: all 60 baseline failures now pass, all 236 controls remain passing, and 100 added checks pass.
 
 This owner independently accepted the [tactical-window/category](universe.md) corrections and [import-settings queue](markets-sessions.md), including obsolete-window cleanup, hub-keyed ordering, newer-draft preservation, rejection recovery and idle-tail cleanup.
 

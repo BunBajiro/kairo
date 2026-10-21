@@ -1,6 +1,6 @@
 # Final audit — Universe, Maps and navigation
 
-Owner: `universe`; correction reviewer: `frontend_stream`. Source review is complete. Both new UI findings are reproduced in both browser engines and widths; their reviewed corrections are banked, with fixed hosted acceptance pending. [Final audit](../FINAL-AUDIT.md) owns current banking and combined acceptance. The 74 closed premerge findings and their scoped evidence remain closed.
+Owner: `universe`; correction reviewer: `frontend_stream`. Source review is complete. Both new UI findings were reproduced in both browser engines and widths; their reviewed corrections are banked and verified in Build93. [Final audit](../FINAL-AUDIT.md) owns current banking and combined acceptance. The 74 closed premerge findings and their scoped evidence remain closed.
 
 ## Coverage and disposition
 
@@ -27,7 +27,7 @@ The correction fences completion by lifetime and request generation, retires gen
 
 **FA-09 — duplicate landmark category, low.** `universe-operations-detail.tsx` supplied `a0_star` twice. Actual visible-picker checks recorded **eight duplicate failures and 16 healthy controls** across the same four contexts. A0-only filtering and All-category recovery passed. The correction removes only the duplicate entry.
 
-Reviewer `frontend_stream` accepted both exact corrections and added controls: the fence runs after the await and before fallback, stale cleanup preserves the current target, and return/unmount retain resource ownership. No polling, extra request or second renderer was introduced. Local harness syntax and hook TypeScript-strip parsing passed. **Fixed browser acceptance remains pending**; the combined coordinator owns runtime/type/build gates.
+Reviewer `frontend_stream` accepted both exact corrections and added controls: the fence runs after the await and before fallback, stale cleanup preserves the current target, and return/unmount retain resource ownership. No polling, extra request or second renderer was introduced. Local harness syntax and hook TypeScript-strip parsing passed. [Build93](../BUILD93-VERIFICATION.json) verifies the fixed browser flows and combined candidate gates.
 
 ## Regression quality and limits
 

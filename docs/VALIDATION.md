@@ -1,6 +1,6 @@
 # Validation and release readiness
 
-The completed [source documentation](SOURCE-DOCUMENTATION-WORK.md) and [manual refresh](DOCUMENTATION-WORK.md) are consolidated in the [current review build](REVIEW-BUILD.md), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Documentation-phase checks and subsequent Build91 verification retain their separate source identities and scope.
+The completed [final release/baseline audit](FINAL-AUDIT.md), [source documentation](SOURCE-DOCUMENTATION-WORK.md) and [manual refresh](DOCUMENTATION-WORK.md) are consolidated in [Build93](REVIEW-BUILD.md), with application version **0.8.0-rc.17** unchanged. [Development](DEVELOPMENT.md) owns setup, commands and packaging; [history and evidence](history/README.md) separates completed investigations from current instructions. Earlier phase and build verification records retain their separate source identities and scope.
 
 **Use the exact build designated in the [current review handoff](REVIEW-BUILD.md).** It records the tested source, verified package/download, actual checks and remaining environment limits. The [completed premerge review](PREMERGE-BUG-REVIEW.md) preserves build90's acceptance and closed bug ledger. The completed [performance acceptance record](https://github.com/BunBajiro/kairo/blob/568ce3e29213e4132a535340c1321e28c46a83cc/analysis/rc17/completion/c954-resumption/resumed/CURRENT-CHECKPOINT.md) preserves prior gates. Internal artifacts are not automatically clean review candidates. PR #10 remains withdrawn; PR #12 owns the current phase. A clean handoff requires the declared automated gates and extracted-package verification; merge and release require the user's later approval after review.
 
@@ -41,7 +41,7 @@ Chrome (Blink) and Firefox (Gecko) are required targets for future review and re
 
 Exercise the affected flow from a fresh page/context as well as after normal navigation. Include delayed or failed resource recovery and desktop/narrow layout where relevant. Keep lazy-loaded offscreen resources distinct from missing visible content. Save useful failures, screenshots and results through the existing Actions artifacts; report the exact tested commit and browser scope.
 
-The browser scope established by the completed bug review is explicit below. Build90's results remain historical; the [current handoff](REVIEW-BUILD.md) records Build91's actual rerun results.
+The browser scope established by the completed bug review is explicit below. Build90's results remain historical; the [current handoff](REVIEW-BUILD.md) records Build93's rerun results and added final-audit coverage.
 
 | Browser | Existing compiled checks |
 | --- | --- |
@@ -66,7 +66,7 @@ Build #90 passed the coverage table above at its recorded source. Historical bui
 
 ## Current consolidated review build
 
-Build91 includes the reviewed application, refreshed manuals and source comments at its tested source commit. It passed the unchanged test-build workflow and independent downloaded-package verification. The [current handoff](REVIEW-BUILD.md) and [Build91 receipt](BUILD91-VERIFICATION.json) record the exact source, artifact, browser/runtime counts and download checks. Runtime results come from the hosted packaged-runtime gate and the subsequent independently extracted package check; no separate new full source-runtime run or new performance measurement is claimed. Windows/DPAPI, live EVE, actual OBS and extended-play limits remain as described below. PR #12 stays draft; merge, release and version changes require separate approval.
+Build93 consolidates the final audit's corrections, refreshed manuals and source comments at its tested source commit. It passed the blocking test-build workflow, including the added final-audit browser and packaging controls, and independent downloaded-package verification. The [current handoff](REVIEW-BUILD.md) and [Build93 receipt](BUILD93-VERIFICATION.json) record the exact source, artifact, browser/runtime results and download checks. These correctness gates do not claim new elapsed-performance measurements. Windows/DPAPI, live EVE, actual OBS and extended-play limits remain as described below. PR #12 stays draft; merge, release and version changes require separate approval.
 
 ## Completed bug-review acceptance (historical Build90)
 
@@ -112,4 +112,4 @@ The guides are banked on the review branch. They are not retroactively included 
 
 The source documentation phase records coverage and independent accuracy review in [its own ledger](SOURCE-DOCUMENTATION-WORK.md) and [verification receipt](SOURCE-DOCUMENTATION-VERIFICATION.json). Comments/JSDoc/TSDoc explain current contracts; executable structure, SQL, defaults, declaration signatures and assertion behavior are preserved against `8c19913`. Protected package/workflow/data/vendor files, completed review evidence and the prior manual-phase receipts remain byte-identical.
 
-Types, a fresh build, parser-based preservation and 219 focused Node helper/model/renderer tests passed during the source documentation phase. Those phase checks did not create a new download or claim a full runtime/browser/performance gate; build90 remained the verified download then, and its source comments and packaged manuals predate these documentation phases. The subsequent [Build91 handoff](REVIEW-BUILD.md) records consolidation and its separate verification.
+Types, a fresh build, parser-based preservation and 219 focused Node helper/model/renderer tests passed during the source documentation phase. Those phase checks did not create a new download or claim a full runtime/browser/performance gate; build90 remained the verified download then, and its source comments and packaged manuals predate these documentation phases. The subsequent [Build91 receipt](BUILD91-VERIFICATION.json) records consolidation and its separate verification.

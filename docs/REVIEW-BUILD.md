@@ -1,37 +1,33 @@
 # Current review build
 
-The [final release/baseline audit](FINAL-AUDIT.md) is in progress. Build91 remains the previous verified download; it does **not** contain subsequent audit corrections, and its results are not acceptance of those changes. A new combined candidate must pass the blocking workflow and independent download verification before it replaces this handoff.
+**Build93 is the verified 0.8.0 review candidate, version `0.8.0-rc.17`.** It includes the completed final audit corrections, user/developer documentation, source comments and CI gates. It supersedes Build91. [The audit ledger](FINAL-AUDIT.md) records findings and remaining human decisions; PR #12 stays draft. Main and the version are unchanged.
 
-**Build91 is the verified consolidated review download for `0.8.0-rc.17`.** It combines the reviewed application, refreshed user/developer manuals and completed in-source documentation. It supersedes Build90 for the current handover; the [original bug-review evidence](PREMERGE-BUG-REVIEW.md) remains intact. PR #12 stays draft. No merge, stable release or version bump was performed.
+[Download Kairo-test-build.zip — Build93](https://github.com/BunBajiro/kairo/actions/runs/39081321026/artifacts/12119109062) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/39081321026) · [Verification receipt](BUILD93-VERIFICATION.json)
 
-[Download Kairo-test-build.zip — Build91](https://github.com/BunBajiro/kairo/actions/runs/39076551873/artifacts/12117353379) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/39076551873) · [Verification receipt](BUILD91-VERIFICATION.json)
-
-The artifact expires on **16 November 2026 at 23:05 UTC**. Sign into GitHub to download it. Extract the complete ZIP into a new folder, stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. Node.js 24 or newer is required; no npm install or local build is needed. Follow the [user guide](USER-GUIDE.md) for data locations, backups and normal startup.
+The artifact expires on **17 November 2026 at 00:23 UTC**. Sign into GitHub to download it. Use current **Node.js 24 LTS, at least 24.21.0**. Stop Kairo and make a complete profile backup before upgrading; extract the full ZIP into a new folder and open `Kairo/START_KAIRO.bat`. No npm install or local build is needed. The [user guide](USER-GUIDE.md) and [recovery policy](PERSISTENCE.md#production-baseline-and-version-compatibility) own startup, data locations and restore details.
 
 ## Exact package identity
 
 | Item | Verified value |
 | --- | --- |
-| Tested source | `99b8b0a19ab4e098cf34dcf051024ef7f97c6041` |
-| Git tree | `8839fdf8705fa8dff750687ac95b7a02491f80a5` |
+| Tested source | `763960b5a764f6791fa1de410ebaa1f8360ddfa3` |
+| Git tree | `adab42709ffb6def3bebbc27cfde8918fd38b946` |
 | Version | `0.8.0-rc.17` |
-| Actions run / artifact | `39076551873` / `12117353379` |
-| ZIP size | 26,852,315 bytes |
-| ZIP SHA256 | `1dd74fef9c6061060d03c597eaa6b2a0a047eb5323555613e2c0726d7005970c` |
-| Contents checked | 576 tracked source files and 20 compiled/copied client files; 596 files total |
+| Actions run / artifact | `39081321026` / `12119109062` |
+| ZIP size | 27,062,081 bytes |
+| ZIP SHA256 | `f4e24f56591712ab59989524fb81abe2916d90cf0c755abebdaa81d5fa59681c` |
+| Contents checked | 635 tracked source files and 21 generated client files; 656 total |
 
-The build-trigger commit has exactly the same tree as completed documentation checkpoint `eec3f3fa0e2674b9ccd63ea0faeb41219c23d6d8`. No application, test, workflow, dependency or version changes were introduced to produce Build91.
+## Verification and limits
 
-## Verification performed
+Hosted acceptance passed a clean locked install, types, fresh build, **16 packaging controls**, **2,713 regression-browser checks** plus existing baseline gates, and **1,246 packaged-runtime tests**. Chrome `155.0.8059.39`, Firefox `153.0` and Node `24.22.0` were used. The added final-audit gate passed all 28 cases / 396 checks, including all 60 previously failing checks and all 236 healthy baseline controls.
 
-The unchanged hosted workflow passed types, a fresh build, all blocking Chrome/Firefox gates, packaging and all **1,215 packaged-runtime tests**. Its logs record **2,317 regression-browser checks**, all passing, plus the existing market-icon, Session-card, Universe/replay and dataset gates. Those counts describe the existing fixture coverage, not every possible UI flow. The browser versions were Chrome `155.0.8059.39` and Firefox `153.0`; Actions used Node `24.21.0`.
+The independently downloaded archive matched GitHub’s digest, passed CRC/path checks and matched every eligible tracked source file. Client assets, copied public files, executable ZIP modes and bundled notices were verified. A fresh extraction without source dependencies independently passed **1,246/1,246 runtime tests** on official Node `24.22.0 / Undici 7.29.1`, with no failures, cancellations or skips. The receipt records raw evidence, per-file identities and a separately excluded unsupported-host attempt.
 
-The independently downloaded ZIP matched GitHub's SHA256 and passed CRC and archive-path checks. Every eligible tracked file matched the exact build commit; the refreshed manuals, source comments, phase inventories/receipts and required client assets were present. A fresh extraction without source dependencies passed **1,215/1,215 runtime tests** with zero failures, cancellations or skips, using Node `24.19.0`. The receipt records per-file identities and actual gate results.
+Real Windows/DPAPI under the actual login, live EVE SSO/scopes and structure permissions, actual OBS scene/audio/output and extended play remain human environment checks. Browser ownership probes do not certify native platform PiP or unrestricted narrow-screen usability. Existing performance evidence retains its original scope. See [Validation](VALIDATION.md) for release rules.
 
-Windows/DPAPI under the real login, live EVE SSO/scopes and structure permissions, actual OBS scene/audio/output behavior and extended play retain their existing limits. No new performance measurement or separate full source-runtime run is claimed. See [Validation](VALIDATION.md) for scope and release rules.
+## Handoff boundary
 
-## Documentation and evidence boundaries
+This receipt and current-download updates were written after verification; the ZIP contains the manuals and comments at its exact tested source. Use this page for current acceptance even where an older packaged handoff says Build91 or “pending.” Earlier completed documentation/bug ledgers and raw evidence remain intact.
 
-Both completed documentation phases are included in the ZIP at its tested source commit. Their ledgers retain the Build90 references that were accurate when those phases finished. **Use this handoff for the current download**, including when an older packaged guide points to Build90.
-
-This acceptance receipt and the current-download pointer updates were written after package verification and live on the review branch; they are not retroactively part of the ZIP. They change handoff metadata only. The completed manual/source verification receipts, closed bug ledger and raw review evidence remain unchanged.
+Bun’s final approval must include the proposed durable-data preservation and tested 0.7.3→0.8.0 upgrade/full stopped-profile recovery boundary. No merge, main push, version bump, tag or publication has been performed. Later stable version/lock/changelog preparation requires approval and verification on the review branch; merging a stable `package.json` change can trigger automatic publication.

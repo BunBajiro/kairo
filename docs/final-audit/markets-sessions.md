@@ -9,7 +9,7 @@ Paths below are relative to `server/` unless another directory is shown. Listed 
 | Area and reviewed owners | Boundaries examined | Disposition |
 | --- | --- | --- |
 | Markets: `markets.mjs`, `market-categories.mjs`, `market-history.mjs`, `market-history-store.mjs`, `market-history-worker.mjs`; `components/kairo/markets.tsx` | Complete-book publication, failed-page retention, pacing, actual worker exit, pagination and demand gaps | No new blocker found |
-| Imports: `imports.mjs`, `import-math.mjs`, `import-cache.mjs`; `components/kairo/import-analyser.tsx` | Fees, quote/save, buyer/seller identity, historical quote retention, roster authorization, cache revision and accepted-write ownership | FA-04 and FA-07 corrected and independently reviewed; combined acceptance pending |
+| Imports: `imports.mjs`, `import-math.mjs`, `import-cache.mjs`; `components/kairo/import-analyser.tsx` | Fees, quote/save, buyer/seller identity, historical quote retention, roster authorization, cache revision and accepted-write ownership | FA-04 and FA-07 corrected, independently reviewed and accepted in [Build93](../BUILD93-VERIFICATION.json) |
 | Sessions: `history.mjs`, `session-policy.mjs`, `session-event-window.mjs`, `session-travel.mjs`, `session-details.mjs`, `session-live.mjs`, `session-combat.mjs`; `components/kairo/session-report.tsx`, `components/kairo/session-report-page.mjs`; `lib/session-summary.ts` | Receipt-time ownership, unowned versus legacy observations, initial hull, delayed enrichment, LP uncertainty and report paging | No new blocker found |
 | Replay: `session-replay.mjs`; `components/kairo/session-replay-timeline.mjs`, `session-replay-sovereignty.mjs` | Fixed event snapshot, observed transitions, coordinate gaps, recorded versus current sovereignty | No new blocker found |
 
@@ -37,7 +37,7 @@ Controls cover cold mounting, same-editor blocking, obsolete error suppression, 
 
 The correction queues accepted commands by actual destination hub across remounts, snapshots submitted values, releases after rejection and removes idle tails. Successful PUT acknowledgement still preserves later edits and precedes optional trader refresh, so refresh failure cannot conceal an already saved setting. Refresh remains inside the same command because it consumes those settings. Retired editors cannot publish responses/errors.
 
-Each Apply retains one PUT; Update trader data retains its additional POST. There are no implicit retries, polling or extra backend reads. Reviewer `frontend_stream` accepted ownership, acknowledgement, failure cleanup and cost bounds; TypeScript and scenario syntax checks pass. Banked at `edbc633`; fixed hosted and combined-candidate gates remain pending. Separate-hub concurrency and optional refresh sequencing were source-reviewed, not separately browser-asserted.
+Each Apply retains one PUT; Update trader data retains its additional POST. There are no implicit retries, polling or extra backend reads. Reviewer `frontend_stream` accepted ownership, acknowledgement, failure cleanup and cost bounds; TypeScript and scenario syntax checks pass. Banked at `edbc633`; [Build93](../BUILD93-VERIFICATION.json) verifies fixed hosted flows and combined-candidate gates. Separate-hub concurrency and optional refresh sequencing were source-reviewed, not separately browser-asserted.
 
 ## Supporting evidence and limits
 

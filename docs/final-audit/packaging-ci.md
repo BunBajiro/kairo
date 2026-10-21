@@ -1,6 +1,8 @@
 # Packaging, CI and release-path audit
 
-Owner: `packaging_ci`; correction reviewer: `docs_tests`. [Final audit](../FINAL-AUDIT.md) owns banking, exact candidate acceptance and release decisions. This report covers source inspection and synthetic packaging controls, not a new download acceptance.
+Owner: `packaging_ci`; correction reviewer: `docs_tests`. [Final audit](../FINAL-AUDIT.md) owns banking, exact candidate acceptance and release decisions. This report covers source inspection, synthetic packaging controls and independent Build93 package verification.
+
+**Current package acceptance:** Build93 matches all **635 eligible tracked files** at `763960b5a764f6791fa1de410ebaa1f8360ddfa3`, with executable modes preserved, plus **21 generated client files**. Download digest, CRC, paths and extracted bytes pass; dependencies/private profiles are absent. Its 85 notice entries and six version-matched supplements validate. The [Build93 receipt](../BUILD93-VERIFICATION.json) owns combined hosted/runtime acceptance and exact artifact identity; these package checks alone do not establish those results.
 
 ## Coverage and disposition
 
@@ -40,4 +42,4 @@ The regression is a Git/Python source-host gate in both workflows, separate from
 
 ## Limits
 
-[Review build](../REVIEW-BUILD.md) and its receipt own Build91 identity, counts and expiry; reading them did not rerun or redownload that build. Later corrections require fresh exact-artifact acceptance. Current advisory analysis is separate from install/build success. Real Windows launcher/DPAPI, live EVE permissions, actual OBS output and extended play remain environment checks.
+The historical [Build91 receipt](../BUILD91-VERIFICATION.json) retains its original identity, counts and expiry; reading it did not rerun or redownload that build. [Review build](../REVIEW-BUILD.md) owns the current handoff. Current advisory analysis is separate from install/build success. Real Windows launcher/DPAPI, live EVE permissions, actual OBS output and extended play remain environment checks.
