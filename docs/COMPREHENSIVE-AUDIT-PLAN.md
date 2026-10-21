@@ -55,6 +55,8 @@ One coordinator owns integration, the ledger and branch banking. Assign named im
 
 A unit is one coherent invariant or feature slice, normally one primary owner and its boundary tests. It must be resumable from a pushed commit and evidence. Stop expanding a unit when it needs a new contract/owner; record a linked successor. Do not wait for an entire phase to bank finished work, or run the full suite after every trivial edit. A pushed correction may be explicitly **banked/pending verification**, never silently accepted.
 
+**Execution may span as many chats as needed; phases are not session-sized commitments.** P0 and every later phase may be split across sessions. Choose the next bounded unit from the ledger, bank completed reviewable work before context/time/usage limits, and leave precise pending gates and next actions. Resume from verified GitHub state without restarting completed coverage or weakening acceptance to finish a chat.
+
 Independent review pairing: runtime/transport ↔ consuming domain; Markets ↔ separate arithmetic/recovery reviewer; Sessions ↔ time/identity/accounting reviewer; Universe data ↔ routing reviewer with separate shared-boundary review; UI/diagnostics ↔ runtime and browser reviewers; packaging ↔ independent artifact verifier. Review source, test oracles, failure boundaries and cost evidence, not only green summaries. Coordinator records reviewer identity and disposition; authors cannot close their own unit alone.
 
 ## Recovery contract and evidence
