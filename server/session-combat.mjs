@@ -170,6 +170,6 @@ export function createSessionCombat(store,auth,esi,combat,{resolveNames=async()=
         const rows=store.db.prepare(SESSION_COMBAT_RECENT_SQL).all(id,id,iso(now()-DAY));
         return Promise.allSettled([...rows.map(s=>sync(s.id,id)),live.sync()]);
     }
-    function sessionChanged(sessionId,id){return Promise.allSettled([sync(sessionId,id),live.sync()]);}
+    function sessionChanged(sessionId,id){return Promise.allSettled([sync(sessionId,id),live.sync({refreshTargets:true})]);}
     return {sync,syncRecent,sessionChanged,syncLive:live.sync,async close(){closed=true;await live.close();await Promise.allSettled([...pending.values()]);}};
 }

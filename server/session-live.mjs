@@ -16,11 +16,14 @@ const iso=at=>new Date(at).toISOString(),validId=id=>Number.isSafeInteger(id)&&i
  * getTargets builds current live owners only when due; isTargetActive rechecks
  * them after awaits. accept must reject until matching records are durable, or
  * the cursor advances. force bypasses cadence, never a persisted cooldown.
- * One sync flight is shared; close aborts transport and awaits accepted work.
+ * One sync flight is shared; an explicit Session change refreshes its targets
+ * after an await without replaying transport. A target change during acceptance
+ * permits one re-offer; further churn retains the cursor for the next pass.
+ * close aborts and drains the flight.
  * maxItems and budgetMs bound each pass (budget checked between packet requests).
  */
 export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,onCheck=()=>{},fetcher=fetch,now=Date.now,spacingMs=200,maxItems=300,budgetMs=45000}={}){
- let pending=null,closed=false,lastRequest=0;
+ let pending=null,closed=false,lastRequest=0,targetsChanged=false,targetRevision=0;
  const controller=new AbortController();
  const deferred=(state,force)=>Date.parse(state.notBefore||'')>now()||(!force&&Date.parse(state.nextCheckAt||'')>now());
  async function read(path,active){
@@ -48,7 +51,11 @@ export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,on
   let state=store.get(key,{});
   if(deferred(state,force))return;
   const started=now(),deadline=Date.now()+budgetMs;
-  const active=()=>!closed&&targets.some(isTargetActive);
+  const active=()=>{
+   if(closed)return false;
+   if(targetsChanged){targetsChanged=false;targets=getTargets();}
+   return targets.some(isTargetActive);
+  };
   const save=patch=>{state={...state,...patch};store.set(key,state);};
   try{
    if(!validId(state.nextSequence)||Date.parse(state.lastAdvanceAt||state.checkedAt||'')<now()-SESSION_RECHECK_WINDOW){
@@ -64,8 +71,15 @@ export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,on
     if(packet===null){caughtUp=true;save({notBefore:iso(now()+6000)});break;}
     const body=packet.esi||packet,hash=packet.hash||packet.zkb?.hash;
     if(!validId(packet.killmail_id)||body.killmail_id!==packet.killmail_id||!validId(body.solar_system_id)||!Array.isArray(body.attackers)||!validId(body.victim?.ship_type_id)||!Number.isFinite(Date.parse(body.killmail_time))||!/^[a-f0-9]{40}$/i.test(hash||'')||(packet.sequence_id!==undefined&&Number(packet.sequence_id)!==sequence))throw new Error('Live killmail feed returned an invalid packet.');
-    await accept({...body,zkb:packet.zkb},hash,targets.filter(isTargetActive));
-    if(!active())return;
+    for(let attempt=0;attempt<2;attempt++){
+     const acceptingRevision=targetRevision;
+     await accept({...body,zkb:packet.zkb},hash,targets.filter(isTargetActive));
+     if(!active())return;
+     if(acceptingRevision===targetRevision)break;
+     // Reuse the packet once for newly eligible owners. Continuous lifecycle
+     // changes must neither skip evidence nor turn acceptance into an open loop.
+     if(attempt===1)return;
+    }
     // Advance only after matching records have been verified and retained.
     save({nextSequence:sequence+1,lastAdvanceAt:iso(now())});count++;
    }
@@ -77,12 +91,12 @@ export function createSessionLiveFeed(store,{getTargets,isTargetActive,accept,on
    }
   }finally{if(active())onCheck(targets);}
  }
- function sync({force=false}={}){
+ function sync({force=false,refreshTargets=false}={}){
   if(closed)return Promise.resolve();
-  if(pending)return pending;
+  if(pending){if(refreshTargets){targetsChanged=true;targetRevision++;}return pending;}
   // Routes can span a long session. Build current targets only when work is due.
   if(deferred(store.get(key,{}),force))return Promise.resolve();
-  const targets=getTargets();if(!targets.length)return Promise.resolve();
+  targetsChanged=false;const targets=getTargets();if(!targets.length)return Promise.resolve();
   pending=run(targets,force).finally(()=>{pending=null;});return pending;
  }
  return {sync,async close(){closed=true;controller.abort();await pending?.catch(()=>{});}};

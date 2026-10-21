@@ -12,13 +12,15 @@ import {opsecManualDraftIsolation,studioSavedNavigation,studioAcceptedOwnership}
 import {importSettingsNavigationOwnership,importSettingsFailedFirstOwnership} from './final-audit-import-scenarios.mjs';
 import {tacticalScenarios,landmarkCategoryScenario} from './final-audit-tactical-scenarios.mjs';
 import {createMarketScanRecoveryFixture,marketScanRecovery} from './market-scan-recovery-scenarios.mjs';
+import {opsecAcceptedNavigation,obsAcceptedNavigation} from './focused-ui-ownership-scenarios.mjs';
+import {sessionAcceptedNavigation} from './focused-session-ownership-scenarios.mjs';
 
 const modulePath=process.env.KAIRO_PLAYWRIGHT_MODULE;
 if(!modulePath||!isAbsolute(modulePath))throw new Error('Set KAIRO_PLAYWRIGHT_MODULE to the isolated Playwright index.mjs absolute path.');
 const engines=await import(pathToFileURL(modulePath).href),dir=await mkdtemp(join(tmpdir(),'kairo-final-audit-ui-'));
 const output=process.env.KAIRO_BROWSER_OUTPUT||dir+'-results';await mkdir(output,{recursive:true});
 const checks=[],errors=[],unexpectedNetwork=[],serverRequests=[],completed=[];
-const scenarios=[['opsec-manual-draft',opsecManualDraftIsolation],['studio-saved-navigation',studioSavedNavigation],['studio-accepted-owner',studioAcceptedOwnership],['imports-navigation',importSettingsNavigationOwnership],['imports-failed-first',importSettingsFailedFirstOwnership],['tactical-ownership',tacticalScenarios],['landmark-category',landmarkCategoryScenario],['market-scan-recovered',marketScanRecovery],['market-scan-cancel',marketScanRecovery],['market-scan-exhausted',marketScanRecovery]];
+const scenarios=[['opsec-manual-draft',opsecManualDraftIsolation],['studio-saved-navigation',studioSavedNavigation],['studio-accepted-owner',studioAcceptedOwnership],['imports-navigation',importSettingsNavigationOwnership],['imports-failed-first',importSettingsFailedFirstOwnership],['tactical-ownership',tacticalScenarios],['landmark-category',landmarkCategoryScenario],['market-scan-recovered',marketScanRecovery],['market-scan-cancel',marketScanRecovery],['market-scan-exhausted',marketScanRecovery],['opsec-accepted-navigation',opsecAcceptedNavigation],['obs-accepted-navigation',obsAcceptedNavigation],['session-accepted-navigation',sessionAcceptedNavigation]];
 const selected=process.env.KAIRO_FINAL_AUDIT_SCENARIOS?.split(',');
 if(selected)for(const name of selected)assert.ok(scenarios.some(([id])=>id===name),'Unknown final-audit scenario: '+name);
 const chosen=scenarios.filter(([name])=>!selected||selected.includes(name));
@@ -27,7 +29,7 @@ let app,browser,context,page,meta;
 function deferred(){let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};}
 function check(label,actual,expected,extra={}){const pass=isDeepStrictEqual(actual,expected);checks.push({...meta,label,pass,actual,expected,...extra});console.log(JSON.stringify(checks.at(-1)));}
 async function frame(){await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
-async function artifact(name,finished=false){await writeFile(join(output,name),JSON.stringify({ok:finished&&completed.length===chosen.length*4&&checks.every(c=>c.pass),finished,scope:'Compiled OPSEC manual/draft isolation, Studio saved navigation, import settings save ownership, tactical-window ownership and market-scan recovery. Fresh disposable actual HTTP/SQLite owner per scenario, Chrome/Firefox at 1600/390 widths; no live EVE or OBS.',expectedScenarios:chosen.length*4,completed,checks,errors,unexpectedNetwork,serverRequests},null,2));}
+async function artifact(name,finished=false){await writeFile(join(output,name),JSON.stringify({ok:finished&&completed.length===chosen.length*4&&checks.every(c=>c.pass),finished,scope:'Compiled OPSEC draft/accepted-save ownership, Studio saved navigation, OBS and Session accepted saves, import settings save ownership, tactical-window ownership and market-scan recovery. Fresh disposable actual HTTP/SQLite owner per scenario, Chrome/Firefox at 1600/390 widths; no live EVE or OBS.',expectedScenarios:chosen.length*4,completed,checks,errors,unexpectedNetwork,serverRequests},null,2));}
 async function stopScenario(){await context?.close();context=null;page=null;await app?.close();app=null;}
 try{
  for(const engine of ['chromium','firefox']){

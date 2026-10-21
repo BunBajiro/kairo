@@ -1,0 +1,26 @@
+{
+  "status": "ready for hosted baseline; product UI unchanged",
+  "scenarios": [
+    "opsec-accepted-navigation",
+    "obs-accepted-navigation",
+    "session-accepted-navigation"
+  ],
+  "contexts": [
+    "Chrome1600",
+    "Chrome390",
+    "Firefox1600",
+    "Firefox390"
+  ],
+  "additional_assertions": 104,
+  "source_review": {
+    "OPSEC/OBS": "universe accepted",
+    "Session": "frontend_stream accepted",
+    "runner": "frontend_stream/root accepted"
+  },
+  "smoke": "Session fixture authenticated GET/PUT and market fixtures passed against real HTTP/SQLite; browser ordering is not yet confirmed",
+  "hashes": {
+    "tests/focused-ui-ownership-scenarios.mjs": "0d912fcd6cd079f927026feaae58cbbf084ba9072f525825d6f81ae4989be016",
+    "tests/focused-session-ownership-scenarios.mjs": "598bc586def24a780477ab672ef08a96d88e36e6230bb5c6212cd1b4f566a838",
+    "tests/final-audit-ui.mjs": "22888d846648d256109f5bf087ea2a3d1db5a638a82027bfec8df424ab52237a"
+  }
+}
