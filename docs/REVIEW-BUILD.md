@@ -1,6 +1,6 @@
 # Current review build
 
-**Build93 is the verified 0.8.0 review candidate, version `0.8.0-rc.17`.** It includes the completed final audit corrections, user/developer documentation, source comments and CI gates. It supersedes Build91. [The audit ledger](FINAL-AUDIT.md) records findings and remaining human decisions; PR #12 stays draft. Main and the version are unchanged.
+**Build93 is the last verified 0.8.0 review candidate, version `0.8.0-rc.17`.** The [market scan recovery follow-up](MARKET-RECOVERY.md) is in progress and is not included in this ZIP. It includes the completed final audit corrections, user/developer documentation, source comments and CI gates. It supersedes Build91. [The audit ledger](FINAL-AUDIT.md) records findings and remaining human decisions; PR #12 stays draft. Main and the version are unchanged.
 
 [Download Kairo-test-build.zip — Build93](https://github.com/BunBajiro/kairo/actions/runs/39081321026/artifacts/12119109062) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/39081321026) · [Verification receipt](BUILD93-VERIFICATION.json)
 

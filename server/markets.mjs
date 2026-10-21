@@ -30,8 +30,9 @@ QUICK_NAMES.splice(QUICK_NAMES.indexOf('Isotopes'),1,'Helium Isotopes','Hydrogen
  * while failure is recorded on the job instead of rejected by idle(). close()
  * stops new requests, cancels current work and drains before Store/ESI may close.
  * spacingMs is a minimum dispatch gap; the shared ESI owner still limits traffic.
+ * retryWait accepts milliseconds; test clocks must advance with its waits.
  */
-export function createMarkets(store,auth,esi,{spacingMs=250,now=()=>Date.now(),historySource='everef',historyFetcher,historyDecode,refreshCharacter,autoUpgrade=false}={}){
+export function createMarkets(store,auth,esi,{spacingMs=250,now=()=>Date.now(),historySource='everef',historyFetcher,historyDecode,refreshCharacter,autoUpgrade=false,retryWait=delay}={}){
  const db=store.db,archives=createHistoryArchive(store,{fetcher:historyFetcher,decode:historyDecode,now,spacingMs});let task=null,current=null,stopped=false,lastRequest=0;
  const pacedRequest=esi.paced?.({spacingMs,now});
  const insertHub=db.prepare('INSERT OR IGNORE INTO market_hubs(id,name,station_name,kind,system_id,system_name,region_id,region_name,builtin) VALUES(?,?,?,\'station\',?,?,?,?,1)');
@@ -44,7 +45,7 @@ export function createMarkets(store,auth,esi,{spacingMs=250,now=()=>Date.now(),h
  function check(job){enabled();if(job?.cancelled)throw new Error('Scan cancelled. Completed books and earlier cached results are kept.');if(job?.characterId)character(job.characterId);}
  function saveJob(job){db.prepare('INSERT INTO market_jobs VALUES(?,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body').run(job.id,JSON.stringify(job));if(job.status!=='running')pruneMarketJobs(db,now());}
  function progress(job,detail,part={}){Object.assign(job,part,{detail,updatedAt:iso(now())});saveJob(job);}
- async function request(path,options={},job){const eligible=()=>{check(job);if(path.startsWith('/markets/structures/'))character(options.characterId,MARKET_SCOPE);};eligible();let r;if(pacedRequest)r=await pacedRequest(path,options,eligible);else{const wait=spacingMs-(now()-lastRequest);if(wait>0)await delay(wait);eligible();lastRequest=now();r=await esi.request(path,options);}check(job);if(r.stale||r.truncated){const e=new Error(r.error||'ESI returned incomplete or stale data. Previous scan retained.');e.status=r.errorStatus;throw e;}if(!Number.isFinite(Date.parse(r.updatedAt))||!Number.isFinite(Date.parse(r.expiresAt)))throw new Error('ESI response has no valid cache dates.');return r;}
+ async function request(path,options={},job){const eligible=()=>{check(job);if(path.startsWith('/markets/structures/'))character(options.characterId,MARKET_SCOPE);};eligible();let r;if(pacedRequest)r=await pacedRequest(path,options,eligible);else{const wait=spacingMs-(now()-lastRequest);if(wait>0)await delay(wait);eligible();lastRequest=now();r=await esi.request(path,options);}check(job);if(r.stale||r.truncated){const e=new Error(r.error||'ESI returned incomplete or stale data. Previous scan retained.');e.status=r.errorStatus;e.code=r.errorCode;e.retryAt=r.retryAt;e.serverRetryAfter=r.serverRetryAfter;throw e;}if(!Number.isFinite(Date.parse(r.updatedAt))||!Number.isFinite(Date.parse(r.expiresAt)))throw Object.assign(new Error('ESI response has no valid cache dates.'),{code:options.validate?'ESI_INVALID_RESPONSE':undefined});return r;}
  const typePut=db.prepare('INSERT INTO market_types(type_id,name) VALUES(?,?) ON CONFLICT(type_id) DO UPDATE SET name=excluded.name');
  async function resolveQuick(job){let ids=store.get('market:quick',null);if(ids)return ids;const r=await request('/universe/ids',{method:'POST',body:QUICK_NAMES,ttl:86400},job),types=r.data.inventory_types||[];if(types.length!==QUICK_NAMES.length)throw new Error('The quick-scan supply list could not be resolved completely. Please retry.');ids=store.get('market:quick',null);if(ids)return ids;ids=[];for(const t of types){typePut.run(t.id,t.name);ids.push(t.id);}store.set('market:quick',ids);return ids;}
  async function lookupType(name){enabled();if(typeof name!=='string'||!name.trim()||name.length>150)throw new Error('Enter an exact item name.');const r=await request('/universe/ids',{method:'POST',body:[name.trim()],ttl:86400});const t=r.data.inventory_types?.find(t=>t.name.toLowerCase()===name.trim().toLowerCase());if(!t)throw new Error('No exact market item found. Use its full in-game name.');const v=await request('/universe/types/'+t.id,{ttl:86400});if(!v.data.market_group_id)throw new Error('This item is not listed on the market.');typePut.run(t.id,t.name);return {id:t.id,name:t.name};}
@@ -63,6 +64,37 @@ export function createMarkets(store,auth,esi,{spacingMs=250,now=()=>Date.now(),h
  function restoreDefaults(){const missing=defaults.filter(h=>!db.prepare('SELECT id FROM market_hubs WHERE id=? AND enabled=1').get(h[0])).length;if(db.prepare('SELECT COUNT(*) n FROM market_hubs WHERE enabled=1').get().n+missing>32)throw new Error('Remove a hub before restoring the core hubs; up to 32 can be followed.');for(const h of defaults){insertHub.run(...h);db.prepare('UPDATE market_hubs SET enabled=1 WHERE id=?').run(h[0]);}return overview();}
  async function discover(input){enabled();let systemId,locationId=0;const charId=Number(input.characterId||0);if(input.current){character(charId,'esi-location.read_location.v1');const l=(await request('/characters/'+charId+'/location',{characterId:charId,ttl:5})).data;systemId=l.solar_system_id;locationId=l.station_id||l.structure_id||0;}else{if(typeof input.system!=='string'||!input.system.trim()||input.system.length>100)throw new Error('Enter a system name.');const r=await request('/universe/ids',{method:'POST',body:[input.system.trim()],ttl:86400});systemId=r.data.solar_systems?.[0]?.id;}if(!validId(systemId))throw new Error('System not found.');const s=(await request('/universe/systems/'+systemId,{ttl:86400})).data;const stations=[];if(locationId>=1000000000000){const l=await resolveHub({locationId,characterId:charId});stations.push(l);}for(const id of (s.stations||[]).slice(0,30)){const station=(await request('/universe/stations/'+id,{ttl:86400})).data;if(!Array.isArray(station.services)||station.services.includes('market'))stations.push({id,name:station.name,kind:'station'});}return {system:s.name,dockedId:locationId,stations,truncated:(s.stations||[]).length>30};}
  function overview(){const hubs=db.prepare('SELECT * FROM market_hubs WHERE enabled=1 ORDER BY builtin DESC,name').all().map(h=>({...h,last_scan:h.last_scan?JSON.parse(h.last_scan):null,updateSuggested:!!h.last_scan&&Date.parse(JSON.parse(h.last_scan).at)+day<=now(),historySource:CORE_HUBS.has(h.id)?'EVE Ref':'ESI',item_count:db.prepare('SELECT COUNT(*) n FROM market_items WHERE hub_id=?').get(h.id).n}));const quick=store.get('market:quick',null);const jobs=db.prepare('SELECT body FROM market_jobs ORDER BY rowid DESC LIMIT 8').all().map(r=>JSON.parse(r.body));return {hubs,upgrade:store.get('market:upgrade',null),historyArchive:archives.status(),job:current?.status==='running'?current:jobs[0]||null,jobs,quick:quick?quick.map(id=>db.prepare('SELECT type_id id,name FROM market_types WHERE type_id=?').get(id)).filter(Boolean):QUICK_NAMES.map(name=>({name})),jita:db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA)?.last_scan?JSON.parse(db.prepare('SELECT last_scan FROM market_hubs WHERE id=?').get(JITA).last_scan):null,enabled:store.get('module:markets',true)};}
+ const invalidOrderResponse=message=>Object.assign(new Error(message),{code:'ESI_INVALID_RESPONSE'});
+ function validateOrderPage(r){
+  if(!r||!Number.isFinite(Date.parse(r.updatedAt))||!Number.isFinite(Date.parse(r.expiresAt)))throw invalidOrderResponse('ESI response has no valid cache dates.');
+  const count=Number(r.headers?.['x-pages']??1);if(!Number.isInteger(count)||count<1||count>2000)throw invalidOrderResponse('ESI reported an unsupported page count. No partial book was saved.');
+  if(!Array.isArray(r.data))throw invalidOrderResponse('Invalid market order response.');
+  // ESI briefly retains exhausted duration-zero orders; they contribute no depth.
+  for(const o of r.data){if(!o||typeof o!=='object'||!validId(o.location_id)||!validId(o.order_id)||!validId(o.type_id)||typeof o.is_buy_order!=='boolean'||!Number.isFinite(o.price)||o.price<=0||!Number.isSafeInteger(o.volume_remain)||o.volume_remain<0||!Number.isFinite(Date.parse(o.issued))||!Number.isInteger(o.duration)||o.duration<0||(o.duration===0&&o.volume_remain!==0))throw invalidOrderResponse('ESI returned a malformed order. Previous book retained.');}
+ }
+ async function orderPage(path,options,job,h,page){
+  const eligible=()=>{check(job);if(path.startsWith('/markets/structures/'))character(options.characterId,MARKET_SCOPE);};
+  // One budget spans every page and comparison hub. Validation stays outside
+  // staging, and ESI rejects bad cache representations before the next attempt.
+  for(;;){
+   let validated;
+   const validate=r=>{validateOrderPage(r);validated=r;};
+   try{const r=await request(path,{...options,validate},job);if(validated!==r)validate(r);return r;}
+   catch(e){
+    eligible();
+    if(!['ESI_INVALID_RESPONSE','ESI_READ_FAILED'].includes(e.code)&&![408,420,429,500,502,503,504].includes(e.status))throw e;
+    const used=job.retries||0,waitMs=Math.max(1000*2**used,(Date.parse(e.retryAt)||0)-now());
+    const message=e.message.replace(' Retrying automatically.','').replace('; retry scheduled.','.');
+    if(used>=2)throw new Error(message+' Recovery attempts exhausted.');
+    if(waitMs>60000-(job.retryWaitMs||0))throw new Error(message+' Recovery paused; retry the scan after '+(e.retryAt||'the provider cooldown')+'.');
+    job.retries=used+1;job.retryWaitMs=(job.retryWaitMs||0)+waitMs;
+    progress(job,h.name+' · page '+page+' · retry '+job.retries+'/2 in '+Math.ceil(waitMs/1000)+'s',{phase:'orders',scanningHub:h.name});
+    // Chunking keeps Cancel, module/access changes and shutdown responsive.
+    for(let left=waitMs;left>0;left-=Math.min(250,left)){eligible();await retryWait(Math.min(250,left));}
+    eligible();
+   }
+  }
+ }
  const stagePut=db.prepare('INSERT INTO market_stage VALUES(?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(job_id,hub_id,order_id) DO UPDATE SET price=excluded.price,volume=excluded.volume');
  /**
   * Validate every page before promoting this hub's book. Each request series must
@@ -79,10 +111,10 @@ export function createMarkets(store,auth,esi,{spacingMs=250,now=()=>Date.now(),h
    let pages=1;
    for(let page=1;page<=pages;page++){
     progress(job,h.name+' · order pages '+(n+1)+'/'+paths.length+' · page '+page+'/'+pages,{phase:'orders',scanningHub:h.name});
-    const r=await request(paths[n]+(paths[n].includes('?')?'&':'?')+'page='+page,{characterId:h.kind==='structure'?job.characterId:0,ttl:300},job);
-    const count=Number(r.headers?.['x-pages']||1);if(!Number.isInteger(count)||count<1||count>2000)throw new Error('ESI reported an unsupported page count. No partial book was saved.');if(page>1&&count!==pages)throw new Error('The market changed its page count during this scan. Run it again to obtain a complete book.');pages=count;
-    if(!Array.isArray(r.data))throw new Error('Invalid market order response.');pageCount++;received+=r.data.length;if(received>2000000)throw new Error('The scan exceeded two million orders. Use a quick scan for this hub.');oldest=oldest<r.updatedAt?oldest:r.updatedAt;expires=expires<r.expiresAt?expires:r.expiresAt;
-    const accepted=[];for(const o of r.data){if(!validId(o.location_id)||!validId(o.order_id)||!validId(o.type_id)||typeof o.is_buy_order!=='boolean'||!Number.isFinite(o.price)||o.price<=0||!Number.isSafeInteger(o.volume_remain)||o.volume_remain<0||!Number.isFinite(Date.parse(o.issued))||!Number.isInteger(o.duration)||o.duration<1)throw new Error('ESI returned a malformed order. Previous book retained.');if(o.location_id!==h.id||!full&&!wanted.has(o.type_id)||!o.volume_remain)continue;accepted.push(o);}
+    const r=await orderPage(paths[n]+(paths[n].includes('?')?'&':'?')+'page='+page,{characterId:h.kind==='structure'?job.characterId:0,ttl:300},job,h,page);
+    const count=Number(r.headers?.['x-pages']??1);if(page>1&&count!==pages)throw new Error('The market changed its page count during this scan. Run it again to obtain a complete book.');pages=count;
+    pageCount++;received+=r.data.length;if(received>2000000)throw new Error('The scan exceeded two million orders. Use a quick scan for this hub.');oldest=oldest<r.updatedAt?oldest:r.updatedAt;expires=expires<r.expiresAt?expires:r.expiresAt;
+    const accepted=r.data.filter(o=>o.location_id===h.id&&(full||wanted.has(o.type_id))&&o.volume_remain);
     db.exec('BEGIN IMMEDIATE');try{for(const o of accepted)stagePut.run(job.id,h.id,o.order_id,o.type_id,o.is_buy_order?1:0,o.price,o.volume_remain,Math.max(1,Number(o.min_volume)||1),String(o.range||'station'),o.issued,o.duration);db.exec('COMMIT');}catch(e){db.exec('ROLLBACK');throw e;}
     job.pages=(job.pages||0)+1;
    }

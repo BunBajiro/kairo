@@ -36,7 +36,12 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     const readCache = store.db.prepare('SELECT * FROM cache WHERE key=?');
     const putCache = store.db.prepare('INSERT INTO cache VALUES(?,?,?,?,?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body,etag=excluded.etag,expires=excluded.expires,updated=excluded.updated,headers=excluded.headers');
     const deleteCache = store.db.prepare('DELETE FROM cache WHERE key=?');
-    const sample = cached => ({ data: JSON.parse(cached.body), updatedAt: iso(cached.updated), expiresAt: iso(cached.expires), headers: JSON.parse(cached.headers), cached: true });
+    const deleteRepresentation = store.db.prepare('DELETE FROM cache WHERE key=? AND body=? AND etag IS ? AND expires=? AND updated=? AND headers=?');
+    const representation = Symbol('ESI cache representation');
+    const identify = (result, row) => Object.defineProperty(result, representation, {value: row});
+    const sample = cached => identify({ data: JSON.parse(cached.body), updatedAt: iso(cached.updated), expiresAt: iso(cached.expires), headers: JSON.parse(cached.headers), cached: true }, cached);
+    const invalidResponse = error => Object.assign(new Error(error.message || 'Invalid ESI response.'), {code: 'ESI_INVALID_RESPONSE'});
+    const readFailure = error => Object.assign(new Error(error.message || 'ESI read failed.', {cause: error}), {code: 'ESI_READ_FAILED'});
     function saveLimits() {
         for (const [key, until] of blocks) if (until <= Date.now()) blocks.delete(key);
         store.set('esi:limits', { errorUntil, blocks: [...blocks], groups: Object.fromEntries(routeGroups) });
@@ -115,6 +120,10 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
      * when available, otherwise rejects. Connection replacement always rejects;
      * it must never recreate a purged cache or make old data usable by a new grant.
      * Use mutate() for commands: this path deliberately caches and coalesces reads.
+     * Optional synchronous validate(result) checks an intrinsic representation
+     * before storage and on cached/shared reads. A rejection carries
+     * ESI_INVALID_RESPONSE and evicts only that exact bad cache row. The caller
+     * owns bounded retries; ordinary pacing and provider cooldowns still apply.
      */
     async function request(path, options = {}) {
         options = withConnection(options);
@@ -126,6 +135,30 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         checkConnection();
         const pace = options[pacingOwner], checkAdmission = options[admissionCheck];
         checkAdmission?.();
+        const validate = result => {
+            checkConnection();
+            if (!options.validate) return result;
+            try { options.validate(result); }
+            catch (error) {
+                checkConnection();
+                const row = result[representation];
+                if (row) deleteRepresentation.run(row.key, row.body, row.etag, row.expires, row.updated, row.headers);
+                const failure = invalidResponse(error), retry = result.headers?.['retry-after'], observed = Date.parse(result.updatedAt);
+                const parsed = retry ? Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - observed : NaN;
+                const deadline = retry ? observed + Math.max(1000, Number.isFinite(parsed) ? parsed : 60000) : 0;
+                const until = Math.max(Date.parse(result.retryAt) || 0, Number.isFinite(deadline) ? deadline : 0, errorUntil,
+                    blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + (result.headers?.['x-ratelimit-group'] || routeGroups.get(route))) || 0);
+                if (until > Date.now()) failure.retryAt = iso(until);
+                if (deadline > Date.now()) {
+                    failure.serverRetryAfter = true;
+                    const retryKey = 'esi-retry:' + key;
+                    if (!(readCache.get(retryKey)?.expires >= deadline))
+                        putCache.run(retryKey, JSON.stringify({message: failure.message, code: failure.code, failures: 0, serverRetryAfter: true}), null, deadline, Date.now(), '{}');
+                }
+                throw failure;
+            }
+            return result;
+        };
         if (!path.startsWith('/') || path.startsWith('//')) throw new Error('Invalid ESI path.');
         method = method.toUpperCase();
         const url = new URL('https://esi.evetech.net' + path);
@@ -136,12 +169,27 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         if (path === '/universe/names' && Array.isArray(body)) body = [...new Set(body)].sort((a, b) => a - b);
         const key = characterId + ':' + method + ':' + path + ':' + (body ? createHash('sha256').update(JSON.stringify(body)).digest('hex') : '');
         const flightKey = characterId ? key + ':connection:' + options[connectionOwner] : key;
-        if (inflight.has(flightKey)) { counters.coalesced++; return inflight.get(flightKey); }
+        const route = method + ':' + pathname.replace(/^(\/killmails\/\d+)\/[^/]+$/, '$1/{hash}').replace(/\/\d+(?=\/|$)/g, '/{id}');
+        if (inflight.has(flightKey)) {
+            counters.coalesced++;
+            const shared = inflight.get(flightKey);
+            if (options.validate) shared.validated = true;
+            return validate(await shared);
+        }
         const cached = readCache.get(key);
         if (cached) retention.touch(key);
+        let cachedResult;
+        if (cached && options.validate) {
+            try { cachedResult = sample(cached); }
+            catch (error) {
+                deleteRepresentation.run(cached.key, cached.body, cached.etag, cached.expires, cached.updated, cached.headers);
+                throw invalidResponse(error);
+            }
+            validate(cachedResult);
+        }
         if (cached && cached.expires > Date.now()) {
             counters.cacheHits++;
-            const result = sample(cached);
+            const result = cachedResult || sample(cached);
             if (path === '/universe/names') rememberNames(result.data, cached.expires, cached.updated);
             return result;
         }
@@ -158,18 +206,17 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
             // cannot fail another consumer's accepted request.
             return request(path, { ...options, [pacingStage]: 'ready' });
         }
-        const route = method + ':' + pathname.replace(/^(\/killmails\/\d+)\/[^/]+$/, '$1/{hash}').replace(/\/\d+(?=\/|$)/g, '/{id}');
         const cachedGroup = cached && JSON.parse(cached.headers)['x-ratelimit-group'];
         if (cachedGroup) routeGroups.set(route, cachedGroup);
         const retryKey = 'esi-retry:' + key, previousFailure = readCache.get(retryKey);
         if (previousFailure) retention.touch(retryKey);
         retention.maintain();
         const task = Promise.resolve().then(async () => {
-            let release, attempted = false;
+            let release, attempted = false, providerRetryAt;
             try {
                 if (previousFailure?.expires > Date.now()) {
                     const failure = JSON.parse(previousFailure.body);
-                    throw Object.assign(new Error(failure.message), { status: failure.status, retryAt: iso(previousFailure.expires) });
+                    throw Object.assign(new Error(failure.message), { status: failure.status, code: failure.code, serverRetryAfter: failure.serverRetryAfter, retryAt: iso(previousFailure.expires) });
                 }
                 checkCooldown(characterId, route);
                 release = await slot(priority);
@@ -178,11 +225,12 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 if (cached?.etag) headers['If-None-Match'] = cached.etag;
                 else if (cached && JSON.parse(cached.headers)['last-modified']) headers['If-Modified-Since'] = JSON.parse(cached.headers)['last-modified'];
                 if (body) headers['Content-Type'] = 'application/json';
-                const fetchResponse = () => {
+                const fetchResponse = async () => {
                     checkConnection();
                     if (pace) pace.lastRequest = pace.now();
                     attempted = true; counters.requests++;
-                    return fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) });
+                    try { return await fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) }); }
+                    catch (error) { throw task.validated ? readFailure(error) : error; }
                 };
                 let response = await fetchResponse();
                 checkConnection();
@@ -192,6 +240,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     checkConnection();
                 }
                 const { now, retry, retryMs } = responseLimits(response, route, characterId);
+                if (retry) providerRetryAt = now + retryMs;
                 if (!response.ok && response.status !== 304) {
                     const error = new Error(response.status === 403 ? 'ESI access denied. Check scopes and character access.' : response.status === 404 ? 'This ESI resource is unavailable for the character.' : response.status === 429 || response.status === 420 ? 'ESI rate limit reached; retry scheduled.' : 'ESI request failed (' + response.status + '). Retrying automatically.');
                     error.status = response.status;
@@ -199,28 +248,57 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     if (retry || [420, 429].includes(response.status)) error.retryAt = iso(now + retryMs);
                     throw error;
                 }
-                if (response.status === 304 && !cached) throw new Error('ESI returned an uncacheable empty response.');
+                if (response.status === 304 && !cached) {
+                    const error = new Error('ESI returned an uncacheable empty response.');
+                    throw task.validated ? invalidResponse(error) : error;
+                }
                 const h = response.status === 304 && cached ? JSON.parse(cached.headers) : {};
-                for (const k of ['x-pages', 'x-ratelimit-group', 'x-ratelimit-remaining', 'last-modified', 'cache-control'])
+                for (const k of ['x-pages', 'x-ratelimit-group', 'x-ratelimit-remaining', 'last-modified', 'cache-control', 'retry-after'])
                     if (response.headers.get(k)) h[k] = response.headers.get(k);
+                if (!retry) delete h['retry-after'];
                 const exp = Date.parse(response.headers.get('expires') || '');
                 const cacheMax = h['cache-control']?.match(/(?:^|,)\s*max-age=(\d+)/i);
                 const age = Number(response.headers.get('age') || 0);
                 const expires = Number.isFinite(exp) ? Math.max(now + 1000, exp) : cacheMax ? now + Math.max(1, Number(cacheMax[1]) - age) * 1000 : now + ttl * 1000;
-                const data = response.status === 304 ? JSON.parse(cached.body) : await response.json();
+                let data;
+                try { data = response.status === 304 ? JSON.parse(cached.body) : await response.json(); }
+                catch (error) {
+                    if (task.validated) {
+                        if (error instanceof SyntaxError) throw invalidResponse(error);
+                        throw readFailure(error);
+                    }
+                    throw error;
+                }
                 checkConnection();
                 // A new representation without an ETag must not inherit the old one.
                 const etag = response.headers.get('etag') || (response.status === 304 ? cached.etag : null);
-                putCache.run(key, JSON.stringify(data), etag, expires, now, JSON.stringify(h));
+                const result = { data, updatedAt: iso(now), expiresAt: iso(expires), headers: h, cached: response.status === 304 };
+                validate(result);
+                checkConnection();
+                const row = {key, body: JSON.stringify(data), etag, expires, updated: now, headers: JSON.stringify(h)};
+                putCache.run(key, row.body, etag, expires, now, row.headers);
                 deleteCache.run(retryKey);
                 if (path === '/universe/names') rememberNames(data, expires, now);
                 if (response.status === 304) counters.notModified++;
-                return { data, updatedAt: iso(now), expiresAt: iso(expires), headers: h, cached: response.status === 304 };
+                return identify(result, row);
             }
             catch (error) {
                 // An old grant's response must not recreate purged cache or
                 // retry state, nor return stale data to its replacement owner.
                 checkConnection();
+                if (error.code === 'ESI_INVALID_RESPONSE') {
+                    if (attempted) counters.failed++;
+                    // Bad representations are retryable without the synthetic
+                    // transport backoff. A provider deadline is never bypassed.
+                    const until = Math.max(providerRetryAt || 0, errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
+                    if (until > Date.now()) error.retryAt = iso(until);
+                    if (providerRetryAt > Date.now()) {
+                        error.serverRetryAfter = true;
+                        if (!(readCache.get(retryKey)?.expires >= providerRetryAt))
+                            putCache.run(retryKey, JSON.stringify({message: error.message, code: error.code, failures: 0, serverRetryAfter: true}), null, providerRetryAt, Date.now(), '{}');
+                    }
+                    throw error;
+                }
                 if (attempted) {
                     counters.failed++;
                     const failures = Math.min(8, (previousFailure ? JSON.parse(previousFailure.body).failures || 0 : 0) + 1);
@@ -228,13 +306,14 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     const delay = location ? Math.min(15000, 3000 * 2 ** (failures - 1)) : [401, 403, 404].includes(error.status) ? 300000 : Math.min(900000, 30000 * 2 ** (failures - 1));
                     const retryAt = Math.max(Date.now() + delay, Date.parse(error.retryAt) || 0);
                     error.retryAt = iso(retryAt);
-                    putCache.run(retryKey, JSON.stringify({ message: error.message, status: error.status, failures, serverRetryAfter: error.serverRetryAfter }), null, retryAt, Date.now(), '{}');
+                    putCache.run(retryKey, JSON.stringify({ message: error.message, status: error.status, code: error.code, failures, serverRetryAfter: error.serverRetryAfter }), null, retryAt, Date.now(), '{}');
                 }
-                if (cached) return { ...sample(cached), stale: true, error: error.message, errorStatus: error.status, retryAt: error.retryAt };
+                if (cached) return identify({ ...(cachedResult || sample(cached)), stale: true, error: error.message, errorStatus: error.status, errorCode: error.code, serverRetryAfter: error.serverRetryAfter, retryAt: error.retryAt }, cached);
                 throw error;
             }
             finally { release?.(); inflight.delete(flightKey); }
         });
+        task.validated = !!options.validate;
         inflight.set(flightKey, task);
         return task;
     }

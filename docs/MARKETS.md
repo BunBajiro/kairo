@@ -53,7 +53,7 @@ A successfully scanned structure book remains available to your other local char
 
 For NPC stations, a full scan reads regional orders and retains orders located at the selected station. A quick scan requests the basket's types. Structure ESI requires reading every order page even for a quick or single-item scan; these modes reduce retained items and history work, not the structure order download.
 
-Only one market scan runs at a time. **Cancel scan** stops it at the next supported cancellation point. A completed book is kept even if later Jita or history work fails. A partially downloaded book does not replace its previous complete book. After Kairo closes during a scan, restart the scan; completed books and usable cached responses remain available.
+Only one market scan runs at a time. Transient or malformed order-page responses receive up to two recovery attempts across the scan, respecting provider cooldowns and a 60-second recovery-wait budget. Progress shows the retry; **Cancel scan** remains available. A completed book is kept even if later Jita or history work fails. A partially downloaded book does not replace its previous complete book. After Kairo closes during a scan, restart the scan; completed books and usable cached responses remain available.
 
 If the job stopped during history collection, select that job's destination hub and choose **Continue histories** when offered. **Update history** also retries history without rescanning its books. Custom hubs need an initial book before a general history-only update can identify the items to fetch.
 
