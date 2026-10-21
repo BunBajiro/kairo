@@ -1,6 +1,6 @@
 {
   "unit": "P0-01",
-  "status": "Independently reviewed static inventory; remote bank/read-back pending. Not behavioral audit acceptance.",
+  "status": "Verified/banked static inventory only; no behavioral audit acceptance.",
   "assessed_source": "fa56b0824133da6f07393d9b04beb9ad6b242de3",
   "assessed_tree": "44182c73ea44053cc55942b2d737360d332f446b",
   "verified_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
@@ -76,5 +76,17 @@
     "runtime-inventory.md": "8b88069905aa2a47bbc805a520279222d2c88a97785a8bbd7dfe7d9d04770127",
     "tracked-files.tsv": "eed849f63475d951b585fd1c45f09c815c4e3eee084ac0aa9193347ed103f361",
     "ui-output-inventory.md": "a410a65d8a490db248230d4caf64b728cef019552cbb175b00f5963716c18029"
+  },
+  "bank": {
+    "commit": "f9cd6935932401bf39e3a32c1fa3d56446844144",
+    "tree": "75e7a4e7a9697a369810bfd13c2f9b296ed45af9",
+    "parent": "fa56b0824133da6f07393d9b04beb9ad6b242de3",
+    "changed_paths": 20,
+    "read_back": "GitHub commit/tree and PR head verified; fetched exact tree byte-identical to reviewed local tree; connector verification.json and PERSISTENCE.md text matched exactly.",
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr_state": "open/draft",
+    "ci": "Intentionally skipped for documentation/metadata-only commit; no new executable build.",
+    "transport": "Direct Git write unavailable; authorized GitHub connector created exact reviewed tree and fast-forwarded with expected parent. No force update.",
+    "receipt_note": "This bank receipt is a following documentation-only continuation, not a new tested executable."
   }
 }

@@ -4,6 +4,8 @@
 
 ## Recover exact state
 
+Latest completed P0 unit: [`f9cd6935932401bf39e3a32c1fa3d56446844144`](https://github.com/BunBajiro/kairo/commit/f9cd6935932401bf39e3a32c1fa3d56446844144), reviewed inventory and clean-slate policy only. Its read-back receipt is recorded in the following documentation continuation. Resume **P0-02 command contracts**, starting with one settings/OBS/Session family; P0-03 diagnostics decisions and P0-04 measured budgets remain pending. Check current remote state before continuing; do not repeat P0-01 absent a relevant source delta.
+
 - Repository: `BunBajiro/kairo`; branch `review/0.8.0-rc-premerge-bug-review`; [PR #12](https://github.com/BunBajiro/kairo/pull/12) remains open/draft.
 - **Exact plan/start bank: [`4a2f6b2d023b776fa19bf4841224dae8801fce71`](https://github.com/BunBajiro/kairo/commit/4a2f6b2d023b776fa19bf4841224dae8801fce71).** It contains the independently reviewed [plan](https://github.com/BunBajiro/kairo/blob/4a2f6b2d023b776fa19bf4841224dae8801fce71/docs/COMPREHENSIVE-AUDIT-PLAN.md) and initial [ledger](https://github.com/BunBajiro/kairo/blob/4a2f6b2d023b776fa19bf4841224dae8801fce71/docs/AUDIT-LEDGER.md).
 - That bank descends directly from completed continuation bank `814710ba9e16f18ecb0524c745347842650f7684`. This handoff and current navigation pointers are a subsequent **documentation-only continuation**, identified by the immutable commit in its handover link. Retain them when working from the review branch; do not reset away later work.
