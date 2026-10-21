@@ -1,0 +1,119 @@
+{
+  "baseline_commit": "cde4723e47cbf7cf43be7eb4ce7885771d99103c",
+  "runtime": "Node24.22.0",
+  "scope": "Bounded runtime edge-case follow-up; real owning Auth/Core/ESI/Vault/SQLite tests with synthetic transport. No live providers. No mutation changes.",
+  "cases": [
+    {
+      "id": "EC-01",
+      "owner": "server/auth.mjs",
+      "owner_baseline_sha256": "c4c4c80860bbb1bc0514e1993b6ce600b6db1bb90994dc9cc5a2903d8527fbda",
+      "owner_current_sha256": "350b3b04062d555f45f3f7df0471c3450218e0d4e1867c98fcd3459f21a46668",
+      "test": "tests/kairo/auth-public-flights.test.mjs",
+      "test_sha256": "f1adf077c55430d4bb9da29369ba94de44cc38019559033d61098622e1d59049",
+      "before": {
+        "tests": 13,
+        "pass": 7,
+        "fail": 6,
+        "log": "auth-discovery-before.txt",
+        "sha256": "bf19d86cddfee5afacf70fbb3321ee61b3ed89a36dbbc3bc25f4a93269e1a43c"
+      },
+      "after": {
+        "tests": 32,
+        "pass": 32,
+        "fail": 0,
+        "log": "auth-discovery-after.txt",
+        "sha256": "b15df8d2efb17b203515148ccc14947de8b8e7bab384ee1b8dfe80c239b14666"
+      },
+      "independent_review": {
+        "reviewer": "universe",
+        "disposition": "accepted",
+        "node": "24.22.0",
+        "tests": 32,
+        "pass": 32,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 1022.461633,
+        "log": "auth-discovery-independent.txt",
+        "sha256": "73d2439b7abad42ebe5f8bea3d7aa5ccbf335a08768f6857635e8c90d6c0261b"
+      }
+    },
+    {
+      "id": "EC-03",
+      "owner": "server/esi.mjs",
+      "owner_baseline_sha256": "db9e33317b072a1e146f88fd0e387f9ac45c3fa5a7408369d0d0514ecdd0a805",
+      "owner_current_sha256": "499f896d612217363254b040c7c2915fd7bfd4109793b9abac62b25a344a88a4",
+      "test": "tests/kairo/esi-admission.test.mjs",
+      "test_sha256": "386bf7e071ffe9c1716aaa188479dfb0584e7d885f45cf46f43012c635ade5a5",
+      "before": {
+        "tests": 7,
+        "pass": 0,
+        "fail": 7,
+        "log": "esi-admission-before.txt",
+        "sha256": "7e232655a25436b9866da56d945c36e56e6dd29b86f10202bf5d4eda53492b82"
+      },
+      "after": {
+        "tests": 70,
+        "pass": 70,
+        "fail": 0,
+        "log": "esi-admission-after.txt",
+        "sha256": "02495ecbc81f82f79992780d89134dc4755146a2707f608d3423de3c6987ac86"
+      },
+      "independent_review": {
+        "reviewer": "universe",
+        "disposition": "accepted",
+        "node": "24.22.0",
+        "tests": 70,
+        "pass": 70,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 726.791254,
+        "log": "esi-admission-independent.txt",
+        "sha256": "9bbbd20037e3c0bf587f0870ba7d80827dadfb9ba75e564ef12f12e9eb28001d"
+      }
+    },
+    {
+      "id": "EC-04",
+      "owner": "server/core.mjs",
+      "owner_baseline_sha256": "374a2f1e2bcb2f3ac035426b3eb4f20132385882a27e4cab890e3dc08c3baaac",
+      "owner_current_sha256": "60e149bf5c5ff5f402f10369d1e32b7a0d048daf17d899dee2e783850a3f52de",
+      "test": "tests/kairo/core-wallet-response.test.mjs",
+      "test_sha256": "bfde22a9a45d47f4d765873f8c82663fd4346c236d9523573f16f7269858950a",
+      "before": {
+        "tests": 5,
+        "pass": 0,
+        "fail": 5,
+        "log": "core-wallet-before.txt",
+        "sha256": "0629ced2583764bc1774b4ec7e40280471ed2776153be9e8c6a1162efd4d134f"
+      },
+      "after": {
+        "tests": 14,
+        "pass": 14,
+        "fail": 0,
+        "log": "core-wallet-after.txt",
+        "sha256": "d52526945354d781d54fd30c5c30d8891f10d9730cb3f0b37f49639c084f9968"
+      },
+      "independent_review": {
+        "reviewer": "universe",
+        "disposition": "accepted",
+        "node": "24.22.0",
+        "tests": 14,
+        "pass": 14,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 843.60637,
+        "log": "core-wallet-independent.txt",
+        "sha256": "c19d44150e3852727f38db2579b02d85c3c6889c1eaaa1ad66b401a10a493f1a"
+      }
+    }
+  ],
+  "existing_controls": {
+    "tests": 93,
+    "pass": 93,
+    "fail": 0,
+    "log": "runtime-edge-existing-controls.txt",
+    "sha256": "6348287f8d07665d897d67b2fa4f5173ee3182fb50806cafc6696e42cb465989"
+  }
+}

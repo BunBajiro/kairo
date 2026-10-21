@@ -53,8 +53,11 @@ export function createAuth(store, vault, { fetcher = fetch, origin }) {
                 if (!r.ok)
                     throw new Error('EVE SSO discovery is unavailable.');
                 const next = await r.json();
-                ['authorization_endpoint', 'token_endpoint', 'jwks_uri', 'revocation_endpoint'].forEach(k => { if (next[k])
-                    validEndpoint(next[k]); });
+                const required = ['authorization_endpoint', 'token_endpoint', 'jwks_uri'];
+                if (!next || typeof next !== 'object' || Array.isArray(next) || required.some(key => typeof next[key] !== 'string' || !next[key]))
+                    throw new Error('EVE SSO discovery returned incomplete endpoints.');
+                required.forEach(key => validEndpoint(next[key]));
+                if (next.revocation_endpoint) validEndpoint(next.revocation_endpoint);
                 metadata = next;
                 metaUntil = Date.now() + 3600000;
                 return metadata;

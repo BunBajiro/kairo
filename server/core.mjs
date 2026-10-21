@@ -308,6 +308,9 @@ export async function createCore(store, auth, esi, moduleDir, options={}) {
         nextRun.set(key, Date.now() + 60000);
         try {
             const options = { characterId: d.scope ? id : 0, ttl: d.ttl, priority: protectionKeys.has(d.key) };
+            if (d.key === 'wallet') options.validate = result => {
+                if (!Number.isFinite(result.data)) throw new Error('ESI returned an invalid wallet balance.');
+            };
             const r = await (d.paged ? esi.paged : esi.request)(d.route.replaceAll('{id}', id).replaceAll('{owner}', ownerId), options);
             // Disconnect/reconnect and scope changes end collection ownership,
             // even if an already dispatched ESI response still succeeds.

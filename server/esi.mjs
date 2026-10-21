@@ -173,8 +173,11 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         if (inflight.has(flightKey)) {
             counters.coalesced++;
             const shared = inflight.get(flightKey);
+            shared.admissions.push(checkAdmission);
             if (options.validate) shared.validated = true;
-            return validate(await shared);
+            const result = await shared;
+            checkConnection(); checkAdmission?.();
+            return validate(result);
         }
         const cached = readCache.get(key);
         if (cached) retention.touch(key);
@@ -212,7 +215,18 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         if (previousFailure) retention.touch(retryKey);
         retention.maintain();
         const task = Promise.resolve().then(async () => {
-            let release, attempted = false, providerRetryAt;
+            let release, attempted = false, providerRetryAt, admissionFailure = false;
+            const checkConsumers = () => {
+                // One cancelled owner cannot cancel another consumer's shared
+                // request. An unguarded consumer still needs the representation.
+                let rejected;
+                for (const guard of task.admissions) {
+                    try { guard?.(); return; }
+                    catch (error) { rejected = error; }
+                }
+                admissionFailure = true;
+                throw rejected;
+            };
             try {
                 if (previousFailure?.expires > Date.now()) {
                     const failure = JSON.parse(previousFailure.body);
@@ -220,6 +234,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 }
                 checkCooldown(characterId, route);
                 release = await slot(priority);
+                checkConsumers();
                 checkCooldown(characterId, route);
                 const headers = await headersFor(characterId);
                 if (cached?.etag) headers['If-None-Match'] = cached.etag;
@@ -227,6 +242,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 if (body) headers['Content-Type'] = 'application/json';
                 const fetchResponse = async () => {
                     checkConnection();
+                    checkConsumers();
                     if (pace) pace.lastRequest = pace.now();
                     attempted = true; counters.requests++;
                     try { return await fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) }); }
@@ -235,6 +251,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 let response = await fetchResponse();
                 checkConnection();
                 if (response.status === 401 && characterId) {
+                    checkConsumers();
                     headers.Authorization = 'Bearer ' + await auth.access(characterId, true);
                     response = await fetchResponse();
                     checkConnection();
@@ -286,6 +303,7 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                 // An old grant's response must not recreate purged cache or
                 // retry state, nor return stale data to its replacement owner.
                 checkConnection();
+                if (admissionFailure) throw error;
                 if (error.code === 'ESI_INVALID_RESPONSE') {
                     if (attempted) counters.failed++;
                     // Bad representations are retryable without the synthetic
@@ -314,8 +332,11 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
             finally { release?.(); inflight.delete(flightKey); }
         });
         task.validated = !!options.validate;
+        task.admissions = [checkAdmission];
         inflight.set(flightKey, task);
-        return task;
+        const result = await task;
+        checkConnection(); checkAdmission?.();
+        return result;
     }
     /**
      * Send an explicit private POST/PUT/DELETE/PATCH command (POST, priority by

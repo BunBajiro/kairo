@@ -186,6 +186,11 @@ test('discovery failures are shared but never poison the next attempt', async t 
         ['HTTP', () => json({}, 503), /SSO discovery is unavailable/],
         ['JSON', () => new Response('{'), /JSON|Unexpected/],
         ['endpoint origin', () => json({ ...discovery, token_endpoint: 'https://unexpected.invalid/token' }), /Unexpected SSO endpoint/],
+        ['empty object', () => json({}), /SSO discovery|Invalid URL/],
+        ['array', () => json([]), /SSO discovery|Invalid URL/],
+        ...['authorization_endpoint', 'token_endpoint', 'jwks_uri'].map(key => ['missing ' + key, () => json({...discovery, [key]: undefined}), /SSO discovery|Invalid URL/]),
+        ['invalid endpoint type', () => json({...discovery, token_endpoint: {url: discovery.token_endpoint}}), /SSO discovery|Invalid URL/],
+        ['insecure endpoint', () => json({...discovery, token_endpoint: 'http://login.eveonline.com/v2/oauth/token'}), /Unexpected SSO endpoint/],
         ['transport', () => { throw new Error('Transport failed'); }, /Transport failed/],
     ]) {
         await t.test(name, async t => {
@@ -206,6 +211,15 @@ test('discovery failures are shared but never poison the next attempt', async t 
             assert.equal(f.calls.tokens.length, 2);
         });
     }
+});
+
+test('valid discovery may omit optional revocation and remains shared and cached', async t => {
+    const f = await fixture(t);
+    f.responses.discovery = async () => json({...discovery, revocation_endpoint: undefined});
+    await Promise.all([f.auth.access(101), f.auth.access(202)]);
+    assert.equal(new URL(await f.auth.authorize('synthetic-session', [])).origin, 'https://login.eveonline.com');
+    assert.equal(f.calls.discovery, 1);
+    assert.equal(f.calls.tokens.length, 2);
 });
 
 test('JWKS failures are shared, are not cached, and permit a later refresh', async t => {
