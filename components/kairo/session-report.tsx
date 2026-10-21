@@ -19,6 +19,17 @@ import {CombatCoverage} from './combat-coverage';
 import {mostActiveSystem} from '@/lib/session-summary';
 import {loadSessionReportPage} from './session-report-page.mjs';
 
+// Accepted details saves retain order across dialog remounts for the same pilot
+// and Session. Failure releases the next write; idle owners leave no saved tail.
+const sessionDetailsWrites=new Map<string,Promise<void>>();
+function saveSessionDetails(url:string,details:{label:string;notes:string},csrf:string){
+ const submitted={...details};
+ const write=(sessionDetailsWrites.get(url)||Promise.resolve()).then(()=>api(url,'PUT',submitted,csrf));
+ const settled=write.then(()=>{},()=>{});sessionDetailsWrites.set(url,settled);
+ void settled.then(()=>{if(sessionDetailsWrites.get(url)===settled)sessionDetailsWrites.delete(url);});
+ return write;
+}
+
 const duration=(n:number)=>n<60?Math.floor(n)+'s':n<3600?Math.floor(n/60)+'m':Math.floor(n/3600)+'h '+Math.floor(n%3600/60)+'m';
 const number=(n:number)=>n.toLocaleString('en-GB');
 const signed=(n:number)=> (n>0?'+':'')+number(n);
@@ -96,7 +107,7 @@ export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onC
  // dialog retires acknowledgement UI through generation, not the accepted write.
  async function save(){
   const g=generation.current;setBusy(true);
-  try{await api(url,'PUT',{label:name,notes},boot.csrf);if(g===generation.current){onSaved();toast.success('Session details saved.');}}
+  try{await saveSessionDetails(url,{label:name,notes},boot.csrf);if(g===generation.current){onSaved();toast.success('Session details saved.');}}
   catch(e:any){if(g===generation.current)toast.error(e.message);}
   finally{if(g===generation.current)setBusy(false);}
  }

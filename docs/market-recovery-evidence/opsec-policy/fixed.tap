@@ -1,0 +1,102 @@
+TAP version 13
+# Subtest: manual-only OPSEC commands preserve the current accepted policy at HTTP receipt
+    # Subtest: force on/off retains saved pilot, lists and covered High-Sec policy
+    ok 1 - force on/off retains saved pilot, lists and covered High-Sec policy
+      ---
+      duration_ms: 24.163786
+      type: 'test'
+      ...
+    # Subtest: a pending manual body merges the latest policy, not a pre-body copy
+    ok 2 - a pending manual body merges the latest policy, not a pre-body copy
+      ---
+      duration_ms: 13.661298
+      type: 'test'
+      ...
+    # Subtest: nonboolean manual commands reject without changing policy or output
+    ok 3 - nonboolean manual commands reject without changing policy or output
+      ---
+      duration_ms: 17.357649
+      type: 'test'
+      ...
+    # Subtest: failed persistence does not publish manual protection and an explicit retry succeeds
+    ok 4 - failed persistence does not publish manual protection and an explicit retry succeeds
+      ---
+      duration_ms: 10.374177
+      type: 'test'
+      ...
+    # Subtest: full-policy replacement and validation retain their existing meaning
+    ok 5 - full-policy replacement and validation retain their existing meaning
+      ---
+      duration_ms: 11.939082
+      type: 'test'
+      ...
+    1..5
+ok 1 - manual-only OPSEC commands preserve the current accepted policy at HTTP receipt
+  ---
+  duration_ms: 317.087082
+  type: 'test'
+  ...
+# Subtest: explicit OPSEC policy commands cannot change the current manual command
+    # Subtest: the untouched new-profile policy accepts canonical defaults without a selected pilot
+    ok 1 - the untouched new-profile policy accepts canonical defaults without a selected pilot
+      ---
+      duration_ms: 11.335986
+      type: 'test'
+      ...
+    # Subtest: policy replacement preserves current manual=true
+    ok 2 - policy replacement preserves current manual=true
+      ---
+      duration_ms: 8.918683
+      type: 'test'
+      ...
+    # Subtest: policy replacement preserves current manual=false
+    ok 3 - policy replacement preserves current manual=false
+      ---
+      duration_ms: 9.315355
+      type: 'test'
+      ...
+    # Subtest: manual=true accepted while the policy body is pending wins at receipt
+    ok 4 - manual=true accepted while the policy body is pending wins at receipt
+      ---
+      duration_ms: 14.51564
+      type: 'test'
+      ...
+    # Subtest: manual=false accepted while the policy body is pending wins at receipt
+    ok 5 - manual=false accepted while the policy body is pending wins at receipt
+      ---
+      duration_ms: 18.819012
+      type: 'test'
+      ...
+    # Subtest: malformed or mixed policy envelopes reject without changing policy or protection
+    ok 6 - malformed or mixed policy envelopes reject without changing policy or protection
+      ---
+      duration_ms: 26.810225
+      type: 'test'
+      ...
+    # Subtest: policy commands retain connected-pilot, list sanitization and overlap validation
+    ok 7 - policy commands retain connected-pilot, list sanitization and overlap validation
+      ---
+      duration_ms: 9.570749
+      type: 'test'
+      ...
+    # Subtest: failed policy persistence retains protection and explicit retry preserves manual
+    ok 8 - failed policy persistence retains protection and explicit retry preserves manual
+      ---
+      duration_ms: 10.230521
+      type: 'test'
+      ...
+    1..8
+ok 2 - explicit OPSEC policy commands cannot change the current manual command
+  ---
+  duration_ms: 348.674475
+  type: 'test'
+  ...
+1..2
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 487.984636

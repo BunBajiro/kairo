@@ -264,10 +264,15 @@ export async function startKairo(options = {}) {
         }
         if (path === '/opsec' && req.method === 'PUT') {
             let b = await body(req);
-            // The immediate manual switch is a narrow command, independent of
-            // the policy editor's drafts. Read the accepted policy after receipt;
-            // ordinary multi-field PUTs retain full-replacement semantics.
-            if (Object.keys(b).length === 1 && Object.hasOwn(b, 'manual')) {
+            // Manual and policy commands own separate fields. Read the other
+            // accepted fields after body receipt; legacy flat PUTs still replace
+            // the full policy. No await separates this merge from persistence.
+            if (Object.hasOwn(b, 'policy')) {
+                const policy = b.policy, fields = ['allowHighsec', 'blueAlliances', 'hostileAlliances', 'characterId'];
+                if (Object.keys(b).length !== 1 || !policy || typeof policy !== 'object' || Array.isArray(policy) || Object.keys(policy).length !== fields.length || fields.some(key => !Object.hasOwn(policy, key)) || typeof policy.allowHighsec !== 'boolean' || !Array.isArray(policy.blueAlliances) || !Array.isArray(policy.hostileAlliances) || !Number.isSafeInteger(policy.characterId) || policy.characterId < 0)
+                    throw new Error('Provide a complete protection policy without a manual command.');
+                b = { ...policy, manual: store.get('opsec', {}).manual === true };
+            } else if (Object.keys(b).length === 1 && Object.hasOwn(b, 'manual')) {
                 if (typeof b.manual !== 'boolean') throw new Error('Manual protection must be true or false.');
                 b = { ...store.get('opsec', {}), manual: b.manual };
             }

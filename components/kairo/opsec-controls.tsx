@@ -50,11 +50,11 @@ export function OPSEC() {
     async function save(next=settings, manualOnly=false) {
         setBusy(true);
         try {
-            await saveProtection(manualOnly ? {manual:next.manual} : {...next,blueAlliances:blue.split(',').map(Number).filter(Boolean),hostileAlliances:hostile.split(',').map(Number).filter(Boolean)},boot.csrf);
+            await saveProtection(manualOnly ? {manual:next.manual} : {policy:{allowHighsec:next.allowHighsec===true,characterId:Number(next.characterId||0),blueAlliances:blue.split(',').map(Number).filter(Boolean),hostileAlliances:hostile.split(',').map(Number).filter(Boolean)}},boot.csrf);
             // A manual override submits one changed field immediately. Accept
             // its saved value without replacing other edits made while saving.
             setSettings((current:any)=>({...current,
-                manual:current.manual===settings.manual?next.manual:current.manual,
+                manual:manualOnly&&current.manual===settings.manual?next.manual:current.manual,
                 allowHighsec:current.allowHighsec===settings.allowHighsec?next.allowHighsec:current.allowHighsec,
                 characterId:current.characterId===settings.characterId?next.characterId:current.characterId,
             })); await reload(); await refresh(); toast.success('Broadcast protection updated.');

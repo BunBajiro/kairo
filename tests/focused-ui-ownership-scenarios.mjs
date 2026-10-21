@@ -58,7 +58,8 @@ export const opsecDirtyAcceptedNavigation=context=>opsecAcceptedNavigation({...c
 
 // A policy save can be accepted by a remount before the prior manual command's
 // acknowledgement arrives. Its captured policy must not become a manual command.
-export async function opsecQueuedPolicyNavigation({page,app,check,frame,deferred}){
+export async function opsecQueuedPolicyNavigation({page,app,check,frame,deferred,manualReply='accepted'}){
+ const persistedManual=manualReply!=='rejected';
  const original={manual:false,allowHighsec:true,characterId:42,blueAlliances:[91],hostileAlliances:[92]};
  app.store.set('opsec',original);
  app.store.db.prepare('UPDATE characters SET scopes=? WHERE id=42').run(JSON.stringify(['esi-location.read_location.v1']));
@@ -68,24 +69,37 @@ export async function opsecQueuedPolicyNavigation({page,app,check,frame,deferred
  const handler=async route=>{
   if(route.request().method()!=='PUT')return route.fallback();writes.push(route.request().postDataJSON());
   if(!hold)return route.continue();hold=false;gate.entered=true;
-  try{const response=await route.fetch();assert.equal(response.status(),200);gate.seen.resolve();await gate.release.promise;await route.fulfill({response});}finally{gate.done.resolve();}
+  try{
+   const response=manualReply==='rejected'?null:await route.fetch();if(response)assert.equal(response.status(),200);
+   gate.seen.resolve();await gate.release.promise;
+   if(manualReply==='rejected')await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'Synthetic manual command rejection'})});
+   else if(manualReply==='unreadable')await route.fulfill({status:200,contentType:'application/json',body:'{"ok":'});
+   else await route.fulfill({response});
+  }finally{gate.done.resolve();}
  };
  await page.route(app.origin+'/api/opsec',handler);
  const manual=page.getByRole('switch',{name:'Force protection on',exact:true}),blue=page.getByRole('textbox',{name:'Blue alliance IDs',exact:true}),save=page.getByRole('button',{name:'Save protection rules',exact:true});
  try{
   await ready(page,app);await manual.click();await bounded(page,gate.seen.promise);
-  check('Held manual acknowledgement already protects the real broadcast',{manual:app.store.get('opsec').manual,hidden:app.core.stream.state().opsec.hidden},{manual:true,hidden:true});
+  check(persistedManual?'Held manual acknowledgement already protects the real broadcast':'A rejected manual command has not changed the saved broadcast state',{manual:app.store.get('opsec').manual,hidden:app.core.stream.state().opsec.hidden},{manual:persistedManual,hidden:persistedManual});
   await navigate(page,'overview');await page.getByRole('heading',{name:'Command centre',exact:true}).waitFor();await navigate(page,'opsec');await blue.waitFor();
   await blue.fill('123');const policy=page.waitForResponse(response=>responseFor('opsec')(response)&&Object.keys(response.request().postDataJSON()).some(key=>key!=='manual'));await save.click();await frame();
-  check('A newer explicit policy save waits behind the held manual command',{writes:writes.length,busy:await save.isDisabled(),manual:app.store.get('opsec').manual},{writes:1,busy:true,manual:true});
+  check('A newer explicit policy save waits behind the held manual command',{writes:writes.length,busy:await save.isDisabled(),manual:app.store.get('opsec').manual},{writes:1,busy:true,manual:persistedManual});
   gate.release.resolve();await bounded(page,gate.done.promise);const response=await bounded(page,policy);assert.equal(response.status(),200);await response.finished();
   await page.waitForFunction(()=>{const control=document.querySelector('[role=switch][aria-label="Force protection on"]');return control&&!control.disabled;});await frame();
-  check('A policy submitted before manual acknowledgement preserves accepted protection',app.store.get('opsec'),{...original,manual:true,blueAlliances:[123]});
-  check('A queued policy save cannot release manually protected broadcast output',app.core.stream.state().opsec.hidden,true);
-  check('The current editor agrees with the accepted manual and policy state',{manual:await manual.getAttribute('aria-checked'),blue:await blue.inputValue()},{manual:'true',blue:'123'});
+  check('A policy submitted before manual acknowledgement preserves accepted protection',app.store.get('opsec'),{...original,manual:persistedManual,blueAlliances:[123]});
+  check(persistedManual?'A queued policy save cannot release manually protected broadcast output':'A queued policy save cannot apply rejected manual intent',app.core.stream.state().opsec.hidden,persistedManual);
+  check('The current editor agrees with the accepted manual and policy state',{manual:await manual.getAttribute('aria-checked'),blue:await blue.inputValue()},{manual:String(persistedManual),blue:'123'});
+  if(manualReply!=='accepted'){
+   const error=page.getByText(manualReply==='rejected'?'Synthetic manual command rejection':'Kairo could not read the response.',{exact:true});await error.waitFor();
+   check('The manual command error remains reported while the explicit policy save completes',await error.isVisible(),true);
+  }
   check('Only the two explicit protection commands reach HTTP',writes.length,2);
  }finally{gate.release.resolve();if(gate.entered)await bounded(page,gate.done.promise);await page.unroute(app.origin+'/api/opsec',handler);}
 }
+
+export const opsecRejectedManualPolicy=context=>opsecQueuedPolicyNavigation({...context,manualReply:'rejected'});
+export const opsecUnreadableManualPolicy=context=>opsecQueuedPolicyNavigation({...context,manualReply:'unreadable'});
 
 export async function obsAcceptedNavigation({page,context,app,check,frame,deferred}){
  const initial=app.core.obs.config();assert.equal(initial.enabled,false);
