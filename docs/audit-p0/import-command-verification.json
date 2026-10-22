@@ -1,0 +1,107 @@
+{
+  "unit": "P0-02E2",
+  "status": "Independently reviewed source-grounded contract/design only; no implementation or new runtime proof. Bank identity is recorded by the following continuation after remote read-back.",
+  "assessed_source": "929f97a7c3d1e4683de9be241c58647962f97492",
+  "assessed_tree": "34f351a039363c16446d2d083500ded312604a32",
+  "assessed_on": "2026-10-22",
+  "verified_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "verified_executable_tree": "3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10",
+  "version": "0.8.0-rc.17",
+  "main_at_recovery": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "pr": {
+    "number": 12,
+    "state": "open",
+    "draft": true
+  },
+  "scope": {
+    "command_handlers": [
+      "HTTP-023",
+      "HTTP-024",
+      "HTTP-027",
+      "HTTP-028",
+      "HTTP-030",
+      "HTTP-031"
+    ],
+    "read_dependencies": [
+      "HTTP-022",
+      "HTTP-025",
+      "HTTP-026",
+      "HTTP-029"
+    ],
+    "related_coverage": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C12",
+      "C16"
+    ],
+    "dependencies": [
+      "Per-hub effective settings and per-plan identity/receipt ownership",
+      "Captured trader refresh collectors and partial outcomes",
+      "Offline calculation context, lifetime and resource bounds"
+    ],
+    "new_read_contracts_not_implemented": [
+      "GET /api/markets/imports?hub=<id>&inspect=settings",
+      "GET /api/markets/imports/plans?hub=<id>&inspect=command (plan ID or immutable creation tuple)",
+      "GET /api/markets/imports?hub=<id>&inspect=refresh (operation ID or token/runtime/lineage tuple)"
+    ]
+  },
+  "product_tests_run": [],
+  "browser_tests_run": [],
+  "performance_measurements": [],
+  "new_findings": [],
+  "implementation_changed": false,
+  "historical_receipts_changed": false,
+  "pending_gates": [
+    "Remaining P0-02 command families and non-HTTP/background owners",
+    "P0-03 diagnostics/toast ownership, defaults, retention and caps",
+    "P0-04 measured baseline and numerical command/job/preparation/resource budgets before corresponding implementation",
+    "IMP-01\u201306 owning requirement acceptance and meaningful defect regressions where reproduced",
+    "Full Markets pricing/history/archive/retention and Imports/domain algorithm coverage",
+    "Independent implementation review, cross-owner faults, Chrome/Firefox and matched performance",
+    "Later candidate/artifact verification; native/live/extended-use evidence remains separate"
+  ],
+  "next_unit": "P0-02F1 Goals/notes controls, then F2 Places/Journey and remaining manifest/non-HTTP families.",
+  "release_actions_authorized": false,
+  "reviews": [
+    {
+      "scope": "Imports source/tests and selected contract",
+      "author": "domain_inventory",
+      "reviewer": "algorithms_inventory",
+      "disposition": "Accepted full source/tests and selected contract at dac7f0e91fd3ecb7262afc3da6acd8c01452b1798d9c40873807c8102f76ed02 before status-only update: settings/plan intent and bounded receipts, current re-quote with captured trader/settings ownership, transaction-scoped final context checks, finite refresh partial outcomes, cache publication ordering and accepted local-save drain. All IMP behavioral proof pending."
+    },
+    {
+      "scope": "HTTP/browser/source consultation",
+      "author": "domain_inventory",
+      "reviewer": "api_inventory",
+      "disposition": "Completed read-only HTTP/UI consultation: preserved current recipe-save meaning, separate known save from later refresh/read failure, draft/returned identity ownership and precise historical pre-persistence failure versus delayed successful-response limits. No new tests or behavioral acceptance."
+    },
+    {
+      "scope": "Shared semantics, continuation and receipt",
+      "author": "root",
+      "reviewer": "inventory_review",
+      "disposition": "Accepted substantive Imports contract at dac7f0e91fd3ecb7262afc3da6acd8c01452b1798d9c40873807c8102f76ed02 and final six-path status/navigation/static receipt: independently reproduced the status-only hash transition, scope manifest, 110 relative links/fragments, unchanged executable/historical proof and following E1 bank identity; F1/F2 continuation accurately limits read-only reconnaissance. No runtime or implementation acceptance."
+    }
+  ],
+  "reviewed_content_before_status_update": {
+    "import-command-contracts.md": "dac7f0e91fd3ecb7262afc3da6acd8c01452b1798d9c40873807c8102f76ed02"
+  },
+  "static_checks": {
+    "changed_paths": 6,
+    "command_handlers": 6,
+    "read_dependencies": 4,
+    "scope_ids_match_manifest": true,
+    "relative_links_and_fragments": 110,
+    "errors": 0,
+    "executable_and_packaging_diff": "none",
+    "historical_receipts_and_closed_ledgers_diff": "none except following-bank E1 status/receipt metadata",
+    "whitespace_check": "pass"
+  },
+  "reviewed_contract_sha256": {
+    "import-command-contracts.md": "d78a802618d0cbb7d1de68d9cf343a1b718aef2dbc378a6d93850e03abbbf454"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "unit": "P0-02E1",
-  "status": "Independently reviewed source-grounded contract/design only; no implementation or new runtime proof. Bank identity is recorded by the following continuation after remote read-back.",
+  "status": "Verified/banked source-grounded contract/design only; no implementation or new runtime proof.",
   "assessed_source": "f7aa784f46a7f82bc209f2f5151493fad16132ab",
   "assessed_tree": "d66e62875b624ebe4e7f39e359d8448dab494757",
   "assessed_on": "2026-10-22",
@@ -116,5 +116,16 @@
   },
   "reviewed_content_before_status_update": {
     "market-command-contracts.md": "c2b77cdf2f3e1f6d46f16a00faa0ea438fce072c4fa3c28a0f885ebb7933b340"
+  },
+  "bank": {
+    "commit": "929f97a7c3d1e4683de9be241c58647962f97492",
+    "tree": "34f351a039363c16446d2d083500ded312604a32",
+    "parent": "f7aa784f46a7f82bc209f2f5151493fad16132ab",
+    "changed_paths": 6,
+    "read_back": "GitHub commit/tree/parent and exact connector receipt text verified; fetched tree equals reviewed index and all working bytes; clean local checkpoint. PR body/head/base/open/draft read back exactly.",
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "ci": "Intentionally skipped documentation-only bank; no new executable build.",
+    "transport": "Authorized GitHub connector exact tree and guarded non-force fast-forward.",
+    "receipt_note": "Following documentation continuation records this bank; no self-SHA or new executable claim."
   }
 }
