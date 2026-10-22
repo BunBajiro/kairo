@@ -7,7 +7,7 @@
 import {snapshotFresh} from './polling.mjs';
 import {sessionCollection} from './session-policy.mjs';
 import {recordedVisitSovereignty} from './visit-sovereignty.mjs';
-import {readSessionVisits,legacySessionStart,sessionObservationOwnershipSql} from './session-travel.mjs';
+import {readSessionVisits,sessionObservationOwnershipSql} from './session-travel.mjs';
 
 export const COMBAT_BUFFER_MS = 10 * 60 * 1000;
 const iso = at => new Date(at).toISOString();
@@ -55,22 +55,17 @@ export function loyaltyReport(start, finish, ended, names={}) {
 }
 
 /**
- * Preserve ordered visits and loops clipped to [Session start, end). New Sessions
- * use only captured starts; only legacy contexts may infer a prior visit. Optional
+ * Preserve owned visits and captured starts clipped to [Session start, end). Optional
  * preparedVisits must be ordered as readSessionVisits returns them.
  */
 export function sessionRoute(store, session, start, end, names=store.get('names',{}), preparedVisits) {
     const from = Date.parse(session.started), to = Date.parse(end);
-    // Reports already read the inclusive compatibility list. Reuse its bounded
+    // Reports already read the inclusive owned visit list. Reuse its bounded
     // rows while keeping route/replay's exclusive end and ownership guards.
     const rows = preparedVisits ? preparedVisits.filter(row => row.character_id === session.character_id
-        && (row.session_id === session.id || row.session_id === null) && row.at >= session.started && row.at < end)
+        && row.session_id === session.id && row.at >= session.started && row.at < end)
         : readSessionVisits(store, session, end);
     let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, sovereignty_at_visit:start.system.sovereignty_at_visit, clipped:true} : null;
-    if (!initial && !start.capturedAt) {
-        const prior = legacySessionStart(store, session);
-        if (prior) initial = {...prior, at:session.started, clipped:true, inferred:true};
-    }
     if(initial&&rows[0]?.system_id===initial.system_id&&Date.parse(rows[0].at)===from)initial=null;
     if(initial){
         const system=store.db.prepare('SELECT name,region_id,region_name,security FROM universe_systems WHERE system_id=?').get(initial.system_id);

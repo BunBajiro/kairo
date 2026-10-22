@@ -62,7 +62,6 @@ export function openStore(dir) {
     }
     if (!db.prepare("SELECT id FROM migrations WHERE id='core-v4'").get()) {
         db.exec(`BEGIN IMMEDIATE;
-        CREATE TABLE journey_hidden_links(character_id INTEGER NOT NULL,from_visit_id INTEGER NOT NULL REFERENCES visits(id) ON DELETE CASCADE,to_visit_id INTEGER NOT NULL REFERENCES visits(id) ON DELETE CASCADE,hidden_at TEXT NOT NULL,PRIMARY KEY(character_id,from_visit_id,to_visit_id));
         CREATE TABLE goal_tracking(goal_id TEXT PRIMARY KEY REFERENCES goals(id) ON DELETE CASCADE,source TEXT NOT NULL,type_id INTEGER,state TEXT NOT NULL DEFAULT '{}',status TEXT NOT NULL DEFAULT 'waiting',detail TEXT NOT NULL DEFAULT '',updated_at TEXT,completed_at TEXT);
         CREATE TABLE goal_progress_entries(goal_id TEXT NOT NULL REFERENCES goals(id) ON DELETE CASCADE,entry_key TEXT NOT NULL,observed REAL NOT NULL,credited REAL NOT NULL DEFAULT 0,PRIMARY KEY(goal_id,entry_key));
         CREATE TABLE combat_records(character_id INTEGER NOT NULL,killmail_id INTEGER NOT NULL,result TEXT NOT NULL,at TEXT NOT NULL,body TEXT NOT NULL,source TEXT NOT NULL,PRIMARY KEY(character_id,killmail_id));
@@ -138,15 +137,12 @@ export function openStore(dir) {
         ALTER TABLE visits ADD COLUMN sovereignty_at_visit TEXT;
         INSERT INTO migrations VALUES('visits-sovereignty-v080',datetime('now')); COMMIT;`);
     }
-    // Seed membership once from legacy visits. New movement belongs to Sessions;
-    // retaining this table must not restart the retired lifetime movement logger.
+    // Discovery membership and Session-owned movement are independent records.
     if (!db.prepare("SELECT id FROM migrations WHERE id='session-travel-v080'").get()) {
         db.exec('BEGIN IMMEDIATE');
         db.exec(`ALTER TABLE visits ADD COLUMN session_id TEXT;
             CREATE TABLE discovered_systems(character_id INTEGER NOT NULL,system_id INTEGER NOT NULL,
                 PRIMARY KEY(character_id,system_id));
-            INSERT OR IGNORE INTO discovered_systems(character_id,system_id)
-                SELECT character_id,system_id FROM visits WHERE character_id>0 AND system_id>0;
             INSERT INTO migrations VALUES('session-travel-v080',datetime('now'));`);
         db.exec('COMMIT');
     }

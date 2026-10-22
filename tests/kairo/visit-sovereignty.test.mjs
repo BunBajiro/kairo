@@ -54,8 +54,8 @@ test('session starts and recorded visits retain their original holder after late
     await listeners.get('data.location')({ characterId: 42, payload: { previous: { solar_system_id: A }, current: { solar_system_id: B, system: { name: 'Perimeter' } } } });
     stop();
     store.db.prepare('UPDATE sessions SET ended=? WHERE id=?').run(iso(now + 60000), 'owner-replay');
-    // An old visit has no captured ownership, even if its system is in today's feed.
-    store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42, A, 'Legacy Jita visit', iso(now + 10000));
+    // An owned visit can lack captured sovereignty; today's feed cannot fill it.
+    store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42, A, 'Owned Jita visit', iso(now + 10000), 'owner-replay');
     store.saveSnapshot(0, 'sovereignty', sample(now, { data: [{ system_id: A, alliance_id: 99 }, { system_id: B, alliance_id: 99 }] }));
     store.set('names', { 77: 'Renamed later', 99: 'New holder' });
     const reopened = fixture.restart(), before = reopened.db.prepare('SELECT total_changes() count').get().count;

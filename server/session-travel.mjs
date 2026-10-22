@@ -19,21 +19,15 @@ export function readSessionVisits(store, session, end, { inclusiveEnd = false } 
     return store.db.prepare(`SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security
         FROM visits v LEFT JOIN universe_systems u USING(system_id)
         WHERE character_id=? AND at>=? AND at${inclusiveEnd ? '<=' : '<'}?
-        AND (session_id=? OR session_id IS NULL) ORDER BY at,id`)
+        AND session_id=? ORDER BY at,id`)
         .all(session.character_id, session.started, end, session.id);
-}
-
-/** Compatibility lookup only: the latest unowned visit at/before this Session start. */
-export function legacySessionStart(store, session) {
-    return store.db.prepare(`SELECT * FROM visits WHERE character_id=? AND session_id IS NULL
-        AND at<=? ORDER BY at DESC,id DESC LIMIT 1`).get(session.character_id, session.started);
 }
 
 function lastSessionSystem(store, session, at, start = JSON.parse(session.start_context)) {
     const last = store.db.prepare(`SELECT system_id FROM visits WHERE character_id=? AND at>=? AND at<=?
-        AND (session_id=? OR session_id IS NULL) ORDER BY at DESC,id DESC LIMIT 1`)
+        AND session_id=? ORDER BY at DESC,id DESC LIMIT 1`)
         .get(session.character_id, session.started, at, session.id);
-    return last?.system_id ?? start.system?.id ?? (!start.capturedAt ? legacySessionStart(store, session)?.system_id : null);
+    return last?.system_id ?? start.system?.id ?? null;
 }
 
 // Capture local receipt eligibility before Core awaits display metadata/names.

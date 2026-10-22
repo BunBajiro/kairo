@@ -1,0 +1,140 @@
+▶ retired Journey HTTP calls have no work; private Places and modern export remain available
+  ✖ GET /journey?character=42 (5.844432ms)
+  ✖ PUT /journey/connections/2?character=42 (9.163367ms)
+  ✖ POST /journey/enrich?character=42 (6.814551ms)
+  ✖ fresh schema and export exclude Journey-only storage (5.743112ms)
+  ✔ private notes, metadata and modern Session routes need no Journey service (23.088662ms)
+✖ retired Journey HTTP calls have no work; private Places and modern export remain available (367.224071ms)
+ℹ {"path":"/journey?character=42","status":200,"writes":0,"providers":0}
+ℹ {"path":"/journey/connections/2?character=42","status":200,"writes":1,"providers":0}
+ℹ {"path":"/journey/enrich?character=42","status":200,"writes":2,"providers":0}
+✖ Session movement/report/replay own their evidence without lifetime Journey fallback (38.067884ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 1
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 597.834247
+
+✖ failing tests:
+
+test at tests/kairo/journey-retirement.test.mjs:36:17
+✖ GET /journey?character=42 (5.844432ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      providers: 0,
+  +   status: 200,
+  -   status: 404,
+      writes: 0
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:41:20)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:36:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 200, writes: 0, providers: 0 },
+    expected: { status: 404, writes: 0, providers: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/journey-retirement.test.mjs:36:17
+✖ PUT /journey/connections/2?character=42 (9.163367ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      providers: 0,
+  +   status: 200,
+  +   writes: 1
+  -   status: 404,
+  -   writes: 0
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:41:20)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:36:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 200, writes: 1, providers: 0 },
+    expected: { status: 404, writes: 0, providers: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/journey-retirement.test.mjs:36:17
+✖ POST /journey/enrich?character=42 (6.814551ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      providers: 0,
+  +   status: 200,
+  +   writes: 2
+  -   status: 404,
+  -   writes: 0
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:41:20)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:36:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 200, writes: 2, providers: 0 },
+    expected: { status: 404, writes: 0, providers: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/journey-retirement.test.mjs:44:13
+✖ fresh schema and export exclude Journey-only storage (5.743112ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:46:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:44:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/journey-retirement.test.mjs:66:1
+✖ Session movement/report/replay own their evidence without lifetime Journey fallback (38.067884ms)
+  AssertionError [ERR_ASSERTION]: Unowned history cannot suppress the first accepted owned sample
+  + actual - expected
+  
+  + undefined
+  - 'owned'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/journey-retirement.test.mjs:76:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'owned',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -7,7 +7,7 @@ export const workspaceRoutes = [
   {id: 'markets', name: 'Markets', group: 'OPERATIONS'},
   {id: 'industry', name: 'Industry & planets', group: 'OPERATIONS'},
   {id: 'sessions', name: 'Sessions', group: 'OPERATIONS'},
-  {id: 'universe-kspace', name: 'Atlas', group: 'UNIVERSE', keywords: ['universe', 'known space', 'K-Space', 'New Eden', 'sovereignty', 'journey']},
+  {id: 'universe-kspace', name: 'Atlas', group: 'UNIVERSE', keywords: ['universe', 'known space', 'K-Space', 'New Eden', 'sovereignty']},
   {id: 'universe-jspace', name: 'Maps', group: 'UNIVERSE', keywords: ['universe', 'J-Space', 'mapping', 'wormhole', 'chain', 'signatures', 'statics']},
   {id: 'universe-settings', name: 'Universe settings', group: 'UNIVERSE', keywords: ['configuration', 'power blocs', 'coalitions', 'ansiblex', 'bridges', 'connections', 'pins', 'sources', 'alerts']},
   {id: 'goals', name: 'Goals & notes', group: 'INTELLIGENCE'},

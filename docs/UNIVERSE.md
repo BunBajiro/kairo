@@ -394,7 +394,7 @@ Static browsing and gate/range planning work from the bundled official snapshot 
 
 Universe/replay APIs require the local Kairo session; mutations require CSRF protection. Private map state is not served by the OBS output server. See [Authentication and security](AUTH-AND-SECURITY.md), [data retention](DATA-RETENTION.md) and [backup guidance](USER-GUIDE.md) for the wider installation.
 
-Travelling outside a Session still updates live location, discovered-system membership and ordinary activity, without maintaining the retired lifetime Journey log. Existing historical visits and Sessions remain readable; old `#journey` links open Atlas. Historical observation edges are not imported as live routing connections.
+Travelling outside a Session still updates live location, discovered-system membership and ordinary activity, without maintaining the retired lifetime Journey log. Session reports and replay read captured starts and Session-owned visits; unowned lifetime visits are not route evidence. The constant `#journey` alias opens Atlas without a Journey service. Historical observation edges are not imported as live routing connections.
 
 ## Common questions and troubleshooting
 

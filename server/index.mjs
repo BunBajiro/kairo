@@ -24,7 +24,7 @@ import {sanitizeConfig} from './stream.mjs';
 import {bindingProjections,toastContexts} from './projections.mjs';
 import {changeSession,sessionReport} from './history.mjs';
 import {sessionReplay} from './session-replay.mjs';
-import {getSystem,journeyData,savePlaceNote,setJourneyConnection} from './places.mjs';
+import {savePlaceNote} from './places.mjs';
 import {listGoals,goalSourceOptions,lookupGoalType} from './goals.mjs';
 import {createDatasetService} from './datasets.mjs';
 import {activeDatasetDirectory, defaultDataDirectory} from './dataset-paths.mjs';
@@ -294,9 +294,6 @@ export async function startKairo(options = {}) {
             const items = rows.slice(0, limit).map(e => ({ ...e, payload: JSON.parse(e.payload) })), last = items.at(-1);
             return json(res, 200, { items, more: rows.length > limit, nextCursor: rows.length > limit ? { at: last.at, id: last.id } : null });
         }
-        if(path==='/journey'&&read)return json(res,200,journeyData(store,checkedChar(url)));
-        if(/^\/journey\/connections\/\d+$/.test(path)&&req.method==='PUT')return json(res,200,setJourneyConnection(store,checkedChar(url),Number(path.split('/')[3]),(await body(req)).hidden));
-        if(path==='/journey/enrich'&&req.method==='POST'){const missing=journeyData(store,checkedChar(url)).systems.filter(s=>s.x===null||!s.region_id).slice(0,25),results=[];for(const s of missing){try{await getSystem(store,esi,s.system_id);results.push({id:s.system_id,ok:true});}catch{results.push({id:s.system_id,ok:false});}}return json(res,200,{results});}
         if(path==='/places'&&read)return json(res,200,store.db.prepare('SELECT * FROM place_notes ORDER BY updated DESC').all().map(n=>({...n,tags:JSON.parse(n.tags)})));
         if(path.startsWith('/places/')){const [,,kind,key]=path.split('/'),id=Number(key);if(!['system','constellation','region'].includes(kind)||!Number.isSafeInteger(id)||id<1)throw new Error('Invalid place.');
             if(core.universe.static().systems.some(system=>system.space==='wormhole'&&system[kind+'_id']===id))throw new Error('Record J-Space system notes inside a private chain map.');
@@ -489,7 +486,7 @@ export async function startKairo(options = {}) {
         // out of this DTO; extending a private table does not automatically export it.
         if (path === '/export' && read) {
             res.setHeader('Content-Disposition', 'attachment; filename="kairo-history.json"');
-            return json(res, 200, { exportedAt: new Date().toISOString(), version:9,discoveredSystems:store.db.prepare('SELECT character_id,system_id FROM discovered_systems ORDER BY character_id,system_id').all(),universe:core.universe.exportUserData(),allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),hiddenJourneyLinks:store.db.prepare('SELECT * FROM journey_hidden_links').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
+            return json(res, 200, { exportedAt: new Date().toISOString(), version:9,discoveredSystems:store.db.prepare('SELECT character_id,system_id FROM discovered_systems ORDER BY character_id,system_id').all(),universe:core.universe.exportUserData(),allianceCombatRecords:store.db.prepare('SELECT * FROM alliance_combat_records').all(),marketImportPlans:store.db.prepare('SELECT body FROM market_import_plans ORDER BY updated').all().map(r=>JSON.parse(r.body)),marketImportSettings:store.db.prepare("SELECT key,value FROM settings WHERE key LIKE 'market:imports:%'").all().map(r=>({key:r.key,value:JSON.parse(r.value)})),marketHubs:store.db.prepare('SELECT * FROM market_hubs').all(),marketQuickSupplies:store.get('market:quick',null),goalTracking:store.db.prepare('SELECT * FROM goal_tracking').all(),goalProgressEntries:store.db.prepare('SELECT * FROM goal_progress_entries').all(),combatRecords:store.db.prepare('SELECT * FROM combat_records').all(),places:store.db.prepare('SELECT * FROM place_notes').all(),characters: auth.characters().map(({ id, name }) => ({ id, name })), goals: store.db.prepare('SELECT * FROM goals').all(), notes: store.db.prepare('SELECT * FROM notes').all(), events: store.db.prepare('SELECT * FROM events ORDER BY at').all(), visits: store.db.prepare('SELECT * FROM visits ORDER BY at').all(), sessions: store.db.prepare('SELECT * FROM sessions').all(), stream: core.stream.config() });
         }
         if (path.startsWith('/modules/') && read) {
             const m = core.registry.modules.find(m => m.id === path.split('/')[2]);

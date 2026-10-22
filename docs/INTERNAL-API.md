@@ -34,7 +34,7 @@ An HTTP response is a view of one operation's result. An event can tell the UI t
 | Public-facing display projection | [`projections.mjs`](../server/projections.mjs), [`stream.mjs`](../server/stream.mjs) | Explicit sanitized fields and protection state for the separate Stream renderer. |
 | Durable storage | [`store.mjs`](../server/store.mjs) and domain-owned tables | Records, additive migrations, bounded indexed reads, accounting and dependency-safe close. |
 
-These are internal alpha interfaces, not a separately versioned public SDK. Change the owner, callers, tests and documentation together when changing a contract. Compatibility endpoints such as legacy Journey remain distinct from the active Session model.
+These are internal alpha interfaces, not a separately versioned public SDK. Change the owner, callers, tests and documentation together when changing a contract. Session travel and discovery own their evidence independently; private Places annotations do not depend on a lifetime travel log.
 
 ### Core's in-process facade
 

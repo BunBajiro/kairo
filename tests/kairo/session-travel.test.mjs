@@ -4,7 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { openStore } from '../../server/store.mjs';
-import { discoveredSystemIds } from '../../server/discovery.mjs';
+import { discoveredSystemIds, recordDiscoveredSystem } from '../../server/discovery.mjs';
 import { readSessionVisits, recordSessionObservation } from '../../server/session-travel.mjs';
 import { registerUniverseHistory } from '../../server/universe-history.mjs';
 import { sessionRoute, sessionShips } from '../../server/session-details.mjs';
@@ -12,7 +12,6 @@ import { changeSession, sessionReport } from '../../server/history.mjs';
 import { createCore } from '../../server/core.mjs';
 import { catalog } from '../../server/modules/catalog.mjs';
 import { sessionReplay } from '../../server/session-replay.mjs';
-import { journeyData, setJourneyConnection } from '../../server/places.mjs';
 
 const A = 30000142, B = 30000144, W = 31000001;
 const epoch = Date.parse('2026-09-20T12:00:00Z'), at = ms => new Date(epoch + ms).toISOString();
@@ -47,32 +46,22 @@ function observer(store, { now = () => epoch + 1000, names = async () => ({}) } 
 }
 const visits = store => store.db.prepare('SELECT * FROM visits ORDER BY at,id').all();
 
-test('upgrade and repeated reopen preserve legacy evidence, IDs, annotations and membership without backfill duplication', async t => {
+test('fresh-profile reopen preserves owned travel, independent discovery, notes and activity', async t => {
     const f = await storage(t), db = f.store.db;
-    db.exec("ALTER TABLE visits DROP COLUMN session_id; DROP TABLE discovered_systems; DELETE FROM migrations WHERE id='session-travel-v080'");
-    const put = db.prepare('INSERT INTO visits(id,character_id,system_id,name,ship_type_id,at,sovereignty_at_visit) VALUES(?,?,?,?,?,?,?)');
-    put.run(101, 42, A, 'First', 587, at(0), '{"source":"legacy-preserved"}');
-    put.run(102, 42, W, 'Wormhole', 588, at(1000), null);
-    put.run(103, 42, W, 'Wormhole again', 588, at(2000), null);
-    put.run(104, 43, B, 'Other pilot', 609, at(2000), null);
-    session(f.store, 'old', 42, {}, at(0), at(3000));
-    db.prepare('INSERT INTO journey_hidden_links VALUES(?,?,?,?)').run(42, 101, 102, at(2500));
+    session(f.store, 'owned', 42, {capturedAt: at(0)}, at(0), at(3000));
+    db.prepare('INSERT INTO visits(id,character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?,?)').run(101, 42, A, 'First', at(1000), 'owned');
+    recordDiscoveredSystem(f.store, 42, A); recordDiscoveredSystem(f.store, 42, W); recordDiscoveredSystem(f.store, 43, B);
     db.prepare('INSERT INTO place_notes VALUES(?,?,?,?,?,?,?)').run('system', W, 'Saved note', 'Do not lose', '[]', 'watch', at(0));
-    db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)').run(42, 'location.changed', 'journey', 'Historic', '{}', at(0));
-    f.store.set('stream', { saved: true });
-    const before = Object.fromEntries(['visits', 'sessions', 'journey_hidden_links', 'place_notes', 'events', 'settings']
-        .map(table => [table, db.prepare('SELECT * FROM ' + table + ' ORDER BY rowid').all().map(row => ({ ...row }))]));
+    db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)').run(42, 'location.changed', 'pilot', 'Observed', '{"session_id":"owned"}', at(1000));
+    f.store.set('stream', {saved: true});
+    const before = Object.fromEntries(['visits', 'sessions', 'discovered_systems', 'place_notes', 'events', 'settings']
+        .map(table => [table, db.prepare('SELECT * FROM ' + table + ' ORDER BY rowid').all().map(row => ({...row}))]));
     for (let i = 0; i < 2; i++) {
         const store = f.reopen();
-        for (const [table, rows] of Object.entries(before)) {
-            const after = store.db.prepare('SELECT * FROM ' + table + ' ORDER BY rowid').all().map(row => ({ ...row }));
-            assert.deepEqual(table === 'visits' ? after.map(({ session_id, ...row }) => row) : after, rows, table);
-        }
-        assert.ok(visits(store).every(row => row.session_id === null));
+        for (const [table, rows] of Object.entries(before)) assert.deepEqual(store.db.prepare('SELECT * FROM ' + table + ' ORDER BY rowid').all().map(row => ({...row})), rows, table);
         assert.deepEqual(discoveredSystemIds(store, 42), [A, W]);
         assert.deepEqual(discoveredSystemIds(store, 43), [B]);
-        assert.equal(store.db.prepare('SELECT COUNT(*) n FROM discovered_systems').get().n, 3);
-        assert.equal(store.db.prepare("SELECT COUNT(*) n FROM migrations WHERE id='session-travel-v080'").get().n, 1);
+        assert.equal(visits(store).length, 1, 'Discovery does not fabricate travel rows');
     }
 });
 
@@ -159,13 +148,13 @@ test('pending or failed names cannot move observation ownership, timestamp, ship
     assert.equal(failed.events[0].at, at(3000)); failed.stop();
 });
 
-test('session read boundaries, equal-time order and legacy-only inferred starts never admit another owned session or pilot', async t => {
+test('session read boundaries and equal-time ordering exclude unowned evidence and other Sessions/pilots', async t => {
     const { store } = await storage(t), s = session(store, 'read', 42, {}, at(0), at(2000));
-    session(store, 'neighbor', 42, { capturedAt: at(0) }, at(0), at(2000));
     const put = store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)');
-    const legacyPrior = Number(put.run(42, A, 'Legacy initial', at(-2000), null).lastInsertRowid);
+    put.run(42, A, 'Unowned prior', at(-2000), null);
     put.run(42, W, 'Other owned prior', at(-1000), 'neighbor');
-    const first = Number(put.run(42, B, 'Legacy in window', at(1000), null).lastInsertRowid);
+    put.run(42, W, 'Unowned in window', at(500), null);
+    const first = Number(put.run(42, B, 'Own first', at(1000), 'read').lastInsertRowid);
     put.run(42, W, 'Other owned equal time', at(1000), 'neighbor');
     const second = Number(put.run(42, A, 'Own equal time', at(1000), 'read').lastInsertRowid);
     put.run(43, W, 'Other pilot', at(1000), 'read');
@@ -178,17 +167,13 @@ test('session read boundaries, equal-time order and legacy-only inferred starts 
     let report;
     try { report = sessionReport(store, s.id, 42); } finally { store.db.prepare = prepare; }
     assert.deepEqual(report.visits.map(v => v.id), [first, second, boundary]);
-    assert.deepEqual(report.route.map(v => v.systemId), [A, B, A]);
+    assert.deepEqual(report.route.map(v => v.systemId), [B, A]);
     assert.equal(windowReads, 1, 'Report and route share one bounded visit projection');
-    const foreignRows = visits(store);
-    assert.deepEqual(sessionRoute(store, s, {}, s.ended, {}, foreignRows).map(v => v.systemId), [A, B, A]);
+    assert.deepEqual(sessionRoute(store, s, {}, s.ended, {}, visits(store)).map(v => v.systemId), [B, A]);
     const route = sessionRoute(store, s, {}, s.ended);
-    assert.equal(route[0].id, legacyPrior); assert.equal(route[0].inferred, true);
-    assert.deepEqual(route.map(v => v.systemId), [A, B, A]);
-    const modern = sessionRoute(store, s, { capturedAt: at(0) }, s.ended);
-    assert.equal(modern[0].entered, at(1000)); assert.equal(modern[0].inferred, false);
+    assert.equal(route[0].entered, at(1000)); assert.ok(route.every(row => !row.inferred));
     const plan = store.db.prepare(`EXPLAIN QUERY PLAN SELECT * FROM visits v WHERE character_id=? AND at>=? AND at<?
-        AND (session_id=? OR session_id IS NULL) ORDER BY at,id`).all(42, at(0), at(2000), s.id);
+        AND session_id=? ORDER BY at,id`).all(42, at(0), at(2000), s.id);
     assert.ok(plan.some(row => row.detail.includes('idx_visits_character_at') && row.detail.includes('at>') && row.detail.includes('at<')));
     assert.ok(plan.every(row => !/^SCAN v\b/.test(row.detail)), JSON.stringify(plan));
 });
@@ -207,26 +192,6 @@ test('a same-millisecond end/start assigns accepted samples to the active sessio
     assert.deepEqual(readSessionVisits(store, next, at(2000)).map(v => v.id), [rows[1].id]);
     assert.equal(o.events.length, 1);
     o.stop();
-});
-
-test('cold Journey projection and hide/unhide use only legacy adjacency with interleaved session rows and equal timestamps', async t => {
-    const { store } = await storage(t), put = store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)');
-    const a = Number(put.run(42, A, 'Legacy A', at(0), null).lastInsertRowid);
-    const modern = Number(put.run(42, W, 'Session W', at(1000), 'owned').lastInsertRowid);
-    const b = Number(put.run(42, B, 'Legacy B', at(1000), null).lastInsertRowid);
-    put.run(43, W, 'Other pilot', at(1000), null);
-    assert.deepEqual(journeyData(store, 42).visits.map(v => v.id), [b, a]);
-    assert.deepEqual(journeyData(store, 42).systems.map(s => s.system_id), [B, A]);
-    assert.throws(() => setJourneyConnection(store, 42, modern, true), /not found/);
-    assert.throws(() => setJourneyConnection(store, 43, b, true), /not found/);
-    setJourneyConnection(store, 42, b, true);
-    assert.deepEqual({ ...store.db.prepare('SELECT from_visit_id,to_visit_id FROM journey_hidden_links').get() }, { from_visit_id: a, to_visit_id: b });
-    assert.equal(journeyData(store, 42).connections[0].hidden, true);
-    setJourneyConnection(store, 42, b, false);
-    assert.equal(journeyData(store, 42).connections[0].hidden, false);
-    assert.equal(visits(store).length, 4);
-    for (let i = 0; i < 501; i++) put.run(42, A, 'Legacy retained', at(2000 + i), null);
-    assert.equal(journeyData(store, 42).visits.length, 500);
 });
 
 test('inactive and unchanged observations do not scan sovereignty to fabricate movement', async t => {
@@ -456,7 +421,7 @@ test('route projection preserves frozen SQL/prepared rows, name precedence and s
     const recordedOwner = { owner_type: 'alliance', owner_id: 77, owner_name: ' Brave ', observed_at: at(0), recorded_at: at(1000), source: 'esi' };
     const put = store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id,ship_type_id,sovereignty_at_visit) VALUES(?,?,?,?,?,?,?)');
     const recorded = Number(put.run(42, B, 'Recorded destination', at(1000), s.id, 588, JSON.stringify(recordedOwner)).lastInsertRowid);
-    const catalogue = Number(put.run(42, B, '', at(1000), null, 588, null).lastInsertRowid);
+    const catalogue = Number(put.run(42, B, '', at(1000), s.id, 588, null).lastInsertRowid);
     const cached = Number(put.run(42, W, '', at(2000), s.id, null, null).lastInsertRowid);
     const fallback = Number(put.run(42, unknown, '', at(3000), s.id, null, null).lastInsertRowid);
     put.run(42, W, 'Before session', at(-1000), s.id, null, null);

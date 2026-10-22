@@ -13,7 +13,7 @@ import {createBus} from '../../server/bus.mjs';
 import {createStream,defaultStream} from '../../server/stream.mjs';
 import {bindingProjection,renderToast} from '../../server/projections.mjs';
 import {captureContext,changeSession,sessionReport} from '../../server/history.mjs';
-import {rememberSystem,journeyData,savePlaceNote} from '../../server/places.mjs';
+import {rememberSystem,savePlaceNote} from '../../server/places.mjs';
 import {createOBS,defaultOBS,obsAuthentication,sanitizeOBS} from '../../server/obs.mjs';
 import {startKairo} from '../../server/index.mjs';
 const sample=data=>({status:'ready',data,updatedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+600000).toISOString()});
@@ -63,10 +63,10 @@ test('named sessions capture wallet and SP samples, diverse events, late combat,
 test('session reports paginate events but keep totals across the entire session',async t=>{
     const {store}=await storage(t);store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended) VALUES(?,?,?,?,?)').run('s',42,'Long session','2026-01-01','2026-02-01');for(let i=0;i<135;i++)publish(store)({type:'goal.completed',characterId:42,at:'2026-01-02'});const first=sessionReport(store,'s',42),next=sessionReport(store,'s',42,100);assert.equal(first.events.length,100);assert.equal(first.more,true);assert.equal(first.stats.goals,135);assert.equal(next.events.length,35);assert.equal(next.more,false);assert.notEqual(first.events[0].id,next.events[0].id);
 });
-test('place notes keep system, constellation and region identities separate and enrich the visual travel ledger',async t=>{
+test('place notes keep system, constellation and region identities separate independently of system metadata',async t=>{
     const {store}=await storage(t);for(const kind of ['system','constellation','region'])savePlaceNote(store,kind,10,{name:kind,body:'Private '+kind,tags:['logistics','logistics','  home  '],status:'home'});
     rememberSystem(store,{system_id:10,name:'UALX-3',constellation_id:20,security_status:-.7,position:{x:1e17,y:2e17,z:-3e17}},{name:'Constellation',region_id:30},{name:'Tenerifis'});
-    store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,10,'UALX-3','2026-09-01');const d=journeyData(store,42);assert.equal(d.systems[0].x,1e17);assert.equal(d.systems[0].region_name,'Tenerifis');assert.equal(d.systems[0].annotation,'Private system');assert.deepEqual(d.systems[0].tags,['logistics','home']);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM place_notes').get().n,3);assert.throws(()=>savePlaceNote(store,'character',1,{}));
+    const system=store.db.prepare('SELECT * FROM universe_systems WHERE system_id=10').get(),note=store.db.prepare("SELECT * FROM place_notes WHERE kind='system' AND entity_id=10").get();assert.equal(system.x,1e17);assert.equal(system.region_name,'Tenerifis');assert.equal(note.body,'Private system');assert.deepEqual(JSON.parse(note.tags),['logistics','home']);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM place_notes').get().n,3);assert.throws(()=>savePlaceNote(store,'character',1,{}));
 });
 // Minimal real WebSocket server: exercises Node's native client and OBS v5 framing/authentication without installed dependencies.
 async function mockOBS(t,{password='fixture-password',holdFirstHello=false}={}) {

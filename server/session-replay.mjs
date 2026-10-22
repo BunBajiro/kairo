@@ -19,7 +19,7 @@ const parse = value => {
  * A read-only snapshot of an owned session. This deliberately does not call
  * sessionReport (which calculates report aggregates) or any live collector.
  * sessionRoute supplies the exact report visit sequence, including loops and
- * legacy inferred starts. An observed transition is never a confirmed gate hop.
+ * captured Session starts. An observed transition is never a confirmed gate hop.
  *
  * now accepts an epoch-ms value or clock function; eventLimit is clamped to
  * 1–10,000. Visits remain uncapped and durationMs is milliseconds. Missing pilot

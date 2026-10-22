@@ -24,8 +24,8 @@ function emit(store, type, minute, payload = {}, characterId = 42) {
     return Number(store.db.prepare('INSERT INTO events(character_id,type,module,summary,payload,at) VALUES(?,?,?,?,?,?)')
         .run(characterId, type, 'test', type, JSON.stringify(payload), at(minute)).lastInsertRowid);
 }
-function visit(store, systemId, minute, characterId = 42) {
-    store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(characterId, systemId, 'System ' + systemId, at(minute));
+function visit(store, systemId, minute, characterId = 42, sessionId = 'replay') {
+    store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(characterId, systemId, 'System ' + systemId, at(minute), sessionId);
 }
 
 test('replay retains repeated systems and same-system observations without inventing intermediate travel', async t => {
@@ -100,21 +100,24 @@ test('explicit and owned combat locations outrank context, while unknown locatio
     assert.equal(result.visits.length, 1, 'Combat locations never invent player visits');
 });
 
-test('missing history is preserved as a gap; legacy prior observations are explicitly inferred', async t => {
+test('missing history remains a gap; owned unknown systems retain honest coordinate coverage', async t => {
     const store = await storage(t); session(store, { start: { capturedAt: at(0) } });
     emit(store, 'goal.completed', 10);
     let result = sessionReplay(store, 'replay', 42);
     assert.deepEqual(result.visits, []); assert.deepEqual(result.travel, []); assert.deepEqual(result.systems, []);
     assert.equal(result.coverage.gaps[0].to, at(60));
-    session(store, { id: 'legacy', start: {} }); visit(store, 1, -10);
-    result = sessionReplay(store, 'legacy', 42);
-    assert.equal(result.visits[0].location_basis, 'inferred_visit');
-    assert.equal(result.events[0].location_basis, 'inferred_visit');
+    session(store, { id: 'unknown', start: {} }); visit(store, 1, -10, 42, null);
+    result = sessionReplay(store, 'unknown', 42);
+    assert.deepEqual(result.visits, [], 'Unowned prior observations do not invent a Session start');
+    visit(store, 1, 5, 42, 'unknown');
+    result = sessionReplay(store, 'unknown', 42);
+    assert.equal(result.visits[0].location_basis, 'recorded_visit');
+    assert.equal(result.events[0].location_basis, 'observed_visit');
     assert.deepEqual(result.coverage.missingCoordinateSystemIds, [1]);
     assert.equal(result.systems[0].x, null);
     assert.equal(result.travel.length, 0);
     store.db.prepare('INSERT INTO universe_systems VALUES(?,?,?,?,?,?,?,?,?,?)').run(1, 'Retained system', 2, 'C', 3, 'R', 0.5, 9460000000000000, 0, -9460000000000000);
-    result = sessionReplay(store, 'legacy', 42);
+    result = sessionReplay(store, 'unknown', 42);
     assert.equal(result.systems[0].coordinate_source, 'recorded');
     assert.deepEqual([result.systems[0].map_x, result.systems[0].map_y], [1, 1]);
     assert.deepEqual(result.coverage.missingCoordinateSystemIds, []);

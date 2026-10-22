@@ -34,7 +34,7 @@ The summary ranks systems by unique killmails in the report’s personal and all
 
 ## Visits and alliance combat are separate
 
-Every observed visit remains in the route, including quiet transits and returns to the same system. The route shows entry/exit times, inferred duration, region and security where available. The starting and ending visits are bounded by the session start/end. ESI location samples can miss fast travel or travel while Kairo is closed; durations describe observed presence rather than a complete gate log.
+Every Session-owned observed visit remains in the route, including quiet transits and returns to the same system. The route shows entry/exit times, inferred duration, region and security where available. The starting and ending visits are bounded by the session start/end. ESI location samples can miss fast travel or travel while Kairo is closed; durations describe observed presence rather than a complete gate log.
 
 The alliance combat rule only controls the **extra combat window**:
 
@@ -91,7 +91,7 @@ If another session starts before the fresh end sample, or the new session's LP b
 2. Choose **Play**. The default speed is **60×**; select 1×, 10×, 30×, 60×, 120× or 300× as needed.
 3. Drag **Session replay time** to seek, or use **Previous recorded system**, **Next recorded system**, **Previous recorded event** and **Next recorded event**. Seeking pauses playback; **Restart** returns to the beginning.
 4. Keep **Following pilot** enabled for smooth camera movement. Dragging the map pauses camera follow; choose **Resume follow** to resume it.
-5. Expand **Recording details** to inspect gaps, inferred context and omissions. **Close session replay** returns to the ordinary map workspace.
+5. Expand **Recording details** to inspect gaps, location coverage and omissions. **Close session replay** returns to the ordinary map workspace.
 
 Replay is a read-only snapshot, not a video or a new collector. A **Live snapshot** stops at the time it was opened; reopen the session replay to include subsequent activity. Playback does not advance while the browser tab is hidden. It follows recorded known-space and wormhole-space locations, switching the displayed space as appropriate; it does not modify your saved Maps network.
 

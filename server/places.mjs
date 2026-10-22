@@ -1,46 +1,10 @@
-/**
- * Shared system metadata, private entity notes and cold legacy Journey adapters.
- * Modern discovery and travel belong to discovery.mjs/session-travel.mjs; do not
- * route routine Universe reads through the lifetime Journey aggregation below.
- * See ../docs/ARCHITECTURE.md for the retained compatibility boundary.
- */
-import { getUniverseSystem } from './universe-static.mjs';
+/** Shared system metadata and private entity notes. Discovery and travel are
+ * owned independently by discovery.mjs and session-travel.mjs. */
 /** Persist coordinates in metres, preserving known coordinates/region fields when omitted. */
 export function rememberSystem(store, system, constellation, region) {
  if (!system?.system_id) return;
  const p=system.position||{};
  store.db.prepare(`INSERT INTO universe_systems VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(system_id) DO UPDATE SET name=excluded.name,constellation_id=excluded.constellation_id,constellation_name=COALESCE(excluded.constellation_name,constellation_name),region_id=COALESCE(excluded.region_id,region_id),region_name=COALESCE(excluded.region_name,region_name),security=excluded.security,x=COALESCE(excluded.x,x),y=COALESCE(excluded.y,y),z=COALESCE(excluded.z,z)`).run(system.system_id,system.name||String(system.system_id),system.constellation_id||null,constellation?.name||null,constellation?.region_id||region?.region_id||null,region?.name||null,system.security_status??null,p.x??null,p.y??null,p.z??null);
-}
-/**
- * Prefer the process-selected static dataset, otherwise resolve ESI hierarchy.
- * Both paths update local system metadata; network/ESI failure rejects unchanged
- * through this helper rather than producing a fabricated system.
- */
-export async function getSystem(store,esi,id) {
- const local=getUniverseSystem(id,{celestials:false});
- if(local){const result={...local,security_status:local.security,position:{x:local.x,y:local.y,z:local.z}};rememberSystem(store,result,local.constellation,local.region);return result;}
- const system=(await esi.request('/universe/systems/'+id,{ttl:86400})).data;let constellation,region;
- if(system.constellation_id){constellation=(await esi.request('/universe/constellations/'+system.constellation_id,{ttl:86400})).data;region=(await esi.request('/universe/regions/'+constellation.region_id,{ttl:86400})).data;}
- const result={...system,system_id:id,constellation,region};rememberSystem(store,result,constellation,region);return result;
-}
-export function journeyData(store,characterId){
- // Cold compatibility view: retained legacy evidence only. New Sessions do
- // not concatenate into a continuous lifetime trail through this adapter.
- const visits=store.db.prepare('SELECT v.*,u.region_id,u.region_name,u.security FROM visits v LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND session_id IS NULL ORDER BY at DESC,id DESC LIMIT 500').all(characterId);
- const hidden=new Set(store.db.prepare('SELECT from_visit_id,to_visit_id FROM journey_hidden_links WHERE character_id=?').all(characterId).map(e=>e.from_visit_id+':'+e.to_visit_id));
- return {visits,
- connections:visits.slice(0,-1).map((to,i)=>{const from=visits[i+1];return {id:to.id,from_visit_id:from.id,to_visit_id:to.id,from_system_id:from.system_id,to_system_id:to.system_id,from_name:from.name,to_name:to.name,at:to.at,hidden:hidden.has(from.id+':'+to.id)};}).filter(e=>e.from_system_id!==e.to_system_id),
- systems:store.db.prepare(`SELECT v.system_id,COALESCE(u.name,v.name) name,COUNT(*) visits,MIN(v.at) first,MAX(v.at) last,u.constellation_id,u.constellation_name,u.region_id,u.region_name,u.security,u.x,u.y,u.z,n.status,n.tags,n.body AS annotation FROM visits v LEFT JOIN universe_systems u USING(system_id) LEFT JOIN place_notes n ON n.kind='system' AND n.entity_id=v.system_id WHERE character_id=? AND session_id IS NULL GROUP BY v.system_id ORDER BY last DESC`).all(characterId).map(s=>({...s,tags:JSON.parse(s.tags||'[]')}))};}
-/** Hide/restore one existing pilot-owned legacy edge without deleting or joining visits. */
-export function setJourneyConnection(store,characterId,toVisitId,hidden){
- if(!Number.isSafeInteger(toVisitId)||toVisitId<1||typeof hidden!=='boolean')throw new Error('Choose a recorded connection to hide or restore.');
- const to=store.db.prepare('SELECT * FROM visits WHERE id=? AND character_id=? AND session_id IS NULL').get(toVisitId,characterId);
- if(!to)throw new Error('Connection not found for this character.');
- const from=store.db.prepare('SELECT * FROM visits WHERE character_id=? AND session_id IS NULL AND (at<? OR (at=? AND id<?)) ORDER BY at DESC,id DESC LIMIT 1').get(characterId,to.at,to.at,to.id);
- if(!from||from.system_id===to.system_id)throw new Error('This visit has no connection to an earlier system.');
- if(hidden)store.db.prepare('INSERT OR IGNORE INTO journey_hidden_links VALUES(?,?,?,?)').run(characterId,from.id,to.id,new Date().toISOString());
- else store.db.prepare('DELETE FROM journey_hidden_links WHERE character_id=? AND from_visit_id=? AND to_visit_id=?').run(characterId,from.id,to.id);
- return {id:to.id,hidden};
 }
 /**
  * Upsert a private installation-wide entity annotation (not pilot-scoped).

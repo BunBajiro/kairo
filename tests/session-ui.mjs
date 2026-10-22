@@ -27,11 +27,11 @@ const finish={...start,capturedAt:at(120),system:{id:3,name:'C-J6MT'},wallet:{va
 store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context,notes) VALUES(?,?,?,?,?,?,?,?)').run('preview',42,'Saturday roam · Tenerifis',at(0),at(120),JSON.stringify(start),JSON.stringify(finish),'Keep the next hull ready.');
 store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context) VALUES(?,?,?,?,?,?,?)').run('legacy',42,'Earlier session',at(-300),at(-200),JSON.stringify({capturedAt:at(-300),wallet:{value:5000000,sampledAt:at(-301)}}),JSON.stringify({capturedAt:at(-200),wallet:{value:4826390.39,sampledAt:at(-201)}}));
 store.db.prepare('INSERT INTO sessions(id,character_id,label,started,ended,start_context,end_context) VALUES(?,?,?,?,?,?,?)').run('archived',42,'Archived session',at(-2000),at(-1900),JSON.stringify({...start,capturedAt:at(-2000)}),JSON.stringify({...finish,capturedAt:at(-1900)}));
-// Match the reported mixed legacy state: route, hull, personal combat and
+// Exercise incomplete captured state: route, hull, personal combat and
 // wallet data alongside missing alliance/LP baselines, with long saved names.
-for(let i=0;i<30;i++)store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,7000+i%6,i%6===0?'A long saved system name for layout coverage':'Transit '+(i%6+1),at(-300+i*3));
+for(let i=0;i<30;i++)store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42,7000+i%6,i%6===0?'A long saved system name for layout coverage':'Transit '+(i%6+1),at(-300+i*3),'legacy');
 for(const [system,name] of [[1,'UALX-3'],[2,'Quiet transit'],[3,'C-J6MT']])store.db.prepare('INSERT INTO universe_systems(system_id,name,region_id,region_name,security) VALUES(?,?,?,?,?)').run(system,name,1000,'Example region',-.3);
-// Current reports use session-owned travel; the earlier fixture retains NULL legacy ownership.
+// Both recordings carry their explicit Session owner.
 for(const [system,name,m] of [[2,'Quiet transit',15],[1,'UALX-3',25],[3,'C-J6MT',60]])store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42,system,name,at(m),'preview');
 // A neighbouring session's record must not enter this report just because its timestamp overlaps.
 store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)').run(42,9999,'Other session only',at(30),'legacy');

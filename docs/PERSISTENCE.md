@@ -43,7 +43,7 @@ Read through the current store at decision boundaries; do not add unbounded deco
 | HTTP representations | `cache`, `cache_usage`; `esi:limits` | [esi.mjs](../server/esi.mjs), [cache-retention.mjs](../server/cache-retention.mjs); shared with public Combat cache maintenance |
 | Settings/extensions | `settings`, `module_data(module,key)`, `migrations` | Individual services; extension namespace supplied by [registry.mjs](../server/registry.mjs) |
 | Semantic history | `events` with optional dedupe key | Core publication and owning event producers |
-| Sessions/travel/discovery | `sessions`, `visits`, `discovered_systems`; legacy `journey_hidden_links` | [history.mjs](../server/history.mjs), [session-travel.mjs](../server/session-travel.mjs), [discovery.mjs](../server/discovery.mjs) |
+| Sessions/travel/discovery | `sessions`, `visits`, `discovered_systems` | [history.mjs](../server/history.mjs), [session-travel.mjs](../server/session-travel.mjs), [discovery.mjs](../server/discovery.mjs) |
 | Goals/notes/place notes | `goals`, `goal_tracking`, `goal_progress_entries`, `notes`, `place_notes` | [goals.mjs](../server/goals.mjs), HTTP note handlers and [places.mjs](../server/places.mjs) |
 | Combat evidence | `combat_records`, `alliance_combat_records` | [combat.mjs](../server/combat.mjs), [session-combat.mjs](../server/session-combat.mjs) |
 | Market scans | `market_hubs`, `market_types`, `market_jobs`, `market_stage`, `market_orders`, `market_items` | [markets.mjs](../server/markets.mjs) |
@@ -89,7 +89,7 @@ The [completed final audit](FINAL-AUDIT.md) tested 0.7.3→0.8.0 using archived-
 
 A transport cache stores an HTTP body, validators and original observation/expiry. A snapshot stores the current collection status and next routine deadline for a data batch. A durable domain record represents user work or retained evidence, such as a session or verified killmail. Clearing one layer is not a general way to repair another.
 
-[ESI polling](ESI-POLLING.md) defines `updatedAt`, `expiresAt`, `refreshAt`, stale fallback and retry state. [Data retention](DATA-RETENTION.md) defines which replaceable entries can expire. Pausing modules keeps stored history. New travel rows belong to active Sessions; the retired lifetime Journey logger does not resume writing merely because `visits` remains in the schema.
+[ESI polling](ESI-POLLING.md) defines `updatedAt`, `expiresAt`, `refreshAt`, stale fallback and retry state. [Data retention](DATA-RETENTION.md) defines which replaceable entries can expire. Pausing modules keeps stored history. Travel rows belong to active Sessions. Journey-only hidden links are not part of the current schema or export, and discovery is not seeded from unowned historical visits.
 
 Market scan staging is separate from the published book. Cancellation/failure must not publish partial orders as a complete book. Daily archive rows are retained separately from their bounded analysis projection. Dataset generations are files selected by the supervisor, not an interchangeable SQL cache.
 

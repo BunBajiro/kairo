@@ -76,7 +76,7 @@ The local hot path never invokes AI. SQLite is the source of truth for local his
 | `server/history.mjs` | Named sessions, sample capture, event boundaries and report aggregation |
 | `server/session-event-window.mjs` | Shared report/replay event membership and boundary ownership |
 | `server/public-feed-transport.mjs` | Core-owned R2Z2 request sharing, pacing and bounded raw packet reuse |
-| `server/places.mjs` | Universe coordinates, cold legacy Journey adapters and private entity annotations |
+| `server/places.mjs` | Shared system metadata and private entity annotations |
 | `server/universe-jspace.mjs` | Private Maps commands, compact library summaries and selected-map projection |
 | `server/sse.mjs` | Shared ordered event writes, backpressure and bounded slow-client shutdown |
 | `server/obs.mjs` | OBS v5 authentication, local connection, inventory and state action execution |
@@ -129,7 +129,7 @@ Dataset replacement preserves in-memory dashboard sessions across the controlled
 
 Reports and replay share event membership through `session-event-window.mjs`. Killmail occurrence times use a half-open Session interval; other events use captured boundary cursors and explicit Session ownership. Missing observation ownership remains legacy evidence, while explicit null means unowned. Reports retain their aggregation and pagination; replay retains its fixed event cursor, suppression and limit without constructing a report.
 
-The standalone Journey page, lifetime counters, footprint preset and visit overlay are retired. `places.mjs` keeps `/api/journey`, enrichment and hidden-link operations as cold compatibility APIs over legacy rows only; new Session-owned rows cannot enter that connection-pruning contract. Old evidence and exports remain available. Saved Universe views normalize only the retired top-level `indicator: 'visits'` to `none`, preserving other configuration keys.
+Journey is removed: no Journey HTTP handlers, lifetime aggregation, hidden-link storage/export or prior unowned-visit inference remains. Session travel reads only its captured start and explicitly owned visits; discovery is recorded independently from current observations. `places.mjs` retains shared system metadata and private entity annotations. The constant `#journey` alias opens Atlas without a Journey service. Saved Universe views normalize the retired top-level `indicator: 'visits'` to `none`, preserving other configuration keys.
 
 ### Maps and navigation
 

@@ -66,14 +66,14 @@ function retained(store, expected) {
     assert.deepEqual(store.db.prepare('PRAGMA foreign_key_check').all(), []);
 }
 
-test('real previous-release 0.7.3 data upgrades into current runtime, retains owners and survives repeated startup and bounded retention', async t => {
+test('historical 0.7.3 fixture retains unrelated records without reviving Journey discovery', async t => {
     const {directory, expected} = await fixture(t);
     for (let attempt = 0; attempt < 2; attempt++) {
         const {app, calls} = await start(directory);
         try {
             retained(app.store, expected);
             assert.deepEqual(app.store.db.prepare('SELECT character_id,system_id FROM discovered_systems ORDER BY system_id').all().map(row => ({...row})),
-                [{character_id: 42, system_id: 30000142}, {character_id: 42, system_id: 30002187}]);
+                [], 'Journey visits do not seed current discovery');
             assert.ok(app.store.db.prepare('SELECT session_id,sovereignty_at_visit FROM visits').all().every(row => row.session_id === null && row.sovereignty_at_visit === null));
             assert.equal(await app.auth.access(42), 'synthetic-v073-access');
             assert.deepEqual(openVault(directory).decrypt(app.store.get('obs.password')), {password: 'synthetic-v073-obs'});
@@ -116,7 +116,7 @@ test('a failed 0.8.0 migration on the real 0.7.3 checkpoint rolls back its own s
     const {app} = await start(directory);
     try {
         retained(app.store, expected);
-        assert.equal(app.store.db.prepare('SELECT COUNT(*) n FROM discovered_systems').get().n, 2);
+        assert.equal(app.store.db.prepare('SELECT COUNT(*) n FROM discovered_systems').get().n, 0);
         assert.equal(app.store.db.prepare("SELECT COUNT(*) n FROM migrations WHERE id='session-travel-v080'").get().n, 1);
     } finally {await app.close();}
 });

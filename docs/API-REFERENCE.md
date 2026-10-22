@@ -14,7 +14,7 @@ The tables inventory current route families and their owners. They are not a com
 | Bootstrap, snapshots, settings, EVE login, modules and export | [Core routes](#bootstrap-data-configuration-and-authentication) |
 | Scans, cache reads and import plans | [Markets](#markets-and-import-planning) |
 | Private stream configuration, OBS commands and protection | [Studio, OBS and OPSEC](#studio-obs-and-opsec) |
-| Timeline, legacy Journey, annotations, Goals and Sessions | [Local records](#timeline-journey-places-goals-notes-and-sessions) |
+| Timeline, annotations, Goals and Sessions | [Local records](#timeline-places-goals-notes-and-sessions) |
 | Atlas, Maps, operations, feeds, navigation and politics | [Universe](#universe-maps-and-operations) |
 | Private delivery and reconnect | [Dashboard SSE](#dashboard-sse-and-client-invalidation) |
 | Public-to-OBS display DTO | [Browser-source API](#read-only-browser-source-api) |
@@ -115,14 +115,11 @@ These are private control-plane routes. Only the separate source listener carrie
 
 `sanitizeConfig` in `server/stream.mjs` clamps geometry/style, validates eligible binding kinds and reconstructs supported toast rules. Routine Core binding refresh evaluates saved visible elements; private preview and explicit save still evaluate their requested sanitized inputs. Do not confuse that accepted hidden-element optimization with an API change.
 
-## Timeline, journey, places, Goals, notes and Sessions
+## Timeline, places, Goals, notes and Sessions
 
 | Method/path | Inputs | Output / owner |
 |---|---|---|
 | GET `/timeline` | C; `before`, `beforeId`, `limit` 1–100 (default 5), `q` trimmed/lowercased/max 200 | `{items,more,nextCursor}`. Descending `(at,id)` stable cursor, includes selected-pilot and global events; parsed payload JSON. `nextCursor` is `{at,id}`. |
-| GET `/journey` | C | `journeyData(store,character)`. |
-| PUT `/journey/connections/:digits` | C; numeric connection ID; `{hidden}` | `setJourneyConnection` result. |
-| POST `/journey/enrich` | C; no parsed body | `{results:[{id,ok}]}` for up to 25 systems missing coordinates/region; per-system failures retained. |
 | GET `/places` | — | All place notes ordered updated descending, parsed tags. |
 | GET `/places/:kind/:id` | kind system/constellation/region; positive safe ID | Existing note or `{kind,entity_id,body:'',tags:[],status:'none'}`. |
 | PUT `/places/:kind/:id` | Valid place + note body | `savePlaceNote` result. |
@@ -321,7 +318,6 @@ These are dispatcher patterns after stripping `/api`; names such as `:id` in tab
 | Shape | Actual recognition and extraction |
 |---|---|
 | Markets hub deletion | `^/markets/hubs/\d+$`; numeric segment 3. |
-| Journey connection | `^/journey/connections/\d+$`; numeric segment 3. |
 | Character deletion | `startsWith('/characters/')`; numeric segment 2. No end-anchored route regex. |
 | Goal / note update-delete | `startsWith('/goals/')` / `startsWith('/notes/')`; raw segment 2. |
 | Place record | `startsWith('/places/')`; kind segment 2 and numeric ID segment 3; domain validation then method branch. |
