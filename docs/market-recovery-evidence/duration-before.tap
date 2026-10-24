@@ -1,0 +1,158 @@
+TAP version 13
+# Subtest: Jita full scan ignores the witnessed exhausted zero-duration row on page eight
+not ok 1 - Jita full scan ignores the witnessed exhausted zero-duration row on page eight
+  ---
+  duration_ms: 53.377492
+  type: 'test'
+  location: '/tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    ESI returned a malformed order. Previous book retained.
+    + actual - expected
+    
+    + 'failed'
+    - 'complete'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'complete'
+  actual: 'failed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:65:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: the exhausted-row exception works for quick station and authenticated structure books
+    # Subtest: quick station
+    not ok 1 - quick station
+      ---
+      duration_ms: 33.78581
+      type: 'test'
+      location: '/tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:81:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        ESI returned a malformed order. Previous book retained.
+        + actual - expected
+        
+        + 'failed'
+        - 'complete'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'complete'
+      actual: 'failed'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:86:20)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:81:9)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+      ...
+    # Subtest: structure
+    not ok 2 - structure
+      ---
+      duration_ms: 38.604534
+      type: 'test'
+      location: '/tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:81:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        ESI returned a malformed order. Previous book retained.
+        + actual - expected
+        
+        + 'failed'
+        - 'complete'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'complete'
+      actual: 'failed'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:86:20)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:81:9)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+      ...
+    1..2
+not ok 2 - the exhausted-row exception works for quick station and authenticated structure books
+  ---
+  duration_ms: 73.131126
+  type: 'test'
+  location: '/tmp/kairo-duration-baseline-ome3amcr/tests/kairo/market-order-duration.test.mjs:79:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: unsupported duration and malformed exhausted rows still retain the complete old book
+    # Subtest: zero-duration active order
+    ok 1 - zero-duration active order
+      ---
+      duration_ms: 9.45186
+      type: 'test'
+      ...
+    # Subtest: negative duration
+    ok 2 - negative duration
+      ---
+      duration_ms: 11.363064
+      type: 'test'
+      ...
+    # Subtest: fractional duration
+    ok 3 - fractional duration
+      ---
+      duration_ms: 9.708129
+      type: 'test'
+      ...
+    # Subtest: string duration
+    ok 4 - string duration
+      ---
+      duration_ms: 12.038453
+      type: 'test'
+      ...
+    # Subtest: missing duration
+    ok 5 - missing duration
+      ---
+      duration_ms: 10.557204
+      type: 'test'
+      ...
+    # Subtest: nonfinite price
+    ok 6 - nonfinite price
+      ---
+      duration_ms: 8.278108
+      type: 'test'
+      ...
+    # Subtest: missing side
+    ok 7 - missing side
+      ---
+      duration_ms: 6.915222
+      type: 'test'
+      ...
+    # Subtest: invalid issue date
+    ok 8 - invalid issue date
+      ---
+      duration_ms: 8.975164
+      type: 'test'
+      ...
+    # Subtest: invalid order identity
+    ok 9 - invalid order identity
+      ---
+      duration_ms: 8.502629
+      type: 'test'
+      ...
+    1..9
+ok 3 - unsupported duration and malformed exhausted rows still retain the complete old book
+  ---
+  duration_ms: 126.878901
+  type: 'test'
+  ...
+1..3
+# tests 14
+# suites 0
+# pass 10
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 347.71984

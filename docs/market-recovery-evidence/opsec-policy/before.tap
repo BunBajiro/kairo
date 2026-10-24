@@ -1,0 +1,340 @@
+TAP version 13
+# Subtest: explicit OPSEC policy commands cannot change the current manual command
+    # Subtest: the untouched new-profile policy accepts canonical defaults without a selected pilot
+    ok 1 - the untouched new-profile policy accepts canonical defaults without a selected pilot
+      ---
+      duration_ms: 6.976423
+      type: 'test'
+      ...
+    # Subtest: policy replacement preserves current manual=true
+    not ok 2 - policy replacement preserves current manual=true
+      ---
+      duration_ms: 11.689729
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:33:43'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   allowHighsec: false,
+        +   blueAlliances: [],
+        +   characterId: 0,
+        +   hostileAlliances: [],
+        +   manual: false
+        -   allowHighsec: true,
+        -   blueAlliances: [
+        -     101
+        -   ],
+        -   characterId: 43,
+        -   hostileAlliances: [
+        -     202
+        -   ],
+        -   manual: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        allowHighsec: true
+        blueAlliances:
+          0: 101
+        hostileAlliances:
+          0: 202
+        characterId: 43
+        manual: true
+      actual:
+        manual: false
+        allowHighsec: false
+        blueAlliances:
+        hostileAlliances:
+        characterId: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:35:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:33:35)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    # Subtest: policy replacement preserves current manual=false
+    not ok 3 - policy replacement preserves current manual=false
+      ---
+      duration_ms: 7.815233
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:33:43'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   allowHighsec: false,
+        +   blueAlliances: [],
+        +   characterId: 0,
+        +   hostileAlliances: [],
+        -   allowHighsec: true,
+        -   blueAlliances: [
+        -     101
+        -   ],
+        -   characterId: 43,
+        -   hostileAlliances: [
+        -     202
+        -   ],
+            manual: false
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        allowHighsec: true
+        blueAlliances:
+          0: 101
+        hostileAlliances:
+          0: 202
+        characterId: 43
+        manual: false
+      actual:
+        manual: false
+        allowHighsec: false
+        blueAlliances:
+        hostileAlliances:
+        characterId: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:35:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:33:35)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    # Subtest: manual=true accepted while the policy body is pending wins at receipt
+    not ok 4 - manual=true accepted while the policy body is pending wins at receipt
+      ---
+      duration_ms: 13.317118
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:38:43'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   allowHighsec: false,
+        +   blueAlliances: [],
+        +   characterId: 0,
+        +   hostileAlliances: [],
+        +   manual: false
+        -   allowHighsec: true,
+        -   blueAlliances: [
+        -     101
+        -   ],
+        -   characterId: 43,
+        -   hostileAlliances: [
+        -     202
+        -   ],
+        -   manual: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        allowHighsec: true
+        blueAlliances:
+          0: 101
+        hostileAlliances:
+          0: 202
+        characterId: 43
+        manual: true
+      actual:
+        manual: false
+        allowHighsec: false
+        blueAlliances:
+        hostileAlliances:
+        characterId: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:47:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:38:35)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    # Subtest: manual=false accepted while the policy body is pending wins at receipt
+    not ok 5 - manual=false accepted while the policy body is pending wins at receipt
+      ---
+      duration_ms: 9.887014
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:38:43'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   allowHighsec: false,
+        +   blueAlliances: [],
+        +   characterId: 0,
+        +   hostileAlliances: [],
+        -   allowHighsec: true,
+        -   blueAlliances: [
+        -     101
+        -   ],
+        -   characterId: 43,
+        -   hostileAlliances: [
+        -     202
+        -   ],
+            manual: false
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        allowHighsec: true
+        blueAlliances:
+          0: 101
+        hostileAlliances:
+          0: 202
+        characterId: 43
+        manual: false
+      actual:
+        manual: false
+        allowHighsec: false
+        blueAlliances:
+        hostileAlliances:
+        characterId: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:47:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:38:35)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    # Subtest: malformed or mixed policy envelopes reject without changing policy or protection
+    not ok 6 - malformed or mixed policy envelopes reject without changing policy or protection
+      ---
+      duration_ms: 6.828356
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:51:10'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"policy":null}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:56:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:51:2)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    # Subtest: policy commands retain connected-pilot, list sanitization and overlap validation
+    not ok 7 - policy commands retain connected-pilot, list sanitization and overlap validation
+      ---
+      duration_ms: 7.007564
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:58:10'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:60:95)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:58:2)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    # Subtest: failed policy persistence retains protection and explicit retry preserves manual
+    not ok 8 - failed policy persistence retains protection and explicit retry preserves manual
+      ---
+      duration_ms: 9.620314
+      type: 'test'
+      location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:64:10'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   allowHighsec: false,
+        +   blueAlliances: [],
+        +   characterId: 0,
+        +   hostileAlliances: [],
+        +   manual: false
+        -   allowHighsec: true,
+        -   blueAlliances: [
+        -     101
+        -   ],
+        -   characterId: 43,
+        -   hostileAlliances: [
+        -     202
+        -   ],
+        -   manual: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        allowHighsec: true
+        blueAlliances:
+          0: 101
+        hostileAlliances:
+          0: 202
+        characterId: 43
+        manual: true
+      actual:
+        manual: false
+        allowHighsec: false
+        blueAlliances:
+        hostileAlliances:
+        characterId: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:69:58)
+        process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:64:2)
+        async Test.run (node:internal/test_runner/test:1409:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+      ...
+    1..8
+not ok 1 - explicit OPSEC policy commands cannot change the current manual command
+  ---
+  duration_ms: 285.36163
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-policy-command.test.mjs:9:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 0
+# pass 1
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 413.445482

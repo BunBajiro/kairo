@@ -1,0 +1,1257 @@
+{
+  "source": "4ffe436ab5ddd16ee72ee0f63c7777bdf0286c5f",
+  "run": "https://github.com/BunBajiro/kairo/actions/runs/38421552532",
+  "scope": "Synthetic compiled UI on hosted Chrome/Firefox, not real EVE/OBS/Windows validation",
+  "suites": {
+    "navigation": {
+      "ok": true,
+      "scope": "Actual compiled Universe Range UI and local endpoint; fresh desktop/narrow contexts, delayed request and synthetic failure recovery",
+      "versions": {
+        "chromium": "154.0.8037.97",
+        "firefox": "153.0"
+      },
+      "checks": [
+        {
+          "browser": "chromium",
+          "width": 1600,
+          "version": "154.0.8037.97",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 1177,
+            "right": 1555,
+            "width": 1600,
+            "page": 1600,
+            "content": 378,
+            "client": 378
+          },
+          "delayedResponse": true,
+          "recovered": true
+        },
+        {
+          "browser": "chromium",
+          "width": 390,
+          "version": "154.0.8037.97",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 13,
+            "right": 367,
+            "width": 390,
+            "page": 390,
+            "content": 354,
+            "client": 354
+          },
+          "delayedResponse": true,
+          "recovered": true
+        },
+        {
+          "browser": "firefox",
+          "width": 1600,
+          "version": "153.0",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 1177,
+            "right": 1565,
+            "width": 1600,
+            "page": 1600,
+            "content": 388,
+            "client": 388
+          },
+          "delayedResponse": true,
+          "recovered": true
+        },
+        {
+          "browser": "firefox",
+          "width": 390,
+          "version": "153.0",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 13,
+            "right": 377,
+            "width": 390,
+            "page": 390,
+            "content": 364,
+            "client": 364
+          },
+          "delayedResponse": true,
+          "recovered": true
+        }
+      ]
+    },
+    "imports": {
+      "ok": true,
+      "scope": "Compiled import UI with synthetic SQLite, real quote responses and delayed delivery; no live EVE validation",
+      "checks": [
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return \u00b7 ~2d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return \u00b7 ~5.6d \u00b7 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 \u00d7 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 \u00d7 1,000,000 ISK"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        }
+      ],
+      "errors": [],
+      "unexpectedNetwork": [],
+      "serverRequests": []
+    },
+    "sessions": {
+      "ok": true,
+      "scope": "Compiled Session report UI with synthetic SQLite and delayed event insertion; no live EVE validation",
+      "checks": [
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        }
+      ],
+      "errors": [],
+      "external": [],
+      "serverRequests": []
+    }
+  },
+  "package": {
+    "source": "4ffe436ab5ddd16ee72ee0f63c7777bdf0286c5f",
+    "bytes": 25972968,
+    "sha256": "a6d4c3c3371eca5728a4184090bec42b32263d2e64d8cda17327427ef2c71b34",
+    "zip_crc": "pass",
+    "exact_source_files": 495,
+    "compiled_assets": 20,
+    "package_entries": 515,
+    "artifact_id": 11826986872,
+    "download": "https://github.com/BunBajiro/kairo/actions/runs/38421552532/artifacts/11826986872",
+    "expires": "2026-11-12",
+    "source_tree": "e4dfed0ccb3f1ab15478ed607b707f104226b852"
+  },
+  "verification": {
+    "types": "pass",
+    "fresh_build": "pass",
+    "source_runtime": {
+      "tests": 1016,
+      "pass": 1016,
+      "fail": 0
+    },
+    "actions_packaged_runtime": {
+      "tests": 1016,
+      "pass": 1016,
+      "fail": 0
+    },
+    "downloaded_extracted_runtime": {
+      "tests": 1016,
+      "pass": 1016,
+      "fail": 0,
+      "without_source_dependencies": true
+    },
+    "all_actions_steps": "success",
+    "job_id": 115379895625,
+    "visually_inspected": "Firefox 390px navigation, imports and Session paging screenshots",
+    "remaining_acceptance": [
+      "Actual Windows environment and DPAPI",
+      "Real EVE SSO, scopes and structure permissions",
+      "Real OBS scene/audio/cover behavior",
+      "Long play-session behavior"
+    ]
+  },
+  "browser_artifacts": [
+    {
+      "suite": "navigation",
+      "artifact_id": 11825709569,
+      "sha256": "37b489a92112d92183a999708cf50e605eb75317f72ebdd032f87c003d5c2258",
+      "checks": 4
+    },
+    {
+      "suite": "imports",
+      "artifact_id": 11827010729,
+      "sha256": "09ded29576618d1ce1d4c0e2da82da985f39bdecbd35a333ecfed99ff3b099f8",
+      "checks": 36
+    },
+    {
+      "suite": "sessions",
+      "artifact_id": 11826883320,
+      "sha256": "b1af97976f33e75c165d469c142ce477b47f6ddb99bfd124031784fbd2f539c2",
+      "checks": 32
+    }
+  ]
+}

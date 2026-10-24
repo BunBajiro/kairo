@@ -1,0 +1,37 @@
+✖ a replacement public feed body without ETag cannot reuse the previous representation validator (35.785814ms)
+✔ a public304 keeps the matching ETag and reuses its original complete representation (22.612389ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.008748
+
+✖ failing tests:
+
+test at tests/kairo/universe-feed-validator-review.test.mjs:28:1
+✖ a replacement public feed body without ETag cannot reuse the previous representation validator (35.785814ms)
+  AssertionError [ERR_ASSERTION]: The current provider representation must replace the different cached body
+  + actual - expected
+  
+    {
+      destinations: [
+  +     30000002
+  -     30000001
+      ],
+  +   sentValidator: '"original"'
+  -   sentValidator: undefined
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/universe-feed-validator-review.test.mjs:43:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { sentValidator: '"original"', destinations: [ 30000002 ] },
+    expected: { sentValidator: undefined, destinations: [ 30000001 ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

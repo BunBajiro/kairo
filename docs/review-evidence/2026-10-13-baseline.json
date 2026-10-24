@@ -1,0 +1,790 @@
+{
+  "source": "6d7a58b95eb1cb8f4f18bf0f2baa695c07f1c7da",
+  "run": "https://github.com/BunBajiro/kairo/actions/runs/38420788541",
+  "scope": "Synthetic compiled UI through actual Chrome and Firefox; no live EVE/Windows/OBS claims",
+  "navigation": [
+    {
+      "browser": "chromium",
+      "width": 1600,
+      "version": "154.0.8037.97",
+      "origin": "UALX-3",
+      "destination": "WB-AYY",
+      "midpoints": 34,
+      "selected": "DT-PXH",
+      "rangeRequests": 3,
+      "bounds": {
+        "left": 1177,
+        "right": 1555,
+        "width": 1600,
+        "page": 1600,
+        "content": 378,
+        "client": 378
+      },
+      "delayedResponse": true,
+      "recovered": true
+    },
+    {
+      "browser": "chromium",
+      "width": 390,
+      "version": "154.0.8037.97",
+      "origin": "UALX-3",
+      "destination": "WB-AYY",
+      "midpoints": 34,
+      "selected": "DT-PXH",
+      "rangeRequests": 3,
+      "bounds": {
+        "left": 13,
+        "right": 367,
+        "width": 390,
+        "page": 390,
+        "content": 354,
+        "client": 354
+      },
+      "delayedResponse": true,
+      "recovered": true
+    },
+    {
+      "browser": "firefox",
+      "width": 1600,
+      "version": "153.0",
+      "origin": "UALX-3",
+      "destination": "WB-AYY",
+      "midpoints": 34,
+      "selected": "DT-PXH",
+      "rangeRequests": 3,
+      "bounds": {
+        "left": 1177,
+        "right": 1565,
+        "width": 1600,
+        "page": 1600,
+        "content": 388,
+        "client": 388
+      },
+      "delayedResponse": true,
+      "recovered": true
+    },
+    {
+      "browser": "firefox",
+      "width": 390,
+      "version": "153.0",
+      "origin": "UALX-3",
+      "destination": "WB-AYY",
+      "midpoints": 34,
+      "selected": "DT-PXH",
+      "rangeRequests": 3,
+      "bounds": {
+        "left": 13,
+        "right": 377,
+        "width": 390,
+        "page": 390,
+        "content": 364,
+        "client": 364
+      },
+      "delayedResponse": true,
+      "recovered": true
+    }
+  ],
+  "imports": {
+    "total": 36,
+    "passed": 12,
+    "failed": 24,
+    "checks": [
+      {
+        "label": "Editing quantity invalidates a pending quote",
+        "pass": false,
+        "actual": {
+          "quantity": "12",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "12",
+          "summary": [],
+          "fills": [],
+          "add": []
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "Changing strategy preserves its chosen quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "Another item cannot receive a previous item quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600,
+        "previousTypeId": 519
+      },
+      {
+        "label": "Added plan uses the current item quantity",
+        "pass": false,
+        "actual": "11",
+        "expected": "100",
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "Reopening the same item starts a new quote lifetime",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "An obsolete failure cannot overwrite the edited form",
+        "pass": false,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [],
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "Current successful quote remains usable",
+        "pass": true,
+        "actual": 1,
+        "expected": 1,
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "Current quote has the requested purchase quantity",
+        "pass": true,
+        "actual": [
+          "12 × 1,000,000 ISK"
+        ],
+        "expected": [
+          "12 × 1,000,000 ISK"
+        ],
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "A current failed quote still reports its error",
+        "pass": true,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [
+          "Obsolete quote failure"
+        ],
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 1600
+      },
+      {
+        "label": "Editing quantity invalidates a pending quote",
+        "pass": false,
+        "actual": {
+          "quantity": "12",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "12",
+          "summary": [],
+          "fills": [],
+          "add": []
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "Changing strategy preserves its chosen quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "Another item cannot receive a previous item quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390,
+        "previousTypeId": 519
+      },
+      {
+        "label": "Added plan uses the current item quantity",
+        "pass": false,
+        "actual": "11",
+        "expected": "100",
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "Reopening the same item starts a new quote lifetime",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "An obsolete failure cannot overwrite the edited form",
+        "pass": false,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [],
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "Current successful quote remains usable",
+        "pass": true,
+        "actual": 1,
+        "expected": 1,
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "Current quote has the requested purchase quantity",
+        "pass": true,
+        "actual": [
+          "12 × 1,000,000 ISK"
+        ],
+        "expected": [
+          "12 × 1,000,000 ISK"
+        ],
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "A current failed quote still reports its error",
+        "pass": true,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [
+          "Obsolete quote failure"
+        ],
+        "engine": "chromium",
+        "version": "154.0.8037.97",
+        "width": 390
+      },
+      {
+        "label": "Editing quantity invalidates a pending quote",
+        "pass": false,
+        "actual": {
+          "quantity": "12",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "12",
+          "summary": [],
+          "fills": [],
+          "add": []
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "Changing strategy preserves its chosen quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "Another item cannot receive a previous item quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600,
+        "previousTypeId": 519
+      },
+      {
+        "label": "Added plan uses the current item quantity",
+        "pass": false,
+        "actual": "11",
+        "expected": "100",
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "Reopening the same item starts a new quote lifetime",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "An obsolete failure cannot overwrite the edited form",
+        "pass": false,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [],
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "Current successful quote remains usable",
+        "pass": true,
+        "actual": 1,
+        "expected": 1,
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "Current quote has the requested purchase quantity",
+        "pass": true,
+        "actual": [
+          "12 × 1,000,000 ISK"
+        ],
+        "expected": [
+          "12 × 1,000,000 ISK"
+        ],
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "A current failed quote still reports its error",
+        "pass": true,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [
+          "Obsolete quote failure"
+        ],
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 1600
+      },
+      {
+        "label": "Editing quantity invalidates a pending quote",
+        "pass": false,
+        "actual": {
+          "quantity": "12",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "12",
+          "summary": [],
+          "fills": [],
+          "add": []
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "Changing strategy preserves its chosen quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add anchoring option to plan"
+          ]
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "Another item cannot receive a previous item quote",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390,
+        "previousTypeId": 519
+      },
+      {
+        "label": "Added plan uses the current item quantity",
+        "pass": false,
+        "actual": "11",
+        "expected": "100",
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "Reopening the same item starts a new quote lifetime",
+        "pass": false,
+        "actual": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now11,422,259.2 ISKEstimated net after fees & hauling20,347,797.25 ISK178.1% return · ~0.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.11 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "expected": {
+          "quantity": "100",
+          "summary": [
+            "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+          ],
+          "fills": [
+            "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+          ],
+          "add": [
+            " Add profiteering option to plan"
+          ]
+        },
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "An obsolete failure cannot overwrite the edited form",
+        "pass": false,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [],
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "Current successful quote remains usable",
+        "pass": true,
+        "actual": 1,
+        "expected": 1,
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "Current quote has the requested purchase quantity",
+        "pass": true,
+        "actual": [
+          "12 × 1,000,000 ISK"
+        ],
+        "expected": [
+          "12 × 1,000,000 ISK"
+        ],
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      },
+      {
+        "label": "A current failed quote still reports its error",
+        "pass": true,
+        "actual": [
+          "Obsolete quote failure"
+        ],
+        "expected": [
+          "Obsolete quote failure"
+        ],
+        "engine": "firefox",
+        "version": "153.0",
+        "width": 390
+      }
+    ]
+  }
+}

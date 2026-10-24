@@ -1,0 +1,45 @@
+{
+  "status": "owner corrections reviewed; hosted/package acceptance pending",
+  "node": "24.22.0",
+  "starting_head": "02646da850cda876ebe5d06931b94e6338082a07",
+  "reviews": [
+    {
+      "owner": "root and docs_tests",
+      "scope": "exhausted duration-zero validation; full/quick/structure; malformed active preservation",
+      "result": "accepted",
+      "baseline": {
+        "tests": 14,
+        "pass": 10,
+        "fail": 4,
+        "note": "duration-only original regression; final negative controls account for added retry behavior"
+      }
+    },
+    {
+      "owner": "docs_tests",
+      "scope": "Markets recovery, budgets, eligibility, atomic promotion, manuals",
+      "result": "35/35 passed; accepted",
+      "source_sha256": "f10227775955fa9cf31fa3f1b026d0f1ae07a8e9b054eb3572797e6156881eb6"
+    },
+    {
+      "owner": "universe",
+      "scope": "ESI cache/coalescing/Retry-After/connection ownership/timeout wrapper; mutations unchanged",
+      "result": "63/63 passed; accepted",
+      "source_sha256": "db9e33317b072a1e146f88fd0e387f9ac45c3fa5a7408369d0d0514ecdd0a805"
+    },
+    {
+      "owner": "universe and root",
+      "scope": "real HTTP/Markets browser recovery harness",
+      "result": "source review accepted; 3/3 runtime fixture preflight; Chrome/Firefox pending"
+    }
+  ],
+  "local_checks": {
+    "markets_combined": "57/57 passed",
+    "source_only_trial": "1299/1300 passed before final ESI timeout controls; HTTP compiled-client test failed because this checkout has no dist/client. Not an acceptance gate; fresh built/package verification remains required."
+  },
+  "boundaries": [
+    "PR12 remains draft",
+    "main/version unchanged",
+    "no publish/merge authorization",
+    "Build93 receipt remains immutable; this fix is not in Build93"
+  ]
+}

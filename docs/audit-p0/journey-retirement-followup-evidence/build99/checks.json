@@ -1,0 +1,556 @@
+{
+  "ok": false,
+  "scope": "Focused compiled Overview→Atlas, owned Session report→map replay, independent private Places note persistence; not full Session/J-Space harness acceptance.",
+  "requestedEngines": [
+    "chromium",
+    "firefox"
+  ],
+  "requiredWidths": [
+    1600,
+    390
+  ],
+  "completedCases": [],
+  "complete": false,
+  "meta": {
+    "engine": "chromium",
+    "version": "155.0.8059.39",
+    "width": 1600
+  },
+  "failure": {
+    "meta": {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600
+    },
+    "error": "page.waitForResponse: Timeout 10000ms exceeded while waiting for event \"response\"\n    at responseWait (/home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:66:26)\n    at openNotes (/home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:172:19)\n    at privateNotes (/home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:200:28)\n    at async file:///home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:240:57"
+  },
+  "checks": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Overview In space opens Atlas",
+      "actual": "#universe-kspace",
+      "expected": "#universe-kspace",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Atlas heading after In space",
+      "actual": [
+        "Atlas"
+      ],
+      "expected": [
+        "Atlas"
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Overview Recent activity opens Atlas",
+      "actual": "#universe-kspace",
+      "expected": "#universe-kspace",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Atlas heading after Recent activity",
+      "actual": [
+        "Atlas"
+      ],
+      "expected": [
+        "Atlas"
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Report is explicitly owned by the selected pilot",
+      "actual": [
+        "jret-owned-flight",
+        42
+      ],
+      "expected": [
+        "jret-owned-flight",
+        42
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Report excludes unowned and neighbouring Session visits",
+      "actual": [
+        30000142,
+        30000144
+      ],
+      "expected": [
+        30000142,
+        30000144
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Report begins at the first owned observation",
+      "actual": [
+        "2026-10-24T11:13:32.209Z",
+        false
+      ],
+      "expected": [
+        "2026-10-24T11:13:32.209Z",
+        false
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Compiled report renders only its two visits",
+      "actual": 2,
+      "expected": 2,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Compiled route names match owned records",
+      "actual": [
+        true,
+        true,
+        false
+      ],
+      "expected": [
+        true,
+        true,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Show on Map sends the captured pilot",
+      "actual": "42",
+      "expected": "42",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Replay keeps the exact report owner",
+      "actual": [
+        "jret-owned-flight",
+        42
+      ],
+      "expected": [
+        "jret-owned-flight",
+        42
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Replay agrees with the report visit projection",
+      "actual": [
+        [
+          30000142,
+          "2026-10-24T11:13:32.209Z"
+        ],
+        [
+          30000144,
+          "2026-10-24T11:13:47.209Z"
+        ]
+      ],
+      "expected": [
+        [
+          30000142,
+          "2026-10-24T11:13:32.209Z"
+        ],
+        [
+          30000144,
+          "2026-10-24T11:13:47.209Z"
+        ]
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Replay preserves the gap before the first owned observation",
+      "actual": "Location not recorded",
+      "expected": "Location not recorded",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Next visits reach the recorded destination",
+      "actual": "Perimeter",
+      "expected": "Perimeter",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Previous visit returns to the owned origin",
+      "actual": "Jita",
+      "expected": "Jita",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Replay event keeps its Session location",
+      "actual": [
+        [
+          "Owned recorded ship change",
+          30000144
+        ]
+      ],
+      "expected": [
+        [
+          "Owned recorded ship change",
+          30000144
+        ]
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Replay leaves recorded visits untouched",
+      "actual": [
+        {
+          "character_id": 42,
+          "system_id": 30002187,
+          "name": "Unowned before start",
+          "at": "2026-10-24T11:13:26.209Z",
+          "session_id": null
+        },
+        {
+          "character_id": 42,
+          "system_id": 30002187,
+          "name": "Unowned inside window",
+          "at": "2026-10-24T11:13:28.209Z",
+          "session_id": null
+        },
+        {
+          "character_id": 42,
+          "system_id": 30000142,
+          "name": "Jita",
+          "at": "2026-10-24T11:13:32.209Z",
+          "session_id": "jret-owned-flight"
+        },
+        {
+          "character_id": 42,
+          "system_id": 30002187,
+          "name": "Neighbour session only",
+          "at": "2026-10-24T11:13:39.209Z",
+          "session_id": "jret-neighbour"
+        },
+        {
+          "character_id": 42,
+          "system_id": 30000144,
+          "name": "Perimeter",
+          "at": "2026-10-24T11:13:47.209Z",
+          "session_id": "jret-owned-flight"
+        }
+      ],
+      "expected": [
+        {
+          "character_id": 42,
+          "system_id": 30002187,
+          "name": "Unowned before start",
+          "at": "2026-10-24T11:13:26.209Z",
+          "session_id": null
+        },
+        {
+          "character_id": 42,
+          "system_id": 30002187,
+          "name": "Unowned inside window",
+          "at": "2026-10-24T11:13:28.209Z",
+          "session_id": null
+        },
+        {
+          "character_id": 42,
+          "system_id": 30000142,
+          "name": "Jita",
+          "at": "2026-10-24T11:13:32.209Z",
+          "session_id": "jret-owned-flight"
+        },
+        {
+          "character_id": 42,
+          "system_id": 30002187,
+          "name": "Neighbour session only",
+          "at": "2026-10-24T11:13:39.209Z",
+          "session_id": "jret-neighbour"
+        },
+        {
+          "character_id": 42,
+          "system_id": 30000144,
+          "name": "Perimeter",
+          "at": "2026-10-24T11:13:47.209Z",
+          "session_id": "jret-owned-flight"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Replay leaves live map topology untouched",
+      "actual": [
+        {
+          "character_id": 42,
+          "kind": "jspace_map",
+          "id": "tracking-source-42",
+          "body": "{\"id\":\"tracking-source-42\",\"name\":\"Live source\",\"description\":\"\",\"track_passages\":false,\"scope\":null,\"scope_version\":2,\"revision\":1,\"created_at\":\"2026-10-24T13:13:29.106Z\",\"updated_at\":\"2026-10-24T13:13:29.106Z\",\"nodes\":[],\"connections\":[],\"passages\":[],\"observations\":[],\"comments\":[],\"pings\":[],\"activity\":[],\"pilots\":[{\"character_id\":42,\"tracking\":true}],\"kind\":\"tracking_source\"}"
+        }
+      ],
+      "expected": [
+        {
+          "character_id": 42,
+          "kind": "jspace_map",
+          "id": "tracking-source-42",
+          "body": "{\"id\":\"tracking-source-42\",\"name\":\"Live source\",\"description\":\"\",\"track_passages\":false,\"scope\":null,\"scope_version\":2,\"revision\":1,\"created_at\":\"2026-10-24T13:13:29.106Z\",\"updated_at\":\"2026-10-24T13:13:29.106Z\",\"nodes\":[],\"connections\":[],\"passages\":[],\"observations\":[],\"comments\":[],\"pings\":[],\"activity\":[],\"pilots\":[{\"character_id\":42,\"tracking\":true}],\"kind\":\"tracking_source\"}"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "One explicit Show on Map causes one replay read",
+      "actual": 1,
+      "expected": 1,
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Atlas loads the independent retained private note",
+      "actual": "Private JRET approach: 旧航路 — kept independently.",
+      "expected": "Private JRET approach: 旧航路 — kept independently.",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Private note save acknowledges the exact text",
+      "actual": "Private JRET approach: 旧航路 — kept independently. Saved in chromium at 1600.",
+      "expected": "Private JRET approach: 旧航路 — kept independently. Saved in chromium at 1600.",
+      "pass": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "label": "Private note is actually persisted",
+      "actual": "Private JRET approach: 旧航路 — kept independently. Saved in chromium at 1600.",
+      "expected": "Private JRET approach: 旧航路 — kept independently. Saved in chromium at 1600.",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "unexpectedNetwork": [],
+  "serverRequests": [],
+  "requests": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/state",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "PUT",
+      "path": "/api/universe/jspace/tracking/active",
+      "search": ""
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/events",
+      "search": ""
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/timeline",
+      "search": "?limit=5&character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/goals",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe/static",
+      "search": "?v=3503375%3A3494416%3A3494416"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/timeline",
+      "search": "?limit=5&character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/goals",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe/static",
+      "search": "?v=3503375%3A3494416%3A3494416"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/sessions",
+      "search": "?character=42&offset=0"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/sessions/jret-owned-flight",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe/static",
+      "search": "?v=3503375%3A3494416%3A3494416"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/sessions/jret-owned-flight/replay",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/places/system/30000142",
+      "search": ""
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "GET",
+      "path": "/api/universe/systems/30000142",
+      "search": "?character=42"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "method": "PUT",
+      "path": "/api/places/system/30000142",
+      "search": ""
+    }
+  ],
+  "httpErrors": [],
+  "cleanupErrors": []
+}

@@ -1,0 +1,71 @@
+{
+  "finding": "EC-07",
+  "status": "corrected and independently reviewed; workspace-only until root banks; hosted fixed browser/package acceptance pending",
+  "owner": "ui_save_review",
+  "confirmed_browser_boundary": {
+    "build": 96,
+    "source": "214f30b669794541f9d9e9bdbe7c2311fcda1fe6",
+    "scope": "accepted manual acknowledgement held after real persistence; remount submits policy before acknowledgement",
+    "failures": 12,
+    "contexts": [
+      "Chromium1600",
+      "Chromium390",
+      "Firefox1600",
+      "Firefox390"
+    ]
+  },
+  "native_baseline": {
+    "source": "214f30b669794541f9d9e9bdbe7c2311fcda1fe6",
+    "server_index_sha256": "04b2ce7df34dd5ec1ee19618ac1f38fa35353ee0f7bef0fd1bd72074a0790ea0",
+    "test": "tests/kairo/opsec-policy-command.test.mjs",
+    "nodes": 9,
+    "pass": 1,
+    "fail": 8,
+    "note": "Seven failing child cases plus their failing parent; new-profile default control passes. The test was added before product correction."
+  },
+  "correction": "Exact policy-only envelope preserves the current saved manual field after body receipt. Legacy flat replacements and manual-only commands retain their contracts. The client sends canonical defaults and policy acknowledgements never assign manual state.",
+  "owner_fixed": {
+    "runtime": "Node24.22.0 / Undici7.29.1",
+    "command": "node --test --test-reporter=tap tests/kairo/opsec-policy-command.test.mjs tests/kairo/opsec-manual-policy.test.mjs",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0
+  },
+  "independent_review": {
+    "reviewer": "session_save_review",
+    "disposition": "accepted server/client/API contract and browser branch ownership; independently reran both native suites 15/15",
+    "limits": "New browser variants have source review only until hosted execution."
+  },
+  "coverage": [
+    "Untouched new-profile defaults with absent bootstrap characterId become canonical pilot 0.",
+    "Manual true and manual false survive policy replacement; manual changes while policy body is incomplete win at receipt.",
+    "Malformed/mixed envelopes, invalid pilot and overlapping lists preserve saved policy/output; list sanitization remains intact.",
+    "SQLite failure retains saved state/output and explicit retry succeeds.",
+    "Browser variants distinguish rejected manual before persistence from unreadable acknowledgement after real persistence; each expects exactly two explicit PUTs and visible error."
+  ],
+  "browser_variants": {
+    "opsec-rejected-manual-policy": {
+      "export": "opsecRejectedManualPolicy",
+      "checks_per_context": 7
+    },
+    "opsec-unreadable-manual-policy": {
+      "export": "opsecUnreadableManualPolicy",
+      "checks_per_context": 7
+    },
+    "baseline_assertions": "The original accepted scenario retains all six checks and expected outcomes."
+  },
+  "request_bound": "No new reads, polls or automatic retries; one existing PUT per explicit manual or policy command.",
+  "source_sha256": {
+    "server/index.mjs": "a3a8d88298247aa7ab98c68f12a1d37789951f64bb2acb8f82298a11dcddf805",
+    "components/kairo/opsec-controls.tsx": "4a5c8c19a91e60afc99716e5d5529e7bc00fc480de1913bd7f3e7e5f8a666d90",
+    "tests/kairo/opsec-policy-command.test.mjs": "1811ec384d80ab7ae65186deb980c9bc9a6c2344bffcfa400f03efe0e10f547f",
+    "tests/kairo/opsec-manual-policy.test.mjs": "f86dcc4a69eb2e6053f2b2a28ae100591d316c045ddeb996aada2cc6b2ca0db2",
+    "tests/focused-ui-ownership-scenarios.mjs": "10e987da83d9c62131e76cfc12b59ea266b32f9024bfb5e366685758a650d485",
+    "docs/API-REFERENCE.md": "08ade6654195ccdd7bb1e0076e34308c95a838116e4238c3db507cd42c7c8bcb"
+  },
+  "evidence_sha256": {
+    "before.tap": "3f241445da564d9b0db829152691cfdee3d0d0420fa7067e8c83ed04f0ea9ae3",
+    "fixed.tap": "739807d45a30cae46360e6ef2233cc5c3679ea0f88be5b0791f28c2b34b62ff2",
+    "independent.tap": "0a16a05dc9d1072a446377410f9ef75b09c1b0a372529ac8efb2c1f2374d08cd"
+  }
+}

@@ -1,0 +1,4373 @@
+{
+  "ok": false,
+  "finished": true,
+  "scope": "Compiled OPSEC manual/draft isolation, Studio saved navigation, import settings save ownership and tactical-window ownership. Fresh disposable actual HTTP/SQLite owner per scenario, Chrome/Firefox at 1600/390 widths; no live EVE or OBS.",
+  "expectedScenarios": 24,
+  "completed": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "landmark-category"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "landmark-category"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "landmark-category"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category"
+    }
+  ],
+  "checks": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Cold OPSEC reads its saved manual/cover policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "highsec": "false"
+      },
+      "expected": {
+        "manual": "false",
+        "highsec": "false"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Editing policy does not persist or reveal covers",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on persists only the immediate manual choice",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on leaves every policy draft editable and unchanged",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on publishes covered manual output",
+      "pass": true,
+      "actual": {
+        "state": "manual",
+        "hidden": true
+      },
+      "expected": {
+        "state": "manual",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off retains the last explicitly saved policy",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "An unsaved High-Sec release draft cannot uncover broadcast output",
+      "pass": false,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off preserves the unsaved policy draft",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit policy Save accepts all policy draft fields",
+      "pass": true,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": true,
+        "characterId": 43,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit saved release can uncover verified High-Sec",
+      "pass": true,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on leaves the saved manual state unchanged",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on preserves the unsaved cover-policy edit",
+      "pass": true,
+      "actual": "false",
+      "expected": "false"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Manual retry preserves the accepted policy and newest local draft",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "savedRelease": false,
+        "draftRelease": "false"
+      },
+      "expected": {
+        "manual": true,
+        "savedRelease": true,
+        "draftRelease": "false"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Only five explicit protection commands are sent",
+      "pass": true,
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Cold Studio displays its actual saved layout",
+      "pass": true,
+      "actual": "Initial saved text",
+      "expected": "Initial saved text"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio Save persists and broadcasts accepted content",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      },
+      "expected": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Ordinary navigation remounts the last accepted Studio layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Accepted first text"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Remounted Studio clean status agrees with persisted content",
+      "pass": false,
+      "actual": {
+        "clean": true,
+        "text": "Initial saved text"
+      },
+      "expected": {
+        "clean": true,
+        "text": "Accepted first text"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Saving another field after remount does not roll back prior accepted text",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Public output retains previously approved content after remount save",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Failed Studio save preserves both durable state and retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio explicit retry persists the retained draft",
+      "pass": true,
+      "actual": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation after retry observes its accepted layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Recovered final text"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation adds no speculative stream writes",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "The newer accepted import Apply survives an older delayed write across navigation",
+      "pass": false,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 20000,
+        "budget": 2000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A rejected older Apply releases the newer accepted destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "One explicit PiP open admits one browser request",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Pending PiP leaves current renderer in the dashboard",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success creates exactly one private child",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Successful PiP does not invoke popup fallback",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Return restores the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Return closes the owned child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Navigation unmounts Universe before delayed PiP resolves",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount closes its returned child",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount cannot append a stale portal host",
+      "pass": false,
+      "actual": true,
+      "expected": false
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP success keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "PiP rejection after unmount cannot open a fallback window",
+      "pass": false,
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP rejection keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Current blocked popup reports the actionable browser failure",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Blocked popup keeps the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Explicit retry after blocked popup moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Blocked attempt and explicit retry make exactly two popup attempts",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Normal unmount closes an already adopted child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "Landmark categories appear exactly once in the visible picker",
+      "pass": false,
+      "actual": 11,
+      "expected": 10
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "A0 star is available once in the visible landmark picker",
+      "pass": false,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "A0-star selection exposes actual bundled star records",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "Selected A0-star category excludes other landmark kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "All-landmarks selection restores other reference kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Cold OPSEC reads its saved manual/cover policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "highsec": "false"
+      },
+      "expected": {
+        "manual": "false",
+        "highsec": "false"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Editing policy does not persist or reveal covers",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on persists only the immediate manual choice",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on leaves every policy draft editable and unchanged",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on publishes covered manual output",
+      "pass": true,
+      "actual": {
+        "state": "manual",
+        "hidden": true
+      },
+      "expected": {
+        "state": "manual",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off retains the last explicitly saved policy",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "An unsaved High-Sec release draft cannot uncover broadcast output",
+      "pass": false,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off preserves the unsaved policy draft",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit policy Save accepts all policy draft fields",
+      "pass": true,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": true,
+        "characterId": 43,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit saved release can uncover verified High-Sec",
+      "pass": true,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on leaves the saved manual state unchanged",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on preserves the unsaved cover-policy edit",
+      "pass": true,
+      "actual": "false",
+      "expected": "false"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Manual retry preserves the accepted policy and newest local draft",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "savedRelease": false,
+        "draftRelease": "false"
+      },
+      "expected": {
+        "manual": true,
+        "savedRelease": true,
+        "draftRelease": "false"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Only five explicit protection commands are sent",
+      "pass": true,
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Cold Studio displays its actual saved layout",
+      "pass": true,
+      "actual": "Initial saved text",
+      "expected": "Initial saved text"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio Save persists and broadcasts accepted content",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      },
+      "expected": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Ordinary navigation remounts the last accepted Studio layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Accepted first text"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Remounted Studio clean status agrees with persisted content",
+      "pass": false,
+      "actual": {
+        "clean": true,
+        "text": "Initial saved text"
+      },
+      "expected": {
+        "clean": true,
+        "text": "Accepted first text"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Saving another field after remount does not roll back prior accepted text",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Public output retains previously approved content after remount save",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Failed Studio save preserves both durable state and retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio explicit retry persists the retained draft",
+      "pass": true,
+      "actual": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation after retry observes its accepted layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Recovered final text"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation adds no speculative stream writes",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "The newer accepted import Apply survives an older delayed write across navigation",
+      "pass": false,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 20000,
+        "budget": 2000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A rejected older Apply releases the newer accepted destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "One explicit PiP open admits one browser request",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Pending PiP leaves current renderer in the dashboard",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success creates exactly one private child",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Successful PiP does not invoke popup fallback",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Return restores the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Return closes the owned child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Navigation unmounts Universe before delayed PiP resolves",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount closes its returned child",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount cannot append a stale portal host",
+      "pass": false,
+      "actual": true,
+      "expected": false
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP success keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "PiP rejection after unmount cannot open a fallback window",
+      "pass": false,
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP rejection keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Current blocked popup reports the actionable browser failure",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Blocked popup keeps the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Explicit retry after blocked popup moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Blocked attempt and explicit retry make exactly two popup attempts",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Normal unmount closes an already adopted child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "Landmark categories appear exactly once in the visible picker",
+      "pass": false,
+      "actual": 11,
+      "expected": 10
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "A0 star is available once in the visible landmark picker",
+      "pass": false,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "A0-star selection exposes actual bundled star records",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "Selected A0-star category excludes other landmark kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "All-landmarks selection restores other reference kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Cold OPSEC reads its saved manual/cover policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "highsec": "false"
+      },
+      "expected": {
+        "manual": "false",
+        "highsec": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Editing policy does not persist or reveal covers",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on persists only the immediate manual choice",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on leaves every policy draft editable and unchanged",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on publishes covered manual output",
+      "pass": true,
+      "actual": {
+        "state": "manual",
+        "hidden": true
+      },
+      "expected": {
+        "state": "manual",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off retains the last explicitly saved policy",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "An unsaved High-Sec release draft cannot uncover broadcast output",
+      "pass": false,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off preserves the unsaved policy draft",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit policy Save accepts all policy draft fields",
+      "pass": true,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": true,
+        "characterId": 43,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit saved release can uncover verified High-Sec",
+      "pass": true,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on leaves the saved manual state unchanged",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on preserves the unsaved cover-policy edit",
+      "pass": true,
+      "actual": "false",
+      "expected": "false"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Manual retry preserves the accepted policy and newest local draft",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "savedRelease": false,
+        "draftRelease": "false"
+      },
+      "expected": {
+        "manual": true,
+        "savedRelease": true,
+        "draftRelease": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-manual-draft",
+      "label": "Only five explicit protection commands are sent",
+      "pass": true,
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Cold Studio displays its actual saved layout",
+      "pass": true,
+      "actual": "Initial saved text",
+      "expected": "Initial saved text"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio Save persists and broadcasts accepted content",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      },
+      "expected": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Ordinary navigation remounts the last accepted Studio layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Accepted first text"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Remounted Studio clean status agrees with persisted content",
+      "pass": false,
+      "actual": {
+        "clean": true,
+        "text": "Initial saved text"
+      },
+      "expected": {
+        "clean": true,
+        "text": "Accepted first text"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Saving another field after remount does not roll back prior accepted text",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Public output retains previously approved content after remount save",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Failed Studio save preserves both durable state and retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio explicit retry persists the retained draft",
+      "pass": true,
+      "actual": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation after retry observes its accepted layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Recovered final text"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation adds no speculative stream writes",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "The newer accepted import Apply survives an older delayed write across navigation",
+      "pass": false,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 20000,
+        "budget": 2000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-navigation",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A rejected older Apply releases the newer accepted destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "imports-failed-first",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "One explicit PiP open admits one browser request",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Pending PiP leaves current renderer in the dashboard",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success creates exactly one private child",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Successful PiP does not invoke popup fallback",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Return restores the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Return closes the owned child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Navigation unmounts Universe before delayed PiP resolves",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount closes its returned child",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount cannot append a stale portal host",
+      "pass": false,
+      "actual": true,
+      "expected": false
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP success keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "PiP rejection after unmount cannot open a fallback window",
+      "pass": false,
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP rejection keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Current blocked popup reports the actionable browser failure",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Blocked popup keeps the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Explicit retry after blocked popup moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Blocked attempt and explicit retry make exactly two popup attempts",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "tactical-ownership",
+      "label": "Normal unmount closes an already adopted child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "Landmark categories appear exactly once in the visible picker",
+      "pass": false,
+      "actual": 11,
+      "expected": 10
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "A0 star is available once in the visible landmark picker",
+      "pass": false,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "A0-star selection exposes actual bundled star records",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "Selected A0-star category excludes other landmark kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "landmark-category",
+      "label": "All-landmarks selection restores other reference kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Cold OPSEC reads its saved manual/cover policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "highsec": "false"
+      },
+      "expected": {
+        "manual": "false",
+        "highsec": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Editing policy does not persist or reveal covers",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": false,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on persists only the immediate manual choice",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on leaves every policy draft editable and unchanged",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force on publishes covered manual output",
+      "pass": true,
+      "actual": {
+        "state": "manual",
+        "hidden": true
+      },
+      "expected": {
+        "state": "manual",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off retains the last explicitly saved policy",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": false,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "An unsaved High-Sec release draft cannot uncover broadcast output",
+      "pass": false,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Force off preserves the unsaved policy draft",
+      "pass": true,
+      "actual": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      },
+      "expected": {
+        "highsec": "true",
+        "pilot": "Audit Beta",
+        "blue": "111",
+        "hostile": "222"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit policy Save accepts all policy draft fields",
+      "pass": true,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ],
+        "characterId": 43
+      },
+      "expected": {
+        "manual": false,
+        "allowHighsec": true,
+        "characterId": 43,
+        "blueAlliances": [
+          111
+        ],
+        "hostileAlliances": [
+          222
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Explicit saved release can uncover verified High-Sec",
+      "pass": true,
+      "actual": {
+        "state": "highsec",
+        "hidden": false
+      },
+      "expected": {
+        "state": "highsec",
+        "hidden": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on leaves the saved manual state unchanged",
+      "pass": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Failed force-on preserves the unsaved cover-policy edit",
+      "pass": true,
+      "actual": "false",
+      "expected": "false"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Manual retry preserves the accepted policy and newest local draft",
+      "pass": false,
+      "actual": {
+        "manual": true,
+        "savedRelease": false,
+        "draftRelease": "false"
+      },
+      "expected": {
+        "manual": true,
+        "savedRelease": true,
+        "draftRelease": "false"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-manual-draft",
+      "label": "Only five explicit protection commands are sent",
+      "pass": true,
+      "actual": 5,
+      "expected": 5
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Cold Studio displays its actual saved layout",
+      "pass": true,
+      "actual": "Initial saved text",
+      "expected": "Initial saved text"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio Save persists and broadcasts accepted content",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      },
+      "expected": {
+        "saved": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        },
+        "public": {
+          "text": "Accepted first text",
+          "label": "Initial label"
+        }
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Ordinary navigation remounts the last accepted Studio layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Accepted first text"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Remounted Studio clean status agrees with persisted content",
+      "pass": false,
+      "actual": {
+        "clean": true,
+        "text": "Initial saved text"
+      },
+      "expected": {
+        "clean": true,
+        "text": "Accepted first text"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Saving another field after remount does not roll back prior accepted text",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Public output retains previously approved content after remount save",
+      "pass": false,
+      "actual": {
+        "text": "Initial saved text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Accepted first text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Failed Studio save preserves both durable state and retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "text": "Initial saved text",
+          "label": "Accepted second label"
+        },
+        "draft": "Recovered final text",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Studio explicit retry persists the retained draft",
+      "pass": true,
+      "actual": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      },
+      "expected": {
+        "text": "Recovered final text",
+        "label": "Accepted second label"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation after retry observes its accepted layout",
+      "pass": false,
+      "actual": "Initial saved text",
+      "expected": "Recovered final text"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "studio-saved-navigation",
+      "label": "Navigation adds no speculative stream writes",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "The newer accepted import Apply survives an older delayed write across navigation",
+      "pass": false,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 20000,
+        "budget": 2000000000
+      },
+      "expected": {
+        "cargo": 20000,
+        "budget": 2000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-navigation",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Cold import desk uses saved destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      },
+      "expected": {
+        "cargo": "10000",
+        "budget": "1000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "The mounted import editor prevents a duplicate Apply",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Held import Apply has not yet persisted",
+      "pass": true,
+      "actual": {
+        "cargo": 10000,
+        "budget": 1000000000
+      },
+      "expected": {
+        "cargo": 10000,
+        "budget": 1000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A rejected older Apply releases the newer accepted destination settings",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "The remounted import editor shows the latest accepted settings",
+      "pass": true,
+      "actual": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      },
+      "expected": {
+        "cargo": "30000",
+        "budget": "3000000000"
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Retired import Apply failures do not enter the current editor",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Two accepted import Applies issue exactly two destination writes",
+      "pass": true,
+      "actual": [
+        20000,
+        30000
+      ],
+      "expected": [
+        20000,
+        30000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply preserves prior destination persistence",
+      "pass": true,
+      "actual": {
+        "cargo": 30000,
+        "budget": 3000000000
+      },
+      "expected": {
+        "cargo": 30000,
+        "budget": 3000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply leaves an editable retry draft",
+      "pass": true,
+      "actual": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      },
+      "expected": {
+        "cargo": "40000",
+        "budget": "4000000000",
+        "editable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "A current failed Apply remains visible for recovery",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import Apply retry saves the retained draft",
+      "pass": true,
+      "actual": {
+        "cargo": 40000,
+        "budget": 4000000000
+      },
+      "expected": {
+        "cargo": 40000,
+        "budget": 4000000000
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Explicit import retry clears its own error",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "imports-failed-first",
+      "label": "Import settings recovery adds no implicit mutations",
+      "pass": true,
+      "actual": [
+        20000,
+        30000,
+        40000,
+        40000
+      ],
+      "expected": [
+        20000,
+        30000,
+        40000,
+        40000
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "One explicit PiP open admits one browser request",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Pending PiP leaves current renderer in the dashboard",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Current PiP success creates exactly one private child",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Successful PiP does not invoke popup fallback",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Return restores the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Return closes the owned child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Navigation unmounts Universe before delayed PiP resolves",
+      "pass": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount closes its returned child",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "PiP response after unmount cannot append a stale portal host",
+      "pass": false,
+      "actual": true,
+      "expected": false
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP success keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "PiP rejection after unmount cannot open a fallback window",
+      "pass": false,
+      "actual": 1,
+      "expected": 0
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Late PiP rejection keeps the newly selected page",
+      "pass": true,
+      "actual": "#universe-settings",
+      "expected": "#universe-settings"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Current blocked popup reports the actionable browser failure",
+      "pass": true,
+      "actual": 1,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Blocked popup keeps the original renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Explicit retry after blocked popup moves the same renderer",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Blocked attempt and explicit retry make exactly two popup attempts",
+      "pass": true,
+      "actual": 2,
+      "expected": 2
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "tactical-ownership",
+      "label": "Normal unmount closes an already adopted child",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "Landmark categories appear exactly once in the visible picker",
+      "pass": false,
+      "actual": 11,
+      "expected": 10
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "A0 star is available once in the visible landmark picker",
+      "pass": false,
+      "actual": 2,
+      "expected": 1
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "A0-star selection exposes actual bundled star records",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "Selected A0-star category excludes other landmark kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "All-landmarks selection restores other reference kinds",
+      "pass": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "Every selected scenario completed",
+      "pass": true,
+      "actual": 24,
+      "expected": 24
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "No uncaught browser errors",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "No unexpected browser requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "landmark-category",
+      "label": "No external server requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    }
+  ],
+  "errors": [],
+  "unexpectedNetwork": [],
+  "serverRequests": []
+}

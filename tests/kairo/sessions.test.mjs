@@ -20,8 +20,8 @@ const mail=(id,m,system=1,overrides={})=>({killmail_id:id,killmail_time:at(m),so
 const visit=(id,system,from,to)=>({id,systemId:system,name:'System '+system,entered:at(from),exited:at(to)});
 
 test('route retains every visit, including quiet transits and repeated systems, clipped to the session',async t=>{
- const {store}=await storage(t),s=session(store),put=store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)');
- put.run(42,9,'Before',at(-5));put.run(42,2,'Beta',at(10));put.run(43,8,'Other pilot',at(12));put.run(42,1,'Alpha',at(20));put.run(42,1,'Alpha again',at(25));put.run(42,3,'Gamma',at(40));put.run(42,4,'After',at(60));
+ const {store}=await storage(t),s=session(store),put=store.db.prepare('INSERT INTO visits(character_id,system_id,name,at,session_id) VALUES(?,?,?,?,?)');
+ put.run(42,9,'Before',at(-5),s.id);put.run(42,2,'Beta',at(10),s.id);put.run(43,8,'Other pilot',at(12),s.id);put.run(42,1,'Alpha',at(20),s.id);put.run(42,1,'Alpha again',at(25),s.id);put.run(42,3,'Gamma',at(40),s.id);put.run(42,4,'After',at(60),s.id);
  const r=sessionReport(store,s.id,42);
  assert.deepEqual(r.route.map(v=>v.systemId),[1,2,1,1,3]);assert.equal(r.stats.systems,3);
  assert.deepEqual(r.route.map(v=>v.seconds),[600,600,300,900,1200]);assert.equal(r.route.every(v=>!v.combatActive),true);
@@ -119,12 +119,12 @@ test('adjacent sessions flag overlapping LP sample ranges rather than crediting 
  assert.equal(sessionReport(store,'first',42).loyalty.status,'overlap');assert.equal(sessionReport(store,'first',42).loyalty.delta,0);
 });
 
-test('capture honours paused modules; old sessions retain events and visits without invented alliance or LP data',async t=>{
+test('capture honours paused modules; missing starts retain event accounting without inventing route, alliance or LP data',async t=>{
  const {store}=await storage(t);store.saveSnapshot(42,'profile',sample({alliance_id:77}));store.saveSnapshot(42,'loyalty',sample([{corporation_id:1,loyalty_points:100}]));
  assert.equal(captureContext(store,42).alliance.id,77);assert.equal(captureContext(store,42).loyalty.balances[0].loyalty_points,100);
  store.set('module:combat',false);assert.equal(captureContext(store,42).loyalty,null);store.set('module:combat',true);
  session(store,'legacy',{start:{},finish:{}});store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)').run(42,1,'Alpha',at(-5));publish(store)({characterId:42,type:'killmail.kill',at:at(20)});
- const r=sessionReport(store,'legacy',42);assert.equal(r.route.length,1);assert.equal(r.route[0].inferred,true);assert.equal(r.loyalty.status,'unavailable');assert.equal(r.allianceCombat.coverage.status,'unavailable');assert.equal(r.stats.kills,1);assert.equal(r.personalCombat.missingDestroyed,1);
+ const r=sessionReport(store,'legacy',42);assert.equal(r.route.length,0);assert.equal(r.loyalty.status,'unavailable');assert.equal(r.allianceCombat.coverage.status,'unavailable');assert.equal(r.stats.kills,1);assert.equal(r.personalCombat.missingDestroyed,1);
 });
 
 test('alliance collection uses supported system/month queries, preserves quiet visits and survives cache/restart',async t=>{

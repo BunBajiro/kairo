@@ -1,0 +1,140 @@
+▶ manual-only OPSEC commands preserve the current accepted policy at HTTP receipt
+  ✖ force on/off retains saved pilot, lists and covered High-Sec policy (18.280807ms)
+  ✖ a pending manual body merges the latest policy, not a pre-body copy (17.541302ms)
+  ✖ nonboolean manual commands reject without changing policy or output (8.955931ms)
+  ✖ failed persistence does not publish manual protection and an explicit retry succeeds (11.645919ms)
+  ✔ full-policy replacement and validation retain their existing meaning (17.747524ms)
+✖ manual-only OPSEC commands preserve the current accepted policy at HTTP receipt (290.164867ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 417.232085
+
+✖ failing tests:
+
+test at tests/kairo/opsec-manual-policy.test.mjs:26:10
+✖ force on/off retains saved pilot, lists and covered High-Sec policy (18.280807ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      allowHighsec: false,
+  +   blueAlliances: [],
+  +   characterId: 0,
+  +   hostileAlliances: [],
+  -   blueAlliances: [
+  -     91
+  -   ],
+  -   characterId: 42,
+  -   hostileAlliances: [
+  -     92
+  -   ],
+      manual: true
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:28:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:26:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { manual: true, allowHighsec: false, blueAlliances: [], hostileAlliances: [], characterId: 0 },
+    expected: { manual: true, allowHighsec: false, blueAlliances: [ 91 ], hostileAlliances: [ 92 ], characterId: 42 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/opsec-manual-policy.test.mjs:34:10
+✖ a pending manual body merges the latest policy, not a pre-body copy (17.541302ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   allowHighsec: false,
+  +   blueAlliances: [],
+  +   characterId: 0,
+  +   hostileAlliances: [],
+  -   allowHighsec: true,
+  -   blueAlliances: [
+  -     101
+  -   ],
+  -   characterId: 43,
+  -   hostileAlliances: [
+  -     202
+  -   ],
+      manual: true
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:44:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:34:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { manual: true, allowHighsec: false, blueAlliances: [], hostileAlliances: [], characterId: 0 },
+    expected: { manual: true, allowHighsec: true, blueAlliances: [ 101 ], hostileAlliances: [ 202 ], characterId: 43 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/opsec-manual-policy.test.mjs:47:10
+✖ nonboolean manual commands reject without changing policy or output (8.955931ms)
+  AssertionError [ERR_ASSERTION]: manual is a boolean command
+  
+  200 !== 400
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:50:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:47:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 400,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/opsec-manual-policy.test.mjs:54:10
+✖ failed persistence does not publish manual protection and an explicit retry succeeds (11.645919ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      allowHighsec: false,
+  +   blueAlliances: [],
+  +   characterId: 0,
+  +   hostileAlliances: [],
+  -   blueAlliances: [
+  -     91
+  -   ],
+  -   characterId: 42,
+  -   hostileAlliances: [
+  -     92
+  -   ],
+      manual: true
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:59:63)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/opsec-manual-policy.test.mjs:54:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { manual: true, allowHighsec: false, blueAlliances: [], hostileAlliances: [], characterId: 0 },
+    expected: { manual: true, allowHighsec: false, blueAlliances: [ 91 ], hostileAlliances: [ 92 ], characterId: 42 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

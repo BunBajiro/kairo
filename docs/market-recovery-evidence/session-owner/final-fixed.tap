@@ -1,0 +1,274 @@
+TAP version 13
+# Subtest: recent combat ranges preserve all eligible IDs/order, exact cutoff and end writes with bounded plans
+ok 1 - recent combat ranges preserve all eligible IDs/order, exact cutoff and end writes with bounded plans
+  ---
+  duration_ms: 187.503145
+  type: 'test'
+  ...
+# Subtest: live feed retains current Session ownership after existing during a pending packet
+ok 2 - live feed retains current Session ownership after existing during a pending packet
+  ---
+  duration_ms: 57.036867
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after new pilot during a pending packet
+ok 3 - live feed retains current Session ownership after new pilot during a pending packet
+  ---
+  duration_ms: 40.8575
+  type: 'test'
+  ...
+# {"pilot":43,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after replacement during a pending packet
+ok 4 - live feed retains current Session ownership after replacement during a pending packet
+  ---
+  duration_ms: 43.724977
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after stop during a pending packet
+ok 5 - live feed retains current Session ownership after stop during a pending packet
+  ---
+  duration_ms: 46.764754
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json"],"esiPaths":[],"cursor":100,"retained":false,"reportKills":0}
+# Subtest: live feed retains current Session ownership after disconnect during a pending packet
+ok 6 - live feed retains current Session ownership after disconnect during a pending packet
+  ---
+  duration_ms: 30.994234
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json"],"esiPaths":[],"cursor":100,"retained":false,"reportKills":0}
+# Subtest: a Session joining during ESI verification retains its buffered alliance candidate before cursor acknowledgement
+ok 7 - a Session joining during ESI verification retains its buffered alliance candidate before cursor acknowledgement
+  ---
+  duration_ms: 56.577117
+  type: 'test'
+  ...
+# {"candidates":[91,92],"paths":["sequence.json","100.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101}
+# Subtest: repeated owner changes during acceptance remain bounded and retain an unacknowledged cursor
+ok 8 - repeated owner changes during acceptance remain bounded and retain an unacknowledged cursor
+  ---
+  duration_ms: 34.430616
+  type: 'test'
+  ...
+# Subtest: collection stays live regardless of age and becomes static exactly 24 hours after ending
+ok 9 - collection stays live regardless of age and becomes static exactly 24 hours after ending
+  ---
+  duration_ms: 3.32506
+  type: 'test'
+  ...
+# Subtest: one live feed shares a durable cursor, checks every two minutes, and observes the 404 minimum wait
+ok 10 - one live feed shares a durable cursor, checks every two minutes, and observes the 404 minimum wait
+  ---
+  duration_ms: 11.80886
+  type: 'test'
+  ...
+# Subtest: a deferred live check does not construct targets or change state, including forced cooldown checks
+ok 11 - a deferred live check does not construct targets or change state, including forced cooldown checks
+  ---
+  duration_ms: 2.509991
+  type: 'test'
+  ...
+# Subtest: due and forced checks share one pending target build and closed checks never rebuild
+ok 12 - due and forced checks share one pending target build and closed checks never rebuild
+  ---
+  duration_ms: 1.695687
+  type: 'test'
+  ...
+# Subtest: a due live check reads current pilot eligibility instead of retaining old targets
+ok 13 - a due live check reads current pilot eligibility instead of retaining old targets
+  ---
+  duration_ms: 50.205592
+  type: 'test'
+  ...
+# Subtest: ending the last live session during a request discards the packet and stops further feed requests
+ok 14 - ending the last live session during a request discards the packet and stops further feed requests
+  ---
+  duration_ms: 1.087849
+  type: 'test'
+  ...
+# Subtest: failed verification and HTTP cooldowns retain the cursor, including across forced checks
+ok 15 - failed verification and HTTP cooldowns retain the cursor, including across forced checks
+  ---
+  duration_ms: 4.093165
+  type: 'test'
+  ...
+# Subtest: a session ending during request spacing cannot start another feed request
+ok 16 - a session ending during request spacing cannot start another feed request
+  ---
+  duration_ms: 12.594437
+  type: 'test'
+  ...
+# Subtest: an expired live cursor restarts from the current pointer instead of looping on expired packets
+ok 17 - an expired live cursor restarts from the current pointer instead of looping on expired packets
+  ---
+  duration_ms: 1.905192
+  type: 'test'
+  ...
+# Subtest: feed work is bounded and rejects malformed or oversized packets without advancing
+ok 18 - feed work is bounded and rejects malformed or oversized packets without advancing
+  ---
+  duration_ms: 14.602778
+  type: 'test'
+  ...
+# Subtest: closing a live collector aborts its in-flight request without recording an error or advancing
+ok 19 - closing a live collector aborts its in-flight request without recording an error or advancing
+  ---
+  duration_ms: 1.177255
+  type: 'test'
+  ...
+# Subtest: live packets verify only relevant records, preserve full personal/alliance totals and stop on end
+ok 20 - live packets verify only relevant records, preserve full personal/alliance totals and stop on end
+  ---
+  duration_ms: 77.309834
+  type: 'test'
+  ...
+# Subtest: the feed continues for another live pilot but ignores ended sessions and paused combat
+ok 21 - the feed continues for another live pilot but ignores ended sessions and paused combat
+  ---
+  duration_ms: 33.775839
+  type: 'test'
+  ...
+# Subtest: ending triggers pending history checks while retaining the source cache and the 24-hour cutoff
+ok 22 - ending triggers pending history checks while retaining the source cache and the 24-hour cutoff
+  ---
+  duration_ms: 44.419865
+  type: 'test'
+  ...
+# Subtest: every recent ended session is eligible for delayed history checks, not just the newest eight
+ok 23 - every recent ended session is eligible for delayed history checks, not just the newest eight
+  ---
+  duration_ms: 60.001117
+  type: 'test'
+  ...
+# Subtest: history reaching the archive deadline in flight does not verify or retain further records
+ok 24 - history reaching the archive deadline in flight does not verify or retain further records
+  ---
+  duration_ms: 23.777577
+  type: 'test'
+  ...
+# Subtest: replay retains repeated systems and same-system observations without inventing intermediate travel
+ok 25 - replay retains repeated systems and same-system observations without inventing intermediate travel
+  ---
+  duration_ms: 180.269656
+  type: 'test'
+  ...
+# Subtest: a stationary session replays one start position with no fabricated movement or long-dwell gap
+ok 26 - a stationary session replays one start position with no fabricated movement or long-dwell gap
+  ---
+  duration_ms: 22.755413
+  type: 'test'
+  ...
+# Subtest: event membership exactly matches report start/end cursor semantics, including delayed kills
+ok 27 - event membership exactly matches report start/end cursor semantics, including delayed kills
+  ---
+  duration_ms: 37.749111
+  type: 'test'
+  ...
+# Subtest: explicit and owned combat locations outrank context, while unknown locations stay unplaced
+ok 28 - explicit and owned combat locations outrank context, while unknown locations stay unplaced
+  ---
+  duration_ms: 32.600752
+  type: 'test'
+  ...
+# Subtest: missing history is preserved as a gap; legacy prior observations are explicitly inferred
+ok 29 - missing history is preserved as a gap; legacy prior observations are explicitly inferred
+  ---
+  duration_ms: 25.08938
+  type: 'test'
+  ...
+# Subtest: replay includes more than one report page and clearly bounds huge event histories without truncating visits
+ok 30 - replay includes more than one report page and clearly bounds huge event histories without truncating visits
+  ---
+  duration_ms: 344.008221
+  type: 'test'
+  ...
+# Subtest: replay suppresses routine location and protection events while preserving movement and source reports
+ok 31 - replay suppresses routine location and protection events while preserving movement and source reports
+  ---
+  duration_ms: 35.185181
+  type: 'test'
+  ...
+# Subtest: routine events cannot crowd meaningful activity out of the cap or inflate incomplete coverage
+ok 32 - routine events cannot crowd meaningful activity out of the cap or inflate incomplete coverage
+  ---
+  duration_ms: 32.978742
+  type: 'test'
+  ...
+# Subtest: live replay snapshots its end once, performs no writes and enforces pilot ownership
+ok 33 - live replay snapshots its end once, performs no writes and enforces pilot ownership
+  ---
+  duration_ms: 23.551479
+  type: 'test'
+  ...
+# Subtest: recorded J-Space movement replays after restart and live connection removal without restoring map entities
+ok 34 - recorded J-Space movement replays after restart and live connection removal without restoring map entities
+  ---
+  duration_ms: 81.418063
+  type: 'test'
+  ...
+# Subtest: replay schematic includes each J-Space entrance and exit then returns to physical K-Space, including rewinds
+ok 35 - replay schematic includes each J-Space entrance and exit then returns to physical K-Space, including rewinds
+  ---
+  duration_ms: 0.818052
+  type: 'test'
+  ...
+# Subtest: repeated entrance or exit observations cannot switch replay projection during a stationary visit
+ok 36 - repeated entrance or exit observations cannot switch replay projection during a stationary visit
+  ---
+  duration_ms: 0.247044
+  type: 'test'
+  ...
+# Subtest: unchanged report appends its next page with one read
+ok 37 - unchanged report appends its next page with one read
+  ---
+  duration_ms: 191.837997
+  type: 'test'
+  ...
+# Subtest: late killmail cannot shift pages; the existing Refresh acquires a complete newer snapshot
+ok 38 - late killmail cannot shift pages; the existing Refresh acquires a complete newer snapshot
+  ---
+  duration_ms: 151.725481
+  type: 'test'
+  ...
+# Subtest: live snapshot bounds its event time and retains original summary/source projections on append
+ok 39 - live snapshot bounds its event time and retains original summary/source projections on append
+  ---
+  duration_ms: 108.254293
+  type: 'test'
+  ...
+# Subtest: obsolete load-more scope cannot publish a late page
+ok 40 - obsolete load-more scope cannot publish a late page
+  ---
+  duration_ms: 101.661446
+  type: 'test'
+  ...
+# Subtest: failed page preserves the original report and supports the same snapshot retry
+ok 41 - failed page preserves the original report and supports the same snapshot retry
+  ---
+  duration_ms: 115.796413
+  type: 'test'
+  ...
+# Subtest: report snapshots reject invalid cursors and times and still enforce pilot ownership
+ok 42 - report snapshots reject invalid cursors and times and still enforce pilot ownership
+  ---
+  duration_ms: 104.98811
+  type: 'test'
+  ...
+# Subtest: snapshot capture uses the row-id maximum and page reads retain the bounded event index
+ok 43 - snapshot capture uses the row-id maximum and page reads retain the bounded event index
+  ---
+  duration_ms: 98.17334
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 992.13235

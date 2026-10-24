@@ -1,0 +1,1562 @@
+{
+  "source": "6ed58f498a820b27d7b65b63087ae9994fd04dc7",
+  "tree": "a6772d5a96c43cc394a22d05120edc7529dcbdcd",
+  "run": 39526688812,
+  "artifact": 12313738547,
+  "archive_sha256": "ca4da557ba6f11167e6dbfc31b5613ecd223bc3a0a7f8189f3b69ba4c40d9382",
+  "complete_raw_checks_sha256": "f0f7627e272a0b7306dfc00988e6d4cf596ec7da6de4cbeed5cda2c50272920e",
+  "completed": 48,
+  "expected": 52,
+  "checks_total": 676,
+  "failed_total": 21,
+  "errors": [],
+  "unexpected_network": [],
+  "external_server_requests": [],
+  "prior_scenario_assertions": {
+    "count": 596,
+    "pass": true
+  },
+  "disposition": {
+    "EC-07": "OPSEC: twelve product expectation failures across Chrome/Firefox1600/390; complete failure/retry controls executed.",
+    "EC-08": "OBS: four persisted-order failures across Chrome/Firefox1600/390; complete failure/retry controls executed.",
+    "Session": "All four scenarios stopped before the first assertion on a mismatched Debrief label. Fixture correction and new baseline required; no product conclusion."
+  },
+  "new_scenario_and_global_checks": [
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Cold manual control agrees with saved released High-Sec policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      },
+      "expected": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Held manual acknowledgement follows actual persistence and cover activation",
+      "pass": true,
+      "actual": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      },
+      "expected": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Accepted manual acknowledgement synchronizes a clean OPSEC remount",
+      "pass": false,
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Unrelated policy fields survive the accepted manual command",
+      "pass": true,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Saving another policy field after remount retains accepted manual protection",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "An unrelated policy save cannot release accepted manual covers",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Current policy failure retains durable state and the retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Explicit policy retry persists its retained draft",
+      "pass": true,
+      "actual": [
+        456
+      ],
+      "expected": [
+        456
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Navigation and acknowledgement add no protection commands",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Cold OBS editor shows the saved disconnected configuration",
+      "pass": true,
+      "actual": {
+        "port": "4455",
+        "enabled": false
+      },
+      "expected": {
+        "port": "4455",
+        "enabled": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Held OBS transport has not persisted and its current editor is busy",
+      "pass": true,
+      "actual": {
+        "port": 4455,
+        "busy": true
+      },
+      "expected": {
+        "port": 4455,
+        "busy": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Accepted OBS writes retain order across editor remounts",
+      "pass": false,
+      "actual": 4466,
+      "expected": 4477
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "The active OBS editor displays its newest accepted port",
+      "pass": true,
+      "actual": "4477",
+      "expected": "4477"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Disabled OBS saves do not connect or arm automation",
+      "pass": true,
+      "actual": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      },
+      "expected": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Current OBS failure preserves durable settings and its retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Explicit OBS retry persists its retained draft",
+      "pass": true,
+      "actual": 4488,
+      "expected": 4488
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "OBS remount after acknowledged retry reads current saved configuration",
+      "pass": true,
+      "actual": "4488",
+      "expected": "4488"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Only explicit OBS saves reach HTTP",
+      "pass": true,
+      "actual": [
+        4466,
+        4477,
+        4488,
+        4488
+      ],
+      "expected": [
+        4466,
+        4477,
+        4488,
+        4488
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 1600,
+      "scenario": "session-accepted-navigation",
+      "label": "Scenario completes",
+      "pass": false,
+      "actual": "locator.inputValue: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.session-report-dialog').getByLabel('Debrief & notes', { exact: true })\n",
+      "expected": "completed"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Cold manual control agrees with saved released High-Sec policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      },
+      "expected": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Held manual acknowledgement follows actual persistence and cover activation",
+      "pass": true,
+      "actual": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      },
+      "expected": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Accepted manual acknowledgement synchronizes a clean OPSEC remount",
+      "pass": false,
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Unrelated policy fields survive the accepted manual command",
+      "pass": true,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Saving another policy field after remount retains accepted manual protection",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "An unrelated policy save cannot release accepted manual covers",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Current policy failure retains durable state and the retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Explicit policy retry persists its retained draft",
+      "pass": true,
+      "actual": [
+        456
+      ],
+      "expected": [
+        456
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Navigation and acknowledgement add no protection commands",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Cold OBS editor shows the saved disconnected configuration",
+      "pass": true,
+      "actual": {
+        "port": "4455",
+        "enabled": false
+      },
+      "expected": {
+        "port": "4455",
+        "enabled": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Held OBS transport has not persisted and its current editor is busy",
+      "pass": true,
+      "actual": {
+        "port": 4455,
+        "busy": true
+      },
+      "expected": {
+        "port": 4455,
+        "busy": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Accepted OBS writes retain order across editor remounts",
+      "pass": false,
+      "actual": 4466,
+      "expected": 4477
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "The active OBS editor displays its newest accepted port",
+      "pass": true,
+      "actual": "4477",
+      "expected": "4477"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Disabled OBS saves do not connect or arm automation",
+      "pass": true,
+      "actual": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      },
+      "expected": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Current OBS failure preserves durable settings and its retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Explicit OBS retry persists its retained draft",
+      "pass": true,
+      "actual": 4488,
+      "expected": 4488
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "OBS remount after acknowledged retry reads current saved configuration",
+      "pass": true,
+      "actual": "4488",
+      "expected": "4488"
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Only explicit OBS saves reach HTTP",
+      "pass": true,
+      "actual": [
+        4466,
+        4477,
+        4488,
+        4488
+      ],
+      "expected": [
+        4466,
+        4477,
+        4488,
+        4488
+      ]
+    },
+    {
+      "engine": "chromium",
+      "version": "155.0.8059.39",
+      "width": 390,
+      "scenario": "session-accepted-navigation",
+      "label": "Scenario completes",
+      "pass": false,
+      "actual": "locator.inputValue: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.session-report-dialog').getByLabel('Debrief & notes', { exact: true })\n",
+      "expected": "completed"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Cold manual control agrees with saved released High-Sec policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      },
+      "expected": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Held manual acknowledgement follows actual persistence and cover activation",
+      "pass": true,
+      "actual": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      },
+      "expected": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Accepted manual acknowledgement synchronizes a clean OPSEC remount",
+      "pass": false,
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Unrelated policy fields survive the accepted manual command",
+      "pass": true,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Saving another policy field after remount retains accepted manual protection",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "An unrelated policy save cannot release accepted manual covers",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Current policy failure retains durable state and the retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Explicit policy retry persists its retained draft",
+      "pass": true,
+      "actual": [
+        456
+      ],
+      "expected": [
+        456
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Navigation and acknowledgement add no protection commands",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Cold OBS editor shows the saved disconnected configuration",
+      "pass": true,
+      "actual": {
+        "port": "4455",
+        "enabled": false
+      },
+      "expected": {
+        "port": "4455",
+        "enabled": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Held OBS transport has not persisted and its current editor is busy",
+      "pass": true,
+      "actual": {
+        "port": 4455,
+        "busy": true
+      },
+      "expected": {
+        "port": 4455,
+        "busy": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Accepted OBS writes retain order across editor remounts",
+      "pass": false,
+      "actual": 4466,
+      "expected": 4477
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "The active OBS editor displays its newest accepted port",
+      "pass": true,
+      "actual": "4477",
+      "expected": "4477"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Disabled OBS saves do not connect or arm automation",
+      "pass": true,
+      "actual": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      },
+      "expected": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Current OBS failure preserves durable settings and its retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Explicit OBS retry persists its retained draft",
+      "pass": true,
+      "actual": 4488,
+      "expected": 4488
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "OBS remount after acknowledged retry reads current saved configuration",
+      "pass": true,
+      "actual": "4488",
+      "expected": "4488"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "obs-accepted-navigation",
+      "label": "Only explicit OBS saves reach HTTP",
+      "pass": true,
+      "actual": [
+        4466,
+        4477,
+        4488,
+        4488
+      ],
+      "expected": [
+        4466,
+        4477,
+        4488,
+        4488
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 1600,
+      "scenario": "session-accepted-navigation",
+      "label": "Scenario completes",
+      "pass": false,
+      "actual": "locator.inputValue: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.session-report-dialog').getByLabel('Debrief & notes', { exact: true })\n",
+      "expected": "completed"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Cold manual control agrees with saved released High-Sec policy",
+      "pass": true,
+      "actual": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      },
+      "expected": {
+        "manual": "false",
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "characterId": 42,
+          "blueAlliances": [
+            91
+          ],
+          "hostileAlliances": [
+            92
+          ]
+        },
+        "hidden": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Held manual acknowledgement follows actual persistence and cover activation",
+      "pass": true,
+      "actual": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      },
+      "expected": {
+        "saved": true,
+        "hidden": true,
+        "busy": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Accepted manual acknowledgement synchronizes a clean OPSEC remount",
+      "pass": false,
+      "actual": "false",
+      "expected": "true"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Unrelated policy fields survive the accepted manual command",
+      "pass": true,
+      "actual": {
+        "manual": true,
+        "allowHighsec": true,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          91
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Saving another policy field after remount retains accepted manual protection",
+      "pass": false,
+      "actual": {
+        "manual": false,
+        "allowHighsec": true,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ],
+        "characterId": 42
+      },
+      "expected": {
+        "manual": true,
+        "allowHighsec": true,
+        "characterId": 42,
+        "blueAlliances": [
+          123
+        ],
+        "hostileAlliances": [
+          92
+        ]
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "An unrelated policy save cannot release accepted manual covers",
+      "pass": false,
+      "actual": false,
+      "expected": true
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Current policy failure retains durable state and the retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "manual": false,
+          "allowHighsec": true,
+          "blueAlliances": [
+            123
+          ],
+          "hostileAlliances": [
+            92
+          ],
+          "characterId": 42
+        },
+        "draft": "456",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Explicit policy retry persists its retained draft",
+      "pass": true,
+      "actual": [
+        456
+      ],
+      "expected": [
+        456
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "opsec-accepted-navigation",
+      "label": "Navigation and acknowledgement add no protection commands",
+      "pass": true,
+      "actual": 4,
+      "expected": 4
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Cold OBS editor shows the saved disconnected configuration",
+      "pass": true,
+      "actual": {
+        "port": "4455",
+        "enabled": false
+      },
+      "expected": {
+        "port": "4455",
+        "enabled": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Held OBS transport has not persisted and its current editor is busy",
+      "pass": true,
+      "actual": {
+        "port": 4455,
+        "busy": true
+      },
+      "expected": {
+        "port": 4455,
+        "busy": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Accepted OBS writes retain order across editor remounts",
+      "pass": false,
+      "actual": 4466,
+      "expected": 4477
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "The active OBS editor displays its newest accepted port",
+      "pass": true,
+      "actual": "4477",
+      "expected": "4477"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Disabled OBS saves do not connect or arm automation",
+      "pass": true,
+      "actual": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      },
+      "expected": {
+        "enabled": false,
+        "automation": false,
+        "connected": false
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Current OBS failure preserves durable settings and its retry draft",
+      "pass": true,
+      "actual": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      },
+      "expected": {
+        "saved": {
+          "enabled": false,
+          "automation": false,
+          "port": 4466,
+          "collection": "",
+          "rules": {
+            "blue": [],
+            "hostile": [],
+            "lowsec": [],
+            "neutral": [],
+            "highsec": [],
+            "triglavian": [],
+            "anoikis": [],
+            "unknown": [],
+            "fw": [],
+            "manual": []
+          },
+          "passwordSaved": false,
+          "legacySafeRules": null
+        },
+        "draft": "4488",
+        "retryable": true
+      }
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Explicit OBS retry persists its retained draft",
+      "pass": true,
+      "actual": 4488,
+      "expected": 4488
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "OBS remount after acknowledged retry reads current saved configuration",
+      "pass": true,
+      "actual": "4488",
+      "expected": "4488"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "obs-accepted-navigation",
+      "label": "Only explicit OBS saves reach HTTP",
+      "pass": true,
+      "actual": [
+        4466,
+        4477,
+        4488,
+        4488
+      ],
+      "expected": [
+        4466,
+        4477,
+        4488,
+        4488
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "session-accepted-navigation",
+      "label": "Scenario completes",
+      "pass": false,
+      "actual": "locator.inputValue: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.session-report-dialog').getByLabel('Debrief & notes', { exact: true })\n",
+      "expected": "completed"
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "session-accepted-navigation",
+      "label": "Every selected scenario completed",
+      "pass": false,
+      "actual": 48,
+      "expected": 52
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "session-accepted-navigation",
+      "label": "No uncaught browser errors",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "session-accepted-navigation",
+      "label": "No unexpected browser requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    },
+    {
+      "engine": "firefox",
+      "version": "153.0",
+      "width": 390,
+      "scenario": "session-accepted-navigation",
+      "label": "No external server requests",
+      "pass": true,
+      "actual": [],
+      "expected": []
+    }
+  ]
+}

@@ -1,7 +1,14 @@
+/**
+ * Field-level credential encryption shared by Auth and OBS. The database itself
+ * remains readable private data; key protection and backup limits are documented
+ * in docs/AUTH-AND-SECURITY.md and docs/PERSISTENCE.md.
+ */
 import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+// Use stdin/stdout for base64 key material, not command-line arguments. CurrentUser
+// wrapping requires the original Windows account context and may fail at startup.
 function dpapi(mode, value) {
     const op = mode === 'protect' ? 'Protect' : 'Unprotect';
     const script = `Add-Type -AssemblyName System.Security; $v=[Console]::In.ReadToEnd().Trim(); $b=[Convert]::FromBase64String($v); $r=[Security.Cryptography.ProtectedData]::${op}($b,$null,[Security.Cryptography.DataProtectionScope]::CurrentUser); [Console]::Out.Write([Convert]::ToBase64String($r))`;
@@ -10,6 +17,16 @@ function dpapi(mode, value) {
         throw new Error('Windows could not open the credential vault.');
     return r.stdout.trim();
 }
+/**
+ * Open or exclusively create the 32-byte key in an existing private data directory.
+ * Windows wraps it with DPAPI; elsewhere a local file requests mode 0600. Existing
+ * unreadable/invalid keys throw rather than silently replacing stored credentials.
+ *
+ * `encrypt(value)` accepts JSON-serializable data and returns a base64 envelope:
+ * 12-byte IV, 16-byte GCM authentication tag, then ciphertext. `decrypt(envelope)`
+ * verifies that tag and parses the JSON, throwing on corruption or a different key.
+ * Keep both methods and plaintext results inside trusted credential owners.
+ */
 export function openVault(dir) {
     const windows = process.platform === 'win32';
     const file = join(dir, windows ? 'vault.dpapi' : 'vault.key');

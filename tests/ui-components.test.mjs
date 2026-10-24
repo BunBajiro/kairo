@@ -1,3 +1,6 @@
+// Retained component-catalog checks, separate from tests/kairo runtime coverage.
+// A fresh build supplies emitted CSS; isolated Vite SSR loads primitives without
+// the app's Cloudflare plugin. The after hook owns the Vite server's disposal.
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";

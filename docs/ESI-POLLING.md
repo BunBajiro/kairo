@@ -1,6 +1,16 @@
-# ESI collection policy — 0.6.0
+# ESI polling and request management
+
+This guide describes the implemented **0.8.0-rc.17** collection policy. [Authentication and security](AUTH-AND-SECURITY.md) owns scope grants and connection lifecycle; [Datasets](DATASETS.md) owns static-data updates.
 
 Kairo separates the application's routine schedule from ESI's cache expiry. The schedule is configurable in **Settings → ESI polling** and applies to all connected characters. Recommendations and allowed slider stops live in `server/polling.mjs`; the server validates the same values the interface displays. Saving only changes polling preferences, not scopes or module enablement. Resetting the draft requires Save to apply it.
+
+## Change collection settings
+
+1. Open **Settings → ESI polling** and select a module, or search for a data batch.
+2. Choose a supported slider stop. **Auto / ESI cache** follows the provider's cache cadence; it does not disable the batch. The recommendation and description explain which features use it.
+3. Select **Save** to apply the draft. Resetting to recommendations edits the draft; it still needs Save. Leaving without saving does not apply those edits.
+
+These settings apply to all connected characters. Public Universe batches are collected once for everyone. A disabled module stays paused, and missing permissions remain missing. Turn modules on/off in **Settings → Modules** and grant permissions through **Connections**. Faster settings cannot make EVE provide fresh information before its cache expires. Slower location checks can miss short visits.
 
 ## Recommended intervals
 
@@ -43,6 +53,9 @@ These are minimum routine intervals, not guaranteed network intervals. The sched
 | Universe | Faction warfare systems | ESI cache |
 | Universe | System kill statistics | 1 hour |
 | Universe | System traffic | 1 hour |
+| Universe | Sovereignty campaigns | 30 seconds |
+| Universe | Incursions | 5 minutes |
+| Universe | Industry cost indices | 1 hour |
 
 Public universe batches are shared across pilots. Private datasets retain per-character authorization and cache isolation, including organization contacts read by different characters. Dataset fallback TTLs are distinct from application polling intervals; actual HTTP cache headers take precedence.
 
@@ -71,12 +84,50 @@ Jita, Amarr, Dodixie and Hek histories share EVE Ref’s completed daily archive
 
 **Update trader data** is an explicit targeted refresh of the selling character’s skills, NPC standings and open orders, plus authorized connected alts’ orders for listing exclusion. It honors module toggles, scopes and the existing HTTP cache/backoff policy. NPC station ownership metadata is cached for seven days. Analysis and saved plans consume these local snapshots; they do not alter the routine polling settings.
 
-Public zKillboard participation has its existing separate one-hour minimum cache. Only previously unseen killmail details require ESI verification; the durable combat ledger prevents repeated verification. Item/system searches and static universe metadata are fetched on demand through the shared cache. No new periodic market, static-data or browser-driven collector was added.
+Character Combat public zKillboard participation has a separate one-hour minimum cache. Live Session alliance-combat collection has its own approximately two-minute schedule, and the Universe public combat display has its own feed/cache; these are separate consumers, not the ESI killmail slider. See [Sessions](SESSIONS.md) and [Universe](UNIVERSE.md). Only previously unseen killmail details require ESI verification; the durable combat ledger prevents repeated verification. Item/system searches and static universe metadata are fetched on demand through the shared cache. Neither category browsing nor analysis adds a periodic market collector. [Static dataset checks](DATASETS.md) are separately scheduled by the updater, independent of ESI and map display ticks.
+
+## Interpreting collection status
+
+| Status | Meaning and next step |
+| --- | --- |
+| `ready` | A successful sample is available. Its routine deadline may be later than HTTP expiry; OPSEC applies stricter evidence rules. |
+| `waiting` | No usable sample has arrived yet, or a prerequisite such as current organization membership is pending. Allow collection to complete. |
+| `missing_scope` | The connected character has not granted the batch's required permission. Update access in Connections. |
+| `not_applicable` | The requested ownership context does not exist, for example alliance contacts for a character with no alliance. |
+| `disabled` | The owning module is paused. Existing history remains stored. |
+| `stale` | Retained data exists but its refresh failed or it is no longer current for the consumer. Read the error/age; it is not a new observation. |
+| `error` | Collection failed without usable retained data. Check the displayed access/network error and retry deadline. |
+
+A successful HTTP 304 is a new observation of the same representation. Re-reading cached data is not. A snapshot's `sourceModifiedAt`, when present, is the provider's Last-Modified value; it is distinct from local receipt time. See [troubleshooting](TROUBLESHOOTING.md) for symptom-based guidance and [Data retention](DATA-RETENTION.md) for how last-good cache entries are kept.
+
+## Developer contract: shared ESI service
+
+Owners are [esi.mjs](../server/esi.mjs), [core.mjs](../server/core.mjs), [polling.mjs](../server/polling.mjs) and [modules/catalog.mjs](../server/modules/catalog.mjs). Use this service instead of introducing a module-local HTTP cache or request queue. General module/event contracts belong in [Internal API](INTERNAL-API.md).
+
+| Interface | Contract |
+| --- | --- |
+| `request(path, options)` | Cached ESI read transport; options include `characterId`, `method`, `body`, fallback `ttl` in seconds and `priority`. Public calls use owner `0`; private calls carry the authorized character ID. Read-style POST name lookups are supported. |
+| `paged(path, options)` | Fetch pages sequentially using `x-pages`, capped at 250. Returns merged data, earliest expiry, combined stale/error/retry information and `truncated` if the provider reports more pages. |
+| `names(ids, options)` | Public name lookup, deduplicated per ID across overlapping batches; up to 500 IDs per provider request. Returns an ID-to-name object and tolerates unavailable names. |
+| `cachedNames(ids)` | Read fresh public per-ID names without network work. Private structures must stay in authorized caches. |
+| `paced({spacingMs})` | Create a paced request function; default spacing 250 ms. Pacing waits own neither a network slot nor another consumer's request flight, and recheck cache/connection/admission before dispatch. |
+| `mutate(path, options)` | Explicit authorized command. Never cached or coalesced; no replay after uncertain network failure. A definite 401 alone permits one refresh/resend. An error may carry `uncertain: true`. |
+| `clearAccessFailures(characterId)` | Remove local 401/403 retry records that have no server Retry-After; does not erase provider cooldowns. |
+| `health()` | Actual request/cache/coalescing/304/failure counters and active/queued counts. These are attribution counters, not elapsed-performance measurements. |
+| `close()` | Stop accepting new public work and await already accepted request chains, including paged/name reads and their cache writes. |
+
+Read results contain `data`, `updatedAt`, `expiresAt`, response metadata in `headers`, and `cached`. Failed refresh with a prior representation additionally returns `stale`, `error`, `errorStatus` and `retryAt`; without prior data the error is thrown. Consumers must preserve this distinction. A cached result's original times are not replaced with `Date.now()`. Optional synchronous `validate(result)` checks intrinsic read-response shape before caching and on shared/cached reads. Rejection carries `ESI_INVALID_RESPONSE` and removes only the rejected cache representation; the owning caller controls bounded retries. Provider cooldowns still apply. This does not change command handling.
+
+Cache identity combines character owner, HTTP method, normalized route/query and body hash. Private in-flight identity also includes connection revision; a response admitted by an old authorization cannot publish into a new connection. Scope-free public reads are shareable, while an organization route accessed through two different characters remains privately isolated.
+
+Core owns collection admission, module gates, scope checks, organization owner changes, enrichment, snapshot persistence and semantic `data.<key>` delivery. It restores deadlines from snapshot metadata after restart, and suppresses publication from superseded connections or disabled modules. A collection may contain several page/detail/name requests; it is not one HTTP request by definition.
+
+The scheduler's general routine deadline is the later of provider expiry and successful observation plus the chosen interval, brought forward where a known training finish permits it. Protected evidence follows its tighter policy. Save validates every submitted key/value against `pollingBatches` before writing `esi:polling`; omitted keys use recommendations, so the UI sends the complete draft. Accepted browser polling saves retain intent order across navigation; changing preferences does not create extra observation timestamps.
 
 ## Verification and sources
 
-An isolated five-minute scheduler simulation with ESI-like cache headers produces 51 location requests and six ship requests, while skill queue checks occur six times including startup. Trained skills, attributes, clones, implants and calendar each collect once. OPSEC stays Blue throughout and emits one initial transition. This verifies scheduling behavior, not real-user bandwidth savings: travel events, edits, page counts, upstream expiry and outages affect actual traffic.
+A retained isolated five-minute scheduler simulation with ESI-like cache headers produces 51 location requests and six ship requests, while skill queue checks occur six times including startup. Trained skills, attributes, clones, implants and calendar each collect once. OPSEC stays Blue throughout and emits one initial transition. This verifies scheduling behavior, not real-user bandwidth savings: travel events, edits, page counts, upstream expiry and outages affect actual traffic.
 
-Tests also cover edited/cancelled queues, early completion refresh, live goals and bindings, persistent custom rates, atomic validation, scope/module isolation, cache reuse across alts, protected evidence, Retry-After, and the private HTTP boundary. The full test suite and build are described in [VALIDATION.md](VALIDATION.md). Live private EVE, Windows and rendered browser/OBS behavior require the user's environment.
+Tests also cover edited/cancelled queues, early completion refresh, live goals and bindings, persistent custom rates, atomic validation, scope/module isolation, cache reuse across alts, protected evidence, Retry-After, and the private HTTP boundary. The full test suite and build are described in [VALIDATION.md](VALIDATION.md). Real private EVE access/SSO, Windows DPAPI and actual OBS output require the user's environment. Compiled browser checks have their explicitly recorded scope in Validation.
 
 The audit checked the retained pinned OpenAPI specification and CCP's [ESI caching guidance](https://developers.eveonline.com/docs/services/esi/best-practices/) and [rate-limit documentation](https://developers.eveonline.com/docs/services/esi/rate-limiting/). The current specification is available through the [official API Explorer](https://developers.eveonline.com/api-explorer). Compatibility remains pinned to 2026-09-04.

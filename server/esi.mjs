@@ -1,23 +1,53 @@
+/**
+ * One runtime's ESI transport: private/public cache identity, shared requests,
+ * four network slots, priority and persisted provider cooldowns. Core owns module
+ * and scope admission; this layer owns transport/connection safety. See
+ * docs/ESI-POLLING.md for scheduling versus provider freshness and retry policy.
+ */
 import { createHash } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
+import { createCacheRetention } from './cache-retention.mjs';
 export const COMPATIBILITY_DATE = '2026-09-04';
 const iso = value => new Date(value).toISOString();
 const validId = id => Number.isSafeInteger(id) && id > 0 && id < 2147483647;
+const transportHeaders = { Accept: 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE,
+    'User-Agent': 'Kairo/0.8 (local EVE companion)' };
+const pacingOwner = Symbol('pacingOwner'), pacingStage = Symbol('pacingStage'), admissionCheck = Symbol('admissionCheck');
+const connectionOwner = Symbol('connectionOwner');
 
+/**
+ * Share one instance across collectors and on-demand consumers. Store/Auth remain
+ * caller-owned and must outlive close(), which refuses new API calls and drains
+ * accepted request chains (including later pages, names and cache writes).
+ */
 export function createESI(store, auth, { fetcher = fetch } = {}) {
     const limits = store.get('esi:limits', {});
+    const retention = createCacheRetention(store);
     const inflight = new Map(), nameFlights = new Map(), routeGroups = new Map(Object.entries(limits.groups || {}));
     const blocks = new Map((limits.blocks || []).filter(([, until]) => until > Date.now()));
     let errorUntil = limits.errorUntil || 0, active = 0;
     const waiters = [], priorityWaiters = [];
+    const accepted = new Set();
+    let closing;
     const counters = { requests: 0, cacheHits: 0, coalesced: 0, notModified: 0, failed: 0 };
+    const connectionRevision = id => auth.connectionRevision?.(id) ?? 0;
+    const withConnection = options => options.characterId && options[connectionOwner] === undefined
+        ? { ...options, [connectionOwner]: connectionRevision(options.characterId) } : options;
     const readCache = store.db.prepare('SELECT * FROM cache WHERE key=?');
     const putCache = store.db.prepare('INSERT INTO cache VALUES(?,?,?,?,?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body,etag=excluded.etag,expires=excluded.expires,updated=excluded.updated,headers=excluded.headers');
     const deleteCache = store.db.prepare('DELETE FROM cache WHERE key=?');
-    const sample = cached => ({ data: JSON.parse(cached.body), updatedAt: iso(cached.updated), expiresAt: iso(cached.expires), headers: JSON.parse(cached.headers), cached: true });
+    const deleteRepresentation = store.db.prepare('DELETE FROM cache WHERE key=? AND body=? AND etag IS ? AND expires=? AND updated=? AND headers=?');
+    const representation = Symbol('ESI cache representation');
+    const identify = (result, row) => Object.defineProperty(result, representation, {value: row});
+    const sample = cached => identify({ data: JSON.parse(cached.body), updatedAt: iso(cached.updated), expiresAt: iso(cached.expires), headers: JSON.parse(cached.headers), cached: true }, cached);
+    const invalidResponse = error => Object.assign(new Error(error.message || 'Invalid ESI response.'), {code: 'ESI_INVALID_RESPONSE'});
+    const readFailure = error => Object.assign(new Error(error.message || 'ESI read failed.', {cause: error}), {code: 'ESI_READ_FAILED'});
     function saveLimits() {
         for (const [key, until] of blocks) if (until <= Date.now()) blocks.delete(key);
         store.set('esi:limits', { errorUntil, blocks: [...blocks], groups: Object.fromEntries(routeGroups) });
     }
+    // Release hands its slot directly to a waiter, so admission never exceeds four.
+    // Priority affects queued dispatch, not an already running provider request.
     async function slot(priority) {
         if (active >= 4) await new Promise(r => (priority ? priorityWaiters : waiters).push(r));
         else active++;
@@ -25,6 +55,37 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
     }
     function cooldown(until) {
         return Object.assign(new Error('ESI is cooling down after a rate limit. Cached data is retained.'), { status: 429, retryAt: iso(until) });
+    }
+    function checkCooldown(characterId, route) {
+        const until = Math.max(errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
+        if (until > Date.now()) throw cooldown(until);
+    }
+    async function headersFor(characterId) {
+        const headers = { ...transportHeaders };
+        if (characterId) headers.Authorization = 'Bearer ' + await auth.access(characterId);
+        return headers;
+    }
+    function responseLimits(response, route, characterId) {
+        const now = Date.now(), retry = response.headers.get('retry-after');
+        const parsed = retry ? Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - now : NaN;
+        const retryMs = Number.isFinite(parsed) ? Math.max(1000, parsed) : 60000;
+        const group = response.headers.get('x-ratelimit-group');
+        let changed = false;
+        if (group && routeGroups.get(route) !== group) { routeGroups.set(route, group); changed = true; }
+        const errorsLeft = response.headers.get('x-esi-error-limit-remain'), remaining = response.headers.get('x-ratelimit-remaining');
+        if (errorsLeft !== null && Number(errorsLeft) < 10) {
+            errorUntil = now + Math.max(10000, Number(response.headers.get('x-esi-error-limit-reset') || 60) * 1000);
+            changed = true;
+        }
+        if ([420, 429].includes(response.status) || remaining !== null && Number(remaining) < 10) {
+            // Buckets belong to a route group and pilot (or the public IP).
+            // Unknown groups retain the conservative pilot-wide fallback.
+            blocks.set(characterId + ':' + (group || '*'), now + Math.max(10000, retryMs));
+            if (response.status === 420) errorUntil = now + Math.max(60000, retryMs);
+            changed = true;
+        }
+        if (changed) saveLimits();
+        return { now, retry, retryMs };
     }
     function rememberNames(data, expires, updated) {
         if (!Array.isArray(data)) return;
@@ -38,7 +99,8 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         catch (error) { store.db.exec('ROLLBACK TO esi_names; RELEASE esi_names'); throw error; }
     }
-    // Public names only. Private structure names retain character cache keys.
+    // Fresh public names only; misses are omitted and no network work occurs.
+    // Private structure names retain character cache keys.
     function cachedNames(ids) {
         const out = {};
         for (const id of ids) {
@@ -47,7 +109,56 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         return out;
     }
-    async function request(path, { characterId = 0, method = 'GET', body, ttl = 300, priority = false } = {}) {
+    /**
+     * Read an ESI path, including read-style POSTs such as /universe/names.
+     * `characterId: 0` is public; private callers supply the admitting pilot.
+     * `ttl` defaults to 300 seconds only when provider cache headers supply no expiry.
+     *
+     * Returns {data, updatedAt, expiresAt, headers, cached}, with ISO timestamps.
+     * Fresh cache reads retain observation time; 304 revalidation advances it.
+     * A failed refresh returns last-good data with stale/error/errorStatus/retryAt
+     * when available, otherwise rejects. Connection replacement always rejects;
+     * it must never recreate a purged cache or make old data usable by a new grant.
+     * Use mutate() for commands: this path deliberately caches and coalesces reads.
+     * Optional synchronous validate(result) checks an intrinsic representation
+     * before storage and on cached/shared reads. A rejection carries
+     * ESI_INVALID_RESPONSE and evicts only that exact bad cache row. The caller
+     * owns bounded retries; ordinary pacing and provider cooldowns still apply.
+     */
+    async function request(path, options = {}) {
+        options = withConnection(options);
+        let { characterId = 0, method = 'GET', body, ttl = 300, priority = false } = options;
+        const checkConnection = () => {
+            if (characterId && connectionRevision(characterId) !== options[connectionOwner])
+                throw new Error('Character connection changed during ESI request.');
+        };
+        checkConnection();
+        const pace = options[pacingOwner], checkAdmission = options[admissionCheck];
+        checkAdmission?.();
+        const validate = result => {
+            checkConnection();
+            if (!options.validate) return result;
+            try { options.validate(result); }
+            catch (error) {
+                checkConnection();
+                const row = result[representation];
+                if (row) deleteRepresentation.run(row.key, row.body, row.etag, row.expires, row.updated, row.headers);
+                const failure = invalidResponse(error), retry = result.headers?.['retry-after'], observed = Date.parse(result.updatedAt);
+                const parsed = retry ? Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - observed : NaN;
+                const deadline = retry ? observed + Math.max(1000, Number.isFinite(parsed) ? parsed : 60000) : 0;
+                const until = Math.max(Date.parse(result.retryAt) || 0, Number.isFinite(deadline) ? deadline : 0, errorUntil,
+                    blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + (result.headers?.['x-ratelimit-group'] || routeGroups.get(route))) || 0);
+                if (until > Date.now()) failure.retryAt = iso(until);
+                if (deadline > Date.now()) {
+                    failure.serverRetryAfter = true;
+                    const retryKey = 'esi-retry:' + key;
+                    if (!(readCache.get(retryKey)?.expires >= deadline))
+                        putCache.run(retryKey, JSON.stringify({message: failure.message, code: failure.code, failures: 0, serverRetryAfter: true}), null, deadline, Date.now(), '{}');
+                }
+                throw failure;
+            }
+            return result;
+        };
         if (!path.startsWith('/') || path.startsWith('//')) throw new Error('Invalid ESI path.');
         method = method.toUpperCase();
         const url = new URL('https://esi.evetech.net' + path);
@@ -57,61 +168,96 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         // IDs are a set here; batch order must not duplicate cache entries.
         if (path === '/universe/names' && Array.isArray(body)) body = [...new Set(body)].sort((a, b) => a - b);
         const key = characterId + ':' + method + ':' + path + ':' + (body ? createHash('sha256').update(JSON.stringify(body)).digest('hex') : '');
-        if (inflight.has(key)) { counters.coalesced++; return inflight.get(key); }
+        const flightKey = characterId ? key + ':connection:' + options[connectionOwner] : key;
+        const route = method + ':' + pathname.replace(/^(\/killmails\/\d+)\/[^/]+$/, '$1/{hash}').replace(/\/\d+(?=\/|$)/g, '/{id}');
+        if (inflight.has(flightKey)) {
+            counters.coalesced++;
+            const shared = inflight.get(flightKey);
+            shared.admissions.push(checkAdmission);
+            if (options.validate) shared.validated = true;
+            const result = await shared;
+            checkConnection(); checkAdmission?.();
+            return validate(result);
+        }
         const cached = readCache.get(key);
+        if (cached) retention.touch(key);
+        let cachedResult;
+        if (cached && options.validate) {
+            try { cachedResult = sample(cached); }
+            catch (error) {
+                deleteRepresentation.run(cached.key, cached.body, cached.etag, cached.expires, cached.updated, cached.headers);
+                throw invalidResponse(error);
+            }
+            validate(cachedResult);
+        }
         if (cached && cached.expires > Date.now()) {
             counters.cacheHits++;
-            const result = sample(cached);
+            const result = cachedResult || sample(cached);
             if (path === '/universe/names') rememberNames(result.data, cached.expires, cached.updated);
             return result;
         }
-        const route = method + ':' + pathname.replace(/^(\/killmails\/\d+)\/[^/]+$/, '$1/{hash}').replace(/\/\d+(?=\/|$)/g, '/{id}');
+        if (pace && options[pacingStage] !== 'ready') {
+            if (options[pacingStage] !== 'queued') {
+                const task = pace.tail.then(() => request(path, { ...options, [pacingStage]: 'queued' }));
+                pace.tail = task.catch(() => {});
+                return task;
+            }
+            const wait = pace.spacingMs - (pace.now() - pace.lastRequest);
+            if (wait > 0) await pace.wait(wait);
+            // Waiting owns no network slot or shared request flight. Recheck
+            // access, cache and coalescing after the wait; a cancelled caller
+            // cannot fail another consumer's accepted request.
+            return request(path, { ...options, [pacingStage]: 'ready' });
+        }
         const cachedGroup = cached && JSON.parse(cached.headers)['x-ratelimit-group'];
         if (cachedGroup) routeGroups.set(route, cachedGroup);
         const retryKey = 'esi-retry:' + key, previousFailure = readCache.get(retryKey);
-        const blockedUntil = () => Math.max(errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
+        if (previousFailure) retention.touch(retryKey);
+        retention.maintain();
         const task = Promise.resolve().then(async () => {
-            let release, attempted = false;
+            let release, attempted = false, providerRetryAt, admissionFailure = false;
+            const checkConsumers = () => {
+                // One cancelled owner cannot cancel another consumer's shared
+                // request. An unguarded consumer still needs the representation.
+                let rejected;
+                for (const guard of task.admissions) {
+                    try { guard?.(); return; }
+                    catch (error) { rejected = error; }
+                }
+                admissionFailure = true;
+                throw rejected;
+            };
             try {
                 if (previousFailure?.expires > Date.now()) {
                     const failure = JSON.parse(previousFailure.body);
-                    throw Object.assign(new Error(failure.message), { status: failure.status, retryAt: iso(previousFailure.expires) });
+                    throw Object.assign(new Error(failure.message), { status: failure.status, code: failure.code, serverRetryAfter: failure.serverRetryAfter, retryAt: iso(previousFailure.expires) });
                 }
-                if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
+                checkCooldown(characterId, route);
                 release = await slot(priority);
-                if (blockedUntil() > Date.now()) throw cooldown(blockedUntil());
-                const headers = { 'Accept': 'application/json', 'Accept-Language': 'en', 'X-Compatibility-Date': COMPATIBILITY_DATE, 'User-Agent': 'Kairo/0.7.3 (local EVE companion)' };
+                checkConsumers();
+                checkCooldown(characterId, route);
+                const headers = await headersFor(characterId);
                 if (cached?.etag) headers['If-None-Match'] = cached.etag;
                 else if (cached && JSON.parse(cached.headers)['last-modified']) headers['If-Modified-Since'] = JSON.parse(cached.headers)['last-modified'];
-                if (characterId) headers.Authorization = 'Bearer ' + await auth.access(characterId);
                 if (body) headers['Content-Type'] = 'application/json';
-                const fetchResponse = () => {
+                const fetchResponse = async () => {
+                    checkConnection();
+                    checkConsumers();
+                    if (pace) pace.lastRequest = pace.now();
                     attempted = true; counters.requests++;
-                    return fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) });
+                    try { return await fetcher('https://esi.evetech.net' + path, { method, headers, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(15000) }); }
+                    catch (error) { throw task.validated ? readFailure(error) : error; }
                 };
                 let response = await fetchResponse();
+                checkConnection();
                 if (response.status === 401 && characterId) {
+                    checkConsumers();
                     headers.Authorization = 'Bearer ' + await auth.access(characterId, true);
                     response = await fetchResponse();
+                    checkConnection();
                 }
-                const now = Date.now(), retry = response.headers.get('retry-after');
-                const parsedRetry = retry ? (Number.isFinite(Number(retry)) ? Number(retry) * 1000 : Date.parse(retry) - now) : NaN;
-                const retryMs = Number.isFinite(parsedRetry) ? Math.max(1000, parsedRetry) : 60000;
-                const group = response.headers.get('x-ratelimit-group');
-                if (group) routeGroups.set(route, group);
-                const errRemain = response.headers.get('x-esi-error-limit-remain');
-                if (errRemain !== null && Number(errRemain) < 10) {
-                    errorUntil = now + Math.max(10000, Number(response.headers.get('x-esi-error-limit-reset') || 60) * 1000);
-                    saveLimits();
-                }
-                const rateRemain = response.headers.get('x-ratelimit-remaining');
-                if (response.status === 429 || response.status === 420 || rateRemain !== null && Number(rateRemain) < 10) {
-                    // Buckets belong to a route group and character (or public
-                    // IP). Unknown/legacy limits remain conservative.
-                    blocks.set(characterId + ':' + (group || '*'), now + Math.max(10000, retryMs));
-                    if (response.status === 420) errorUntil = now + Math.max(60000, retryMs);
-                    saveLimits();
-                }
+                const { now, retry, retryMs } = responseLimits(response, route, characterId);
+                if (retry) providerRetryAt = now + retryMs;
                 if (!response.ok && response.status !== 304) {
                     const error = new Error(response.status === 403 ? 'ESI access denied. Check scopes and character access.' : response.status === 404 ? 'This ESI resource is unavailable for the character.' : response.status === 429 || response.status === 420 ? 'ESI rate limit reached; retry scheduled.' : 'ESI request failed (' + response.status + '). Retrying automatically.');
                     error.status = response.status;
@@ -119,24 +265,58 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     if (retry || [420, 429].includes(response.status)) error.retryAt = iso(now + retryMs);
                     throw error;
                 }
-                if (response.status === 304 && !cached) throw new Error('ESI returned an uncacheable empty response.');
+                if (response.status === 304 && !cached) {
+                    const error = new Error('ESI returned an uncacheable empty response.');
+                    throw task.validated ? invalidResponse(error) : error;
+                }
                 const h = response.status === 304 && cached ? JSON.parse(cached.headers) : {};
-                for (const k of ['x-pages', 'x-ratelimit-group', 'x-ratelimit-remaining', 'last-modified', 'cache-control'])
+                for (const k of ['x-pages', 'x-ratelimit-group', 'x-ratelimit-remaining', 'last-modified', 'cache-control', 'retry-after'])
                     if (response.headers.get(k)) h[k] = response.headers.get(k);
+                if (!retry) delete h['retry-after'];
                 const exp = Date.parse(response.headers.get('expires') || '');
                 const cacheMax = h['cache-control']?.match(/(?:^|,)\s*max-age=(\d+)/i);
                 const age = Number(response.headers.get('age') || 0);
                 const expires = Number.isFinite(exp) ? Math.max(now + 1000, exp) : cacheMax ? now + Math.max(1, Number(cacheMax[1]) - age) * 1000 : now + ttl * 1000;
-                const data = response.status === 304 ? JSON.parse(cached.body) : await response.json();
+                let data;
+                try { data = response.status === 304 ? JSON.parse(cached.body) : await response.json(); }
+                catch (error) {
+                    if (task.validated) {
+                        if (error instanceof SyntaxError) throw invalidResponse(error);
+                        throw readFailure(error);
+                    }
+                    throw error;
+                }
+                checkConnection();
                 // A new representation without an ETag must not inherit the old one.
                 const etag = response.headers.get('etag') || (response.status === 304 ? cached.etag : null);
-                putCache.run(key, JSON.stringify(data), etag, expires, now, JSON.stringify(h));
+                const result = { data, updatedAt: iso(now), expiresAt: iso(expires), headers: h, cached: response.status === 304 };
+                validate(result);
+                checkConnection();
+                const row = {key, body: JSON.stringify(data), etag, expires, updated: now, headers: JSON.stringify(h)};
+                putCache.run(key, row.body, etag, expires, now, row.headers);
                 deleteCache.run(retryKey);
                 if (path === '/universe/names') rememberNames(data, expires, now);
                 if (response.status === 304) counters.notModified++;
-                return { data, updatedAt: iso(now), expiresAt: iso(expires), headers: h, cached: response.status === 304 };
+                return identify(result, row);
             }
             catch (error) {
+                // An old grant's response must not recreate purged cache or
+                // retry state, nor return stale data to its replacement owner.
+                checkConnection();
+                if (admissionFailure) throw error;
+                if (error.code === 'ESI_INVALID_RESPONSE') {
+                    if (attempted) counters.failed++;
+                    // Bad representations are retryable without the synthetic
+                    // transport backoff. A provider deadline is never bypassed.
+                    const until = Math.max(providerRetryAt || 0, errorUntil, blocks.get(characterId + ':*') || 0, blocks.get(characterId + ':' + routeGroups.get(route)) || 0);
+                    if (until > Date.now()) error.retryAt = iso(until);
+                    if (providerRetryAt > Date.now()) {
+                        error.serverRetryAfter = true;
+                        if (!(readCache.get(retryKey)?.expires >= providerRetryAt))
+                            putCache.run(retryKey, JSON.stringify({message: error.message, code: error.code, failures: 0, serverRetryAfter: true}), null, providerRetryAt, Date.now(), '{}');
+                    }
+                    throw error;
+                }
                 if (attempted) {
                     counters.failed++;
                     const failures = Math.min(8, (previousFailure ? JSON.parse(previousFailure.body).failures || 0 : 0) + 1);
@@ -144,17 +324,77 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
                     const delay = location ? Math.min(15000, 3000 * 2 ** (failures - 1)) : [401, 403, 404].includes(error.status) ? 300000 : Math.min(900000, 30000 * 2 ** (failures - 1));
                     const retryAt = Math.max(Date.now() + delay, Date.parse(error.retryAt) || 0);
                     error.retryAt = iso(retryAt);
-                    putCache.run(retryKey, JSON.stringify({ message: error.message, status: error.status, failures, serverRetryAfter: error.serverRetryAfter }), null, retryAt, Date.now(), '{}');
+                    putCache.run(retryKey, JSON.stringify({ message: error.message, status: error.status, code: error.code, failures, serverRetryAfter: error.serverRetryAfter }), null, retryAt, Date.now(), '{}');
                 }
-                if (cached) return { ...sample(cached), stale: true, error: error.message, errorStatus: error.status, retryAt: error.retryAt };
+                if (cached) return identify({ ...(cachedResult || sample(cached)), stale: true, error: error.message, errorStatus: error.status, errorCode: error.code, serverRetryAfter: error.serverRetryAfter, retryAt: error.retryAt }, cached);
                 throw error;
             }
-            finally { release?.(); inflight.delete(key); }
+            finally { release?.(); inflight.delete(flightKey); }
         });
-        inflight.set(key, task);
-        return task;
+        task.validated = !!options.validate;
+        task.admissions = [checkAdmission];
+        inflight.set(flightKey, task);
+        const result = await task;
+        checkConnection(); checkAdmission?.();
+        return result;
     }
+    /**
+     * Send an explicit private POST/PUT/DELETE/PATCH command (POST, priority by
+     * default). Never cache/coalesce it or replay an uncertain outcome. Only an
+     * explicit 401 permits one token refresh and resend on the same connection.
+     * Returns {data, status, updatedAt, cached:false}; data is null for an empty
+     * body, parsed JSON or otherwise text. Failure throws and may carry status,
+     * retryAt or uncertain:true; uncertainty means the provider may have applied it.
+     * Callers must not turn that marker into an automatic retry.
+     */
+    async function mutate(path, { characterId, method = 'POST', body, priority = true } = {}) {
+        if (typeof path !== 'string' || !path.startsWith('/') || path.startsWith('//') || path.includes('\\')) throw new Error('Invalid ESI path.');
+        method = method.toUpperCase();
+        if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) throw new Error('Choose a mutation HTTP method.');
+        if (!Number.isSafeInteger(characterId) || characterId <= 0) throw new Error('An ESI command needs a connected pilot.');
+        const owner = connectionRevision(characterId);
+        const checkConnection = () => {
+            if (connectionRevision(characterId) !== owner)
+                throw new Error('Character connection changed during ESI command.');
+        };
+        const url = new URL('https://esi.evetech.net' + path);
+        if (url.origin !== 'https://esi.evetech.net') throw new Error('Invalid ESI origin.');
+        url.searchParams.sort();
+        const pathname = url.pathname.replace(/\/$/, '') || '/', route = method + ':' + pathname.replace(/\/\d+(?=\/|$)/g, '/{id}');
+        let release, attempted = false, response;
+        try {
+            checkCooldown(characterId, route);
+            release = await slot(priority);
+            checkConnection();
+            checkCooldown(characterId, route);
+            const headers = await headersFor(characterId);
+            if (body !== undefined) headers['Content-Type'] = 'application/json';
+            const send = () => { checkConnection(); attempted = true; counters.requests++; response = null; return fetcher(url.href, { method, headers,
+                body: body === undefined ? undefined : JSON.stringify(body), redirect: 'error', signal: AbortSignal.timeout(15000) }); };
+            response = await send();
+            // An explicit 401 guarantees rejection; it is the only automatic command retry.
+            if (response.status === 401) { checkConnection(); headers.Authorization = 'Bearer ' + await auth.access(characterId, true); response = await send(); }
+            const { now, retry, retryMs } = responseLimits(response, route, characterId);
+            if (!response.ok) throw Object.assign(new Error(response.status === 403 ? 'ESI command denied. Check pilot scopes and access.' : 'ESI command failed (HTTP ' + response.status + ').'),
+                { status: response.status, ...(retry || [420, 429].includes(response.status) ? { retryAt: iso(now + retryMs) } : {}) });
+            const raw = response.status === 204 || response.status === 205 ? '' : await response.text();
+            let data = null; if (raw) { try { data = JSON.parse(raw); } catch { data = raw; } }
+            return { data, status: response.status, updatedAt: iso(now), cached: false };
+        } catch (error) {
+            if (attempted) counters.failed++;
+            // A timeout/transport failure may happen after the server applied the command.
+            if (attempted && (!response || response.ok)) error.uncertain = true;
+            throw error;
+        } finally { release?.(); }
+    }
+    /**
+     * Sequentially concatenate array pages, capped at 250, under one connection.
+     * Return the earliest page expiry, latest retry deadline and any stale failure;
+     * `truncated` flags a larger advertised page count. A page failure with no cached
+     * fallback rejects the aggregate. Supply a base path without a page parameter.
+     */
     async function paged(path, options = {}) {
+        options = withConnection(options);
         const first = await request(path + (path.includes('?') ? '&' : '?') + 'page=1', options);
         const pages = Math.min(250, Number(first.headers['x-pages'] || 1));
         let data = [...first.data], stale = first.stale, error = first.error, errorStatus = first.errorStatus, expiresAt = first.expiresAt, retryAt = first.retryAt;
@@ -167,6 +407,12 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         }
         return { ...first, data, expiresAt, stale, error, errorStatus, retryAt, truncated: Number(first.headers['x-pages'] || 1) > pages };
     }
+    /**
+     * Resolve valid public IDs to an ID-to-name object, omitting unavailable names.
+     * Deduplicate IDs across overlapping calls and issue batches of at most 500.
+     * Provider failure is tolerated as missing display enrichment; never put private
+     * structure names here or infer authoritative absence from a missing result.
+     */
     async function names(ids, options = {}) {
         const unique = [...new Set(ids.filter(validId))].sort((a, b) => a - b), out = cachedNames(unique);
         const missing = unique.filter(id => !out[id] && !nameFlights.has(id)), waiting = [];
@@ -191,5 +437,37 @@ export function createESI(store, auth, { fetcher = fetch } = {}) {
         // Explicit refresh / renewed SSO may fix access. Keep server cooldowns.
         store.db.prepare("DELETE FROM cache WHERE key LIKE ? AND json_extract(body,'$.status') IN (401,403) AND COALESCE(json_extract(body,'$.serverRetryAfter'),0)=0").run('esi-retry:' + characterId + ':%');
     }
-    return { request, paged, names, cachedNames, clearAccessFailures, health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters }) };
+    const closedError = () => new Error('ESI is shutting down.');
+    function own(operation, args) {
+        if (closing) return Promise.reject(closedError());
+        const task = operation(...args).finally(() => accepted.delete(task));
+        accepted.add(task);
+        return task;
+    }
+    // Only the public boundary stops admission. An accepted names/paged call
+    // keeps its private request chain alive until all cache writes complete.
+    return {
+        request: (...args) => own(request, args), mutate: (...args) => own(mutate, args),
+        /**
+         * Return (path, options, checkAdmission) with one courtesy queue per call
+         * to paced(). spacingMs is milliseconds (default 250); warm/shared reads
+         * bypass waiting. The optional synchronous guard may throw on cancellation
+         * or lost access and is rechecked after waiting, without poisoning a shared
+         * flight. Injected now/wait must use the same millisecond clock.
+         */
+        paced({ spacingMs = 250, now = Date.now, wait = delay } = {}) {
+            if (closing) throw closedError();
+            if (!Number.isFinite(spacingMs) || spacingMs < 0) throw new Error('Choose a valid ESI request spacing.');
+            const pace = { spacingMs, now, wait, lastRequest: 0, tail: Promise.resolve() };
+            return (path, options = {}, checkAdmission) => own(request, [path,
+                { ...options, [pacingOwner]: pace, [admissionCheck]: checkAdmission }]);
+        },
+        paged: (...args) => own(paged, args), names: (...args) => own(names, args),
+        cachedNames(ids) { if (closing) throw closedError(); return cachedNames(ids); },
+        clearAccessFailures(id) { if (closing) throw closedError(); return clearAccessFailures(id); },
+        // Idempotent drain; request failures belong to their original callers.
+        close() { return closing ||= Promise.allSettled([...accepted]).then(() => {}); },
+        // Counters attribute transport work, not elapsed performance or freshness.
+        health: () => ({ active, queued: waiters.length + priorityWaiters.length, errorUntil, ...counters })
+    };
 }

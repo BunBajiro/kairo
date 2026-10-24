@@ -1,0 +1,131 @@
+{
+  "unit": "P0-02E1",
+  "status": "Verified/banked source-grounded contract/design only; no implementation or new runtime proof.",
+  "assessed_source": "f7aa784f46a7f82bc209f2f5151493fad16132ab",
+  "assessed_tree": "d66e62875b624ebe4e7f39e359d8448dab494757",
+  "assessed_on": "2026-10-22",
+  "verified_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "verified_executable_tree": "3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10",
+  "version": "0.8.0-rc.17",
+  "main_at_recovery": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "pr": {
+    "number": 12,
+    "state": "open",
+    "draft": true
+  },
+  "scope": {
+    "command_handlers": [
+      "HTTP-009",
+      "HTTP-010",
+      "HTTP-011",
+      "HTTP-012",
+      "HTTP-013",
+      "HTTP-014",
+      "HTTP-015",
+      "HTTP-016",
+      "HTTP-021"
+    ],
+    "read_dependencies": [
+      "HTTP-008",
+      "HTTP-017",
+      "HTTP-018",
+      "HTTP-019",
+      "HTTP-020"
+    ],
+    "related_coverage": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C12",
+      "C16"
+    ],
+    "dependencies": [
+      "Authoritative hub/basket edits and bounded asynchronous resolution",
+      "Market scan admission, exact job ownership, partial book/history commits and cancellation",
+      "Provider-read discovery/type enrichment; migration-only HTTP-015 retirement under clean-slate policy"
+    ],
+    "new_read_contracts_not_implemented": [
+      "GET /api/markets?inspect=hub&hubId=<id>",
+      "GET /api/markets?inspect=defaults",
+      "GET /api/markets?inspect=job (exact jobId or commandToken/runtimeEpoch/storageLineage tuple)"
+    ],
+    "retirement_selected_not_implemented": [
+      "HTTP-015 POST /api/markets/upgrade and migration-only market:upgrade queue/banner/automatic chaining"
+    ]
+  },
+  "product_tests_run": [],
+  "browser_tests_run": [],
+  "performance_measurements": [],
+  "new_findings": [],
+  "implementation_changed": false,
+  "historical_receipts_changed": false,
+  "pending_gates": [
+    "Remaining P0-02 command families and non-HTTP/background owners",
+    "P0-03 diagnostics/toast ownership, defaults, retention and caps",
+    "P0-04 measured baseline and numerical command/job/preparation/resource budgets before corresponding implementation",
+    "MKT-01\u201306 owning requirement acceptance and meaningful defect regressions where reproduced",
+    "Full Markets pricing/history/archive/retention and Imports/domain algorithm coverage",
+    "Independent implementation review, cross-owner faults, Chrome/Firefox and matched performance",
+    "Later candidate/artifact verification; native/live/extended-use evidence remains separate"
+  ],
+  "next_unit": "P0-02E2 Imports commands, then remaining manifest/non-HTTP families.",
+  "release_actions_authorized": false,
+  "reviews": [
+    {
+      "scope": "Markets source/tests and selected contract",
+      "author": "runtime_inventory",
+      "reviewer": "api_inventory",
+      "disposition": "Accepted full source/tests and selected contract at c2b77cdf2f3e1f6d46f16a00faa0ea438fce072c4fa3c28a0f885ebb7933b340 before status-only update, including bounded compatible basket proof, exact job/stop/unknown-admission ownership, partial-commit accounting, passive inspection and migration-only retirement. All MKT behavioral proof pending."
+    },
+    {
+      "scope": "Bounded basket proof feasibility",
+      "author": "runtime_inventory",
+      "reviewer": "algorithms_inventory",
+      "disposition": "Read-only consultation supports nonreused live membership revisions, finite overlap tracking, atomic virtual-default normalization and scan-admission invalidation. Exact source/design acceptance remains with assigned source and integrated reviewers; no tests."
+    },
+    {
+      "scope": "Browser owner and historical evidence limits",
+      "author": "runtime_inventory",
+      "reviewer": "output_recon",
+      "disposition": "Read-only UI/source consultation checked draft generations, distinct scan access, job-targeted cancellation needs, source-only upgrade retirement and historical Chrome/Firefox limits. No new browser tests or behavioral acceptance."
+    },
+    {
+      "scope": "Shared semantics, continuation and receipt",
+      "author": "root",
+      "reviewer": "inventory_review",
+      "disposition": "Accepted substantive Markets contract at c2b77cdf2f3e1f6d46f16a00faa0ea438fce072c4fa3c28a0f885ebb7933b340 and final six-path status/navigation/receipt: final contract hash 65e244fe3f9742f6d12447160bc89cffb9f394db8c362237030cdb090a983d73, reversible status-only delta, 108 links, nine handler/five read IDs, source/tree identities, preserved executable/historical evidence, D bank receipt and precise E2 continuation. No product tests run."
+    }
+  ],
+  "static_checks": {
+    "changed_paths": 6,
+    "command_handlers": 9,
+    "read_dependencies": 5,
+    "scope_ids_match_manifest": true,
+    "relative_links_and_fragments": 108,
+    "errors": 0,
+    "executable_and_packaging_diff": "none",
+    "historical_receipts_and_closed_ledgers_diff": "none except following-bank D status/receipt metadata",
+    "whitespace_check": "pass"
+  },
+  "reviewed_contract_sha256": {
+    "market-command-contracts.md": "65e244fe3f9742f6d12447160bc89cffb9f394db8c362237030cdb090a983d73"
+  },
+  "reviewed_content_before_status_update": {
+    "market-command-contracts.md": "c2b77cdf2f3e1f6d46f16a00faa0ea438fce072c4fa3c28a0f885ebb7933b340"
+  },
+  "bank": {
+    "commit": "929f97a7c3d1e4683de9be241c58647962f97492",
+    "tree": "34f351a039363c16446d2d083500ded312604a32",
+    "parent": "f7aa784f46a7f82bc209f2f5151493fad16132ab",
+    "changed_paths": 6,
+    "read_back": "GitHub commit/tree/parent and exact connector receipt text verified; fetched tree equals reviewed index and all working bytes; clean local checkpoint. PR body/head/base/open/draft read back exactly.",
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "ci": "Intentionally skipped documentation-only bank; no new executable build.",
+    "transport": "Authorized GitHub connector exact tree and guarded non-force fast-forward.",
+    "receipt_note": "Following documentation continuation records this bank; no self-SHA or new executable claim."
+  }
+}

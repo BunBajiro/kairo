@@ -98,7 +98,7 @@ test('Abyssal observations remain classifiable when ESI cannot provide public sy
     try{await core.syncProtection();assert.equal(store.snapshot(42,'location').status,'ready');assert.equal(core.stream.getOPSEC().state,'triglavian');}finally{await core.close();}
 });
 test('system lookup resolves Sigma Grindset and Sportmodel via ESI names without a connected pilot',async t=>{
-    const dir=await mkdtemp(join(tmpdir(),'kairo-owner-http-'));const owners={'EX-0LQ':[30001000,99011223,'Sigma Grindset'],'CB4-Q2':[30001001,99012279,'Sportmodel']};
+    const dir=await mkdtemp(join(tmpdir(),'kairo-owner-http-'));const owners={'EX-0LQ':[30001181,99011223,'Sigma Grindset'],'CB4-Q2':[30001205,99012279,'Sportmodel']};
     const app=await startKairo({port:18420,streamPort:18421,dataDir:dir,noSync:true,fetcher:async(url,options)=>{
         const path=new URL(url).pathname;let data={};
         if(path==='/universe/ids')data={systems:[{id:owners[JSON.parse(options.body)[0]][0]}]};

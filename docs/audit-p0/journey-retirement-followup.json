@@ -1,0 +1,133 @@
+{
+  "unit": "JRET-01 follow-up",
+  "status": "Independently reviewed source/test design; banked unverified pending focused hosted browser gate. Not candidate or comprehensive-audit acceptance.",
+  "assessed_on": "2026-10-24",
+  "recovered_bank": "96d145da7ffd7d584953ec1b372ae9733240590a",
+  "recovered_tree": "24b95361e02e4fc271cd2dc7859db0b8306ba9c8",
+  "bank_identity": "Commit containing this receipt; exact subsequent GitHub read-back is recorded by the next continuation/PR permalink.",
+  "historical_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "original_evidence": "journey-retirement-wip.json",
+  "scope": {
+    "css": "29 proven-unused Journey rules removed; no active consumers; adjacent combat/workspace/widget declarations preserved.",
+    "browser_requirement": "Compiled Overview links, populated owned Session report/map replay including gap/foreign/unowned controls, independent persisted/reloaded private notes, zero Journey/provider requests, both engines at1600/390.",
+    "workflow": "Blocking focused gate plus always-upload evidence; four-minute step cap; existing30-minute job/guards unchanged.",
+    "coverage": [
+      "C04",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12",
+      "C16"
+    ],
+    "source_sha256": {
+      "app/globals.css": "c84c9678a11625b8f7e0987eaeb6a3a0c60f5fd8aff569d088ffdb6da24a4111",
+      "tests/journey-retirement-ui.mjs": "309ea32326d8f874e2066bc59aa2a450114c294091da698ebd9a33b2775f49d8",
+      ".github/workflows/test-build.yml": "a2227ebb472693d13608117888daca18d1737c7c0336bb6c6dfb19134d394f6b"
+    }
+  },
+  "reviews": [
+    {
+      "author": "algorithms_inventory",
+      "reviewer": "output_recon",
+      "scope": "CSS exact source",
+      "disposition": "Accepted source cleanup; no behavioral run by reviewer."
+    },
+    {
+      "author": "domain_inventory",
+      "reviewer": "output_recon",
+      "scope": "Focused compiled-browser harness exact source",
+      "disposition": "Accepted test design: actual HTTP/SQLite/data ownership, private state, request/cost oracles; complete-only success and evidence-safe bounded teardown. Browser execution pending."
+    },
+    {
+      "author": "root",
+      "reviewer": "inventory_review",
+      "scope": "Workflow exact source",
+      "disposition": "Accepted blocking positive-prerequisite gate and distinct evidence upload; unchanged release/concurrency/credential guards. Prior Build98 duration20m37s plus4minute cap fits nominal30minute budget; actual hosted elapsed remains owed."
+    }
+  ],
+  "runtime": {
+    "node": "24.22.1",
+    "undici": "7.30.1",
+    "npm": "11.9.0",
+    "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9"
+  },
+  "local_checks": [
+    {
+      "name": "types",
+      "command": [
+        "npm",
+        "run",
+        "check:kairo"
+      ],
+      "exit": 0,
+      "duration_seconds": 9.438,
+      "sha256": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit": 0,
+      "duration_seconds": 7.569,
+      "sha256": "ee1cc17d33a6911a72cf66e436fd50dcfe5ff56eb4f03330ea26752d1b1b9b4e"
+    },
+    {
+      "name": "runtime",
+      "command": [
+        "npm",
+        "run",
+        "test:kairo"
+      ],
+      "exit": 0,
+      "duration_seconds": 17.147,
+      "sha256": "2717cd879da4123c113233c41d3d9870be8548ddb67ecffe95b7bc71ab8482c2"
+    }
+  ],
+  "full_runtime": {
+    "tests": 1354,
+    "pass": 1354,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "local_browser_limit": "One benign launch attempt each: Chrome native socket EPERM before page; Firefox child user-namespace uid_map EPERM/SIGSEGV, no usable page before25second deadline. No app assertions or bypass. Exact environment receipt/logs retained.",
+  "recovered_hosted_evidence": {
+    "build": 98,
+    "run": 39873991698,
+    "source": "96d145da7ffd7d584953ec1b372ae9733240590a",
+    "steps": 52,
+    "all_steps": "success",
+    "regression_browser_checks": 3181,
+    "packaging_controls": 16,
+    "packaged_runtime_pass": 1354,
+    "scope": "Changed Session/J-Space fixtures ran in Chrome; note-discard56/56 across both engines1600/390. Does not cover new CSS, new focused harness or independent downloaded-artifact acceptance.",
+    "receipt": "journey-retirement-followup-evidence/build98-hosted.json"
+  },
+  "next_actions": [
+    "Recover current branch/main/PR and inspect any newer source before running or banking.",
+    "Read the new focused hosted gate and its uploaded raw checks/screenshots for the exact source containing this receipt. A failed/partial/unexecuted matrix remains unverified.",
+    "If any fixture/product failure occurs, retain evidence, fix the owning issue with independent review and rerun applicable gates; do not weaken assertions.",
+    "Accept bounded Journey retirement only after required source-bound browser evidence and independent review. Full candidate/artifact and native/live/extended-use acceptance remain separate.",
+    "Continue P0-02F2 Places source/design contracts, then remaining command families, P0-03 decisions and P0-04 measured budgets."
+  ],
+  "release_actions_authorized": false,
+  "historical_evidence_changed": false,
+  "evidence_sha256": {
+    "journey-retirement-followup-evidence/build.txt": "ee1cc17d33a6911a72cf66e436fd50dcfe5ff56eb4f03330ea26752d1b1b9b4e",
+    "journey-retirement-followup-evidence/build98-hosted.json": "6afdf639efd2116dd7ed4e48883bbce57c07dae3ac922a7a855f49175c2f093f",
+    "journey-retirement-followup-evidence/environment/chrome-install.log": "c58685130149e07c6f9793c4aedf7eb1c092e5f431d768de58548a55599703ed",
+    "journey-retirement-followup-evidence/environment/chromium-launch.log": "af07fa2662fb62fc1f1b9b2c468f48e6a0b76b28d6bacf6d793add9a30f392a5",
+    "journey-retirement-followup-evidence/environment/firefox-install.log": "e66886515f44dc0d2015189fbdbb4e01e8a25495ab9613f5c795b189c7a9189a",
+    "journey-retirement-followup-evidence/environment/firefox-launch.log": "028615ed47827cc85d513f4c9dcfdea5905d1289b2bf87c7f443e9777217d738",
+    "journey-retirement-followup-evidence/environment/install-ci.log": "99a0d534ac449a2f1578f7037c0bf5e9b227a96854ff606b82e19f88d76bd428",
+    "journey-retirement-followup-evidence/environment/launch-probe.mjs": "d416c24d8ff3bec8eeac2aa535ad181009acdbabd47e73591304903018ee3931",
+    "journey-retirement-followup-evidence/environment/setup-receipt.json": "eab44cb04088c4d2f3fba5e1bd168e0945f0ee8d267391b69a63a8d331c1a164",
+    "journey-retirement-followup-evidence/runtime.txt": "2717cd879da4123c113233c41d3d9870be8548ddb67ecffe95b7bc71ab8482c2",
+    "journey-retirement-followup-evidence/types.txt": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+  }
+}

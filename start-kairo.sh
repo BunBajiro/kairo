@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
+# Start from the distribution root; exec gives the supervisor signal ownership.
+# A patched Node supplies the runtime APIs; no dependency install is needed here.
 set -eu
 cd "$(dirname "$0")"
 if ! command -v node >/dev/null 2>&1; then
-  echo 'Install Node.js 24 or newer from https://nodejs.org/ first.'
+  echo 'Install current Node.js 24 LTS (24.21.0 minimum) from https://nodejs.org/ first.'
   exit 1
 fi
-node -e "if(Number(process.versions.node.split('.')[0])<24){console.error('Node.js 24 or newer is required.');process.exit(1)}"
-exec node server/index.mjs --open
+node -e "import('./server/runtime-version.mjs').then(m=>m.assertSupportedRuntime()).catch(e=>{console.error(e.message);process.exitCode=1})"
+exec node server/start.mjs --open

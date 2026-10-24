@@ -1,0 +1,15 @@
+.universe-global-search{isolation:isolate;z-index:12}
+.universe-global-search>kbd{font:14px var(--font-mono);color:#bfd1ca;border:1px solid #49605a;border-radius:4px;min-width:23px;text-align:center;margin-right:11px;flex-shrink:0;background:#1b2d27}
+.universe-global-search .universe-search-popover{position:absolute;top:calc(100% + 9px);left:0;width:min(520px,calc(100vw - 48px));min-width:100%;max-height:min(470px,65dvh);overflow:auto;border:1px solid #58796d;border-radius:8px;background:#14231f;box-shadow:0 20px 55px #0008;z-index:40;animation:universe-search-arrive 150ms ease-out}
+.universe-search-caption{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid #3d554a;color:#def1e6;font-size:14px}
+.universe-search-caption small{font-size:14px;color:#b6c9bf}
+.universe-global-search [role=listbox]>button{display:flex;align-items:center;gap:12px;width:100%;min-height:66px;border:0;border-bottom:1px solid #2d4239;background:transparent;text-align:left;padding:12px 14px;color:#e7f3ed;cursor:pointer}
+.universe-global-search [role=listbox]>button.is-active{background:#294a3b;box-shadow:inset 3px 0 #a6efd0}
+.universe-global-search [role=option]>span:nth-child(2){display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.universe-global-search [role=option] strong{font-size:16px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.universe-global-search [role=option] small{font-size:14px;color:#bed0c7;line-height:1.45;overflow-wrap:anywhere}
+.universe-search-kind{display:grid;place-items:center;width:33px;height:36px;flex-shrink:0;background:#101e1a;border:1px solid #42594d;border-radius:5px;color:#a5e8ca}
+.universe-search-popover>p{font-size:16px;line-height:1.5;color:#c8d7ce;padding:18px;margin:0}
+@keyframes universe-search-arrive{from{opacity:.4;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.universe-global-search .universe-search-popover{width:100%;max-height:55dvh}.universe-search-caption small{display:none}}
+@media(prefers-reduced-motion:reduce){.universe-search-popover{animation:none!important}}

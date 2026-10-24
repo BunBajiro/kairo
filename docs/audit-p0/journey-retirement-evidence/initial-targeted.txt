@@ -1,0 +1,164 @@
+✔ PKCE uses an unpredictable verifier and an S256 challenge (35.687499ms)
+✔ EVE claims reject wrong audience, issuer, expiry and identity (0.76115ms)
+✔ vault persistence is authenticated and never writes a plaintext token (114.19638ms)
+✔ SSO state is session-bound and single-use; validated tokens refresh and rotate (125.351965ms)
+✔ ESI deduplicates concurrent requests and respects Cache-Control (112.234516ms)
+✔ ESI 304 extends freshness, and a failed update retains stale data (99.669266ms)
+✔ ESI collects every X-Pages page and isolates character cache entries (98.553271ms)
+✔ ESI rate limiting stops repeated requests for the cooldown (62.036215ms)
+✔ OPSEC fails closed on missing, stale or unclassified data and manual always wins (1.431944ms)
+✔ OPSEC classifies FW before sovereignty; blue and hostile both remain covered (0.56629ms)
+✔ stream defaults are empty; normalization only admits explicit output fields (2.016361ms)
+✔ stream toasts use only approved copy, obey enabled flags and cooldowns (89.87029ms)
+✔ module registry accepts independent migrations, events, a page and disable lifecycle (118.271952ms)
+✔ local host checks and constant-time CSRF comparison reject unexpected inputs (0.373444ms)
+✖ HTTP isolation: private data needs a session; stream cannot reach admin; writes need CSRF (494.059577ms)
+✔ full local pipeline: OAuth callback leads to scoped ESI, private discovery, and sanitized stream state (397.08336ms)
+✔ scheduling metadata stays current across writes, deletion and rollback without exposing payloads (84.425078ms)
+✔ protection projects only its evidence and still responds immediately to disabled modules (473.523671ms)
+✔ cached routine datasets do not repeatedly load protection pilot identity (221.042885ms)
+✔ Sessions keep pilot travel and hull history with Universe disabled and stop when Pilot is disabled (219.104273ms)
+✔ v0.1 database migrates once without losing existing sessions, goals or stream copy (98.050355ms)
+✔ selected goal projects approved fields live, and never switches to another character or deleted goal (121.54374ms)
+✔ ESI bindings reject stale, disabled and disconnected character data (67.017865ms)
+✔ context toasts whitelist tokens, obey character filters and redact at delivery and later state changes (134.815824ms)
+✔ named sessions capture wallet and SP samples, diverse events, late combat, character and time boundaries (110.064482ms)
+✔ session reports paginate events but keep totals across the entire session (404.599029ms)
+✔ place notes keep system, constellation and region identities separate independently of system metadata (182.381664ms)
+✔ OBS authenticates over a real local websocket, hides/mutes before shows and scenes, and keeps its password out of config (122.962874ms)
+✔ OBS abandons obsolete reveals during a state change and never runs a scene switch after a failed hide (114.443413ms)
+✔ OBS refuses stale source identities or a different collection, and an OBS kick does not auto-reconnect (187.019671ms)
+✔ OBS reconnects to the latest protection state and rejects a wrong password (180.666778ms)
+✔ OBS reconnect clears an interrupted collection transition and resumes inventory and protection (102.570055ms)
+▶ OBS saves a new port or password while the startup connection is still pending
+  ✔ port (95.530153ms)
+  ✔ password (78.025137ms)
+✔ OBS saves a new port or password while the startup connection is still pending (174.654171ms)
+✔ HTTP feature APIs preserve data after restart and remain inaccessible to browser sources (614.757333ms)
+▶ retired Journey HTTP calls have no work; private Places and modern export remain available
+  ✔ GET /journey?character=42 (6.348097ms)
+  ✔ PUT /journey/connections/2?character=42 (7.717438ms)
+  ✔ POST /journey/enrich?character=42 (6.02093ms)
+  ✔ fresh schema and export exclude Journey-only storage (6.127123ms)
+  ✔ private notes, metadata and modern Session routes need no Journey service (35.436287ms)
+✔ retired Journey HTTP calls have no work; private Places and modern export remain available (623.305461ms)
+ℹ {"path":"/journey?character=42","status":404,"writes":0,"providers":0}
+ℹ {"path":"/journey/connections/2?character=42","status":404,"writes":0,"providers":0}
+ℹ {"path":"/journey/enrich?character=42","status":404,"writes":0,"providers":0}
+✔ Session movement/report/replay own their evidence without lifetime Journey fallback (76.67384ms)
+ℹ {"projection":"report","visitWindows":1,"systems":[30000144]}
+ℹ {"projection":"replay","visitWindows":1,"systems":[30000144]}
+✔ participation includes assisted and zero-damage EWAR kills, not fleet affiliation alone (21.435112ms)
+✔ combat ingestion drains an unseen backlog beyond 50, deduplicates sources and retains history (674.820228ms)
+✔ public participation reads are cached, send no EVE credentials and preserve records on rate limits (78.792452ms)
+✔ late assisted kills repair archived reports without historic toasts or duplicate counts (177.484759ms)
+✔ wallet goals follow fresh data, pause on stale snapshots and complete once without regressing (191.747495ms)
+✔ skills include fresh completed queue entries and type lookup validates real skill categories (67.489976ms)
+✔ asset goals sum owned quantities and reject stale, truncated, disabled and unauthorized sources (93.324055ms)
+✔ mining baselines survive restarts and rolling ledgers without double-counting daily totals (79.371416ms)
+✔ income and manufacturing goals retain credited records as source windows roll forward (103.550821ms)
+✔ combat goals count only verified participation since creation and preserve manual legacy goals (122.401472ms)
+✔ normal core collection pages ESI killmails and updates automatic goals and linked stream widgets (358.549726ms)
+✔ HTTP goal edits enforce CSRF and character identity and stay off OBS routes (402.284011ms)
+✔ replay retains repeated systems and same-system observations without inventing intermediate travel (620.101451ms)
+✔ a stationary session replays one start position with no fabricated movement or long-dwell gap (81.784961ms)
+✔ event membership exactly matches report start/end cursor semantics, including delayed kills (74.459339ms)
+✔ explicit and owned combat locations outrank context, while unknown locations stay unplaced (97.102349ms)
+✔ missing history remains a gap; owned unknown systems retain honest coordinate coverage (121.270075ms)
+✔ replay includes more than one report page and clearly bounds huge event histories without truncating visits (609.991305ms)
+✔ replay suppresses routine location and protection events while preserving movement and source reports (120.052721ms)
+✔ routine events cannot crowd meaningful activity out of the cap or inflate incomplete coverage (123.023103ms)
+✔ live replay snapshots its end once, performs no writes and enforces pilot ownership (68.775788ms)
+✔ recorded J-Space movement replays after restart and live connection removal without restoring map entities (161.076354ms)
+✔ replay schematic includes each J-Space entrance and exit then returns to physical K-Space, including rewinds (0.578919ms)
+✔ repeated entrance or exit observations cannot switch replay projection during a stationary visit (0.286174ms)
+✔ fresh-profile reopen preserves owned travel, independent discovery, notes and activity (148.485857ms)
+✔ fresh observations discover outside sessions, retain activity, and obey Pilot independently of Universe (100.583993ms)
+✔ fresh starts avoid duplicate baselines, loops persist, and active recording resumes from durable evidence after restart (84.400837ms)
+✔ stale or missing captured starts acquire the first same-system fresh sample and retain the preceding coverage gap (376.171655ms)
+✔ pending or failed names cannot move observation ownership, timestamp, ship, sovereignty or activity across session changes (212.295855ms)
+✔ session read boundaries and equal-time ordering exclude unowned evidence and other Sessions/pilots (181.662596ms)
+✔ a same-millisecond end/start assigns accepted samples to the active session without inventing an activity transition (70.662333ms)
+✔ inactive and unchanged observations do not scan sovereignty to fabricate movement (50.509989ms)
+✔ real Core captures location receipt before deferred metadata/names and never transfers it to a later session (239.857325ms)
+✔ real Core retains delayed hull activity in the receipt session including replay end-cursor handling (188.6669ms)
+✔ real Core stale transport samples never become new session travel or discovery (129.903789ms)
+✔ a missing Session ship baseline starts with the first fresh same-ship sample without inventing a change (136.322483ms)
+✔ first ship observations persist across restart, cost no repeat writes and remain pilot-owned (42.509648ms)
+✔ first hull received before delayed names stays with the original Session (291.995965ms)
+✔ stale and paused ship delivery cannot establish a first hull, but re-enabled fresh evidence can (204.164611ms)
+✔ first-ship projection respects earlier/equal transitions and excludes out-of-window observations (34.178846ms)
+✔ Pilot pause during enrichment suppresses delivery, and a fresh sample after re-enable establishes the missing baseline (84.550691ms)
+✔ Pilot pause during enrichment retains the prior system until a fresh resumed transition, without duplicate delivery (90.285025ms)
+✔ route projection preserves frozen SQL/prepared rows, name precedence and synthetic-start metadata (40.611442ms)
+✔ route retains every visit, including quiet transits and repeated systems, clipped to the session (101.914662ms)
+✔ only in-visit alliance combat qualifies a buffer; same-system windows merge without recursive expansion (1.374169ms)
+✔ entry is inclusive, departure is exclusive, and alliance losses never add destroyed or unpriced-kill value (0.384261ms)
+✔ friendly attackers on alliance victims produce losses only, with each value counted on one side (0.698046ms)
+✔ saved v0.7.1 killmails recalculate exclusively on reopen and retain personal participation in alliance totals (174.227248ms)
+✔ ships preserve changes between two ships of the same hull and exclude other pilots and end boundary (62.025402ms)
+✔ LP uses per-corporation net balance changes, including spent/removed balances and valid empty snapshots (1.231477ms)
+✔ LP reconciliation retains original samples, persists the first later sample, and never keeps drifting (78.032705ms)
+✔ adjacent sessions flag overlapping LP sample ranges rather than crediting the same change twice (85.105004ms)
+✔ capture honours paused modules; missing starts retain event accounting without inventing route, alliance or LP data (105.823417ms)
+✔ alliance collection uses supported system/month queries, preserves quiet visits and survives cache/restart (117.724256ms)
+✔ public valuations enrich existing personal ESI records without duplicate events or losing values on later ingestion (59.458652ms)
+✔ month query planning crosses UTC year boundaries and deduplicates repeated visits (0.470639ms)
+✔ alliance page collection resumes a verification budget, handles late records and preserves totals on rate limits (318.39973ms)
+✔ prepared gate and jump planners preserve per-leg results while reusing one graph or grid (7.004464ms)
+✔ a fifty-stop production itinerary reads one computational snapshot projection and builds one graph (164.91527ms)
+✔ route badges preserve all source metadata without unrelated body decoding (197.453503ms)
+▶ production itinerary acceptance rejects routing evidence changes but permits unrelated writes
+  ✔ kill data (181.789129ms)
+  ✔ standings (123.254531ms)
+  ✔ pilot reauthorisation (130.879601ms)
+  ✔ pilot scopes (102.875652ms)
+  ✔ module policy (249.274128ms)
+  ✔ source expiry (82.578029ms)
+  ✔ unrelated pilot, display data and settings (75.860551ms)
+✔ production itinerary acceptance rejects routing evidence changes but permits unrelated writes (951.150721ms)
+▶ used private connection access, size, expiry and list evidence is revalidated before save
+  ✔ access (62.109597ms)
+  ✔ confirmation (61.438641ms)
+  ✔ size (61.34298ms)
+  ✔ mass (60.098067ms)
+  ✔ used list becomes disabled (57.515544ms)
+  ✔ used connection expires while source snapshots remain fresh (46.802378ms)
+  ✔ map removal cannot recreate a saved route (45.204637ms)
+  ✔ another map connection changes (45.654324ms)
+✔ used private connection access, size, expiry and list evidence is revalidated before save (442.507713ms)
+▶ used public reports and nominal limits retain freshness and mutation guards
+  ✔ unchanged (50.141373ms)
+  ✔ report changed (51.016623ms)
+  ✔ type changed (49.431844ms)
+  ✔ feed expired (46.630737ms)
+  ✔ camel timestamps (43.529682ms)
+✔ used public reports and nominal limits retain freshness and mutation guards (242.437222ms)
+ℹ tests 126
+ℹ suites 0
+ℹ pass 125
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3844.810607
+
+✖ failing tests:
+
+test at tests/kairo/contracts.test.mjs:34:1
+✖ HTTP isolation: private data needs a session; stream cannot reach admin; writes need CSRF (494.059577ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  404 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/a261d43da816/kairo-journey-retirement/tests/kairo/contracts.test.mjs:34:392)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 404,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

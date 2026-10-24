@@ -1,7 +1,19 @@
 'use strict';
+/**
+ * Independent read-only OBS renderer served by the Stream listener. `/events`
+ * supplies server-approved display projections; never fetch private `/api`
+ * snapshots or import dashboard Context here. All text enters through textContent.
+ *
+ * One document owns the EventSource, timer and DOM maps until unload. Geometry
+ * uses the saved 1920 × 1080 canvas; timestamps are epoch milliseconds. Only
+ * received/saved cover geometry can be restored on disconnect. See
+ * ../../docs/STREAMING.md for the security boundary and real-OBS limits.
+ */
 const stage=document.getElementById('stage'),toastLane=document.getElementById('toasts');
 let current={elements:[],opsec:{state:'unknown',hidden:true},paused:false,position:'top-right',toasts:[]},connected=false;
-const seen=new Set(),active=new Map(),widgets=new Map();
+const seen=new Set(),active=new Map(),widgets=new Map(),timeWidgets=new Map();
+let savedLayout='';
+function setText(node,value){const text=String(value??'');if(node.textContent!==text)node.textContent=text;}
 const pathname=location.pathname,onlyToasts=pathname==='/stream/toasts',onlyOpsec=pathname==='/stream/opsec',widgetId=pathname.startsWith('/stream/widget/')?pathname.split('/').pop():null;
 const two=n=>String(n).padStart(2,'0');
 function duration(end){if(!end)return '--:--:--';const n=Math.max(0,Math.floor((end-Date.now())/1000));return two(Math.floor(n/3600))+':'+two(Math.floor(n%3600/60))+':'+two(n%60);}
@@ -19,8 +31,12 @@ function makeWidget(e){
     const label=part('span','widget-label',node),content=part('div','content widget-value',node),detail=part('div','widget-detail',node),bar=part('div','widget-bar',node),fill=part('div','widget-fill',bar);
     return {node,label,content,detail,bar,fill};
 }
+// Reconcile by widget ID/kind instead of rebuilding the stage. Clock work is
+// limited to eligible visible widgets; paused output still retains OPSEC covers.
+// Disconnection always treats received cover geometry as Unknown/hidden.
 function render(){
     const opsec=connected?current.opsec:{state:'unknown',hidden:true},visible=new Set();
+    timeWidgets.clear();
     if(!onlyToasts) for(const e of current.elements||[]){
         if(widgetId&&e.id!==widgetId||onlyOpsec&&e.kind!=='opsec'||current.paused&&e.kind!=='opsec'||e.kind==='opsec'&&!opsec.hidden)continue;
         visible.add(e.id);let widget=widgets.get(e.id);
@@ -29,10 +45,11 @@ function render(){
         const {node,label,content,detail,bar,fill}=widget;
         node.dataset.context=opsec.state;node.dataset.appearance=e.appearance||'frame';
         Object.assign(node.style,{left:e.x+'px',top:e.y+'px',width:e.width+'px',height:e.height+'px',fontSize:e.fontSize+'px',background:e.kind==='opsec'?'#080b0f':e.kind==='panel'||e.appearance==='minimal'?`rgba(0,0,0,${e.opacity})`:'transparent'});node.style.setProperty('--accent',e.color);node.style.setProperty('--widget-opacity',e.opacity);
-        label.textContent=e.kind==='opsec'?e.label||'//IMPERIUM BROADCAST RULES':e.label;
-        content.textContent=e.kind==='opsec'?e.text||'//Element Disabled':elementText(e);
+        setText(label,e.kind==='opsec'?e.label||'//IMPERIUM BROADCAST RULES':e.label);
+        setText(content,e.kind==='opsec'?e.text||'//Element Disabled':elementText(e));
+        if((!e.bindingStatus||connected&&e.bindingStatus==='ready')&&(e.kind==='clock'||e.kind==='countdown'||e.startedAt))timeWidgets.set(e.id,e);
         const detailText=e.kind==='countdown'&&e.bindingStatus==='ready'?[e.text,e.detail].filter(Boolean).join(' · '):e.detail||'';
-        detail.textContent=detailText;detail.hidden=!detailText;bar.hidden=!['goal','progress'].includes(e.kind);
+        setText(detail,detailText);detail.hidden=!detailText;bar.hidden=!['goal','progress'].includes(e.kind);
         fill.style.width=Math.max(0,Math.min(100,e.value||0))+'%';
         if(e.kind==='divider')node.style.background=e.color;
         // Append only when ordering changes; ordinary data refreshes preserve
@@ -49,9 +66,12 @@ function playSound(){try{const ctx=new (window.AudioContext||window.webkitAudioC
 const signals={notification:['SIGNAL','+','info'],training:['TRAINING COMPLETE','↑','info'],industry:['INDUSTRY READY','▦','info'],objective:['OBJECTIVE COMPLETE','✓','success'],session:['FLIGHT LOG','↗','info'],kill:['KILL CONFIRMED','+','success'],loss:['LOSS RECORDED','−','danger'],navigation:['SYSTEM ENTERED','↗','info'],protection:['PROTECTION','!','warning']};
 // Older rules with an empty message can still use their saved wording.
 const toastText=t=>t.message?.trim()||t.title||'';
+// Server delivery determines showAt; expiry is enforced again locally. Keep at
+// most three visible toasts and 500 recently seen IDs to bound replay/DOM costs.
+// Timeouts own removal only; state reconciliation may remove the node earlier.
 function showToast(t){
     if(onlyOpsec||widgetId||current.paused||t.expiresAt<=Date.now())return;
-    if(active.has(t.id)){active.get(t.id).querySelector('.toast-message').textContent=toastText(t);return;}
+    if(active.has(t.id)){setText(active.get(t.id).querySelector('.toast-message'),toastText(t));return;}
     if(seen.has(t.id))return;seen.add(t.id);if(seen.size>500)seen.delete(seen.values().next().value);
     while(active.size>=3){const [id,node]=active.entries().next().value;node.remove();active.delete(id);}
     const node=document.createElement('article');node.className='toast kairo-toast';
@@ -63,10 +83,22 @@ function showToast(t){
     toastLane.append(node);active.set(t.id,node);if(t.sound&&!current.muted)playSound();
     setTimeout(()=>{node.remove();active.delete(t.id);},Math.max(0,t.expiresAt-Date.now()));
 }
-try{const saved=JSON.parse(localStorage.getItem('kairo-safe-layout')||'null');if(saved?.elements){current={...current,...saved,toasts:[],opsec:{state:'unknown',hidden:true}};render();}}catch{}
+// Recovery needs current geometry and static wording, not server timestamps or
+// volatile bound values. Covers are always restored UNKNOWN/fail-closed.
+function recoveryLayout(state){return {position:state.position,muted:state.muted,paused:state.paused,elements:(state.elements||[]).map(e=>{
+    if(!e.bindingStatus)return e;
+    const {text,detail,value,startedAt,endsAt,bindingStatus,...layout}=e;
+    return {...layout,text:'Source disconnected',detail:'',value:0,startedAt:0,endsAt:0,bindingStatus:'disconnected'};
+})};}
+function persistLayout(){try{const next=JSON.stringify(recoveryLayout(current));if(next!==savedLayout){localStorage.setItem('kairo-safe-layout',next);savedLayout=next;}}catch{}}
+try{const saved=JSON.parse(localStorage.getItem('kairo-safe-layout')||'null');if(saved?.elements){current={...current,...saved,toasts:[],opsec:{state:'unknown',hidden:true}};savedLayout=JSON.stringify(recoveryLayout(current));render();}}catch{}
+// A successful state packet, not socket-open alone, establishes output authority.
+// Disconnect clears notifications and marks bound text disconnected; saved cover
+// geometry remains available independently of live source authority.
 const events=new EventSource('/events');
-events.addEventListener('state',e=>{try{current=JSON.parse(e.data);connected=true;localStorage.setItem('kairo-safe-layout',JSON.stringify({...current,toasts:[]}));render();}catch{}});
+// Render protection immediately. Storage denial/quota failures must never block it.
+events.addEventListener('state',e=>{try{current=JSON.parse(e.data);connected=true;render();persistLayout();}catch{}});
 events.addEventListener('toast',e=>{try{showToast(JSON.parse(e.data));}catch{}});
 events.onerror=()=>{connected=false;current.toasts=[];toastLane.replaceChildren();active.clear();render();};
-setInterval(()=>{for(const e of current.elements||[]){const content=widgets.get(e.id)?.content;if(content&&(e.kind==='clock'||e.kind==='countdown'||e.startedAt))content.textContent=elementText(e);}},250);
+setInterval(()=>{for(const [id,e] of timeWidgets){const content=widgets.get(id)?.content;if(content)setText(content,elementText(e));}},250);
 addEventListener('resize',scale);scale();

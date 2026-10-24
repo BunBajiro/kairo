@@ -1,0 +1,195 @@
+id	surface	method	path	match	selector	source	line	coverage	owner	kind	notes
+HTTP-001	private-api	GET	/api/bootstrap	exact		server/index.mjs	157	C01	server/index.mjs	read	—
+HTTP-002	private-api	GET	/api/datasets	exact		server/index.mjs	159	C05	server/datasets.mjs	read	—
+HTTP-003	private-api	POST	/api/datasets/check	exact		server/index.mjs	160	C05	server/datasets.mjs	job-control	—
+HTTP-004	private-api	POST	/api/datasets/install	exact		server/index.mjs	164	C05	server/datasets.mjs	job-control	—
+HTTP-005	private-api	GET	/api/state	exact		server/index.mjs	168	C03	server/core.mjs;server/registry.mjs	read	—
+HTTP-006	private-api	GET	/api/events	exact		server/index.mjs	172	C03,C12	server/core.mjs:connectUI;server/sse.mjs	sse	—
+HTTP-007	private-api	POST	/api/sync	exact		server/index.mjs	181	C03	server/core.mjs;server/registry.mjs	job-control	—
+HTTP-008	private-api	GET	/api/markets	exact		server/index.mjs	190	C06	server/markets.mjs	read	—
+HTTP-009	private-api	POST	/api/markets/hubs	exact		server/index.mjs	191	C06	server/markets.mjs	local-command	—
+HTTP-010	private-api	POST	/api/markets/defaults	exact		server/index.mjs	192	C06	server/markets.mjs	local-command	—
+HTTP-011	private-api	DELETE	/api/markets/hubs/\d+	regex		server/index.mjs	193	C06	server/markets.mjs	local-command	—
+HTTP-012	private-api	POST	/api/markets/discover	exact		server/index.mjs	194	C06	server/markets.mjs	read-through-refresh	—
+HTTP-013	private-api	PUT	/api/markets/quick	exact		server/index.mjs	195	C06	server/markets.mjs	local-command	—
+HTTP-014	private-api	POST	/api/markets/scan	exact		server/index.mjs	196	C06	server/markets.mjs	job-control	—
+HTTP-015	private-api	POST	/api/markets/upgrade	exact		server/index.mjs	197	C06	server/markets.mjs	job-control	—
+HTTP-016	private-api	POST	/api/markets/cancel	exact		server/index.mjs	198	C06	server/markets.mjs	job-control	—
+HTTP-017	private-api	GET	/api/markets/categories	exact		server/index.mjs	199	C06	server/markets.mjs	read	—
+HTTP-018	private-api	GET	/api/markets/browse	exact		server/index.mjs	200	C06	server/markets.mjs	read	—
+HTTP-019	private-api	GET	/api/markets/item	exact		server/index.mjs	201	C06	server/markets.mjs	read	—
+HTTP-020	private-api	GET	/api/markets/report	exact		server/index.mjs	202	C06	server/markets.mjs	read	—
+HTTP-021	private-api	POST	/api/markets/type	exact		server/index.mjs	203	C06	server/markets.mjs	read-through-refresh	—
+HTTP-022	private-api	GET	/api/markets/imports	exact		server/index.mjs	204	C07	server/imports.mjs	read	—
+HTTP-023	private-api	PUT	/api/markets/imports/settings	exact		server/index.mjs	205	C07	server/imports.mjs	local-command	—
+HTTP-024	private-api	POST	/api/markets/imports/refresh	exact		server/index.mjs	206	C07	server/imports.mjs	read-through-refresh	—
+HTTP-025	private-api	GET	/api/markets/imports/analyse	exact		server/index.mjs	207	C07	server/imports.mjs	read	—
+HTTP-026	private-api	GET	/api/markets/imports/item	exact		server/index.mjs	208	C07	server/imports.mjs	read	—
+HTTP-027	private-api	POST	/api/markets/imports/quote	exact		server/index.mjs	209	C07	server/imports.mjs	query-post	—
+HTTP-028	private-api	POST	/api/markets/imports/plan-quote	exact		server/index.mjs	210	C07	server/imports.mjs	query-post	—
+HTTP-029	private-api	GET	/api/markets/imports/plans	exact		server/index.mjs	211	C07	server/imports.mjs	read	—
+HTTP-030	private-api	POST	/api/markets/imports/plans	exact		server/index.mjs	212	C07	server/imports.mjs	local-command	—
+HTTP-031	private-api	DELETE	/api/markets/imports/plans	exact		server/index.mjs	213	C07	server/imports.mjs	local-command	—
+HTTP-032	private-api	GET	/api/settings/polling	exact		server/index.mjs	214	C02	server/core.mjs:pollingSettings/savePolling	read	—
+HTTP-033	private-api	PUT	/api/settings/polling	exact		server/index.mjs	215	C02	server/core.mjs:pollingSettings/savePolling	local-command	—
+HTTP-034	private-api	PUT	/api/settings	exact		server/index.mjs	216	C01	server/index.mjs	local-command	—
+HTTP-035	private-api	POST	/api/auth/start	exact		server/index.mjs	229	C01	server/auth.mjs	auth-start	—
+HTTP-036	private-api	DELETE	/api/characters/*	prefix		server/index.mjs	235	C01	server/auth.mjs	local-and-provider-command	Prefix match consumes a selected path segment; additional suffix behavior requires method/path review.
+HTTP-037	private-api	PUT	/api/modules	exact		server/index.mjs	241	C03	server/core.mjs;server/registry.mjs	local-command	—
+HTTP-038	private-api	GET	/api/stream	exact		server/index.mjs	248	C13	server/stream.mjs;server/projections.mjs	read	—
+HTTP-039	private-api	PUT	/api/stream	exact		server/index.mjs	250	C13	server/stream.mjs;server/projections.mjs	local-command	—
+HTTP-040	private-api	GET	/api/stream/sources	exact		server/index.mjs	251	C13	server/stream.mjs;server/projections.mjs	read	—
+HTTP-041	private-api	POST	/api/stream/preview	exact		server/index.mjs	252	C13	server/stream.mjs;server/projections.mjs	query-post	—
+HTTP-042	private-api	GET	/api/obs	exact		server/index.mjs	253	C13	server/obs.mjs	read	—
+HTTP-043	private-api	GET	/api/obs/status	exact		server/index.mjs	254	C13	server/obs.mjs	read	—
+HTTP-044	private-api	PUT	/api/obs	exact		server/index.mjs	255	C13	server/obs.mjs	external-session-or-command	—
+HTTP-045	private-api	GET	/api/obs/targets	exact		server/index.mjs	256	C13	server/obs.mjs	read	—
+HTTP-046	private-api	GET	/api/obs/filters	exact		server/index.mjs	257	C13	server/obs.mjs	read	—
+HTTP-047	private-api	POST	/api/obs/reconnect	exact		server/index.mjs	258	C13	server/obs.mjs	external-session-or-command	—
+HTTP-048	private-api	POST	/api/obs/apply	exact		server/index.mjs	259	C13	server/obs.mjs	external-session-or-command	—
+HTTP-049	private-api	POST	/api/stream/test	exact		server/index.mjs	260	C13	server/stream.mjs;server/projections.mjs	output-command	—
+HTTP-050	private-api	PUT	/api/opsec	exact		server/index.mjs	265	C13	server/index.mjs;server/opsec.mjs	local-command	—
+HTTP-051	command-selector	PUT	/api/opsec	exact	policy object	server/index.mjs	270	C13	server/index.mjs:api	local-command	All variants converge on save/refresh at 284-286.
+HTTP-052	command-selector	PUT	/api/opsec	exact	manual only	server/index.mjs	275	C13	server/index.mjs:api	local-command	All variants converge on save/refresh at 284-286.
+HTTP-053	command-selector	PUT	/api/opsec	exact	legacy flat policy	server/index.mjs	279	C13	server/index.mjs:api	local-command	All variants converge on save/refresh at 284-286.
+HTTP-054	private-api	GET	/api/timeline	exact		server/index.mjs	288	C08	server/index.mjs:api	read	—
+HTTP-055	private-api	GET	/api/journey	exact		server/index.mjs	297	C09	server/places.mjs	read	—
+HTTP-056	private-api	PUT	/api/journey/connections/\d+	regex		server/index.mjs	298	C09	server/places.mjs	local-command	—
+HTTP-057	private-api	POST	/api/journey/enrich	exact		server/index.mjs	299	C09	server/places.mjs	read-through-refresh	—
+HTTP-058	private-api	GET	/api/places	exact		server/index.mjs	300	C09	server/index.mjs:api	read	—
+HTTP-059	private-api-boundary	ANY	/api/places/*	prefix		server/index.mjs	301	C09,C01	server/index.mjs:api	prefix-validation	Validate kind/entity and J-Space exclusion before GET/PUT/DELETE selection; unsupported methods then fall through.
+HTTP-060	private-api	GET	/api/places/*	prefix		server/index.mjs	303	C09	server/places.mjs;server/index.mjs	read	Outer predicate at 301; kind and entity ID are validated after splitting the path.
+HTTP-061	private-api	PUT	/api/places/*	prefix		server/index.mjs	304	C09	server/places.mjs;server/index.mjs	local-command	Outer predicate at 301; kind and entity ID are validated after splitting the path.
+HTTP-062	private-api	DELETE	/api/places/*	prefix		server/index.mjs	305	C09	server/places.mjs;server/index.mjs	local-command	Outer predicate at 301; kind and entity ID are validated after splitting the path.
+HTTP-063	private-api	GET	/api/goals/sources	exact		server/index.mjs	306	C08	server/goals.mjs;server/index.mjs	read	—
+HTTP-064	private-api	POST	/api/goals/type	exact		server/index.mjs	307	C08	server/goals.mjs;server/index.mjs	read-through-refresh	—
+HTTP-065	private-api	GET	/api/goals	exact		server/index.mjs	310	C08	server/goals.mjs;server/index.mjs	read	—
+HTTP-066	private-api	POST	/api/goals	exact		server/index.mjs	312	C08	server/goals.mjs;server/index.mjs	local-command	—
+HTTP-067	private-api	PUT	/api/goals/*	prefix		server/index.mjs	317	C08	server/index.mjs:api	local-command	Prefix match consumes a selected path segment; additional suffix behavior requires method/path review.
+HTTP-068	private-api	DELETE	/api/goals/*	prefix		server/index.mjs	338	C08	server/index.mjs:api	local-command	Prefix match consumes a selected path segment; additional suffix behavior requires method/path review.
+HTTP-069	private-api	GET	/api/notes	exact		server/index.mjs	346	C08	server/index.mjs:api	read	—
+HTTP-070	private-api	POST	/api/notes	exact		server/index.mjs	348	C08	server/index.mjs:api	local-command	—
+HTTP-071	private-api	DELETE	/api/notes/*	prefix		server/index.mjs	358	C08	server/index.mjs:api	local-command	Prefix match consumes a selected path segment; additional suffix behavior requires method/path review.
+HTTP-072	private-api	POST	/api/session	exact		server/index.mjs	365	C08	server/history.mjs;server/index.mjs	local-command	—
+HTTP-073	private-api	GET	/api/sessions	exact		server/index.mjs	366	C08	server/index.mjs:api	read	—
+HTTP-074	private-api	GET	/api/sessions/[^/]+/replay	regex		server/index.mjs	367	C08	server/session-replay.mjs:sessionReplay	read	—
+HTTP-075	private-api-boundary	ANY	/api/sessions/*	prefix		server/index.mjs	368	C08,C01	server/index.mjs:api	prefix-validation	Resolve character before GET/PUT selection; replay GET regex is earlier; unsupported methods then fall through.
+HTTP-076	private-api	GET	/api/sessions/*	prefix		server/index.mjs	368	C08	server/history.mjs:sessionReport;server/session-combat.mjs:sync;server/index.mjs	read-through-refresh	Replay GET exact regex precedes this prefix. GET may start Session combat sync unless noSync.
+HTTP-077	private-api	PUT	/api/sessions/*	prefix		server/index.mjs	369	C08	server/index.mjs:api	local-command	Replay GET exact regex precedes this prefix. GET may start Session combat sync unless noSync.
+HTTP-078	private-api	GET	/api/universe/static	exact		server/index.mjs	372	C09	server/universe.mjs	read	—
+HTTP-079	private-api	GET	/api/universe	exact		server/index.mjs	383	C09	server/universe.mjs	read	—
+HTTP-080	private-api	GET	/api/universe/jspace	exact		server/index.mjs	384	C10	server/universe-jspace.mjs	read	—
+HTTP-081	private-api	GET	/api/universe/jspace/summaries	exact		server/index.mjs	385	C10	server/universe-jspace.mjs	read	—
+HTTP-082	private-api	GET	/api/universe/jspace/search	exact		server/index.mjs	386	C10	server/universe-jspace.mjs	read	—
+HTTP-083	private-api	PUT	/api/universe/jspace/tracking/active	exact		server/index.mjs	387	C10	server/universe-jspace.mjs	local-command	—
+HTTP-084	private-api	GET	/api/universe/jspace/scope-options	exact		server/index.mjs	388	C09,C10	server/universe-owner-search.mjs;server/universe-jspace-scopes.mjs	read	—
+HTTP-085	private-api	GET	/api/universe/jspace/owners/search	exact		server/index.mjs	389	C09,C10	server/universe-owner-search.mjs;server/universe-jspace-scopes.mjs	read	—
+HTTP-086	private-api	POST	/api/universe/jspace/destinations	exact		server/index.mjs	390	C11,C10	server/universe-destinations.mjs;server/universe.mjs	query-post	—
+HTTP-087	private-api	POST	/api/universe/jspace/maps	exact		server/index.mjs	391	C10	server/universe-jspace.mjs	local-command	—
+HTTP-088	private-api	POST	/api/universe/jspace/import/preview	exact		server/index.mjs	392	C10	server/universe-jspace.mjs	query-post	—
+HTTP-089	private-api	POST	/api/universe/jspace/import	exact		server/index.mjs	393	C10	server/universe-jspace.mjs	local-command	—
+HTTP-090	private-api	POST	/api/universe/jspace/maps/[^/]+/commands	regex		server/index.mjs	394	C10	server/universe-jspace.mjs	local-command	—
+HTTP-091	private-api	POST	/api/universe/jspace/maps/[^/]+/duplicate	regex		server/index.mjs	395	C10	server/universe-jspace.mjs	local-command	—
+HTTP-092	private-api	GET	/api/universe/jspace/maps/[^/]+/export	regex		server/index.mjs	396	C10	server/universe-jspace.mjs	export	—
+HTTP-093	private-api	GET	/api/universe/jspace/maps/[^/]+	regex		server/index.mjs	400	C10	server/universe-jspace.mjs	read	—
+HTTP-094	private-api	DELETE	/api/universe/jspace/maps/[^/]+	regex		server/index.mjs	401	C10	server/universe-jspace.mjs	local-command	—
+HTTP-095	private-api	GET	/api/universe/operations	exact		server/index.mjs	402	C10,C09	server/universe-operations.mjs	read	—
+HTTP-096	private-api	GET	/api/universe/operations/config	exact		server/index.mjs	403	C10,C09	server/universe-operations.mjs	read	—
+HTTP-097	private-api	PUT	/api/universe/operations/config	exact		server/index.mjs	404	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-098	private-api	GET	/api/universe/log-directories	exact		server/index.mjs	405	C10,C09	server/universe-operations.mjs	read	—
+HTTP-099	private-api	POST	/api/universe/intel	exact		server/index.mjs	406	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-100	private-api	DELETE	/api/universe/intel/[^/]+	regex		server/index.mjs	407	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-101	private-api	POST	/api/universe/alerts/[^/]+/ack	regex		server/index.mjs	408	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-102	private-api	POST	/api/universe/signatures/preview	exact		server/index.mjs	409	C10,C09	server/universe-operations.mjs	query-post	—
+HTTP-103	private-api	POST	/api/universe/signatures/import	exact		server/index.mjs	410	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-104	private-api	POST	/api/universe/signatures/restore	exact		server/index.mjs	411	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-105	private-api	POST	/api/universe/upgrades/preview	exact		server/index.mjs	412	C10,C09	server/universe-operations.mjs	query-post	—
+HTTP-106	private-api	POST	/api/universe/upgrades/import	exact		server/index.mjs	413	C10,C09	server/universe-operations.mjs	local-command	—
+HTTP-107	private-api	GET	/api/universe/upgrades/export	exact		server/index.mjs	414	C10,C09	server/universe-operations.mjs	export	—
+HTTP-108	private-api	POST	/api/universe/signatures	exact		server/index.mjs	420	C10,C09	server/universe-operations.mjs:saveSignature	local-command	Expanded collection dispatch declared at 419.
+HTTP-109	private-api	POST	/api/universe/upgrades	exact		server/index.mjs	420	C10,C09	server/universe-operations.mjs:saveUpgrade	local-command	Expanded collection dispatch declared at 419.
+HTTP-110	private-api	DELETE	/api/universe/signatures/*	prefix		server/index.mjs	421	C10,C09	server/universe-operations.mjs:removeSignature	local-command	Expanded collection dispatch declared at 419; map_id query scopes the operation.
+HTTP-111	private-api	DELETE	/api/universe/upgrades/*	prefix		server/index.mjs	421	C10,C09	server/universe-operations.mjs:removeUpgrade	local-command	Expanded collection dispatch declared at 419; map_id query scopes the operation.
+HTTP-112	private-api	POST	/api/universe/operations/refresh	exact		server/index.mjs	423	C10,C09	server/universe-operations.mjs	read-through-refresh	—
+HTTP-113	private-api	GET	/api/universe/feeds	exact		server/index.mjs	424	C09	server/universe-feeds.mjs	read	—
+HTTP-114	private-api	GET	/api/universe/feeds/config	exact		server/index.mjs	425	C09	server/universe-feeds.mjs	read	—
+HTTP-115	private-api	PUT	/api/universe/feeds/config	exact		server/index.mjs	426	C09	server/universe-feeds.mjs	local-command	—
+HTTP-116	private-api	POST	/api/universe/feeds/refresh	exact		server/index.mjs	427	C09	server/universe-feeds.mjs	read-through-refresh	—
+HTTP-117	private-api	POST	/api/universe/feeds/import	exact		server/index.mjs	428	C09	server/universe-feeds.mjs	local-command	—
+HTTP-118	private-api	PUT	/api/universe/feeds/storms	exact		server/index.mjs	429	C09	server/universe-feeds.mjs	local-command	—
+HTTP-119	private-api	GET	/api/universe/navigation	exact		server/index.mjs	430	C10,C11	server/universe-navigation.mjs	read	—
+HTTP-120	private-api	PUT	/api/universe/navigation/itinerary	exact		server/index.mjs	431	C10,C11	server/universe-navigation.mjs	local-command	—
+HTTP-121	private-api	DELETE	/api/universe/navigation/itinerary	exact		server/index.mjs	432	C10,C11	server/universe-navigation.mjs	local-command	—
+HTTP-122	private-api	DELETE	/api/universe/navigation/stops/[^/]+	regex		server/index.mjs	433	C10,C11	server/universe-navigation.mjs	local-command	—
+HTTP-123	private-api	POST	/api/universe/navigation/bridges	exact		server/index.mjs	435	C10,C11	server/universe-navigation.mjs:discoverBridges	read-through-query-post	Expanded action dispatch declared at 434; plan saves computed plan, waypoints persist dispatch status.
+HTTP-124	private-api	POST	/api/universe/navigation/plan	exact		server/index.mjs	435	C10,C11	server/universe-navigation.mjs:plan	local-plan-cache-write	Expanded action dispatch declared at 434; plan saves computed plan, waypoints persist dispatch status.
+HTTP-125	private-api	POST	/api/universe/navigation/reachability	exact		server/index.mjs	435	C10,C11	server/universe-navigation.mjs:reachability	query-post	Expanded action dispatch declared at 434; plan saves computed plan, waypoints persist dispatch status.
+HTTP-126	private-api	POST	/api/universe/navigation/reorder	exact		server/index.mjs	435	C10,C11	server/universe-navigation.mjs:reorderStops	local-command	Expanded action dispatch declared at 434; plan saves computed plan, waypoints persist dispatch status.
+HTTP-127	private-api	POST	/api/universe/navigation/waypoints	exact		server/index.mjs	435	C10,C11	server/universe-navigation.mjs:sendWaypoints	external-command	Expanded action dispatch declared at 434; plan saves computed plan, waypoints persist dispatch status.
+HTTP-128	private-api	POST	/api/universe/links/preview	exact		server/index.mjs	437	C10	server/universe.mjs	query-post	—
+HTTP-129	private-api	GET	/api/universe/link-lists/[^/]+/export	regex		server/index.mjs	438	C10	server/universe.mjs	export	—
+HTTP-130	private-api	GET	/api/universe/politics/config	exact		server/index.mjs	443	C09	server/universe-politics.mjs;server/index.mjs	read	—
+HTTP-131	private-api	PUT	/api/universe/politics/config	exact		server/index.mjs	444	C09	server/universe-politics.mjs;server/index.mjs	local-command	—
+HTTP-132	private-api	GET	/api/universe/politics	exact		server/index.mjs	449	C09	server/universe-politics.mjs;server/index.mjs	read	—
+HTTP-133	private-api	POST	/api/universe/politics	exact		server/index.mjs	450	C09	server/universe-politics.mjs;server/index.mjs	read-through-refresh	—
+HTTP-134	private-api	GET	/api/universe/politics/alliances	exact		server/index.mjs	454	C09	server/universe-politics.mjs;server/index.mjs	read	—
+HTTP-135	private-api	POST	/api/universe/politics/alliances/resolve	exact		server/index.mjs	455	C09	server/universe-politics.mjs;server/index.mjs	read-through-refresh	—
+HTTP-136	private-api	GET	/api/universe/systems/\d+	regex		server/index.mjs	473	C09	server/universe.mjs	read	—
+HTTP-137	private-api	POST	/api/universe/search	exact		server/index.mjs	474	C09	server/universe.mjs	read-through-query-post	—
+HTTP-138	private-api	POST	/api/universe/route	exact		server/index.mjs	480	C11	server/universe.mjs;server/universe-routing.mjs	query-post	—
+HTTP-139	private-api	POST	/api/universe/jump-plan	exact		server/index.mjs	481	C11	server/universe.mjs;server/universe-routing.mjs	query-post	—
+HTTP-140	private-api	POST	/api/universe/links/prune-expired	exact		server/index.mjs	482	C10	server/universe.mjs	local-command	—
+HTTP-141	private-api	POST	/api/universe/structures/verify	exact		server/index.mjs	483	C09	server/universe.mjs	read-through-refresh	—
+HTTP-142	private-api	POST	/api/universe/link-lists	exact		server/index.mjs	485	C10	server/universe.mjs:saveLinkList	local-command	Expanded collection dispatch declared at 484.
+HTTP-143	private-api	POST	/api/universe/links	exact		server/index.mjs	485	C10	server/universe.mjs:saveLink	local-command	Expanded collection dispatch declared at 484.
+HTTP-144	private-api	POST	/api/universe/pins	exact		server/index.mjs	485	C10	server/universe.mjs:savePin	local-command	Expanded collection dispatch declared at 484.
+HTTP-145	private-api	POST	/api/universe/views	exact		server/index.mjs	485	C10	server/universe.mjs:saveView	local-command	Expanded collection dispatch declared at 484.
+HTTP-146	private-api	DELETE	/api/universe/link-lists/*	prefix		server/index.mjs	486	C10	server/universe.mjs:deleteLinkList	local-command	Expanded collection dispatch declared at 484; selected ID segment is decoded.
+HTTP-147	private-api	DELETE	/api/universe/links/*	prefix		server/index.mjs	486	C10	server/universe.mjs:deleteLink	local-command	Expanded collection dispatch declared at 484; selected ID segment is decoded.
+HTTP-148	private-api	DELETE	/api/universe/pins/*	prefix		server/index.mjs	486	C10	server/universe.mjs:deletePin	local-command	Expanded collection dispatch declared at 484; selected ID segment is decoded.
+HTTP-149	private-api	DELETE	/api/universe/views/*	prefix		server/index.mjs	486	C10	server/universe.mjs:deleteView	local-command	Expanded collection dispatch declared at 484; selected ID segment is decoded.
+HTTP-150	private-api	GET	/api/export	exact		server/index.mjs	490	C04	server/index.mjs;server/universe.mjs:exportUserData	export	—
+HTTP-151	private-api	GET	/api/modules/*	prefix		server/index.mjs	494	C03	server/core.mjs;server/registry.mjs	read	Prefix match consumes a selected path segment; additional suffix behavior requires method/path review.
+HTTP-152	private-api-boundary	ANY	unmatched /api/*	fallback		server/index.mjs	499	C01	server/index.mjs:api	not-found	404 after private API dispatch; no inferred HEAD/OPTIONS aliases.
+HTTP-153	dashboard	GET	non-/api/* on localhost:<port>	condition		server/index.mjs	525	C01	server/index.mjs:handleDashboard	redirect	Before callback and private API dispatch; redirects to 127.0.0.1 origin with path/query.
+HTTP-154	dashboard	ANY	/auth/eve/callback	exact		server/index.mjs	526	C01	server/auth.mjs:callback	local-and-provider-command	No method predicate in this branch; existing session and OAuth state/code path; localhost GET redirect is earlier.
+HTTP-155	dashboard	ANY	/api/*	prefix		server/index.mjs	546	C01	server/index.mjs:api	dispatch-boundary	Session and same-origin guard; non-GET API requests additionally need CSRF at 153-156.
+HTTP-156	dashboard	ANY	/stream*	prefix		server/index.mjs	552	C13,C01	server/index.mjs:handleDashboard	redirect	No method predicate; earlier localhost GET redirect may apply; target uses path without query.
+HTTP-157	dashboard	GET|HEAD	/	exact		server/index.mjs	558	C01,C12	server/index.mjs:establish/staticFile	session-and-asset	After callbacks/API/stream dispatch; absent session established before static serving.
+HTTP-158	dashboard	GET|HEAD	remaining path	fallback		server/index.mjs	560	C01,C12	server/index.mjs:staticFile	asset	Lookup exact path then .html then /index.html; other remaining methods return 405 at 556.
+HTTP-159	broadcast-boundary	non-GET	all paths	guard		server/index.mjs	580	C13,C01	server/index.mjs:broadcast	method-rejection	405 before path dispatch.
+HTTP-160	broadcast	GET	/state	exact		server/index.mjs	583	C13	server/stream.mjs:state	public-read	Loopback stream listener; no dashboard session; only approved Stream projection.
+HTTP-161	broadcast	GET	/events	exact		server/index.mjs	585	C13	server/stream.mjs:connect	public-sse	Loopback stream listener; no dashboard session.
+HTTP-162	broadcast	GET	/	exact		server/index.mjs	589	C13	server/index.mjs:staticFile	asset	Serves public/stream/index.html.
+HTTP-163	broadcast	GET	/stream*	prefix		server/index.mjs	589	C13	server/index.mjs:staticFile	asset	Alias prefix serves public/stream/index.html.
+HTTP-164	broadcast	GET	/render.css	exact		server/index.mjs	591	C13	server/index.mjs:staticFile	asset	Fixed public/stream asset allowlist.
+HTTP-165	broadcast	GET	/render.js	exact		server/index.mjs	591	C13	server/index.mjs:staticFile	asset	Fixed public/stream asset allowlist.
+HTTP-166	broadcast	GET	/widgets.css	exact		server/index.mjs	591	C13	server/index.mjs:staticFile	asset	Fixed public/stream asset allowlist.
+HTTP-167	broadcast-boundary	GET	unmatched path	fallback		server/index.mjs	593	C13	server/index.mjs:broadcast	not-found	404 after allowlisted routes.
+HTTP-168	command-selector	POST	/api/session	exact	action=start	server/history.mjs	30	C08	server/history.mjs:changeSession	local-command	Endpoint dispatch server/index.mjs:365.
+HTTP-169	command-selector	POST	/api/session	exact	action=end	server/history.mjs	38	C08	server/history.mjs:changeSession	local-command	Endpoint dispatch server/index.mjs:365.
+HTTP-170	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=pilot.add	server/universe-jspace.mjs	657	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-171	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=pilot.tracking	server/universe-jspace.mjs	658	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-172	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=pilot.remove	server/universe-jspace.mjs	659	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-173	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=map.update	server/universe-jspace.mjs	660	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-174	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=group.add	server/universe-jspace.mjs	667	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-175	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=node.save	server/universe-jspace.mjs	668	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-176	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=nodes.position	server/universe-jspace.mjs	675	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-177	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=node.remove	server/universe-jspace.mjs	685	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-178	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=nodes.remove	server/universe-jspace.mjs	686	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-179	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=connection.save	server/universe-jspace.mjs	697	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-180	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=connection.remove	server/universe-jspace.mjs	698	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-181	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=passage.add	server/universe-jspace.mjs	705	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-182	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=passage.save	server/universe-jspace.mjs	706	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-183	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=passage.remove	server/universe-jspace.mjs	711	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-184	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=observation.save	server/universe-jspace.mjs	715	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-185	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=observation.remove	server/universe-jspace.mjs	722	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-186	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=comment.add	server/universe-jspace.mjs	726	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-187	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=comment.remove	server/universe-jspace.mjs	727	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-188	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=ping.add	server/universe-jspace.mjs	731	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-189	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=ping.remove	server/universe-jspace.mjs	732	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-190	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=signature.save	server/universe-jspace.mjs	733	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-191	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=signature.remove	server/universe-jspace.mjs	747	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-192	command-selector	POST	/api/universe/jspace/maps/[^/]+/commands	regex	op=undo	server/universe-jspace.mjs	752	C10	server/universe-jspace.mjs:command	local-command	Endpoint dispatch server/index.mjs:394; nested op selector, not another HTTP route.
+HTTP-193	scaffold	delegated	/_vinext/image	exact		worker/index.ts	33	C16	vinext/server/image-optimization	retained-scaffold	Worker-only optional endpoint, requires ASSETS/IMAGES; local distribution does not run worker.
+HTTP-194	scaffold	delegated	remaining path	fallback		worker/index.ts	44	C16	vinext/server/app-router-entry	retained-scaffold	Framework handler; not a second Kairo local API.

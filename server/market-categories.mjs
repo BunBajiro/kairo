@@ -1,9 +1,36 @@
+/**
+ * Offline market-group ancestry, packaged volumes and image variants shared by
+ * Market Browser and Import Analyser. Dataset generation is selected at process
+ * startup; refreshing it requires a new runtime. See ../docs/DATASETS.md.
+ */
 import {readFileSync} from 'node:fs';
-const bundled=JSON.parse(readFileSync(new URL('./data/market-categories.json',import.meta.url),'utf8'));
+import {datasetFile} from './dataset-paths.mjs';
+let bundledIndex;
+function defaultIndex(){return bundledIndex ||= indexCategories(JSON.parse(readFileSync(datasetFile('market-categories.json'),'utf8')));}
+// Default consumers share one process-selected dataset and index. Importing Core
+// does no taxonomy IO; the first market operation prepares it exactly once.
+const bundled=Object.freeze({
+ ids:category=>defaultIndex().ids(category),
+ get known(){return defaultIndex().known;},
+ overview:items=>defaultIndex().overview(items),
+ type:id=>defaultIndex().type(id),
+ imageVariant:id=>defaultIndex().imageVariant(id),
+});
 
-// CCP market groups are separate from inventory groups. Keep their full ancestry
-// and type assignments, so existing order books need no re-scan or per-item ESI call.
-export function createMarketCategories(catalog=bundled){
+/**
+ * CCP market groups differ from inventory groups. Retained ancestry/type IDs
+ * let existing books use categories without a re-scan or per-item ESI call.
+ * Return an index whose ids()/known are JSON arrays for SQLite json_each, not JS
+ * arrays. type() exposes nullable packaged m³ and leaf-to-root ancestry. Unknown
+ * types retain a generic icon; invalid category IDs or malformed ancestry throw.
+ */
+export function createMarketCategories(catalog){
+ if(catalog===undefined)return bundled;
+ // Explicit catalogs have separate ownership; mutation by their caller cannot
+ // change a prepared index or any default consumer.
+ return indexCategories({...catalog,groups:catalog.groups.map(g=>({...g,types:[...g.types]})),volumes:{...catalog.volumes}});
+}
+function indexCategories(catalog){
  const groups=new Map(catalog.groups.map(g=>[g.id,g])),owner=new Map(),ancestors=new Map(),branches=new Map();
  for(const g of groups.values()){
   const path=[],seen=new Set();let node=g;
@@ -17,5 +44,8 @@ export function createMarketCategories(catalog=bundled){
   return {source:catalog.source,build:catalog.build,groups:[...groups.values()].map(g=>({id:g.id,parentId:g.parentId,name:g.name,count:counts.get(g.id)||0})),total:items.length,unknown};
  }
  function type(id){const path=(ancestors.get(owner.get(id))||[]).map(id=>groups.get(id));return {path:path.map(g=>({id:g.id,name:g.name})),root:path.at(-1)?.id||0,volume:catalog.volumes?.[id]??null};}
- return {ids,known,overview,type};
+ // Blueprints and reaction formulas use the image service's bp resource.
+ // Resolve from existing ancestry without allocating a path for each image.
+ const imageVariant=id=>ancestors.get(owner.get(Number(id)))?.at(-1)===2?'bp':'icon';
+ return {ids,known,overview,type,imageVariant};
 }

@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Cached taxonomy navigation for the shared market desk. Group counts include
+ * descendants; selecting a group is independent of expanding its children. Values
+ * are string group IDs or the reserved all/unknown/choose destinations. The server
+ * supplies category metadata; this tree performs no per-type lookups.
+ * See ../../docs/MARKETS.md.
+ */
 import {useMemo,useState} from 'react';
 import {ChevronRight,Folder,FolderOpen,Layers,Package} from 'lucide-react';
 import {Collapsible,CollapsibleTrigger,CollapsibleContent} from '@/components/ui/collapsible';

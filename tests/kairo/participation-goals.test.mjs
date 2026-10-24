@@ -11,7 +11,6 @@ import {createBus} from '../../server/bus.mjs';
 import {createStream,defaultStream} from '../../server/stream.mjs';
 import {bindingProjection} from '../../server/projections.mjs';
 import {sessionReport} from '../../server/history.mjs';
-import {journeyData,setJourneyConnection} from '../../server/places.mjs';
 import {allScopes,catalog} from '../../server/modules/catalog.mjs';
 import {startKairo} from '../../server/index.mjs';
 
@@ -59,13 +58,6 @@ test('late assisted kills repair archived reports without historic toasts or dup
  await combat.ingest(42,[ref(k),ref(other),ref(boundary)],'zkillboard');await combat.ingest(42,[ref(k)]);
  const r=sessionReport(store,'fleet',42);assert.equal(r.stats.kills,1);assert.equal(r.stats.losses,0);assert.equal(r.events[0].payload.participation,true);assert.equal(stream.state().toasts.length,0);assert.equal(combat.recent(42).length,2);
  store.saveSnapshot(42,'killmails',sample([]));assert.equal(sessionReport(store,'fleet',42).stats.kills,1);
-});
-test('hiding a filament connection is reversible, character-scoped and never bridges neighbouring visits',async t=>{
- const {dir,store}=await storage(t),put=store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)'),at=iso(Date.now());
- const a=Number(put.run(42,1,'A',at).lastInsertRowid);put.run(43,99,'Other pilot',at);const b=Number(put.run(42,2,'B',at).lastInsertRowid),c=Number(put.run(42,3,'C',at).lastInsertRowid);
- setJourneyConnection(store,42,b,true);let data=journeyData(store,42);assert.equal(data.visits.length,3);assert.deepEqual(data.connections.map(c=>[c.from_system_id,c.to_system_id,c.hidden]),[[2,3,false],[1,2,true]]);
- assert.throws(()=>setJourneyConnection(store,43,b,true));assert.throws(()=>setJourneyConnection(store,42,a,true));assert.throws(()=>setJourneyConnection(store,42,c,'true'));
- const reopened=openStore(dir);try{assert.equal(journeyData(reopened,42).connections.find(c=>c.id===b).hidden,true);setJourneyConnection(reopened,42,b,false);assert.equal(journeyData(reopened,42).connections.some(c=>c.hidden),false);assert.equal(reopened.db.prepare("SELECT COUNT(*) n FROM migrations WHERE id='core-v4'").get().n,1);}finally{reopened.close();}
 });
 test('wallet goals follow fresh data, pause on stale snapshots and complete once without regressing',async t=>{
  const {store}=await storage(t),service=createGoals(store,auth,publish(store));store.saveSnapshot(42,'wallet',sample(500));
@@ -120,7 +112,7 @@ test('normal core collection pages ESI killmails and updates automatic goals and
  const core=await createCore(store,auth,{request,paged:async path=>{calls.push(path);return sample(path.endsWith('/killmails/recent')?[ref(k)]:[]);},names:async()=>({587:'Rifter'}),health:()=>({})},dir,{noSync:true});
  try{const c=defaultStream();c.elements=[{id:'goal',kind:'progress',visible:true,binding:'goal.progress',sourceId:g.id,characterId:42}];core.stream.save(c);await core.sync(42);assert.ok(calls.includes('/characters/42/killmails/recent'));assert.equal(goal(store,g.id).done,1);assert.equal(core.stream.state().elements[0].value,100);assert.equal(core.snapshots(42).killmails.data[0].result,'kill');}finally{await core.close();}
 });
-test('HTTP goal and connection edits enforce CSRF and character identity and stay off OBS routes',async t=>{
+test('HTTP goal edits enforce CSRF and character identity and stay off OBS routes',async t=>{
  const dir=await mkdtemp(join(tmpdir(),'kairo-v4-http-')),app=await startKairo({port:18430,streamPort:18431,dataDir:dir,noSync:true,fetcher:async()=>new Response('{}')});t.after(async()=>{await app.close();await rm(dir,{recursive:true,force:true});});
  for(const id of [42,43])app.store.db.prepare('INSERT INTO characters(id,name,scopes,tokens) VALUES(?,?,?,?)').run(id,'Pilot '+id,JSON.stringify(allScopes),'{}');
  app.store.saveSnapshot(42,'wallet',sample(200));const cookie=(await fetch(app.origin)).headers.get('set-cookie').split(';')[0],boot=await fetch(app.origin+'/api/bootstrap',{headers:{Cookie:cookie}}).then(r=>r.json()),headers={Cookie:cookie,Origin:app.origin,'Content-Type':'application/json','X-Kairo-CSRF':boot.csrf};
@@ -129,8 +121,6 @@ test('HTTP goal and connection edits enforce CSRF and character identity and sta
  const goals=await req('/goals?character=42').then(r=>r.json());assert.equal(goals[0].source,'wallet.balance');assert.equal(goals[0].progress,200);
  assert.equal((await req('/goals/'+id+'?character=42','PUT',{progress:500})).status,400);assert.equal((await req('/goals/'+id+'?character=43','DELETE')).status,400);
  assert.equal((await fetch(app.origin+'/api/goals?character=42',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:'{}'})).status,403);
- const put=app.store.db.prepare('INSERT INTO visits(character_id,system_id,name,at) VALUES(?,?,?,?)');put.run(42,1,'A','2026-01-01');const to=Number(put.run(42,2,'B','2026-01-02').lastInsertRowid);
- assert.equal((await req('/journey/connections/'+to+'?character=43','PUT',{hidden:true})).status,400);assert.equal((await req('/journey/connections/'+to+'?character=42','PUT',{hidden:true})).status,200);
- for(const path of ['/api/goals/sources','/api/goals/type','/api/journey/connections/'+to])assert.equal((await fetch(app.streamOrigin+path)).status,404);
+ for(const path of ['/api/goals/sources','/api/goals/type'])assert.equal((await fetch(app.streamOrigin+path)).status,404);
  const sources=await req('/goals/sources?character=42').then(r=>r.json());assert.equal(sources.sources.length,8);
 });

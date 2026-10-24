@@ -1,0 +1,42 @@
+{
+  "finding": "EC-09",
+  "status": "workspace correction independently reviewed; banking and hosted fixed browser/type/build gates pending",
+  "boundary": "An earlier accepted Session details PUT can finish after a later save from a reopened dialog and overwrite its durable label/notes.",
+  "baseline": {
+    "source": "214f30b669794541f9d9e9bdbe7c2311fcda1fe6",
+    "build": 96,
+    "scenario": "session-accepted-navigation",
+    "contexts": [
+      "Chrome1600",
+      "Chrome390",
+      "Firefox1600",
+      "Firefox390"
+    ],
+    "cases": 4,
+    "checks": 32,
+    "pass": 28,
+    "fail": 4,
+    "failures": "Only durable accepted-write ordering fails: earlier label/notes replace latest. Current editor, explicit failure/retry, reopen and four-write controls pass.",
+    "raw_checks_sha256": "96f5cf676322b5016ba58dad0e5aad16c9b635132e566023ff34667a937c8c4b"
+  },
+  "correction": {
+    "source": "components/kairo/session-report.tsx",
+    "source_sha256": "bb282ebe7eadbe5c7fe7e0c8d194122712edee48c7acc337233df0f1a26b15ab",
+    "behavior": "Serialize captured scalar label/notes by Session URL across remounts; preserve caller rejection and existing generation guards; release rejected tails and remove idle map entries.",
+    "request_bound": "One PUT per explicit accepted save; no added GET, retry or polling."
+  },
+  "regression": {
+    "source": "tests/focused-session-ownership-scenarios.mjs",
+    "sha256": "c541563017d29d379af0b2f854c82a35c237b64b88fc8a2188273d46895bde69",
+    "assertions": "Original eight checks per context unchanged."
+  },
+  "review": {
+    "owner": "session_save_review",
+    "independent": "root",
+    "disposition": "Accepted narrow per-URL payload queue, caller rejection, identity-checked cleanup and unchanged presentation ownership. Hosted fixed evidence remains required."
+  },
+  "local_checks": [
+    "git diff --check passes"
+  ],
+  "scope": "Same browser dashboard lifetime; cross-tab concurrency and live EVE behavior are not claimed."
+}

@@ -1,0 +1,103 @@
+{
+  "status": "source/dependency correction independently accepted; combined candidate gates and banking tracked by coordinator",
+  "application_version": "0.8.0-rc.17",
+  "node": "24.21.0",
+  "npm": "11.19.0",
+  "embedded_undici": "7.29.1",
+  "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9",
+  "original_lock_sha256": "ee62865dfc3f03b1aca7978d205583f4d67c0c0e4a6fd489fa6c1baa0b6f78b2",
+  "source_changes": {
+    "direct_packages": {
+      "react": "19.2.9",
+      "react-dom": "19.2.9",
+      "react-server-dom-webpack": "19.2.9",
+      "@vitejs/plugin-rsc": "0.5.38",
+      "vite": "8.0.16"
+    },
+    "engines": {
+      "node": ">=24.21.0"
+    },
+    "changed_lock_records": 39,
+    "unchanged_optional_libc_constraints_preserved": 40,
+    "plugin_vendored_rsc": "19.3.1"
+  },
+  "checks": {
+    "bounded_clean_install": {
+      "exit_code": 0,
+      "installed_packages": 676,
+      "receipt": {
+        "lockfile_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9",
+        "node": "v24.21.0",
+        "platform": "linux-x64"
+      },
+      "log": "dependency-clean-install.txt"
+    },
+    "types": {
+      "exit_code": 0,
+      "command": "npm run check:kairo",
+      "note": "Same dependency versions; preceding lock differed only in the subsequently restored platform libc constraints."
+    },
+    "fresh_build": {
+      "exit_code": 0,
+      "log": "dependency-fresh-build.txt"
+    },
+    "packaging_regressions": {
+      "passed": 16,
+      "log": "dependency-package-tests.txt"
+    },
+    "notices": {
+      "entries": 85,
+      "empty_entries_covered_by_supplement": [
+        [
+          "@radix-ui/react-compose-refs",
+          "1.1.2"
+        ],
+        [
+          "@vitejs/plugin-rsc",
+          "0.5.38"
+        ],
+        [
+          "react-remove-scroll-bar",
+          "2.3.8"
+        ],
+        [
+          "victory-vendor",
+          "37.3.6"
+        ]
+      ],
+      "supplement_versions_and_text_digests_valid": true,
+      "sha256": "10f80210126ef1dff48935813f0457f5838a5dd33e9fda4f473c76f7de4cc04e"
+    }
+  },
+  "audit": {
+    "before": {
+      "info": 0,
+      "low": 1,
+      "moderate": 6,
+      "high": 24,
+      "critical": 1,
+      "total": 32
+    },
+    "after": {
+      "info": 0,
+      "low": 1,
+      "moderate": 6,
+      "high": 20,
+      "critical": 1,
+      "total": 28
+    },
+    "unique_advisory_urls_before": 81,
+    "unique_advisory_urls_after": 75,
+    "removed_package_entries": [
+      "nanoid",
+      "react-server-dom-webpack",
+      "source-map-js",
+      "vite"
+    ],
+    "baseline_sha256": "6f71c873591c3ce397c388af8adc12cffe4b4ee2b07ad8d526fce89f2d71cb56",
+    "after_sha256": "90aa3fa747ff42c4140af11feeaad84248ce3c3bf69b5a4dc684d246c210a4b3",
+    "limit": "Registry audit omits current upstream RSC/plugin advisories; primary-source patch requirements separately verified. Remaining Next/tool findings are triaged in ../dependencies.md."
+  },
+  "independent_reviewer": "docs_tests: accepted final lock scope, exact versions/peer compatibility, required transitive changes, preserved libc constraints, clean install/build/16 packaging controls, actual vendored RSC19.3.1, and complete version-matched notices",
+  "combined_runtime_check": "Coordinator reports 1246/1246 under official Node24.21.0; exact final combined source/artifact identity belongs to coordinator receipt."
+}

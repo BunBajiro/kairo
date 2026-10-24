@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Linux-only dependency installer. Hold one project lock across cache selection,
+# tarball preflight and the single bounded npm ci; failures keep their exit code.
+# A matching seed is a cache preference, not proof that every package is cached.
+# The install receipt is written only after npm succeeds and vinext is executable.
+# See docs/DEVELOPMENT.md; this helper neither builds nor packages the application.
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

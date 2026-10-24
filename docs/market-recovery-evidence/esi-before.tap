@@ -1,0 +1,370 @@
+✖ validated malformed fresh reads reject before cache admission and recover through ordinary paced transport (30.726724ms)
+▶ malformed warm and expired cached bodies are evicted before they can be reused or revalidated with 304
+  ✖ warm (22.300903ms)
+  ✖ expired (18.25644ms)
+✖ malformed warm and expired cached bodies are evicted before they can be reused or revalidated with 304 (41.212195ms)
+✖ a validated consumer independently rejects an unvalidated shared response without failing its other consumer (20.456216ms)
+✖ rejecting an observed cache row never deletes a newer replacement (18.199039ms)
+✖ invalid network replacement preserves a good previous observation and can safely revalidate it (17.43312ms)
+✖ invalid JSON is a rejected representation without synthetic retry cooldown (24.777095ms)
+▶ malformed responses preserve explicit Retry-After and shared low-budget cooldowns
+  ✖ {"Retry-After":"90"} (23.25348ms)
+  ✖ {"X-Ratelimit-Group":"markets","X-Ratelimit-Remaining":"9","Retry-After":"90"} (17.8092ms)
+✖ malformed responses preserve explicit Retry-After and shared low-budget cooldowns (42.016848ms)
+✖ a cancelled retry cannot send or poison another eligible validated caller (17.401476ms)
+✔ a late private validated consumer cannot invalidate a replacement connection cache (18.465977ms)
+✖ a validated join classifies malformed JSON from an unvalidated flight without synthetic backoff (16.473968ms)
+▶ rejected warm and coalesced unvalidated responses preserve their provider Retry-After
+  ✖ warm (17.437218ms)
+  ✖ coalesced (15.686458ms)
+✖ rejected warm and coalesced unvalidated responses preserve their provider Retry-After (33.682512ms)
+✖ unexpected 304 without a reusable representation rejects and recovers with a full read (18.067469ms)
+▶ validated fetch and body transport failures retain ordinary backoff without classifying auth errors as retryable
+  ✖ fetch (20.490766ms)
+  ✖ body (15.065059ms)
+  ✖ timeout (14.598446ms)
+  ✖ body-timeout (17.363003ms)
+✖ validated fetch and body transport failures retain ordinary backoff without classifying auth errors as retryable (83.501701ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 1
+ℹ fail 22
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 458.885495
+
+✖ failing tests:
+
+test at tests/kairo/esi-validation.test.mjs:22:1
+✖ validated malformed fresh reads reject before cache admission and recover through ordinary paced transport (30.726724ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:26:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:36:50
+✖ warm (22.300903ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:41:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:36:42)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:36:50
+✖ expired (18.25644ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:41:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:36:42)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:49:1
+✖ a validated consumer independently rejects an unvalidated shared response without failing its other consumer (20.456216ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:54:77)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:60:1
+✖ rejecting an observed cache row never deletes a newer replacement (18.199039ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:62:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:71:1
+✖ invalid network replacement preserves a good previous observation and can safely revalidate it (17.43312ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:77:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:83:1
+✖ invalid JSON is a rejected representation without synthetic retry cooldown (24.777095ms)
+  AssertionError [ERR_ASSERTION]: The "invalid" validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:86:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+        at JSON.parse (<anonymous>)
+        at parseJSONFromBytes (node:internal/deps/undici/undici:4394:19)
+        at successSteps (node:internal/deps/undici/undici:7048:27)
+        at readAllBytes (node:internal/deps/undici/undici:5965:13),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:92:145
+✖ {"Retry-After":"90"} (23.25348ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:95:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:92:137)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:92:145
+✖ {"X-Ratelimit-Group":"markets","X-Ratelimit-Remaining":"9","Retry-After":"90"} (17.8092ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:95:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:92:137)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:103:1
+✖ a cancelled retry cannot send or poison another eligible validated caller (17.401476ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection (invalid).
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:107:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:124:1
+✖ a validated join classifies malformed JSON from an unvalidated flight without synthetic backoff (16.473968ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'ESI_INVALID_RESPONSE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:129:28)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'ESI_INVALID_RESPONSE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:135:49
+✖ warm (17.437218ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:146:81)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:135:41)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:135:49
+✖ coalesced (15.686458ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:146:81)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:135:41)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:154:1
+✖ unexpected 304 without a reusable representation rejects and recovers with a full read (18.067469ms)
+  AssertionError [ERR_ASSERTION]: The "invalid" validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ESI returned an uncacheable empty response.
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ESI returned an uncacheable empty response.
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:202:63
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:157:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:164:80
+✖ fetch (20.490766ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  TypeError: Network disconnected
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Network disconnected
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:168:43
+        at fetcher (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:17:133)
+        at fetchResponse (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:185:28)
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:187:38
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+        at async Test.run (node:internal/test_runner/test:1409:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:164:80
+✖ body (15.065059ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  TypeError: Body stream disconnected
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Body stream disconnected
+        at Object.json (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:172:23)
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:210:97
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:164:80
+✖ timeout (14.598446ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  TimeoutError: The operation timed out
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TimeoutError: The operation timed out
+        at new DOMException (node:internal/per_context/domexception:76:18)
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:169:45
+        at fetcher (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:17:133)
+        at fetchResponse (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:185:28)
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:187:38
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests/kairo/esi-validation.test.mjs:164:80
+✖ body-timeout (17.363003ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  TimeoutError: The operation timed out
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TimeoutError: The operation timed out
+        at new DOMException (node:internal/per_context/domexception:76:18)
+        at Object.json (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:171:54)
+        at file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/server/esi.mjs:210:97
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:175:9)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/esi-validation-baseline-p7c07mpy/tests/kairo/esi-validation.test.mjs:164:72)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

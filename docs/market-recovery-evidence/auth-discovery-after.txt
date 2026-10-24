@@ -1,0 +1,42 @@
+✔ a superseded refresh success cannot alter a new SSO connection (47.449286ms)
+✔ a superseded refresh invalid_grant cannot alter a new SSO connection (63.227875ms)
+✔ access after a new login does not join a refresh owned by the old connection (43.359025ms)
+✔ disconnect removes local access promptly and cannot delete a login completed during revocation (71.241959ms)
+✔ settling an obsolete refresh does not clear the replacement connection flight (50.362128ms)
+✔ a refresh settling after disconnect cannot publish or return disconnected access (33.027841ms)
+✔ two cold pilots share discovery and JWKS while their refresh POSTs stay separate (106.919598ms)
+✔ public flights and caches belong to one Auth instance (35.61549ms)
+✔ one-hour expiration refreshes both public domains once for concurrent pilots (40.311656ms)
+✔ concurrent unknown signing keys share the rotation fetch and still verify signatures (36.141206ms)
+✔ an unknown key on a cold cache permits exactly one shared rotation retry (23.380348ms)
+✔ a failed rotation keeps trusted warm keys usable and permits the next rotation attempt (38.646351ms)
+▶ discovery failures are shared but never poison the next attempt
+  ✔ HTTP (34.92545ms)
+  ✔ JSON (34.337162ms)
+  ✔ endpoint origin (44.861567ms)
+  ✔ empty object (32.304334ms)
+  ✔ array (49.053443ms)
+  ✔ missing authorization_endpoint (34.553556ms)
+  ✔ missing token_endpoint (42.501395ms)
+  ✔ missing jwks_uri (34.670943ms)
+  ✔ invalid endpoint type (21.320051ms)
+  ✔ insecure endpoint (22.954378ms)
+  ✔ transport (51.331098ms)
+✔ discovery failures are shared but never poison the next attempt (409.325295ms)
+✔ valid discovery may omit optional revocation and remains shared and cached (101.618472ms)
+▶ JWKS failures are shared, are not cached, and permit a later refresh
+  ✔ HTTP (32.520277ms)
+  ✔ JSON (201.988008ms)
+  ✔ malformed keys (161.838239ms)
+  ✔ transport (48.176559ms)
+✔ JWKS failures are shared, are not cached, and permit a later refresh (447.59836ms)
+✔ a public request timeout reaches all waiters and its flight clears for retry (39.890765ms)
+✔ one pilot failing a token refresh does not cancel or mark another pilot for reauthorization (33.363228ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1792.126807

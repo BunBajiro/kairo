@@ -1,0 +1,76 @@
+{
+  "finding": "EC-05",
+  "status": "workspace-only correction independently accepted; combined hosted/package verification pending",
+  "before": {
+    "source": "8059e247a2805ab73da55723ee90e696330546f3",
+    "test_sha256": "3dfa455376c21810f1793e58747872bc79e7d97ad1c0b5bce41592e97c4b1267",
+    "log": "before.tap",
+    "pass": 3,
+    "fail": 2,
+    "failure": "new pilot omitted and replacement pilot refetched the same packet",
+    "source_kind": "captured local commit, not a banked GitHub identity",
+    "banked_equivalent": {
+      "commit": "5ee71a7c7aa22fffc19788492e8370f551bfcebf",
+      "tree": "8405df64269a9859802acbb72c5fa3e559b11103",
+      "owning_source_sha256": {
+        "server/session-live.mjs": "2590cbe88fc9dac1754eb4346a791642d24dbee39f2f0ed2dc70a299a1460f72",
+        "server/session-combat.mjs": "d51f4c08d68a3dfb78e8ab841906a28b3349151631a6c5c3008c93b240f4b41f"
+      }
+    }
+  },
+  "additional_boundary": {
+    "source_sha256": {
+      "server/session-live.mjs": "f2d29ce826ebfb88d232d09296f28c37583d0c732bbeba940e7ad6ad6d38f0c3",
+      "server/session-combat.mjs": "a4f7c1b01fe99d7602c808e074f68bae87c25c8250585d599173ec56293ee663",
+      "tests/kairo/session-live-owner-review.test.mjs": "f7a24d12c579b1024a85d239a7111369bbfdad2beec8108f2c5104787cb61c12"
+    },
+    "log": "accept-boundary-before.tap",
+    "pass": 5,
+    "fail": 1,
+    "failure": "a different alliance joining during ESI verification lost its buffered candidate while the shared cursor advanced"
+  },
+  "fixed": {
+    "command": "node --test --test-reporter=tap tests/kairo/session-live-owner-review.test.mjs tests/kairo/session-live.test.mjs tests/kairo/session-combat-eligibility.test.mjs tests/kairo/session-report-page.test.mjs tests/kairo/session-replay.test.mjs",
+    "node": "24.22.0",
+    "log": "final-fixed.tap",
+    "tests": 43,
+    "pass": 43,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "source_sha256": {
+    "server/session-live.mjs": "a44b80aaf104011198c9212adb91a4c08af57725e444508a429803e528a82ace",
+    "server/session-combat.mjs": "a4f7c1b01fe99d7602c808e074f68bae87c25c8250585d599173ec56293ee663",
+    "tests/kairo/session-live-owner-review.test.mjs": "6ba050dac3e929239d5cb00c2e5a6ee2c2a8e0c1c9ffd3abcc024f4bb6ab9792"
+  },
+  "evidence_sha256": {
+    "final-independent-markets-review.tap": "407bcfd824354ca575e79c102e296f68cca43ed1b090519ba00337ff08a4bd48",
+    "fixed.tap": "3e6dd8ae7f148d889ef5476361af4e52eacc53780c305126a11f0d7cbb5fb5ba",
+    "final-fixed.tap": "f2aa24b2db2bb8ed99e3b2be6bcf0828e351f2aeabc58cb5158cad3ac84b67b6",
+    "before.tap": "c6370bb6ef26e3e01de3f05b7029c9ab2d181afa1d466632f1dcfb1e4b07d869",
+    "accept-boundary-before.tap": "97e81a8733085cc548dc4aa2337905ef6835c31d7cb5f95efc86ec90956447e4"
+  },
+  "bounds": [
+    "Ordinary coalesced calls do not rebuild targets. Explicit lifecycle changes refresh once after awaits.",
+    "A changed target revision permits one repeat acceptance using the same packet; a second change retains the cursor and ends this pass.",
+    "Real-owner regression observes one feed GET and one ESI HTTP verification per distinct killmail, including personal ingestion.",
+    "Buffered alliance candidates remain provisional until an in-visit engagement qualifies the visit."
+  ],
+  "limits": [
+    "Synthetic transport exercises real Session, Combat, ESI and SQLite owners; it is not live-provider evidence.",
+    "Session details delayed-save browser candidate is separate and still requires hosted reproduction."
+  ],
+  "independent_review": {
+    "reviewer": "markets_sessions",
+    "disposition": "accepted",
+    "command": "node --test --test-reporter=tap tests/kairo/session-live-owner-review.test.mjs tests/kairo/session-live.test.mjs tests/kairo/session-combat-eligibility.test.mjs",
+    "node": "24.22.0",
+    "log": "final-independent-markets-review.tap",
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  }
+}

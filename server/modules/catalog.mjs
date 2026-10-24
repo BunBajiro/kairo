@@ -1,5 +1,14 @@
+/**
+ * Built-in collection descriptors consumed by Core, Connections and OAuth scope
+ * selection. Registry extensions are separate: see docs/INTERNAL-API.md.
+ * Universe datasets collect once under owner 0; other modules collect per pilot.
+ */
 import { pollIntervals } from '../polling.mjs';
 const module = (id, name, description, datasets) => ({ id, name, version: '1.0.0', description, datasets, scopes: [...new Set(datasets.map(d => d.scope).filter(Boolean))] });
+// ttl is the ESI fallback cache lifetime in seconds; pollInterval is the
+// application policy in seconds (0 follows provider cache expiry). paged means
+// X-Pages collection through ESI's bounded paging owner, not arbitrary cursors.
+// {owner} routes obtain corporation/alliance identity from a ready pilot profile.
 const d = (key, route, scope, ttl = 300, paged = false) => ({ key, route, scope, ttl, paged, pollInterval: pollIntervals[key] ?? 0 });
 export const catalog = [
     module('pilot', 'Pilot telemetry', 'Live location, current hull, online status and your local flight history.', [
@@ -29,11 +38,13 @@ export const catalog = [
     module('comms', 'Calendar & notifications', 'Upcoming events, EVE notifications and mail headers. Mail bodies stay out of stream output.', [
         d('calendar', '/characters/{id}/calendar', 'esi-calendar.read_calendar_events.v1', 300), d('notifications', '/characters/{id}/notifications', 'esi-characters.read_notifications.v1', 300), d('mail', '/characters/{id}/mail', 'esi-mail.read_mail.v1', 300)
     ]),
-    module('universe', 'New Eden', 'Tranquility status, market estimates, sovereignty, faction warfare, system traffic and kills.', [
-        d('status', '/status', null, 60), d('prices', '/markets/prices', null, 3600), d('sovereignty', '/sovereignty/systems', null, 300), d('fw', '/fw/systems', null, 600), d('kills', '/universe/system_kills', null, 600), d('jumps', '/universe/system_jumps', null, 600)
+    module('universe', 'Universe', 'Local New Eden atlas, flight history, route planning, sovereignty, structures, standings and activity.', [
+        d('status', '/status', null, 60), d('prices', '/markets/prices', null, 3600), d('sovereignty', '/sovereignty/systems', null, 300), d('fw', '/fw/systems', null, 600), d('kills', '/universe/system_kills', null, 600), d('jumps', '/universe/system_jumps', null, 600), d('sovereignty_campaigns', '/sovereignty/campaigns', null, 5), d('incursions', '/incursions', null, 300), d('industry_systems', '/industry/systems', null, 3600)
     ]),
 ];
-// Optional structure visibility is used only to resolve authorized asset locations.
+// Optional structure visibility resolves authorized asset, market and map locations.
 catalog.find(m => m.id === 'hangar').scopes.push('esi-universe.read_structures.v1');
 catalog.find(m => m.id === 'markets').scopes.push('esi-markets.structure_markets.v1','esi-universe.read_structures.v1','esi-location.read_location.v1');
+catalog.find(m => m.id === 'universe').scopes.push('esi-universe.read_structures.v1', 'esi-fleets.read_fleet.v1', 'esi-ui.write_waypoint.v1', 'esi-search.search_structures.v1');
+/** Built-in OAuth allowlist, including optional command/enrichment capabilities. */
 export const allScopes = [...new Set(catalog.flatMap(m => m.scopes))];

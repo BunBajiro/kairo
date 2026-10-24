@@ -1,0 +1,75 @@
+TAP version 13
+# Subtest: live feed retains current Session ownership after existing during a pending packet
+ok 1 - live feed retains current Session ownership after existing during a pending packet
+  ---
+  duration_ms: 40.642846
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after new pilot during a pending packet
+ok 2 - live feed retains current Session ownership after new pilot during a pending packet
+  ---
+  duration_ms: 26.667031
+  type: 'test'
+  ...
+# {"pilot":43,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after replacement during a pending packet
+ok 3 - live feed retains current Session ownership after replacement during a pending packet
+  ---
+  duration_ms: 23.633516
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after stop during a pending packet
+ok 4 - live feed retains current Session ownership after stop during a pending packet
+  ---
+  duration_ms: 19.431918
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json"],"esiPaths":[],"cursor":100,"retained":false,"reportKills":0}
+# Subtest: live feed retains current Session ownership after disconnect during a pending packet
+ok 5 - live feed retains current Session ownership after disconnect during a pending packet
+  ---
+  duration_ms: 20.989411
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json"],"esiPaths":[],"cursor":100,"retained":false,"reportKills":0}
+# Subtest: a Session joining during ESI verification retains its buffered alliance candidate before cursor acknowledgement
+not ok 6 - a Session joining during ESI verification retains its buffered alliance candidate before cursor acknowledgement
+  ---
+  duration_ms: 26.712219
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/session-live-owner-review.test.mjs:76:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    A newly eligible alliance must retain this buffered candidate before the shared cursor advances
+    + actual - expected
+    
+      [
+        91,
+    -   92
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 91
+    1: 92
+  actual:
+    0: 91
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/session-live-owner-review.test.mjs:108:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# {"candidates":[91],"paths":["sequence.json","100.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101}
+1..6
+# tests 6
+# suites 0
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 244.020918

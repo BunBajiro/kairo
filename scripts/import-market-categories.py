@@ -3,6 +3,10 @@ Usage: python scripts/import-market-categories.py SDE_DIRECTORY BUILD_NUMBER SOU
 marketGroups.jsonl and types.jsonl are required from the official archive.
 Include npcCorporations.jsonl to refresh the optional NPC ownership seed.
 """
+# Offline developer regeneration, not the managed runtime updater. This overwrites
+# bundled taxonomy and, only when its input exists, NPC ownership; omitting that
+# optional file preserves the previous ownership seed. Volumes are packaged m³.
+# Parent integrity is checked before publishing. See docs/UNIVERSE-DATA.md.
 import json,sys
 from pathlib import Path
 source=Path(sys.argv[1]);groups={};volumes={}

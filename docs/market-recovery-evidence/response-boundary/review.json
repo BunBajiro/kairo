@@ -1,0 +1,46 @@
+{
+  "id": "EC-06",
+  "status": "owner correction and independent root review verified; hosted browser acceptance pending; workspace-only until banked",
+  "boundary": "Malformed successful JSON is returned as an error envelope, allowing read publication and false mutation acknowledgement.",
+  "before": {
+    "source": "6ed58f498a820b27d7b65b63087ae9994fd04dc7",
+    "model_sha256": "11c5461a7a9edd34e38ad0816a39af67bc11bc3543e4d2ef494fd4ee09cd41ba",
+    "tests": 4,
+    "pass": 1,
+    "fail": 3,
+    "log": "before.tap"
+  },
+  "fixed": {
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "log": "fixed.tap",
+    "command": "node --test --test-reporter=tap tests/kairo/api-response-boundary.test.mjs tests/kairo/administrative-refresh.test.mjs"
+  },
+  "proof": "Actual model.ts imports under native Node type stripping, real HTTP bytes and createOBSControlRefresh. Invalid initial reads retain full-read recovery; invalid current status retains last usable state; an already accepted PUT remains unacknowledged and submits exactly once. No UI component is copied into this test.",
+  "contract": "Reject malformed JSON syntax. Valid JSON null/false/zero/arrays/objects and explicit HTTP error messages remain unchanged. No global response schema, extra polling or automatic mutation retry.",
+  "browser": {
+    "scenario": "obs-malformed-response-recovery",
+    "cases": 4,
+    "checks": 40,
+    "status": "prepared; not executed",
+    "scope": "Actual compiled OBS editor and HTTP/SQLite: malformed current full configuration read retains last usable state/draft, existing focus recovery, persisted PUT with malformed acknowledgement retains dirty/password draft, explicit retry; exactly two explicit PUTs; disabled OBS remains disabled."
+  },
+  "runtime": "Node 24.22.0 / Undici 7.29.1",
+  "hashes": {
+    "components/kairo/model.ts": "ee81dd6056f95b65189e78a7b861bdcc8a05a8d5a850aac98d4ab0cddadf3fa7",
+    "tests/kairo/api-response-boundary.test.mjs": "2ec10b5a7f289059e6f79fa536ae4b25b43d365491a5b4ec0d5476849ae6e1bf",
+    "tests/focused-response-recovery-scenarios.mjs": "84696269bdd47b3c07dcdb3ee0fcb582d1d503255a7b3714de6eeea6c26620a5",
+    "docs/market-recovery-evidence/response-boundary/before.tap": "b972392ea1475cfe37ef0c5f7f2f029f488e001d8e23d6fb36dd827678a5cbe8",
+    "docs/market-recovery-evidence/response-boundary/fixed.tap": "f1df604505433c4fde7a9b8004ac8ef2e33bdb9259cc5b538f0058f84487eb1e",
+    "docs/market-recovery-evidence/response-boundary/independent.tap": "e56f413c4a75c7e06a47b5e13907769b7ec0049aeffe980af5b83c839091bd6b"
+  },
+  "independent": {
+    "reviewer": "root",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "log": "independent.tap",
+    "disposition": "Actual helper/HTTP/OBS owner reproduced malformed reads and uncertain accepted save. Narrow syntax rejection preserves valid JSON and existing error path; no automatic mutation retry. Browser fixture reviewed; hosted execution pending."
+  }
+}

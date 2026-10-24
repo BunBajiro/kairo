@@ -1,0 +1,1314 @@
+{
+  "phase": "0.8.0 source documentation",
+  "date": "2026-10-17",
+  "baseline": "8c19913842c5770daa76b1d640d5960c1ef41e13",
+  "version": "0.8.0-rc.17",
+  "verified_application_source": "5c55cbbbae6c935a86ad5dde71cc1899958fde62",
+  "scope": "Comments and source contracts only, plus phase/navigation/verification records. No application correction, executable code, SQL, assertion, default, signature, workflow, dependency or version change.",
+  "coverage": {
+    "baseline_tracked_paths": 575,
+    "comment_edited_source_paths": 249,
+    "owners": 7,
+    "inventory": "SOURCE-DOCUMENTATION-INVENTORY.json",
+    "acceptance": "Meaningful contracts reviewed systematically; existing sufficient comments/types/tests retained. Comment count is not a gate."
+  },
+  "preservation": {
+    "javascript_typescript": {
+      "method": "TypeScript 5.9.3 parse diagnostics, recursive syntax-tree comparison preserving leaf tokens, and comment-free AST printer output. Parsed pragmas and position-normalized comment directives retain syntax-token/line binding; actual token trivia guards PURE/NO_SIDE_EFFECTS and selected bundler hints. Parsed JSDoc tooling tags are compared separately. Strings, regex literals, templates, JSX text and SQL remain syntax nodes. Untracked nonignored JS/TS source fails the gate.",
+      "files": 235,
+      "failures": 0,
+      "untrackedSource": [],
+      "controls": [
+        {
+          "name": "ordinary prose",
+          "expectedEqual": true,
+          "actualEqual": true,
+          "passed": true
+        },
+        {
+          "name": "runtime token",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "automatic semicolon insertion",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "SQL literal",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "regex literal",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "JSX text",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "literal comment text preserved",
+          "expectedEqual": true,
+          "actualEqual": true,
+          "passed": true
+        },
+        {
+          "name": "JSX literal comment text preserved",
+          "expectedEqual": true,
+          "actualEqual": true,
+          "passed": true
+        },
+        {
+          "name": "block TS ignore",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "preserved TS ignore after new prose",
+          "expectedEqual": true,
+          "actualEqual": true,
+          "passed": true
+        },
+        {
+          "name": "moved TS ignore",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "JSX import pragma",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "bundler PURE",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "bundler NO_SIDE_EFFECTS",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "moved PURE",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        },
+        {
+          "name": "JSDoc type",
+          "expectedEqual": false,
+          "actualEqual": false,
+          "passed": true
+        }
+      ]
+    },
+    "python_shell_launchers": [
+      {
+        "path": "START_KAIRO.bat",
+        "method": "Only REM prologue comments inserted; original body unchanged; no Windows execution",
+        "equal": true
+      },
+      {
+        "path": "scripts/build-universe-destinations.py",
+        "method": "Full Python AST including docstrings and literal values",
+        "equal": true
+      },
+      {
+        "path": "scripts/build-universe-points.py",
+        "method": "Full Python AST including docstrings and literal values",
+        "equal": true
+      },
+      {
+        "path": "scripts/build-universe-wormholes.py",
+        "method": "Full Python AST including docstrings and literal values",
+        "equal": true
+      },
+      {
+        "path": "scripts/build-verified.sh",
+        "method": "Only full-line header comments inserted before code; complete original body unchanged; shell syntax pass",
+        "equal": true
+      },
+      {
+        "path": "scripts/import-market-categories.py",
+        "method": "Full Python AST including docstrings and literal values",
+        "equal": true
+      },
+      {
+        "path": "scripts/import-universe.py",
+        "method": "Full Python AST including docstrings and literal values",
+        "equal": true
+      },
+      {
+        "path": "scripts/install-ci.sh",
+        "method": "Only full-line header comments inserted before code; complete original body unchanged; shell syntax pass",
+        "equal": true
+      },
+      {
+        "path": "scripts/package-release.py",
+        "method": "Full Python AST including docstrings and literal values",
+        "equal": true
+      },
+      {
+        "path": "scripts/sites-env.sh",
+        "method": "Only full-line header comments inserted before code; complete original body unchanged; shell syntax pass",
+        "equal": true
+      },
+      {
+        "path": "start-kairo.sh",
+        "method": "Only full-line header comments inserted before code; complete original body unchanged; shell syntax pass",
+        "equal": true
+      }
+    ],
+    "css": {
+      "method": "PostCSS parse tree with only comment nodes and formatting/location metadata omitted",
+      "files": 3,
+      "rows": [
+        {
+          "path": "components/kairo/jspace-map.css",
+          "equal": true
+        },
+        {
+          "path": "public/stream/render.css",
+          "equal": true
+        },
+        {
+          "path": "public/stream/widgets.css",
+          "equal": true
+        }
+      ]
+    },
+    "protected_paths_unchanged": [
+      "package.json",
+      "package-lock.json",
+      "docs/PREMERGE-BUG-REVIEW.md",
+      "docs/review-evidence",
+      "docs/DOCUMENTATION-WORK.md",
+      "docs/DOCUMENTATION-VERIFICATION.json",
+      ".github",
+      "server/data",
+      "server/vendor",
+      "vendor"
+    ],
+    "source_guide_references": {
+      "occurrences": 159,
+      "unique_guides": 24,
+      "broken": 0
+    }
+  },
+  "gates": {
+    "node": "v24.19.0",
+    "typescript": "5.9.3",
+    "type_check": {
+      "command": "npm run check:kairo",
+      "result": "pass",
+      "log_sha256": "77280d9384dfd28f13dc8a3dcccf9c43a74a759fc56593083d982e5f7d8d292f"
+    },
+    "fresh_build": {
+      "command": "npm run build",
+      "result": "pass",
+      "log_sha256": "1372d4f52a034a9fa7e52281da07a527da7afe87d7d3748deeacb4960b5cee7f",
+      "notes": "Existing chunk-size advisory remains; no production package or browser handoff created."
+    },
+    "focused_tests": [
+      {
+        "owner": "source_universe_ui",
+        "kind": "existing Node model tests",
+        "files": 21,
+        "passed": 129,
+        "failed": 0,
+        "log_sha256": "ae3431145dacf470a09196afccf4f04d6cf9b3121bbf05c57b985d03a5d3670a",
+        "suites": [
+          "jspace-clock",
+          "jspace-camera-surface",
+          "jspace-map-geometry",
+          "jspace-connection-model",
+          "jspace-workspace-model",
+          "jspace-notes",
+          "map-discovery-search",
+          "map-display-model",
+          "map-group-placement",
+          "mapper-preferences",
+          "universe-map-labels",
+          "universe-map-layouts",
+          "universe-map-math",
+          "universe-map-navigation",
+          "universe-map-operations",
+          "universe-map-portals",
+          "universe-presentation",
+          "universe-requests",
+          "universe-view-model",
+          "universe-navigation-state",
+          "universe-signature-bookmarks"
+        ]
+      },
+      {
+        "owner": "source_dashboard_ui",
+        "kind": "existing Node helper/renderer tests",
+        "passed": 90,
+        "failed": 0,
+        "log_sha256": "37376f538e98ee73947bcc3296bc6a9836ebd908da21bc1885b7a40c4214572a"
+      }
+    ],
+    "fresh_full_runtime": false,
+    "fresh_browser": false,
+    "fresh_performance": false
+  },
+  "independent_review": {
+    "core": "source_foundation",
+    "foundation": "source_domains",
+    "domains": "source_universe_server",
+    "universe_backend": "source_tooling_tests",
+    "universe_frontend": "source_dashboard_ui",
+    "dashboard_and_broadcast": "source_universe_ui",
+    "tooling_tests": "root",
+    "verification_method_and_inventory": "source_foundation",
+    "disposition": "All reviewed and accepted; comments-only precision/noise findings resolved. No application corrections."
+  },
+  "release_state": {
+    "pr": 12,
+    "draft": true,
+    "branch": "review/0.8.0-rc-premerge-bug-review",
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "merged": false,
+    "released": false,
+    "version_bumped": false,
+    "new_download": false,
+    "application_download": "build90; packaged manuals and source comments predate documentation phases"
+  },
+  "environment_limits": [
+    "Real Windows/DPAPI",
+    "Live EVE SSO and actual permissions",
+    "Actual OBS output/audio/scene behaviour",
+    "Extended play"
+  ],
+  "source_files": [
+    {
+      "path": "START_KAIRO.bat",
+      "sha256": "a5e48ac5c6d908ab22e6a4816e5c3a96bba4c706a1025bca55658964a7811aaa"
+    },
+    {
+      "path": "app/chatgpt-auth.ts",
+      "sha256": "8ad0758b9fd8568c98ba8ca88a61823f6a35cef0e9befc96d560b1111666555f"
+    },
+    {
+      "path": "app/layout.tsx",
+      "sha256": "2e948b1543bec7438d82b0b9cb54bb9b17809011dc03e8348ffa627210f38cb3"
+    },
+    {
+      "path": "app/page.tsx",
+      "sha256": "2c7c57fa4d23502e35783137324da99667d04153f37b836b8d7fc315b80d0481"
+    },
+    {
+      "path": "build/sites-vite-plugin.ts",
+      "sha256": "69ff0d877e7ee6987a33a5c95655e6e11a0d2c6da9b03d4868f382847f45560c"
+    },
+    {
+      "path": "components/kairo/administrative-refresh.d.mts",
+      "sha256": "98fd00e92c50c762a83b3c1dc724960eeffbea4a85674c8f21586f97ae90ab30"
+    },
+    {
+      "path": "components/kairo/administrative-refresh.mjs",
+      "sha256": "21091e34f8312bddc25bad76ae27a7bb4fa2790117938fb2624f9433fcd4266f"
+    },
+    {
+      "path": "components/kairo/combat-coverage.tsx",
+      "sha256": "f577754fae397ea96b180e28d4402e796e2819af50353fd69333b9289abc0590"
+    },
+    {
+      "path": "components/kairo/connections.tsx",
+      "sha256": "1f257e158d382f71db8bdb6479b443f3be93f21ea181989219745a483dd8e30d"
+    },
+    {
+      "path": "components/kairo/context.tsx",
+      "sha256": "4913e91837040f96aecadd96c8357192f810a1d79b31a8062ad97608c2243be4"
+    },
+    {
+      "path": "components/kairo/dashboard.tsx",
+      "sha256": "7df472e8478d9a1273f1bcabe8d4c647cd771378dbf9200284a65a0bb3691964"
+    },
+    {
+      "path": "components/kairo/dataset-connection.d.mts",
+      "sha256": "0baf902d90abaa3963f6c4b44243ee242eb794bbca127b019b48ce2e921f4428"
+    },
+    {
+      "path": "components/kairo/dataset-connection.mjs",
+      "sha256": "b7ffd28a138277969fd11dac6d177b7b550a9b2349333c210f5c5fe8880ac202"
+    },
+    {
+      "path": "components/kairo/datasets.tsx",
+      "sha256": "18343c7da280d1f07b5e33a758f55804285270a12fc73351ab8582e319621c53"
+    },
+    {
+      "path": "components/kairo/derived-models.mjs",
+      "sha256": "f2c113bec375804b285ff8824ddd9c384662c1905ac680278986a04ed8f17ed4"
+    },
+    {
+      "path": "components/kairo/formatters.mjs",
+      "sha256": "1fc6440a4525436efde5572117ae11d5872643f7682ab5b79ea9349595d0bba2"
+    },
+    {
+      "path": "components/kairo/goal-resource-reads.d.mts",
+      "sha256": "ac5457090056e305f539e87feefe0861e2a2d9322ed1df6e9aac7bfbd8b4fbe1"
+    },
+    {
+      "path": "components/kairo/goal-resource-reads.mjs",
+      "sha256": "b62bcf78d4e2377132a40a3795cf7dfc45a6ad653fa7f1c024b77cc65243089f"
+    },
+    {
+      "path": "components/kairo/goals.tsx",
+      "sha256": "2f4a8e977cac12c21320c334c5b6dcc9947205a9a93f425179c1347f97c88eba"
+    },
+    {
+      "path": "components/kairo/import-analyser.tsx",
+      "sha256": "a5cd8408669c3b6572da47aab89bf5d427fc7a8d60747371bd07a5cb127fa479"
+    },
+    {
+      "path": "components/kairo/intelligence.tsx",
+      "sha256": "e7c55c4274cb120e570792760de469634a70921f99d9705390e741903c2e55ce"
+    },
+    {
+      "path": "components/kairo/jspace-camera-surface.mjs",
+      "sha256": "4244b8c4fa236608b893d68509a17743eabed5df02a7a24349e7572e7e2995cd"
+    },
+    {
+      "path": "components/kairo/jspace-clock.d.mts",
+      "sha256": "1a63a6fc8c9dc5e9bf312873a38ca26661da496dc6443b515f38c380453386b1"
+    },
+    {
+      "path": "components/kairo/jspace-clock.mjs",
+      "sha256": "61fe776df40e51449c909f813e5e7d5f9e651304a98c898b6570fd401f297db8"
+    },
+    {
+      "path": "components/kairo/jspace-connection-model.mjs",
+      "sha256": "ddb6f21e3075d61d19b938eafc2f20c9c43e11e139bfb0ef639ccef78fd252dd"
+    },
+    {
+      "path": "components/kairo/jspace-destinations.tsx",
+      "sha256": "9bb112a5bdd78a7514106dd3533eefaae8f11af08ce09fcd0e7d6a4e180e9a7e"
+    },
+    {
+      "path": "components/kairo/jspace-map-geometry.d.mts",
+      "sha256": "6833b745a9689ed6acb31605f1e48626b416556e587957b44b50f3250ffedd56"
+    },
+    {
+      "path": "components/kairo/jspace-map-geometry.mjs",
+      "sha256": "11b28921952da706965453bed01144878340eda28e64e0f7f53383b647fe8f01"
+    },
+    {
+      "path": "components/kairo/jspace-map.css",
+      "sha256": "11ab14d5f65c58fbf43ace5b35b786d7b7925dc1d14b047b632c920567ec89ca"
+    },
+    {
+      "path": "components/kairo/jspace-map.tsx",
+      "sha256": "3c282a76cb866f82aa57955e0453227313ce65a20ecafd370dd70842bd587ad3"
+    },
+    {
+      "path": "components/kairo/jspace-notes-model.mjs",
+      "sha256": "117ee485f679e173cfbd9791ff9f6854545b8c4d5050b7a37760eed0cc94e163"
+    },
+    {
+      "path": "components/kairo/jspace-notes.tsx",
+      "sha256": "4d2f164c10aee4f8e9ba024e92cc553fbdb94daa090fb8208974f5a0a2cd7fd4"
+    },
+    {
+      "path": "components/kairo/jspace-workspace-model.d.mts",
+      "sha256": "eef8ea9b27bae7e9f14949219eb5b9480e0964c59e475e38b78cd65906c75022"
+    },
+    {
+      "path": "components/kairo/jspace-workspace-model.mjs",
+      "sha256": "c24090a9f9543fef48bc18a9bff78fb2c4ef51e0d08943647063cc17da92c3bc"
+    },
+    {
+      "path": "components/kairo/jspace-workspace-panels.tsx",
+      "sha256": "df90cf82293733d8e65eb96016ee62b86d11f0f46e3fdcdb934eb8d133eb8c52"
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "sha256": "dcfc660afc247d3d38584d4ab1bfa9bf5dde1b396c51cac77ba4745d07768d82"
+    },
+    {
+      "path": "components/kairo/map-discovery-search-model.mjs",
+      "sha256": "40e199f352e17fa845f6a1c18562441693606a4000288ed8352bd4aa9b9eda5a"
+    },
+    {
+      "path": "components/kairo/map-discovery-search.tsx",
+      "sha256": "3462c669c562317e2356e356c283e748b3227cbc6dfdf0c76a217e148c6592fd"
+    },
+    {
+      "path": "components/kairo/map-display-controls.tsx",
+      "sha256": "a8980594951fa58f8d85b7d33129a26dab8d73d40f80e0691cf09f5b836d29e2"
+    },
+    {
+      "path": "components/kairo/map-display-model.mjs",
+      "sha256": "8fa9179b8608833ffc4ced14f510993e0720802472025ca95af0fc33e8c8e93d"
+    },
+    {
+      "path": "components/kairo/map-group-placement.mjs",
+      "sha256": "c508fe939c8a56a98ec720ce5668723c9cd9b848a23039b9bcce7492f02e59fa"
+    },
+    {
+      "path": "components/kairo/mapper-preferences-controls.tsx",
+      "sha256": "575d01b5e338e5cf5e4ff2c345d1ad714c5645a534417236c1c5963214bacba5"
+    },
+    {
+      "path": "components/kairo/mapper-preferences.mjs",
+      "sha256": "a88a5fe97a682b886886f41b5333387f385da462b357d850813e055422ffcb19"
+    },
+    {
+      "path": "components/kairo/market-categories.tsx",
+      "sha256": "9bc02a4e8a5003de78ebfaade1d2f58512df3938bcefbe47f49f875b6e3d9090"
+    },
+    {
+      "path": "components/kairo/markets.tsx",
+      "sha256": "cea30ffac454c10540cacf18193054754a90e581e8b46af43e12ca056d2942a0"
+    },
+    {
+      "path": "components/kairo/model.ts",
+      "sha256": "11c5461a7a9edd34e38ad0816a39af67bc11bc3543e4d2ef494fd4ee09cd41ba"
+    },
+    {
+      "path": "components/kairo/name-directory-state.mjs",
+      "sha256": "cd8f6d6476a65e3508f3fa9776561f96e00b3a104e33a01de9b47dbaad6ed16c"
+    },
+    {
+      "path": "components/kairo/obs-controls.tsx",
+      "sha256": "9db75c6454b7d0de25dab9c873020f6b2b1a2393f7baad3d144c73a8e0b143fc"
+    },
+    {
+      "path": "components/kairo/operations.tsx",
+      "sha256": "a0bc0fabd916c9bb260f2f822bb2b6c18dd15998a658a11c7fe1cb9e15f8c129"
+    },
+    {
+      "path": "components/kairo/opsec-controls.tsx",
+      "sha256": "0a9c58bd0c7e918550005ff4849cabc214025bc6c1efa219e70cb740a8ddf271"
+    },
+    {
+      "path": "components/kairo/place-notes.tsx",
+      "sha256": "802e0463176b1beb8cbebfa1527acda4e36bc488892bd64b8cd7f243a6f2275d"
+    },
+    {
+      "path": "components/kairo/polling-settings.tsx",
+      "sha256": "fee39ce05131c846cfffd1b56a44b8862c7b5d5aa12a4493a6e99d1ab0ae8924"
+    },
+    {
+      "path": "components/kairo/power-bloc-settings.tsx",
+      "sha256": "d9d7b8089b0120b02b7912fa528d39d2a59aaf67680c50bf918c0425a5297ec0"
+    },
+    {
+      "path": "components/kairo/resource-state.d.mts",
+      "sha256": "dc8dc7684af4223ed4158eb39685ad84f12b7a866c9b77dbab49922ae822407a"
+    },
+    {
+      "path": "components/kairo/resource-state.mjs",
+      "sha256": "cdd9efb7e166dbe181ba9e0d32b1549e2973ac182e54dfff81f7c450a117d59e"
+    },
+    {
+      "path": "components/kairo/scoped-refresh.d.mts",
+      "sha256": "9ea6d1358ffdddd7bc894971c042632b8ba30f497135c01477951a2bad04fd47"
+    },
+    {
+      "path": "components/kairo/scoped-refresh.mjs",
+      "sha256": "f22fa6ffa4063b1af51912346f1e1a369598e293ff626c59f1567c52b804809f"
+    },
+    {
+      "path": "components/kairo/session-archive.d.mts",
+      "sha256": "bc8d42119aeb7acf3bbfa2dc2ca12edeed04a2d5deda91eae7185cb13e1d5415"
+    },
+    {
+      "path": "components/kairo/session-archive.mjs",
+      "sha256": "c4daca4b1c0a6fd67d2af63427c773907d43179d927a4ed67c9d642c35c386f0"
+    },
+    {
+      "path": "components/kairo/session-replay-map.d.mts",
+      "sha256": "c506dd2c8791be9f62d164b6d46956ffb581b262229f2c0cd9e64ee6e2ca6d23"
+    },
+    {
+      "path": "components/kairo/session-replay-sovereignty.d.mts",
+      "sha256": "0d74cdf5a6fd6196b1135359f7da2312238616fde5609d1f0f3307a3a9b54759"
+    },
+    {
+      "path": "components/kairo/session-replay-sovereignty.mjs",
+      "sha256": "3bd98efe8f28af9f291a2640d9396a62c18b88bf991e99720eb5d06be2e62abc"
+    },
+    {
+      "path": "components/kairo/session-replay-timeline.d.mts",
+      "sha256": "b6a87b4e8df441cabe065c1432b8bacae8083ff7cddf51c73adb503dc627e9d7"
+    },
+    {
+      "path": "components/kairo/session-replay-timeline.mjs",
+      "sha256": "debf59afcec4d547240dd55370766bb5678d9191cfa8255cc72a0ef285cac638"
+    },
+    {
+      "path": "components/kairo/session-replay.tsx",
+      "sha256": "c4b7b3622639521d65fdcead62aab807e6bbe7d555a0f72e98c12ef68d136750"
+    },
+    {
+      "path": "components/kairo/session-report-page.d.mts",
+      "sha256": "855f039eb5782bd48b2d5469bb40ab268aee2a4b0ec2b847e4bd0ae884e7e699"
+    },
+    {
+      "path": "components/kairo/session-report-page.mjs",
+      "sha256": "c32d6fbeed5e466b8c2b098f6ef7af1bccae0ea32a439bc28a75762734baa632"
+    },
+    {
+      "path": "components/kairo/session-report.tsx",
+      "sha256": "b69b513155e8b58bf26ed0ebe435b9304b05aee1e803e1bf633d4d9cbd72fdda"
+    },
+    {
+      "path": "components/kairo/stream-data.tsx",
+      "sha256": "125025b54688ffdc53f349e2bd649a5cded4fcc5c6d2b64179ed200d41d7c16b"
+    },
+    {
+      "path": "components/kairo/studio-work.d.mts",
+      "sha256": "d3fb77125968e2f8632ad5211f0ad0c6c0954013e95abb17b7266c523d41354f"
+    },
+    {
+      "path": "components/kairo/studio-work.mjs",
+      "sha256": "ac6f81f3b893f5f64b4187a443f0c6d08c0085dc0ebc452104eab336143db0ab"
+    },
+    {
+      "path": "components/kairo/studio.tsx",
+      "sha256": "c2d931f3a179e5bfa0cc9a0f0a285b864250520f695731999ee215ab3015c5e0"
+    },
+    {
+      "path": "components/kairo/ui.tsx",
+      "sha256": "8aac91abff3866178bfee9299687bc515cdfa83f68ffad6157ab274e7b77347f"
+    },
+    {
+      "path": "components/kairo/universe-connections.tsx",
+      "sha256": "838df289406a2bbad283ec04ce9daa6f3bb0104c9954061924fb2877439572b8"
+    },
+    {
+      "path": "components/kairo/universe-map-context.tsx",
+      "sha256": "aac1ff8dd2903bbcc0d31a5651b6f7b39a461e4ceb8a877231b50224c73a0aee"
+    },
+    {
+      "path": "components/kairo/universe-map-labels.d.mts",
+      "sha256": "1e710b6c56b0efaba94f42e8204051d70d7422003a609fc0192369a6d8aeecea"
+    },
+    {
+      "path": "components/kairo/universe-map-layouts.mjs",
+      "sha256": "368373cba706b7d0c580e63b22b0effd4e3ebac218e0cd7bb0eebdbe8cb412a4"
+    },
+    {
+      "path": "components/kairo/universe-map-math.d.mts",
+      "sha256": "b5d1a5a5d94527a2a10d4a8ec47da7e23d31a028a94b95bacbf05e1557e13a39"
+    },
+    {
+      "path": "components/kairo/universe-map-math.mjs",
+      "sha256": "1deb27f11c6fbf823b94459bfe0adb08cc91f077a2f1f63788fd29cdadac6d73"
+    },
+    {
+      "path": "components/kairo/universe-map-navigation.mjs",
+      "sha256": "5bdb9fe3727dbfd283d341e200b6bcc0fdd2ead5a7f8370682cf0e03fdd7ab08"
+    },
+    {
+      "path": "components/kairo/universe-map-operations.d.mts",
+      "sha256": "c44b632dd75bb02c5918e3b501c6751741353c94d17ea93f497168ba3dcbc2c8"
+    },
+    {
+      "path": "components/kairo/universe-map-operations.mjs",
+      "sha256": "1aa372397420eb07666e58438b7afb8a54fe355decaa9b435ee59d1ac8da6c4a"
+    },
+    {
+      "path": "components/kairo/universe-map-worker.mjs",
+      "sha256": "209a70ead4abe1cd379ed950cd0254bbd2f5520a952a36e6daebe39ee9448290"
+    },
+    {
+      "path": "components/kairo/universe-map.tsx",
+      "sha256": "e07ce1089dfddfc266f1c09e433932b3c5d1e76074a7e57d73d25f0dbdd528e4"
+    },
+    {
+      "path": "components/kairo/universe-navigation-state.d.mts",
+      "sha256": "966021f1ec85ff2be49e58295d5cfa2b75afd20e989bd4eddc8c3744b1f7af21"
+    },
+    {
+      "path": "components/kairo/universe-navigation-ui.tsx",
+      "sha256": "52e5a0cb0b1ce54426da489ba2f0c17d77e4a175ad8b62d32a58e466c8d768a4"
+    },
+    {
+      "path": "components/kairo/universe-operations-detail.tsx",
+      "sha256": "4aa7bd671b88961e7acbb0361490d5187c1477f68fb6f190519ec83b74f47b72"
+    },
+    {
+      "path": "components/kairo/universe-operations-settings.tsx",
+      "sha256": "408b78fde014374b33da84b363ba18116799ed745502cde1fbf5df326d110efe"
+    },
+    {
+      "path": "components/kairo/universe-operations.tsx",
+      "sha256": "ad077427957c4ba11027a9cbef4b2a23f6c37b5327e0bab24fab5caaa9acb204"
+    },
+    {
+      "path": "components/kairo/universe-overview.tsx",
+      "sha256": "306e7c76cdb5c2ce7f0659b3d021b643dd5cbfc5f0b4eefd4960200f980d5681"
+    },
+    {
+      "path": "components/kairo/universe-politics.tsx",
+      "sha256": "e763a4db559dba4030ae96cf2e76af5a0caf71b93995c3b373c4502d39b6150e"
+    },
+    {
+      "path": "components/kairo/universe-requests.mjs",
+      "sha256": "f59272ae55ec57537855a2bb6b20a390e2573d8049c7b121030308943c0fa58e"
+    },
+    {
+      "path": "components/kairo/universe-settings.tsx",
+      "sha256": "b42c016ef1d07c3725f44897445998b081fa97295f5c193937a0abad5d2ac862"
+    },
+    {
+      "path": "components/kairo/universe-signature-bookmarks.mjs",
+      "sha256": "26d2d1542773b013e7afa46d6b6f6e3a93e0f29edd789ec9d5dc5f86c257172f"
+    },
+    {
+      "path": "components/kairo/universe-tactical-window.tsx",
+      "sha256": "5e96db5b41966514c25b88b77ec115e17a7ca14562804eef9d8993b967e3d0a7"
+    },
+    {
+      "path": "components/kairo/universe-types.ts",
+      "sha256": "8c37f9628115b8c619c41b1f17f39ea4cf5185d2ee3fc249bf82507bafaaa00a"
+    },
+    {
+      "path": "components/kairo/universe-view-model.mjs",
+      "sha256": "4f3ee7845ad89db543434966f0088ca47b11ba375d04de2a5983cacff45b4ad2"
+    },
+    {
+      "path": "components/kairo/universe.tsx",
+      "sha256": "6235e589b245b58f86b2d0a61feed4eeb4674f1f374499cc4b2d9fb6d0a661a1"
+    },
+    {
+      "path": "components/kairo/use-resource-refresh.ts",
+      "sha256": "648d1913b0a4856fa8d18d1668aa9a1ec6ea699def7c66e4c81866f3e17e2896"
+    },
+    {
+      "path": "components/kairo/workspace-navigation.d.mts",
+      "sha256": "db6fbb82690de4a506e92c351d149c6bc436861a40301c1d9ad18a604e96f2c1"
+    },
+    {
+      "path": "components/kairo/workspace-navigation.mjs",
+      "sha256": "47bc2a1e4d3cc8dbc598caa8d29da4dcdd5ea52ccd785d2c43e05541a5468e8b"
+    },
+    {
+      "path": "db/index.ts",
+      "sha256": "a203c296c307f55eec99a500e48c3043335496f17f4102e3e773b8658bede250"
+    },
+    {
+      "path": "db/schema.ts",
+      "sha256": "9bc624b46d0b99906dbda13168c8cb028a660909472214c6dbbe2f9f1e73ac3f"
+    },
+    {
+      "path": "drizzle.config.ts",
+      "sha256": "730d7f5ce7283f25c59b63599beb52d4a3a14b3f90d1ab2fdc3db45286d4ad99"
+    },
+    {
+      "path": "examples/d1/app/api/notes/route.ts",
+      "sha256": "cb1dad08bc87855e07b2acd6f183d3ccbf58ef1480f6b46ddb75a3fc993858e7"
+    },
+    {
+      "path": "examples/d1/db/schema.ts",
+      "sha256": "31de05cea98f8cd2c21fd184630b53f205b42277e3a53c7fbeaffb64b0a38076"
+    },
+    {
+      "path": "lib/session-summary.ts",
+      "sha256": "eb32cdec78eebfffa6546296b796bb0dc673f8be219a43f4ee59e8f45e975428"
+    },
+    {
+      "path": "lib/universe-schematic-layout.d.mts",
+      "sha256": "0fd773b63f9866a14c023281792f71e0a2b4f7010a5902c0325a09f8f006307d"
+    },
+    {
+      "path": "lib/universe-territory-colours.d.mts",
+      "sha256": "c46e0ef3295bae88de9a5616447c5062a37ad2408faa92555fd2a58061565479"
+    },
+    {
+      "path": "lib/universe-territory-colours.mjs",
+      "sha256": "13f5212b1510668ed193abe950fdf7f84392af38eaa3a2be55a46c9a357f4335"
+    },
+    {
+      "path": "lib/utils.ts",
+      "sha256": "d9f1a4fccde349cd20f28d37446203e21545c60c55927f76a4f8ebed75c1fb69"
+    },
+    {
+      "path": "next.config.ts",
+      "sha256": "853374e5e1771e6b3c10b10b3716ad17cbb970da7730cdda824e9eec17e9e6c5"
+    },
+    {
+      "path": "public/stream/protection.js",
+      "sha256": "c52a9221651f07c2da1ee9ea8f970e8919a8ce75fdc720b8598b8b4523a172c1"
+    },
+    {
+      "path": "public/stream/render.css",
+      "sha256": "5469c60727578daa3f5765986f7fc3c5af618253118a1415cc2e20c6cd1a3593"
+    },
+    {
+      "path": "public/stream/render.js",
+      "sha256": "fc88aa48386ed78b007d27da9dd8866aa0849312a3cf80dc63757fdc8e7a0b33"
+    },
+    {
+      "path": "public/stream/widgets.css",
+      "sha256": "ac10cd1b32223f698d5962fe2421c3b7bb89f050f81703af068216cb4c95f397"
+    },
+    {
+      "path": "scripts/build-universe-destinations.py",
+      "sha256": "14ab0811dbcde783e38c8dbe308ee2f4a82144a91e9fb25584dd3b71810e9573"
+    },
+    {
+      "path": "scripts/build-universe-points.py",
+      "sha256": "d240c43a08e5efe64985ea918cb23327449f5b2d45b0ee78678df3016f85efd0"
+    },
+    {
+      "path": "scripts/build-universe-wormholes.py",
+      "sha256": "62d7b25f4c87f3add609ab8f068e8fe4f5ffa16eeffd632e574a320405ca5561"
+    },
+    {
+      "path": "scripts/build-verified.sh",
+      "sha256": "90973f44a946cc47e1423bf494722a1877090a5737a7136c64a613e0058e53df"
+    },
+    {
+      "path": "scripts/import-market-categories.py",
+      "sha256": "6271c5667d5dfe80943ab14b217e18d4bef2c2bcc2a7fb93b107b4b641042442"
+    },
+    {
+      "path": "scripts/import-universe.py",
+      "sha256": "a05549c8dcd170397e10f6a4aa300d210957255ea37f9aa885facfd68504efc5"
+    },
+    {
+      "path": "scripts/install-ci.sh",
+      "sha256": "98aee2ade475860a83445e7c540802491c564e1fa3dbb4cd0d4c8c30165f71fd"
+    },
+    {
+      "path": "scripts/package-release.py",
+      "sha256": "1b9e23c87bdf52b6da68f2518a2d6abfac49bf5ba8069872c4b98ef8f984810a"
+    },
+    {
+      "path": "scripts/sites-env.sh",
+      "sha256": "31a6d92c72cce470fdbb0740f7fe015c7c68cc9a53ebfa5aa3fc917c606d909f"
+    },
+    {
+      "path": "server/asset-locations.mjs",
+      "sha256": "9d646825c1cfafa2ac18b6a848b84cdda05d5dcaa772084f866e96f2a2932696"
+    },
+    {
+      "path": "server/auth.mjs",
+      "sha256": "c4c4c80860bbb1bc0514e1993b6ce600b6db1bb90994dc9cc5a2903d8527fbda"
+    },
+    {
+      "path": "server/bus.mjs",
+      "sha256": "84a153b02586d7eb1dcc6bd7a26ebf4e4d954aaacddc087465f92a494d87cfd2"
+    },
+    {
+      "path": "server/cache-retention.mjs",
+      "sha256": "b3eb57808a42c5c3daea08551f7592dfc9dce60b23a0c9e6d47854a07a7221f4"
+    },
+    {
+      "path": "server/combat.mjs",
+      "sha256": "44bf83883e6b11e7af41854586a637d95b2ee5b5feb90f3930bb5439ca273ef7"
+    },
+    {
+      "path": "server/core.mjs",
+      "sha256": "374a2f1e2bcb2f3ac035426b3eb4f20132385882a27e4cab890e3dc08c3baaac"
+    },
+    {
+      "path": "server/dataset-paths.mjs",
+      "sha256": "c45f4a2042ced28eebb8a8fbae4f163a3ef6f7da63a746b0824942bc91fd6fcc"
+    },
+    {
+      "path": "server/datasets.mjs",
+      "sha256": "793c6e314dcf0b6cbb488501d8a77cdbc718c363a55576bed1d1b38ee01b3890"
+    },
+    {
+      "path": "server/discovery.mjs",
+      "sha256": "fab7f72f35a6ff5e5d39f60cc19deb29af832bc48779136398ccc62592a56e3b"
+    },
+    {
+      "path": "server/enrichment.mjs",
+      "sha256": "6036039ba17d73756fd6f8d8e6ac5714e279f5397804a94ebcf70f5411fe7a58"
+    },
+    {
+      "path": "server/esi.mjs",
+      "sha256": "fb18516db20eb7147db7c9b9875ef051b82e7123859dfe7eda2236a10b47582c"
+    },
+    {
+      "path": "server/goals.mjs",
+      "sha256": "d4a7507c2116651610d9a43a30b195111053f48c7b11372ad41cb66907e3a9a7"
+    },
+    {
+      "path": "server/history.mjs",
+      "sha256": "9e5a768a574cb138ff71308209da0620a32cb9878329e554334958ddcea6c0cd"
+    },
+    {
+      "path": "server/import-cache.mjs",
+      "sha256": "0446aa8b3ee5b0c1e34ee3a4bc7ebd0b0fd63a29a03e7dee9ed6afa350746307"
+    },
+    {
+      "path": "server/import-math.mjs",
+      "sha256": "d068aebec138d6bbad7c33bf7dfb16738d5010e1b5e71794a7b039e2f411e1ce"
+    },
+    {
+      "path": "server/imports.mjs",
+      "sha256": "71001736ff8befaaab000a17e45e3de21f7942d44172b75f53766c9e5e5e7eed"
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "3bada5b622743e7639be4a2ab443cc11f5daba95182349ff4d8870050acc8672"
+    },
+    {
+      "path": "server/market-categories.mjs",
+      "sha256": "58781bf55a4435795ba8de3ac0128bca760ad13f47b2b5e6067af714f64f903d"
+    },
+    {
+      "path": "server/market-history-store.mjs",
+      "sha256": "a5725ffd549699a4f01fa991a3c2eca4914b3e4504a6916d6221bd1ea13c4af5"
+    },
+    {
+      "path": "server/market-history-worker.mjs",
+      "sha256": "c00ad5a7bfef394898a3dd36b9e6b3b1036f488337b22424d0a72395fd868977"
+    },
+    {
+      "path": "server/market-history.mjs",
+      "sha256": "b0c54c5322ba14ec27bd5188128fbcb03066b671869c8eda904237b41c0e7a9f"
+    },
+    {
+      "path": "server/markets.mjs",
+      "sha256": "8361edae8181bb0b3f3aa1e60442183ac365a1b2f301c6a47d33e02171159258"
+    },
+    {
+      "path": "server/modules/catalog.mjs",
+      "sha256": "0d614977fd792d22a9b543a4e0ceb043cb96935a525a4b6a0794b8914d255ea3"
+    },
+    {
+      "path": "server/modules/milestones.mjs",
+      "sha256": "57431f192c2b1937e9a07fa2dde572ba68a4b2796f0e7a42fa5b24aca5ab2596"
+    },
+    {
+      "path": "server/obs.mjs",
+      "sha256": "718cc77a6fd46eace8f4bf8d118dea30a118b4027559f8b7defc8204bf45484b"
+    },
+    {
+      "path": "server/opsec.mjs",
+      "sha256": "d3d5c073319e0c30d526a958adcf848eb673ed14942630b466537047f91826d8"
+    },
+    {
+      "path": "server/places.mjs",
+      "sha256": "233074c250d5a272e79a28a43b0d8ad363e68652f72e6283753631eac94163cd"
+    },
+    {
+      "path": "server/polling.mjs",
+      "sha256": "c94302b130f444c5fe8051d4c878f62582253fc12c6c30ec11d15174aac30fa0"
+    },
+    {
+      "path": "server/projections.mjs",
+      "sha256": "80e7bf6575d789d1e8437369a77f290f5a0f50563ac8f24e3c3d1dea5e77a1ea"
+    },
+    {
+      "path": "server/public-feed-transport.mjs",
+      "sha256": "b789262489408fd3963bd3c44d818f6caa8a9ccff674e406b43a0071e529dc31"
+    },
+    {
+      "path": "server/registry.mjs",
+      "sha256": "3aff60bb644de8aeb6ab0ecd6ab3c536f90b8caf61b52f0bbabe03565bdf61cf"
+    },
+    {
+      "path": "server/runtime-child.mjs",
+      "sha256": "3285f3537c8e9a1310762a460338a2e66a509ab6d04af5b2ca50f143e70fbaf2"
+    },
+    {
+      "path": "server/runtime-lock.mjs",
+      "sha256": "9e0846d73edd41177b5af3e7f42e2380214716390d7973cc8f408adfa7cacb57"
+    },
+    {
+      "path": "server/runtime-supervisor.mjs",
+      "sha256": "bccf76f9e459bed94fb95e996c2e06ec297a80d0644a3d02974fae6ff8f92b97"
+    },
+    {
+      "path": "server/sde-archive.mjs",
+      "sha256": "0c6ffb3d8911d3240e19ff241b998d11277053a46de59cc0d0f6b62dc020b8ca"
+    },
+    {
+      "path": "server/sde-build.mjs",
+      "sha256": "1703972beb0df8c949377990de24af615246837fccb4e4e8278b397d0671249b"
+    },
+    {
+      "path": "server/sde-limits.mjs",
+      "sha256": "ce5158b19f67693555c2f15a862e3c0b3b75f27d51d69f18c593f17ad2fe476e"
+    },
+    {
+      "path": "server/sde-worker.mjs",
+      "sha256": "687aed87649656951f9c3ec2dfeb05e2d3772f9e11d132cdb6c53fd3dee42faf"
+    },
+    {
+      "path": "server/session-combat.mjs",
+      "sha256": "d51f4c08d68a3dfb78e8ab841906a28b3349151631a6c5c3008c93b240f4b41f"
+    },
+    {
+      "path": "server/session-details.mjs",
+      "sha256": "e27bd582d4c93ced4d2f095f998789df4f5ef35fa7107c0a40b99c775d3a6653"
+    },
+    {
+      "path": "server/session-event-window.mjs",
+      "sha256": "56cb9cbf9d20fb12aa7d0c96bc94121f29fd47ba13272ba6410d6ca0020021dd"
+    },
+    {
+      "path": "server/session-live.mjs",
+      "sha256": "2590cbe88fc9dac1754eb4346a791642d24dbee39f2f0ed2dc70a299a1460f72"
+    },
+    {
+      "path": "server/session-policy.mjs",
+      "sha256": "36459f1307447a8e7b11c0cc2935d23ef86e4b658d77dbfce1f862fdb7541f77"
+    },
+    {
+      "path": "server/session-replay.mjs",
+      "sha256": "6ec6c90eee8d271bab4336b384d163078a9cd8f04cb501c165b653b932879af7"
+    },
+    {
+      "path": "server/session-travel.mjs",
+      "sha256": "55a8b1d1a3c008e8d47c8dde0498448be0dc68988e48c19b41a0483ecfa862e3"
+    },
+    {
+      "path": "server/sse.mjs",
+      "sha256": "08307bd7c27dd03b885087f14e211672ce7ed70b7691b163160ba9487393a027"
+    },
+    {
+      "path": "server/start.mjs",
+      "sha256": "759bc274e945e4832191093b45c511bb45289d15ebe480fa95d71bab1de2c688"
+    },
+    {
+      "path": "server/store.mjs",
+      "sha256": "3c6bcb40bb038ce6df473ab13ab5c34e1262815c95321e46c48501415bdcf58f"
+    },
+    {
+      "path": "server/stream.mjs",
+      "sha256": "df272318a7d9746b4ab6ab4dc00d84079a6bee0d47fdee8e795db192ef48aa2b"
+    },
+    {
+      "path": "server/ui-resources.mjs",
+      "sha256": "e6b44855c117853aa2fb718962bb6bc053ef3dd1f26fcbf173a79d2689ad0610"
+    },
+    {
+      "path": "server/universe-ansiblex.mjs",
+      "sha256": "28e673a11c2cf76ea8742adaa4124301a9c2f4b0b141269a99608111e1ab0ad4"
+    },
+    {
+      "path": "server/universe-destinations.mjs",
+      "sha256": "3fe53f070fe673b22f2d491411c20369d06e88072c212f4bf1d55946cc045791"
+    },
+    {
+      "path": "server/universe-faction-warfare.mjs",
+      "sha256": "4e79d6b6e12dae0500318e8289d57e1965242aafb86339d9c149715a7933830f"
+    },
+    {
+      "path": "server/universe-feed-model.mjs",
+      "sha256": "090134bc459da48434eb0e234c480da59dfedc1b7aa7ab202f5fb350d5367712"
+    },
+    {
+      "path": "server/universe-feeds.mjs",
+      "sha256": "12b0a87aa7c991540901cccd38691db11866046ea8dc11e1e539d7ba532cc2fd"
+    },
+    {
+      "path": "server/universe-history.mjs",
+      "sha256": "f8cec31247d94d42426230eac5ea0d212b693bd98c703d3654c134e460c3f33e"
+    },
+    {
+      "path": "server/universe-intel.mjs",
+      "sha256": "d6648e777671d1d2d2a3bf2ae2e75105f7289c427a816bdc3a7092326ec2806e"
+    },
+    {
+      "path": "server/universe-jspace-scopes.mjs",
+      "sha256": "894b28cd7cee50714f91818906e22e43f5c2d33c45b818802b297ccb9621427e"
+    },
+    {
+      "path": "server/universe-jspace-tracking.mjs",
+      "sha256": "312270546bdfd5a22c2afc5e8de125a7aeace5b0dbb904b20f7ba43743d99b8c"
+    },
+    {
+      "path": "server/universe-jspace.mjs",
+      "sha256": "ddd4ac7e468c613e15ecd065a620dffeabe70237df79003f91760356459a85be"
+    },
+    {
+      "path": "server/universe-log-tail.mjs",
+      "sha256": "809b9c1fb57d0a856c4efbcb8d2ca94f861602fbecb6a1ab27c7482224db05ea"
+    },
+    {
+      "path": "server/universe-navigation.mjs",
+      "sha256": "8722bc5be6ccb5c351a6e74f6fcfc47cdb50223a73ef61d611e1d1572ed548a0"
+    },
+    {
+      "path": "server/universe-operations.mjs",
+      "sha256": "532fa0ed16aef8aee9198822728b41847db4d740a296e4237f04cad5d5618670"
+    },
+    {
+      "path": "server/universe-owner-search.mjs",
+      "sha256": "c4c0b990eb3854860b4ccfbaba84af0ecc08deeec8108b03412910cefe72be6b"
+    },
+    {
+      "path": "server/universe-politics.mjs",
+      "sha256": "4a3afdcebaaf997de369b898dbaec7c2382dab5c6eb32dbb5bfa4c65d2b788b7"
+    },
+    {
+      "path": "server/universe-routing.mjs",
+      "sha256": "06d3155f56a0ff6845552f8cdf384ef7beec023622dfecb6975a9fa37e1a6657"
+    },
+    {
+      "path": "server/universe-sovereignty.mjs",
+      "sha256": "243dbe1b3c00268dbe4a09e31a8a66968165e10bda6152baa7ed51b63d1d604f"
+    },
+    {
+      "path": "server/universe-static.mjs",
+      "sha256": "1ceddf800928a377da58dc486b51c5008f5cc4c25726ab7cc7ab95c9fc1ea6b8"
+    },
+    {
+      "path": "server/universe-upgrades.mjs",
+      "sha256": "5a1d984866b9019da7232430cafc56559fb33ad4532b285a0f40720dac0541e9"
+    },
+    {
+      "path": "server/universe-wormholes.mjs",
+      "sha256": "d46427aa7f71f00b510cafe8dc3c829906e27ecdcd17c93dc2858a350019f1e1"
+    },
+    {
+      "path": "server/universe.mjs",
+      "sha256": "92a599a7386ce1cdd6be04f6c630749082af16c6c5dd6cbe9489d83874b6ea52"
+    },
+    {
+      "path": "server/vault.mjs",
+      "sha256": "25d2d24adc89957926608d6cdb802dbf43aa3d4fef6acea752e719e72c1cace8"
+    },
+    {
+      "path": "server/visit-sovereignty.mjs",
+      "sha256": "7e004795630ee56d3d05d5da620f10bfdeee94c08b12eb405303a06f895d73bf"
+    },
+    {
+      "path": "start-kairo.sh",
+      "sha256": "5927ac3418001e4d74020d609c5b0f16e8fcca4731b566bdfc12ddaec495e8aa"
+    },
+    {
+      "path": "tests/datasets-ui.mjs",
+      "sha256": "9d5e77fcfbc036cd33f6432a3ed10440bcfa404b886a7d56b068491d9c005cb6"
+    },
+    {
+      "path": "tests/helpers/dataset-fixture.mjs",
+      "sha256": "ccda52d8de8e21b3f562cf91fa77bb1eb664a0569f897f760dc70eda83a59b6f"
+    },
+    {
+      "path": "tests/helpers/market-blueprint-fixture.mjs",
+      "sha256": "89513b8311dafe98d09b2f919d64670935101a2807f1ba26dba64ca526784dc0"
+    },
+    {
+      "path": "tests/helpers/market-icon-fixture.mjs",
+      "sha256": "c42dc7db2a1cba226b5311af6a7af8e0082ecec170d4cc749dece7bc7e5e5969"
+    },
+    {
+      "path": "tests/helpers/operation-icon-fixture.mjs",
+      "sha256": "da02e218d6bdc92a2544fe3a2ae8c3ab89d028108d47df604799be9165b24b60"
+    },
+    {
+      "path": "tests/kairo/administrative-refresh.test.mjs",
+      "sha256": "29151df8e59b176c1d654428b5e220683ca8adbfa9acecf9835105a95b516a89"
+    },
+    {
+      "path": "tests/kairo/auth-public-flights.test.mjs",
+      "sha256": "855538cb989d62efa91b06918b319ac85ad0651c3877f543f77f363482cd54db"
+    },
+    {
+      "path": "tests/kairo/core-construction-rollback.test.mjs",
+      "sha256": "f3ab7f65cc2dccee1feaedec67e22ee19ff3da05dcf2d93a2e3d04328e46e7ba"
+    },
+    {
+      "path": "tests/kairo/dataset-publication-cancellation.test.mjs",
+      "sha256": "55f040466ba58f92aef2568b8799bb9b3f69db2890648fe23e76e019c3bc4291"
+    },
+    {
+      "path": "tests/kairo/dataset-settings-overlap.test.mjs",
+      "sha256": "319c7ac95e9ce4b2342aee5e945add5b83ca15d6ae80cfa0f160b3e7ee7c91d9"
+    },
+    {
+      "path": "tests/kairo/esi-optimization.test.mjs",
+      "sha256": "d5b2cab825760996e0af1997f6b7e9f448366dca1db5a6a28f5e83a93a00c5c0"
+    },
+    {
+      "path": "tests/kairo/history-storage.test.mjs",
+      "sha256": "8aaa6f57492583118114e0abf98a04c8030c5276e444f86cbfa19bcd68e814f1"
+    },
+    {
+      "path": "tests/kairo/imports.test.mjs",
+      "sha256": "e1207784c6db0c54b20bc445260669d1d80a16d064cd8062a9fab9a911f0cd3e"
+    },
+    {
+      "path": "tests/kairo/jspace-clock.test.mjs",
+      "sha256": "6c6992cec79158d030385da34641e3a40cff681f68a3c9abdd3ec7322e9222c7"
+    },
+    {
+      "path": "tests/kairo/lifecycle.test.mjs",
+      "sha256": "e9be350132066f9cd3a5cbd7a1df63dd3ab484640ecaf97c3b8550b883670b25"
+    },
+    {
+      "path": "tests/kairo/market-history-worker.test.mjs",
+      "sha256": "991410db401b1c60d7ecaa01985f32ee36b1d630d6d1aec74496516591193e3f"
+    },
+    {
+      "path": "tests/kairo/public-feed-transport.test.mjs",
+      "sha256": "2f4c2668bc9640fde01babd7d911e5492a7fb3221be06599d0bac7978a1f4abd"
+    },
+    {
+      "path": "tests/kairo/runtime-child.test.mjs",
+      "sha256": "228104e285061bde5403b7515099dbf54d04fff1e71f2eb9f34e39e41b146843"
+    },
+    {
+      "path": "tests/kairo/runtime-supervisor.test.mjs",
+      "sha256": "7a2c6d6a3b1d0deb58c36208d1b70d414b324e73f8e1cae9441939c0b280fa67"
+    },
+    {
+      "path": "tests/kairo/sde-build.test.mjs",
+      "sha256": "39c44c61d0c30aa8c707359a0f552b56aa3159fa0da5ed803c14cd3545d13e11"
+    },
+    {
+      "path": "tests/kairo/sde-worker-limits.test.mjs",
+      "sha256": "0d8c7b8adc8ead72c7d44a3560512662e765dc806cdbad1df4e6261edeb28766"
+    },
+    {
+      "path": "tests/kairo/sse.test.mjs",
+      "sha256": "1859de5f9a5414353aa920d9d7ca9933fb47f58e65fb2458ea657d752db816a9"
+    },
+    {
+      "path": "tests/kairo/startup-rollback.test.mjs",
+      "sha256": "48cebc84868ba99819282fda3092af62739906af0612ae823e838ff9d9372978"
+    },
+    {
+      "path": "tests/kairo/studio-work.test.mjs",
+      "sha256": "304e977d1e491155af68f0b08c0d0e2aa0abf21b52eb64f719d40a3cb6e73c07"
+    },
+    {
+      "path": "tests/market-icons-firefox.mjs",
+      "sha256": "017579d3297095b7c80648638716d6c69edd855beb133a7f2cedcd19925fa360"
+    },
+    {
+      "path": "tests/market-icons-ui.mjs",
+      "sha256": "809435884e5eb133ffc5a1fc3475516ae104efa4faf887b6dc660dda6d7ad595"
+    },
+    {
+      "path": "tests/premerge-appearance-scenarios.mjs",
+      "sha256": "158bfbce9f7484c3f7e5f26dc9a8e5e98d3e88e6870e55e0198c616f34d81d9c"
+    },
+    {
+      "path": "tests/premerge-blueprint-icons-ui.mjs",
+      "sha256": "e708183018b5ac259d40dda49f81e0069f116c182c3de77458831b1d03e70b09"
+    },
+    {
+      "path": "tests/premerge-dashboard-ui.mjs",
+      "sha256": "faf7a6dc975361bb1d5dd6a65b290fe457a8269047ce6c7a15a30ea310cd47fa"
+    },
+    {
+      "path": "tests/premerge-goal-progress-scenarios.mjs",
+      "sha256": "b0a69444dd6575b982600717989e8aa54827357550340685f08922a294e78555"
+    },
+    {
+      "path": "tests/premerge-imports-ui.mjs",
+      "sha256": "805e3b133e0ea92a48507c24e91e2125a2ba1ebd19488d6a58a8f8f3de02463b"
+    },
+    {
+      "path": "tests/premerge-map-hover-ui.mjs",
+      "sha256": "6977981efd686b28b5b27ec98d724a1f5a99bc61bf77adc2a5c30857c9643e3c"
+    },
+    {
+      "path": "tests/premerge-navigation-ui.mjs",
+      "sha256": "425eb892ed132119869dd82d721426244ed5bac19a57298321e7e169100ed5b6"
+    },
+    {
+      "path": "tests/premerge-operation-icons-ui.mjs",
+      "sha256": "e93406ebf857395a68ba3d86eddfff558f3afa5674d609ba4deea594dc386035"
+    },
+    {
+      "path": "tests/premerge-pass4-market-settings.mjs",
+      "sha256": "2119013e0adde47fbcfe652bea5cd5944c5e73b03f204faebd6427c8b3470224"
+    },
+    {
+      "path": "tests/premerge-pass4-markets-ui.mjs",
+      "sha256": "665c28d9dfa8eee167d0ea647c17f23783705c3b8cc8dc8eab9c435249ce60f3"
+    },
+    {
+      "path": "tests/premerge-pass4-navigation-ui.mjs",
+      "sha256": "fe53f156c03a52733a695159c81b9e0179a14610c68287f40575f9d2e76f9357"
+    },
+    {
+      "path": "tests/premerge-pass4-shared-ui.mjs",
+      "sha256": "40e3322f9c790f5cc43760804db881b3722a71541e4d11924d19aa41619744c0"
+    },
+    {
+      "path": "tests/premerge-pass4-universe-settings-ui.mjs",
+      "sha256": "ea22b32e6ab19cb304f951cff9ed892161ca3e3818c6351b5a9089cdf6bb3f82"
+    },
+    {
+      "path": "tests/premerge-runtime-edit-scenarios.mjs",
+      "sha256": "be8abd62fe493c934347c517acedc94680cf965836d501577248af1d8776d4bf"
+    },
+    {
+      "path": "tests/premerge-session-edit-scenarios.mjs",
+      "sha256": "0671ea3af53ca930d98093b39473fb744c860c201d0d58dae282f33cdfdb6f52"
+    },
+    {
+      "path": "tests/premerge-sessions-ui.mjs",
+      "sha256": "0e74e7d244eaca0e6a709f87d80c9d1228dc12a563897918c1f5dae698e1f892"
+    },
+    {
+      "path": "tests/premerge-shared-ui.mjs",
+      "sha256": "8351df661f0fbe063cd7754d04910c0786730ec08601ebfe3697498214f09bd3"
+    },
+    {
+      "path": "tests/premerge-studio-capacity-scenario.mjs",
+      "sha256": "eb21d00e5e013106a2cd2f2b0525dd12043dd9a8783716957c406dd2e7a55ab2"
+    },
+    {
+      "path": "tests/rendered-html.test.mjs",
+      "sha256": "7fe0e3d29241657c5f91c6bb3890286c1fe17ae52491fabb5c52b1c0ecdc9081"
+    },
+    {
+      "path": "tests/session-ui.mjs",
+      "sha256": "ab2219f0bfe06a336be77707985317b93a7523f1ec8a67077c6b0ab5dad367c9"
+    },
+    {
+      "path": "tests/ui-components.test.mjs",
+      "sha256": "349460b24b8efb99ea9f079349c86a90a4b8547ec1d33dcc58c0479fdd735785"
+    },
+    {
+      "path": "tests/universe-ui.mjs",
+      "sha256": "0805a098fc9eb2c885764b61d6e357d8fe39ed8c4e953d529f218a0d83b87d56"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "416d3ba263dc1bac027eef234d580c0e4b55a28056cd1db4dadb019890da86de"
+    },
+    {
+      "path": "worker/index.ts",
+      "sha256": "551722e06117416b79aedb1bc42d2e8fd32432a650a9ef953dc9f90040a0a4c7"
+    }
+  ],
+  "documentation_links": {
+    "markdown_files": 34,
+    "local_links": 551,
+    "heading_fragments": 60,
+    "errors": [],
+    "method": "Tracked Markdown links outside fenced code; local target existence and GitHub-style heading fragments. No remote-link or historical-example rerun claimed."
+  },
+  "banking": {
+    "source_integration_commit": "b24948b04828b73b7a47b703d6ff18f821aafeeb",
+    "source_integration_tree": "f4f2ce6e44c1da83e3947e1c414c355ac81d6753",
+    "fetched_tree_matches_validated_local_tree": true,
+    "earlier_pushed_checkpoints": [
+      "1038033c49e6e15dcc4d7b40abb06ec63c8cfa5a",
+      "528663c164af47b0b406f0f182c6299f2fb2df40"
+    ],
+    "status": "Source documentation complete for review; final receipt changes only phase status and banking metadata."
+  }
+}

@@ -1,5 +1,10 @@
-// Application polling policy, in seconds. HTTP cache expiry remains a hard
-// lower bound. Zero keeps the ESI cadence for protection evidence.
+/**
+ * Shared collection policy used by Settings validation and Core scheduling.
+ * Intervals/choices are seconds; deadlines and injected clocks are milliseconds.
+ * HTTP cache expiry remains a lower bound. Zero follows the provider cadence,
+ * never disables collection. Strict protection freshness is owned by OPSEC/Core;
+ * these routine deadlines must not weaken it. See docs/ESI-POLLING.md.
+ */
 export const pollIntervals = Object.freeze({
     profile: 0, location: 5, ship: 60, online: 60,
     skills: 600, queue: 60, attributes: 3600, clones: 900, implants: 900,
@@ -9,13 +14,13 @@ export const pollIntervals = Object.freeze({
     killmails: 300, standings: 3600, loyalty: 3600,
     contacts: 0, corporation_contacts: 0, alliance_contacts: 0,
     calendar: 900, notifications: 600, mail: 300,
-    status: 60, prices: 3600, sovereignty: 0, fw: 0, kills: 3600, jumps: 3600,
+    status: 60, prices: 3600, sovereignty: 0, fw: 0, kills: 3600, jumps: 3600, sovereignty_campaigns: 30, incursions: 300, industry_systems: 3600,
 });
 
 const b = (label, choices, description) => ({ label, choices, description });
 export const pollingBatches = Object.freeze({
     profile: b('Pilot & membership', [0, 3600, 21600, 86400], 'Your character profile, corporation and alliance. Supplies pilot details and the membership behind standing checks.'),
-    location: b('Location & system context', [5, 10, 15], 'Tracks systems, docking and undocking for Journey and OPSEC. Slower checks can miss short visits. Kept below the 30-second protection freshness limit.'),
+    location: b('Location & system context', [5, 10, 15], 'Tracks systems, docking and undocking for Universe and OPSEC. Slower checks can miss short visits. Kept below the 30-second protection freshness limit.'),
     ship: b('Current ship', [30, 60, 120, 300, 600], 'Updates your hull, ship-change events and linked stream widgets. Docking, undocking and logging in can bring a check forward.'),
     online: b('Online status', [60, 120, 300, 600], 'Checks whether your pilot is online and updates login statistics. Also helps detect when to check your ship again.'),
     skills: b('Trained skills', [60, 300, 600, 1800, 3600], 'Refreshes trained levels and skill points for pilot details, session reports and skill goals. A known completion can bring a check forward.'),
@@ -48,14 +53,24 @@ export const pollingBatches = Object.freeze({
     sovereignty: b('Sovereignty & holder names', [0, 300, 600, 1800, 3600], 'Refreshes system sovereignty and resolves holder names for System intelligence and OPSEC. One shared collection serves all pilots.'),
     fw: b('Faction warfare context', [0, 1800, 3600, 7200], 'Refreshes warzone systems used by System intelligence and the faction-warfare protection override. Shared across pilots.'),
     kills: b('System kill statistics', [3600, 7200, 21600], 'Refreshes public ship, pod and NPC kill counts in System intelligence. ESI reports a cached window, rather than live combat.'),
+    sovereignty_campaigns: b('Sovereignty campaigns', [30, 60, 300, 600, 1800, 3600], 'Refreshes public sovereignty campaign timers and progress. Hub structures, development and vulnerability windows share the sovereignty collection.'),
+    incursions: b('Incursions', [300, 600, 1800, 3600], 'Refreshes public incursion systems, influence and staging information for Universe.'),
+    industry_systems: b('Industry cost indices', [3600, 7200, 21600], 'Refreshes shared system industry cost indices. Your own mining activity uses the separate mining ledger.'),
     jumps: b('System traffic', [3600, 7200, 21600], 'Refreshes public gate-jump counts for System intelligence. Your own travel history uses the separate location checks.'),
 });
 
+/** Normalize saved choices; unknown keys are omitted and invalid/missing values use recommendations. */
 export function pollingValues(saved = {}) {
     return Object.fromEntries(Object.entries(pollIntervals).map(([key, recommended]) => [key,
         pollingBatches[key].choices.includes(saved?.[key]) ? saved[key] : recommended]));
 }
 
+/**
+ * Validate every supplied batch/choice before returning a complete policy.
+ * Omitted keys reset to recommendations: this is replacement, not patch semantics.
+ * Throws on unknown batches, unsupported stops or a non-object input; writes are
+ * the caller's responsibility after the whole input has passed.
+ */
 export function validatePolling(input) {
     if (!input || Array.isArray(input) || typeof input !== 'object') throw new Error('Provide polling intervals by data batch.');
     for (const [key, value] of Object.entries(input)) {
@@ -65,6 +80,12 @@ export function validatePolling(input) {
     return pollingValues(input);
 }
 
+/**
+ * Return the next routine epoch-millisecond deadline for an observed sample.
+ * Known training finishes may bring observation + interval forward, but never
+ * before provider expiry. Invalid observation/expiry dates fall back to now;
+ * the sample is not modified and no new observation time is invented.
+ */
 export function refreshDeadline(dataset, sample, queue, now = Date.now()) {
     const observed = Date.parse(sample.updatedAt);
     let due = (Number.isFinite(observed) ? observed : now) + (dataset.pollInterval || 0) * 1000;
@@ -79,8 +100,11 @@ export function refreshDeadline(dataset, sample, queue, now = Date.now()) {
     return Math.max(Number.isFinite(Date.parse(sample.expiresAt)) ? Date.parse(sample.expiresAt) : now, due);
 }
 
-// A scheduled local sample stays usable between polls. ESI expiry and the
-// original observation time are retained separately for OPSEC and provenance.
+/**
+ * A ready sample is usable before refreshAt (or expiresAt if no refreshAt exists).
+ * Exact expiry is stale; no deadline on a ready sample is accepted for legacy
+ * compatibility. This is routine UI/domain freshness, not OPSEC evidence validity.
+ */
 export function snapshotFresh(sample, now = Date.now()) {
     const until = sample?.refreshAt ?? sample?.expiresAt;
     return sample?.status === 'ready' && (!until || Date.parse(until) > now);

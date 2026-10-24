@@ -1,0 +1,149 @@
+{
+  "unit": "JRET-01",
+  "status": "WORK IN PROGRESS \u2014 implementation not accepted as verified candidate",
+  "authorization": "User explicitly directed removal of deprecated Journey and dependent usage; fresh-data policy applies. No release action authorized.",
+  "base_commit": "3ed4134e9ca8e277efb8008c80b480e66722a923",
+  "base_tree": "df58590a44805df23a68913ff9df4676a7ba143c",
+  "historical_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "bank_commit": null,
+  "runtime": {
+    "node": "24.22.0",
+    "undici": "7.29.1",
+    "playwright": "1.62.1",
+    "chrome": "156.0.8078.47",
+    "firefox": "153.0",
+    "dependency_changes": false
+  },
+  "author": "algorithms_inventory",
+  "reviewer": "output_recon",
+  "review_disposition": "output_recon accepted source/evidence for explicitly unverified WIP banking; not candidate acceptance. Reviewed tracked diff SHA256 33b2fa7a5fa59298c41577cc1f3948bb3211190bbc37c68143f23f758f25b1e2 and requirement test a45da483df4cd66599e5e35e390f640239e21f1525733a7bbb4e6a7289d5d119.",
+  "file_sha256": {
+    "app/globals.css": "39b881516574af06abccc850ec3895b1527b967e36d9815bc155c1c637b32138",
+    "components/kairo/connections.tsx": "d945d9407bcf11bc224a3883ece22d461999bb79b18c4c59d7bdf1b4863ef925",
+    "components/kairo/operations.tsx": "8c14f77aad8e2548a6130f50eb13a2312980063857e77953c61537c6add6c5ef",
+    "components/kairo/workspace-navigation.mjs": "a362101cda873c8a93c76cf1e7d6e5d4a15073e6c28dec549ccc698ec2eb7587",
+    "docs/API-REFERENCE.md": "7cf8a25e363f55901622340086bf73a6590dc3d29893dc93dfc28c527e9ddd5f",
+    "docs/ARCHITECTURE.md": "aa23d2b92586b33dd99195ec14158bf1794dc0e58b413b8a6a588ccbf959010c",
+    "docs/INTERNAL-API.md": "81d65cfa5a48dad1e36956d2c0079ec653221c646efd22d02b031f5fb8922856",
+    "docs/PERSISTENCE.md": "7e0fc29d6fa1921c761440547acc087dfbe95f10483917d04c423c8568724b5d",
+    "docs/SESSIONS.md": "2706d764b5b9bf7fe73511cf8709765ce21a0d5ac9338b602ef45b1969030d59",
+    "docs/UNIVERSE.md": "8c5305a14b10856d1480a2b247e41b806736c5fb112b211851ab0cd87a5971cc",
+    "server/index.mjs": "2ec530f68b4dbbffbe93c73ba73d1c8635935cebdd6c81622684c349ef37f973",
+    "server/places.mjs": "b12d12192dcfcd22e99ea1b2c28e34d1e416889bd5f764df0ea3ab832068e84d",
+    "server/session-details.mjs": "72167f43b6d3a35f695fa14fbbe2a9c163687a700ca030e51142a5fde3fff33d",
+    "server/session-replay.mjs": "bb1e5490dd0a5ea683f022404989bfc2538fe2d7891ab83a22014a19de49cd5b",
+    "server/session-travel.mjs": "a8cbd281f05d5fb6bde4d4b55b987e80d3260297f513507220e88a65a9b8bd97",
+    "server/store.mjs": "31292c2474f67b32c201a838374ae3fa7534212b07c8159f54634c9e81b912e8",
+    "tests/jspace-ui-workflows.mjs": "a4051fdce3de936d6dfb26cdf2ee9d322ad3a639d10973b78d408e473a84c1cd",
+    "tests/kairo/contracts.test.mjs": "61ad335671a54a1e94ebee55f53240c13dcac3c942656a56ccdcbdb9d9a86434",
+    "tests/kairo/expanded.test.mjs": "a14f9e5046f805e3fe3267f4a1008e758744a3ec25ae0840389196fe2266db35",
+    "tests/kairo/journey-retirement.test.mjs": "a45da483df4cd66599e5e35e390f640239e21f1525733a7bbb4e6a7289d5d119",
+    "tests/kairo/participation-goals.test.mjs": "44e2846c630996d198c32d78752b7ea81576e120e6187e865114b4e2b918f36f",
+    "tests/kairo/session-replay.test.mjs": "fab0f25f7bbe3c6b6b6bd6fc287677dc39905cccf5b5e74c559fffc318b7bfaf",
+    "tests/kairo/session-travel.test.mjs": "ad89a60897c56b94991a8957f571a93d61779cb76f5b621d10a595b3902504fd",
+    "tests/kairo/sessions.test.mjs": "83963f1b9cdcb196393117833770ea8fddab7f92e145c528b9a44ab03e8cd569",
+    "tests/kairo/upgrade-v073.test.mjs": "ddd7b93e4125472ee6bcfe2a3e0f2f9b331f35d7c4f3e42d124959d55ebbcff2",
+    "tests/kairo/visit-sovereignty.test.mjs": "54faf820b0dfefa40353f73f99c06860231608bf6b63cd6a08cf3b9fb2b6d1eb",
+    "tests/session-ui.mjs": "8a13f7358b55cbcf61da793f9a63efdeae8b110684687be082107342827ea19c"
+  },
+  "checks": [
+    {
+      "name": "requirement failing-before",
+      "command": "node --test tests/kairo/journey-retirement.test.mjs",
+      "source": "base_commit plus the identical new requirement test before product edits",
+      "exit": 1,
+      "tests": 7,
+      "pass": 1,
+      "fail": 6,
+      "meaning": "Five distinct assertion failures plus failed parent: Journey routes returned200; PUT wrote1 and enrichment2 rows, static fixture made0 provider calls; export exposed Journey field; unowned history suppressed first owned capture.",
+      "evidence": "journey-retirement-evidence/before.txt"
+    },
+    {
+      "name": "healthy baseline",
+      "command": "node --test tests/kairo/session-travel.test.mjs tests/kairo/session-replay.test.mjs tests/kairo/universe-route-preparation.test.mjs tests/kairo/data-access.test.mjs",
+      "exit": 0,
+      "tests": 62,
+      "evidence": "journey-retirement-evidence/healthy-before.txt"
+    },
+    {
+      "name": "initial targeted after",
+      "exit": 1,
+      "tests": 126,
+      "pass": 125,
+      "fail": 1,
+      "meaning": "HTTP isolation expected compiled root page200 but got404 before the first build; retirement assertions passed. Resolved by fresh build and final targeted rerun.",
+      "evidence": "journey-retirement-evidence/initial-targeted.txt"
+    },
+    {
+      "name": "types",
+      "command": "npm run check:kairo",
+      "exit": 0,
+      "evidence": "journey-retirement-evidence/types.txt"
+    },
+    {
+      "name": "fresh build",
+      "command": "npm run build",
+      "exit": 0,
+      "evidence": "journey-retirement-evidence/build.txt"
+    },
+    {
+      "name": "targeted fixed",
+      "command": "node --test tests/kairo/journey-retirement.test.mjs tests/kairo/session-travel.test.mjs tests/kairo/session-replay.test.mjs tests/kairo/sessions.test.mjs tests/kairo/participation-goals.test.mjs tests/kairo/expanded.test.mjs tests/kairo/contracts.test.mjs tests/kairo/universe-route-preparation.test.mjs tests/kairo/data-access.test.mjs tests/kairo/visit-sovereignty.test.mjs tests/kairo/upgrade-v073.test.mjs",
+      "exit": 0,
+      "tests": 132,
+      "pass": 132,
+      "fail": 0,
+      "evidence": "journey-retirement-evidence/fixed-targeted.txt"
+    },
+    {
+      "name": "Chrome note-discard attempt",
+      "command": "KAIRO_SHARED_SCENARIOS=note-discard KAIRO_SHARED_BROWSERS=chromium,firefox node tests/premerge-shared-ui.mjs",
+      "exit": 1,
+      "browser_assertions": 0,
+      "meaning": "Chrome native process singleton socket() denied Operation not permitted; SIGABRT before page creation. Firefox not reached in this invocation.",
+      "evidence": "journey-retirement-evidence/browser-chrome-launch.txt"
+    },
+    {
+      "name": "Firefox note-discard attempt",
+      "command": "KAIRO_SHARED_SCENARIOS=note-discard KAIRO_SHARED_BROWSERS=firefox node tests/premerge-shared-ui.mjs",
+      "exit": 130,
+      "browser_assertions": 0,
+      "meaning": "Interrupted with SIGINT after approximately90seconds with no harness output/assertions; cause unresolved. No Firefox verification claimed.",
+      "evidence": "journey-retirement-evidence/browser-firefox-interruption.txt"
+    }
+  ],
+  "predeclared_cost_controls": {
+    "retired_route_status": 404,
+    "retired_route_sql_writes": 0,
+    "retired_route_provider_requests": 0,
+    "private_notes_provider_requests": 0,
+    "session_report_visit_window_reads": 1,
+    "session_replay_visit_window_reads": 1,
+    "route_preparation_lifetime_visit_reads": 0,
+    "new_timers_or_loops": 0,
+    "browser_journey_api_requests": "Pending browser gate"
+  },
+  "pending": [
+    "Chrome/Firefox Overview direct-link and modern owned Session replay flows at1600/390; zero Journey API calls",
+    "Private-note browser regression in both engines: Chrome environment-blocked, Firefox interrupted without assertions",
+    "Full relevant automated/candidate gates; changed session-ui and jspace-ui fixture execution",
+    "Proven-unused remaining Journey CSS: atlas-link-toggle, map-connection, connection-inspector, system-connections, region-navigator/shortlist; remove scoped rules preserving combat-coverage, then rebuild and verify",
+    "Review current documentation links and final source manifest after any continuation edit"
+  ],
+  "limits": [
+    "No native Windows/DPAPI, live EVE/OBS or extended-use evidence",
+    "No historical receipt or pinned prior-version fixture/generator changed",
+    "0.7.3 test is an unrelated-record historical fixture regression, not a compatibility gate",
+    "Not downloadable candidate, no version bump/main push/merge/tag/publication/PR-ready action"
+  ],
+  "evidence_sha256": {
+    "journey-retirement-evidence/before.txt": "50c18521e863c4fe613bff0463924e278b7584e91d269b6a0f74a14de10e32c1",
+    "journey-retirement-evidence/browser-chrome-launch.txt": "748fd3e388b8d8cb1244487a918cf779c0507be9e4dbb844137137596496a824",
+    "journey-retirement-evidence/browser-firefox-interruption.txt": "bc3550b154d81aeca9a25e75048a5b661ec60090b3a3e00b77c9b29894fdae31",
+    "journey-retirement-evidence/build.txt": "bcd98a662021da7c3cba96ebdbcd925a98dd19c3055b1b9743017bec7778c41a",
+    "journey-retirement-evidence/fixed-targeted.txt": "5c25bc744065c4c27ab4a8d77057fe0ded38ec4bf7d69879934966e1d055153f",
+    "journey-retirement-evidence/healthy-before.txt": "d4f072244c66a18e530ef2e30bf27e7716971361812f5fd60a546f7a060941ac",
+    "journey-retirement-evidence/initial-targeted.txt": "d9eafeeb2438b4cb6ac3f259dc40b7230769e2d16cd6ecd92676fc210476d4b2",
+    "journey-retirement-evidence/types.txt": "1fb1907716393cc1677c8d64974dc08e6acbd1c6055adb6fe1ffa73ba7ac875b"
+  }
+}

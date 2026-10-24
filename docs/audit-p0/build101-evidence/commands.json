@@ -1,0 +1,40 @@
+{
+  "verification_command": "python docs/audit-p0/build101-evidence/verify-package.py /workspace/scratch/a261d43da816/build101-independent/Kairo-test-build101.zip /workspace/scratch/a261d43da816/build101-independent/fresh-package /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin",
+  "working_directory": "/workspace/scratch/a261d43da816/kairo-audit-p002b",
+  "exit_code": 0,
+  "raw_runtime_command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+    "run",
+    "test:kairo"
+  ],
+  "raw_runtime_working_directory": "/workspace/scratch/a261d43da816/build101-independent/fresh-package/Kairo",
+  "source_identity_commands": [
+    "git rev-parse HEAD HEAD^{tree}",
+    "git ls-tree -rz --full-tree aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+    "git show aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5:scripts/package-release.py"
+  ],
+  "source_identity_output": [
+    "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+    "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9"
+  ],
+  "download_command": "Python urllib.request.urlretrieve(connector returned temporary download_url, /workspace/scratch/a261d43da816/build101-independent/Kairo-test-build101.zip); signed URL intentionally not retained",
+  "install_or_build_commands_run": [],
+  "verifier_stdout": {
+    "eligible_tracked": 797,
+    "generated": 21,
+    "total": 818,
+    "runtime_exit": 0,
+    "summary": {
+      "tests": 1354,
+      "suites": 0,
+      "pass": 1354,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 17881.685702
+    },
+    "changed": [],
+    "extra": []
+  }
+}

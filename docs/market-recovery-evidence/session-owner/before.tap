@@ -1,0 +1,84 @@
+TAP version 13
+# Subtest: live feed retains current Session ownership after existing during a pending packet
+ok 1 - live feed retains current Session ownership after existing during a pending packet
+  ---
+  duration_ms: 41.00966
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json","101.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after new pilot during a pending packet
+not ok 2 - live feed retains current Session ownership after new pilot during a pending packet
+  ---
+  duration_ms: 25.818249
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/session-live-owner-review.test.mjs:15:5'
+  failureType: 'testCodeFailure'
+  error: 'A packet relevant to the newly started live Session must be retained before its shared cursor advances past it'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/session-live-owner-review.test.mjs:67:16)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# {"pilot":43,"paths":["sequence.json","100.json","101.json"],"esiPaths":[],"cursor":101,"retained":false,"reportKills":0}
+# Subtest: live feed retains current Session ownership after replacement during a pending packet
+not ok 3 - live feed retains current Session ownership after replacement during a pending packet
+  ---
+  duration_ms: 26.179457
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/session-live-owner-review.test.mjs:15:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Owner changes must not duplicate feed transport
+    + actual - expected
+    
+      [
+        'sequence.json',
+        '100.json',
+    +   '100.json'
+    -   '101.json'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'sequence.json'
+    1: '100.json'
+    2: '101.json'
+  actual:
+    0: 'sequence.json'
+    1: '100.json'
+    2: '100.json'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/session-live-owner-review.test.mjs:71:16)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json","100.json"],"esiPaths":["/killmails/900/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],"cursor":101,"retained":true,"reportKills":1}
+# Subtest: live feed retains current Session ownership after stop during a pending packet
+ok 4 - live feed retains current Session ownership after stop during a pending packet
+  ---
+  duration_ms: 20.853161
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json"],"esiPaths":[],"cursor":100,"retained":false,"reportKills":0}
+# Subtest: live feed retains current Session ownership after disconnect during a pending packet
+ok 5 - live feed retains current Session ownership after disconnect during a pending packet
+  ---
+  duration_ms: 19.015935
+  type: 'test'
+  ...
+# {"pilot":42,"paths":["sequence.json","100.json"],"esiPaths":[],"cursor":100,"retained":false,"reportKills":0}
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 213.573783

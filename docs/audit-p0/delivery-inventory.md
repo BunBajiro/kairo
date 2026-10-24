@@ -1,0 +1,50 @@
+# C16: delivery, evidence and coverage boundaries
+
+Source and disposition: [P0-01](README.md). Primary inventory author `root`; independent reviewer `inventory_review`. All units below are **inventoried / behavioral review pending**. C16 maintains proof quality and delivery; it does not replace domain acceptance. Source paths are repository-relative.
+
+| Unit | Files / executable surface | Existing evidence to inspect | Missing proof / next bounded action |
+| --- | --- | --- | --- |
+| C16.1 install/build/type/config | `package.json`, `package-lock.json`, `.npmrc`, `scripts/{sites-env,install-ci,build-verified}.sh`, `vite.config.ts`, `next.config.ts`, `tsconfig*.json`, `postcss.config.mjs`, `eslint.config.mjs`, `build/sites-vite-plugin.ts`, `.openai/hosting.json` | [Development](../DEVELOPMENT.md); [Build97 receipt](../BUILD97-VERIFICATION.json); source-documentation receipt | Inspect locked install/timeout/lock/failure propagation and build freshness; type scope excludes scaffold DB/Worker/build/examples. Confirm candidate dependency/source and artifact identity; no speculative upgrades. |
+| C16.2 package/launch/notices | `scripts/package-release.py`, `tests/package-release.test.py`, `START_KAIRO.bat`, `start-kairo.sh`, `vendor/*`, `server/vendor/seek-bzip/*` | Build97 package/extracted-runtime receipts; 16 historical packaging controls; C05 launch/runtime tests | Packaging uses tracked source plus generated `dist/client`, rejects eligible symlinks/dirty tracked changes and excludes known state paths. Reassess new inputs, generated references, licenses/modes/path/CRC/digest and fresh extraction at next candidate. Native Windows launch/DPAPI not automated acceptance. Vendored bzip internals excluded from first-party algorithm rewrite; C06 archive decoding/limits and C16 provenance remain in scope. |
+| C16.3 CI/release guards | `.github/workflows/{test-build,release}.yml` | Build97 hosted gate receipt; exact workflow source | Review failure propagation, fixture isolation, total job budgets (test-build 30 minutes), cancellation and evidence identities when adding audit gates. Release uses a separate reduced gate set, stable-version/changelog checks and publication from main; do not invoke or alter release progression. |
+| C16.4 runtime/browser test oracles | Every `tests/kairo/*.test.mjs`, browser entrypoint/scenario/helper/fixture under `tests/`; see path manifest | [Validation](../VALIDATION.md), [focused ledger](../MARKET-RECOVERY.md), preserved final/premerge reviews | Verify each applicable assertion against actual owner state and independent oracle, not test filename/count. Extend only concrete gaps; preserve failing-before controls for defects, requirement tests for new features, fixture failures separately. Current browser gates are not blanket Firefox coverage. |
+| C16.5 shipped data generation | `scripts/import-{universe,market-categories}.py`, `scripts/build-universe-{points,wormholes,destinations}.py`; all `server/data/*` | [Universe data](../UNIVERSE-DATA.md); C05 SDE, C06 taxonomy and C09/C11 data tests | Offline commands overwrite bundled assets; inspect parser termination, units/identity/graph validity, provenance/hashes, reproducibility and failure publication. Generators are first-party code; generated blobs are integration/provenance inputs, not unreviewed executable source. Do not run generators against bundled files as an inventory check. |
+| C16.6 retained scaffold/shared primitives | `app/chatgpt-auth.ts`, `worker/index.ts`, `db/*`, `drizzle/*`, `drizzle.config.ts`, `examples/d1/*`, `components/ui/*`, `components.json`, `hooks/use-mobile.ts`, `lib/utils.ts`, `tests/{rendered-html,ui-components}.test.mjs` | Architecture scaffold boundary; `npm run test:scaffold` (separate gate) | Worker `/_vinext/image` and optional D1 example routes are not local Kairo APIs. Review build/preview integration and used primitive accessibility under C12; do not mistake D1 schema for local SQLite. Unused catalog primitives remain scaffold/dependency coverage, not proof of local product flows. |
+| C16.7 current docs and historical proof | `AGENTS.md`, `README.md`, `CHANGELOG.md`, all `docs/*`, `.gitignore`; developer/source/API contracts | [Documentation work](../DOCUMENTATION-WORK.md), [source documentation work](../SOURCE-DOCUMENTATION-WORK.md), [history index](../history/README.md) | Keep current instructions consistent with source and actual gates. Preserve historical receipts/74 closed findings and exact source limitations. Only new evidence reopens a finding; only explicit Bun approval reduces audit scope. |
+
+## Current command and gate denominator
+
+Package scripts are the complete `package.json` set at the assessed source:
+
+| Commands | Owning boundary and future evidence |
+| --- | --- |
+| `install:ci`, `build`, `check:kairo`, `lint` | Locked Linux build tools, type-check scope and optional lint; an available script is not automatically a blocking hosted gate. |
+| `test`, `test:kairo` | Same `node --test tests/kairo/*.test.mjs` runtime suite, including fixture-backed HTTP/SQLite controls; wildcard does not run browser or scaffold tests. |
+| `test:scaffold` | Fresh build then `node --test tests/*.test.mjs`; retained preview/component checks, separate from packaged runtime acceptance. |
+| `start`, `start:local`, shell/Windows launchers | `server/start.mjs`, optionally `--open`; C05 owns lifecycle/lease/child acknowledgment. |
+| `dev`, `db:generate` | Vite preview and optional scaffold migration generation; neither is local production startup or migration of Kairo SQLite. |
+| Five offline Python data commands above | Regenerate official/reference bundled data; validate inputs/output ownership before use. |
+| `python3 scripts/package-release.py <zip>` | Clean tracked checkout and fresh built client; structure checks do not replace independent downloaded-artifact verification. |
+
+Hosted `test-build.yml` currently runs install → types → fresh build, then these browser entrypoints (sharing fixture ports, so run serially), then packaging controls → package/extract → packaged runtime → upload. Upload-only steps are evidence collection, not tests:
+
+| Browser scope | Entry points in `tests/` |
+| --- | --- |
+| Chrome and Firefox | `final-audit-ui.mjs`, `premerge-operation-icons-ui.mjs`, `premerge-pass4-navigation-ui.mjs`, `premerge-pass4-universe-settings-ui.mjs`, `premerge-pass4-markets-ui.mjs`, `premerge-pass4-shared-ui.mjs`, `premerge-blueprint-icons-ui.mjs`, `premerge-map-hover-ui.mjs`, `premerge-navigation-ui.mjs`, `premerge-imports-ui.mjs`, `premerge-sessions-ui.mjs`, `premerge-dashboard-ui.mjs`, `premerge-shared-ui.mjs` |
+| Firefox-specific baseline | `market-icons-firefox.mjs` |
+| Chrome-specific baselines | `market-icons-ui.mjs`, `session-ui.mjs`, `universe-ui.mjs`, `datasets-ui.mjs` |
+| Present but not directly invoked by current hosted workflow | `jspace-ui-workflows.mjs`, `maps-expansion-ui.mjs`; scenario/helper modules are support inputs imported by runners, not independent gate claims |
+
+Build97's 52 hosted steps, 3,181 browser-regression checks, 16 packaging controls and 1,349 runtime tests remain historical source-bound results. This inventory ran none of them and adds no runtime acceptance. No automatic assumption that existing tests cover every unit or newly required feature.
+
+## Baseline workload preparation for P0-04
+
+| Affected workload | Candidate fixture/owner starting points | Proof still needed before implementation |
+| --- | --- | --- |
+| Idle / ordinary enabled collectors and UI | `core-idle-protection`, `core-module-disable`, `esi-pacing`, `ui-snapshot-revision`, `sse`; compiled dashboard harness | Matched enabled/pilot/tab/consumer setup; provider call counts, CPU, retained memory, queue/listener/timer counts and ordinary latency. Define cold/warm runs and fresh-process repetitions. |
+| Duplicate and unique error storms | bus/ESI/HTTP/supervisor failure seams, final-audit HTTP fixtures; future diagnostics owner | Baseline without new capture; repeatable duplicate and unique schedules, terminal failures and disabled consumers. Declare aggregate event/rate/byte/pending/export/toast limits and measure Off/Normal/Detailed overhead separately. New storm harness/acceptance still owed. |
+| Large books, histories and map libraries | `market-recovery`, `market-pacing`, `market-history-worker`, `history-storage`, `startup-indexes`, `universe-jspace-reads`, map math/layout/routing tests | Explicit dataset size/distribution/identity and actual SQL/worker/request/render costs. Existing correctness fixtures are starting seams, not elapsed performance baselines. Retain MR two-extra-attempt/60-second recovery bounds. |
+| Startup / restart / dataset handoff | `runtime-supervisor`, `runtime-child`, `runtime-lock`, `startup-rollback`, `datasets`, `persistence-recovery`; `upgrade-v073` is historical compatibility evidence, not an acceptance obligation | Fresh-process ordinary elapsed runs separate from counters/profiles/forced GC; central/tail/variability, CPU/memory/disk and drain/worker counts. Fixtures cannot establish native DPAPI/live checks. Clean-slate policy is approved; storage design is unconstrained by pre-final profiles. Verify intended runtime recovery with fresh synthetic profiles; no legacy-profile handling gate is owed. |
+| Application notification delivery / browser recovery | `final-audit-ui`, `premerge-dashboard-ui`, `premerge-shared-ui`, `premerge-pass4-*`, C15 publisher inventory | Actual compiled Chrome/Firefox, cold navigation/reconnect and narrow/desktop; report inspection/export and action ownership; delivery, DOM and cleanup bounds. |
+
+Numerical performance budgets are **not yet measured or accepted**. P0-04 must fix host/runtime/data/fixture identities, run methodology and tolerances from variance and product requirements, then bank independent review before corresponding implementation. Preserve historical performance evidence at its own source; do not restart the three-version investigation or transfer its percentages to Build97.
