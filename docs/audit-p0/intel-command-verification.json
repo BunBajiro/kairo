@@ -1,0 +1,121 @@
+{
+  "unit": "P0-02G3",
+  "status": "Independently reviewed source/design; this commit is its documentation bank. No implementation or behavioral acceptance.",
+  "assessed_on": "2026-10-24",
+  "assessed_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "assessed_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "author": "intel_contracts",
+  "scope": {
+    "command_handlers": [
+      "HTTP-099",
+      "HTTP-100",
+      "HTTP-101"
+    ],
+    "read_dependencies": [
+      "HTTP-095",
+      "HTTP-096"
+    ],
+    "other_dependency": "G2 reader admission/effect ownership; G1 and shared expiry/cooldown/publication contracts",
+    "coverage": [
+      "C09",
+      "C10",
+      "C12",
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C13"
+    ],
+    "not_accepted_here": "Signatures, upgrades, map import/copy/delete lifecycle, comprehensive parser/graph algorithms, notification implementation and Build101 reconciliation."
+  },
+  "contract_sha256": "ca7ea98ab92377c9e6c8558920bdcad2402fb925a89dd716b61a322d9d247ee5",
+  "reviews": [
+    {
+      "reviewer": "intel_review",
+      "scope": "Independent full owning source/tests and selected design",
+      "disposition": "Accepted exact substantive hash; report-retained original alert disposition, commit-time server birth identity and non-reserving absent delete, raw100 ID cap, stamped source-time distinction and pending-line control fencing verified."
+    },
+    {
+      "reviewer": "intel_integration",
+      "scope": "Integrated G2/G1/shared commands, privacy and lifecycle contracts",
+      "disposition": "Accepted exact substantive hash; fixed lane evidence, atomic event/publication, passive reads, runtime-only pending log coverage, unchanged-reader versus changed alert/parser authority and all pending budget/implementation gates coherent; no blocking design issues."
+    }
+  ],
+  "implementation_changed": false,
+  "product_tests_run": [],
+  "browser_tests_run": [],
+  "performance_measurements": [],
+  "new_findings": [],
+  "historical_receipts_changed": false,
+  "pending_gates": [
+    "INTEL-01 Admission/identity",
+    "INTEL-02 Atomic creation/duplicates",
+    "INTEL-03 Delete/ack",
+    "INTEL-04 Reconciliation/lifecycle",
+    "INTEL-05 Automatic delivery/clock",
+    "INTEL-06 Browser/privacy/cost",
+    "P0-03 diagnostics/toast contracts",
+    "P0-04 numerical aggregate, clock, recovery and drain budgets"
+  ],
+  "design_limits": [
+    "Three fixed user-command lanes per scope avoid automatic-intake CAS starvation; conservative same-lane conflicts selected.",
+    "Exact semantic identity/source-time duplicates refine the current broader five-second OR rule; requirement acceptance pending.",
+    "Automatic unresolved bytes are bounded runtime-only uncommitted input, not durable historical log replay; restart/retirement coverage gaps are explicit.",
+    "Current per-scope row ceilings preserved subject to measured aggregate limits; active cooldown capacity suppresses alert with explicit disposition, preserving report.",
+    "Atomic semantic-event storage requires outer-commit-aware shared publication; no transient notification replay.",
+    "No permanent per-click/tombstone journal or cross-tab exactly-once desktop/audio guarantee."
+  ],
+  "static_checks": {
+    "json": "pass",
+    "relative_links": {
+      "checked": 19,
+      "missing": []
+    },
+    "whitespace": {
+      "check": "direct whitespace scan (new untracked files are outside git diff)",
+      "trailing_whitespace": []
+    },
+    "changed_paths": [
+      "docs/audit-p0/intel-command-contracts.md",
+      "docs/audit-p0/intel-command-verification.json"
+    ],
+    "scope_matches_manifest": true,
+    "command_handlers": 3,
+    "read_dependencies": 2,
+    "owner_delta_to_continuation": "pass"
+  },
+  "bank": {
+    "status": "Commit containing this receipt; exact SHA/tree/read-back recorded by PR and following continuation.",
+    "parent": "d7c0ca687b08cdd8dd0c16a1d50567523d2e17c1",
+    "parent_tree": "8308ce5c043141db1cf465f5bb09aa1601bd9b34",
+    "ci": "Documentation-only [skip ci]; tested executable/test source remains aa2bc453, Build101."
+  },
+  "release_actions_authorized": false,
+  "reviewed_substantive_sha256": "66304fe8418f0d8dace5be76ddd503f8f3723d727a009ad1c610e5211501c961",
+  "status_metadata_delta": "Opening acceptance/reviewer sentence only; reviewed substantive content unchanged.",
+  "continuation_base": "d7c0ca687b08cdd8dd0c16a1d50567523d2e17c1",
+  "continuation_tree": "8308ce5c043141db1cf465f5bb09aa1601bd9b34",
+  "owner_delta": "All intervening17 paths are documentation/evidence; Operations/parser/log-tail/index/UI/Core and owning tests unchanged.",
+  "next_unit": "P0-02G4 signatures: HTTP-102 preview,103 import,104 restore,108 save and110 delete; reads095/096 and exact selected map/scope/catalog dependencies. Read Operations signature owners, universe-intel.mjs clipboard parser, Maps signature/import/undo integration, actual UI callers and owning tests. Trace preview purity versus import acceptance, replacement/merge/deletion, lost acknowledgment, undo provenance, scope/revision/incarnation, row limits and partial failure. Then separate G5 upgrades105/106/109/111; preserve all other remaining coverage groups.",
+  "coverage_reconciliation": {
+    "immutable_manifest_rows": 194,
+    "command_query_effect_rows": 123,
+    "previously_contracted": 52,
+    "newly_contracted": 3,
+    "current_contracted": 55,
+    "retired_journey_commands": 2,
+    "remaining": 66,
+    "companion_boundary_rows": 71,
+    "historical_checkpoint_changed": false,
+    "meaning": "Source/design assignment only, not behavioral acceptance; other read effects and non-HTTP obligations remain."
+  },
+  "integration_static_checks": {
+    "changed_paths": 7,
+    "relative_links_and_fragments": 163,
+    "scope_manifest_and_194_row_arithmetic": "pass",
+    "source_executable_changes": "none",
+    "historical_raw_receipts_changed": false,
+    "contract_hash_unchanged": true,
+    "whitespace": "pass"
+  }
+}
