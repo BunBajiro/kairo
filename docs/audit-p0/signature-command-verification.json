@@ -1,0 +1,129 @@
+{
+  "unit": "P0-02G4",
+  "status": "Independently reviewed source/design; this commit is the documentation bank. No implementation or behavioral acceptance.",
+  "assessed_on": "2026-10-24",
+  "assessed_source": "65728d6b4424ed18f7ab4c2dccdfa0175f5e298b",
+  "assessed_tree": "1d474611d54b201f93e0c7ab2b234d78e07d91ff",
+  "continuation_base": "65728d6b4424ed18f7ab4c2dccdfa0175f5e298b",
+  "continuation_tree": "1d474611d54b201f93e0c7ab2b234d78e07d91ff",
+  "author": "signature_contracts",
+  "scope": {
+    "command_handlers": [
+      "HTTP-102",
+      "HTTP-103",
+      "HTTP-104",
+      "HTTP-108",
+      "HTTP-110"
+    ],
+    "read_dependencies": [
+      "HTTP-095",
+      "HTTP-096"
+    ],
+    "pending_maps_selectors": [
+      "HTTP-190",
+      "HTTP-191",
+      "HTTP-192"
+    ],
+    "coverage": [
+      "C09",
+      "C10",
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C12",
+      "C13"
+    ],
+    "not_accepted_here": "Maps selectors190\u2013192 and broader map/link/import/expiry/browser-local algorithms; upgrades; implementation/performance/browser acceptance."
+  },
+  "contract_sha256": "c67bc8e641858d7a5a84a800ea93fcdb7b667d8c53226afa6ca464295519fa3c",
+  "reviews": [
+    {
+      "reviewer": "signature_review",
+      "scope": "Independent owning source/tests and design",
+      "disposition": "Accepted exact substantive hash for source/spec and documentation quality; source/selected separation, scope/counts, pure preview, atomic usable subset, exact restore provenance and pending Maps boundaries verified. No blockers."
+    },
+    {
+      "reviewer": "intel_integration",
+      "scope": "Integrated dependency review",
+      "disposition": "Accepted exact substantive hash after exact external-user receipt association and terminal-newline rule clarified; G2/G3/shared semantics and scoped signature/Maps obligations coherent. No blockers."
+    }
+  ],
+  "implementation_changed": false,
+  "product_tests_run": [],
+  "browser_tests_run": [],
+  "performance_measurements": [],
+  "new_findings": [],
+  "historical_receipts_changed": false,
+  "pending_gates": [
+    "SIG-01 Input/preview",
+    "SIG-02 Save/import",
+    "SIG-03 Delete/restore",
+    "SIG-04 Dependencies",
+    "SIG-05 Uncertainty/lifecycle/UI",
+    "SIG-06 Cost",
+    "P0-03 diagnostics/toast contracts",
+    "P0-04 numerical aggregate, clock, admission/read/write and drain budgets"
+  ],
+  "design_limits": [
+    "One collection CAS/latest receipt per pilot/scope including live and trash; external writers must participate.",
+    "Within-budget malformed input retains usable-subset semantics but storage commits the complete prepared subset atomically.",
+    "Input overflow rejects before any prefix admission; raw HTTP bytes and domain code units are distinct.",
+    "Preview is stateless and pure; import recomputes exact captured recipe/base/dependencies.",
+    "Restoration preserves original observation identity/age and may resolve an unchanged live binding, never a retired link.",
+    "No permanent command journal, receipt copying or automatic mutation replay."
+  ],
+  "coverage_reconciliation": {
+    "immutable_manifest_rows": 194,
+    "command_query_effect_rows": 123,
+    "previously_contracted": 55,
+    "newly_contracted": 5,
+    "current_contracted": 60,
+    "retired_journey_commands": 2,
+    "remaining": 61,
+    "companion_boundary_rows": 71,
+    "historical_checkpoint_changed": false,
+    "meaning": "After source/design acceptance only; runtime and other read/non-HTTP effects remain pending."
+  },
+  "bank": {
+    "status": "Commit containing this receipt; exact remote SHA/tree/read-back recorded in PR and following continuation.",
+    "parent": "65728d6b4424ed18f7ab4c2dccdfa0175f5e298b",
+    "parent_tree": "1d474611d54b201f93e0c7ab2b234d78e07d91ff",
+    "ci": "Documentation-only [skip ci]; executable/test source remains aa2bc453, Build101."
+  },
+  "release_actions_authorized": false,
+  "static_checks": {
+    "json": "pass",
+    "relative_links": {
+      "checked": 22,
+      "missing": []
+    },
+    "whitespace": {
+      "check": "Direct scan including untracked files",
+      "trailing_whitespace": []
+    },
+    "changed_paths": [
+      "docs/audit-p0/signature-command-contracts.md",
+      "docs/audit-p0/signature-command-verification.json"
+    ],
+    "scope_matches_manifest": true,
+    "command_handlers": 5,
+    "read_dependencies": 2,
+    "owner_delta_to_continuation": "pass; git diff Build101 aa2bc453..65728d6 on named owners/UI/tests is empty"
+  },
+  "owner_delta": "Named signature owners, parser, Maps/canonical Universe, HTTP, UI and owning tests unchanged from Build101 executable through continuation65728d6.",
+  "executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "reviewed_substantive_sha256": "bdc5492afb04de7bb920e7373c760b7fb2addf0da8b1fdcc2ee741624d3beb89",
+  "status_metadata_delta": "Opening acceptance/reviewer sentence only; reviewed substantive content unchanged.",
+  "next_unit": "P0-02G5 upgrade records: HTTP-105 preview,106 import,109 save,111 delete; companion export107 and reads095/096. Read server/universe-upgrades.mjs parsers/formatters, Operations upgrade owners, actual UI and owning tests plus map copy/import scope dependencies. Trace SMT versus JSON semantics, natural system/slot identity, provenance and missing-note preservation, atomic full-valid merge, preview/dependency bases, strict byte/row/value limits, passive reconciliation and bounded export. Then remaining Maps/navigation/Politics/browser-local groups; all algorithm/runtime/numerical gates remain owed.",
+  "integration_static_checks": {
+    "changed_paths": 7,
+    "relative_links_and_fragments": 172,
+    "scope_manifest_and_actual_ID_partition": "60contracted+2retired+61remaining+71other=194;pass",
+    "executable_changes": "none",
+    "historical_raw_receipts_changed": false,
+    "contract_hash_unchanged": true,
+    "whitespace": "pass"
+  }
+}
