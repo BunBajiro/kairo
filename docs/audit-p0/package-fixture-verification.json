@@ -1,0 +1,95 @@
+{
+  "finding": "CA-001",
+  "unit": "C16 packaging verification fixture",
+  "status": "Corrected and independently reviewed; local failing-before/fixed and16-test packaging controls pass. Banked correction remains pending new hosted workflow/package acceptance.",
+  "severity": "Low application risk; blocks delivery verification. No product-packager defect asserted.",
+  "owner": "api_inventory",
+  "independent_reviewer": "output_recon",
+  "coordinator": "root",
+  "date": "2026-10-24",
+  "coverage": [
+    "C16"
+  ],
+  "assessed_source": "b7281cc900edc1e5780eef2a1f8ba0e05e01c0a0",
+  "assessed_tree": "945e2e9ab45a9db6aa2b7b4c0b4946b17ab9a504",
+  "historical_failure_source": "2f8b461195ea613ff35134cb9ae92438806e72fe",
+  "original_test_sha256": "70af7afb0e2058814efa2bacaa0eb79a8684e871c093418a349738e98855ba48",
+  "fixed_test_sha256": "f165b53c1ec4c12ab8f8b7a7e4063d89e10fd82d5af4f9af7f987845cc94cc3e",
+  "unchanged_packager_sha256": "4f99e79eda78a2fddc03b5a8a39538bd475d27bd548e8672c4507b6a9fa7df5d",
+  "changed_executable_scope": [
+    "tests/package-release.test.py"
+  ],
+  "product_workflow_dependencies_version_changed": false,
+  "bank_identity": "Commit containing this receipt; the next read-back continuation/PR records its exact identity.",
+  "invariant": "A source-archive-without-checkout test must exercise actual packager rejection without constructing and then destructively removing live Git metadata. The15 Git-backed controls retain their setup and assertions.",
+  "observed_failure": "Build100 attempt2 package-input suite16tests/1error: maintenance.lock disappeared during Python3.12 shutil.rmtree of a temporary .git, before invoking the packager oracle. Package/extraction/runtime/upload were skipped.",
+  "source_failure_receipt": "journey-retirement-followup-evidence/build100-attempt2/hosted.json",
+  "cause_limit": "Exact hosted Git2.55 lock producer remains unknown. Deterministic injection reproduces deletion after enumeration at actual unlink; local Python3.12.14 final rendered exception names the enclosing .git while captured inner unlink filename is maintenance.lock. This is the same failure mechanism, not an identical traceback or proved Git producer.",
+  "correction": "Extract common archive fixture preparation. The15 existing PackageReleaseTests initialize/commit Git in the same order; SourceArchiveTests never creates .git and verifies its absence before the unchanged real packager error/no-output oracle. No ignore_errors, retry, maintenance configuration or product packager change.",
+  "verification": {
+    "runtime": "Python3.12.14; Git2.51.1",
+    "unmodified_suite": "16/16 passed locally,26.645s; a single clean run does not disprove the hosted race.",
+    "deterministic_before": {
+      "process_exit": 1,
+      "test_errors": 1,
+      "packager_calls": 0,
+      "removed_children": 1
+    },
+    "deterministic_fixed": {
+      "process_exit": 0,
+      "test_errors": 0,
+      "packager_calls": 1,
+      "fixture_git_commands": 0,
+      "git_metadata_exists": false,
+      "output_exists": false,
+      "packager_exit": 1,
+      "packager_error": "Packaging requires Git and a clean Git checkout at the intended commit."
+    },
+    "full_candidate_suite": {
+      "tests": 16,
+      "pass": 16,
+      "errors": 0,
+      "failures": 0,
+      "elapsed_seconds": 27.25
+    },
+    "timing_limit": "Observed run durations only; no matched performance improvement/regression conclusion.",
+    "all_test_names_retained": 16,
+    "other_test_bodies_unchanged": 15,
+    "probe_driver_transition": "Full suite used retained probe-before-exit.py; final probe.py only appends exit status based on unittest result. Final before/fixed targeted cases rerun with explicit exits1/0. No test or oracle change from that driver delta.",
+    "hosted_workflow": "Pending for commit containing the correction; do not rerun the old failed source or claim a downloadable artifact."
+  },
+  "review": "output_recon accepted exact f165b53c candidate, AST equality of15 unchanged test bodies/all16 names, actual disappearing-child seam, real fixed rejection/no-output and16/16 suite; final cc194ad3 probe exit-only delta also accepted. Root inspected source diff, probe and raw results.",
+  "replay": {
+    "requires": "Python3.12-compatible build host, Git, repository checkout; no EVE/OBS/browser or network.",
+    "before_fixture": "Extract tests/package-release.test.py from b7281cc900edc1e5780eef2a1f8ba0e05e01c0a0 to a temporary .py path.",
+    "command": "python docs/audit-p0/package-fixture-evidence/probe.py <repo-root> <fixture.py> <temporary-output-directory> --race",
+    "expected": "Original fixture exits1 with one error before packager; fixed fixture exits0 with actual Git-checkout rejection/no output. --suite runs all16 controls without race injection.",
+    "normal_gate": "python3 tests/package-release.test.py"
+  },
+  "pending": [
+    "New hosted complete workflow with packaging controls, package creation/extraction and extracted runtime",
+    "Independent exact downloadable-artifact acceptance remains separate from hosted success",
+    "P0-02G3 and remaining 69 command/query/effect rows; P0-03 decisions/P0-04 budgets"
+  ],
+  "historical_receipts_changed": false,
+  "release_actions_authorized": false,
+  "evidence_sha256": {
+    "package-fixture-evidence/after.json": "462f5672efacbfaa251840b4673a8b4434dbdb7baa73ce04957619bc64665cb0",
+    "package-fixture-evidence/after.txt": "0a1aa9b320e9e5b7e1ed72dbcebaffc3fe394d8b56a57fe7699f9c2526a1b818",
+    "package-fixture-evidence/baseline.json": "69abdf03210868e6a39cc5e74745f39c1109d38efc3713e60daa14d3a7d34e9c",
+    "package-fixture-evidence/baseline.txt": "0a81596ac171e2949aba890886ff3721fc6699c4547f845d1069e2f121948522",
+    "package-fixture-evidence/before.json": "fe677558e8650829b6ad061e6dcc2ef4fe0084ee066a247223ae35a258357239",
+    "package-fixture-evidence/before.txt": "949ec79764fc4c4d72891b73722c2c1a440e5ba5d80db1cb46dae62b88fc338b",
+    "package-fixture-evidence/probe-before-exit.py": "4474d278ced8a8da376c04f891e73f12a1c1586458b21628ddef9ea930d27df0",
+    "package-fixture-evidence/probe.py": "cc194ad3c35ff2532f3558463cff64f731a10037b98dd243c29563333ab1c78c",
+    "package-fixture-evidence/suite.json": "cce271370c70ad43aea66524c408bad54c7fe01d5f3cd8db397c18d67ce065ff",
+    "package-fixture-evidence/suite.txt": "1a31e487b480b606a6f55cd255391611e14ea70c5fce005803632b91a0290d39"
+  },
+  "static_checks": {
+    "changed_paths": 16,
+    "relative_link_targets": 131,
+    "only_executable_change": "tests/package-release.test.py",
+    "earlier_raw_receipts": "unchanged",
+    "whitespace": "pass"
+  }
+}

@@ -6,7 +6,6 @@ packaged-runtime suite. All profiles, links and secrets below are synthetic.
 import io
 import json
 from pathlib import Path
-import shutil
 import subprocess
 import tarfile
 import tempfile
@@ -16,7 +15,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class PackageReleaseTests(unittest.TestCase):
+class PackageFixture(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.source_archive = subprocess.check_output(['git', 'archive', 'HEAD'], cwd=ROOT)
@@ -36,15 +35,16 @@ class PackageReleaseTests(unittest.TestCase):
         (self.source / 'vendor/frontend-license-supplement.json').write_bytes(self.supplement)
         for name, content in self.package_metadata.items():
             (self.source / name).write_bytes(content)
-        self.git('init', '-q')
-        self.git('add', '.')
-        self.commit()
+        self.prepare_checkout()
         (self.source / 'dist/client/assets').mkdir(parents=True)
         (self.source / 'dist/client/index.html').write_text('<!doctype html><title>Package fixture</title>')
         (self.source / 'dist/client/assets/client.js').write_text('console.log("compiled fixture");')
         (self.source / 'dist/client/.vite').mkdir()
         (self.source / 'dist/client/.vite/license.md').write_text('# Licenses\n\n## react - 19.2.6 (MIT)\n\nSynthetic fixture license.\n')
         self.output = self.base / 'Kairo-test.zip'
+
+    def prepare_checkout(self):
+        """Archive-only fixtures intentionally have no Git metadata."""
 
     def git(self, *args):
         return subprocess.check_output(['git', *args], cwd=self.source, stderr=subprocess.STDOUT)
@@ -62,6 +62,13 @@ class PackageReleaseTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn(expected, result.stderr)
         self.assertFalse(self.output.exists(), 'Invalid inputs must fail before opening the destination')
+
+
+class PackageReleaseTests(PackageFixture):
+    def prepare_checkout(self):
+        self.git('init', '-q')
+        self.git('add', '.')
+        self.commit()
 
     def test_clean_tracked_sources_and_compiled_client_are_packaged(self):
         result = self.package()
@@ -192,8 +199,10 @@ runpy.run_path(sys.argv[0], run_name='__main__')
         (self.source / 'dist/client/.vite/license.md').unlink()
         self.assert_rejected('bundled license')
 
+
+class SourceArchiveTests(PackageFixture):
     def test_source_archive_without_git_checkout_is_rejected(self):
-        shutil.rmtree(self.source / '.git')
+        self.assertFalse((self.source / '.git').exists())
         self.assert_rejected('Git checkout')
 
 
