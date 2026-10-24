@@ -1,7 +1,7 @@
 {
   "finding": "CA-001",
   "unit": "C16 packaging verification fixture",
-  "status": "Corrected and independently reviewed; local failing-before/fixed and16-test packaging controls pass. Banked correction remains pending new hosted workflow/package acceptance.",
+  "status": "Verified/banked CA-001 correction at aa2bc453; local failing-before/fixed proof,16 local and hosted packaging controls, complete Build101 and independently downloaded artifact/runtime acceptance pass. Finding closed for its bounded verification-fixture scope.",
   "severity": "Low application risk; blocks delivery verification. No product-packager defect asserted.",
   "owner": "api_inventory",
   "independent_reviewer": "output_recon",
@@ -20,7 +20,12 @@
     "tests/package-release.test.py"
   ],
   "product_workflow_dependencies_version_changed": false,
-  "bank_identity": "Commit containing this receipt; the next read-back continuation/PR records its exact identity.",
+  "bank_identity": {
+    "commit": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+    "tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+    "parent": "b7281cc900edc1e5780eef2a1f8ba0e05e01c0a0",
+    "read_back": "Prior session verified all16 exact files and clean checkout; this session reconfirmed GitHub commit/tree/parent and PR head/main/open/draft."
+  },
   "invariant": "A source-archive-without-checkout test must exercise actual packager rejection without constructing and then destructively removing live Git metadata. The15 Git-backed controls retain their setup and assertions.",
   "observed_failure": "Build100 attempt2 package-input suite16tests/1error: maintenance.lock disappeared during Python3.12 shutil.rmtree of a temporary .git, before invoking the packager oracle. Package/extraction/runtime/upload were skipped.",
   "source_failure_receipt": "journey-retirement-followup-evidence/build100-attempt2/hosted.json",
@@ -56,7 +61,7 @@
     "all_test_names_retained": 16,
     "other_test_bodies_unchanged": 15,
     "probe_driver_transition": "Full suite used retained probe-before-exit.py; final probe.py only appends exit status based on unittest result. Final before/fixed targeted cases rerun with explicit exits1/0. No test or oracle change from that driver delta.",
-    "hosted_workflow": "Pending for commit containing the correction; do not rerun the old failed source or claim a downloadable artifact."
+    "hosted_workflow": "Build101 run40101935977/job120895709046 attempt1:54/54 steps,16/16 packaging controls, package/extraction/upload and1354/1354 packaged-runtime pass. Source aa2bc453; see build101-hosted.json."
   },
   "review": "output_recon accepted exact f165b53c candidate, AST equality of15 unchanged test bodies/all16 names, actual disappearing-child seam, real fixed rejection/no-output and16/16 suite; final cc194ad3 probe exit-only delta also accepted. Root inspected source diff, probe and raw results.",
   "replay": {
@@ -67,9 +72,8 @@
     "normal_gate": "python3 tests/package-release.test.py"
   },
   "pending": [
-    "New hosted complete workflow with packaging controls, package creation/extraction and extracted runtime",
-    "Independent exact downloadable-artifact acceptance remains separate from hosted success",
-    "P0-02G3 and remaining 69 command/query/effect rows; P0-03 decisions/P0-04 budgets"
+    "P0-02G3 and remaining69 command/query/effect rows; P0-03 decisions/P0-04 budgets",
+    "Comprehensive audit and required recovery/diagnostics/toast implementation remain pending; native/live/extended-use checks separate."
   ],
   "historical_receipts_changed": false,
   "release_actions_authorized": false,
@@ -91,5 +95,14 @@
     "only_executable_change": "tests/package-release.test.py",
     "earlier_raw_receipts": "unchanged",
     "whitespace": "pass"
+  },
+  "closure": {
+    "date": "2026-10-24",
+    "coordinator": "root",
+    "independent_evidence_reviewer": "build101_review",
+    "hosted_receipt": "build101-hosted.json",
+    "downloaded_package_receipt": "build101-package-verification.json",
+    "artifact": 12563930765,
+    "scope": "C16 fixture correction verified; exact historical maintenance.lock producer still unknown. No product-packager defect or historical finding reopening."
   }
 }

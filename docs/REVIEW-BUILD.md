@@ -1,30 +1,30 @@
-# Current verified checkpoint
+# Current verified audit checkpoint
 
-**Build97 is the verified 0.8.0 checkpoint, version `0.8.0-rc.17`. Release progression is paused.** It includes the completed [Jita recovery and focused edge-case pass](MARKET-RECOVERY.md), together with the earlier final-audit corrections, manuals, source comments and CI gates. It supersedes Build93/94 for current testing. PR #12 remains draft; main and the version are unchanged. Staged execution now follows the [audit ledger](AUDIT-LEDGER.md); this checkpoint does not establish release readiness.
+**Build101, version `0.8.0-rc.17`, is verified for review. The comprehensive audit is still in progress and release progression remains paused.** It includes the requested Journey retirement and the CA-001 packaging-test correction. PR #12 remains open/draft; main and the version are unchanged. Continue from the [execution handoff](AUDIT-EXECUTION-HANDOFF.md) and [ledger](AUDIT-LEDGER.md).
 
-[Download Kairo-test-build.zip — Build97](https://github.com/BunBajiro/kairo/actions/runs/39529421954/artifacts/12315426986) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/39529421954) · [Verification receipt](BUILD97-VERIFICATION.json)
+[Download Kairo-test-build.zip — Build101](https://github.com/BunBajiro/kairo/actions/runs/40101935977/artifacts/12563930765) · [Successful Actions run](https://github.com/BunBajiro/kairo/actions/runs/40101935977) · [Hosted evidence](audit-p0/build101-hosted.json) · [Independent package verification](audit-p0/build101-package-verification.json)
 
-The artifact expires on **20 November 2026 at 02:12 UTC**. Sign into GitHub to download it. Use **Node.js 24 LTS, at least 24.21.0**. Follow the [fresh-data setup policy](USER-GUIDE.md#start-080-with-fresh-data): stop Kairo, select a fresh data directory, extract the full ZIP into a new folder and open `Kairo/START_KAIRO.bat`. Build97 does not automatically reset an old profile. No npm install or local build is needed. The [user guide](USER-GUIDE.md) and [recovery policy](PERSISTENCE.md#production-baseline-and-version-compatibility) own startup, data locations and restore details.
+The artifact expires on **23 November 2026 at 14:41 UTC**. Sign into GitHub to download it. Use **Node.js 24 LTS, at least 24.21.0**. Follow the [fresh-data setup policy](USER-GUIDE.md#start-080-with-fresh-data): stop Kairo, select a fresh data directory, extract the full ZIP into a new folder and open `Kairo/START_KAIRO.bat`. No npm install or local build is needed. The build does not automatically reset old profiles. The [user guide](USER-GUIDE.md) and [persistence policy](PERSISTENCE.md) own startup and data locations.
 
 ## Exact package identity
 
 | Item | Verified value |
 | --- | --- |
-| Tested source | `0eece9d7d5f60f0246dbfda89b5cb4f55e576979` |
-| Git tree | `3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10` |
-| Actions run / artifact | `39529421954` / `12315426986` |
-| ZIP size | 27,354,594 bytes |
-| ZIP SHA256 | `706b5cd7a32af11b9b9b3164f1ef9444568a7ede77ae034e3d2d0711132378bd` |
-| Contents checked | 707 tracked source files and 21 generated client files; 728 total |
+| Executable/test source | `aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5` |
+| Git tree | `c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9` |
+| Actions run / artifact | `40101935977` / `12563930765` |
+| ZIP size | 27,873,895 bytes |
+| ZIP SHA256 | `cd8a3e86a7a9de8f3310eca3c41f3002d5977aca346f46f50b095bc98c186b83` |
+| Contents | 797 eligible tracked-source files + 21 generated client files; 818 total |
 
 ## Verification and limits
 
-All **52 hosted steps** passed, including a clean locked install, types, fresh build, **16 packaging controls**, **3,181 regression-browser checks** plus the existing baseline gates, and **1,349 packaged-runtime tests**. Chrome `155.0.8059.39`, Firefox `153.0` and Node `24.22.0` were used. The expanded ownership/recovery gate passed **72 cases / 864 checks** at desktop/narrow widths. All product-failure assertions retained from Builds95/96 now pass; the [independent comparison](market-recovery-evidence/build97-ui-comparison.json) records preserved checks and fixture limits.
+All **54 hosted steps** passed: locked install, types, fresh build, **125 focused Journey checks**, **3,181 reported existing regression controls**, 16 packaging controls and **1,354 packaged-runtime tests**. Browser gates used Chrome 155.0.8059.39 and Firefox 153.0, including relevant 1600/390 cases. The hosted receipt distinguishes 3,302 individual Boolean pass rows plus four navigation case summaries from the separate baseline gates; counts are not interchangeable.
 
-The downloaded archive matched GitHub's digest, passed CRC/path checks and matched every eligible tracked source file. Client assets, executable modes and bundled notices were verified. A fresh extraction without source dependencies independently passed **1,349/1,349 runtime tests** on Node `24.22.0 / Undici 7.29.1`, with no failures, cancellations or skips. All 728 extracted files remained byte-identical afterward. The receipt binds the detailed evidence.
+The independently downloaded ZIP matched GitHub's digest and all 797 eligible Git blobs/modes. CRC, paths, duplicates, exclusions, generated-asset references, public copies and bundled notices passed. A fresh extraction without source dependencies separately passed **1,354/1,354 runtime tests**, with zero failures/cancellations/skips on explicit installed Node 24.22.1 / Undici 7.30.1. All 818 archived files remained byte/mode-identical with no extras. The package verifier and raw runtime evidence are retained in the linked receipt. A different reviewer inspected the actual hosted/API/archive/evidence; these are bounded checks, not comprehensive audit completion.
 
-Real Windows/DPAPI under the actual login, live EVE SSO/scopes and structure permissions, actual OBS scene/audio/output and extended play remain environment checks. Browser ownership probes do not certify cross-tab/restart ordering, native platform PiP or unrestricted narrow-screen usability. Existing performance evidence retains its original scope; these gates do not establish new elapsed-performance measurements. See [Validation](VALIDATION.md).
+[Journey acceptance](audit-p0/journey-retirement-verification.json) retains the original before/fixed and Chrome/Firefox flow proof. [CA-001](audit-p0/package-fixture-verification.json) is closed with its deterministic before/fixed evidence and this full hosted/package result. Earlier failed Build99/100 receipts remain intact; the old lock producer is still unknown. [Build97](BUILD97-VERIFICATION.json) remains the independently verified historical MR/EC checkpoint, together with all 74 closed findings and original performance evidence.
 
-This page, verification receipt and planning handoff were written after the tested build. The ZIP contains documentation at its exact source commit, including then-pending verification pointers; use this page for current acceptance. Historical receipts and raw evidence remain intact.
+Required logging/Settings Logging, optional error toasts, integrated application toasts and the remaining comprehensive recovery/algorithm work are **not implemented or accepted by this checkpoint**. Source/design P0 contracts are separate. Native Windows/DPAPI, live EVE/OBS, platform PiP and extended-use checks remain outside automated evidence. Run durations are observations, not matched performance acceptance; browser fixtures do not establish blanket usability or cross-tab/restart guarantees.
 
-The future audit must precede renewed release progression. Bun has approved a fresh-data 0.8.0 baseline with no prior-version carryover requirement; [Persistence](PERSISTENCE.md#production-baseline-and-version-compatibility) records the policy and remaining current-build recovery evidence. No main push, merge, version bump, tag or publication has been performed. Stable version/lock/changelog preparation requires approval and verification on the review branch; merging a stable package version can trigger automatic publication.
+This page and new evidence were written after the tested source. The ZIP contains its exact source's documentation, including then-pending verification pointers; use this page for current acceptance. No main push, merge, version bump, tag, publication or PR-ready action is authorized.

@@ -1,0 +1,141 @@
+{
+  "status": "Independently reviewed and coordinator accepted downloaded-package verification for exact Build101 source. Bounded artifact/runtime checkpoint only; comprehensive audit and release readiness remain pending.",
+  "verifier": "artifact101",
+  "verified_at_utc": "2026-10-24",
+  "build": 101,
+  "source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "version": "0.8.0-rc.17",
+  "artifact": {
+    "id": 12563930765,
+    "run": 40101935977,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/40101935977/artifacts/12563930765",
+    "name": "Kairo-test-build.zip",
+    "bytes": 27873895,
+    "sha256": "cd8a3e86a7a9de8f3310eca3c41f3002d5977aca346f46f50b095bc98c186b83",
+    "github_digest_matches": true,
+    "source_matches_connector": true,
+    "expired_at_retrieval": false,
+    "expires_at": "2026-11-23T14:41:52Z"
+  },
+  "package_verification": {
+    "eligible_tracked_files": 797,
+    "exact_source_blob_matches": 797,
+    "generated_client_files": 21,
+    "total_files": 818,
+    "modes": {
+      "0o100644": 814,
+      "0o100755": 4
+    },
+    "crc_paths_duplicates_case_collisions_symlinks_exclusions": "pass",
+    "required_paths_checked": 60,
+    "client_manifest_imports_files_local_html_assets": "pass",
+    "all_six_public_copies_byte_match": true,
+    "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9",
+    "notices": {
+      "entries": 85,
+      "empty_entries_covered": [
+        [
+          "@radix-ui/react-compose-refs",
+          "1.1.2"
+        ],
+        [
+          "@vitejs/plugin-rsc",
+          "0.5.38"
+        ],
+        [
+          "react-remove-scroll-bar",
+          "2.3.8"
+        ],
+        [
+          "victory-vendor",
+          "37.3.6"
+        ]
+      ],
+      "supplement_packages": 6,
+      "additional_notices": 13,
+      "supplement_text_digests": "pass",
+      "supplied_upstream_blob_ids_checked": 4,
+      "upstream_network_retrieval": false,
+      "license_sha256": "10f80210126ef1dff48935813f0457f5838a5dd33e9fda4f473c76f7de4cc04e"
+    },
+    "extracted_byte_and_mode_matches_before_runtime": true
+  },
+  "independent_extracted_runtime": {
+    "command": "npm run test:kairo",
+    "environment_file": "build101-evidence/runtime-environment.json",
+    "node": "24.22.1",
+    "embedded_undici": "7.30.1",
+    "explicit_node_exec_path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "node_sha256": "61ab14cd750fc24d5db53490ec5fc40f756e4b6e136b78cf7004265471d9bd1d",
+    "NODE_PATH": "unset",
+    "NODE_OPTIONS": "unset",
+    "node_modules": "absent in package and all extraction ancestors",
+    "source_install_or_local_build": false,
+    "fresh_synthetic_fixtures": true,
+    "exit_code": 0,
+    "tests": 1354,
+    "suites": 0,
+    "pass": 1354,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 17881.685702,
+    "all_818_archived_files_byte_and_mode_identical_after_runtime": true,
+    "extra_package_files": [],
+    "archive_unchanged_after_runtime": true
+  },
+  "historical_evidence": "BUILD97-VERIFICATION.json, earlier MR/EC/74 findings and historical performance proof remain unchanged. This receipt does not reinterpret or reopen them.",
+  "evidence": {
+    "build101-evidence/archive-check.json": {
+      "bytes": 5694,
+      "sha256": "6a763d85550e9aea995ac9e1a60e2a8e8f74fdb3e0103cfc4a977eedd9fe45bc"
+    },
+    "build101-evidence/artifact-retrieval.json": {
+      "bytes": 1501,
+      "sha256": "1e0e2aa5a6d801b01b9e27d44a97ee9d66eae498eea897abae53d4afccf70902"
+    },
+    "build101-evidence/commands.json": {
+      "bytes": 1607,
+      "sha256": "499d396f5defe57b2ee78d65ccae759319369072ff0575776efffd974cf9cdb6"
+    },
+    "build101-evidence/extracted-runtime.txt": {
+      "bytes": 143123,
+      "sha256": "ccc1e49a50022f0c3e69637ec5ae47a971e66c43f6fda4ee5067ff7d1f017590"
+    },
+    "build101-evidence/runtime-environment.json": {
+      "bytes": 1849,
+      "sha256": "c02c74872fa89b132d146ce5df71ea50c8b6d74daa55a7e2380d3ef2ff7ef3ea"
+    },
+    "build101-evidence/runtime-result.json": {
+      "bytes": 603,
+      "sha256": "38537656d35cbfa7b82dbc7c809229bfa25912f035abf8090d4c4cf5ec06fdeb"
+    },
+    "build101-evidence/verifier-attempts.json": {
+      "bytes": 638,
+      "sha256": "37a3bab3a49d7eca962dd5b8e651ace589b3fb49de5c83a6a42ffe8d806551b2"
+    },
+    "build101-evidence/verify-package.py": {
+      "bytes": 12307,
+      "sha256": "39988aa8af7576905dde359c875042cafbe78d2138bb28c166754596bf9983d2"
+    }
+  },
+  "limits": [
+    "This independent check binds the downloaded Build101 package to exact source aa2bc453 and tree c19bcc3, not later documentation/evidence commits.",
+    "Hosted job/gate reconciliation is separate in build101-hosted.json; this verifier did not rerun hosted browser or locally build the artifact.",
+    "Generated assets were inventoried and linked/source-public copies checked; source-to-generated reproducibility is not claimed independently of the hosted build.",
+    "Uses preinstalled explicit Node24.22.1 binary, hashed and recorded; no fresh official Node archive checksum retrieval was performed.",
+    "License text SHA256 and four supplied upstream Git blob IDs were checked against shipped source metadata; no fresh upstream network license retrieval.",
+    "Tests use fresh synthetic temporary data and establish only their owning assertions; no prior-version compatibility, personal profile recovery, live EVE/OBS, real Windows/DPAPI/native PiP or extended-use acceptance.",
+    "Observed test duration is not a new elapsed-performance acceptance. Required diagnostics/toast implementation and wider P0/P1-P6 coverage remain pending.",
+    "No source/product changes, dependency installation, main push, merge, version bump, tag, publication or PR-ready action performed by this verifier."
+  ],
+  "independent_review": {
+    "reviewer": "build101_review",
+    "accepted_receipt_sha256": "928ecf94ae74e7a3e017c22b1e531474a6419751cdb294531cc30541619c2161",
+    "disposition": "Accepted797 exact source blobs plus21generated files, archive paths/CRC/modes/assets/notices, all8 raw evidence hashes and actual fresh1354-test runtime result. Independently rechecked current818 extracted bytes/modes and no extras. No redundant runtime rerun or native/live/performance inference.",
+    "coordinator": "root",
+    "accepted_on": "2026-10-24"
+  }
+}
