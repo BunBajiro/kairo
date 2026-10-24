@@ -1,0 +1,100 @@
+{
+  "unit": "JRET-01 Journey retirement",
+  "status": "Verified bounded removal and affected-flow acceptance; not whole-audit, candidate, downloadable-artifact or release acceptance.",
+  "accepted_on": "2026-10-24",
+  "coordinator": "root",
+  "source": "2f8b461195ea613ff35134cb9ae92438806e72fe",
+  "tree": "e9f32e9e784976429d9e80661120ec11c30ea5b0",
+  "documentation_base": "95b2f41c704d127032e2dee1376c7ae8f44df753",
+  "source_delta_after_tested_commit": "Documentation/evidence only through this receipt; executable and harness unchanged.",
+  "scope": [
+    "Retired HTTP-055/056/057 and active Journey adapters/schema/export dependencies",
+    "Modern explicitly owned Session report/replay and observations retained; no unowned legacy fallback/discovery seeding",
+    "Shared live metadata and private installation-wide Places notes retained",
+    "Active Overview links target Atlas; 29 unused Journey CSS rules removed; harmless legacy bookmark/view sanitation retained"
+  ],
+  "prior_evidence": {
+    "original_source_and_failing_before": "journey-retirement-wip.json",
+    "fresh_locked_types_build_1354_runtime_and_reviews": "journey-retirement-followup.json",
+    "build99_fixture_failure_and_correction": "journey-retirement-browser-correction.json",
+    "build100_attempt1_zero_assertion_launch_timeout": "journey-retirement-launch-review.json",
+    "build98_exact_source_hosted_controls": "journey-retirement-followup-evidence/build98-hosted.json"
+  },
+  "tested_hashes": {
+    "app/globals.css": "c84c9678a11625b8f7e0987eaeb6a3a0c60f5fd8aff569d088ffdb6da24a4111",
+    "tests/journey-retirement-ui.mjs": "806e45548a12f6d5f34c72fea83c8a9549a6fc13d508ec6180f198ca969eb693",
+    ".github/workflows/test-build.yml": "a2227ebb472693d13608117888daca18d1737c7c0336bb6c6dfb19134d394f6b"
+  },
+  "hosted": {
+    "run": 40097637976,
+    "attempt": 2,
+    "job": 120887162177,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/40097637976/attempts/2",
+    "focused_gate": 8,
+    "focused_gate_conclusion": "success",
+    "upload_gate": 9,
+    "artifact": 12561936974,
+    "artifact_url": "https://github.com/BunBajiro/kairo/actions/runs/40097637976/artifacts/12561936974",
+    "artifact_bytes": 3524897,
+    "artifact_sha256": "b59c5fc0b5beb56a1573ae463f06476ffa1526b29ce00995f0b90546a8be8731",
+    "chrome": "155.0.8059.39",
+    "firefox": "153.0",
+    "widths": [
+      1600,
+      390
+    ],
+    "checks": 125,
+    "pass": 125,
+    "complete_cases": 4,
+    "per_case_checks": 31,
+    "global_completion_check": 1,
+    "errors": 0,
+    "full_workflow": "Still running when this focused acceptance was recorded; follow-up continuation must record its final conclusion.",
+    "retry": "Exactly one unchanged-source rerun after attempt1 startup timeout; no assertion/timeout weakening or further retry."
+  },
+  "verified_controls": [
+    "Both compiled Overview links reach Atlas",
+    "Explicit report/replay pilot and Session identity excludes unowned and neighbouring Session visits; preserves initial observation gap and recorded event",
+    "Replay navigation leaves visits and live map topology unchanged",
+    "Actual note save and SQLite persistence, real main-document200 reload and exact text readback",
+    "Public Stream status200 excludes private note text",
+    "Each engine/width: exactly1 replay GET,2 Places GETs and1 Places PUT; zero Journey/provider calls",
+    "Complete-only success and clean bounded teardown; no browser/HTTP/unexpected-network/cleanup errors"
+  ],
+  "reviews": [
+    {
+      "reviewer": "output_recon",
+      "disposition": "Independently accepted exact tested source/hashes, raw actual-versus-expected equality, all4 cases, request counts, cold reload/SQLite/private output and artifact digest/CRC. All12 screenshots reviewed. No bounded Journey-retirement blocker remains."
+    },
+    {
+      "reviewer": "root",
+      "disposition": "Reconciled exact source/current documentation delta and raw complete matrix, cold-reload/request/private-state controls; visually inspected representative desktop replay and narrow Firefox notes captures. Accept bounded JRET-01 only."
+    }
+  ],
+  "limits": [
+    "Screenshots support exercised Atlas/replay states but note captures end above the textarea and narrow captures include scroll/transition positions. No blanket visual/accessibility/narrow-usability acceptance; real interaction/DOM/SQLite oracles establish the bounded flows.",
+    "No matched latency/CPU/memory performance conclusion; retained request/data invariants and historical performance proof are the affected controls.",
+    "Full candidate workflow and independent exact downloaded artifact acceptance remain separate; Build97 is still the independently verified historical artifact.",
+    "Native Windows/DPAPI, live EVE/OBS and extended-use checks remain outside automated evidence.",
+    "Local browser launch probes were blocked before usable pages; they are not behavioral evidence."
+  ],
+  "historical_receipts_changed": false,
+  "release_actions_authorized": false,
+  "next_actions": [
+    "Record final Build100 attempt2 job result and remaining package/artifact limits without conflating source and later documentation banks.",
+    "Continue P0-02G2 Operations settings/fleet refresh and remaining command families; P0-03 decisions/P0-04 numerical budgets before corresponding implementation."
+  ],
+  "evidence_sha256": {
+    "journey-retirement-followup-evidence/build100-attempt2/checks.json": "bf9945325d73ee01a2c3d648a0ed028f31076261ceff9dd365b275c41a48c745",
+    "journey-retirement-followup-evidence/build100-attempt2/retrieval.json": "a04c8d9fdc4b2b9b47be2aaf7188bc806c5dc704a111363351a7666bd16cfb60"
+  },
+  "static_checks": {
+    "changed_documentation_evidence_paths": 7,
+    "relative_link_targets": 115,
+    "all_focused_actual_expected_equal": true,
+    "source_hashes_exact": true,
+    "executable_delta": "none",
+    "prior_raw_receipts": "unchanged",
+    "whitespace": "pass"
+  }
+}
