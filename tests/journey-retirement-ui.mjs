@@ -166,11 +166,24 @@ async function ownedReplay() {
     check('One explicit Show on Map causes one replay read', requests.filter(row => row.engine === meta.engine && row.width === meta.width && row.path === '/api/sessions/' + sessionId + '/replay').length, 1);
 }
 
-async function openNotes() {
+async function openNotes({coldReload = false} = {}) {
     // PlaceNotes mounts inside a native details element and reads even while
     // collapsed. Observe before navigation/selection, not after opening it.
     const reply = responseWait('/api/places/system/' + jita.system_id);
-    await go('universe-kspace');
+    if (coldReload) {
+        // Navigating to the same fragment can retain this Document/editor.
+        // A real reload plus an identity probe proves the cold persistence read.
+        await page.evaluate(() => {document.__jretColdReopen = true;});
+        const navigation = await page.reload({waitUntil: 'domcontentloaded', timeout: 15000});
+        assert.ok(navigation, 'Cold reopen returns the main document response.');
+        check('Cold reopen replaces the main document', {
+            status: navigation.status(),
+            navigation: navigation.request().isNavigationRequest(),
+            mainFrame: navigation.request().frame() === page.mainFrame(),
+            oldDocument: await page.evaluate(() => Object.hasOwn(document, '__jretColdReopen')),
+        }, {status: 200, navigation: true, mainFrame: true, oldDocument: false});
+        await page.locator('.connection-status.online').waitFor({state: 'attached'});
+    } else await go('universe-kspace');
     const search = page.getByRole('combobox', {name: 'Find a solar system', exact: true});
     await search.fill(jita.name);
     await page.getByRole('listbox', {name: 'Universe search results', exact: true}).getByRole('option').first().waitFor();
@@ -178,7 +191,8 @@ async function openNotes() {
     const open = page.getByRole('button', {name: 'Open details', exact: true});
     if (await open.isVisible()) await open.click();
     await page.locator('.universe-system-title h3').filter({hasText: jita.name}).waitFor();
-    await page.getByText('Private field notes', {exact: true}).click();
+    const disclosure = page.locator('details.universe-notes');
+    if (!await disclosure.evaluate(element => element.open)) await disclosure.locator('summary').click();
     const note = await jsonResponse(reply);
     await page.locator('.place-notes textarea').waitFor();
     await page.waitForFunction(body => document.querySelector('.place-notes textarea')?.value === body, note.body);
@@ -197,7 +211,7 @@ async function privateNotes() {
     check('Private note is actually persisted', app.store.db.prepare("SELECT body FROM place_notes WHERE kind='system' AND entity_id=?").get(jita.system_id)?.body, savedText);
     // Full document reload/reopen verifies the note is independent of a mounted
     // editor and no retired Journey aggregate is required to recover it.
-    ({panel, note} = await openNotes());
+    ({panel, note} = await openNotes({coldReload: true}));
     check('Cold reopen reads the saved note', [note.body, await panel.locator('textarea').inputValue()], [savedText, savedText]);
     const publicResponse = await fetch(app.streamOrigin + '/state', {signal: AbortSignal.timeout(10000)});
     check('Public Stream state remains available', publicResponse.status, 200);
