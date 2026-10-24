@@ -1,0 +1,36 @@
+{
+  "unit": "JRET-01 hosted launch review",
+  "status": "Focused browser verification pending. Pre-page launch failure retained; one bounded identical-source rerun authorized by the execution coordinator after positive later-run availability evidence.",
+  "source": "2f8b461195ea613ff35134cb9ae92438806e72fe",
+  "tree": "e9f32e9e784976429d9e80661120ec11c30ea5b0",
+  "harness_sha256": "806e45548a12f6d5f34c72fea83c8a9549a6fc13d508ec6180f198ca969eb693",
+  "run": 40097637976,
+  "attempt": 1,
+  "job": 120883201631,
+  "artifact": 12561805655,
+  "artifact_sha256": "4833163a58a00e1e3e4ab293ae83140ca504dfa9bfd23d437ac109aa32205320",
+  "observed": "Chromium process spawned but Playwright launch timed out after20seconds before page creation; zero checks/requests/completed cases. Corrected cold-note reload was not exercised.",
+  "cause": "Unknown. DBus stderr alone does not establish a cause. No product defect is asserted.",
+  "later_availability": "Same run/job subsequently passed final-audit, operation-image and navigation/settings Chrome/Firefox gates (steps10/12/14); observed via GitHub job API by runtime_inventory/root. This supports one unchanged-source rerun, not a claim that the timeout was diagnosed or resolved.",
+  "review": {
+    "reviewer": "output_recon",
+    "disposition": "Independently confirmed pre-page failure and zero behavioral evidence. Same20second launch bound exists in older harnesses. One identical-source retry justified after later availability proof; no source/timeouts/assertions change indicated. Stop and investigate if launch fails again."
+  },
+  "retry_policy": {
+    "extra_attempts": 1,
+    "source_unchanged": true,
+    "timeouts_unchanged": true,
+    "assertions_unchanged": true,
+    "action": "After current job finishes, rerun that GitHub Actions job for exact source2f8b461. Inspect complete matrix/raw checks and independent review before bounded JRET acceptance. Record the second attempt even if failed.",
+    "on_repeat_launch_failure": "Stop retries; investigate environment evidence. Do not weaken or silently skip browser acceptance."
+  },
+  "prior_fixture_failure": "journey-retirement-browser-correction.json",
+  "original_followup": "journey-retirement-followup.json",
+  "native_live_extended_or_candidate_acceptance": false,
+  "release_actions_authorized": false,
+  "evidence_sha256": {
+    "journey-retirement-followup-evidence/build100-attempt1/checks.json": "01b8c04babfda96979f66ab4311925224b43def54b1f2cc6bb633668ffe84593",
+    "journey-retirement-followup-evidence/build100-attempt1/failure.json": "ea68cf5bd86ba4f9e700c6e1dbbeb2de7a49eaa327ca67fda8e1ed6ae78fcf6d",
+    "journey-retirement-followup-evidence/build100-attempt1/retrieval.json": "df38cfda4e5eda5462e2c24edee65f036856971e27f194ba613b10c2f674dfb7"
+  }
+}
