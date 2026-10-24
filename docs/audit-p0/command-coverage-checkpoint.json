@@ -1,0 +1,649 @@
+{
+  "status": "Independently reviewed source/design coverage reconciliation. No implementation, behavioral acceptance, product tests, measurements or new findings.",
+  "author": "algorithms_inventory",
+  "independent_reviewer": "output_recon",
+  "assessed_at_utc": "2026-10-24",
+  "assessed_source": "95b2f41c704d127032e2dee1376c7ae8f44df753",
+  "coordinator_reported_successor": "1a7b7f3 is a JRET documentation/evidence bank with these command owners unchanged; no checkout or product verification claim is made by this checkpoint.",
+  "manifest": {
+    "path": "http-surface.tsv",
+    "sha256": "483b27cdac153a9d18797f85cdb6bec9c6f1eb7e580257f372cb384071596ae3",
+    "id_encoding": "Integers denote HTTP-NNN, zero-padded to three digits. The immutable manifest includes handlers, nested selectors and boundaries; these are not 194 unique endpoints.",
+    "rows": 194,
+    "command_query_effect_kinds": [
+      "job-control",
+      "local-command",
+      "read-through-refresh",
+      "query-post",
+      "auth-start",
+      "local-and-provider-command",
+      "external-session-or-command",
+      "output-command",
+      "read-through-query-post",
+      "local-plan-cache-write",
+      "external-command"
+    ]
+  },
+  "counts": {
+    "command_query_effect_rows": 123,
+    "other_rows": 71,
+    "accepted_source_design_rows": 50,
+    "accepted_handlers": 45,
+    "accepted_nested_selectors": 5,
+    "G2_scoped_pending_rows": 2,
+    "retired_command_rows": 2,
+    "remaining_rows": 69,
+    "remaining_handlers": 46,
+    "remaining_nested_selectors": 23,
+    "unassigned_command_query_effect_rows": 0
+  },
+  "accepted_contract_groups": [
+    {
+      "unit": "A",
+      "ids": [
+        33,
+        34,
+        44,
+        47,
+        48,
+        72,
+        77,
+        168,
+        169
+      ],
+      "count": 9,
+      "contracts": [
+        "settings-command-contracts.md",
+        "obs-command-contracts.md",
+        "session-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "B",
+      "ids": [
+        35,
+        36,
+        37,
+        154
+      ],
+      "count": 4,
+      "contracts": [
+        "auth-command-contracts.md",
+        "module-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "C",
+      "ids": [
+        39,
+        41,
+        49,
+        50,
+        51,
+        52,
+        53
+      ],
+      "count": 7,
+      "contracts": [
+        "opsec-command-contracts.md",
+        "stream-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "D",
+      "ids": [
+        3,
+        4,
+        7
+      ],
+      "count": 3,
+      "contracts": [
+        "dataset-command-contracts.md",
+        "sync-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "E1",
+      "ids": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        21
+      ],
+      "count": 9,
+      "contracts": [
+        "market-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "E2",
+      "ids": [
+        23,
+        24,
+        27,
+        28,
+        30,
+        31
+      ],
+      "count": 6,
+      "contracts": [
+        "import-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "F1",
+      "ids": [
+        64,
+        66,
+        67,
+        68,
+        70,
+        71
+      ],
+      "count": 6,
+      "contracts": [
+        "goal-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "F2",
+      "ids": [
+        61,
+        62
+      ],
+      "count": 2,
+      "contracts": [
+        "place-command-contracts.md"
+      ]
+    },
+    {
+      "unit": "G1",
+      "ids": [
+        115,
+        116,
+        117,
+        118
+      ],
+      "count": 4,
+      "contracts": [
+        "feed-command-contracts.md"
+      ]
+    }
+  ],
+  "in_progress": {
+    "unit": "G2 operational config/refresh",
+    "status": "Scoped; source/design acceptance and banking not claimed here.",
+    "ids": [
+      97,
+      112
+    ],
+    "count": 2,
+    "read_dependencies": [
+      95,
+      96,
+      98
+    ]
+  },
+  "retired": {
+    "unit": "JRET-01",
+    "command_ids": [
+      56,
+      57
+    ],
+    "read_ids": [
+      55
+    ],
+    "note": "Implemented removal recorded by Journey receipts; keep all three manifest entries as historical denominator. This checkpoint adds no retirement behavior acceptance."
+  },
+  "remaining_command_groups": [
+    {
+      "unit": "session_report_collection",
+      "ids": [
+        76
+      ],
+      "count": 1
+    },
+    {
+      "unit": "maps_lifecycle_import_tracking_dispatch",
+      "ids": [
+        83,
+        87,
+        88,
+        89,
+        90,
+        91,
+        94
+      ],
+      "count": 7
+    },
+    {
+      "unit": "maps_pilot_membership_details",
+      "ids": [
+        170,
+        171,
+        172,
+        173
+      ],
+      "count": 4
+    },
+    {
+      "unit": "maps_groups_nodes_positions_connections",
+      "ids": [
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180
+      ],
+      "count": 7
+    },
+    {
+      "unit": "maps_passages_observations_comments_pings",
+      "ids": [
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189
+      ],
+      "count": 9
+    },
+    {
+      "unit": "maps_signatures_undo",
+      "ids": [
+        190,
+        191,
+        192
+      ],
+      "count": 3
+    },
+    {
+      "unit": "operational_intel_alert_ack",
+      "ids": [
+        99,
+        100,
+        101
+      ],
+      "count": 3
+    },
+    {
+      "unit": "signatures_preview_import_restore_save_delete",
+      "ids": [
+        102,
+        103,
+        104,
+        108,
+        110
+      ],
+      "count": 5
+    },
+    {
+      "unit": "upgrades_preview_import_save_delete",
+      "ids": [
+        105,
+        106,
+        109,
+        111
+      ],
+      "count": 4
+    },
+    {
+      "unit": "navigation_itinerary_bridges_plan_reachability_waypoints",
+      "ids": [
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127
+      ],
+      "count": 8
+    },
+    {
+      "unit": "link_lists_links_preview_pruning",
+      "ids": [
+        128,
+        140,
+        142,
+        143,
+        146,
+        147
+      ],
+      "count": 6
+    },
+    {
+      "unit": "pins_saved_views",
+      "ids": [
+        144,
+        145,
+        148,
+        149
+      ],
+      "count": 4
+    },
+    {
+      "unit": "politics_config_refresh_alliance_resolution",
+      "ids": [
+        131,
+        133,
+        135
+      ],
+      "count": 3
+    },
+    {
+      "unit": "system_lookup_structure_verification",
+      "ids": [
+        137,
+        141
+      ],
+      "count": 2
+    },
+    {
+      "unit": "destination_route_jump_calculations",
+      "ids": [
+        86,
+        138,
+        139
+      ],
+      "count": 3
+    }
+  ],
+  "remaining_kind_counts": {
+    "local-command": 53,
+    "query-post": 8,
+    "read-through-refresh": 4,
+    "read-through-query-post": 2,
+    "local-plan-cache-write": 1,
+    "external-command": 1
+  },
+  "other_row_groups": [
+    {
+      "unit": "shared_or_accepted_unit_read_dependencies",
+      "ids": [
+        1,
+        2,
+        5,
+        6,
+        8,
+        17,
+        18,
+        19,
+        20,
+        22,
+        25,
+        26,
+        29,
+        32,
+        38,
+        40,
+        42,
+        43,
+        45,
+        46,
+        54,
+        58,
+        59,
+        60,
+        63,
+        65,
+        69,
+        73,
+        74,
+        75,
+        113,
+        114,
+        160,
+        161
+      ],
+      "count": 34
+    },
+    {
+      "unit": "G2_scoped_read_dependencies",
+      "ids": [
+        95,
+        96,
+        98
+      ],
+      "count": 3
+    },
+    {
+      "unit": "retired_journey_read",
+      "ids": [
+        55
+      ],
+      "count": 1
+    },
+    {
+      "unit": "future_domain_read_export_companions",
+      "ids": [
+        78,
+        79,
+        80,
+        81,
+        82,
+        84,
+        85,
+        92,
+        93,
+        107,
+        119,
+        129,
+        130,
+        132,
+        134,
+        136,
+        150,
+        151
+      ],
+      "count": 18
+    },
+    {
+      "unit": "http_guards_redirects_assets_fallbacks",
+      "ids": [
+        152,
+        153,
+        155,
+        156,
+        157,
+        158,
+        159,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167
+      ],
+      "count": 13
+    },
+    {
+      "unit": "retained_worker_scaffold",
+      "ids": [
+        193,
+        194
+      ],
+      "count": 2
+    }
+  ],
+  "interpretation_limits": [
+    "Accepted means reviewed source/design scope only. Read dependencies and a covered dispatcher do not accept every side effect, query algorithm, collector, command selector or browser flow.",
+    "HTTP-015 has an accepted retirement decision in E1; it is not yet removed. HTTP-055/056/057 removal is separately implemented by JRET-01.",
+    "HTTP-090 is one dispatcher with 23 still-pending selectors HTTP-170 through HTTP-192; it cannot close those variants by itself.",
+    "Future groups are a complete disjoint allocation proposal for the remaining manifest rows, not accepted designs or persistent author assignments. Activate separate author/reviewer per bounded unit.",
+    "New selected status/authority endpoints, including GET Sync and Stream authority renewal, need an implementation delta register beside this immutable manifest.",
+    "No main push, merge, version bump, tag, publication or PR-ready action. Preserve clean-slate policy, historical receipts, all 74 closed findings and verified performance scope."
+  ],
+  "read_effect_seams": [
+    {
+      "ids": [
+        76
+      ],
+      "owner": "server/index.mjs; server/session-combat.mjs",
+      "remaining": "GET Session report may start combat collection. A selects passive command inspection but does not settle this entire trigger/collector."
+    },
+    {
+      "ids": [
+        45,
+        46
+      ],
+      "owner": "server/obs.mjs; obs-command-contracts.md",
+      "remaining": "A traces inventory/filter reads only as needed for reconciliation. Targets45 can connect, and identification can apply automation; do not count all inventory/filter effects accepted."
+    },
+    {
+      "ids": [
+        136,
+        137
+      ],
+      "owner": "server/index.mjs:universeDetail; server/core.mjs:resolveNames",
+      "remaining": "GET detail136 and POST search137 can resolve/persist owner names. Manifest read/query labels are not side-effect-free proof."
+    },
+    {
+      "ids": [
+        86,
+        113
+      ],
+      "owner": "server/universe.mjs:jspaceDestinations; server/universe-feeds.mjs:state",
+      "remaining": "Destination calculation86 calls feeds.state(), which can perform canonical connection expiry maintenance. G1 requires separate passive receipt inspection; ordinary projection is not that reader."
+    },
+    {
+      "ids": [
+        151
+      ],
+      "owner": "server/index.mjs; server/registry.mjs",
+      "remaining": "GET module page invokes trusted extension read with db/store access. Module-toggle B does not settle arbitrary read-hook effects."
+    },
+    {
+      "ids": [
+        150
+      ],
+      "owner": "server/index.mjs; server/universe.mjs:exportUserData",
+      "remaining": "Selective export needs bounded coherent snapshot/privacy/failure ownership; it is not full-profile backup or restore."
+    },
+    {
+      "ids": [
+        123,
+        124,
+        125,
+        127,
+        138,
+        139
+      ],
+      "owner": "server/universe-navigation.mjs; server/universe.mjs",
+      "remaining": "Distinguish read-through bridge discovery, saved computed plan, calculations and external waypoint commands; POST is not a common retry/commit classification."
+    }
+  ],
+  "non_http_obligations": [
+    {
+      "unit": "Browser storage/navigation",
+      "anchors": [
+        "ui-output-inventory.md:C12.1/C12.7/C12.8/C12.9",
+        "ui-output-inventory.md:C13.3"
+      ],
+      "grouping_count": 9,
+      "groups": [
+        "selected pilot",
+        "dataset recovery receipts",
+        "Universe workspace/territory/camera",
+        "Atlas projection",
+        "J-Space workspace/cameras",
+        "map display/mapper preferences",
+        "operational audio/desktop consent",
+        "request slots/Settings handoffs",
+        "Stream safe-layout storage"
+      ],
+      "limit": "Nine grouping families, not an exact key/command count. Enumerate concrete keys, writers, acknowledgment/failure semantics and cross-tab ownership before acceptance."
+    },
+    {
+      "unit": "Browser external/local effects",
+      "anchors": [
+        "ui-output-inventory.md:C12.8/C12.9",
+        "ui-output-inventory.md:C15.5/C15.6"
+      ],
+      "remaining": "Clipboard, downloads, detached document/window/PiP ownership, audio/desktop notification consent and scoped callbacks; HTTP receipts alone do not prove completion."
+    },
+    {
+      "unit": "Extensions/event accounting",
+      "anchors": [
+        "runtime-inventory.md:C03.3/C03.4",
+        "domain-inventory.md:C08.4"
+      ],
+      "remaining": "Trusted migrate/register/read/dispose, ctx.on/get/set/publish, Milestones accepted listeners and eight goal-source algorithms. B/F1 settle selected ownership only, not hook safety or all source arithmetic."
+    },
+    {
+      "unit": "Catalog collectors",
+      "anchor": "runtime-inventory.md:Built-in collector denominator",
+      "count": 38,
+      "family_counts": {
+        "Pilot": 4,
+        "Training": 5,
+        "Wallet": 4,
+        "Markets": 0,
+        "Hangar": 3,
+        "Industry": 4,
+        "Combat": 3,
+        "OPSEC": 3,
+        "Comms": 3,
+        "Universe": 9
+      },
+      "remaining": "Nine nonempty families plus intentional Markets0; shared scheduling contracts do not accept all38 schemas/accounting paths. Derived sovereignty_structures is not a39th collector."
+    },
+    {
+      "unit": "Other background producers",
+      "anchors": [
+        "runtime-inventory.md",
+        "domain-inventory.md",
+        "ui-output-inventory.md:C13"
+      ],
+      "remaining": "Auth renewal; enrichment; Markets/history workers; personal/alliance/Session Combat; Universe discovery/tracking/expiry/politics/fleet/logs; OBS maintenance; dataset workers/supervisor; retention. Keep automatic triggers, durable accounting, cancellation and actual drain beside domain commands."
+    },
+    {
+      "unit": "Diagnostics/application notifications",
+      "anchor": "ui-output-inventory.md:C14/C15",
+      "historical_inventory_counts": {
+        "sonner_importing_files": 15,
+        "lexical_toast_calls": 68
+      },
+      "remaining": "P0-03 designs and requirement acceptance still owed, including non-Sonner dispositions. Historical counts are source-bound inventory, not completed publisher migration. Stream toasts excluded from consolidation."
+    },
+    {
+      "unit": "Offline/build/runtime commands",
+      "anchors": [
+        "runtime-inventory.md:C05",
+        "delivery-inventory.md:C16"
+      ],
+      "offline_data_generators": 5,
+      "remaining": "Launch/shutdown/IPC, package scripts, five offline data generators, package/export publication and retained scaffold; no release action authorized."
+    }
+  ],
+  "reproduce": [
+    "Parse http-surface.tsv as TSV keyed by integer suffix of id; require194 unique IDs.",
+    "Select rows whose kind is in manifest.command_query_effect_kinds: expect123; complement must equal the disjoint union of other_row_groups and contain71.",
+    "Union accepted_contract_groups.ids: expect50 with no duplicates. Subtract it, in_progress.ids and retired.command_ids from the123 set: expect69.",
+    "Require remaining_command_groups.ids disjoint and their union equal that69 set exactly; sum each stored count and recompute remaining_kind_counts from manifest.",
+    "Partition accepted and remaining sets by surface==command-selector: expect5/23 selectors and45/46 handlers respectively. Read full contracts and actual owners for semantic limits; set coverage is not behavioral proof."
+  ],
+  "review": {
+    "reviewer": "output_recon",
+    "disposition": "Accepted exact substantive hash: manifest194=123+71, disjoint exhaustive50+2+2+69, handler/selector and kind counts, source read-effects and non-HTTP obligations all checked. No scope waived.",
+    "reviewed_substantive_sha256": "b0b192e5e2451a67124becf320618bbae9bd07d2b694d8052c6960efb8fa761e",
+    "metadata_delta": "Review status, this disposition and exact root continuation identity only."
+  },
+  "coordinator_verified_successor": {
+    "commit": "1a7b7f3779e09a215e56dde32428908fdccfc8c4",
+    "tree": "bebe3146b90fead78ab7dc2e30b2b159f832123a",
+    "owner_delta": "Documentation/evidence only; exact fetched bytes and open/draft PR/main verified by root. G2 is scoped, unbanked design at this checkpoint."
+  }
+}

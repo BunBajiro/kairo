@@ -41,6 +41,8 @@ Coverage status: `planned → inspecting → evidence pending → independently 
 
 Each expanded unit records: ID and parent row; paths/features/contracts; applicable classes and reasoned exclusions; primary owner and different reviewer; assessed exact source; planned/actual scenarios; evidence links; status; residual limits; next action. Completion requires reconciling every denominator entry, not merely running all old tests. Unresolved confirmed defects, missing required feature acceptance and blocked automated coverage prevent comprehensive completion; deferral/reduced scope requires Bun's recorded decision. Separate native/live limits do not waive deterministic automated coverage.
 
+[Command coverage reconciliation](audit-p0/command-coverage-checkpoint.json), assessed at `95b2f41…`, is independently reviewed:194 rows partitioned completely, including69 remaining command/query/effect entries and explicit read-side-effect/non-HTTP obligations. Its50 accepted +2 scoped G2 +2 retired counts are source/design assignment at that checkpoint, not behavior coverage. The current unit table below owns later status.
+
 ## Findings and feature acceptance
 
 No new findings asserted. Use `CA-001…` for confirmed findings and `REQ-LOG`, `REQ-TOAST` subunits for required new behavior. A hypothesis remains evidence-pending, not a confirmed defect. If related to a closed finding, link it and state the genuinely new evidence; do not rewrite the historical receipt.
