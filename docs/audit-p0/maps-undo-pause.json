@@ -1,0 +1,113 @@
+{
+  "unit": "P0-02H11 pause bank",
+  "date": "2026-10-26",
+  "status": "User-requested pause; H11 UNREVIEWED WIP and I1 read-only preparation only. No acceptance/count advance.",
+  "parent_bank": {
+    "commit": "e82478ea18470cfb6b4b89ea3db06a46aa93adeb",
+    "tree": "9563208fdac997d473275172312a5269efab3843",
+    "accepted_unit": "P0-02H10"
+  },
+  "tested_executable": {
+    "commit": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+    "tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+    "label": "Build101"
+  },
+  "frozen_unreviewed_files": [
+    {
+      "path": "docs/audit-p0/maps-undo-contracts.md",
+      "sha256": "7ef432edb946d4569942d28e96606e5c52cefd1e5d8b054151839656b464dd30",
+      "bytes": 30120
+    },
+    {
+      "path": "docs/audit-p0/maps-undo-verification.json",
+      "sha256": "c740e570e180874befde46880a613633b74ffa25e1c2257053febd68b233ef16",
+      "bytes": 12325
+    }
+  ],
+  "author_pause_report": {
+    "author": "maps_undo_author",
+    "draft": "Full first draft; mixed Rally/alias and coverage clarification incorporated immediately before pause.",
+    "completed": "Read accepted predecessor/source/preparation; local HEAD/tree and executable-owner delta; pause-time receipt JSON/hash synchronization.",
+    "pending": [
+      "Complete author self-review",
+      "Full author static validation and new frozen completed-draft hashes",
+      "Two full independent frozen-byte spec/quality reviews",
+      "Root acceptance, conditional coverage reconciliation and final metadata/tree review"
+    ],
+    "active_work": "None; author stopped, no active tools/background jobs."
+  },
+  "coverage": {
+    "contracted": 93,
+    "retired": 2,
+    "remaining": 28,
+    "command_query_effect_total": 123,
+    "companions": 71,
+    "manifest_total": 194,
+    "H11_conditional_only": [
+      94,
+      2,
+      27
+    ],
+    "I1_after_H11_conditional_only": [
+      97,
+      2,
+      24
+    ]
+  },
+  "continuation": "docs/audit-p0/maps-undo-continuation.md",
+  "next_preparation": {
+    "path": "docs/audit-p0/route-query-preparation.md",
+    "status": "Read-only unaccepted I1 preparation; not activated",
+    "ids": [
+      86,
+      138,
+      139
+    ]
+  },
+  "pause_integrity_review": {
+    "reviewer": "maps_integration_review",
+    "scope": "Exact documentation/tree integrity, truthful WIP/current counts and durable continuation only. NOT either H11 full spec/quality review.",
+    "status": "Requested after final staged bytes; outcome and exact bank identity recorded in PR12 after review/readback."
+  },
+  "limits": {
+    "H11_full_reviews": "Both pending",
+    "runtime_acceptance": "All MAP-UNDO-01\u201306 pending",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0,
+    "H8_P3_advisories": "Both remain open, unchanged",
+    "release": "Paused; PR12 open/draft; main/version unchanged"
+  },
+  "bank_readback": "Pending before this commit exists; verify exact commit/tree/parent, all changed remote bytes/path entries and PR body/head/main/open/draft. PR12 records completed readback; do not infer it from local preparation.",
+  "root_pause_static_checks": {
+    "changed_paths": 9,
+    "relative_links_and_fragments": 282,
+    "frozen_H11_bytes": "match author pause hashes exactly",
+    "JSON_and_whitespace": "pass",
+    "actual_disjoint_exhaustive_partition": [
+      93,
+      2,
+      28,
+      71
+    ],
+    "conditional_counts_only": {
+      "H11": [
+        94,
+        2,
+        27,
+        71
+      ],
+      "I1_after_H11": [
+        97,
+        2,
+        24,
+        71
+      ]
+    },
+    "H10_receipt_delta": "status/bank readback annotation only",
+    "historical_preservation": "No prior evidence/contract changed beyond H10 status/bank annotation and current shared continuation",
+    "executable_test_config_dependency_changes": "none; prior43 paths since Build101 are docs/AGENTS only; this9-path bank is docs only",
+    "limit": "Pause documentation integrity only; author complete self-review/static validation, both H11 full reviews and all runtime/browser/performance acceptance remain pending."
+  }
+}

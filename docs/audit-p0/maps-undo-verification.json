@@ -1,0 +1,219 @@
+{
+  "unit": "P0-02H11",
+  "status": "UNREVIEWED WIP paused at user request; author self-review/static validation and both independent full reviews unfinished. No acceptance, implementation or behavioral proof.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_undo_author",
+  "assessed_source": "e82478ea18470cfb6b4b89ea3db06a46aa93adeb",
+  "assessed_tree": "9563208fdac997d473275172312a5269efab3843",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101 inherited source-bound evidence only; documentation HEAD is not tested executable.",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Root supplied H10 exact commit/tree/parent, six remote bytes/path entries, exact PR/main/open/draft and clean checkout verification. Author checked local HEAD/tree and empty executable-owner delta; remote checks not repeated. Root-owned shared continuation may be modified concurrently."
+  },
+  "accepted_h10": {
+    "contract": "docs/audit-p0/maps-signature-contracts.md",
+    "contract_sha256": "4a9fd2631605f72f7af62c8a940bc6fb0d287d9eb749971a597ef85c148b9d82",
+    "final_bank_receipt_sha256": "8c991fc1b77922e4b4b3e5db2e957bb0343ed2e79acf46975c001e269a1e0f35",
+    "reconciled_interface": "Effective190/191 changes clear history; evidence-only190 preserves it.192 never restores G4/canonical binding/signature age/child receipt state; G4 trash restore remains separately owned."
+  },
+  "open_h8_advisories": "H8-SR-A1/H8-I1 BOM versus ordinary trim and H8-SR-A2/H8-I2 conservative generated/current-metadata allowance remain mandatory before H8 implementation/P0-04 and whole-audit review; no resolution or waiver.",
+  "owner_delta_check": {
+    "command": "git diff aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD --name-only -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      192
+    ],
+    "command_count": 1,
+    "shared_dispatcher": 90,
+    "dispatcher_recounted": false,
+    "read_dependencies": [
+      93
+    ],
+    "owning_ui": "Actual Undo map edit toolbar and Undo removal notice; exact fresh-result selection and independent gesture/selection/dirty editor ownership. No implicit framing promise.",
+    "selected_inspection": "Existing093 inspect=lifecycle: at most one exact inverse plus bounded current top/latest safe receipt; no payload/history/graph parsing or mutation.",
+    "excluded_from_acceptance": [
+      "All originating operation selectors and090/read companions",
+      "086/138/139 calculations",
+      "Broader navigation/Politics/browser-local/collector/clock algorithms"
+    ]
+  },
+  "handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "accepted_interfaces_read": [
+    "docs/audit-p0/command-contracts.md",
+    "docs/audit-p0/maps-lifecycle-contracts.md",
+    "docs/audit-p0/maps-import-contracts.md",
+    "docs/audit-p0/maps-tracking-contracts.md",
+    "docs/audit-p0/maps-roster-contracts.md",
+    "docs/audit-p0/maps-card-contracts.md",
+    "docs/audit-p0/maps-connection-contracts.md",
+    "docs/audit-p0/maps-passage-contracts.md",
+    "docs/audit-p0/maps-observation-contracts.md",
+    "docs/audit-p0/maps-note-rally-contracts.md",
+    "docs/audit-p0/maps-note-rally-verification.json",
+    "docs/audit-p0/maps-signature-contracts.md",
+    "docs/audit-p0/maps-signature-verification.json",
+    "docs/audit-p0/signature-command-contracts.md",
+    "docs/audit-p0/README.md",
+    "docs/audit-p0/http-surface.tsv",
+    "docs/audit-p0/command-coverage-checkpoint.json"
+  ],
+  "preparation": "Read h11-preparation-brief.md, ACTIVE h11-authoring-instructions.md, complete own h11-preflight-notes.md including consumed-coverage addendum and independent h11-source-notes.md/h11-integration-notes.md. H10 final/current continuation read after activation; no unfinished H10 used. Preparation notes are not review of this frozen draft.",
+  "source_anchors_read": [
+    {
+      "path": "server/universe-jspace.mjs",
+      "anchors": [
+        "limits14; tracking writes118-121; atomic185-188",
+        "node/archive190-227; retirement237-270; prune326-350",
+        "notes/pings382-408; projection435-450; capacity517-521",
+        "map deletion541-549; group612-641; command648-777 including undo752-773"
+      ]
+    },
+    {
+      "path": "server/universe-jspace-tracking.mjs",
+      "anchors": [
+        "population199-248: coverage-only writes, active+archive owner, no absent-slot ledger",
+        "sample baseline/frontier278-359"
+      ]
+    },
+    {
+      "path": "server/universe.mjs",
+      "anchors": [
+        "expiry175-239; exact child/canonical retirement and nested publication"
+      ]
+    },
+    {
+      "path": "server/universe-navigation.mjs",
+      "anchors": [
+        "plan-reference retirement43-54"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "anchors": [
+        "notice63,87; perform/command170-197",
+        "selection218-241; remove/undo258-271; controls303-305; editor keys346,349"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-model.mjs",
+      "anchors": [
+        "queue98-122"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-map.tsx",
+      "anchors": [
+        "scope84-86; map/camera167-205; gesture258-290"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-panels.tsx",
+      "anchors": [
+        "dirty connection draft93-116"
+      ]
+    }
+  ],
+  "existing_tests_read_not_run": [
+    "tests/kairo/universe-jspace.test.mjs49-74,205-220 and relevant archive/observation controls",
+    "tests/kairo/maps-permanent-links.test.mjs",
+    "tests/kairo/jspace-retention.test.mjs42-139",
+    "tests/kairo/universe-jspace-http.test.mjs",
+    "tests/kairo/universe-jspace-reads.test.mjs64-108,187-209",
+    "tests/kairo/jspace-tracking.test.mjs262-312",
+    "tests/jspace-ui-workflows.mjs96-124,225-254,296-306",
+    "tests/kairo/jspace-workspace-model.test.mjs19-52"
+  ],
+  "evidence_limits": [
+    "Existing simple undo/card-only/group/retirement controls do not prove strict192 authority, receipts, exhaustive LIFO or capacity.",
+    "Browser natural-shape assertions and held pre-dispatch fetch are not exact inverse/fresh identity/lost acknowledgment/outer-commit proof.",
+    "Simplified tracking owner controls do not prove real192 coverage-only retirement or accepted map authority changes.",
+    "No tests, measurements, reproduced source defect or historical reopening."
+  ],
+  "selected_decisions": [
+    "One strict current-map exact-top192 target; entry origin immutable, generations eligibility only; no per-entry lane/no-op/skip/redo/replay.",
+    "Bounded narrow inverse entries, ceiling10 and measured byte/reference caps; deterministic oldest eviction, exact lost-link pruning; oversized required entry rejects origin atomically.",
+    "Writer-owned affected retirement and separate bounded due-expiry transition advance map/top authority; rejected192/inspection do not retire or retarget. Absent-row ping restoration entries remain clock-owned.",
+    "Explicit reviewed H4/H5 extension of exact retained predecessor/result associations preserves ordinary field/card LIFO through fresh identities, only facts restored; no equality/recreated-identity authority or revived missing group edges.",
+    "Temporary reversible marker dependencies preserve fresh-card/Rally/undo-Rally/undo-card chain; unconsumed child blocks. Alias/removal/restoration chain preserves current metadata but cannot revive an invalidated creation ancestor.",
+    "Fresh-add inverse restores true slot absence, no hidden archive. Archive-consuming inverse restores qualified historical context under fresh archive identity and transfers current monotone metadata, never consumed authority or newer private context overwrite.",
+    "Fresh creation retirement on relevant later card-owned source coverage/evidence prevents lost consumption and old-donor resurrection; no absent-slot ledger/tombstone invented. Selected history retirement advances map authority even though old coverage-only source write did not. Current eligibility is rechecked inside192.",
+    "Field inverses preserve latest metadata; existing baseline/frontier/system-history owners survive. Whole mixed groups reject if any required member loses evidence or dependencies.",
+    "All H4-H10 exclusions remain; H8 historical ages and H9 author/context/fixed TTL preserved, G4 original-ID trash restoration separate.",
+    "One actual outer transaction owns inverse/archive/required exact resource-reference-child-nav retirement/entry/predecessor/activity/authority/receipt; callbacks and timers only after commit.",
+    "Known saved result separate from application/current projection; exact safe receipt may outlive entry. One bounded passive inspection, no private payload/value/absence inference, replay or per-entry polling.",
+    "Toolbar/notice capture exact target/base/request/selection lifetime; known removal only, exact returned fresh-card selection while still owned; newer dirty drafts/gestures survive old completions and remounts. Actual occupancy survives close/timeout."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/maps-undo-contracts.md",
+    "sha256": "7ef432edb946d4569942d28e96606e5c52cefd1e5d8b054151839656b464dd30"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "pending full frozen-byte spec compliance and quality review"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "pending full frozen-byte spec compliance and quality review"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "pending independent reviews and integration/exact-tree banking"
+    }
+  },
+  "author_static_checks": {
+    "completed": "Local HEAD/tree and empty executable-owner delta read before drafting; receipt JSON serialized/parsed and contract hash synchronized at pause.",
+    "unfinished": "Full relative link/fragment, exact manifest192, actual conditional exhaustive94+2+27+71 partition, whitespace, final delta and complete author self-review remain pending.",
+    "limit": "No product/browser/performance tests, helper files, independent review or completion claimed. Resume from explicit WIP freeze."
+  },
+  "acceptance": {
+    "MAP-UNDO-01": "pending",
+    "MAP-UNDO-02": "pending",
+    "MAP-UNDO-03": "pending",
+    "MAP-UNDO-04": "pending",
+    "MAP-UNDO-05": "pending",
+    "MAP-UNDO-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "coverage_reconciliation": {
+    "previously_contracted": 93,
+    "previously_remaining": 28,
+    "conditional_newly_contracted": 1,
+    "conditional_contracted": 94,
+    "retired_commands": 2,
+    "conditional_remaining": 27,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Conditional source/design count only; both reviews and root acceptance pending. No originating-operation or090 recount."
+  },
+  "next_bounded_unit": "P0-02I1 queries086/138/139, one-pair direct queries only; Navigation mutation/batch/JDC/fuel/send and other remaining families stay pending.",
+  "limits": [
+    "Only assigned H11 contract/receipt and scratch report authored; root owns shared continuation/exact-tree bank. No edits after freeze absent concrete review feedback.",
+    "No product/tests/helpers/shared/index edits/commits/pushes/agents.",
+    "Preserve historical final audit/74closed findings/receipts/performance, fresh-data0.8.0 without legacy migration/recovery obligations and current synthetic runtime recovery.",
+    "H8 P3s/P0-03/P0-04/dependency implementation before code.",
+    "No telemetry/Stream consolidation/native Windows DPAPI/live EVE OBS/extended-use acceptance or release progression."
+  ]
+}
