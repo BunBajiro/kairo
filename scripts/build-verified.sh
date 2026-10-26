@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Compile the frontend inside the writable Sites environment. This checks only
+# build completion, not runtime/browser acceptance or release authorization.
+# Timeout values use GNU timeout durations; TERM precedes a bounded KILL grace.
+# See docs/DEVELOPMENT.md for the separate type, runtime and browser gates.
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

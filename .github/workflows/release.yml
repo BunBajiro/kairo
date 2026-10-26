@@ -33,6 +33,7 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '24'
+          check-latest: true
           cache: npm
 
       - name: Prepare version and release notes
@@ -60,7 +61,7 @@ jobs:
           notes = (
               'Download the compiled application below, extract the ZIP into a new folder, '
               'stop any running Kairo instance, then open `Kairo/START_KAIRO.bat`. '
-              'Node.js 24 or newer is required; no npm install or local build is needed.\n\n'
+              'Current Node.js 24 LTS (24.21.0 minimum) is required; no npm install or local build is needed.\n\n'
               f'[Download Kairo-v{version}.zip](https://github.com/{repository}/releases/download/'
               f'v{version}/Kairo-v{version}.zip)\n\n'
               + section.group(1).strip() + '\n'
@@ -80,6 +81,9 @@ jobs:
 
       - name: Build the application
         run: npm run build
+
+      - name: Verify package input boundaries
+        run: python3 tests/package-release.test.py
 
       - name: Package and extract the release
         env:

@@ -9,6 +9,13 @@ export const protectionLabel = state => protectionLabels[state === 'safe' ? 'hig
 
 // Existing Safe actions become High-Sec actions. States previously reported as
 // Unknown inherit its rules once, so upgrading cannot silently drop protection.
+/**
+ * Normalize legacy saved action maps into fresh per-state arrays. Explicit empty
+ * arrays remain intentional; missing newly split states inherit Unknown (High-Sec
+ * can inherit Safe first). Cloning prevents editing one state's inherited rules
+ * from changing another. This helper does not classify space or execute actions.
+ * See ../../docs/STREAMING.md for migration and OBS ordering.
+ */
 export function upgradeProtectionRules(input = {}) {
     const rules = {};
     for (const state of protectionStates) {

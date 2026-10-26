@@ -1,0 +1,103 @@
+TAP version 13
+# Subtest: default administrative timers keep the Window receiver when scheduling, rearming and closing
+ok 1 - default administrative timers keep the Window receiver when scheduling, rearming and closing
+  ---
+  duration_ms: 3.427565
+  type: 'test'
+  ...
+# Subtest: Markets uses one completed-read timer: 5 idle reads per visible 120s, none while hidden, immediate resume
+ok 2 - Markets uses one completed-read timer: 5 idle reads per visible 120s, none while hidden, immediate resume
+  ---
+  duration_ms: 1.37626
+  type: 'test'
+  ...
+# Subtest: Markets running jobs refresh at 2s then return to idle on complete, cancelled or failed
+ok 3 - Markets running jobs refresh at 2s then return to idle on complete, cancelled or failed
+  ---
+  duration_ms: 3.204393
+  type: 'test'
+  ...
+# Subtest: slow administrative reads never overlap and retain only one newer forced invalidation
+ok 4 - slow administrative reads never overlap and retain only one newer forced invalidation
+  ---
+  duration_ms: 0.805635
+  type: 'test'
+  ...
+# Subtest: failed administrative read retains old view and recovers; disposal rejects late publication
+ok 5 - failed administrative read retains old view and recovers; disposal rejects late publication
+  ---
+  duration_ms: 0.760887
+  type: 'test'
+  ...
+# Subtest: OBS stream status wins over a delayed recovery read and dirty configuration survives recovery
+ok 6 - OBS stream status wins over a delayed recovery read and dirty configuration survives recovery
+  ---
+  duration_ms: 0.719996
+  type: 'test'
+  ...
+# Subtest: OBS saving preserves edits made during PUT and a newer stream status; clean save permits future config recovery
+ok 7 - OBS saving preserves edits made during PUT and a newer stream status; clean save permits future config recovery
+  ---
+  duration_ms: 2.852645
+  type: 'test'
+  ...
+# Subtest: OBS full reads are initial/reconnect only; idle/focus use status and hidden reconnect waits without losing dirty config
+ok 8 - OBS full reads are initial/reconnect only; idle/focus use status and hidden reconnect waits without losing dirty config
+  ---
+  duration_ms: 0.540016
+  type: 'test'
+  ...
+# Subtest: OBS failed initial config read retries config rather than getting stuck on status-only reads
+ok 9 - OBS failed initial config read retries config rather than getting stuck on status-only reads
+  ---
+  duration_ms: 0.311903
+  type: 'test'
+  ...
+# Subtest: Goals eight source updates read eight progress resources and no additional notes or hidden metadata
+ok 10 - Goals eight source updates read eight progress resources and no additional notes or hidden metadata
+  ---
+  duration_ms: 1.324788
+  type: 'test'
+  ...
+# Subtest: Goals note/source events are pilot scoped, hidden invalidations resume, and old pilot reads cannot publish
+ok 11 - Goals note/source events are pilot scoped, hidden invalidations resume, and old pilot reads cannot publish
+  ---
+  duration_ms: 0.873464
+  type: 'test'
+  ...
+# Subtest: malformed initial OBS JSON reports a failure and retries full config rather than switching to status-only reads
+ok 12 - malformed initial OBS JSON reports a failure and retries full config rather than switching to status-only reads
+  ---
+  duration_ms: 29.092211
+  type: 'test'
+  ...
+# {"calls":[{"path":"/api/obs","method":"GET","body":""},{"path":"/api/obs","method":"GET","body":""}],"configs":[{"port":4455,"enabled":false,"rules":{}}],"statuses":[{"connected":false}],"errors":["Kairo could not read the response."]}
+# Subtest: malformed current OBS status keeps the last usable state and recovers on the next explicit request
+ok 13 - malformed current OBS status keeps the last usable state and recovers on the next explicit request
+  ---
+  duration_ms: 15.046708
+  type: 'test'
+  ...
+# {"calls":[{"path":"/api/obs","method":"GET","body":""},{"path":"/api/obs/status","method":"GET","body":""},{"path":"/api/obs/status","method":"GET","body":""}],"afterFailure":{"configs":[{"port":4455,"enabled":false,"rules":{}}],"statuses":[{"connected":false}],"errors":["Kairo could not read the response."]},"statuses":[{"connected":false},{"connected":false,"reconnecting":false}]}
+# Subtest: malformed successful OBS save stays unacknowledged, keeps the draft owner and never resubmits automatically
+ok 14 - malformed successful OBS save stays unacknowledged, keeps the draft owner and never resubmits automatically
+  ---
+  duration_ms: 10.330815
+  type: 'test'
+  ...
+# {"saved":{"port":4466,"enabled":false,"rules":{}},"acknowledged":false,"configs":[{"port":4455,"enabled":false,"rules":{}}],"statuses":[{"connected":false},{"connected":false}],"errors":["Kairo could not read the response."],"puts":1}
+# Subtest: valid JSON values and explicit HTTP errors retain the transport contract without extra reads
+ok 15 - valid JSON values and explicit HTTP errors retain the transport contract without extra reads
+  ---
+  duration_ms: 9.690118
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 210.794483

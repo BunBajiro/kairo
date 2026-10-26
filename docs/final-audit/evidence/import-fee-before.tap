@@ -1,0 +1,180 @@
+▶ trained Advanced Broker Relations discounts actual NPC repricing costs at every level
+  ✔ level 0 (0.982673ms)
+  ✖ level 1 (0.602359ms)
+  ✖ level 2 (2.269423ms)
+  ✖ level 3 (0.148254ms)
+  ✖ level 4 (0.196246ms)
+  ✖ level 5 (0.144989ms)
+✖ trained Advanced Broker Relations discounts actual NPC repricing costs at every level (5.737666ms)
+✖ maximum relist training reaches the first non-loss-making tick under the current NPC fee policy (0.508327ms)
+✖ structure relisting uses the same trained discount without reducing its entered broker rate (0.223087ms)
+✔ fee minima and a zero-repricing plan retain their established meaning (0.353212ms)
+✖ real import quotes and saved plans apply the current trained fee while retained snapshots remain historical (119.963835ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 2
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 226.025038
+
+✖ failing tests:
+
+test at tests/kairo/import-fee-policy-review.test.mjs:29:17
+✖ level 1 (0.602359ms)
+  AssertionError [ERR_ASSERTION]: one downward/same-price repricing reserve: expected 880000, received 899999.9999999999
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:31:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:29:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:29:17
+✖ level 2 (2.269423ms)
+  AssertionError [ERR_ASSERTION]: one downward/same-price repricing reserve: expected 760000, received 800000
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:31:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:29:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:29:17
+✖ level 3 (0.148254ms)
+  AssertionError [ERR_ASSERTION]: one downward/same-price repricing reserve: expected 640000, received 700000
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:31:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:29:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:29:17
+✖ level 4 (0.196246ms)
+  AssertionError [ERR_ASSERTION]: one downward/same-price repricing reserve: expected 520000, received 600000.0000000001
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:31:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:29:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:29:17
+✖ level 5 (0.144989ms)
+  AssertionError [ERR_ASSERTION]: one downward/same-price repricing reserve: expected 400000, received 500000
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:31:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:29:17)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:40:1
+✖ maximum relist training reaches the first non-loss-making tick under the current NPC fee policy (0.508327ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 1049000
+  - 1048000
+       ^
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:42:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1049000,
+    expected: 1048000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:47:1
+✖ structure relisting uses the same trained discount without reducing its entered broker rate (0.223087ms)
+  AssertionError [ERR_ASSERTION]: 80% discount on structure repricing: expected 1000000, received 1250000
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:52:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/kairo/import-fee-policy-review.test.mjs:68:1
+✖ real import quotes and saved plans apply the current trained fee while retained snapshots remain historical (119.963835ms)
+  AssertionError [ERR_ASSERTION]: real service quote reserve: expected 400000, received 500000
+      at near (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:18:50)
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/import-fee-policy-review.test.mjs:107:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

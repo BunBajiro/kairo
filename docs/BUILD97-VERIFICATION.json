@@ -1,0 +1,146 @@
+{
+  "status": "Verified focused MR-01/MR-02 and EC-01–09 checkpoint. Release progression is paused for a separate comprehensive audit planning chat and later execution chat; this is not release-readiness acceptance.",
+  "verified_at_utc": "2026-10-21",
+  "reviewer": "packaging_ci; root and session_save_review independently accepted the browser comparison; root accepted final receipt, source/tree/log bindings, evidence digests and documented scope",
+  "version": "0.8.0-rc.17",
+  "source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "tree": "3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10",
+  "workflow": {
+    "build": 97,
+    "run": 39529421954,
+    "job": 118991993024,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/39529421954",
+    "conclusion": "success",
+    "steps": 52,
+    "all_steps_successful": true
+  },
+  "artifact": {
+    "id": 12315426986,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/39529421954/artifacts/12315426986",
+    "bytes": 27354594,
+    "sha256": "706b5cd7a32af11b9b9b3164f1ef9444568a7ede77ae034e3d2d0711132378bd",
+    "github_digest_matches": true,
+    "expires_at": "2026-11-20T02:12:42Z"
+  },
+  "package_verification": {
+    "eligible_tracked_files": 707,
+    "exact_source_matches": 707,
+    "generated_client_files": 21,
+    "total_files": 728,
+    "executable_modes": "724 files with mode 0644 and 4 files with mode 0755; tracked executable bits preserved",
+    "crc_paths_exclusions_extracted_bytes": "pass",
+    "client_references_and_copied_public_assets": "pass",
+    "license_entries": 85,
+    "four_missing_license_texts_covered_by_six_valid_supplements": true,
+    "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9"
+  },
+  "hosted_gates": {
+    "clean_install_types_fresh_build": "pass",
+    "python_package_controls": {
+      "tests": 16,
+      "pass": 16
+    },
+    "regression_browser_checks": 3181,
+    "regression_browser_failures": 0,
+    "baseline_browser_gates": "All passed; actual individual counts and idle metrics retained in hosted-gates evidence.",
+    "packaged_runtime": {
+      "tests": 1349,
+      "suites": 0,
+      "pass": 1349,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 36600.618813
+    }
+  },
+  "final_audit_ui": {
+    "cases": 72,
+    "checks": 864,
+    "failed": 0,
+    "prior_build96_scenario_keys_retained": 804,
+    "new_scenario_checks_since_build96": 56,
+    "global_controls": 4,
+    "prior_assertions_missing_or_weakened": false,
+    "build95_and_96_product_failure_assertions_now_passing": 32,
+    "build95_fixture_stop_entries_excluded": 4,
+    "browser_dimensions": [
+      [
+        "chromium",
+        "155.0.8059.39",
+        390
+      ],
+      [
+        "chromium",
+        "155.0.8059.39",
+        1600
+      ],
+      [
+        "firefox",
+        "153.0",
+        390
+      ],
+      [
+        "firefox",
+        "153.0",
+        1600
+      ]
+    ],
+    "errors_and_unexpected_browser_server_requests": 0,
+    "artifact_id": 12314268679,
+    "raw_archive_sha256": "e96e022c07499d7f11c430be787d9b56a296ed8b2c87cd316c2e8cb2aa123577",
+    "complete_raw_checks_sha256": "2b3c7cc704c39f36e178619ca468fc49ef3c4a0521c77030545ebe54977691f0",
+    "durable_retention": "264 new EC scenario assertions plus four final global controls; 596 historical scenario assertions are not duplicated. All full current assertions are bound by digest and the independent comparison.",
+    "scope": "Actual HTTP/SQLite owners and compiled UI in Chrome/Firefox at 1600/390 pixels; representative screenshot inspection is explicitly limited. No live-provider or broad native-platform usability acceptance."
+  },
+  "independent_extracted_runtime": {
+    "command": "npm run test:kairo",
+    "node": "24.22.0",
+    "embedded_undici": "7.29.1",
+    "explicit_node_path_verified": true,
+    "official_node_archive_sha256": "cc2f601cee82d9a5a233302fe307abc600727035fd7d2c3a3571755989e95008",
+    "official_archive_checksum_matches": true,
+    "NODE_PATH": "unset",
+    "node_modules": "absent",
+    "source_install_or_local_build": false,
+    "exit_code": 0,
+    "tests": 1349,
+    "suites": 0,
+    "pass": 1349,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 20953.436148,
+    "all_728_archived_files_unchanged_after_runtime": true,
+    "extra_package_files": []
+  },
+  "evidence": {
+    "build97-hosted-gates.json": {
+      "file": "market-recovery-evidence/build97-hosted-gates.json",
+      "sha256": "1b3ee039a9ea037ee2e322c63192cd9ffcbe06dff5484fe064db94b00e08fb52"
+    },
+    "build97-package-check.json": {
+      "file": "market-recovery-evidence/build97-package-check.json",
+      "sha256": "b4e4f427ddde00a8f05f7c0cfbf4fe5fd77cf93d79f83b1ed272d31235ea9007"
+    },
+    "build97-edge-ui-checks.json": {
+      "file": "market-recovery-evidence/build97-edge-ui-checks.json",
+      "sha256": "fe7d46e40ebdeeb38fcdf62117501d0b72f02899283be60cf3c9bbba6b743121"
+    },
+    "build97-ui-comparison.json": {
+      "file": "market-recovery-evidence/build97-ui-comparison.json",
+      "sha256": "a3da18aa72f3297b9999144c77b29a9f16eabe6977d1434b511cba8463f537bb"
+    },
+    "build97-extracted-runtime.txt": {
+      "file": "market-recovery-evidence/build97-extracted-runtime.txt",
+      "sha256": "bfc5fc26fb478433ec54020d2a18ea4ee25b5d90b20b65a486ba659f58d8810f"
+    }
+  },
+  "limits": [
+    "This receipt binds tested executable source 0eece9d7, not later documentation-only commits or future audit implementation.",
+    "The next chat plans the comprehensive timing/programming/algorithm audit and approved logging/toast work; execution belongs to a subsequent chat. This checkpoint does not complete that audit.",
+    "Build93/94 receipts and raw evidence remain unchanged. Native Windows/DPAPI, live EVE/OBS and personal usage acceptance are not established by these automated checks.",
+    "No main push, merge, version change, stable workflow invocation or publication."
+  ]
+}

@@ -13,6 +13,8 @@
 .kairo-widget.divider{padding:0;border:0;box-shadow:none}.kairo-widget.divider::before{display:none}
 .kairo-widget.panel::before,.kairo-widget[data-appearance=minimal]::before{display:none}
 .kairo-widget[data-appearance=minimal]{border-color:transparent;box-shadow:none}
+/* Protection must never fade, animate in, or inherit translucent widget styling;
+   the renderer owns when a saved cover is present, CSS keeps it fully opaque. */
 .kairo-widget.opsec{background:#080b0f!important;border-color:var(--accent);opacity:1!important;animation:none!important;transition:none!important}
 .kairo-widget.opsec[data-context=blue]{--accent:#98c5ff!important}.kairo-widget.opsec[data-context=hostile]{--accent:#f49b99!important}.kairo-widget.opsec[data-context=fw],.kairo-widget.opsec[data-context=lowsec]{--accent:#efc88c!important}.kairo-widget.opsec[data-context=triglavian]{--accent:#ef8b80!important}.kairo-widget.opsec[data-context=anoikis]{--accent:#c2a9f5!important}.kairo-widget.opsec[data-context=neutral],.kairo-widget.opsec[data-context=unknown]{--accent:#b2c0ca!important}
 .kairo-widget.opsec .widget-value{font-weight:400;letter-spacing:0}

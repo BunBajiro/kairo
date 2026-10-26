@@ -1,0 +1,134 @@
+{
+  "status": "Verified MR-01/MR-02 checkpoint only; excludes EC-01\u201305 and later save/navigation review. Not final combined acceptance or release authorization.",
+  "verified_at_utc": "2026-10-21",
+  "reviewer": "packaging_ci",
+  "version": "0.8.0-rc.17",
+  "source": "cde4723e47cbf7cf43be7eb4ce7885771d99103c",
+  "tree": "129ccde0bee552b531d7524bb107bf3f70dd5d41",
+  "workflow": {
+    "build": 94,
+    "run": 39524490519,
+    "job": 118975842946,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/39524490519",
+    "conclusion": "success",
+    "steps": 52,
+    "all_steps_successful": true
+  },
+  "artifact": {
+    "id": 12313776615,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/39524490519/artifacts/12313776615",
+    "bytes": 27208086,
+    "sha256": "eeb6180b82d2bc46d5dbff55c06c40e0c25edebf2543125e129afd79c4f4bcb8",
+    "github_digest_matches": true,
+    "expires_at": "2026-11-20T01:16:27Z"
+  },
+  "package_verification": {
+    "eligible_tracked_files": 654,
+    "exact_source_matches": 654,
+    "generated_client_files": 21,
+    "total_files": 675,
+    "executable_modes": "671 files with mode 0644 and 4 files with mode 0755; tracked executable bits preserved",
+    "crc_paths_exclusions_extracted_bytes": "pass",
+    "client_references_and_copied_public_assets": "pass",
+    "license_entries": 85,
+    "four_missing_license_texts_covered_by_six_valid_supplements": true,
+    "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9"
+  },
+  "hosted_gates": {
+    "clean_install_types_fresh_build": "pass",
+    "python_package_controls": {
+      "tests": 16,
+      "pass": 16
+    },
+    "regression_browser_checks": 2917,
+    "regression_browser_failures": 0,
+    "baseline_browser_gates": "All passed; individual counts retained in hosted-gates evidence.",
+    "packaged_runtime": {
+      "tests": 1303,
+      "suites": 0,
+      "pass": 1303,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 25233.809603
+    }
+  },
+  "final_audit_ui": {
+    "cases": 40,
+    "checks": 600,
+    "failed": 0,
+    "new_market_cases": 12,
+    "new_market_assertions": 204,
+    "prior_scenario_assertions_retained": 392,
+    "global_controls": 4,
+    "prior_assertions_missing_or_weakened": false,
+    "browser_dimensions": [
+      [
+        "chromium",
+        "155.0.8059.39",
+        390
+      ],
+      [
+        "chromium",
+        "155.0.8059.39",
+        1600
+      ],
+      [
+        "firefox",
+        "153.0",
+        390
+      ],
+      [
+        "firefox",
+        "153.0",
+        1600
+      ]
+    ],
+    "errors_and_unexpected_browser_server_requests": 0,
+    "raw_archive_sha256": "439f2dcb2c5bb02ebd126930c65ac817eb85f08e565a577c2705896f99368cdc",
+    "complete_raw_checks_sha256": "9c7fbc9c976ee87b04ecd96af3c62b1335f97085dd87a45b91512199bd2640a4",
+    "scope": "Actual HTTP/SQLite recovery, cancellation and exhaustion in both engines at 1600/390 pixels; no live-provider or new screenshot/usability acceptance claimed."
+  },
+  "independent_extracted_runtime": {
+    "command": "npm run test:kairo",
+    "node": "24.22.0",
+    "embedded_undici": "7.29.1",
+    "explicit_node_path_verified": true,
+    "NODE_PATH": "unset",
+    "node_modules": "absent",
+    "source_install_or_local_build": false,
+    "exit_code": 0,
+    "tests": 1303,
+    "suites": 0,
+    "pass": 1303,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 19510.916175
+  },
+  "evidence": {
+    "build94-hosted-gates.json": {
+      "file": "market-recovery-evidence/build94-hosted-gates.json",
+      "sha256": "f8d5e262f777644583ce80595cacd206fd76511ff0ce218245aa81f5fcfaae61"
+    },
+    "build94-package-check.json": {
+      "file": "market-recovery-evidence/build94-package-check.json",
+      "sha256": "96f1429bbdb3ba96b6ed335daea064caf6bdc7c06eebde34271f3727ee792643"
+    },
+    "build94-market-ui-checks.json": {
+      "file": "market-recovery-evidence/build94-market-ui-checks.json",
+      "sha256": "dfcfc093d3b26c96b759e3b1ac7ce776266e08cb337f6af192ba1ef024a6019a"
+    },
+    "build94-extracted-runtime.txt": {
+      "file": "market-recovery-evidence/build94-extracted-runtime.txt",
+      "sha256": "a7e02d4b096fb9218ceaa40c4d26379e79832d6234e8a62ad651c56b7ce9bf6b"
+    }
+  },
+  "limits": [
+    "Tested source remains cde4723e even as the review branch advances; fresh combined acceptance is required for EC-01\u201305 and any later UI corrections.",
+    "Build93 receipt/raw evidence is unchanged. Its human environment and release-approval limits remain applicable.",
+    "No main push, merge, version change, stable workflow invocation or publication."
+  ]
+}

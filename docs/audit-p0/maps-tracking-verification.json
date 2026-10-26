@@ -1,0 +1,238 @@
+{
+  "unit": "P0-02H3",
+  "status": "Verified/banked source/design only; no implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_tracking_author",
+  "assessed_source": "f5bca80e4f8d483b102e560d0eb950672e555f5f",
+  "assessed_tree": "5d360b2ed190e38b3c104fb782953874ad4c81f7",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101; inherited source-bound evidence only, not H3 proof",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Remote identity supplied by coordinator; author checked local HEAD/tree and executable-owner delta only."
+  },
+  "owner_delta_check": {
+    "command": "git diff --name-only aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      83
+    ],
+    "command_count": 1,
+    "read_dependencies": [
+      80,
+      81,
+      93
+    ],
+    "selected_inspection": "HTTP-081 GET /api/universe/jspace/summaries?inspect=tracking; global metadata-only mode, no pilot/map selector",
+    "primary": "C10",
+    "dependencies": [
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12",
+      "C13"
+    ],
+    "limit": "Producer/read/lifetime interfaces are not whole-owner acceptance."
+  },
+  "mandatory_handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "contract_interfaces_read": [
+    "command-contracts.md",
+    "http-surface.tsv",
+    "command-coverage-checkpoint.json",
+    "maps-lifecycle-contracts.md",
+    "maps-import-contracts.md",
+    "maps-import-verification.json",
+    "operations-control-contracts.md",
+    "intel-command-contracts.md",
+    "signature-command-contracts.md",
+    "upgrade-command-contracts.md",
+    "place-command-contracts.md",
+    "auth-command-contracts.md",
+    "module-command-contracts.md",
+    "dataset-command-contracts.md"
+  ],
+  "interface_read_limit": "Relevant authority/reader/observation/receipt and dataset activation/drain sections, not renewed behavioral review of prior units.",
+  "source_read": [
+    "server/index.mjs",
+    "server/universe-jspace.mjs",
+    "server/universe-jspace-tracking.mjs",
+    "server/universe.mjs",
+    "server/universe-operations.mjs",
+    "server/universe-log-tail.mjs",
+    "server/core.mjs",
+    "server/auth.mjs",
+    "components/kairo/dashboard.tsx"
+  ],
+  "existing_tests_read_not_run": [
+    "tests/kairo/jspace-tracking.test.mjs",
+    "tests/kairo/universe-jspace.test.mjs",
+    "tests/kairo/universe-location-composition.test.mjs",
+    "tests/kairo/universe-jspace-http.test.mjs"
+  ],
+  "test_limits": [
+    "Tracker activate helper is not HTTP-083.",
+    "Actual service selected-pilot tests do not establish new CAS/receipt/rollback/reauth semantics.",
+    "Existing Maps HTTP test does not call083.",
+    "Source-read lifecycle/log-tail seams do not establish H3 drain acceptance."
+  ],
+  "preflight_interfaces": [
+    {
+      "interface": "H3 internal",
+      "ruling": "One installation-wide selected source-recorder entity; separate persisted intent, source continuity, application and valid observation."
+    },
+    {
+      "interface": "H3 x H1/H2",
+      "ruling": "Independent nonreused source incarnation; atomic pointer/baseline/birth, no interactive membership/roster/selected-map/import authority mutation."
+    },
+    {
+      "interface": "H3 x G2/Auth/Modules",
+      "ruling": "Capture exact connection/runtime and relevant reader/control identity; same-ID replacement retires continuity; selecting preference does not configure readers or prove observation."
+    },
+    {
+      "interface": "H3 x G3/G4/G5/Places",
+      "ruling": "No manufactured automatic alert/scan/canonical authority or historical age renewal; child/global annotation owners unchanged."
+    },
+    {
+      "interface": "H3 x C11/C12",
+      "ruling": "Source-only dedupe/continuity; actual Dashboard picker/recording action owns intent; broader algorithms and browser-local storage acceptance remain pending."
+    },
+    {
+      "interface": "H3 x P0-03/P0-04",
+      "ruling": "Diagnostics/toast defaults and measured numerical aggregate/index/queue/clock/drain budgets remain prerequisites."
+    },
+    {
+      "interface": "Author x integration",
+      "ruling": "Only two new repository docs and scratch author report; root owns shared ledger/counts/banking."
+    }
+  ],
+  "selected_decisions": [
+    "One lineage-bound global CAS revision/latest receipt, strict required numeric0 or current connected positive target and exact target connection; no dynamic fallback recorder.",
+    "Absent virtual0 and passive bootstrap/remount/CSRF/roster/localStorage convergence; deliberate picker change or reachable Use this pilot for recording action owns mutation.",
+    "Fresh same-value commands advance only command evidence when continuity is unchanged; clear0 does not disable independent interactive tracking.",
+    "Atomic pointer, affected source baseline/continuity dependency, optional source birth and receipt; staged runtime updates follow actual outer commit with fail-closed obsolete-source fence.",
+    "Source incarnation and continuity generation remain distinct from topology source_generation/coverage; source reset cannot replay independent interactive deliveries or revive removed topology.",
+    "Captured connection/runtime/relevant reader control and source generation fence old callbacks including same-ID reauth and A-to-B-to-A; first new eligible observation baseline-only.",
+    "Global metadata-only081 inspection, one initial uncertain-ack read and no automatic mutation replay; current application/eligibility separate from retained command proof.",
+    "Replaceable unsent local desired choice versus admitted work, exact known-predecessor continuation, unknown/conflict pause and no silent rebase; actual close occupancy retained."
+  ],
+  "bootstrap_tradeoff": {
+    "rationale": "Passive uninitialized0 prevents stale startup tabs seizing the global recorder; recording begins only after deliberate choice. Native Choice cannot emit change for its already selected sole option, so a meaningful Use this pilot for recording action is required when viewed pilot is not confirmed selected. Current recorder differs from viewed pilot and must be represented honestly.",
+    "coordinator": "root agreed this ruling during authoring; no user approval or implementation claim."
+  },
+  "contract": {
+    "path": "docs/audit-p0/maps-tracking-contracts.md",
+    "sha256": "6fa9a26c17aa6db617e0a209ec601b48efa022355211890081df71a18f9778b2"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality; no findings or required corrections.",
+      "reviewed_contract_sha256": "2349a771d91d11081aa12b08ae3ec9802d65b360db85ed425e84909bffc92f00",
+      "reviewed_receipt_sha256": "ccef487771b670eef7afb8daeb0261744bd00dad3e64ceff9bcc6efbe6b4c410"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality; no findings or required corrections.",
+      "reviewed_contract_sha256": "2349a771d91d11081aa12b08ae3ec9802d65b360db85ed425e84909bffc92f00",
+      "reviewed_receipt_sha256": "ccef487771b670eef7afb8daeb0261744bd00dad3e64ceff9bcc6efbe6b4c410"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after source/integrated review; implementation, behavioral and numerical gates remain pending."
+    }
+  },
+  "author_static_checks": {
+    "receipt_json": "valid",
+    "contract_sha256": "matches exact bytes",
+    "relative_links_checked": 28,
+    "missing_links": [],
+    "count_arithmetic": "70+2+51=123;123+71=194",
+    "limit": "Documentation-only checks; no runtime/browser/performance proof",
+    "manifest_scope": "194 unique manifest rows; HTTP-083 exact PUT /api/universe/jspace/tracking/active local-command matches scoped row.",
+    "whitespace": "Both new files checked directly for trailing whitespace/final newline; git diff --check passed for current shared worktree.",
+    "self_review": "Rechecked observed versus selected separation, single-pilot bootstrap action, receipt identities, no-op/clear/reauth, actual outer commit, source-only dedupe, unknown read-back, close occupancy and pending algorithm/budget boundaries."
+  },
+  "acceptance": {
+    "MAP-TRACK-01": "pending",
+    "MAP-TRACK-02": "pending",
+    "MAP-TRACK-03": "pending",
+    "MAP-TRACK-04": "pending",
+    "MAP-TRACK-05": "pending",
+    "MAP-TRACK-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "limits": [
+    "Workspace-only; no author commit/push/shared-ledger edits.",
+    "No main push, merge, version bump, tag, publication or PR-ready action.",
+    "Preserve historical receipts, final audit,74 closed findings and verified performance.",
+    "Clean-slate0.8.0: no prior-version migration/recovery requirement; fresh synthetic runtime correctness remains required.",
+    "Native Windows/DPAPI, live EVE/OBS and extended use remain outside automation.",
+    "No automatic telemetry, Stream-toast consolidation or new tooling project.",
+    "No implementation before dependency contracts and reviewed P0-04 numerical budgets; P0-03 remains pending."
+  ],
+  "next_bounded_unit": "P0-02H4 Maps dispatcher/roster/details: HTTP-090 boundary plus170 pilot.add,171 pilot.tracking,172 pilot.remove and173 map.update. Trace strict dispatch/map authority, roster consent/baselines, scope/details and undo boundaries, saved edit versus source population/application, passive reconciliation and real MapPilots/MapForm ownership. Preserve H1/H2/H3 and G3–G5 interfaces. Keep selectors174–192, destinations086, broader movement/population/graph/navigation/Politics and browser-local groups pending.",
+  "reviewed_substantive_sha256": "2349a771d91d11081aa12b08ae3ec9802d65b360db85ed425e84909bffc92f00",
+  "status_metadata_delta": "Opening acceptance sentence only; substantive contract unchanged from independent reviews.",
+  "coverage_reconciliation": {
+    "previously_contracted": 69,
+    "newly_contracted": 1,
+    "current_contracted": 70,
+    "retired_commands": 2,
+    "remaining": 51,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Source/design assignment only; passive081 adds no command row. Historical checkpoint unchanged; read effects/non-HTTP obligations remain."
+  },
+  "bank": {
+    "status": "Verified/banked; following H4 continuation records exact remote read-back.",
+    "parent": "f5bca80e4f8d483b102e560d0eb950672e555f5f",
+    "parent_tree": "5d360b2ed190e38b3c104fb782953874ad4c81f7",
+    "ci": "Documentation-only [skip ci]; tested executable remains aa2bc453, Build101.",
+    "commit": "712aef0c7003a8814218a1cd91c7e4c34e57773b",
+    "tree": "5d57582935679de07f0b6480555406ffea3bcc42",
+    "readback": "On26October2026 exact commit/tree/parent and all6 remote file bytes/path entries matched; final integrated reviewer accepted exact tree; PR exact body/head/main/open/draft verified and checkout clean."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "f5bca80e4f8d483b102e560d0eb950672e555f5f",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "previous_bank_readback": "H2 exact commit/tree/parent and all6 remote file bytes/path entries, exact PR body/head/main/open/draft and clean checkout verified; unchanged on current continuation.",
+    "source_delta": "aa2bc453..f5bca80 contains27 documentation/evidence paths including AGENTS.md; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 202,
+    "actual_ID_partition": "70contracted+2retired+51remaining+71other=194; pass",
+    "final_contract_sha256": "6fa9a26c17aa6db617e0a209ec601b48efa022355211890081df71a18f9778b2",
+    "substantive_hash_reconstruction": "pass; opening acceptance sentence only",
+    "older_receipt_delta": "H2 status/bank identity only; substantive/historical proof unchanged",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; no product/browser/performance run."
+  }
+}

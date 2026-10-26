@@ -1,3 +1,6 @@
+// Frontend development/compilation retains the Sites Worker scaffold. The shipped
+// local application serves dist/client through server/index.mjs, without a Worker
+// or D1 database. See docs/DEVELOPMENT.md and docs/ARCHITECTURE.md.
 import vinext from "vinext";
 import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
@@ -44,6 +47,8 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    // Ship the exact bundled dependency license texts with the compiled client.
+    build: { license: true },
     server: {
       host: "127.0.0.1",
       allowedHosts: ["terminal.local"],

@@ -1,0 +1,303 @@
+{
+  "unit": "P0-02H4",
+  "status": "Verified/banked source/design only; no implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_roster_author",
+  "assessed_source": "712aef0c7003a8814218a1cd91c7e4c34e57773b",
+  "assessed_tree": "5d57582935679de07f0b6480555406ffea3bcc42",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101 inherited source-bound evidence only; no H4 runtime proof",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Remote exact H3 bank/tree/parent/bytes and PR verification supplied by coordinator; author independently checked local HEAD/tree and empty executable-owner delta."
+  },
+  "owner_delta_check": {
+    "command": "git diff aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD --name-only -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      90,
+      170,
+      171,
+      172,
+      173
+    ],
+    "command_count": 5,
+    "read_dependencies": [
+      80,
+      81,
+      93,
+      84,
+      82,
+      85
+    ],
+    "selected_inspection": "Extend H1 HTTP-093 inspect=lifecycle with exact map/optional row and bounded saved-command/follow-up/application metadata; no new command row.",
+    "primary": "C10",
+    "dependencies": [
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12",
+      "C13"
+    ],
+    "excluded_from_acceptance": [
+      "HTTP-083 already H3",
+      "HTTP-086 separate query-post",
+      "HTTP-174 through HTTP-192",
+      "broader movement/population/graph/routing algorithms",
+      "navigation/Politics/browser-local families"
+    ]
+  },
+  "handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "accepted_interfaces_read": [
+    "docs/audit-p0/command-contracts.md",
+    "docs/audit-p0/maps-lifecycle-contracts.md",
+    "docs/audit-p0/maps-import-contracts.md",
+    "docs/audit-p0/maps-tracking-contracts.md",
+    "docs/audit-p0/maps-tracking-verification.json",
+    "docs/audit-p0/operations-control-contracts.md",
+    "docs/audit-p0/intel-command-contracts.md",
+    "docs/audit-p0/signature-command-contracts.md",
+    "docs/audit-p0/upgrade-command-contracts.md",
+    "docs/audit-p0/place-command-contracts.md",
+    "docs/audit-p0/http-surface.tsv",
+    "docs/audit-p0/command-coverage-checkpoint.json"
+  ],
+  "source_anchors_read": [
+    {
+      "path": "server/index.mjs",
+      "anchors": [
+        "private jspace routes",
+        "090 checkedChar/body/decoded locator dispatch"
+      ]
+    },
+    {
+      "path": "server/universe-jspace.mjs",
+      "anchors": [
+        "clean/boolean/LIMITS",
+        "scopeContext/withScopeContexts",
+        "tracking adapters and copyConnection",
+        "command648-777",
+        "map.update/roster cases",
+        "pretransaction getLinks",
+        "undo/forgetMapConnections/writeMap",
+        "postcommit sync/populate/project",
+        "next-unit group/node/position/remove cases"
+      ]
+    },
+    {
+      "path": "server/universe-jspace-tracking.mjs",
+      "anchors": [
+        "syncMap/ensureIndex",
+        "allowed/sample/baseline/rosterCommand",
+        "projectPilots/resetSourceBaseline",
+        "sourceComponents/populateScopes",
+        "scopeAcceptsTransition/observeLocation"
+      ]
+    },
+    {
+      "path": "server/universe-jspace-scopes.mjs",
+      "anchors": [
+        "validateJSpaceScope",
+        "matchesJSpaceScope",
+        "jspaceScopeOptions"
+      ]
+    },
+    {
+      "path": "server/universe.mjs",
+      "anchors": [
+        "getScopeContext/scopeOptions",
+        "canonical read/retirement integration through supplied owner interfaces"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "anchors": [
+        "perform/command/moveNodes",
+        "MapPilots",
+        "MapScopeEditor",
+        "MapForm/settings onSubmit"
+      ]
+    }
+  ],
+  "tests_read_not_run": [
+    "tests/kairo/jspace-tracking.test.mjs",
+    "tests/kairo/jspace-scopes.test.mjs",
+    "tests/kairo/universe-jspace.test.mjs",
+    "tests/kairo/universe-jspace-http.test.mjs",
+    "tests/jspace-ui-workflows.mjs"
+  ],
+  "test_limits": [
+    "Relevant owning sections read; no product suite executed.",
+    "Tracking fixture command bypasses actual dispatcher/revision/undo/outer transaction.",
+    "UI workflow actually exercises add/pause/resume/remove and scope save/clear, but not held response/new row/unknown/cross-tab proof.",
+    "Current passage test permits a pre-enable baseline; selected post-consent endpoint rule requires new requirement acceptance.",
+    "No existing test establishes H4 strict envelope, receipt, no-side-effect rejection, consent-safe undo, aggregate budgets or actual drain."
+  ],
+  "preflight_interfaces": [
+    {
+      "interface": "H4 internal",
+      "ruling": "One H1 map CAS and strict per-op dispatcher; atomic saved edit separate from bounded captured population follow-up."
+    },
+    {
+      "interface": "H4 x H1/H2",
+      "ruling": "Map birth/retirement/portable history identities unchanged; no copied child authority, no membership change."
+    },
+    {
+      "interface": "H4 x H3/G2",
+      "ruling": "Row identity/recipient continuity independent of global selection/readers; cached interactive seed cannot bridge pre-consent movement; preserve other subscribers."
+    },
+    {
+      "interface": "H4 x pending192",
+      "ruling": "Effective consent/scope/roster change clears undo; title/description-only field-scoped inverse excludes newer consent/evidence; full192 remains pending."
+    },
+    {
+      "interface": "H4 x G3/G4/G5/Places",
+      "ruling": "No private child/annotation copy or new alert/scan/access; canonical retirement keeps accepted exact-owner interfaces."
+    },
+    {
+      "interface": "H4 x C11/C12",
+      "ruling": "Strict OR scope and current local authorities; actual MapPilots/MapForm/MapScopeEditor generations, unknown and late-choice ownership."
+    },
+    {
+      "interface": "H4 x P0-03/P0-04",
+      "ruling": "Meaningful feedback and measured finite aggregate/queue/clock/drain budgets precede implementation; no numeric acceptance here."
+    }
+  ],
+  "selected_decisions": [
+    "Version1 exact common envelope and operation field table; unknown/malformed/stale/foreign selectors cannot run cleanup before rejection.",
+    "One H1 map revision/latest receipt; nonreused roster row incarnation and recipient continuity prevent remove/re-add ABA. Successful no-op advances evidence only.",
+    "Connected add/resume; exact disconnected retained target pause/remove; owner may be deselected and roster may become empty; local consent does not configure readers or select recorder.",
+    "Fresh eligible cached interactive sample may display/seed optional unrestricted wormhole card, but neither traversal endpoint may originate from pre-consent seed/callback; first current-generation producer observation is baseline-only.",
+    "Independent passage-consent generation requires both endpoints captured after enabling; disable fences pending passages without disrupting continuous topology tracking.",
+    "Strict patch; omitted-preserve, empty-description clear, scope null/empty unrestricted, group null rejects; full raw4000 description and matching UI alignment; scope sorted/dedup explicit OR with raw2000/group and shared150000-byte envelope.",
+    "Scope catalog/policy/config dependencies separated from current complete sovereignty matching; unavailable evidence is not malformed input or unrestricted fallback; clear/contraction retains history and no unrestricted backfill.",
+    "Atomic parent map/roster/seed/undo/receipt/follow-up admission; actual outer commit publishes indexes and eligibility fences.",
+    "One separately owned bounded scoped population pass only for changed nonempty scope or add/resume; whole-component capacity and whole-pass storage rollback retain parent success. No replay via inspection or same-value save.",
+    "One bounded latest follow-up association may carry exact parent proof until superseded; current projection/application and saved result remain distinct.",
+    "Effective roster/scope/passage change clears undo; metadata-only name/description inverse cannot restore full snapshots or current evidence; selector192 not accepted.",
+    "Passive H1 lifecycle inspection, one initial unknown read/no mutation retry; exact UI draft/choice/row/map/owner generations and actual shutdown occupancy."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/maps-roster-contracts.md",
+    "sha256": "125760e0b0ed44651f4bf752b8439ea902e3dcdc9cc5ac3cced47177cdca82b5"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality; no findings or required corrections.",
+      "reviewed_contract_sha256": "7045c0cc178f231b2307935f7de7834aea562747ee1446907e4709a0bc523b63",
+      "reviewed_receipt_sha256": "0a49b0618a751d8b9ed42c4924854c65dd5481c3ad319d137d39dff6002c7212"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality; no findings or required corrections.",
+      "reviewed_contract_sha256": "7045c0cc178f231b2307935f7de7834aea562747ee1446907e4709a0bc523b63",
+      "reviewed_receipt_sha256": "0a49b0618a751d8b9ed42c4924854c65dd5481c3ad319d137d39dff6002c7212"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after source/integrated review; implementation, behavioral and numerical gates remain pending."
+    }
+  },
+  "author_static_checks": {
+    "receipt_json": "valid; parsed again after write",
+    "contract_sha256": "matches exact bytes",
+    "relative_links_checked": 27,
+    "missing_links": [],
+    "manifest_scope": "Exact IDs90,170,171,172,173 and POST path/op selectors checked against194-row manifest",
+    "count_arithmetic": "75+2+46=123;123+71=194; conditional upon review, current shared counts unchanged by author",
+    "whitespace": "Checked both new files directly; git diff --check also run, including root-owned tracked continuation changes",
+    "self_review": "Rechecked observed/selected separation, strict raw envelope/field rules, no-op and disconnected row semantics, cached seed/passage consent boundaries, scope clear/no backfill, parent/follow-up atomicity and bounded attribution, actual outer publication, undo exclusions, UI/test scope and pending gates",
+    "limit": "Documentation-only static verification, not product/browser/performance evidence"
+  },
+  "acceptance": {
+    "MAP-ROSTER-01": "pending",
+    "MAP-ROSTER-02": "pending",
+    "MAP-ROSTER-03": "pending",
+    "MAP-ROSTER-04": "pending",
+    "MAP-ROSTER-05": "pending",
+    "MAP-ROSTER-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "coverage_reconciliation": {
+    "previously_contracted": 70,
+    "retired_commands": 2,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Source/design assignment only;090 shared envelope adds no acceptance for174–192. Read dependencies add no command rows; historical denominator unchanged.",
+    "newly_contracted": 5,
+    "current_contracted": 75,
+    "remaining": 46
+  },
+  "next_bounded_unit": "P0-02H5 card/group placement: selectors174 group.add,175 node.save,176 nodes.position,177 node.remove and178 nodes.remove. Reuse H4 dispatcher/map authority; trace strict card/archive identity, group recipe/catalog/shared-link dependencies, coordinates/locks, atomic incident-owned-link/G4 retirement, pending192 undo and actual staging/drag/editor/remove ownership. Keep179/180 canonical connection controls for H6;181–192,086 and wider movement/population/route/navigation/Politics/browser-local obligations remain pending.",
+  "limits": [
+    "Only two assigned new repository documents and scratch author report; no shared-ledger changes by author.",
+    "No implementation/tests/helpers/commits/pushes; no main/merge/version/tag/publication/PR-ready action.",
+    "Preserve historical receipts/final audit/74 closed findings/performance evidence.",
+    "Fresh-data0.8.0 removes legacy migration/recovery obligations but retains synthetic runtime correctness.",
+    "No telemetry, Stream-toast consolidation or separate tooling project.",
+    "Native Windows/DPAPI, live EVE/OBS and extended use remain outside automation.",
+    "P0-03 and reviewed P0-04 numerical budgets/dependency implementation remain required."
+  ],
+  "reviewed_substantive_sha256": "7045c0cc178f231b2307935f7de7834aea562747ee1446907e4709a0bc523b63",
+  "status_metadata_delta": "Opening acceptance sentence and one intersentence space only; substantive contract unchanged from full independent reviews.",
+  "copyedit": {
+    "author": "maps_roster_author",
+    "change": "authority.Current MapScopeEditor -> authority. Current MapScopeEditor",
+    "copyedited_contract_sha256": "60ead40077eeab91fa28c3601066f9c57283c510bc33199d32a6e616b521b66f",
+    "copyedited_receipt_sha256": "d085739277239beb9ed9451345cfb5cadb7580448f58566f2675861c253d2110",
+    "limit": "No design change; exact reconstruction checked during final metadata review."
+  },
+  "bank": {
+    "status": "Verified/banked; following H5 continuation records exact remote read-back.",
+    "parent": "712aef0c7003a8814218a1cd91c7e4c34e57773b",
+    "parent_tree": "5d57582935679de07f0b6480555406ffea3bcc42",
+    "ci": "Documentation-only [skip ci]; tested executable remains aa2bc453, Build101.",
+    "commit": "b517da2d95a624aaf1fcc7919a4815a9c1bf1f79",
+    "tree": "79bad7e5e8ae8ebe1277bcf64c609e6c63972e7c",
+    "readback": "On26October2026 exact commit/tree/parent and all6 remote file bytes/path entries matched; final integrated reviewer accepted exact tree and cosmetic reconstruction; PR exact body/head/main/open/draft verified and checkout clean."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "712aef0c7003a8814218a1cd91c7e4c34e57773b",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "previous_bank_readback": "H3 exact commit/tree/parent and all6 remote file bytes/path entries, exact PR body/head/main/open/draft and clean checkout verified.",
+    "source_delta": "aa2bc453..712aef0 contains29 documentation/evidence paths including AGENTS.md; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 207,
+    "actual_ID_partition": "75contracted+2retired+46remaining+71other=194; pass",
+    "final_contract_sha256": "125760e0b0ed44651f4bf752b8439ea902e3dcdc9cc5ac3cced47177cdca82b5",
+    "substantive_hash_reconstruction": "pass; opening acceptance sentence and one intersentence space only",
+    "older_receipt_delta": "H3 status/bank identity only; substantive/historical proof unchanged",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; no product/browser/performance run."
+  }
+}

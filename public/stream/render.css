@@ -1,4 +1,6 @@
 @import url('/widgets.css?v=0.6.0');
+/* The renderer scales this fixed canvas as one surface; widget positions remain
+   canonical pixels. Keep the document transparent for OBS composition. */
 :root{color-scheme:normal}html,body{margin:0;background:transparent!important;width:100%;height:100%;overflow:hidden}body{font-family:'Segoe UI',Arial,sans-serif;color:#e8f1f0}*{box-sizing:border-box}
 #stage{width:1920px;height:1080px;position:absolute;left:0;top:0;transform-origin:top left;pointer-events:none}
 .element{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}

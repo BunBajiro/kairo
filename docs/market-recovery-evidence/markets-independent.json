@@ -1,0 +1,36 @@
+{
+  "reviewer": "docs_tests",
+  "disposition": "accepted",
+  "scope": "Independent Markets duration, page validation/retry/staging and regression review; ESI implementation review belongs to universe/runtime_data. Hosted combined/browser/package acceptance remains pending.",
+  "node": "24.22.0",
+  "command": "node --test --test-reporter=tap tests/kairo/market-recovery.test.mjs tests/kairo/market-order-duration.test.mjs tests/kairo/market-pacing.test.mjs",
+  "counts": {
+    "tests": 35,
+    "pass": 35,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "log": "integrated.tap",
+  "log_sha256": "4fa32eb2007cfe244d2a9bde50122f2ea247812cfeb9fee132f5376341a541cd",
+  "reviewed_files_sha256": {
+    "server/markets.mjs": "f10227775955fa9cf31fa3f1b026d0f1ae07a8e9b054eb3572797e6156881eb6",
+    "tests/kairo/market-recovery.test.mjs": "048cfde54cad4f9859dc27ca4c2511cc4119b032b52ab0275006100249d98617",
+    "tests/kairo/market-order-duration.test.mjs": "8b5bea46c78936052b387af19a3abb4fb5b25ad42defa4c0fa9587d582120f25",
+    "docs/MARKETS.md": "f07a48cee45163f5da9c6372c1d304a342047abd900b9925f4c3d2c18cd44478",
+    "docs/ESI-POLLING.md": "483b26fa69bc2aca7250b39394f479d43ae4687366d7a5dd6ce25b19ad6f487a"
+  },
+  "baseline": {
+    "log": "before.tap",
+    "format": "Node default text reporter; original raw output retained",
+    "tests": 3,
+    "pass": 1,
+    "fail": 2,
+    "source_identity": "before-source.json",
+    "initial_test_snapshot": "before-test.mjs",
+    "scope": "Initial three-test recovery baseline before retry/ESI changes, with concurrent narrow duration predicate correction already present."
+  },
+  "findings": [],
+  "verification": "Two extra attempts shared across pages/hubs; cumulative60s waiting honors provider deadlines; cancellation/access/module/shutdown rechecked every250ms; terminal access and pagination drift unchanged; complete old books retained until per-hub atomic promotion; no repeated healthy-page fetch/stage; malformed duration-zero exception limited to exhausted rows; warm cache and history reuse retained."
+}

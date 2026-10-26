@@ -1,43 +1,83 @@
+/**
+ * Core's durable personal combat ledger and cached public-reference collector.
+ * Public references discover candidates; ESI hash verification establishes the
+ * killmail, and recorded attacker/victim identity establishes participation.
+ * Source windows may expire without deleting accepted records. See ../docs/SESSIONS.md.
+ */
 import {setTimeout as wait} from 'node:timers/promises';
 import {killValue} from './session-details.mjs';
+import {createCacheRetention} from './cache-retention.mjs';
 
 const HOUR=3600000, DAY=24*HOUR;
 const validId=id=>Number.isSafeInteger(id)&&id>0;
-// Credit every recorded attacker, including zero-damage EWAR, independently of
-// the final_blow flag. Membership in the same fleet/corporation is insufficient.
+/**
+ * Return 'loss', 'kill' or null; victim identity wins if also listed as attacker.
+ * Every recorded attacker counts, including zero-damage EWAR, independently of
+ * final_blow. Fleet/corporation membership alone never establishes participation.
+ */
 export function participation(killmail,characterId){
  if(killmail?.victim?.character_id===characterId)return 'loss';
  return Array.isArray(killmail?.attackers)&&killmail.attackers.some(a=>a.character_id===characterId)?'kill':null;
 }
+/**
+ * Share per-pilot public syncs and paced public-page requests. Core/Session callers
+ * must await ingest() directly; close() drains the tracked public owners, not
+ * arbitrary caller promises. Keep Store/ESI available until all owners drain.
+ * spacingMs/now use milliseconds; onChange announces a changed durable batch.
+ */
 export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},onChange=()=>{},fetcher=fetch,now=Date.now,spacingMs=1100}={}){
+ const retention=createCacheRetention(store);
  const pending=new Map(),publicPending=new Map();let nextRequest=0,closed=false,queue=Promise.resolve();
  const active=id=>!closed&&store.get('module:combat',true)&&auth.characters().some(c=>c.id===id&&!c.needsReauth);
+ const notifyChanges=id=>{if(active(id))onChange(id);};
  const recent=id=>store.db.prepare('SELECT body FROM combat_records WHERE character_id=? ORDER BY at DESC,killmail_id DESC LIMIT 200').all(id).map(r=>JSON.parse(r.body));
  const coverage=id=>store.snapshot(id,'combat_public')||{status:'waiting',data:null};
- const get=store.db.prepare('SELECT body FROM combat_records WHERE character_id=? AND killmail_id=?');
+ const get=store.db.prepare('SELECT body,source FROM combat_records WHERE character_id=? AND killmail_id=?');
+ const eventExists=store.db.prepare('SELECT 1 FROM events WHERE dedupe=?');
+ const put=store.db.prepare(`INSERT INTO combat_records VALUES(?,?,?,?,?,?) ON CONFLICT(character_id,killmail_id) DO UPDATE
+  SET result=excluded.result,at=excluded.at,body=excluded.body,source=CASE WHEN source='esi' THEN source ELSE excluded.source END
+  WHERE result<>excluded.result OR at<>excluded.at OR body<>excluded.body OR (source<>'esi' AND source<>excluded.source)`);
+ // Persist canonical occurrence time/provenance, preserve an existing valuation
+ // when a new reference lacks one, and publish with stable per-pilot dedupe.
+ // Historical events repair reports without becoming fresh Stream notifications.
  function record(id,raw,source){
   const result=participation(raw,id),time=Date.parse(raw?.killmail_time);
   if(!result||!validId(raw.killmail_id)||!validId(raw.solar_system_id)||!validId(raw.victim?.ship_type_id)||!Number.isFinite(time)||time>now()+60000)return false;
   const killmail={...raw,killmail_time:new Date(time).toISOString(),result};delete killmail.zkb;
   const existing=get.get(id,raw.killmail_id),value=killValue(raw)??(existing?killValue(JSON.parse(existing.body)):null);
   if(value!==null)killmail.zkb={totalValue:value};
-  store.db.prepare(`INSERT INTO combat_records VALUES(?,?,?,?,?,?) ON CONFLICT(character_id,killmail_id) DO UPDATE SET result=excluded.result,at=excluded.at,body=excluded.body,source=CASE WHEN source='esi' THEN source ELSE excluded.source END`).run(id,killmail.killmail_id,result,killmail.killmail_time,JSON.stringify(killmail),source);
+  // A retained reference can repair a missing event without changing the
+  // ledger row or requeueing the Universe evidence attached to UPDATE triggers.
+  const changed=put.run(id,killmail.killmail_id,result,killmail.killmail_time,JSON.stringify(killmail),source).changes>0;
   const names=store.get('names',{}),started=store.get('combat.started:'+id,now()),historical=time<started;
   publish?.({type:'killmail.'+result,module:'combat',characterId:id,at:killmail.killmail_time,historical,summary:(result==='loss'?'Lost ':'Participated in kill: ')+(names[killmail.victim.ship_type_id]||'ship'),payload:{killmail_id:killmail.killmail_id,system_id:killmail.solar_system_id,system_name:names[killmail.solar_system_id],ship_type_id:killmail.victim.ship_type_id,hull_name:names[killmail.victim.ship_type_id],attackers:killmail.attackers?.length||0,damage_taken:killmail.victim.damage_taken,participation:result==='kill',source},dedupe:'killmail:'+id+':'+killmail.killmail_id});
-  return true;
+  return changed;
  }
- async function ingest(id,refs,source='esi'){
+ /**
+  * Verify up to 100 unseen references per call; return failed/pending counts so
+  * collectors can retry incomplete coverage. Ineligible pilots are a no-op.
+  * Retained records can receive value/source corrections without another fetch.
+  */
+ async function ingest(id,refs,source='esi',{notify=notifyChanges}={}){
   if(!active(id)||!Array.isArray(refs))return {pending:0,failed:0};
   if(!store.get('combat.started:'+id,0))store.set('combat.started:'+id,now());
+  let changed=false;
+  try{
   // Migrate retained snapshots into the durable ledger before the first refresh.
-  for(const old of store.snapshot(id,'killmails')?.data||[])if(!get.get(id,old.killmail_id))record(id,old,'esi');
+  for(const old of store.snapshot(id,'killmails')?.data||[])if(!get.get(id,old.killmail_id))changed=record(id,old,'esi')||changed;
   let remaining=0,failed=0,fetched=0;
   const records=[];
   for(const ref of refs){
    if(!active(id))break;
    if(!validId(ref?.killmail_id))continue;
    const existing=get.get(id,ref.killmail_id);
-   if(existing){const raw=JSON.parse(existing.body);if(killValue(ref)!==null)raw.zkb={totalValue:killValue(ref)};if(killValue(ref)!==null||!store.db.prepare('SELECT 1 FROM events WHERE dedupe=?').get('killmail:'+id+':'+ref.killmail_id))record(id,raw,source);continue;}
+   if(existing){
+    const raw=JSON.parse(existing.body),value=killValue(ref),changedValue=value!==null&&value!==killValue(raw);
+    if(changedValue)raw.zkb={totalValue:value};
+    const changedSource=existing.source!=='esi'&&existing.source!==source;
+    if(changedValue||changedSource||!eventExists.get('killmail:'+id+':'+ref.killmail_id))changed=record(id,raw,source)||changed;
+    continue;
+   }
    // Both current full ESI-format zKillboard responses and historical hash-only
    // responses are accepted. Details are always verified with the ESI hash.
    const hash=ref.killmail_hash||ref.zkb?.hash;
@@ -52,12 +92,20 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
   }
   if(records.length&&active(id)){
    await resolveNames(records);
-   if(active(id))for(const raw of records)record(id,raw,source);
+   if(active(id))for(const raw of records)changed=record(id,raw,source)||changed;
   }
   return {pending:remaining,failed};
+  }finally{
+   // Live and Session-history ingestion bypass the public refresh owner.
+   // Publish one batch change from the durable ledger, including corrections
+   // retained before a later lookup fails; identical references stay silent.
+   if(changed&&notify&&active(id))notify(id);
+  }
  }
  async function fetchPublicPage(id,path,key){
   const cached=store.db.prepare('SELECT * FROM cache WHERE key=?').get(key);
+  if(cached)retention.touch(key);
+  retention.maintain();
   if(cached&&cached.expires>now())return {refs:JSON.parse(cached.body),updatedAt:new Date(cached.updated).toISOString(),expiresAt:new Date(cached.expires).toISOString()};
   const task=queue.then(async()=>{
    if(nextRequest>now())await wait(nextRequest-now());
@@ -95,15 +143,15 @@ export function createCombat(store,auth,esi,{publish,resolveNames=async()=>{},on
    for(let number=1;number<=100&&active(id);number++){
     const r=await page(id,number);expiresAt=expiresAt&&expiresAt<r.expiresAt?expiresAt:r.expiresAt;updatedAt=r.updatedAt;pages++;
     const refs=r.refs.filter(k=>!k.killmail_time||Date.parse(k.killmail_time)>=started-90*DAY);
-    const result=await ingest(id,refs,'zkillboard');
+    const result=await ingest(id,refs,'zkillboard',{notify:false});
     if(result.pending||result.failed){partial=true;break;}
     if(r.refs.length<200||refs.length<r.refs.length)break;
     if(number===100){partial=true;limitReached=true;}
    }
    if(active(id))store.saveSnapshot(id,'combat_public',{status:partial?'partial':'ready',updatedAt,expiresAt,retryAt:partial&&!limitReached?new Date(now()+60000).toISOString():expiresAt,pages,limitReached,windowDays:90,data:null,detail:limitReached?'The public API page limit was reached; coverage is incomplete.':partial?'More killmail details are awaiting collection.':'Public participation records collected. zKillboard responses are cached for at least one hour.'});
   }catch(error){if(active(id))store.saveSnapshot(id,'combat_public',{...prior,status:prior.updatedAt?'stale':'error',error:error.message,retryAt:new Date(Math.max(now()+60000,store.get('combat.public.cooldown',0))).toISOString(),data:null});}
-  if(active(id))onChange(id);
+  notifyChanges(id);
  }
  function syncPublic(id){if(pending.has(id))return pending.get(id);const task=run(id).finally(()=>pending.delete(id));pending.set(id,task);return task;}
- return {ingest,recent,coverage,syncPublic,publicPage,async close(){closed=true;await Promise.allSettled([...pending.values(),...publicPending.values()]);}};
+ return {ingest,recent,coverage,syncPublic,publicPage,notifyChanges,async close(){closed=true;await Promise.allSettled([...pending.values(),...publicPending.values()]);}};
 }

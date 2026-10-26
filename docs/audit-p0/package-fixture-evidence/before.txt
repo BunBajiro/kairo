@@ -1,0 +1,28 @@
+test_source_archive_without_git_checkout_is_rejected (package_fixture.PackageReleaseTests.test_source_archive_without_git_checkout_is_rejected) ... ERROR
+
+======================================================================
+ERROR: test_source_archive_without_git_checkout_is_rejected (package_fixture.PackageReleaseTests.test_source_archive_without_git_checkout_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/a261d43da816/kairo-audit-p002b/tests/package-release.test.py", line 196, in test_source_archive_without_git_checkout_is_rejected
+    shutil.rmtree(self.source / '.git')
+  File "/tmp/kairo-package-fixture-20261024/fixture_probe.py", line 80, in checked_rmtree
+    return original_rmtree(path, *positional, **keywords)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/shutil.py", line 759, in rmtree
+    _rmtree_safe_fd(stack, onexc)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/shutil.py", line 703, in _rmtree_safe_fd
+    onexc(func, path, err)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/shutil.py", line 700, in _rmtree_safe_fd
+    onexc(os.unlink, fullname, err)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/shutil.py", line 698, in _rmtree_safe_fd
+    os.unlink(entry.name, dir_fd=topfd)
+  File "/tmp/kairo-package-fixture-20261024/fixture_probe.py", line 67, in disappearing_child
+    return original_unlink(path, *positional, **keywords)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: PosixPath('/tmp/kairo-package-test-f83qiovf/source/.git')
+
+----------------------------------------------------------------------
+Ran 1 test in 1.319s
+
+FAILED (errors=1)

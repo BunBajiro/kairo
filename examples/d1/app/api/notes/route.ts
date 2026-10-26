@@ -1,3 +1,9 @@
+/**
+ * Inactive Sites/D1 example: files under examples/ are not application routes.
+ * Adopting it requires moving the route under app/api, adjusting imports, adding
+ * the notes table to db/schema.ts and generating/applying the D1 migration.
+ * Its notes and auth assumptions are unrelated to Kairo's private local APIs.
+ */
 import { desc } from "drizzle-orm";
 import { getDb } from "../../../../../db";
 import { notes } from "../../../db/schema";
@@ -15,6 +21,7 @@ function toRouteErrorMessage(error: unknown) {
   return message;
 }
 
+/** Return at most 20 newest notes, with descending ID as the timestamp tie-break. */
 export async function GET() {
   try {
     const db = getDb();
@@ -33,6 +40,11 @@ export async function GET() {
   }
 }
 
+/**
+ * Accept JSON string fields title/content, trim both and require a nonempty title.
+ * Returns the inserted row with 201; missing title is 400, while parse/DB errors
+ * use this example's 500 envelope. No Kairo session or CSRF guard is installed.
+ */
 export async function POST(request: Request) {
   try {
     const payload = (await request.json()) as {

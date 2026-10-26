@@ -1,4 +1,10 @@
 "use client";
+/**
+ * Editor for runtime-provided polling choices, shared across connected pilots.
+ * Interval values are seconds; zero follows ESI cache timing. Saving these choices
+ * does not override provider expiry, backoff or disabled collection modules.
+ * See ../../docs/ESI-POLLING.md; server/polling.mjs owns validation and defaults.
+ */
 import { useEffect, useState } from 'react';
 import { Activity, ArrowRight, BrainCircuit, Boxes, Check, Clock3, Factory, Globe, Mail, Orbit, RefreshCw, RotateCcw, Save, Search, ShieldCheck, Swords, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,6 +21,16 @@ type Polling = { intervals: Record<string, number>; groups: Group[] };
 const icons: Record<string, typeof Orbit> = { pilot: Orbit, training: BrainCircuit, wallet: Wallet, hangar: Boxes, industry: Factory, combat: Swords, opsec: ShieldCheck, comms: Mail, universe: Globe };
 const interval = (seconds: number) => seconds === 0 ? 'ESI cache' : seconds < 60 ? seconds + ' sec' : seconds < 3600 ? seconds / 60 + ' min' : seconds / 3600 + ' hr';
 const tick = (seconds: number) => seconds === 0 ? 'Auto' : seconds < 60 ? seconds + 's' : seconds < 3600 ? seconds / 60 + 'm' : seconds / 3600 + 'h';
+// Accepted saves retain their order when the editor unmounts during transport.
+let pollingWrite: Promise<unknown> = Promise.resolve();
+// Snapshot the accepted replacement payload before joining the module-level queue.
+// The catch belongs to queue recovery; the returned promise still rejects to its caller.
+function savePolling(intervals: Record<string, number>, csrf: string): Promise<Polling> {
+    const submitted = { ...intervals };
+    const write = pollingWrite.then(() => api('/settings/polling', 'PUT', { intervals: submitted }, csrf));
+    pollingWrite = write.catch(() => {});
+    return write;
+}
 
 export function PollingSettings() {
     const { boot, refresh } = useKairo();
@@ -34,7 +50,7 @@ export function PollingSettings() {
     async function save() {
         setSaving(true); setError('');
         try {
-            const result: Polling = await api('/settings/polling', 'PUT', { intervals: draft }, boot.csrf);
+            const result = await savePolling(draft, boot.csrf);
             setConfig(result); setDraft(result.intervals);
             toast.success('ESI polling settings saved.');
             refresh().catch(() => {});

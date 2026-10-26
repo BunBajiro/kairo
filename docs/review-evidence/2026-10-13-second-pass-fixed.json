@@ -1,0 +1,2126 @@
+{
+  "source": "e311a63a0323a5054f42f9fbdc77b52e13765b36",
+  "run": "https://github.com/BunBajiro/kairo/actions/runs/38428457449",
+  "scope": "Synthetic compiled UI on hosted Chrome/Firefox plus source and independently downloaded packaged runtime; not actual EVE/OBS/Windows validation",
+  "suites": {
+    "navigation": {
+      "ok": true,
+      "scope": "Actual compiled Universe Range UI and local endpoint; fresh desktop/narrow contexts, delayed request and synthetic failure recovery",
+      "versions": {
+        "chromium": "154.0.8037.97",
+        "firefox": "153.0"
+      },
+      "checks": [
+        {
+          "browser": "chromium",
+          "width": 1600,
+          "version": "154.0.8037.97",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 1177,
+            "right": 1555,
+            "width": 1600,
+            "page": 1600,
+            "content": 378,
+            "client": 378
+          },
+          "delayedResponse": true,
+          "recovered": true
+        },
+        {
+          "browser": "chromium",
+          "width": 390,
+          "version": "154.0.8037.97",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 13,
+            "right": 367,
+            "width": 390,
+            "page": 390,
+            "content": 354,
+            "client": 354
+          },
+          "delayedResponse": true,
+          "recovered": true
+        },
+        {
+          "browser": "firefox",
+          "width": 1600,
+          "version": "153.0",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 1177,
+            "right": 1565,
+            "width": 1600,
+            "page": 1600,
+            "content": 388,
+            "client": 388
+          },
+          "delayedResponse": true,
+          "recovered": true
+        },
+        {
+          "browser": "firefox",
+          "width": 390,
+          "version": "153.0",
+          "origin": "UALX-3",
+          "destination": "WB-AYY",
+          "midpoints": 34,
+          "selected": "DT-PXH",
+          "rangeRequests": 3,
+          "bounds": {
+            "left": 13,
+            "right": 377,
+            "width": 390,
+            "page": 390,
+            "content": 364,
+            "client": 364
+          },
+          "delayedResponse": true,
+          "recovered": true
+        }
+      ]
+    },
+    "imports": {
+      "ok": true,
+      "scope": "Compiled import UI with synthetic SQLite, real quote responses and delayed delivery; no live EVE validation",
+      "checks": [
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 × 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 × 1,000,000 ISK"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 × 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 × 1,000,000 ISK"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 × 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 × 1,000,000 ISK"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Editing quantity invalidates a pending quote",
+          "pass": true,
+          "actual": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "expected": {
+            "quantity": "12",
+            "summary": [],
+            "fills": [],
+            "add": []
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Changing strategy preserves its chosen quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now102,016,000 ISKEstimated net after fees & hauling49,664,375 ISK48.7% return · ~2d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add anchoring option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Another item cannot receive a previous item quote",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "previousTypeId": 519
+        },
+        {
+          "label": "Added plan uses the current item quantity",
+          "pass": true,
+          "actual": "100",
+          "expected": "100",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Reopening the same item starts a new quote lifetime",
+          "pass": true,
+          "actual": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "expected": {
+            "quantity": "100",
+            "summary": [
+              "Capital needed now103,838,720 ISKEstimated net after fees & hauling184,979,975 ISK178.1% return · ~5.6d · 1 trips"
+            ],
+            "fills": [
+              "Buy at Jita in these price batchesPlace separate immediate purchases at each price shown. A single purchase at the highest price can pay that price for every unit.100 × 1,000,000 ISK"
+            ],
+            "add": [
+              " Add profiteering option to plan"
+            ]
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "An obsolete failure cannot overwrite the edited form",
+          "pass": true,
+          "actual": [],
+          "expected": [],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Current successful quote remains usable",
+          "pass": true,
+          "actual": 1,
+          "expected": 1,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Current quote has the requested purchase quantity",
+          "pass": true,
+          "actual": [
+            "12 × 1,000,000 ISK"
+          ],
+          "expected": [
+            "12 × 1,000,000 ISK"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "A current failed quote still reports its error",
+          "pass": true,
+          "actual": [
+            "Obsolete quote failure"
+          ],
+          "expected": [
+            "Obsolete quote failure"
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        }
+      ],
+      "errors": [],
+      "unexpectedNetwork": [],
+      "serverRequests": []
+    },
+    "sessions": {
+      "ok": true,
+      "scope": "Compiled Session report UI with synthetic SQLite and delayed event insertion; no live EVE validation",
+      "checks": [
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600
+        },
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390
+        },
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600
+        },
+        {
+          "label": "HTTP rejects invalid snapshot fields and wrong-pilot reads",
+          "pass": true,
+          "actual": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "expected": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Initial timeline uses one report page",
+          "pass": true,
+          "actual": 100,
+          "expected": 100,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Late insert does not shift the existing snapshot",
+          "pass": true,
+          "actual": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "expected": {
+            "displayed": 200,
+            "loadMore": 0,
+            "status": "200 of 200 events shown"
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Pagination adds no new notices",
+          "pass": true,
+          "actual": 0,
+          "expected": 0,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Existing Refresh acquires the delayed event",
+          "pass": true,
+          "actual": "Delayed published killmail",
+          "expected": "Delayed published killmail",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "All events remain reachable without duplicates",
+          "pass": true,
+          "actual": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "expected": {
+            "displayed": 201,
+            "unique": 201,
+            "loadMore": 0
+          },
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Report count agrees with completed timeline",
+          "pass": true,
+          "actual": "201 of 201 events shown",
+          "expected": "201 of 201 events shown",
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        },
+        {
+          "label": "Report stays within desktop or narrow viewport",
+          "pass": true,
+          "actual": true,
+          "expected": true,
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390
+        }
+      ],
+      "errors": [],
+      "external": [],
+      "serverRequests": []
+    },
+    "dashboard": {
+      "ok": true,
+      "scope": "Actual compiled dashboard and local HTTP/SSE; synthetic pilots, image transport, denied preference storage and delayed bootstrap arrival",
+      "checks": [
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Initial hull image transport failure is observed",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Failed hull has no decoded pixels",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "A successfully loaded replacement hull is visible",
+          "pass": true,
+          "actual": "1",
+          "expected": "1",
+          "before": {
+            "src": "https://images.evetech.net/types/587/render?size=512",
+            "decoded": false,
+            "opacity": "0",
+            "display": "block"
+          },
+          "after": {
+            "src": "https://images.evetech.net/types/621/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Replacement uses the new ship telemetry",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Pilot switching renders only the selected pilot hull",
+          "pass": true,
+          "actual": "Kestrel",
+          "expected": "Kestrel",
+          "switched": {
+            "src": "https://images.evetech.net/types/602/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Image failure does not leak into another pilot",
+          "pass": true,
+          "actual": "1",
+          "expected": "1"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Both replacement images actually loaded",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "denied-storage",
+          "label": "Storage scenario uses a healthy core with connected pilots",
+          "pass": true,
+          "actual": [
+            42,
+            43
+          ],
+          "expected": [
+            42,
+            43
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "denied-storage",
+          "label": "Unavailable saved-pilot preference falls back to the first pilot",
+          "pass": true,
+          "actual": "Dashboard Alpha",
+          "expected": "Dashboard Alpha"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "denied-storage",
+          "label": "Storage denial does not substitute guest data for connected pilot",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "bootstrap-race",
+          "label": "Both module mutations persist on the real server",
+          "pass": true,
+          "actual": {
+            "wallet": false,
+            "industry": false
+          },
+          "expected": {
+            "wallet": false,
+            "industry": false
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 1600,
+          "scenario": "bootstrap-race",
+          "label": "An older bootstrap cannot undo a newer displayed module setting",
+          "pass": true,
+          "actual": {
+            "wallet": "false",
+            "industry": "false"
+          },
+          "expected": {
+            "wallet": "false",
+            "industry": "false"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Initial hull image transport failure is observed",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Failed hull has no decoded pixels",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "A successfully loaded replacement hull is visible",
+          "pass": true,
+          "actual": "1",
+          "expected": "1",
+          "before": {
+            "src": "https://images.evetech.net/types/587/render?size=512",
+            "decoded": false,
+            "opacity": "0",
+            "display": "block"
+          },
+          "after": {
+            "src": "https://images.evetech.net/types/621/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Replacement uses the new ship telemetry",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Pilot switching renders only the selected pilot hull",
+          "pass": true,
+          "actual": "Kestrel",
+          "expected": "Kestrel",
+          "switched": {
+            "src": "https://images.evetech.net/types/602/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Image failure does not leak into another pilot",
+          "pass": true,
+          "actual": "1",
+          "expected": "1"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Both replacement images actually loaded",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "denied-storage",
+          "label": "Storage scenario uses a healthy core with connected pilots",
+          "pass": true,
+          "actual": [
+            42,
+            43
+          ],
+          "expected": [
+            42,
+            43
+          ]
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "denied-storage",
+          "label": "Unavailable saved-pilot preference falls back to the first pilot",
+          "pass": true,
+          "actual": "Dashboard Alpha",
+          "expected": "Dashboard Alpha"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "denied-storage",
+          "label": "Storage denial does not substitute guest data for connected pilot",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "Both module mutations persist on the real server",
+          "pass": true,
+          "actual": {
+            "wallet": false,
+            "industry": false
+          },
+          "expected": {
+            "wallet": false,
+            "industry": false
+          }
+        },
+        {
+          "engine": "chromium",
+          "version": "154.0.8037.97",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "An older bootstrap cannot undo a newer displayed module setting",
+          "pass": true,
+          "actual": {
+            "wallet": "false",
+            "industry": "false"
+          },
+          "expected": {
+            "wallet": "false",
+            "industry": "false"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Initial hull image transport failure is observed",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Failed hull has no decoded pixels",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "A successfully loaded replacement hull is visible",
+          "pass": true,
+          "actual": "1",
+          "expected": "1",
+          "before": {
+            "src": "https://images.evetech.net/types/587/render?size=512",
+            "decoded": false,
+            "opacity": "0",
+            "display": "block"
+          },
+          "after": {
+            "src": "https://images.evetech.net/types/621/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Replacement uses the new ship telemetry",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Pilot switching renders only the selected pilot hull",
+          "pass": true,
+          "actual": "Kestrel",
+          "expected": "Kestrel",
+          "switched": {
+            "src": "https://images.evetech.net/types/602/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Image failure does not leak into another pilot",
+          "pass": true,
+          "actual": "1",
+          "expected": "1"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "hull-recovery",
+          "label": "Both replacement images actually loaded",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "denied-storage",
+          "label": "Storage scenario uses a healthy core with connected pilots",
+          "pass": true,
+          "actual": [
+            42,
+            43
+          ],
+          "expected": [
+            42,
+            43
+          ]
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "denied-storage",
+          "label": "Unavailable saved-pilot preference falls back to the first pilot",
+          "pass": true,
+          "actual": "Dashboard Alpha",
+          "expected": "Dashboard Alpha"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "denied-storage",
+          "label": "Storage denial does not substitute guest data for connected pilot",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "bootstrap-race",
+          "label": "Both module mutations persist on the real server",
+          "pass": true,
+          "actual": {
+            "wallet": false,
+            "industry": false
+          },
+          "expected": {
+            "wallet": false,
+            "industry": false
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 1600,
+          "scenario": "bootstrap-race",
+          "label": "An older bootstrap cannot undo a newer displayed module setting",
+          "pass": true,
+          "actual": {
+            "wallet": "false",
+            "industry": "false"
+          },
+          "expected": {
+            "wallet": "false",
+            "industry": "false"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Initial hull image transport failure is observed",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Failed hull has no decoded pixels",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "A successfully loaded replacement hull is visible",
+          "pass": true,
+          "actual": "1",
+          "expected": "1",
+          "before": {
+            "src": "https://images.evetech.net/types/587/render?size=512",
+            "decoded": false,
+            "opacity": "0",
+            "display": "block"
+          },
+          "after": {
+            "src": "https://images.evetech.net/types/621/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Replacement uses the new ship telemetry",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Pilot switching renders only the selected pilot hull",
+          "pass": true,
+          "actual": "Kestrel",
+          "expected": "Kestrel",
+          "switched": {
+            "src": "https://images.evetech.net/types/602/render?size=512",
+            "decoded": true,
+            "opacity": "1",
+            "display": "block"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Image failure does not leak into another pilot",
+          "pass": true,
+          "actual": "1",
+          "expected": "1"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "hull-recovery",
+          "label": "Both replacement images actually loaded",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "denied-storage",
+          "label": "Storage scenario uses a healthy core with connected pilots",
+          "pass": true,
+          "actual": [
+            42,
+            43
+          ],
+          "expected": [
+            42,
+            43
+          ]
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "denied-storage",
+          "label": "Unavailable saved-pilot preference falls back to the first pilot",
+          "pass": true,
+          "actual": "Dashboard Alpha",
+          "expected": "Dashboard Alpha"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "denied-storage",
+          "label": "Storage denial does not substitute guest data for connected pilot",
+          "pass": true,
+          "actual": "Caracal",
+          "expected": "Caracal"
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "Both module mutations persist on the real server",
+          "pass": true,
+          "actual": {
+            "wallet": false,
+            "industry": false
+          },
+          "expected": {
+            "wallet": false,
+            "industry": false
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "An older bootstrap cannot undo a newer displayed module setting",
+          "pass": true,
+          "actual": {
+            "wallet": "false",
+            "industry": "false"
+          },
+          "expected": {
+            "wallet": "false",
+            "industry": "false"
+          }
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "No uncaught browser errors",
+          "pass": true,
+          "actual": [],
+          "expected": []
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "No unexpected browser requests",
+          "pass": true,
+          "actual": [],
+          "expected": []
+        },
+        {
+          "engine": "firefox",
+          "version": "153.0",
+          "width": 390,
+          "scenario": "bootstrap-race",
+          "label": "No external server requests",
+          "pass": true,
+          "actual": [],
+          "expected": []
+        }
+      ],
+      "errors": [],
+      "unexpectedNetwork": [],
+      "serverRequests": []
+    }
+  },
+  "package": {
+    "source": "e311a63a0323a5054f42f9fbdc77b52e13765b36",
+    "bytes": 26008786,
+    "sha256": "992b7411f4bef44d9db3cdff97a413f3e44db82e4d830dbae0e32cb26270a04e",
+    "zip_crc": "pass",
+    "exact_source_files": 504,
+    "compiled_assets": 20,
+    "package_entries": 524,
+    "artifact_id": 11830088137,
+    "download": "https://github.com/BunBajiro/kairo/actions/runs/38428457449/artifacts/11830088137",
+    "expires": "2026-11-12T16:20:26Z",
+    "source_tree": "3277218f34621dad2174f2f98a6d43d384defc69"
+  },
+  "verification": {
+    "types": "pass",
+    "fresh_build": "pass",
+    "source_runtime": {
+      "tests": 1074,
+      "pass": 1074,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "actions_packaged_runtime": {
+      "tests": 1074,
+      "pass": 1074,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "downloaded_extracted_runtime": {
+      "tests": 1074,
+      "pass": 1074,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "without_source_dependencies": true
+    },
+    "all_actions_steps": "success",
+    "job_id": 115403988618,
+    "visually_inspected": {
+      "scope": "All12 dashboard screenshots: three scenarios, Chrome154.0.8037.97/Firefox153.0, widths1600/390",
+      "result": "No persistent application defect or blocker observed; image/pilot recovery and disabled module state corroborated by raw checks",
+      "limits": "Hull captures include picker closing animation (overlay/double text); Firefox390 module capture shows Industry while Wallet is above the screenshot crop. Raw UI/server assertions verify both controls."
+    },
+    "remaining_acceptance": [
+      "Actual Windows environment and DPAPI",
+      "Real EVE SSO, scopes and structure permissions",
+      "Real OBS scene/audio/cover behavior",
+      "Long play-session behavior"
+    ]
+  },
+  "browser_artifacts": [
+    {
+      "suite": "navigation",
+      "artifact_id": 11828844300,
+      "sha256": "d84bc012c097574d1a6af9af62a8fefb2c0de4ec25ef62545e8462e68bd29cf0",
+      "bytes": 1182515,
+      "checks": 4,
+      "zip_crc": "pass",
+      "digest_verified": true
+    },
+    {
+      "suite": "imports",
+      "artifact_id": 11829123483,
+      "sha256": "4bb723b65376f694d337f8e3eb0cc7048978a8e2f39b8567fbc2b38cb1b7e805",
+      "bytes": 644704,
+      "checks": 36,
+      "zip_crc": "pass",
+      "digest_verified": true
+    },
+    {
+      "suite": "sessions",
+      "artifact_id": 11829368023,
+      "sha256": "d308cfc3e0870cd22bddab022b3f9b2833e16397b87678c8755241e83da498fb",
+      "bytes": 661528,
+      "checks": 32,
+      "zip_crc": "pass",
+      "digest_verified": true
+    },
+    {
+      "suite": "dashboard",
+      "artifact_id": 11829203675,
+      "sha256": "2c148022cc96060824ec31fc67de94e19c7671b4752c3091fd2c07752bfece38",
+      "bytes": 1480793,
+      "checks": 51,
+      "zip_crc": "pass",
+      "digest_verified": true
+    }
+  ],
+  "regression_files": {
+    "PBR-6": [
+      "tests/kairo/universe-ansiblex.test.mjs",
+      "tests/kairo/universe-service.test.mjs"
+    ],
+    "PBR-7": [
+      "tests/kairo/imports.test.mjs"
+    ],
+    "PBR-8": [
+      "tests/kairo/session-travel.test.mjs"
+    ],
+    "PBR-9": [
+      "tests/kairo/auth-connection-ownership.test.mjs"
+    ],
+    "PBR-10": [
+      "tests/kairo/imports.test.mjs"
+    ],
+    "PBR-11": [
+      "tests/kairo/stream-notification-scope.test.mjs"
+    ],
+    "PBR-12": [
+      "tests/kairo/universe-service.test.mjs",
+      "tests/kairo/universe-destinations.test.mjs"
+    ],
+    "PBR-13": [
+      "tests/kairo/markets.test.mjs"
+    ],
+    "PBR-14": [
+      "tests/kairo/imports.test.mjs"
+    ],
+    "PBR-15": [
+      "tests/premerge-dashboard-ui.mjs"
+    ],
+    "PBR-16": [
+      "tests/premerge-dashboard-ui.mjs"
+    ],
+    "PBR-17": [
+      "tests/premerge-dashboard-ui.mjs"
+    ],
+    "PBR-18": [
+      "tests/kairo/core-connection-ownership.test.mjs",
+      "tests/kairo/esi-connection-ownership.test.mjs"
+    ],
+    "PBR-19": [
+      "tests/kairo/milestone-session.test.mjs"
+    ],
+    "PBR-20": [
+      "tests/kairo/http-body.test.mjs"
+    ]
+  },
+  "closure": {
+    "confirmed_findings": 20,
+    "closed": 20,
+    "known_confirmed_open": 0,
+    "reviewed_areas": [
+      "Universe/Maps/operations/routes",
+      "Markets/imports/histories",
+      "Sessions/combat/travel/replay",
+      "Runtime/datasets/Registry/Stream/OBS",
+      "Dashboard/connections/settings",
+      "Auth/ESI/HTTP/Vault",
+      "Core/Goals/modules/persistence"
+    ]
+  },
+  "retained_attempts": {
+    "dashboard_baseline": {
+      "source": "c9ea251d490c79e6ec399b6bcf6d8749999a0be6",
+      "run": "https://github.com/BunBajiro/kairo/actions/runs/38425291854",
+      "checks": 51,
+      "pass": 35,
+      "fail": 16,
+      "evidence": "2026-10-13-second-pass-baseline.json",
+      "package_created": false
+    },
+    "combined_source_initial": {
+      "tests": 1072,
+      "pass": 1070,
+      "fail": 2,
+      "failures": [
+        {
+          "test": "cached routine datasets do not repeatedly load protection pilot identity",
+          "resolution": "Removed redundant roster reads on fresh cached data; retained existing exact-two-read cost assertion."
+        },
+        {
+          "test": "a missing Session ship baseline starts with the first fresh same-ship sample without inventing a change",
+          "resolution": "Controlled clock proves receipt-time persistence, exclusion at the existing exclusive end and inclusion after time advances; no sleep or relaxed assertion."
+        }
+      ],
+      "final_added_controls": "Two ESI pacing/page-chain cases bring the final suite to1074."
+    },
+    "build74": {
+      "source": "0855d42c8d66ce0b6a727b1c35e6ab4a7bc2ea61",
+      "run": "https://github.com/BunBajiro/kairo/actions/runs/38427722255",
+      "premerge_checks": 123,
+      "premerge_pass": 123,
+      "firefox_market": "pass",
+      "failed_step": "Verify market item icons in Chrome",
+      "failure": "Test click helper lost its target between DOM lookups; scrollIntoView on undefined before icon assertions. Retained screenshot showed a healthy market with no application errors.",
+      "failure_artifact": 11829951342,
+      "failure_artifact_sha256": "5c47fe86210d61b42addeb9280c9135b5953e0df239d750ba2fcdf78e9bb36f2",
+      "resolution": "Reacquire the connected current element on each animation frame and preserve the stable, unobstructed-click requirement. No application source change or nonblocking gate.",
+      "package_created": false
+    },
+    "local_baseline_output_summaries": {
+      "PBR-9": [
+        "✖ a superseded refresh success cannot alter a new SSO connection (24.906881ms)",
+        "✖ a superseded refresh invalid_grant cannot alter a new SSO connection (10.941506ms)",
+        "✖ access after a new login does not join a refresh owned by the old connection (10.339507ms)",
+        "✖ disconnect removes local access promptly and cannot delete a login completed during revocation (14.389911ms)",
+        "ℹ tests 4",
+        "ℹ suites 0",
+        "ℹ pass 0",
+        "ℹ fail 4",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 207.844956"
+      ],
+      "PBR-18_core": [
+        "✖ a disconnected pilot's pending successful dataset cannot recreate purged snapshots (203.580438ms)",
+        "✖ a disconnected pilot's pending failed dataset cannot recreate purged snapshots (34.334908ms)",
+        "✖ narrower access during a request cannot publish or retain the old response as fresh (46.440776ms)",
+        "✖ revoked access during a request suppresses new snapshots and later collection batches (27.487402ms)",
+        "✖ disconnect then reconnect with the same scope rejects the old connection and permits a new collection (25.859797ms)",
+        "✖ a disconnect during optional name enrichment also fences dataset publication (41.726242ms)",
+        "✔ ordinary token rotation preserves accepted dataset work and its event (33.213433ms)",
+        "ℹ tests 7",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 6",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 578.073818"
+      ],
+      "PBR-18_esi_initial": [
+        "✖ new connection reads do not join a private request from the previous connection (19.532108ms)",
+        "✖ late private success cannot recreate a cache purged by disconnect/reconnect (8.281254ms)",
+        "✖ obsolete private failure cannot back off or replace current connection results (14.260525ms)",
+        "✔ same-connection coalescing and warm caches remain unchanged (8.830302ms)",
+        "ℹ tests 4",
+        "ℹ suites 0",
+        "ℹ pass 1",
+        "ℹ fail 3",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 143.966482"
+      ]
+    },
+    "observed_baselines_from_tool_output": {
+      "PBR-11": {
+        "source": "ba719e63a99faf96aa051c325fa85f81374f8237",
+        "fail": 4,
+        "pass": 1,
+        "healthy_control": "Unchanged pilot scope continues delivery",
+        "note": "Before-fix output was observed in tool results; no raw log file was saved."
+      },
+      "PBR-20": {
+        "expected": "Réserve 猫 🚀",
+        "actual": "R��serve ��� ����",
+        "controls": "Existing raw byte limits, malformed input and request guards pass",
+        "note": "Before-fix native HTTP output was observed in tool results; parent and corruption subtest failed. No raw log file was saved."
+      },
+      "PBR-18_esi_additional": {
+        "fail": 2,
+        "cases": [
+          "A queued request cannot escape connection ownership when pacing ends",
+          "A multi-page chain cannot change connection ownership between pages"
+        ],
+        "note": "Observed in ephemeral baseline test output, separate from the saved initial ESI baseline."
+      }
+    }
+  },
+  "performance_scope": "Correctness and bounded-work regressions; no new elapsed performance comparison or relabeling of historical measurements."
+}

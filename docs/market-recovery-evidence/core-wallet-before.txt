@@ -1,0 +1,100 @@
+✖ invalid wallet null retains last good observation and recovers without publishing bad data (177.30667ms)
+✖ invalid wallet {} retains last good observation and recovers without publishing bad data (62.361681ms)
+✖ invalid wallet [] retains last good observation and recovers without publishing bad data (71.865355ms)
+✖ invalid wallet "500" retains last good observation and recovers without publishing bad data (51.937634ms)
+✖ a poisoned warm wallet cache is rejected once, then a negative balance is a valid fresh observation (47.28667ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 530.147223
+
+✖ failing tests:
+
+test at tests/kairo/core-wallet-response.test.mjs:31:48
+✖ invalid wallet null retains last good observation and recovers without publishing bad data (177.30667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'ready' !== 'stale'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/core-wallet-response.test.mjs:36:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ready',
+    expected: 'stale',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/core-wallet-response.test.mjs:31:48
+✖ invalid wallet {} retains last good observation and recovers without publishing bad data (62.361681ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'ready' !== 'stale'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/core-wallet-response.test.mjs:36:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ready',
+    expected: 'stale',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/core-wallet-response.test.mjs:31:48
+✖ invalid wallet [] retains last good observation and recovers without publishing bad data (71.865355ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'ready' !== 'stale'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/core-wallet-response.test.mjs:36:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ready',
+    expected: 'stale',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/core-wallet-response.test.mjs:31:48
+✖ invalid wallet "500" retains last good observation and recovers without publishing bad data (51.937634ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'ready' !== 'stale'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/core-wallet-response.test.mjs:36:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ready',
+    expected: 'stale',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/core-wallet-response.test.mjs:48:1
+✖ a poisoned warm wallet cache is rejected once, then a negative balance is a valid fresh observation (47.28667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'ready' !== 'stale'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/core-wallet-response.test.mjs:53:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ready',
+    expected: 'stale',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,37 @@
+✔ second supervisor is rejected before inspecting or cleaning datasets (5.720139ms)
+✔ update drains old core before new generation, preserves sessions privately and opens one browser (9.596117ms)
+✔ failed pending startup rolls back once and reports the failed build (2.643058ms)
+✔ failed preparation cancels the update notice while current core keeps running (2.547853ms)
+✔ startup timeout terminates bad generation before rollback and releases lease on close (14.473345ms)
+✔ unexpected active core exit fails clearly without a restart loop (2.119558ms)
+✔ IPC failure after commit preserves the newly published generation (1.830632ms)
+✔ real core replacement keeps the browser cookie, CSRF token and saved settings (650.050839ms)
+✔ runtime policy accepts patched branches and rejects earlier or unknown versions (1.841198ms)
+✔ launcher rejects obsolete Node before acquiring a profile lease (62.017107ms)
+✔ embedded startup rejects an obsolete bundled Undici before opening a profile (101.419533ms)
+✔ actual OBS client rejects an unrequested WebSocket protocol without crashing Node (80.572165ms)
+✔ startup rolls back acquired owners after store fails (27.979932ms)
+✔ startup rolls back acquired owners after vault fails (7.54982ms)
+✔ startup rolls back acquired owners after auth fails (5.345664ms)
+✔ startup rolls back acquired owners after esi fails (4.887484ms)
+✔ startup rolls back acquired owners after core fails (7.594797ms)
+✔ startup rolls back acquired owners after datasets fails (3.616816ms)
+✔ startup rolls back acquired owners after ready fails (3.507322ms)
+✔ startup rolls back acquired owners after status fails (3.443525ms)
+✔ startup rolls back acquired owners after listen-dashboard fails (4.30841ms)
+✔ startup rolls back acquired owners after listen-broadcast fails (4.811469ms)
+✔ startup rolls back acquired owners after activation fails (3.893764ms)
+✔ startup waits for asynchronous Core cleanup and retains secondary failures while closing ESI and Store (4.725589ms)
+✔ Store closes its database and releases transaction locks after PRAGMA journal_mode fails (2.913345ms)
+✔ Store closes its database and releases transaction locks after ALTER TABLE sessions ADD COLUMN start_context fails (19.874333ms)
+✔ Store closes its database and releases transaction locks after DELETE FROM market_orders fails (18.599329ms)
+✔ Store closes its database and releases transaction locks after idx_events_character_type_at fails (21.398122ms)
+✔ Store closes its database and releases transaction locks after ALTER TABLE visits ADD COLUMN session_id fails (18.912141ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 780.176798

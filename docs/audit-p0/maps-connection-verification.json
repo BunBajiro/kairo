@@ -1,0 +1,334 @@
+{
+  "unit": "P0-02H6",
+  "status": "Verified/banked source/design only; no implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_connection_author",
+  "assessed_source": "d915c7afb673be2000994ef2770ef1e51a45f86e",
+  "assessed_tree": "11d0ed6e1c4b0ff735198f81c0f59b04e8c84603",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101 inherited exact source-bound evidence only; no H6 runtime proof",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Coordinator supplied exact H5 remote commit/tree/parent, six file byte comparisons and PR read-back. Author checked local HEAD/tree, current continuation and empty executable-owner delta; did not independently repeat remote verification."
+  },
+  "owner_delta_check": {
+    "command": "git diff aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD --name-only -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      179,
+      180
+    ],
+    "command_count": 2,
+    "shared_dispatcher": 90,
+    "dispatcher_recounted": false,
+    "read_dependencies": [
+      81,
+      93
+    ],
+    "selected_inspection": "Reuse H4 HTTP093 inspect=lifecycle, bounded exact edge/link/two-endpoint identities and safe result/dependency metadata only; no new command row.",
+    "primary": "C10",
+    "dependencies": [
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12",
+      "C13"
+    ],
+    "excluded_from_acceptance": [
+      "H5 selectors174–178 already accepted",
+      "181–192 and086",
+      "configured-network commands and feed collection",
+      "broader movement/population/expiry scheduling/routing/navigation/Politics/browser-local algorithms"
+    ]
+  },
+  "handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "accepted_interfaces_read": {
+    "active_dependency": [
+      "docs/audit-p0/maps-card-contracts.md",
+      "docs/audit-p0/maps-card-verification.json"
+    ],
+    "shared_and_relevant_sections": [
+      "docs/audit-p0/command-contracts.md",
+      "docs/audit-p0/maps-lifecycle-contracts.md",
+      "docs/audit-p0/maps-import-contracts.md",
+      "docs/audit-p0/maps-tracking-contracts.md",
+      "docs/audit-p0/maps-roster-contracts.md",
+      "docs/audit-p0/operations-control-contracts.md",
+      "docs/audit-p0/intel-command-contracts.md",
+      "docs/audit-p0/signature-command-contracts.md",
+      "docs/audit-p0/upgrade-command-contracts.md",
+      "docs/audit-p0/place-command-contracts.md",
+      "docs/audit-p0/http-surface.tsv",
+      "docs/audit-p0/command-coverage-checkpoint.json"
+    ],
+    "independent_preparation": "Coordinator-authorized h6-source-notes.md and h6-integration-notes.md consulted before freeze; source/design observations only, not independent verdicts on this draft."
+  },
+  "source_anchors_read": [
+    {
+      "path": "server/index.mjs",
+      "anchors": [
+        "HTTP090 private/body boundary and existing Maps route dispatch"
+      ]
+    },
+    {
+      "path": "server/universe-jspace.mjs",
+      "anchors": [
+        "saveConnection563–615",
+        "command647–778",
+        "atomic185–189",
+        "node/restoreNode/archiveNodes190–227",
+        "markDetached/forgetMapConnections/forgetConnections228–276",
+        "project397–451"
+      ]
+    },
+    {
+      "path": "server/universe.mjs",
+      "anchors": [
+        "HOURS34",
+        "canonical expiry scheduling and retirement157–241",
+        "linkReadContext313–347",
+        "normalizeLink409–494",
+        "saveLink495–507",
+        "reciprocal saveLinkList515–558"
+      ]
+    },
+    {
+      "path": "server/universe-navigation.mjs",
+      "anchors": [
+        "forgetConnections43–55 and plan reference dependency"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-connection-model.mjs",
+      "anchors": [
+        "UI lifetime/mass/ship choices",
+        "connectionConditionPatch",
+        "observedLife49–73"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-model.mjs",
+      "anchors": [
+        "connectionHasEnded",
+        "publicChainScene",
+        "connectionEditorPayload54–77",
+        "drawnConnectionPayload80–82",
+        "existing layout queue is separate"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-panels.tsx",
+      "anchors": [
+        "JSpaceConnectionEditor93–117",
+        "actual signature190 selector",
+        "JSpacePublicReport adoption boundary"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "anchors": [
+        "perform/command166–183",
+        "connectSystems198–218",
+        "removeDiagram257–271",
+        "quickCondition289",
+        "public adoption346",
+        "editor key and onSaved/onClose continuation"
+      ]
+    }
+  ],
+  "existing_tests_read_not_run": [
+    "tests/kairo/maps-permanent-links.test.mjs",
+    "tests/kairo/universe-jspace.test.mjs",
+    "tests/kairo/jspace-retention.test.mjs",
+    "tests/kairo/jspace-connection-model.test.mjs",
+    "tests/kairo/jspace-workspace-model.test.mjs",
+    "tests/kairo/universe-jspace-http.test.mjs",
+    "tests/jspace-ui-workflows.mjs"
+  ],
+  "evidence_limits": [
+    "Service unknown-null test constructs input directly; actual helper/editor draws stable16h/large and remains unconfirmed/inaccessible.",
+    "Server HOURS includes8/12/0 beyond six UI duration presets; explicit same-duration and4→4.5h extension are supported intent, not reproduced defects.",
+    "Existing HTTP Maps test primarily covers guards/nodes/lifecycle, not complete179/180 schema/receipt/fault schedules.",
+    "Exact UUID/code-reuse/retirement and shared-reference controls do not prove future G4 bases/outer-token associations or actual outer publication.",
+    "Shared reverse-owner/capital fields currently omitted from rejection list are ignored in shared branch, not proven to mutate configuration.",
+    "Existing unit/browser controls do not establish new identity/CAS/unknown/editor/drain or aggregate cost contracts."
+  ],
+  "selected_decisions": [
+    "Explicit create/edit/attach and exact remove forms under H4 map CAS; nonreused edge/canonical identities, canonical dependency and conservative G4 basis; no extra command lane/journal.",
+    "Exact two endpoint active/add/restore modes under H5, required Boolean add_missing_nodes on create/attach, no natural-ID fallback; fresh restored card identity and preserved archive context.",
+    "Real catalog gate, map-owned private Ansiblex/wormhole and configured shared reference separated; immutable endpoints/kind/orientation, duplicate canonical/gate policy and distinct parallel observations.",
+    "Strict per-kind patch tables, explicit omitted/null/empty/default behavior, complete reverse-owner/capital guards, finite mass/ship/type claims and generated/provenance field exclusion. Finite-live owned links retain independent stored confirmation/access claims; effective traversal requires confirmation and other eligibility. Unknown expiry still requires all three routing flags false; H2 copy/import demotion unchanged.",
+    "Actual stable16h/large draw defaults preserved; explicit unknown can correct exact still-live finite lifetime to null with resulting confirmed/access/reverse false, coherent null duration and unknown band/status, preserved source/discovery ages and changed disposition; already canonical unknown is no-op. Explicit duration/expiry/band/collapse intent;8/12 direct duration choices retained; same-preset and4→4.5 correction allowed only while old identity live.",
+    "No unrelated/echoed renewal or clearing, no qualitative extension/clearing; preserve original observation/discovery, exact UTC seconds, single server observation/correction instant/final expiry recheck and measured clock policy before code. Explicit unknown correction is distinct from conservative band:unknown; no expired/collapsed identity revival.",
+    "Public adoption binds exact locally cached source/report/generation and original age/expiry with manual-adoption provenance; no provider fetch or forged reported-source payload; verification is explicit.",
+    "Code annotation versus exact G4 UUID/incarnation bind/unbind; binding-only reads child base without changing collection receipt; retirement writes exact changed-child outer-token association.",
+    "Exact live/trash bound retirement, shared network and unrelated context preserved, surviving same-UUID references become unresolved without link deletion/rebind; permanent connection removal cannot be undone by192.",
+    "All parent/card/canonical/child/navigation/undo/receipt effects in one actual outer transaction; independent expiry has no prevalidation effects; stage callback/timer/index publication until outer commit.",
+    "Immutable saved result includes exact edge identity and explicit no-op/terminal result; optional current projection separate; H4 passive one-read reconciliation and no matching-endpoint inference/retry.",
+    "Actual draw/editor/quick/remove/adoption request/editor/selection generations, dirty drafts and immutable accepted successors; real occupancy drains on close/dataset handoff.",
+    "All MAP-CONN acceptance, numerical raw/output/fanout/clock/transaction/index/drain budgets and P0-03 feedback remain pending."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/maps-connection-contracts.md",
+    "sha256": "1582d4687589a9392b75303a10796ef26ffa0306421449d7c7881b717b7cdff3"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality after scoped round1 re-review; H6-I1 and H6-I2 addressed, no open findings.",
+      "reviewed_contract_sha256": "bf134922d18bcaf05ea97a486acbff45c93cff292b746f2d5614f3e72bef68ef",
+      "reviewed_receipt_sha256": "ab097e5eca330a1751783c0d7123e674c042b35562121b387efc9f7db7c5dd9b",
+      "full_review_contract_sha256": "2128d5d406991501e1bbdbd7d3dc6f597469c5cb6af351f3f2dce92689aafacf",
+      "full_review_receipt_sha256": "bae20c1b28f97f78c0c90c65490fa30a1e3028fddcee5b60f64cabe189cbe771"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality after scoped round1 re-review; H6-I1 and H6-I2 addressed, no open findings.",
+      "reviewed_contract_sha256": "bf134922d18bcaf05ea97a486acbff45c93cff292b746f2d5614f3e72bef68ef",
+      "reviewed_receipt_sha256": "ab097e5eca330a1751783c0d7123e674c042b35562121b387efc9f7db7c5dd9b",
+      "full_review_contract_sha256": "2128d5d406991501e1bbdbd7d3dc6f597469c5cb6af351f3f2dce92689aafacf",
+      "full_review_receipt_sha256": "bae20c1b28f97f78c0c90c65490fa30a1e3028fddcee5b60f64cabe189cbe771"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after both full and scoped reviews; implementation, behavioral and numerical gates remain pending."
+    }
+  },
+  "author_static_checks": {
+    "receipt_json": "Valid parse after initial write; final reparse in author report.",
+    "contract_sha256": "Matches exact current contract bytes.",
+    "relative_links_checked": 28,
+    "missing_links_or_fragments": [],
+    "manifest_scope": "Exact179/180 POST nested selectors; two rows;090 not recounted.",
+    "count_arithmetic": "82+2+39=123;123+71=194 conditional upon independent acceptance.",
+    "whitespace": "No assigned-file trailing whitespace; git diff --check exit0; final freeze checks in author report.",
+    "self_review": "Observed/selected separation; explicit modes/per-kind fields/clear/defaults; H5 active/archive identity; actual draw8/12/UI distinctions; deliberate quantitative correction versus no renewal/revival; G4 read/write association; real outer commit; exact saved identity/generation/unknown/drain; scope/numeric gates. Round1: independent stored flags versus effective confirmation gate; explicit finite-to-unknown correction versus omission/band:unknown/already-unknown no-op; exact pending HTTP and actual unconfirm/reconfirm oracles; only two aliased findings changed.",
+    "limit": "Documentation static checks only; not product/browser/performance evidence."
+  },
+  "acceptance": {
+    "MAP-CONN-01": "pending",
+    "MAP-CONN-02": "pending",
+    "MAP-CONN-03": "pending",
+    "MAP-CONN-04": "pending",
+    "MAP-CONN-05": "pending",
+    "MAP-CONN-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "coverage_reconciliation": {
+    "previously_contracted": 80,
+    "retired_commands": 2,
+    "remaining_before_acceptance": 41,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Source/design assignment only;090/H5 already accepted and not counted again. Companion reads add no command rows; historical denominator unchanged.",
+    "newly_contracted": 2,
+    "current_contracted": 82,
+    "remaining": 39
+  },
+  "next_bounded_unit": "P0-02H7 passage controls: selectors181 passage.add,182 passage.save,183 passage.remove. Reuse H4 map authority and H5/H6 exact edge/retirement interfaces; settle strict row identity/corrections/review/provenance, occurrence preservation, shared accurate bounded mass aggregation, sampled delivery/removal fences and actual add/edit/cancel/remove ownership. H8 then covers observations184/185;186–192,086 and wider movement/population/route/navigation/Politics/browser-local obligations remain pending.",
+  "limits": [
+    "Only assigned H6 contract/receipt plus scratch h6-author-report.md written during active drafting; root owns shared continuation.",
+    "No product/browser/performance tests, helpers, executable edits, index changes, commits or pushes.",
+    "Preserve final audit,74closed findings,historical evidence/performance and fresh-data0.8.0 policy; no legacy migration/recovery obligation.",
+    "P0-03/P0-04 and dependency implementation precede implementation; no telemetry/Stream-toast consolidation.",
+    "Native Windows/DPAPI/live EVE/OBS/extended use remain outside automation.",
+    "Main/merge/version/tag/publication/PR-ready/release progression unauthorized."
+  ],
+  "correction_round_1": {
+    "round": 1,
+    "maximum_rounds": 5,
+    "baseline": {
+      "contract_sha256": "2128d5d406991501e1bbdbd7d3dc6f597469c5cb6af351f3f2dce92689aafacf",
+      "receipt_sha256": "bae20c1b28f97f78c0c90c65490fa30a1e3028fddcee5b60f64cabe189cbe771",
+      "snapshots": "Coordinator-frozen h6-v1-maps-connection-contracts.md and h6-v1-maps-connection-verification.json; exact bytes verified before correction."
+    },
+    "review_reports_read": [
+      "h6-source-review.md",
+      "h6-integration-review.md"
+    ],
+    "independent_v1_verdicts": {
+      "spec_compliance": "Changes required from both reviewers.",
+      "documentation_quality": "Changes required from both reviewers."
+    },
+    "finding_count": 2,
+    "findings": [
+      {
+        "id": "H6-I1",
+        "alias": "H6-SR-01",
+        "severity": "P2",
+        "status": "ADDRESSED; independently re-reviewed source/design only.",
+        "correction": "Stored access claims remain independent of confirmation for finite-live wormholes/permanent Ansiblex. Unconfirm may retain hidden reverse access, but effective traversal remains disabled. Unknown expiry still requires confirmation and both access flags false; no incidental hidden flag clear or H2 copy/import demotion change.",
+        "pending_oracles": "Direct179 finite-live unconfirm/reconfirm and actual Chrome/Firefox editor uncheck/save/reopen/reconfirm with reverse_accessible:true: preserve reverse claim/expiry/ages, visible forward clear retained, no traversal while unconfirmed; re-enable only currently eligible direction.",
+        "independent_disposition": "ADDRESSED; maps_source_review and maps_integration_review, exact v2 contract bf134922d18bcaf05ea97a486acbff45c93cff292b746f2d5614f3e72bef68ef"
+      },
+      {
+        "id": "H6-I2",
+        "alias": "H6-SR-02",
+        "severity": "P2",
+        "status": "ADDRESSED; independently re-reviewed source/design only.",
+        "correction": "Explicit unknown accepts exact still-live finite-to-null only with resulting confirmed/access/reverse false, coherent null expiry/duration and unknown band/status, preserved original source/observation/discovery ages, one changed-correction instant versus already-unknown no-op. Omission/echo/unrelated/band:unknown retain finite bounds; no expired/collapsed revival.",
+        "pending_oracles": "Actual179 HTTP and direct-owner finite-to-unknown changed result versus fresh already-unknown no-op, retained true flag rejection/atomicity, unchanged identity/source ages, no route authority, and correction held through expiry/collapse rejects. Current editor has no Unknown control; no new control required.",
+        "independent_disposition": "ADDRESSED; maps_source_review and maps_integration_review, exact v2 contract bf134922d18bcaf05ea97a486acbff45c93cff292b746f2d5614f3e72bef68ef"
+      }
+    ],
+    "scope_limit": "Only the two findings, matching selected/acceptance consistency, receipt and author report changed. No new behavior acceptance, product tests/edits, helpers, shared/index changes or commits.",
+    "v2_contract_sha256": "bf134922d18bcaf05ea97a486acbff45c93cff292b746f2d5614f3e72bef68ef",
+    "diff_evidence": "Exact two-file unified diff against h6-v1 snapshots is embedded in h6-author-report.md; no separate helper/diff file written by author.",
+    "re_review": "Both independent scoped spec and documentation-quality verdicts accepted for exact v2 hashes.",
+    "independent_status": "Both source and integrated scoped spec/quality re-reviews accepted;2 addressed,0 open; documentation only."
+  },
+  "reviewed_substantive_sha256": "bf134922d18bcaf05ea97a486acbff45c93cff292b746f2d5614f3e72bef68ef",
+  "status_metadata_delta": "Opening acceptance sentence only after the independently re-reviewed scoped corrections.",
+  "bank": {
+    "status": "Verified/banked; following H7 continuation records exact remote read-back.",
+    "parent": "d915c7afb673be2000994ef2770ef1e51a45f86e",
+    "parent_tree": "11d0ed6e1c4b0ff735198f81c0f59b04e8c84603",
+    "ci": "Documentation-only [skip ci]; tested executable remains aa2bc453, Build101.",
+    "commit": "18a6e6efaa381e1ead1a32ce1326891ee1a9938e",
+    "tree": "ed3268b80d63ae37fd058616d449508ec9bc62f8",
+    "readback": "On26October2026 exact commit/tree/parent and all6 remote file bytes/path entries matched; final integrated reviewer accepted exact tree and acceptance-sentence reconstruction; PR exact body/head/main/open/draft verified and checkout clean."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "d915c7afb673be2000994ef2770ef1e51a45f86e",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "previous_bank_readback": "H5 exact commit/tree/parent and all6 remote file bytes/path entries, exact PR body/head/main/open/draft and clean checkout verified.",
+    "source_delta": "aa2bc453..d915c7a contains33 documentation/evidence paths including AGENTS.md; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 220,
+    "actual_ID_partition": "82contracted+2retired+39remaining+71other=194; pass",
+    "final_contract_sha256": "1582d4687589a9392b75303a10796ef26ffa0306421449d7c7881b717b7cdff3",
+    "substantive_hash_reconstruction": "pass; opening acceptance sentence only beyond reviewed v2",
+    "older_receipt_delta": "H5 status/bank identity only; substantive/historical proof unchanged",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; no product/browser/performance run."
+  }
+}

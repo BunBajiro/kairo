@@ -1,9 +1,18 @@
-// Daily archive rows are historical storage. market_history is the bounded
-// working projection consumed by market reports and import analysis.
+/**
+ * Calendar-window statistics and atomic writes for shared regional history.
+ * Daily archive storage and the bounded market_history projection have separate
+ * lifetimes; these helpers never download data. See ../docs/MARKETS.md.
+ */
 export const DAY = 86400000;
 const date = n => new Date(n).toISOString().slice(0, 10);
 const writers = new WeakMap();
 
+/**
+ * Summarize the previous `days` complete UTC calendar days, excluding today. Duplicate
+ * dates use the last valid row. daily_volume divides by calendar days, including
+ * unreported days; average is volume-weighted ISK or null for no traded units.
+ * now is epoch milliseconds; callers supply a positive day count.
+ */
 export function historyWindow(rows, days = 30, now = Date.now()) {
     const end = Date.parse(date(now)), start = end - days * DAY, unique = new Map();
     for (const r of rows || []) {
@@ -42,8 +51,11 @@ function statements(db) {
     return writers.get(db);
 }
 
-// A synchronous, caller-bounded batch. SAVEPOINT also composes with an outer
-// transaction; a failed source write cannot leave its history half updated.
+/**
+ * Write a synchronous, caller-bounded batch of [typeId, sourceRows] entries;
+ * updated/expires are ISO cache timestamps. SAVEPOINT composes with an outer
+ * transaction; a failed source write cannot leave its history half updated.
+ */
 export function saveHistories(store, region, entries, updated, expires, source, now = Date.now()) {
     const db = store.db, write = statements(db);
     db.exec('SAVEPOINT market_history_write');

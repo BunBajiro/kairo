@@ -1,3 +1,8 @@
+/**
+ * Pure Session-card summary shared with the UI. The report owner has already
+ * qualified combat and travel; this helper ranks that evidence without reads.
+ * See ../docs/SESSIONS.md for the report's presence and valuation rules.
+ */
 type Visit = {systemId:number;name?:string;seconds:number};
 type Killmail = {killmailId:number;systemId:number};
 type SummaryRecord = {
@@ -7,8 +12,11 @@ type SummaryRecord = {
  names:Record<string,string>;
 };
 
-// Consume the report's already-qualified records; never extend visit windows
-// here. A killmail appearing in both personal and alliance lists counts once.
+/**
+ * Rank the report's qualified combat, then observed seconds and system ID; return
+ * null without activity. Do not extend visit windows here. A killmail appearing
+ * in both personal and alliance lists counts once.
+ */
 export function mostActiveSystem(report:SummaryRecord){
  const systems=new Map<number,{systemId:number;name:string;seconds:number;killmails:number}>();
  function system(id:number,name?:string){

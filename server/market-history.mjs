@@ -1,16 +1,36 @@
+/**
+ * Markets-owned EVE Ref daily archive importer for the four core hub regions.
+ * Successful days survive interrupted imports; bounded analysis projections are
+ * rebuilt from retained days, and custom hubs use Markets' ESI history path.
+ * See ../docs/MARKETS.md for source and calendar-window semantics.
+ */
 import {Worker} from 'node:worker_threads';
 import {setTimeout as delay} from 'node:timers/promises';
 import {DAY,saveHistories} from './market-history-store.mjs';
 export {DAY,historyWindow,historySummary,saveHistory} from './market-history-store.mjs';
 export const CORE_HUBS=new Set([60003760,60008494,60011866,60005686]);
 const iso=n=>new Date(n).toISOString(),date=n=>iso(n).slice(0,10),origin='https://data.everef.net/market-history/';
-export function decodeArchive(bytes,date,{signal,timeoutMs=45000}={}){
- return new Promise((resolve,reject)=>{const worker=new Worker(new URL('./market-history-worker.mjs',import.meta.url),{workerData:{bytes,date},execArgv:[],resourceLimits:{maxOldGenerationSizeMb:128}});let done=false;
-  function finish(error,value){if(done)return;done=true;clearTimeout(timer);signal?.removeEventListener('abort',abort);worker.terminate();error?reject(error):resolve(value);}
+/**
+ * Decode one compressed daily CSV in a bounded worker. Resolve {rows, records}
+ * only after native worker exit; reject malformed data, abort or timeout (ms).
+ * The caller must await rejection as well as success before releasing ownership.
+ */
+export function decodeArchive(bytes,date,{signal,timeoutMs=45000,createWorker=(url,options)=>new Worker(url,options)}={}){
+ return new Promise((resolve,reject)=>{const worker=createWorker(new URL('./market-history-worker.mjs',import.meta.url),{workerData:{bytes,date},execArgv:[],resourceLimits:{maxOldGenerationSizeMb:128}});let outcome;
+  const cleanup=()=>{clearTimeout(timer);signal?.removeEventListener('abort',abort);};
+  function finish(error,value){if(outcome)return;outcome={error,value};cleanup();void worker.terminate();}
   const abort=()=>finish(new Error('History import cancelled.')),timer=setTimeout(()=>finish(new Error('History decoding timed out.')),timeoutMs);
-  worker.once('message',m=>finish(m.error?new Error(m.error):null,m));worker.once('error',e=>finish(e));worker.once('exit',()=>{if(!done)finish(new Error('History decoder stopped before completing.'));});signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
+  worker.once('message',m=>finish(m.error?new Error(m.error):null,m));worker.once('error',e=>finish(e));
+  // A result is not completion: the next archive/close must await native exit.
+  worker.once('exit',()=>{cleanup();if(!outcome)reject(new Error('History decoder stopped before completing.'));else if(outcome.error)reject(outcome.error);else resolve(outcome.value);});
+  signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
  });
 }
+/**
+ * Own one cancellable update. check() must throw when the parent scan is no
+ * longer eligible; progress() publishes that parent's status. cancel() requests
+ * abort but is not a completion barrier: await the accepted update() promise.
+ */
 export function createHistoryArchive(store,{fetcher=fetch,now=()=>Date.now(),spacingMs=250,decode=decodeArchive}={}){
  let controller=null,lastRequest=0;const db=store.db;
  async function download(path,limit,signal){const cooldown=store.get('market:everef:retry',0);if(cooldown>now())throw new Error('EVE Ref asked us to wait. Retry after '+iso(cooldown)+'.');const wait=spacingMs-(now()-lastRequest);if(wait>0)await delay(wait,undefined,{signal});lastRequest=now();
@@ -43,6 +63,11 @@ export function createHistoryArchive(store,{fetcher=fetch,now=()=>Date.now(),spa
      const rows=db.prepare('SELECT * FROM market_history_days WHERE region_id=? AND date>=? AND date<? ORDER BY type_id,date').all(region,date(start),date(end)),byType=new Map();for(const r of rows){if(!byType.has(r.type_id))byType.set(r.type_id,[]);byType.get(r.type_id).push({date:r.date,average:r.average,highest:r.highest,lowest:r.lowest,volume:r.volume,order_count:r.order_count});}
      // Daily archive rows retain history; the analysis projection only needs
      // its current calendar window. Yield between atomic, bounded batches.
+     // A corrected archive can remove the final observed day for a type. Its
+     // previous EVE Ref projection must become an explicit empty window, not
+     // remain fresh with a row that the corrected source no longer contains.
+     for(const prior of db.prepare("SELECT h.type_id FROM market_history h JOIN market_history_meta m USING(region_id,type_id) WHERE h.region_id=? AND m.source='EVE Ref'").all(region))
+      if(!byType.has(prior.type_id))byType.set(prior.type_id,[]);
      const entries=[...byType];
      for(let offset=0;offset<entries.length;offset+=100){check();saveHistories(store,region,entries.slice(offset,offset+100),iso(now()),iso(now()+DAY),'EVE Ref',now());await delay(0);}
     }

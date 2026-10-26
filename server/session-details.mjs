@@ -1,11 +1,21 @@
+/**
+ * Read projections for Session routes, ships, LP and personal/alliance combat.
+ * Reconciliation explicitly writes its first eligible delayed LP sample; other
+ * helpers project retained evidence without requesting fresh data. Time strings
+ * are UTC ISO timestamps and route/ship durations are seconds. See ../docs/SESSIONS.md.
+ */
 import {snapshotFresh} from './polling.mjs';
 import {sessionCollection} from './session-policy.mjs';
+import {recordedVisitSovereignty} from './visit-sovereignty.mjs';
+import {readSessionVisits,sessionObservationOwnershipSql} from './session-travel.mjs';
 
 export const COMBAT_BUFFER_MS = 10 * 60 * 1000;
 const iso = at => new Date(at).toISOString();
 const validId = id => Number.isSafeInteger(id) && id > 0;
+/** A missing/invalid zKill valuation is null; a verified zero-ISK value remains zero. */
 export const killValue = k => typeof k?.zkb?.totalValue === 'number' && Number.isFinite(k.zkb.totalValue) && k.zkb.totalValue >= 0 ? k.zkb.totalValue : null;
 
+/** Copy a fresh valid LP balance sample; unavailable/malformed evidence returns null. */
 export function loyaltySample(snapshot) {
     if (!snapshotFresh(snapshot) || !Array.isArray(snapshot.data) || !Number.isFinite(Date.parse(snapshot.updatedAt))) return null;
     if (snapshot.data.some(r => !validId(r.corporation_id) || !Number.isSafeInteger(r.loyalty_points) || r.loyalty_points < 0)) return null;
@@ -28,6 +38,11 @@ export function reconcileSessionLoyalty(store, characterId) {
     }
 }
 
+/**
+ * LP is a per-corporation NET balance difference, including spending/removals.
+ * A delayed sample is an estimate and overlap/pending remain explicit statuses;
+ * absent baselines yield delta=null rather than invented zero earnings.
+ */
 export function loyaltyReport(start, finish, ended, names={}) {
     const a = start.loyalty, reconciliation = finish.loyaltyReconciliation;
     const b = reconciliation?.status === 'delayed' ? reconciliation.sample : finish.loyalty;
@@ -39,33 +54,42 @@ export function loyaltyReport(start, finish, ended, names={}) {
     return {status, rows, delta:rows.reduce((n,r)=>n+r.delta,0), startSampledAt:a.sampledAt, endSampledAt:b.sampledAt, sameSample:a.sampledAt===b.sampledAt, scope:'esi-characters.read_loyalty.v1'};
 }
 
-export function sessionRoute(store, session, start, end, names=store.get('names',{})) {
+/**
+ * Preserve owned visits and captured starts clipped to [Session start, end). Optional
+ * preparedVisits must be ordered as readSessionVisits returns them.
+ */
+export function sessionRoute(store, session, start, end, names=store.get('names',{}), preparedVisits) {
     const from = Date.parse(session.started), to = Date.parse(end);
-    const rows = store.db.prepare(`SELECT v.*,u.name system_name,u.region_id,u.region_name,u.security FROM visits v
-        LEFT JOIN universe_systems u USING(system_id) WHERE character_id=? AND at>=? AND at<? ORDER BY at,id`).all(session.character_id,session.started,end);
-    let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, clipped:true} : null;
-    if (!initial && !start.capturedAt) {
-        const prior = store.db.prepare('SELECT * FROM visits WHERE character_id=? AND at<=? ORDER BY at DESC,id DESC LIMIT 1').get(session.character_id,session.started);
-        if (prior) initial = {...prior, at:session.started, clipped:true, inferred:true};
-    }
-    const points = [];
+    // Reports already read the inclusive owned visit list. Reuse its bounded
+    // rows while keeping route/replay's exclusive end and ownership guards.
+    const rows = preparedVisits ? preparedVisits.filter(row => row.character_id === session.character_id
+        && row.session_id === session.id && row.at >= session.started && row.at < end)
+        : readSessionVisits(store, session, end);
+    let initial = start.system && validId(start.system.id) ? {system_id:start.system.id, name:start.system.name, at:session.started, ship_type_id:start.shipTypeId, sovereignty_at_visit:start.system.sovereignty_at_visit, clipped:true} : null;
     if(initial&&rows[0]?.system_id===initial.system_id&&Date.parse(rows[0].at)===from)initial=null;
     if(initial){
         const system=store.db.prepare('SELECT name,region_id,region_name,security FROM universe_systems WHERE system_id=?').get(initial.system_id);
         if(system)initial={...initial,system_name:system.name,region_id:system.region_id??initial.region_id,region_name:system.region_name??initial.region_name,security:system.security??initial.security};
     }
-    for (const row of [...(initial?[initial]:[]), ...rows]) {
-        points.push({...row, name:row.name||row.system_name||names[row.system_id]||String(row.system_id)});
-    }
+    // SQL rows already carry their route fields; only the returned projection
+    // needs a display name. Do not clone every visit into an intermediate row.
+    const points = initial ? [initial, ...rows] : rows;
     return points.map((v,i) => {
         const entered = Math.max(from,Date.parse(v.at)), exited = Math.min(to,Date.parse(points[i+1]?.at||end));
-        return {id:v.id||'start', systemId:v.system_id, name:v.name, regionId:v.region_id, regionName:v.region_name, security:v.security, entered:iso(entered), exited:iso(exited), seconds:Math.max(0,Math.floor((exited-entered)/1000)), shipTypeId:v.ship_type_id, clipped:!!v.clipped, inferred:!!v.inferred, active:!session.ended && i===points.length-1};
+        return {id:v.id||'start', systemId:v.system_id, name:v.name||v.system_name||names[v.system_id]||String(v.system_id), regionId:v.region_id, regionName:v.region_name, security:v.security, entered:iso(entered), exited:iso(exited), seconds:Math.max(0,Math.floor((exited-entered)/1000)), shipTypeId:v.ship_type_id, sovereignty_at_visit:recordedVisitSovereignty(v.sovereignty_at_visit,v.system_id), clipped:!!v.clipped, inferred:!!v.inferred, active:!session.ended && i===points.length-1};
     });
 }
 
+/** Preserve individual ship changes even for the same hull type; aggregate hull seconds. */
 export function sessionShips(store, session, start, end, names) {
-    const rows = store.db.prepare(`SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) ORDER BY at,id`).all(session.character_id,session.started,end,session.started,start.eventCursor??0);
-    const points = start.shipTypeId ? [{typeId:start.shipTypeId, shipId:start.ship?.id||null, at:session.started}] : [];
+    const rows = store.db.prepare(`SELECT payload,at FROM events WHERE character_id=? AND type='ship.changed' AND at>=? AND at<? AND (at>? OR id>?) AND ${sessionObservationOwnershipSql()} ORDER BY at,id`).all(session.character_id,session.started,end,session.started,start.eventCursor??0,session.id);
+    const first = start.firstShip, firstAt = Date.parse(first?.at);
+    // An equal/earlier actual transition already establishes the first hull.
+    // Never move an observation back to the start or ahead of older events.
+    const observed = first && validId(first.typeId) && Number.isFinite(firstAt)
+        && firstAt >= Date.parse(session.started) && firstAt < Date.parse(end) && (!rows[0] || firstAt < Date.parse(rows[0].at));
+    const points = start.shipTypeId ? [{typeId:start.shipTypeId, shipId:start.ship?.id||null, at:session.started}]
+        : observed ? [{typeId:first.typeId, shipId:first.shipId||null, at:iso(firstAt)}] : [];
     for (const row of rows) {
         const p = JSON.parse(row.payload);
         if (validId(p.ship_type_id)) points.push({typeId:p.ship_type_id, shipId:p.ship_id||null, at:row.at});
@@ -86,6 +110,7 @@ export function allianceSides(k, allianceId) {
     return {kill:!!allianceId && !loss && !!k.attackers?.some(a=>a.alliance_id===allianceId),loss};
 }
 
+/** Merge touching/overlapping windows only within the same system; retain visit IDs. */
 export function mergeCombatWindows(windows) {
     const merged = [];
     for (const w of [...windows].sort((a,b)=>a.systemId-b.systemId||Date.parse(a.from)-Date.parse(b.from))) {
@@ -98,6 +123,12 @@ export function mergeCombatWindows(windows) {
     return merged;
 }
 
+/**
+ * Qualify visits with alliance combat during [entered, exited), then apply a
+ * fixed ten-minute buffer on each side. Personal participation is not subtracted
+ * from alliance totals; consumers must not sum both as disjoint categories.
+ * Valuations are ISK with separate missing-value counts, not zero-price estimates.
+ */
 export function allianceSummary(route, records, allianceId, now=Date.now()) {
     const relevant = [...new Map(records.filter(k=>{const s=allianceSides(k,allianceId);return s.kill||s.loss;}).map(k=>[k.killmail_id,k])).values()];
     const indexed = relevant.map(record=>({record,at:Date.parse(record.killmail_time)}));
@@ -138,8 +169,9 @@ export function allianceSummary(route, records, allianceId, now=Date.now()) {
     return {allianceId,visits,windows,items,kills,losses,destroyed,lost,missingDestroyed,missingLost,combatVisits:visits.filter(v=>v.combatActive).length};
 }
 
-export function sessionDetails(store, session, start, finish, end) {
-    const names=store.get('names',{}),route=sessionRoute(store,session,start,end,names);
+/** Compose bounded Session evidence; no HTTP collection or loyalty reconciliation here. */
+export function sessionDetails(store, session, start, finish, end, preparedVisits) {
+    const names=store.get('names',{}),route=sessionRoute(store,session,start,end,names,preparedVisits);
     // The alliance current at session start stays attached to the historical
     // flight. Older sessions without this evidence cannot reconstruct it.
     const allianceId=start.alliance?.id||null;

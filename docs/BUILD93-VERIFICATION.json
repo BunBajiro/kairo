@@ -1,0 +1,344 @@
+{
+  "status": "Accepted review package after combined hosted gates, independent download/package/UI review and extracted-runtime execution; final human release approval remains outstanding.",
+  "verified_at_utc": "2026-10-21",
+  "repository": "BunBajiro/kairo",
+  "branch": "review/0.8.0-rc-premerge-bug-review",
+  "pull_request": 12,
+  "pull_request_state": "draft",
+  "version": "0.8.0-rc.17",
+  "source": "763960b5a764f6791fa1de410ebaa1f8360ddfa3",
+  "tree": "adab42709ffb6def3bebbc27cfde8918fd38b946",
+  "unchanged_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "workflow": {
+    "name": "Kairo test build",
+    "build": 93,
+    "run": 39081321026,
+    "job": 117538658968,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/39081321026",
+    "conclusion": "success",
+    "node": "24.22.0",
+    "all_steps_successful": true,
+    "steps": 52,
+    "gates_file": "final-audit/evidence/build93-hosted-gates.json",
+    "gates_sha256": "ed60b738aa273393e7c9353e97e35c7e8b6c0da2dc186230e65c9d7e63d3b790"
+  },
+  "artifact": {
+    "id": 12119109062,
+    "name": "Kairo-test-build.zip",
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/39081321026/artifacts/12119109062",
+    "bytes": 27062081,
+    "sha256": "f4e24f56591712ab59989524fb81abe2916d90cf0c755abebdaa81d5fa59681c",
+    "github_digest_matches": true,
+    "expires_at": "2026-11-17T00:23:20Z",
+    "crc": "pass",
+    "paths": "unique regular files under Kairo/; no traversal or symlinks"
+  },
+  "source_verification": {
+    "reviewer": "packaging_ci",
+    "eligible_tracked_files": 635,
+    "exact_git_blob_matches": 635,
+    "generated_client_files": 21,
+    "total_files": 656,
+    "missing": [],
+    "unexpected": [],
+    "archive_executable_modes": "preserved; 652 files 0644 and 4 files 0755",
+    "extracted_bytes_match": true,
+    "inventory_file": "final-audit/evidence/build93-package-inventory.json",
+    "inventory_sha256": "2ebf3d15819eb866b12d4386a1012e3642530a367695234edd6d41fec416e088",
+    "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9",
+    "excluded": "No dependencies, private profile/database/WAL/vault/env files, performance output or Worker/SSR distribution.",
+    "generated_output_scope": "Digests bind downloaded output; no claim of a second reproducible local build."
+  },
+  "client_references": {
+    "html_and_manifest_asset_targets": [
+      "dist/client/assets/framework-CRpp3ldO.js",
+      "dist/client/assets/index-MyRfdxVg.css",
+      "dist/client/assets/index-rhIKtzfp.js",
+      "dist/client/assets/layout-segment-context-B0EUqggt.js",
+      "dist/client/assets/page-Ch-8o9su.css",
+      "dist/client/assets/page-DAmQpOwN.js",
+      "dist/client/assets/rolldown-runtime-QTnfLwEv.js",
+      "dist/client/favicon.svg",
+      "public/stream/render.css",
+      "public/stream/render.js"
+    ],
+    "missing": [],
+    "manifest_import_keys": "all resolve",
+    "stream_asset_root": "public/stream as served by separate broadcast listener in server/index.mjs",
+    "copied_public_files": [
+      "public/favicon.svg",
+      "public/stream/widgets.css",
+      "public/stream/render.css",
+      "public/stream/protection.js",
+      "public/stream/index.html",
+      "public/stream/render.js"
+    ],
+    "copied_bytes_match": true,
+    "node_modules_absent": true
+  },
+  "third_party_notices": {
+    "license_entries": 85,
+    "empty_entries_covered": [
+      [
+        "@radix-ui/react-compose-refs",
+        "1.1.2"
+      ],
+      [
+        "@vitejs/plugin-rsc",
+        "0.5.38"
+      ],
+      [
+        "react-remove-scroll-bar",
+        "2.3.8"
+      ],
+      [
+        "victory-vendor",
+        "37.3.6"
+      ]
+    ],
+    "license_sha256": "10f80210126ef1dff48935813f0457f5838a5dd33e9fda4f473c76f7de4cc04e",
+    "supplement_versions_and_digests": "all six valid",
+    "supplement_additional_notices": 13,
+    "upstream_license_blob_matches": [
+      "@radix-ui/react-compose-refs",
+      "@vitejs/plugin-rsc",
+      "react-remove-scroll-bar",
+      "victory-vendor"
+    ]
+  },
+  "hosted_gates": {
+    "install": "clean locked install",
+    "types": "pass",
+    "build": "fresh build passed",
+    "packaging_python": {
+      "tests": 16,
+      "pass": 16
+    },
+    "regression_browser_checks": 2713,
+    "regression_browser_failures": 0,
+    "baseline_browser_gates": "market icons (Firefox3/Chrome19), Session cards (9 cards,4 visits,3 buffered visits,135 events,7 layout checks), Universe/replay84, datasets15; all pass",
+    "packaged_runtime": {
+      "tests": 1246,
+      "pass": 1246,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  },
+  "final_audit_ui": {
+    "reviewer": "frontend_stream",
+    "artifact": 12119021571,
+    "artifact_sha256": "d8b8558d85f218b7880915990c84f461e5bb9b9ce2ddaa3a31b9be7d70c6b9c6",
+    "download_digest_crc_paths": "pass",
+    "engines": {
+      "Chrome": "155.0.8059.39",
+      "Firefox": "153.0"
+    },
+    "widths": [
+      1600,
+      390
+    ],
+    "cases": 28,
+    "checks": 396,
+    "passed": 396,
+    "failed": 0,
+    "errors": [],
+    "unexpected_network": [],
+    "unexpected_server_requests": [],
+    "baseline_failed_now_passing": 60,
+    "baseline_healthy_retained": 236,
+    "added_checks": 100,
+    "original_assertions_weakened": false,
+    "raw_checks_file": "final-audit/evidence/build93-ui-checks.json",
+    "raw_checks_sha256": "cb19d240371ef742f12794497a72f5833177c45ec14833488dce1f1156c2f330",
+    "visual_review": "12 representative captures across both engines and widths; narrow Studio editor/canvas right edge is cropped, and landmark capture includes a menu-dismiss overlay frame. Visual review is not a claim of unrestricted narrow-screen usability.",
+    "native_PiP": "Deferred success/rejection/lifetime exercised with controlled child-window harness, not native platform PiP acceptance."
+  },
+  "independent_extracted_runtime": {
+    "command": "npm run test:kairo",
+    "node": "24.22.0",
+    "embedded_undici": "7.29.1",
+    "npm": "11.19.1",
+    "node_archive_sha256": "cc2f601cee82d9a5a233302fe307abc600727035fd7d2c3a3571755989e95008",
+    "node_checksum_source": "https://nodejs.org/dist/v24.22.0/SHASUMS256.txt",
+    "node_path_verified_before_run": true,
+    "NODE_PATH": "unset",
+    "node_modules": "absent",
+    "source_install_or_local_build": false,
+    "exit_code": 0,
+    "tests": 1246,
+    "suites": 0,
+    "pass": 1246,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 16806.909824,
+    "log_file": "final-audit/evidence/build93-extracted-runtime.txt",
+    "log_sha256": "e8ad1a72e764908b67775e8016fef98f5fcba6e957b490b7f204550903be4490"
+  },
+  "excluded_local_attempt": {
+    "accepted": false,
+    "reason": "Initial Node tar extraction lost executable modes; PATH fell through to host Node24.19.0/Undici7.29.0. Runtime prerequisite correctly rejected startup. Official tar modes restored, actual executable verified, complete extracted suite rerun successfully above. No application changes.",
+    "actual": {
+      "tests": 1198,
+      "suites": 0,
+      "pass": 1152,
+      "fail": 46,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 23653.020011
+    },
+    "log_sha256": "63a1ed994fcdf5d4451da8dee0b999879926ad5ecc73608260fb9d0055908d59",
+    "scope": "Environment setup failure retained here as a failed attempt, not acceptance or a new application regression."
+  },
+  "post_build_records": "This receipt, raw verification records and current handoff pointers are written after the ZIP. Tested source remains763960b5; later ledger/docs commits do not change the archive retroactively.",
+  "limits": [
+    "Windows/DPAPI under actual login; live EVE SSO/scopes/structure permissions; actual OBS scene/audio/output; extended play require human environment checks.",
+    "Prior performance evidence retains its original scope; no new benchmark claim.",
+    "Dependency report retains scoped npm findings; no zero-advisory or blanket safety claim.",
+    "Bun must approve durable-data preservation and tested0.7.3→0.8.0 upgrade/full stopped-profile same-account recovery boundary; no automatic backup, general import, in-place downgrade or portable DPAPI promise.",
+    "No first-party license chosen.",
+    "No merge, main push, version bump, tag, stable workflow invocation, publication or PR-ready transition authorized. Stable version/lock/changelog preparation and refreshed candidate verification precede any later approved merge; stable main changes can trigger automatic publication."
+  ],
+  "independent_final_reviews": [
+    {
+      "reviewer": "packaging_ci",
+      "disposition": "accepted",
+      "scope": "Receipt/source/artifact identities, all banked evidence hashes, hosted steps/counts, official Node archive/executable, extracted runtime and client assets."
+    },
+    {
+      "reviewer": "frontend_stream",
+      "disposition": "accepted",
+      "scope": "Full browser check comparison against preserved Build92, unchanged original assertions, added ownership cases and representative visual captures."
+    },
+    {
+      "reviewer": "markets_sessions",
+      "disposition": "accepted",
+      "scope": "Final handoff claims, production data/environment limits, stable workflow approval boundary and documentation scope."
+    }
+  ],
+  "documentation_review": {
+    "reviewer": "docs_tests",
+    "scope": "Post-build current-pointer/receipt review; no application tests rerun.",
+    "markdown": {
+      "files": 43,
+      "local_links": 656,
+      "heading_fragments": 63,
+      "errors": [],
+      "scope": "Tracked Markdown local inline links and GitHub-style heading fragments; external URLs not fetched."
+    },
+    "protected_evidence": {
+      "baseline": "b9f9e43ea84d3a7b1b8c206b48e442a75353b46d",
+      "files": 18,
+      "unchanged": 18,
+      "records": [
+        {
+          "path": "docs/BUILD91-VERIFICATION.json",
+          "sha256": "548064ed29e5a88ebcf6ca6ada4bace711b48c4c0d390914f8954952f2385a27",
+          "unchanged": true
+        },
+        {
+          "path": "docs/DOCUMENTATION-VERIFICATION.json",
+          "sha256": "751ba7ab94a3c4da51d64bc041c412b46f15544daa93baba3d01ce9433400024",
+          "unchanged": true
+        },
+        {
+          "path": "docs/DOCUMENTATION-WORK.md",
+          "sha256": "0eed5694e375c07c225ab67b451ae5699889d36ae9a412b008dafba1319047c9",
+          "unchanged": true
+        },
+        {
+          "path": "docs/PREMERGE-BUG-REVIEW.md",
+          "sha256": "8f0aef0ba0de405e4012959493905c551fe4d5826279f0006e86c05100496308",
+          "unchanged": true
+        },
+        {
+          "path": "docs/SOURCE-DOCUMENTATION-INVENTORY.json",
+          "sha256": "935496e9049731a0c06f7dfaaca51d211af378169b3dc2d8cf5811aefb79dac0",
+          "unchanged": true
+        },
+        {
+          "path": "docs/SOURCE-DOCUMENTATION-VERIFICATION.json",
+          "sha256": "84933aea35594d24d73b454be44ab8a17486a6a589d74f6ab9855868ceb52493",
+          "unchanged": true
+        },
+        {
+          "path": "docs/SOURCE-DOCUMENTATION-WORK.md",
+          "sha256": "e01614e3faebaba240a40589758923e134e995518daf66924671199c3288efcc",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-13-baseline.json",
+          "sha256": "8a2a763ebb1e685aaf3d294dfefd63c434fba584c3cadc91162644d645cfe7f8",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-13-fixed.json",
+          "sha256": "ce8b20792c9eb5364ca8b1f05b17b58a860f0340f4abb783c91843622c4b1e8c",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-13-followup-baseline.json",
+          "sha256": "2e891087ecd92009e0faf9895a123ac46d236d5811eb63dd6d832c35cb9e8399",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-13-followup-fixed.json",
+          "sha256": "9d94802be0c252307000603b832403051a8c6bcd5ba5e6109ed1e571ec63eff4",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-13-second-pass-baseline.json",
+          "sha256": "1f0ba3b345070a8c9442042334ccb7a3915ad24151e4e952977c098be39b3bfe",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-13-second-pass-fixed.json",
+          "sha256": "2732836c94c089ca85d64ac18c9a6a84967447820b8cd13e44e5cc1c0d19e2f3",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-15-firefox-icons.json",
+          "sha256": "07837d57842d1b1b97665c2f794321c8a474bf398524905fdd243e29f304c7d4",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-15-fourth-pass.json",
+          "sha256": "c1c4e6ad00ac073329e607227a2a729576a4f2170cc02996616aa70a86e9d2b7",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-15-retrospective-review.json",
+          "sha256": "a4bc496cc95f0c96a933ea91ceeaa0b61b26e3c430990c0c3908914ccbfefe28",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-15-third-pass-baseline.json",
+          "sha256": "3b9ef55eb39534c9c5d2182ea656c03050f3e81ae0947a92c10a1390bf129e5d",
+          "unchanged": true
+        },
+        {
+          "path": "docs/review-evidence/2026-10-15-third-pass-fixed.json",
+          "sha256": "6dc38c77953e883a2965bb8331cc6cb79f48bc367fc895973a34118118c32f79",
+          "unchanged": true
+        }
+      ]
+    },
+    "historical_validation_sections": {
+      "Completed bug-review acceptance (historical Build90)": true,
+      "Completed performance acceptance (historical)": true,
+      "Documentation phase verification": true,
+      "Source documentation verification; historical Build91 reference retargeted to immutable receipt only": true
+    },
+    "non_documentation_tracked_changes": [],
+    "disposition": "accepted",
+    "changed_markdown_words": {
+      "before": 12777,
+      "after": 12362,
+      "delta": -415,
+      "scope": "Twelve edited Markdown files compared with pre-acceptance head6a93b136; no new narrative page."
+    }
+  }
+}

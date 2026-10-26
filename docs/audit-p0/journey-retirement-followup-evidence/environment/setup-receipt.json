@@ -1,0 +1,70 @@
+{
+  "scope": "JRET-01 environment setup and one benign launch probe per engine; no application verification",
+  "date_utc": "2026-10-24",
+  "repository_head": "96d145da7ffd7d584953ec1b372ae9733240590a",
+  "runtime": {
+    "node": "24.22.1",
+    "undici": "7.30.1",
+    "npm": "11.9.0",
+    "node_path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "playwright": "1.62.1"
+  },
+  "dependencies": {
+    "command": "npm run install:ci",
+    "cwd": "/workspace/scratch/a261d43da816/kairo-audit-p002b",
+    "exit": 0,
+    "packages_added": 680,
+    "lock_sha256": "46a17f00e0282543e3b3b6bb691466d9fcda48fdd62819d646711de4dd404db9",
+    "package_files_changed": false
+  },
+  "environment": {
+    "KAIRO_PLAYWRIGHT_MODULE": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs",
+    "PLAYWRIGHT_BROWSERS_PATH": "/tmp/kairo-jret-env-20261024/playwright-browsers",
+    "KAIRO_CHROME_PATH": "/tmp/kairo-jret-env-20261024/chrome/opt/google/chrome/chrome"
+  },
+  "browser_install": {
+    "chrome": "156.0.8078.47",
+    "firefox": "153.0",
+    "chrome_source": "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb",
+    "chrome_install_exit": 0,
+    "firefox_command": "node /opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/cli.js install firefox",
+    "firefox_install_exit": 0
+  },
+  "launch_bounds": {
+    "attempts_per_browser": 1,
+    "playwright_launch_timeout_ms": 12000,
+    "outer_deadline_seconds": 25,
+    "termination_grace_seconds": 3,
+    "command": "timeout --signal=TERM --kill-after=3s 25s env PLAYWRIGHT_BROWSERS_PATH=/tmp/kairo-jret-env-20261024/playwright-browsers node /tmp/kairo-jret-env-20261024/launch-probe.mjs <chromium|firefox>"
+  },
+  "launch_results": {
+    "chromium": {
+      "exit": 1,
+      "elapsed_ms": 5077,
+      "browser_launched": false,
+      "page_ready": false,
+      "cause": "native process_singleton socket() EPERM; SIGABRT"
+    },
+    "firefox": {
+      "exit": 124,
+      "parent_launch_ms": 363,
+      "page_ready": false,
+      "cause": "content-process user namespace uid_map EPERM, child SIGSEGV; browser.newPage remained unusable until outer deadline"
+    }
+  },
+  "limits": [
+    "No product edits, app server/harness ports, builds or product tests by environment agent",
+    "No browser requirement assertions completed",
+    "No permission escalation or additional bypass flags",
+    "No remaining chrome/firefox processes observed after probes",
+    "Direct ldd checks found no missing libraries for Chrome executable and Firefox libmozgtk; this is not launch proof"
+  ],
+  "evidence_sha256": {
+    "install-ci.log": "99a0d534ac449a2f1578f7037c0bf5e9b227a96854ff606b82e19f88d76bd428",
+    "firefox-install.log": "e66886515f44dc0d2015189fbdbb4e01e8a25495ab9613f5c795b189c7a9189a",
+    "chrome-install.log": "c58685130149e07c6f9793c4aedf7eb1c092e5f431d768de58548a55599703ed",
+    "chromium-launch.log": "af07fa2662fb62fc1f1b9b2c468f48e6a0b76b28d6bacf6d793add9a30f392a5",
+    "firefox-launch.log": "028615ed47827cc85d513f4c9dcfdea5905d1289b2bf87c7f443e9777217d738",
+    "launch-probe.mjs": "d416c24d8ff3bec8eeac2aa535ad181009acdbabd47e73591304903018ee3931"
+  }
+}

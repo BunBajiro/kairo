@@ -3,6 +3,11 @@
 // source transaction; they add no persistent schema or profiling machinery.
 const readers = new WeakMap();
 
+/**
+ * Install one connection-local revision source and return its opaque stamp reader.
+ * Compare stamps for equality only: the combined local/external value is not a
+ * count or persisted version. Callers must also fence time and auth dependencies.
+ */
 export function importRevision(db) {
     if (readers.has(db)) return readers.get(db);
     db.exec('CREATE TEMP TABLE import_revision(value INTEGER NOT NULL); INSERT INTO import_revision VALUES(0)');

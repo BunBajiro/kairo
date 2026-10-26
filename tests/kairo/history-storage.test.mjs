@@ -17,6 +17,9 @@ async function fixture(t){
     return {dir,store};
 }
 const stored=(store,id=1)=>store.db.prepare('SELECT h.*,m.source FROM market_history h LEFT JOIN market_history_meta m USING(region_id,type_id) WHERE h.region_id=? AND h.type_id=?').get(REGION,id);
+// Reconstruct the pre-migration cache shape and remove its migration marker.
+// Reopening the real Store must apply/rollback migration atomically; mocked SQL
+// would not establish that indexes, metadata and durable player rows survive.
 function legacy(store){
     saveHistory(store,REGION,1,history(),iso(NOW),iso(NOW+DAY),'EVE Ref',NOW);
     store.db.prepare('UPDATE market_history SET body=?').run(JSON.stringify(history()));
@@ -114,4 +117,16 @@ test('archive projection resumes between bounded batches and retains older daily
         assert.equal(row.daily_volume,10/30);
     }
     assert.ok(store.get('market:everef:projection',''));
+});
+
+
+test('successful archive corrections replace days and invalidate a removed type without erasing older archives',async t=>{
+    const {store}=await fixture(t),day=date(NOW-DAY),old=date(NOW-100*DAY);let total=2,average=100;
+    const row=id=>({region_id:REGION,type_id:id,date:day,average,highest:average+10,lowest:average-10,volume:30,order_count:3,http_last_modified:iso(NOW)});
+    const archive=createHistoryArchive(store,{now:()=>NOW,spacingMs:0,fetcher:async url=>url.endsWith('totals.json')?new Response(JSON.stringify({[day]:total})):new Response('synthetic'),decode:async()=>({records:total,rows:Array.from({length:total},(_,i)=>row(i+1))})});
+    store.db.prepare('INSERT INTO market_history_days VALUES(?,?,?,?,?,?,?,?,?)').run(REGION,99,old,100,200,50,10,3,iso(NOW));
+    await archive.update();assert.equal(stored(store,1).average,100);assert.equal(stored(store,2).reported_days,1);
+    total=1;average=400;store.db.prepare('DELETE FROM settings WHERE key=?').run('market:everef:manifest');await archive.update();
+    assert.equal(stored(store,1).average,400);assert.equal(stored(store,1).source,'EVE Ref');assert.deepEqual(JSON.parse(stored(store,2).body),[]);assert.equal(stored(store,2).reported_days,0);assert.equal(stored(store,2).daily_volume,0);
+    assert.equal(store.db.prepare('SELECT COUNT(*) n FROM market_history_days WHERE date=?').get(day).n,1);assert.equal(store.db.prepare('SELECT COUNT(*) n FROM market_history_days WHERE date=?').get(old).n,1);
 });

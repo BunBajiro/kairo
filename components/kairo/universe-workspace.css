@@ -1,0 +1,182 @@
+/* The Atlas is a workspace, not an optional full-screen mode. */
+.workspace:has(.universe-module.is-atlas-workspace){height:calc(100dvh - 68px);min-height:600px;display:flex;flex-direction:column;padding-top:10px;padding-bottom:12px;margin:0 auto}
+.workspace:has(.universe-module.is-atlas-workspace)>.page-heading{flex-shrink:0;margin-bottom:8px}
+.workspace:has(.universe-module.is-atlas-workspace)>.page-transition{flex:1;min-height:0;display:flex;flex-direction:column}
+.workspace:has(.universe-module.is-atlas-workspace)>.workspace-footer{display:none}
+.universe-module.is-atlas-workspace{position:relative;display:flex;flex-direction:column;flex:1;min-height:0;height:100%;isolation:isolate}
+.is-atlas-workspace>.universe-heading,.is-atlas-workspace>.universe-command-deck,.is-atlas-workspace>.universe-error{flex-shrink:0}
+.is-atlas-workspace>.universe-heading{margin-bottom:10px}
+.is-atlas-workspace .universe-command-deck{grid-template-columns:310px minmax(170px,1fr) 165px 46px;z-index:20;margin-bottom:10px}
+.is-atlas-workspace .universe-command-deck .universe-space-switch{grid-column:1;grid-row:1}
+.is-atlas-workspace .universe-command-deck .universe-search{grid-column:2;grid-row:1;z-index:35}
+.is-atlas-workspace .universe-workspace-bar>button:nth-last-child(2){grid-column:3;grid-row:1}
+.is-atlas-workspace .universe-workspace-bar>button:last-child{grid-column:4;grid-row:1}
+.is-atlas-workspace .universe-layer-command{grid-row:2}
+.is-atlas-workspace .universe-command-deck>.universe-layer-panel{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:30;max-height:min(65dvh,550px);overflow:auto;overscroll-behavior:contain;margin:0;box-shadow:0 22px 55px #0009}
+.is-atlas-workspace>.universe-atlas-layout{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);position:relative;gap:14px}
+.is-atlas-workspace.is-dock-collapsed>.universe-atlas-layout,.is-atlas-workspace>.replay-map-layout{grid-template-columns:minmax(0,1fr)}
+.is-atlas-workspace .universe-map-column{min-height:0;display:flex;flex-direction:column}
+.is-atlas-workspace .universe-canvas-shell{flex:1;min-height:0;display:flex;flex-direction:column}
+.is-atlas-workspace .universe-map-viewport{flex:1;min-height:0!important;height:auto!important}
+.is-atlas-workspace .universe-map-toolbar,.is-atlas-workspace .universe-map-guide,.is-atlas-workspace .universe-map-footnote{flex-shrink:0}
+.is-atlas-workspace .universe-map-guide[open]{max-height:35%;overflow:auto;overscroll-behavior:contain}
+.is-atlas-workspace .universe-map-footnote{margin:0;padding-top:6px;min-height:31px;gap:10px}
+.is-atlas-workspace .universe-inspector{height:100%;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.universe-inspector[hidden]{display:none!important}
+.universe-dock-handle{display:none}
+.universe-source-drawer{position:absolute;bottom:0;right:0;width:min(800px,100%);max-height:min(72dvh,100%);overflow:auto;overscroll-behavior:contain;z-index:25;border-radius:6px;box-shadow:0 20px 65px #000b;animation:universe-panel-enter .22s ease-out both}
+.universe-source-drawer .universe-sources{margin:0;background:#172922;border-color:#63866f}
+.universe-source-drawer .universe-sources .panel-head{position:sticky;top:-22px;padding-block:14px;background:#172922;z-index:1}
+.universe-source-drawer .universe-sources .panel-head>button{width:42px;height:42px;display:grid;place-items:center}
+.universe-source-drawer .universe-sources .meta{font-size:14px;color:#bdcec1}
+.universe-detail-back{display:flex;align-items:center;gap:8px;font-size:14px;color:#c0d7c8;min-height:34px;margin-bottom:13px;border-bottom:1px solid #3a5847}
+.universe-detail-back:hover{color:#e7f7ec}
+.universe-breadcrumb>button{text-decoration:underline;text-decoration-color:#789981;text-underline-offset:4px;text-align:left}
+.universe-owner-link{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:8px 0;color:#dcebd9;border-radius:4px}
+.universe-owner-link>strong{flex:1;min-width:0;overflow-wrap:anywhere}
+.universe-owner-link>img{flex-shrink:0;object-fit:contain;border:1px solid #50745c;background:#102019;border-radius:4px;padding:3px}
+.universe-owner-link>svg{flex-shrink:0}
+.universe-owner-link:disabled{cursor:default}
+.universe-owner-link:disabled>svg{display:none}
+.universe-owner-link:not(:disabled):hover{background:#26432e}
+.universe-system-route-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}
+.universe-system-route-actions>[data-slot=button]{font-size:16px;white-space:normal;min-height:48px;height:auto;padding:10px 8px;line-height:1.35}
+@media(min-width:1101px){
+ .is-atlas-workspace.is-replaying{display:grid;grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"heading heading" "error error" "loading loading" "map controls";gap:0 14px;align-items:stretch}
+ .is-atlas-workspace.is-replaying>.universe-heading{grid-area:heading}
+ .is-atlas-workspace.is-replaying>.universe-error{grid-area:error}
+ .is-atlas-workspace.is-replaying>.universe-loading{grid-area:loading}
+ .is-atlas-workspace.is-replaying>.session-replay{grid-area:controls;height:100%;max-height:none;min-height:0;overflow:auto;margin:0;overscroll-behavior:contain}
+ .is-atlas-workspace.is-replaying>.replay-map-layout{grid-area:map}
+}
+@media(min-width:1101px) and (max-width:1450px){
+ .is-atlas-workspace .universe-command-deck{grid-template-columns:285px minmax(140px,1fr) 154px 44px;column-gap:8px}
+ .is-atlas-workspace .universe-heading-title{gap:9px}
+ .is-atlas-workspace .universe-heading-meta{gap:8px}
+ .is-atlas-workspace .universe-heading-meta>button>span{display:none}
+ .is-atlas-workspace .universe-heading-meta>button{width:42px;padding:0}
+}
+@media(max-width:1100px){
+ .workspace:has(.universe-module.is-atlas-workspace){padding-top:8px;padding-bottom:10px}
+ .is-atlas-workspace .universe-heading{gap:7px}
+ .is-atlas-workspace .universe-heading .universe-tabs{min-height:42px}
+ .is-atlas-workspace .universe-heading .universe-tabs>button{min-height:42px;padding-block:8px}
+ .is-atlas-workspace .universe-command-deck{grid-template-columns:280px minmax(120px,1fr) 46px;gap:8px;padding:9px}
+ .is-atlas-workspace .universe-command-deck .universe-search{grid-column:2;grid-row:1}
+ .is-atlas-workspace .universe-workspace-bar>button:nth-last-child(2){grid-column:3;grid-row:1;font-size:0;padding:0;width:46px}
+ .is-atlas-workspace .universe-workspace-bar>button:nth-last-child(2)>svg{display:block;width:20px;height:20px}
+ .is-atlas-workspace .universe-workspace-bar>button:last-child{display:none}
+ .is-atlas-workspace>.universe-atlas-layout{grid-template-columns:minmax(0,1fr)}
+ .is-atlas-workspace .universe-inspector{position:absolute;right:0;bottom:0;width:min(460px,100%);height:min(76dvh,100%);z-index:10;box-shadow:0 0 0 1px #76947b,0 12px 60px #000c;animation:universe-panel-enter .22s ease-out both}
+ .universe-dock-handle{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;color:#c0d4c7;padding:6px 12px;border-bottom:1px solid #53735f;background:#172c22;position:sticky;top:0;z-index:5}
+ .universe-dock-handle>button{width:36px;height:36px;display:grid;place-items:center;border:1px solid #526e59;border-radius:4px;color:#e1eee0}
+ .is-atlas-workspace .universe-inspector-tabs{top:49px;z-index:4}
+ .is-atlas-workspace.is-jspace .universe-dock-handle{background:#292339;border-color:#75628c;color:#e1d2f0}
+ .is-atlas-workspace.is-replaying>.universe-heading{order:0;min-height:42px}
+ .is-atlas-workspace.is-replaying>.replay-map-layout{order:1}
+ .is-atlas-workspace.is-replaying>.session-replay{order:2;flex-shrink:0;max-height:42%;overflow:auto;margin:10px 0 0;overscroll-behavior:contain}
+ .is-atlas-workspace.is-replaying>.universe-error{order:0}
+}
+@media(max-width:700px){
+ .workspace:has(.universe-module.is-atlas-workspace){height:calc(100dvh - 58px);min-height:650px;padding:8px 12px}
+ .workspace:has(.universe-module.is-atlas-workspace)>.page-heading{margin-bottom:6px;min-height:34px}
+ .workspace:has(.universe-module.is-atlas-workspace)>.page-heading .page-actions{gap:7px}
+ .is-atlas-workspace .universe-heading{margin-bottom:8px;gap:5px;min-height:0}
+ .is-atlas-workspace .universe-heading-title{gap:8px}
+ .is-atlas-workspace .universe-emblem{width:36px;height:36px}
+ .is-atlas-workspace .universe-emblem>svg{width:23px;height:23px}
+ .is-atlas-workspace .universe-heading h2{font-size:24px;margin:0}
+ .is-atlas-workspace .universe-heading-meta{gap:7px}
+ .is-atlas-workspace .universe-heading-meta [data-slot=button]{width:38px;min-height:38px;height:38px;padding:0}
+ .is-atlas-workspace .universe-heading .universe-tabs{gap:3px;min-height:40px;overflow:hidden}
+ .is-atlas-workspace .universe-heading .universe-tabs>button{font-size:16px;min-height:40px;padding:6px 5px;gap:5px;flex:1 1 auto}
+ .is-atlas-workspace .universe-heading .universe-tabs>button>svg{display:none}
+ .is-atlas-workspace .universe-command-deck{grid-template-columns:minmax(0,1fr) 46px;padding:7px;gap:7px;margin-bottom:8px}
+ .is-atlas-workspace .universe-command-deck .universe-space-switch{grid-column:1/-1;grid-row:1;gap:7px}
+ .is-atlas-workspace .universe-command-deck .universe-space-switch>button{min-height:42px;padding:7px 10px;gap:8px}
+ .is-atlas-workspace .universe-command-deck .universe-space-switch strong{font-size:16px;line-height:1.3}
+ .is-atlas-workspace .universe-command-deck .universe-space-switch small{display:none}
+ .is-atlas-workspace .universe-command-deck .universe-space-switch>button>svg:first-child{display:block;width:19px;height:19px}
+ .is-atlas-workspace .universe-command-deck .universe-search{grid-column:1;grid-row:2;height:43px;min-height:43px;padding-inline:10px}
+ .is-atlas-workspace .universe-command-deck .universe-search input{height:41px}
+ .is-atlas-workspace .universe-global-search>kbd{display:none}
+ .is-atlas-workspace .universe-workspace-bar>button:nth-last-child(2){grid-column:2;grid-row:2;height:43px;min-height:43px}
+ .is-atlas-workspace .universe-layer-command{display:none}
+ .is-atlas-workspace .universe-command-deck>.universe-layer-panel{max-height:60dvh;padding:16px}
+ .is-atlas-workspace .universe-map-footnote{font-size:14px;min-height:32px;gap:8px;flex-wrap:nowrap;padding-top:5px;line-height:1.4}
+ .is-atlas-workspace .universe-map-footnote>span{min-width:0;max-width:none;flex:1;font-size:14px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+ .is-atlas-workspace .universe-map-footnote>span>svg{display:none}
+ .is-atlas-workspace .universe-map-footnote>button{white-space:nowrap;font-size:14px;min-height:27px;flex-shrink:0}
+ .is-atlas-workspace .universe-inspector{width:100%;height:min(72dvh,100%);border-radius:8px 8px 4px 4px}
+ .is-atlas-workspace .universe-inspector-tabs button{min-height:46px;padding:8px;font-size:16px}
+ .is-atlas-workspace .universe-source-drawer{max-height:75dvh}
+ .is-atlas-workspace .universe-source-drawer .universe-sources .panel-head{top:-17px}
+ .is-atlas-workspace .universe-map-immersive .universe-map-coordinate-title{display:none}
+ .is-atlas-workspace .universe-map-immersive .universe-map-toolbar{min-height:52px;justify-content:center!important;padding:6px 7px!important}
+ .is-atlas-workspace .universe-map-immersive .universe-map-guide>summary{min-height:38px;padding:8px 12px}
+ .is-atlas-workspace .universe-system-route-actions{gap:8px}
+}
+@media(prefers-reduced-motion:reduce){.universe-source-drawer,.is-atlas-workspace .universe-inspector{animation:none!important}}
+
+/* Operational tools share one dock; the renderer stays mounted across tools. */
+.universe-inspector-tools{display:flex;align-items:flex-end;gap:12px;padding:14px 17px;border-bottom:1px solid #567356;background:#233c2a;position:sticky;top:0;z-index:6}.universe-inspector-tools>.field-label{flex:1;font-size:14px;color:#c3d9bb;min-width:0;gap:6px}.universe-inspector-tools .choice{width:100%;min-width:0;height:44px;font-size:16px;background:#182d1c}.universe-inspector-shortcuts{display:flex;gap:5px}.universe-inspector-shortcuts>button{display:flex;gap:5px;justify-content:center;align-items:center;min-width:38px;height:44px;border:1px solid #638368;border-radius:4px;color:#d9eccf;background:#244a30}.universe-inspector-shortcuts span{font-size:14px;min-width:12px}.universe-inspector-body>[hidden]{display:none!important}.universe-tactical-host{display:contents}.universe-detached-placeholder{display:flex;flex:1;min-height:180px;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:25px;border:1px dashed #617e67;background:#14291e;border-radius:7px;color:#c0dec5}.universe-detached-placeholder h3{font-size:25px;color:#e0efd8;margin:0}.universe-detached-placeholder p{max-width:420px;text-align:center;font-size:16px;line-height:1.6;margin:0}.universe-tactical-notice{position:absolute;z-index:40;top:55px;right:0;max-width:min(440px,100%);padding:12px 16px;background:#223c2c;border:1px solid #6b8c69;color:#e0eed4;font-size:14px;border-radius:5px;pointer-events:none}
+@media(max-width:1100px){.universe-inspector-tools{top:49px}}@media(max-width:700px){.universe-inspector-tools{padding:10px 14px;gap:9px}.is-atlas-workspace .universe-heading-meta{gap:5px}.is-atlas-workspace .universe-heading h2{font-size:22px}.is-atlas-workspace .universe-heading-title{gap:6px}.is-atlas-workspace .universe-heading-meta [data-slot=button]{width:35px;min-height:37px;height:37px}}
+
+/* A dedicated chain atlas shares Kairo's existing notebooks and planners in a contextual drawer. */
+.jspace-dedicated-workspace{position:relative;min-width:0}
+.jspace-dedicated-workspace .universe-heading-title .eyebrow{display:block;font-size:12px;color:#bba9d9;letter-spacing:.12em;margin-bottom:2px}
+.jspace-shared-dock.universe-inspector{position:fixed;z-index:45;right:24px;top:92px;bottom:24px;width:min(480px,calc(100vw - 32px));display:flex;flex-direction:column;border:1px solid #71618b;background:#111b2afc;box-shadow:0 18px 70px #020609b0;border-radius:8px;overflow:hidden;animation:kairo-map-context-enter .16s ease-out both}
+.jspace-shared-dock>.universe-dock-handle{display:flex;align-items:center;justify-content:space-between;flex:none;padding:15px 18px;background:#202637;border-bottom:1px solid #526075;font-size:17px;color:#e8e2f4}
+.jspace-shared-dock>.universe-dock-handle button{display:grid;place-items:center;width:38px;height:38px;border:1px solid #65728a;border-radius:4px;color:#e1e7ef;background:#111f30}
+.jspace-shared-dock>.universe-inspector-body{min-height:0;overflow:auto;padding:18px;scrollbar-width:thin;overscroll-behavior:contain}
+@media(max-width:760px){.jspace-shared-dock.universe-inspector{right:8px;left:8px;top:72px;bottom:8px;width:auto}.jspace-dedicated-workspace .universe-heading{align-items:center}.jspace-dedicated-workspace .universe-heading-title h2{font-size:26px}.jspace-shared-dock>.universe-inspector-body{padding:14px}}
+@media(prefers-reduced-motion:reduce){.jspace-shared-dock.universe-inspector{animation:none}}
+
+.jspace-shared-dock[hidden]{display:none}
+
+/* J-Space lives in its chain canvas; all shared tools use one consistent dock. */
+.workspace:has(.jspace-dedicated-workspace){padding-top:10px;padding-bottom:12px}
+.workspace:has(.jspace-dedicated-workspace)>.page-heading{margin-bottom:10px}
+.workspace:has(.jspace-dedicated-workspace)>.workspace-footer{display:none}
+.jspace-dedicated-workspace .jspace-shared-dock.universe-inspector{border-color:#817098;background:linear-gradient(155deg,#24253a,#111d2d 65%);box-shadow:0 16px 60px #030711b3,inset 0 1px #d7c4f31a}
+.jspace-dedicated-workspace .jspace-shared-dock>.universe-dock-handle{background:linear-gradient(110deg,#302940,#1a2c3c);border-color:#615671;min-height:64px;gap:12px}
+.jspace-dock-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:9px 12px;background:#141e2dc9;border-bottom:1px solid #4c4660;flex:none}
+.jspace-dock-tools button{display:flex;gap:6px;align-items:center;justify-content:center;min-height:39px;padding:7px 5px;border:1px solid transparent;border-radius:5px;color:#bec5d8;font-size:14px;transition:background .16s,border-color .16s,color .16s}
+.jspace-dock-tools button:hover:not(:disabled){background:#302e45;color:#ede7fa}
+.jspace-dock-tools button[aria-pressed=true]{color:#f0e4ff;background:#423452;border-color:#9478b2}
+.jspace-dock-tools button:focus-visible{outline:2px solid #d6b5ff;outline-offset:2px}
+.jspace-dock-tools button:disabled{opacity:.5}
+@media(prefers-reduced-motion:reduce){.jspace-dock-tools button{transition:none}}
+@media(max-width:520px){.jspace-dock-tools{padding:8px;gap:3px}.jspace-dock-tools button{flex-direction:column;gap:3px;padding:5px 2px;min-height:53px}.jspace-dock-tools button span{line-height:1.3}}
+
+/* J-Space occupies the available window; its graph resizes with the sidebar. */
+.jspace-shell{height:100dvh;min-height:0;min-width:0;overflow:hidden}
+.jspace-shell>.topbar{flex:none;height:52px;min-height:52px;padding:0 12px;gap:12px}
+.jspace-shell>.topbar>.page-actions{margin-left:auto;width:auto;flex:none;gap:7px}
+.jspace-shell>.topbar .choice{width:190px;min-width:0}
+.jspace-shell>.topbar>.page-actions>button{height:34px}
+.jspace-shell>.topbar>.topbar-right{gap:16px}
+.jspace-shell>.workspace{flex:1;display:flex;flex-direction:column;height:auto;min-height:0;max-width:none;margin:0;padding:8px}
+.jspace-shell>.workspace>.page-transition{flex:1;min-height:0;display:flex;flex-direction:column}
+.jspace-shell .jspace-dedicated-workspace{flex:1;min-height:0;display:flex;flex-direction:column}
+.jspace-shell .jspace-dedicated-workspace>.jspace-workspace{flex:1;min-height:0;display:flex;flex-direction:column}
+.jspace-shell .jspace-workspace>.jspace-workspace-stage{flex:1;height:auto;min-height:0}
+.jspace-shell .jspace-workspace-toolbar,.jspace-shell .jspace-workspace-footer,.jspace-shell .jspace-notice{flex-shrink:0}
+.jspace-shell .jspace-workspace-toolbar{padding:9px 12px}
+.jspace-shell .jspace-workspace-footer{padding:4px 12px}
+.jspace-shell .jspace-welcome{overflow:auto}
+@media(max-width:1100px){.jspace-shell>.topbar>.topbar-right{display:none}}
+@media(max-width:700px){.jspace-shell>.topbar{padding:0 8px;gap:8px}.jspace-shell>.topbar>div:first-child{gap:5px}.jspace-shell>.topbar .choice{width:140px}.jspace-shell>.workspace{padding:5px}.jspace-shell .jspace-workspace-toolbar{padding:8px;gap:8px}.jspace-shell .jspace-workspace-footer{padding:3px 6px}}
+
+/* Atlas projection is a persistent workspace preference, within immediate reach. */
+.universe-projection-switch{display:flex;align-items:center;flex-shrink:0;gap:2px;padding:3px;border:1px solid var(--border);border-radius:8px;background:var(--background)}
+.universe-projection-switch button{min-width:38px;min-height:34px;border-radius:5px;color:var(--muted-foreground);font-size:16px;font-weight:700;letter-spacing:.04em;transition:background .16s,color .16s}
+.universe-projection-switch button[aria-pressed=true]{background:color-mix(in srgb,var(--primary) 18%,transparent);color:var(--primary)}
+.universe-projection-switch button:hover{color:var(--foreground);background:color-mix(in srgb,var(--primary) 9%,transparent)}
+.universe-projection-switch button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+/* Replace the retired space-switch slot with a compact projection control. */
+.is-atlas-workspace .universe-command-deck{grid-template-columns:minmax(170px,1fr) auto 165px 46px}
+.is-atlas-workspace .universe-command-deck .universe-search{grid-column:1;grid-row:1}
+.is-atlas-workspace .universe-projection-switch{grid-column:2;grid-row:1;justify-self:start}
+@media(max-width:1100px){.is-atlas-workspace .universe-command-deck{grid-template-columns:minmax(0,1fr) auto 46px}}
+@media(max-width:700px){.is-atlas-workspace .universe-command-deck .universe-search{grid-column:1;grid-row:1}.is-atlas-workspace .universe-workspace-bar>button:nth-last-child(2){grid-column:3;grid-row:1}.is-atlas-workspace .universe-projection-switch button{min-width:32px}}

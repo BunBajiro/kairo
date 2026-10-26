@@ -1,0 +1,249 @@
+{
+  "reported_at": "2026-10-15",
+  "baseline_commit": "8225eda4ed1e9be21155adaadc6ab0fefbdff702",
+  "application_commit": "695c50ce7b095bf3e61d97ce97d12bcdee4a1746",
+  "finding": "PBR-58",
+  "state": "Reproduced in provider and hosted partial baseline; independently reviewed source/tests banked; full fixed browser/package acceptance pending",
+  "user_report": "Firefox category icons appear after restarting Kairo but not before.",
+  "screenshots": [
+    {
+      "filename": "image(1).png",
+      "sha256": "8f161bbe821a64459c7bd98bdb5ee51622efd2f5f5e3cd7f650e9efdc57c4048",
+      "bytes": 250291,
+      "observation": "Blueprints & Reactions > Ammunition & Charges > Bombs: six item rows and selected Shrapnel Bomb Blueprint detail show no icons."
+    },
+    {
+      "filename": "image(2).png",
+      "sha256": "f380870ae646c449be5fd5bc10705b3d701632b630bb571a5be09b31e373fafc",
+      "bytes": 247823,
+      "observation": "All items: visible item icons load."
+    },
+    {
+      "filename": "image(3).png",
+      "sha256": "65cea9c514c068e56af5e94217d71e4590bb5fd639664d6b8c0178f08fd0719e",
+      "bytes": 430167,
+      "observation": "Ordinary Ammunition & Charges > Bombs: seven item rows display icons after scan; this is a different category from screenshot1."
+    },
+    {
+      "filename": "image(4).png",
+      "path": "upload/image(4).png",
+      "sha256": "a74ae353c2b7a4790e40eab3045188bee3c6e7dbfecf9f77387a7d3d33f96838",
+      "bytes": 193001,
+      "observation": "Blueprints & Reactions > Drones: every visible blueprint row has an empty icon position; the category lists 81 cached items. No item is selected in the detail pane."
+    }
+  ],
+  "coverage_gap": "Prior Firefox coverage serves HTTP 200 for every image path and tests ordinary images; the Chrome load-reset probe manually changes src. Neither establishes blueprint resource correctness. New build87 supplies actual wrong-resource and decoding failures for cold blueprint categories/detail in all four contexts, but a fixture ambiguity prevents its later healthy/import flows. Complete fixed hosted acceptance remains pending.",
+  "user_clarification": "The user confirmed the missing icons affect blueprints only. The fourth supplied screenshot shows the Blueprints & Reactions > Drones category with missing icons in every visible blueprint row.",
+  "reproduction": {
+    "owner": "components/kairo/ui.tsx ItemName selects /types/{id}/icon?size=32 for every type; onError hides a failed image and onLoad restores visibility.",
+    "provider_evidence": {
+      "path": "/workspace/scratch/a2b6c8fc6e85/pass3-markets-icon-provider-investigation.log",
+      "sha256": "f0ba9808e05c824fd5a31e2bbe42beb35efcf307b0cac989bc3ed7d718d6534d",
+      "observed_at": "2026-10-15T15:35:41.183309+00:00",
+      "method": "Read-only live GETs performed by pass3_markets.",
+      "responses": [
+        {
+          "url": "https://images.evetech.net/types/27917",
+          "status": 200,
+          "body": [
+            "bpc",
+            "bp"
+          ]
+        },
+        {
+          "url": "https://images.evetech.net/types/27917/icon?size=32",
+          "status": 400,
+          "body": "bad category or variation"
+        },
+        {
+          "url": "https://images.evetech.net/types/27917/bp?size=32",
+          "status": 200,
+          "content_type": "image/png"
+        },
+        {
+          "url": "https://images.evetech.net/types/27916",
+          "status": 200,
+          "body": [
+            "icon"
+          ]
+        },
+        {
+          "url": "https://images.evetech.net/types/46166",
+          "status": 200,
+          "body": [
+            "bpc",
+            "bp"
+          ]
+        },
+        {
+          "url": "https://images.evetech.net/types/2489",
+          "status": 200,
+          "body": [
+            "bpc",
+            "bp"
+          ]
+        }
+      ],
+      "scope": "Direct image-response proof is for blueprint 27917. Reaction 46166 and drone blueprint 2489 are additional metadata controls, not separately recorded image downloads."
+    },
+    "before_owner_regression": {
+      "test": "tests/kairo/market-blueprint-icons.test.mjs",
+      "log": "/workspace/scratch/a2b6c8fc6e85/pass3-markets-blueprint-before.log",
+      "sha256": "59d985b2b557defbd163eb69c0bae49861fb4e93acd442fc222f5950b243a932",
+      "owner": "Actual createMarkets/imports services and SQLite with cached data and denied external requests.",
+      "runner_counts": {
+        "tests": 16,
+        "passed": 3,
+        "failed": 13,
+        "specific_failed_assertions": 11,
+        "failed_parent_tests": 2
+      },
+      "failed_paths": [
+        "Blueprint-category browse",
+        "Mixed All items browse, including ordinary and unknown IDs",
+        "Selected item detail",
+        "Hub report",
+        "Import analysis cards",
+        "Import opportunity detail",
+        "Custom quote",
+        "Combined manifest quote",
+        "Newly saved plan",
+        "Reopened plan",
+        "Legacy plan read"
+      ],
+      "healthy_controls": [
+        "Existing market SQL counts remain browse=3, detail=5, report=7 with no external requests or database writes.",
+        "Import quantities and profit remain positive; an unknown type is excluded for missing cargo data.",
+        "Legacy plan identity, financial totals, packing, quote time and raw stored body remain unchanged, with no extra writes or external requests."
+      ],
+      "classification_controls": "Translated blueprint labels, ordinary names containing Blueprint, reaction/drone blueprints and unknown IDs prevent classification by display-name guessing.",
+      "limit": "Owner failures establish the missing server image-variation contract. Build87 separately establishes compiled UI wrong-resource and decoding failures for cold blueprint categories/detail; complete healthy/import and fixed browser acceptance remains pending."
+    }
+  },
+  "design_review": {
+    "reviewer": "pass3_shared",
+    "source_owner": "pass3_markets",
+    "disposition": "Actual Markets/import and Core/operations source independently accepted by pass3_shared; fixed hosted browser/package acceptance remains pending.",
+    "proposal": [
+      "Classify a known type from the existing server taxonomy ancestry: Blueprints & Reactions root 2 selects bp; ordinary and unknown types select icon.",
+      "Propagate one iconVariant scalar through existing bounded market browse/detail/report and import opportunity/detail/quote/plan responses.",
+      "Enrich legacy plan lines on read without rewriting stored plans or repricing their financial snapshot.",
+      "Make ItemName accept an optional typed variant defaulting to icon; market/import callers supply metadata while existing dimensions, lazy loading and load/error handlers remain unchanged.",
+      "Core uiSnapshot annotates only fresh decoded assets, transactions, orders and jobs rows, including legacy/stale data; jobs classify the displayed product_type_id or fallback blueprint_type_id. Raw ESI samples and dataRevision remain unchanged."
+    ],
+    "cost_constraints": [
+      "Use existing prepared taxonomy lookups; no taxonomy shipment to the frontend, name guessing, per-image SQL or provider metadata requests.",
+      "Keep one image resource per rendered item, existing request/poll bounds and ordinary/unknown icon behavior.",
+      "No automatic retry, fallback resource, timer, new recovery policy or CSP change."
+    ],
+    "pending": [
+      "Complete fixed hosted Chrome/Firefox 1600px/390px acceptance for correct resource URLs, decoded visible images, healthy/failure controls and request bounds.",
+      "Independently verify the resulting successful tested package."
+    ],
+    "source_owners": [
+      "pass3_markets",
+      "pass4_core"
+    ]
+  },
+  "scope_limit": "The user clarification and provider responses establish a blueprint resource defect. The initial restart description does not establish identical-type before/after recovery; this correction does not introduce or claim an automatic retry policy.",
+  "historical_validation": "Build86 remains the verified package for PBR-1 through PBR-57 and its recorded 991 browser checks and 1,164 runtime tests. Those historical passing gates do not cover or close PBR-58.",
+  "bank_status": {
+    "banked_baseline_commit": "b25f3df59a13d247f90be5d5811227952a2ebfad",
+    "baseline_url": "https://github.com/BunBajiro/kairo/commit/b25f3df59a13d247f90be5d5811227952a2ebfad",
+    "banked_application_commit": "695c50ce7b095bf3e61d97ce97d12bcdee4a1746",
+    "pbr58_evidence_and_tests": "Original tests/evidence banked at b25f3df; additional Core owner tests and implementation review banked at dad1d71.",
+    "pbr58_implementation": "Actual Markets/import/Core/operations correction independently reviewed by pass3_shared and banked at dad1d71 with [skip ci]; not a hosted/package acceptance result.",
+    "hosted_baseline": "Build87 partial baseline retained: cold blueprint Bombs, selected detail and Drones reproduced in all four contexts; later ordinary/import workflows stop at a fixture selector ambiguity.",
+    "fixed_hosted_package": "Build88 blueprint and all171 operations-icon checks pass; final combined browser/package acceptance pending. Build86 remains limited to the previous57 findings.",
+    "implementation_commit": "dad1d71c576fefd716db82d8393f92ed29df98ce",
+    "implementation_url": "https://github.com/BunBajiro/kairo/commit/dad1d71c576fefd716db82d8393f92ed29df98ce",
+    "expanded_browser_baseline_commit": "e24c4f805dbe311f9eb9274d7f6dd2cbc4f9ccb9",
+    "expanded_browser_run": {
+      "build": 88,
+      "run_id": 38766074729,
+      "url": "https://github.com/BunBajiro/kairo/actions/runs/38766074729",
+      "status": "Completed with expected failures in unrelated new UI baselines; blueprint and operations icon gates pass."
+    }
+  },
+  "implementation_review": {
+    "reviewer": "pass3_shared",
+    "state": "Actual source and owner regressions banked at dad1d71; full fixed browser/package acceptance pending.",
+    "market_import_files": [
+      "server/market-categories.mjs",
+      "server/markets.mjs",
+      "server/imports.mjs",
+      "components/kairo/ui.tsx",
+      "components/kairo/markets.tsx",
+      "components/kairo/import-analyser.tsx"
+    ],
+    "core_files": [
+      "server/core.mjs",
+      "components/kairo/operations.tsx"
+    ],
+    "independent_fixed_command": "node --test tests/kairo/market-blueprint-icons.test.mjs tests/kairo/core-blueprint-icons.test.mjs",
+    "independent_fixed_result": {
+      "tests": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    "core_before_log": "/workspace/scratch/a2b6c8fc6e85/pass4-core-blueprint-before.log",
+    "core_before_counts": {
+      "tests": 4,
+      "passed": 1,
+      "failed": 3
+    },
+    "core_fixed_log": "/workspace/scratch/a2b6c8fc6e85/pass4-core-blueprint-fixed.log",
+    "market_fixed_log": "/workspace/scratch/a2b6c8fc6e85/pass3-markets-blueprint-after.log",
+    "reviewed_bounds": [
+      "O(1) prepared taxonomy lookup without allocating ancestry per image.",
+      "Market SQL remains 3/5/7; import legacy body, identity and financial snapshot unchanged.",
+      "Core cold cache adds no requests/writes or per-row snapshot reads; live collection makes six existing source requests, cache repeat makes none, failure/recovery totals twelve.",
+      "No frontend taxonomy, image metadata lookup, retries, fallback resources, timers or CSP changes."
+    ]
+  },
+  "browser_before": {
+    "build": 87,
+    "commit": "b25f3df59a13d247f90be5d5811227952a2ebfad",
+    "checks_path": "/workspace/scratch/a2b6c8fc6e85/pass4-artifacts/build87/blueprint/checks.json",
+    "artifact_validation": "Parent verified download digest and ZIP CRC. pass3_shared independently read actual checks/errors/requests.",
+    "browsers": {
+      "chromium": "155.0.8059.39",
+      "firefox": "153.0"
+    },
+    "widths": [
+      1600,
+      390
+    ],
+    "counts": {
+      "checks": 51,
+      "passed": 18,
+      "failed": 33,
+      "product_expectation_failures": 32,
+      "workflow_completion_failures": 1,
+      "exceptions": 4,
+      "image_requests": 16,
+      "invalid_image_requests_http_400": 16
+    },
+    "completed_scope": [
+      "Cold blueprint Bombs before All items: two actual blueprint types request icon instead of bp and fail decoding/visibility.",
+      "Selected blueprint detail: the same incorrect resource fails.",
+      "Blueprint Drones category: the same incorrect resource fails."
+    ],
+    "fixture_limit": "Each context stops at Ship Equipment because both ordinary and blueprint branches contain that label. Healthy ordinary category, All items, report and import/manifest controls did not execute. The selector correction banked at dad1d71 chooses the observed exact ordinary button Ship Equipment 2. No complete baseline or fixed browser pass is claimed.",
+    "network_limit": "Intercepted image responses implement the separately observed live provider contract; no claim of live provider availability during the hosted run."
+  },
+  "fixed_browser88": {
+    "artifact_id": 11988578210,
+    "path": "/workspace/scratch/a2b6c8fc6e85/pass4-artifacts/build88/blueprint/checks.json",
+    "checks_file_sha256": "146af8a55c54a0297c4a82ec34dcb9cfb35d651cdec7a0ce235a4bbec96d4785",
+    "artifact_validation": "Root independently verified artifact SHA and ZIP CRC; Shared independently counted actual checks.",
+    "counts": {
+      "checks": 295,
+      "passed": 295,
+      "failed": 0,
+      "errors": 0
+    },
+    "limit": "Mock image responses implement the separately observed live provider contract; no live provider availability claim. Root visually reviewed Firefox1600 Bombs screenshot.",
+    "operations_checks": 171
+  }
+}

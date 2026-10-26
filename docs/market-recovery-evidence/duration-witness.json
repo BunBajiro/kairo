@@ -1,0 +1,113 @@
+{
+  "source": "02646da850cda876ebe5d06931b94e6338082a07",
+  "observed_at_utc": "2026-10-21T00:42:01Z",
+  "url": "https://esi.evetech.net/markets/10000002/orders?order_type=all&page=8",
+  "request_compatibility_date": "2026-08-18",
+  "response_headers": {
+    "Date": "Wed, 21 Oct 2026 00:42:01 GMT",
+    "Last-Modified": "Wed, 21 Oct 2026 00:37:29 GMT",
+    "Expires": "Wed, 21 Oct 2026 00:42:29 GMT",
+    "X-Pages": "405"
+  },
+  "response_order_count": 1000,
+  "witness_index_zero_based": 699,
+  "witness": {
+    "duration": 0,
+    "is_buy_order": false,
+    "issued": "2026-10-21T00:37:29Z",
+    "location_id": 60003760,
+    "min_volume": 1,
+    "order_id": 7450320550,
+    "price": 37760.0,
+    "range": "region",
+    "system_id": 30000142,
+    "type_id": 25600,
+    "volume_remain": 0,
+    "volume_total": 11
+  },
+  "schema": {
+    "url": "https://esi.evetech.net/meta/openapi.json?compatibility_date=2026-09-04",
+    "request_compatibility_date": "2026-09-04",
+    "resolved_version": "2026-08-18",
+    "sha256": "9a9a0f4af77216300e960cfd2576c9baac085a8170022e40c928c28622d80fc6",
+    "region_and_structure_order_properties": {
+      "duration": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "volume_remain": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "is_buy_order": {
+        "type": "boolean"
+      }
+    },
+    "all_three_required": true,
+    "duration_has_no_minimum": true
+  },
+  "later_response": {
+    "request_compatibility_date": "2026-09-04",
+    "date": "Wed, 21 Oct 2026 00:44:07 GMT",
+    "last_modified": "Wed, 21 Oct 2026 00:42:29 GMT",
+    "expires": "Wed, 21 Oct 2026 00:47:29 GMT",
+    "sha256": "4c177a6cc4fc45b58160066e9645e46934d34d6c1db036e18e5917e107ac5949",
+    "orders": 1000,
+    "zero_duration_count": 0
+  },
+  "limits": "Tiny public response extract observed directly; no user profile or authenticated data. Original whole response was not retained. User confirmed Jita Full scan and later retry success, but their exact response bytes were not available.",
+  "before_command": [
+    "/workspace/scratch/2aef5a8d9ec4/node-runtime-review/node-v24.22.0-linux-x64/bin/node",
+    "--test",
+    "--test-reporter=tap",
+    "tests/kairo/market-order-duration.test.mjs"
+  ],
+  "before_exit_code": 1,
+  "before_counts": {
+    "tests": 14,
+    "pass": 10,
+    "fail": 4,
+    "note": "Three acceptance cases and their parent fail; nine negative controls and their parent pass."
+  },
+  "before_source": "Isolated git archive of 02646da850cda876ebe5d06931b94e6338082a07 plus the final regression file",
+  "harness_note": "An intermediate fixed-source run expected one history request, but the seed scan correctly left fresh history cached. Corrected the request-bound expectation to zero and reran the final regression against isolated unmodified source. The intermediate log is retained separately and is not a product failure.",
+  "duration_only_regression_sha256": "aefc1df17ad0a33d7e177016f89c7bd7e87238bee851df88878240f7f580e07f",
+  "duration_only_fixed_command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "tests/kairo/market-order-duration.test.mjs",
+    "tests/kairo/markets.test.mjs",
+    "tests/kairo/market-pacing.test.mjs"
+  ],
+  "duration_only_fixed_counts": {
+    "tests": 37,
+    "pass": 37,
+    "fail": 0
+  },
+  "integration_note": "The recorded before.tap and fixed.tap cover the duration-only unit with the original new-test request bound. Subsequent retry integration adds retryWait injection and changes terminal malformed-response calls from 8 to 10; that final integrated source requires a separately recorded run.",
+  "integrated_verification": {
+    "command": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "tests/kairo/market-order-duration.test.mjs",
+      "tests/kairo/markets.test.mjs",
+      "tests/kairo/market-pacing.test.mjs"
+    ],
+    "runtime": "Node24.22.0",
+    "tests": 37,
+    "pass": 37,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "log": "integrated.tap",
+    "log_sha256": "1538d0741061fac3ca806d1328faedc4f4f09ca432591abf1b7d07f2f4250304",
+    "workspace_sha256": {
+      "server/markets.mjs": "f10227775955fa9cf31fa3f1b026d0f1ae07a8e9b054eb3572797e6156881eb6",
+      "server/esi.mjs": "fc2cb2523aadba53f1d3a697931652f3ec6ee81ad0f0a7ada7e976759501403d",
+      "tests/kairo/market-order-duration.test.mjs": "8b5bea46c78936052b387af19a3abb4fb5b25ad42defa4c0fa9587d582120f25"
+    },
+    "scope": "Actual Markets/SQLite owner with controlled provider responses; moved intrinsic validator and final zero-depth filtering reviewed. ESI transport cache/retry integration has separate owner coverage."
+  }
+}

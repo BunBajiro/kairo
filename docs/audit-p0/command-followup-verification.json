@@ -1,0 +1,109 @@
+{
+  "unit": "P0-02B",
+  "status": "Verified/banked source-grounded contract/design only; no implementation or new runtime proof.",
+  "assessed_source": "9e72c08c6a786d908be7d4ba5203dec44266d14c",
+  "assessed_tree": "e0154c8e3a30e6f5dcb30c2bce2b34ef03d58807",
+  "recovered_on": "2026-10-22",
+  "historical_wip_bank": "9e72c08c6a786d908be7d4ba5203dec44266d14c",
+  "historical_wip_receipt": "command-followup-wip.json",
+  "verified_executable_source": "0eece9d7d5f60f0246dbfda89b5cb4f55e576979",
+  "verified_executable_tree": "3349f0b083bb9df8a88fc99f3f4fb36ade8d3d10",
+  "version": "0.8.0-rc.17",
+  "main_at_recovery": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+  "pr": {
+    "number": 12,
+    "state": "open",
+    "draft": true
+  },
+  "scope": {
+    "command_handlers": [
+      "HTTP-035",
+      "HTTP-036",
+      "HTTP-037",
+      "HTTP-154"
+    ],
+    "related_coverage": [
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C12",
+      "C13",
+      "C16"
+    ],
+    "dependencies": [
+      "Client ID/app identity",
+      "token refresh and revocation",
+      "Core/ESI connection ownership",
+      "Registry hooks and incarnation tasks",
+      "module output fences requiring P0-02C"
+    ]
+  },
+  "reviews": [
+    {
+      "scope": "Auth source/tests/protocol and selected contract",
+      "author": "runtime_inventory",
+      "reviewer": "api_inventory",
+      "disposition": "Accepted complete source/test/protocol trace and selected contract at 77f03d9bfdccda83f0538c9d9ff8926e9845f13d18f7ee6df4949764e1f8f496 before status-only update; all AUTH behavioral proof remains pending."
+    },
+    {
+      "scope": "Module source/tests and selected contract",
+      "author": "algorithms_inventory",
+      "reviewer": "domain_inventory",
+      "disposition": "Accepted source/design at e0816b06e35e76f48d9f94b24fec5aab4bc8541dfeab729f6afa1b5ae053c44a before status-only update; no implementation acceptance."
+    },
+    {
+      "scope": "Shared semantics, cross-owner consistency, continuation and receipt",
+      "author": "root",
+      "reviewer": "inventory_review",
+      "disposition": "Accepted Auth and Module source/design after bounded lifecycle, exact readback, crash evidence, safe callback continuation and renewal-versus-access corrections. Independently accepted final six-path navigation/receipt, exact assessed tree, both final hashes, four manifest IDs, 102 relative links, documentation-only scope and preserved historical WIP receipts."
+    }
+  ],
+  "product_tests_run": [],
+  "browser_tests_run": [],
+  "performance_measurements": [],
+  "new_findings": [],
+  "implementation_changed": false,
+  "historical_receipts_changed": false,
+  "pending_gates": [
+    "P0-02C exact OPSEC/Stream immediate output fencing and convergence; remaining command families",
+    "P0-03 diagnostics/toast ownership/defaults/retention/caps",
+    "P0-04 measured baseline workloads and finite numerical budgets before corresponding implementation",
+    "AUTH-01\u201308 and MOD-01\u201306 owner regressions/requirement acceptance with healthy controls",
+    "C03.4 extension-specific migration/recovery proof; C08 crash/accounting proof",
+    "Independent exact-source implementation review, integration, Chrome/Firefox and matched costs",
+    "Later candidate/artifact verification; native Windows/DPAPI, live EVE/OBS and extended use remain outside automated evidence"
+  ],
+  "next_unit": "P0-02C: OPSEC/Stream controls and local output, including immediate safety fences required by Auth/module/OBS contracts.",
+  "release_actions_authorized": false,
+  "reviewed_content_before_status_update": {
+    "auth-command-contracts.md": "77f03d9bfdccda83f0538c9d9ff8926e9845f13d18f7ee6df4949764e1f8f496",
+    "module-command-contracts.md": "e0816b06e35e76f48d9f94b24fec5aab4bc8541dfeab729f6afa1b5ae053c44a"
+  },
+  "static_checks": {
+    "changed_paths": 6,
+    "command_handlers": 4,
+    "scope_ids_match_manifest": true,
+    "relative_links_and_fragments": 102,
+    "errors": 0,
+    "executable_and_packaging_diff": "none",
+    "historical_receipts_and_closed_ledgers_diff": "none",
+    "whitespace_check": "pass"
+  },
+  "reviewed_contract_sha256": {
+    "auth-command-contracts.md": "ff128877e03dd8dcd4ce1478f463ba4db5fcebe8e64df375f92c68229066f38f",
+    "module-command-contracts.md": "0d8f17629187bd9dc609d0b679f656e7968e866b74264588054c1c485829c71d"
+  },
+  "bank": {
+    "commit": "7882b6e7c1fc13cc92c2fc94e8667448cd8362af",
+    "tree": "30fdc336d8ec406739763e5552f79794910980f5",
+    "parent": "9e72c08c6a786d908be7d4ba5203dec44266d14c",
+    "changed_paths": 6,
+    "read_back": "GitHub commit/tree/parent and exact connector receipt text verified; fetched tree equals reviewed index and all working bytes; clean local checkpoint. PR body/head/base/open/draft read back exactly.",
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "ci": "Intentionally skipped documentation-only bank; no new executable build.",
+    "transport": "Authorized GitHub connector exact tree and guarded non-force fast-forward.",
+    "receipt_note": "Following documentation continuation records this bank; no self-SHA or new executable claim."
+  }
+}

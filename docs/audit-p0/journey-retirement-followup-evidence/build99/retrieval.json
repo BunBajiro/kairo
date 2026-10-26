@@ -1,0 +1,59 @@
+{
+  "status": "Focused hosted gate failed; remaining workflow still running when inspected. Not candidate acceptance.",
+  "reviewer": "runtime_inventory",
+  "retrieved_at_utc": "2026-10-24",
+  "source": "0114cf0cb99d8bf16c1c1ce20e23d68ff9315f09",
+  "tree": "82ddfbf10a13dcf6a5bece92ba09a8d9132a4e87",
+  "run": 40097111640,
+  "job": 120881564353,
+  "run_url": "https://github.com/BunBajiro/kairo/actions/runs/40097111640",
+  "artifact": {
+    "id": 12560464619,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/40097111640/artifacts/12560464619",
+    "name": "journey-retirement-check",
+    "bytes": 1630378,
+    "sha256": "79732103280f0e283aa24d17c21b794c9440c4b356a8c89ee1dadc28367bda68",
+    "github_digest_matches": true,
+    "crc_and_paths_valid": true
+  },
+  "gate": {
+    "number": 8,
+    "name": "Verify Journey retirement in Chrome and Firefox",
+    "conclusion": "failure",
+    "upload_step": 9,
+    "upload_conclusion": "success"
+  },
+  "observed": {
+    "checks": 22,
+    "passing_checks": 22,
+    "completed_cases": [],
+    "complete": false,
+    "failure": {
+      "meta": {
+        "engine": "chromium",
+        "version": "155.0.8059.39",
+        "width": 1600
+      },
+      "error": "page.waitForResponse: Timeout 10000ms exceeded while waiting for event \"response\"\n    at responseWait (/home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:66:26)\n    at openNotes (/home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:172:19)\n    at privateNotes (/home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:200:28)\n    at async file:///home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:240:57"
+    },
+    "errors": [],
+    "unexpected_network": [],
+    "provider_requests": [],
+    "http_errors": [],
+    "cleanup_errors": []
+  },
+  "classification": "Second private-note openNotes cold-reopen response wait expired after actual initial note Save persisted; fixture versus application cause requires owner/independent review. No confirmed product defect asserted.",
+  "limits": [
+    "Other engine/viewport cases did not run.",
+    "Full job logs returned BlobNotFound while job was in progress; artifact contains exact stack, requests and screenshots.",
+    "No repository edits or local tests performed."
+  ],
+  "files": {
+    "chromium-1600-owned-replay.png": "521d2013990d3c971a210eb4d4b40fd6c4ef71454d44af1345b4a5f04b9c9323",
+    "failure.json": "2c7e1c0affac8360ce80ddc90ed8c23db479c6df2589a0766635346fd2e9e61a",
+    "chromium-1600-overview-atlas.png": "b6684da9d6d47d43eacefdaf9f09eb28b49e4092a915a5288f2d535a18179beb",
+    "checks.json": "282b24aec2191e2e86b93a4414896d6afd063b80cb2dd45fb78f8acf48315d4e",
+    "chromium-1600-failure.png": "afcdc500212cafd3244372dcc6233aba962172555cc816c65c2ab38149164b24",
+    "checks-partial.json": "282b24aec2191e2e86b93a4414896d6afd063b80cb2dd45fb78f8acf48315d4e"
+  }
+}

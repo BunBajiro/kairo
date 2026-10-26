@@ -1,0 +1,47 @@
+{
+  "unit": "JRET-01 browser fixture correction",
+  "status": "Source/test correction independently reviewed; banked pending hosted rerun. No new product defect or candidate acceptance.",
+  "assessed_on": "2026-10-24",
+  "parent_bank": "0114cf0cb99d8bf16c1c1ce20e23d68ff9315f09",
+  "parent_tree": "82ddfbf10a13dcf6a5bece92ba09a8d9132a4e87",
+  "original_followup": "journey-retirement-followup.json",
+  "failure": {
+    "run": 40097111640,
+    "source": "0114cf0cb99d8bf16c1c1ce20e23d68ff9315f09",
+    "artifact": 12560464619,
+    "classification": "Harness did not perform its intended cold reopen: same fragment navigation kept existing document/editor, then the unconditional disclosure click closed it. No second Places GET occurred, so response wait timed out.",
+    "preceding_passes": 22,
+    "completed_cases": 0,
+    "unreached": [
+      "chromium390",
+      "firefox1600",
+      "firefox390"
+    ],
+    "evidence": "journey-retirement-followup-evidence/build99/retrieval.json"
+  },
+  "correction": {
+    "path": "tests/journey-retirement-ui.mjs",
+    "sha256": "806e45548a12f6d5f34c72fea83c8a9549a6fc13d508ec6180f198ca969eb693",
+    "behavior": "Explicit page.reload with Places response waiter armed first; assert HTTP200/main-frame navigation/new document; open disclosure only if closed.",
+    "assertions": "All22 preceding assertions and saved-text/SQLite/reopen/privacy/request/provider oracles retained; only the intended fixture boundary corrected.",
+    "product_changed": false
+  },
+  "review": {
+    "author": "domain_inventory",
+    "reviewer": "output_recon",
+    "disposition": "Accepted exact corrected harness and diagnosis after inspecting raw checks, trace and failure screenshot; no product edit justified. Root also inspected exact evidence/diff. No reviewer browser execution."
+  },
+  "checks": {
+    "node_syntax": "pass",
+    "whitespace": "pass",
+    "runtime_tests": "Not repeated for harness-only correction; preceding exact product/CSS local1354 pass and Build98 source-bound results remain separately recorded.",
+    "browser": "Hosted corrected-source rerun required; no local usable browser under current environment controls."
+  },
+  "next": "Inspect the complete corrected-source hosted matrix and raw evidence, retain any further failure, then independent bounded JRET acceptance. Candidate/artifact/full audit/native/live/extended checks remain separate.",
+  "release_actions_authorized": false,
+  "evidence_sha256": {
+    "journey-retirement-followup-evidence/build99/checks.json": "282b24aec2191e2e86b93a4414896d6afd063b80cb2dd45fb78f8acf48315d4e",
+    "journey-retirement-followup-evidence/build99/failure.json": "2c7e1c0affac8360ce80ddc90ed8c23db479c6df2589a0766635346fd2e9e61a",
+    "journey-retirement-followup-evidence/build99/retrieval.json": "89e0564f3ca5829b3e3fc8b192aff7719259d96c8b20a8a65eb26a99bdd1ebeb"
+  }
+}

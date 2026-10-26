@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Exec one development tool with project-scoped writable caches and temporary
+# state. Environment changes belong to that child process, not the caller shell.
+# SITES_ENV_READY prevents install/build wrappers from recursively re-entering.
+# This environment is unrelated to Kairo's runtime data directory and vault.
 set -euo pipefail
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

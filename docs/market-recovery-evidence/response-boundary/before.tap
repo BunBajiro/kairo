@@ -1,0 +1,139 @@
+TAP version 13
+# Subtest: malformed initial OBS JSON reports a failure and retries full config rather than switching to status-only reads
+not ok 1 - malformed initial OBS JSON reports a failure and retries full config rather than switching to status-only reads
+  ---
+  duration_ms: 35.716848
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/api-response-boundary.test.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        '/api/obs',
+    +   '/api/obs/status'
+    -   '/api/obs'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '/api/obs'
+    1: '/api/obs'
+  actual:
+    0: '/api/obs'
+    1: '/api/obs/status'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/api-response-boundary.test.mjs:34:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# {"calls":[{"path":"/api/obs","method":"GET","body":""},{"path":"/api/obs/status","method":"GET","body":""}],"configs":[],"statuses":[null,{"config":{"port":4455,"enabled":false,"rules":{}},"status":{"connected":false}}],"errors":[]}
+# Subtest: malformed current OBS status keeps the last usable state and recovers on the next explicit request
+not ok 2 - malformed current OBS status keeps the last usable state and recovers on the next explicit request
+  ---
+  duration_ms: 13.843799
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/api-response-boundary.test.mjs:39:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      {
+        configs: [
+          {
+            enabled: false,
+            port: 4455,
+    ...
+        ],
+    +   errors: [],
+    -   errors: [
+    -     'Kairo could not read the response.'
+    -   ],
+        statuses: [
+          {
+            connected: false
+          },
+    +     {
+    +       error: 'Kairo could not read the response.'
+    +     }
+        ]
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    configs:
+      0:
+        port: 4455
+        enabled: false
+        rules:
+    statuses:
+      0:
+        connected: false
+    errors:
+      0: 'Kairo could not read the response.'
+  actual:
+    configs:
+      0:
+        port: 4455
+        enabled: false
+        rules:
+    statuses:
+      0:
+        connected: false
+      1:
+        error: 'Kairo could not read the response.'
+    errors:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/api-response-boundary.test.mjs:50:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# {"calls":[{"path":"/api/obs","method":"GET","body":""},{"path":"/api/obs/status","method":"GET","body":""},{"path":"/api/obs/status","method":"GET","body":""}],"afterFailure":{"configs":[{"port":4455,"enabled":false,"rules":{}}],"statuses":[{"connected":false},{"error":"Kairo could not read the response."}],"errors":[]},"statuses":[{"connected":false},{"error":"Kairo could not read the response."},{"connected":false,"reconnecting":false}]}
+# Subtest: malformed successful OBS save stays unacknowledged, keeps the draft owner and never resubmits automatically
+not ok 3 - malformed successful OBS save stays unacknowledged, keeps the draft owner and never resubmits automatically
+  ---
+  duration_ms: 10.253265
+  type: 'test'
+  location: '/workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/api-response-boundary.test.mjs:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/api-response-boundary.test.mjs:72:42)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# {"saved":{"port":4466,"enabled":false,"rules":{}},"acknowledged":true,"configs":[{"port":4455,"enabled":false,"rules":{}},null,{"port":4466,"enabled":false,"rules":{}}],"statuses":[{"connected":false},null,{"connected":false}],"errors":[],"puts":1}
+# Subtest: valid JSON values and explicit HTTP errors retain the transport contract without extra reads
+ok 4 - valid JSON values and explicit HTTP errors retain the transport contract without extra reads
+  ---
+  duration_ms: 10.306462
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 184.964055

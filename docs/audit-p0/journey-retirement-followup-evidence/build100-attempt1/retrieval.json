@@ -1,0 +1,54 @@
+{
+  "status": "Focused hosted gate failed before page creation; remaining workflow still running when inspected. Not candidate acceptance.",
+  "reviewer": "runtime_inventory",
+  "retrieved_at_utc": "2026-10-24",
+  "source": "2f8b461195ea613ff35134cb9ae92438806e72fe",
+  "tree": "e9f32e9e784976429d9e80661120ec11c30ea5b0",
+  "run": 40097637976,
+  "job": 120883201631,
+  "run_url": "https://github.com/BunBajiro/kairo/actions/runs/40097637976",
+  "artifact": {
+    "id": 12561805655,
+    "url": "https://github.com/BunBajiro/kairo/actions/runs/40097637976/artifacts/12561805655",
+    "name": "journey-retirement-check",
+    "bytes": 4384,
+    "sha256": "4833163a58a00e1e3e4ab293ae83140ca504dfa9bfd23d437ac109aa32205320",
+    "github_digest_matches": true,
+    "crc_and_paths_valid": true
+  },
+  "gate": {
+    "number": 8,
+    "name": "Verify Journey retirement in Chrome and Firefox",
+    "conclusion": "failure",
+    "upload_step": 9,
+    "upload_conclusion": "success"
+  },
+  "observed": {
+    "checks": 0,
+    "completed_cases": [],
+    "complete": false,
+    "failure": {
+      "meta": {
+        "engine": "chromium",
+        "stage": "browser launch"
+      },
+      "error": "browserType.launch: Timeout 20000ms exceeded.\nCall log:\n  - <launching> /usr/bin/google-chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-SKwss4 --remote-debugging-pipe --no-startup-window\n  - <launched> pid=4311\n  - [pid=4311][err] [4311:4338:1024/132122.385043:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n\n    at /home/runner/work/kairo/kairo/tests/journey-retirement-ui.mjs:231:44"
+    },
+    "errors": [],
+    "unexpected_network": [],
+    "provider_requests": [],
+    "http_errors": [],
+    "cleanup_errors": []
+  },
+  "classification": "Chromium launch timeout20000ms before page creation. stderr contains a DBus address message; exact launch failure cause unresolved. Corrected cold-reload path never exercised. No product finding asserted.",
+  "limits": [
+    "All application/engine/viewport assertions remain unexecuted in this attempt.",
+    "No screenshots because no page existed.",
+    "No repository edits or local tests performed."
+  ],
+  "files": {
+    "failure.json": "ea68cf5bd86ba4f9e700c6e1dbbeb2de7a49eaa327ca67fda8e1ed6ae78fcf6d",
+    "checks.json": "01b8c04babfda96979f66ab4311925224b43def54b1f2cc6bb633668ffe84593",
+    "checks-partial.json": "01b8c04babfda96979f66ab4311925224b43def54b1f2cc6bb633668ffe84593"
+  }
+}

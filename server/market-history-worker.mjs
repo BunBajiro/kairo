@@ -1,3 +1,9 @@
+/**
+ * Private worker protocol for market-history.decodeArchive: workerData supplies
+ * compressed bytes and one UTC date; return {rows, records} or {error}. records
+ * counts validated rows across all regions; rows retains the four core hub regions.
+ * No database writes occur here. The parent owns timeout, cancellation and exit.
+ */
 import {parentPort,workerData} from 'node:worker_threads';
 import Bunzip from './vendor/seek-bzip/lib/index.js';
 const regions=new Set([10000002,10000043,10000032,10000042]);

@@ -1,3 +1,8 @@
+/**
+ * Pure broadcast protection classification plus a caller-owned continuity tracker.
+ * Missing required evidence requires covers; only verified High-Sec with explicit
+ * release policy can hide them. No network reads occur here. See ../docs/STREAMING.md.
+ */
 import { protectionLabel } from '../public/stream/protection.js';
 export const LOCATION_MAX_AGE = 30000;
 const REFRESH_GRACE = 30000;
@@ -11,12 +16,19 @@ function deadline(snapshot, key, now) {
 }
 const unavailable = reason => ({ state: 'unknown', hidden: true, reason, unavailable: true });
 const range = (id, first, last) => Number.isSafeInteger(id) && id >= first && id <= last;
+/** Return a recognized special-space category, or null to continue ordinary classification. */
 export function specialSpace(systemId, regionId) {
     // CCP's documented inclusive ID ranges; Pochven retains known-space IDs.
     if (regionId === 10000070 || range(systemId, 32000000, 32999999) || range(regionId, 12000000, 12999999)) return 'triglavian';
     if (range(systemId, 31000000, 31999999) || range(regionId, 11000000, 11999999)) return 'anoikis';
     return null;
 }
+/**
+ * Classify caller-provided snapshots at epoch-ms now. hidden means covers are
+ * required, not that OBS has confirmed pixels are hidden. Verified categories
+ * carry validUntil as their earliest evidence deadline. Priority: manual, special space, FW, sovereignty
+ * policy/contacts, then security; an explicit neutral contact still wins precedence.
+ */
 export function classifyOPSEC(input) {
     const { manual, location, system, constellation, region, fw, sovereignty, profile, settings = {}, now = Date.now() } = input;
     const ready = key => input[key]?.status === 'ready' && !input[key]?.truncated && now < deadline(input[key], key, now);
@@ -70,6 +82,11 @@ export function classifyOPSEC(input) {
     return classified('neutral', 'Null-security space without an alliance sovereignty standing.', keys, { standingSource: 'none' });
 }
 
+/**
+ * Return a stateful classifier for one protection owner. A policy/pilot change
+ * clears continuity. Only previously covered verified states survive transient
+ * gaps up to their ORIGINAL deadline; release and explicit access failures never do.
+ */
 export function createProtectionTracker() {
     let previous, policy;
     return input => {

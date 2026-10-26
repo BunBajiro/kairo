@@ -1,4 +1,11 @@
 "use client";
+/**
+ * Pilot/session-owned report dialog. Report refresh replaces a snapshot; event
+ * pagination appends to its fixed cursor/end without replacing summary projections.
+ * Label/notes edits remain local until saved. The runtime owns reconciliation and
+ * combat boundaries; see ../../docs/SESSIONS.md and ../../docs/API-REFERENCE.md.
+ */
+import {setUniverseRequest} from './universe-requests.mjs';
 import {Children,isValidElement,useEffect,useId,useRef,useState,type ReactNode} from 'react';
 import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogTitle} from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
@@ -10,6 +17,18 @@ import {useKairo} from './context';
 import {api,isk,stamp} from './model';
 import {CombatCoverage} from './combat-coverage';
 import {mostActiveSystem} from '@/lib/session-summary';
+import {loadSessionReportPage} from './session-report-page.mjs';
+
+// Accepted details saves retain order across dialog remounts for the same pilot
+// and Session. Failure releases the next write; idle owners leave no saved tail.
+const sessionDetailsWrites=new Map<string,Promise<void>>();
+function saveSessionDetails(url:string,details:{label:string;notes:string},csrf:string){
+ const submitted={...details};
+ const write=(sessionDetailsWrites.get(url)||Promise.resolve()).then(()=>api(url,'PUT',submitted,csrf));
+ const settled=write.then(()=>{},()=>{});sessionDetailsWrites.set(url,settled);
+ void settled.then(()=>{if(sessionDetailsWrites.get(url)===settled)sessionDetailsWrites.delete(url);});
+ return write;
+}
 
 const duration=(n:number)=>n<60?Math.floor(n)+'s':n<3600?Math.floor(n/60)+'m':Math.floor(n/3600)+'h '+Math.floor(n%3600/60)+'m';
 const number=(n:number)=>n.toLocaleString('en-GB');
@@ -55,20 +74,24 @@ function RouteVisits({route}:{route:any[]}){
  return <><ol className="session-route-list">{route.slice(0,limit).map((v,i)=><li key={v.id}><span className="session-route-index">{String(i+1).padStart(2,'0')}</span><details><summary><span><strong>{v.name}</strong><small>{v.regionName||'Region not recorded'}</small></span><span className="session-visit-time">{duration(v.seconds)}</span>{v.combatActive&&<span className="session-buffer-badge">±10m combat window</span>}<ChevronDown size={14}/></summary><div className="session-visit-detail"><p>Entry: {stamp(v.entered)}{v.clipped?' · session start':''}<br/>Exit: {v.active?'In progress · latest report':stamp(v.exited)}</p><p>{v.combatActive?'Alliance combat occurred during this visit, so its alliance kill/loss window extends ten minutes before entry and after exit.':'This visit remains in your route. No alliance combat has been found during the visit, so no extra combat window applies.'}</p>{v.security!==undefined&&v.security!==null&&<p>Security: {v.security.toFixed(2)}</p>}{v.inferred&&<p>Starting location inferred from the last saved visit.</p>}</div></details></li>)}</ol>{route.length>limit&&<Button variant="outline" onClick={()=>setLimit(n=>n+40)}>Show more visits ({route.length-limit})</Button>}</>;
 }
 
-export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;onSaved:()=>void}){
- const {boot,character}=useKairo();
+export function SessionReport({id,onClose,onSaved,onRestoreFocus}:{id:string;onClose:()=>void;onSaved:()=>void;onRestoreFocus:()=>void}){
+ const {boot,character,navigate}=useKairo();
  const summaryId=useId();
+ const restoreOnDismiss=useRef(false);
  const [report,setReport]=useState<any>(null),[name,setName]=useState(''),[notes,setNotes]=useState(''),[busy,setBusy]=useState(false),[refreshing,setRefreshing]=useState(false),[loadingMore,setLoadingMore]=useState(false),[error,setError]=useState('');
  const generation=useRef(0),reportRef=useRef<any>(null),requestVersion=useRef(0),requestingMore=useRef(false);
  const url='/sessions/'+encodeURIComponent(id)+'?character='+character;
  useEffect(()=>{
   const g=++generation.current;let running=false;
   setReport(null);reportRef.current=null;setError('');setName('');setNotes('');setBusy(false);setRefreshing(false);setLoadingMore(false);requestingMore.current=false;
+  // Keep report polling bounded: static sessions, hidden tabs and an expanded event
+  // archive need no recurring full read. Only the first read initializes editable
+  // label/notes; subsequent snapshots must not replace an unsaved debrief.
   async function read(initial=false){
    if(running||requestingMore.current||(!initial&&(document.hidden||reportRef.current?.collection?.phase==='static'))||(!initial&&(reportRef.current?.events.length||0)>100))return;
    running=true;const request=++requestVersion.current;
    try{const next=await api(url);if(g!==generation.current||request!==requestVersion.current)return;const first=!reportRef.current;reportRef.current=next;setReport(next);if(first){setName(next.session.label);setNotes(next.session.notes||'');}setError('');}
-   catch(e:any){if(g===generation.current)setError(e.message);}
+   catch(e:any){if(g===generation.current&&request===requestVersion.current)setError(e.message);}
    finally{running=false;}
   }
   read(true);const timer=setInterval(()=>read(),15000);
@@ -77,19 +100,21 @@ export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;o
  async function refreshReport(){
   const g=generation.current,request=++requestVersion.current;setRefreshing(true);
   try{const next=await api(url);if(g===generation.current&&request===requestVersion.current){reportRef.current=next;setReport(next);setError('');}}
-  catch(e:any){if(g===generation.current)setError(e.message);}
+  catch(e:any){if(g===generation.current&&request===requestVersion.current)setError(e.message);}
   finally{if(g===generation.current)setRefreshing(false);}
  }
+ // The PUT is allowed to finish for its captured Session. Closing/switching the
+ // dialog retires acknowledgement UI through generation, not the accepted write.
  async function save(){
   const g=generation.current;setBusy(true);
-  try{await api(url,'PUT',{label:name,notes},boot.csrf);if(g===generation.current){onSaved();toast.success('Session details saved.');}}
+  try{await saveSessionDetails(url,{label:name,notes},boot.csrf);if(g===generation.current){onSaved();toast.success('Session details saved.');}}
   catch(e:any){if(g===generation.current)toast.error(e.message);}
   finally{if(g===generation.current)setBusy(false);}
  }
  async function moreEvents(){
   const g=generation.current,request=++requestVersion.current;setLoadingMore(true);requestingMore.current=true;
-  try{const next=await api(url+'&offset='+report.events.length);if(g===generation.current&&request===requestVersion.current){const events=[...new Map([...report.events,...next.events].map((e:any)=>[e.id,e])).values()];const value={...next,events};reportRef.current=value;setReport(value);}}
-  catch(e:any){if(g===generation.current)toast.error(e.message);}
+  try{const next=await loadSessionReportPage(report,(offset,snapshot)=>api(url+'&'+new URLSearchParams({offset:String(offset),eventCursor:String(snapshot.eventCursor),eventEnd:snapshot.eventEnd})),()=>g===generation.current&&request===requestVersion.current);if(next){reportRef.current=next;setReport(next);setError('');}}
+  catch(e:any){if(g===generation.current&&request===requestVersion.current)toast.error(e.message);}
   finally{if(g===generation.current){setLoadingMore(false);requestingMore.current=false;}}
  }
  const s=report?.stats,alliance=report?.allianceCombat,lp=report?.loyalty,personal=report?.personalCombat;
@@ -100,9 +125,10 @@ export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;o
  const activity=report?mostActiveSystem(report):null;
  const phase=report?.collection?.phase,feed=report?.liveFeed;
  const collectionLabel=phase==='static'?'Session archived · zKill checks finished':alliance?.coverage.status==='disabled'?'Combat collection paused':phase==='live'?'Live session · zKill checks every 2 minutes':'Session ended · delayed zKill checks';
- return <Dialog open={!!id} onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="session-report-dialog session-v2"><DialogHeader><p className="eyebrow">KAIRO / FLIGHT RECORD</p><DialogTitle>Session overview</DialogTitle><DialogDescription>{report?pilot+' · '+stamp(report.session.started)+' → '+(report.session.ended?stamp(report.session.ended):'In progress'):'Loading your session…'}</DialogDescription></DialogHeader>
+ return <Dialog open={!!id} onOpenChange={open=>{if(!open){restoreOnDismiss.current=true;onClose();}}}><DialogContent onCloseAutoFocus={event=>{event.preventDefault();if(restoreOnDismiss.current)onRestoreFocus();}} className="session-report-dialog session-v2"><DialogHeader><p className="eyebrow">KAIRO / FLIGHT RECORD</p><DialogTitle>Session overview</DialogTitle><DialogDescription>{report?pilot+' · '+stamp(report.session.started)+' → '+(report.session.ended?stamp(report.session.ended):'In progress'):'Loading your session…'}</DialogDescription></DialogHeader>
   {error&&<p role="alert" className="inline-error">{error}</p>}
   {report&&<div className="stack">
+   <div className="flex justify-end"><Button variant="outline" onClick={()=>{setUniverseRequest('kairo-universe-replay',JSON.stringify({sessionId:id,characterId:character}));onClose();navigate('universe');}}><MapPin size={15}/> Show on Map</Button></div>
    <div className="report-title"><label className="field-label flex-1">Session name<Input value={name} onChange={e=>setName(e.target.value)} maxLength={100}/></label><span className={'tag '+(!report.session.ended?'positive':'')}>{report.session.ended?'COMPLETE':'ACTIVE'}</span></div>
    <section className="session-summary" aria-labelledby={summaryId}>
     <div className="session-summary-heading"><div><h2 id={summaryId}><Clock size={19}/> Session summary</h2><p className="session-collection-status">{collectionLabel}</p></div><Button size="sm" variant="outline" disabled={refreshing} onClick={refreshReport}><RefreshCw size={14} className={refreshing?'animate-spin':''}/> Refresh</Button></div>
@@ -123,7 +149,7 @@ export function SessionReport({id,onClose,onSaved}:{id:string;onClose:()=>void;o
      {report.route.length?<RouteVisits route={report.route}/>:<p className="meta">No location observations were captured for this session.</p>}
     </ReportCard>
     <ReportCard cardId="ships" tone="travel" status={report.ships.initialRecorded?'Starting ship recorded':'Starting ship not recorded'} icon={Ship} title="Ships flown" subtitle="Hull history & changes" preview={<><span className="session-metric-pair"><Metric label="Hull types" value={report.ships.hulls.length}/><Metric label="Ship changes" value={s.shipChanges}/></span><span className="session-hull-preview">{!report.ships.hulls.length&&<span className="session-coverage-line">No hull observations recorded.</span>}{report.ships.hulls.slice(0,4).map((h:any)=><span key={h.typeId}><img loading="lazy" width={40} height={40} src={'https://images.evetech.net/types/'+h.typeId+'/icon?size=64'} alt=""/><span>{h.name}</span></span>)}</span></>}>
-     {!report.ships.initialRecorded&&<p className="meta">The starting ship was not captured; the list begins with the first recorded ship change.</p>}
+     {!report.ships.initialRecorded&&<p className="meta">The starting ship was not captured; the list begins with the first recorded ship observation.</p>}
      <div className="session-hulls">{report.ships.hulls.map((h:any)=><div key={h.typeId}><img loading="lazy" width={64} height={64} src={'https://images.evetech.net/types/'+h.typeId+'/icon?size=64'} alt=""/><span><strong>{h.name}</strong><small>{duration(h.seconds)} observed · {h.stints} {h.stints===1?'stint':'stints'}</small></span></div>)}</div>
      <ol className="session-ship-changes">{report.ships.changes.map((h:any,i:number)=><li key={i}><time>{stamp(h.at)}</time><span>{h.name}</span><small>{duration(h.seconds)}</small></li>)}</ol>
     </ReportCard>

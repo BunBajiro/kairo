@@ -1,0 +1,108 @@
+✖ launcher rejects obsolete Node before acquiring a profile lease (178.187764ms)
+✖ embedded startup rejects an obsolete bundled Undici before opening a profile (95.358537ms)
+✖ actual OBS client rejects an unrequested WebSocket protocol without crashing Node (73.778757ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 429.370156
+
+✖ failing tests:
+
+test at tests/kairo/runtime-version.test.mjs:17:1
+✖ launcher rejects obsolete Node before acquiring a profile lease (178.187764ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Node\.js 24\.21\.0/. Input:
+  
+  'Choose two different local ports between 1024 and 65535.\n'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/runtime-version.test.mjs:24:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Choose two different local ports between 1024 and 65535.\n',
+    expected: /Node\.js 24\.21\.0/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tests/kairo/runtime-version.test.mjs:28:1
+✖ embedded startup rejects an obsolete bundled Undici before opening a profile (95.358537ms)
+  AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + Comparison {}
+  - Comparison {
+  -   code: 'UNSUPPORTED_NODE'
+  - }
+  
+      at async file:///workspace/scratch/2aef5a8d9ec4/kairo/[eval1]:6:9 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Choose two different local ports between 1024 and 65535.
+        at startKairo (file:///workspace/scratch/2aef5a8d9ec4/kairo/server/index.mjs:52:15)
+        at file:///workspace/scratch/2aef5a8d9ec4/kairo/[eval1]:6:30,
+    expected: { code: 'UNSUPPORTED_NODE' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+  
+  Node.js v24.19.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/runtime-version.test.mjs:39:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/kairo/runtime-version.test.mjs:43:1
+✖ actual OBS client rejects an unrequested WebSocket protocol without crashing Node (73.778757ms)
+  AssertionError [ERR_ASSERTION]: node:internal/deps/undici/undici:14770
+              if (!requestProtocols.includes(secProtocol)) {
+                                    ^
+  
+  TypeError: Cannot read properties of null (reading 'includes')
+      at Object.processResponse (node:internal/deps/undici/undici:14770:35)
+      at node:internal/deps/undici/undici:13421:23
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  
+  Node.js v24.19.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/2aef5a8d9ec4/kairo/tests/kairo/runtime-version.test.mjs:76:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

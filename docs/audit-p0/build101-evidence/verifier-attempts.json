@@ -1,0 +1,11 @@
+{
+  "initial_checker_attempt": {
+    "exit_code": 1,
+    "stage": "Pre-extraction supplemental notices validation",
+    "exception": "KeyError: source_blob_sha",
+    "cause": "Independent verifier initially assumed every supplement and additional notice supplied an upstream Git blob ID. The exact source schema supplies it only for four main entries; all 19 texts supply SHA256.",
+    "correction": "Validate every text SHA256 and each supplied Git blob ID; record supplied-ID count and explicitly exclude fresh upstream network retrieval.",
+    "artifact_or_application_failure": false,
+    "extraction_or_runtime_started": false
+  }
+}
