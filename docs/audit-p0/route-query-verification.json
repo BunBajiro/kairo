@@ -1,0 +1,674 @@
+{
+  "unit": "P0-02I1",
+  "status": "Independently reviewed source/design; this commit is the documentation bank. No implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "route_query_author",
+  "assessed_source": "c706300213f3a2ff9b7585f1204ec4aa599cd483",
+  "assessed_tree": "9efd049aae6d7c85bf38c1fc1a83f8021f6e9307",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101 inherited source-bound evidence only; documentation HEAD is not tested executable.",
+  "verified_predecessor": {
+    "unit": "P0-02H11",
+    "commit": "c706300213f3a2ff9b7585f1204ec4aa599cd483",
+    "tree": "9efd049aae6d7c85bf38c1fc1a83f8021f6e9307",
+    "parent": "aa428e3238b18ff91b0461928bbf13aa167ab71f",
+    "contract": "docs/audit-p0/maps-undo-contracts.md",
+    "contract_sha256": "a51d2527cf61040427d7e0b7ac635bba284d25532ace26a66d8bd15bf52d8a50",
+    "bank_receipt_sha256": "3ac1043555a8b7030fcd7778a63544ba065ca0709ed5da18366e8581462a733b",
+    "verification": "Root supplied exact six remote bytes/modes/commit/tree/parent, fetched-clean and PR body/head/main/open-draft readback plus both full reviews and final metadata acceptance. Author checked local HEAD/tree and source delta; no independent remote verification claim. Root separately updates H11 bank readback receipt."
+  },
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Root-verified state; no release action or product test by this author."
+  },
+  "scope": {
+    "command_ids": [
+      86,
+      138,
+      139
+    ],
+    "command_count": 3,
+    "classification": "Pure bounded calculation target; historical query-post labels alone do not establish present purity. Direct138/139 each have one explicit endpoint pair.",
+    "actual_consumer": "086 destination panel: Inspect, Copy route and destination-only local Navigation draft intent. Optional Show route is not wired. No compiled direct138/139 consumer established.",
+    "excluded_from_acceptance": [
+      "Navigation120-127 internal batch/JDC/fuel/reachability/plan/persistence/send",
+      "Link/list/pin/view/Politics commands",
+      "Broader graph/numeric algorithms and browser-local families",
+      "Provider collectors, all source/maintenance implementations and P0-03/P0-04 acceptance"
+    ],
+    "manifest_rows": [
+      {
+        "id": "HTTP-086",
+        "method": "POST",
+        "path": "/api/universe/jspace/destinations",
+        "kind": "query-post",
+        "match": "exact",
+        "source": "server/index.mjs",
+        "owner": "server/universe-destinations.mjs;server/universe.mjs"
+      },
+      {
+        "id": "HTTP-138",
+        "method": "POST",
+        "path": "/api/universe/route",
+        "kind": "query-post",
+        "match": "exact",
+        "source": "server/index.mjs",
+        "owner": "server/universe.mjs;server/universe-routing.mjs"
+      },
+      {
+        "id": "HTTP-139",
+        "method": "POST",
+        "path": "/api/universe/jump-plan",
+        "kind": "query-post",
+        "match": "exact",
+        "source": "server/index.mjs",
+        "owner": "server/universe.mjs;server/universe-routing.mjs"
+      }
+    ]
+  },
+  "handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "accepted_interfaces_read": [
+    "docs/audit-p0/command-contracts.md",
+    "docs/audit-p0/dataset-command-contracts.md",
+    "docs/audit-p0/maps-lifecycle-contracts.md",
+    "docs/audit-p0/maps-tracking-contracts.md",
+    "docs/audit-p0/maps-roster-contracts.md",
+    "docs/audit-p0/maps-card-contracts.md",
+    "docs/audit-p0/maps-connection-contracts.md",
+    "docs/audit-p0/maps-passage-contracts.md",
+    "docs/audit-p0/maps-undo-contracts.md",
+    "docs/audit-p0/maps-undo-verification.json",
+    "docs/audit-p0/feed-command-contracts.md",
+    "docs/audit-p0/operations-control-contracts.md",
+    "docs/audit-p0/http-surface.tsv",
+    "docs/audit-p0/command-coverage-checkpoint.json"
+  ],
+  "preparation": {
+    "durable": "docs/audit-p0/route-query-preparation.md",
+    "scratch_read": [
+      "i1-preparation-brief.md",
+      "i1-authoring-instructions.md",
+      "i1-preflight-notes.md",
+      "i1-source-notes.md",
+      "i1-integration-notes.md"
+    ],
+    "limit": "Full ACTIVE instructions and final H11/current continuation read at activation. Preparation is source reconnaissance, not review of this final pair. No unfinished H10/H11 draft dependency."
+  },
+  "source_anchors_read": [
+    {
+      "path": "server/index.mjs",
+      "anchors": [
+        "134-145 private guards/body reader",
+        "387 destinations",
+        "477-478 direct route/jump"
+      ]
+    },
+    {
+      "path": "server/universe.mjs",
+      "anchors": [
+        "65 standingForAlliance",
+        "175-239 canonical expiry/retirement/timers",
+        "313-354 linkReadContext/links",
+        "654-755 routeContext/preparation/direct wrappers"
+      ]
+    },
+    {
+      "path": "server/universe-jspace.mjs",
+      "anchors": [
+        "328-350 reconcileNodes archive/undo",
+        "397-455 map projection",
+        "999 exact map getter"
+      ]
+    },
+    {
+      "path": "server/universe-feeds.mjs",
+      "anchors": [
+        "61-78 save/prune/Nav/timer",
+        "209 onward state/provider distinction"
+      ]
+    },
+    {
+      "path": "server/universe-operations.mjs",
+      "anchors": [
+        "648 readContext config/location/fleet/status without provider configuration"
+      ]
+    },
+    {
+      "path": "server/universe-static.mjs",
+      "anchors": [
+        "48-85 process-cached physical atlas"
+      ]
+    },
+    {
+      "path": "server/universe-routing.mjs",
+      "anchors": [
+        "8-125 physical constants/local models/hull/settings",
+        "135-244 blocking/cost/travel graph",
+        "273-414 main heap/route/spatial jump"
+      ]
+    },
+    {
+      "path": "server/universe-destinations.mjs",
+      "anchors": [
+        "14-19 lazy bundled reference",
+        "21-60 checked public reports",
+        "61-125 strict partial input/candidates/ranking/exclusions"
+      ]
+    },
+    {
+      "path": "server/universe-navigation.mjs",
+      "anchors": [
+        "134-180 internal preparation/batch/acceptance"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-destinations.tsx",
+      "anchors": [
+        "26-49 input/request lifetime",
+        "55-76 controls/results/copy/actions"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "anchors": [
+        "352 actual Inspect/Set destination wiring"
+      ]
+    },
+    {
+      "path": "components/kairo/universe.tsx",
+      "anchors": [
+        "140 destination-only Navigation draft intent"
+      ]
+    },
+    {
+      "path": "components/kairo/universe-navigation-ui.tsx",
+      "anchors": [
+        "29-76 actual Navigation APIs"
+      ]
+    },
+    {
+      "path": "components/kairo/model.ts",
+      "anchors": [
+        "123 api transport/JSON response boundary"
+      ]
+    }
+  ],
+  "existing_tests_read_not_run": [
+    {
+      "path": "tests/kairo/universe-routing.test.mjs",
+      "anchors": "11-191 small/directed/parallel/weighted/physical controls"
+    },
+    {
+      "path": "tests/kairo/universe-destinations.test.mjs",
+      "anchors": "14-120 category/public/limit/provenance controls"
+    },
+    {
+      "path": "tests/kairo/universe-route-preparation.test.mjs",
+      "anchors": "27 onward one graph/grid/projection, Navigation50 stops and held evidence"
+    },
+    {
+      "path": "tests/kairo/universe-http.test.mjs",
+      "anchors": "8 onward guest/local/private isolation/jump/network/Stream controls"
+    },
+    {
+      "path": "tests/kairo/universe-jspace.test.mjs",
+      "anchors": "386-398 destination exact map scope and ignored forged graph"
+    },
+    {
+      "path": "tests/kairo/universe-jspace-reads.test.mjs",
+      "anchors": "183 destinations reject source map"
+    },
+    {
+      "path": "tests/kairo/universe-jspace-http.test.mjs",
+      "anchors": "destinations is Stream GET exclusion only"
+    },
+    {
+      "path": "tests/jspace-ui-workflows.mjs",
+      "anchors": "499-512 actual destination hull/path/copy unchanged itinerary"
+    }
+  ],
+  "observed_effects": {
+    "138": "links -> linkReadContext -> expiry cleanup -> exact canonical/G4/Maps/history/Navigation reference deletion, callback and timer effects; before selected map validation.",
+    "086": "map projection can clean canonical links and reconcile disconnected cards/archive/undo; feeds.state can prune durable reports, retire Navigation references and reschedule timers. Exact map getter does not ensureSource.",
+    "139": "Direct physical wrapper skips links; do not impute138 maintenance.",
+    "limit": "Source inspection only; no reproduced defect. Passive target differs from current getters."
+  },
+  "selected_decisions": [
+    "No mutation token/CAS/idempotency/commit receipt/durable query journal. Passive local readers and separately attributable maintenance; bounded ephemeral preparation/request timers remain charged.",
+    "Strict exact private HTTP/context and per-route complete recipe; runtime/catalog/connection/map ABA checked across body wait and publication; guest0 local138/139 preserved, optional collection-off not blanket prohibition.",
+    "Exact catalog names and canonical numeric-string endpoint aliases, no lossy coercion/truncation/conflict fallback.086 selected origin may be outside map cards;139 requires destination, has range default5 and finite(0,20], rejects map/preset/JDC/fuel.",
+    "086 interactive map versus138 optional owned tracking-source map retained; internal Navigation prepareRoutePlan/routeContext schemas remain separately owned.",
+    "Complete route-specific preference/default/null/applicability table; current/announced/live distinct historical local models. Source086500/1e12/160 ceilings become rejecting/common selected policy subject to P0-04, not measured proof.",
+    "Unknown lifetime/nominal mass/standing/activity are not zero, confirmed accessible or known safe. Existing hypothetical unknown private hull planning remains qualified; public/type/source eligibility follows selected model.",
+    "One coherent read capture, six computational bodies maximum plus narrow metadata; one graph/grid reuse, no large unrelated Operations/Politics/history/provider work.",
+    "Whole relevant graph/candidate source generations and earliest eligibility transition fence optimality and negative results, including unused/new/removed edge/candidate and absent optional evidence. No repeated full-graph publication scan or silent newer recipe.",
+    "Completed result DTO binds normalized recipe/snapshot; failed DTO contains no private partial result. Zero-hop/no_candidates/completed no_route differ from invalid/unavailable/stale/budget/deadline/cancel/error.",
+    "Deterministic path cost/hops/directed-edge tie and destination cost/hops/system ordering; duplicate public endpoint picks deterministic witnessed report with exact age/count. Top-limit proof does not require total reachable-count traversal.",
+    "Bounded deterministic exclusion diagnostics disclose exact omissions; paths/rankings never truncate. Private explanations differ from redacted application logging.",
+    "Actual086 observer generations fence same-recipe ABA and late success/error/finally/copy; Set destination is destination-only intent preserving Navigation origin policy, not path reuse/save/send.",
+    "Real task/resource occupancy persists to settlement after observer cancellation; no prompt synchronous-cancel claim, indefinite polling, automatic provider refresh or fake release."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/route-query-contracts.md",
+    "sha256": "9c07043c54a8c194972d5c8a75d78ae5dfba7c97702519d88f7f302eb627a756"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality.",
+      "reviewed_contract_sha256": "dd978f945f40a03ab33c4323653be86f0ea2ddf7abd0e3241b7fb2b95638906d",
+      "reviewed_receipt_sha256": "ae3f10b98252870aad4032a6f4da035e6676753aa2eeb49be77d5c232a593342",
+      "outcome": "Full independent spec compliance and source/design documentation quality accepted; no findings or advisories. Complete086/138/139 unit and actual source/UI/accepted interfaces checked; strict schemas/defaults/applicability, passive maintenance separation, coherent whole-graph/candidate evidence, truthful outputs, actual086 actions, internal Navigation and finite proof gates accepted. No runtime/algorithm/performance acceptance.",
+      "findings": [],
+      "open_findings": []
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality.",
+      "reviewed_contract_sha256": "dd978f945f40a03ab33c4323653be86f0ea2ddf7abd0e3241b7fb2b95638906d",
+      "reviewed_receipt_sha256": "ae3f10b98252870aad4032a6f4da035e6676753aa2eeb49be77d5c232a593342",
+      "outcome": "Full independent spec compliance and source/design documentation quality accepted; no findings or advisories. Complete086/138/139 unit and actual source/UI/accepted interfaces checked; strict schemas/defaults/applicability, passive maintenance separation, coherent whole-graph/candidate evidence, truthful outputs, actual086 actions, internal Navigation and finite proof gates accepted. No runtime/algorithm/performance acceptance.",
+      "findings": [],
+      "open_findings": []
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after both full reviews and source/interface reconciliation; final metadata/tree review remains separate before banking."
+    }
+  },
+  "author_self_review": {
+    "status": "Complete for author submission only; no independent acceptance.",
+    "corrections": [
+      "Preserved internal Navigation schema boundary and current graph/grid reuse.",
+      "Removed unnecessary all-reachable-total work; bounded top-limit result requires proof only of requested ranking.",
+      "Added exact failed-query DTO with no retired/private partial recipe/snapshot; completed negatives retain required evidence.",
+      "Made coherent read capture explicit and kept search outside read transaction.",
+      "Distinguished request-owned timers/private exclusion explanations from shared maintenance/application logs.",
+      "Explicit module/source retirement only invalidates selected authority, not unrelated unscoped local planning."
+    ],
+    "remaining_prerequisites": [
+      "P0-04 primitive/opaque identity representations and all aggregate resource/clock ceilings must be fixed and measured before implementation.",
+      "Passive readers and writer-owned whole-graph/source/candidate generation interfaces must be implemented/proven.",
+      "All ROUTE-Q gates, actual consumers, independent algorithms and exact local model fidelity remain pending.",
+      "H8-SR-A1/H8-I1 and H8-SR-A2/H8-I2 remain open before H8 implementation/P0-04/whole-audit review."
+    ]
+  },
+  "author_static_checks": {
+    "status": "Completed author documentation validation: JSON parse/contract hash,37 relative Markdown links with no fragments,47 receipt repository paths plus five scratch preparations, exact manifest086/138/139, actual disjoint exhaustive conditional97+2+24+71 partition, assigned-file whitespace and empty executable-owner delta. Final commands/output and hashes recorded in scratch i1-author-report.md.",
+    "product_execution": "None; static documentation validation only.",
+    "corrections": "Initial exploratory manifest read treated HTTP-NNN as a bare integer; corrected parsing before actual partition validation. Initial receipt path check found two expanded basename mistakes (Operations/model), corrected to actual source paths and rerun. No product test failure or source defect."
+  },
+  "acceptance": {
+    "ROUTE-Q-01": "pending",
+    "ROUTE-Q-02": "pending",
+    "ROUTE-Q-03": "pending",
+    "ROUTE-Q-04": "pending",
+    "ROUTE-Q-05": "pending",
+    "ROUTE-Q-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "coverage_reconciliation": {
+    "status": "Source/design accepted after both full independent reviews and root reconciliation; no runtime/algorithm acceptance.",
+    "previously_contracted": 94,
+    "previously_remaining": 27,
+    "retired_commands": 2,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "manifest_sha256": "483b27cdac153a9d18797f85cdb6bec9c6f1eb7e580257f372cb384071596ae3",
+    "accepted_post_checkpoint_groups": {
+      "operations-control": [
+        97,
+        112
+      ],
+      "intel-command": [
+        99,
+        100,
+        101
+      ],
+      "signature-command": [
+        102,
+        103,
+        104,
+        108,
+        110
+      ],
+      "upgrade-command": [
+        105,
+        106,
+        109,
+        111
+      ],
+      "maps-lifecycle": [
+        87,
+        91,
+        94
+      ],
+      "maps-import": [
+        88,
+        89
+      ],
+      "maps-tracking": [
+        83
+      ],
+      "maps-roster": [
+        90,
+        170,
+        171,
+        172,
+        173
+      ],
+      "maps-card": [
+        174,
+        175,
+        176,
+        177,
+        178
+      ],
+      "maps-connection": [
+        179,
+        180
+      ],
+      "maps-passage": [
+        181,
+        182,
+        183
+      ],
+      "maps-observation": [
+        184,
+        185
+      ],
+      "maps-note-rally": [
+        186,
+        187,
+        188,
+        189
+      ],
+      "maps-signature": [
+        190,
+        191
+      ],
+      "maps-undo": [
+        192
+      ]
+    },
+    "retired_ids": [
+      56,
+      57
+    ],
+    "companion_boundary_ids": [
+      1,
+      2,
+      5,
+      6,
+      8,
+      17,
+      18,
+      19,
+      20,
+      22,
+      25,
+      26,
+      29,
+      32,
+      38,
+      40,
+      42,
+      43,
+      45,
+      46,
+      54,
+      55,
+      58,
+      59,
+      60,
+      63,
+      65,
+      69,
+      73,
+      74,
+      75,
+      78,
+      79,
+      80,
+      81,
+      82,
+      84,
+      85,
+      92,
+      93,
+      95,
+      96,
+      98,
+      107,
+      113,
+      114,
+      119,
+      129,
+      130,
+      132,
+      134,
+      136,
+      150,
+      151,
+      152,
+      153,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      193,
+      194
+    ],
+    "validation": "Actual disjoint exhaustive sets reconstructed from immutable checkpoint, accepted unit receipts and manifest kind partition; not arithmetic counts alone.",
+    "newly_contracted": 3,
+    "current_contracted": 97,
+    "remaining": 24,
+    "current_contracted_ids": [
+      3,
+      4,
+      7,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      21,
+      23,
+      24,
+      27,
+      28,
+      30,
+      31,
+      33,
+      34,
+      35,
+      36,
+      37,
+      39,
+      41,
+      44,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      61,
+      62,
+      64,
+      66,
+      67,
+      68,
+      70,
+      71,
+      72,
+      77,
+      83,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      94,
+      97,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      108,
+      109,
+      110,
+      111,
+      112,
+      115,
+      116,
+      117,
+      118,
+      138,
+      139,
+      154,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192
+    ],
+    "remaining_ids": [
+      76,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      131,
+      133,
+      135,
+      137,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149
+    ]
+  },
+  "owner_delta_check": {
+    "command": "git diff aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 --name-only -- server components lib tests",
+    "exit_code": 0,
+    "output": ""
+  },
+  "next_bounded_unit": "P0-02I2 Navigation authority/itinerary preflight:120 PUTitinerary,121 DELETEitinerary,122 DELETEstop,126 reorder with119 read companion. Trace exact saved intent, revision/stop identity and plan invalidation;123 bridge discovery,124 plan cache,125 reachability and127 external waypoint send remain separate pending units.",
+  "limits": [
+    "Only assigned route-query contract/receipt and scratch i1-author-report.md authored; root owns shared handoff/ledger/H11 metadata and exact-tree bank.",
+    "No source/tests/helpers/shared/index edits, product tests, commits/pushes or subagents. Freeze pending both full independent reviews; no edits until concrete feedback.",
+    "Preserve final historical audit/all74 closed findings, receipts, verified performance and fresh-data0.8.0; no prior-version migration/recovery obligation before finalization, current synthetic correctness still owed.",
+    "All other command/non-HTTP/collector/algorithm/P0-03/P0-04 work remains pending; diagnostics/toasts unimplemented; no telemetry or Stream-toast consolidation.",
+    "No native Windows/DPAPI/live EVE/OBS/extended-use acceptance or main/merge/version/tag/publication/PR-ready/release action."
+  ],
+  "reviewed_substantive_sha256": "dd978f945f40a03ab33c4323653be86f0ea2ddf7abd0e3241b7fb2b95638906d",
+  "status_metadata_delta": {
+    "from": "**Author-complete source/design draft; both independent full reviews pending. No source/design acceptance, implementation or behavioral acceptance.**",
+    "to": "**Independently reviewed source/design; implementation and behavioral acceptance pending.**",
+    "limit": "Opening acceptance sentence only beyond independently reviewed final freeze; substantive contract unchanged."
+  },
+  "review_freeze": {
+    "contract_file": "i1-v1-route-query-contracts.md",
+    "receipt_file": "i1-v1-route-query-verification.json",
+    "limit": "Scratch basenames identify reviewed artifacts only; reversing recorded opening sentence reconstructs exact substantive contract. Durable outcome/hashes below; scratch is not a resume dependency."
+  },
+  "bank": {
+    "status": "Commit containing this receipt; exact remote identity/readback recorded in PR12 and following continuation.",
+    "parent": "c706300213f3a2ff9b7585f1204ec4aa599cd483",
+    "parent_tree": "9efd049aae6d7c85bf38c1fc1a83f8021f6e9307",
+    "ci": "Documentation-only [skip ci]; tested executable remains Build101 aa2bc453."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "c706300213f3a2ff9b7585f1204ec4aa599cd483",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "predecessor_verification": "H11 exact commit/tree/parent and all6remote file bytes/path entries/modes, fetched clean checkout and exact PR body/head/main/open/draft read back.",
+    "source_delta": "Build101-to-H11 contains48 documentation/AGENTS paths only; no executable/test/config/dependency change."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 271,
+    "actual_disjoint_exhaustive_partition": [
+      97,
+      2,
+      24,
+      71
+    ],
+    "final_contract_sha256": "9c07043c54a8c194972d5c8a75d78ae5dfba7c97702519d88f7f302eb627a756",
+    "substantive_reconstruction": "Opening acceptance sentence only beyond final reviewed freeze",
+    "older_receipt_delta": "H11 status/bank readback annotation only",
+    "historical_preservation": "Earlier receipts/immutable coverage/I1 preparation unchanged; no reopened findings",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; all runtime/browser/algorithm/performance proof remains pending."
+  }
+}
