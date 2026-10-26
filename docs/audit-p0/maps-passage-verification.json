@@ -1,0 +1,244 @@
+{
+  "unit": "P0-02H7",
+  "status": "Independently reviewed source/design; this commit is the documentation bank. No implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_passage_author",
+  "assessed_source": "18a6e6efaa381e1ead1a32ce1326891ee1a9938e",
+  "assessed_tree": "ed3268b80d63ae37fd058616d449508ec9bc62f8",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101 inherited source-bound evidence only; no H7 runtime proof",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Coordinator supplied verified H6 commit/tree/parent, six remote bytes and exact PR/main/open/draft read-back. Author checked local HEAD/tree, accepted H6 contract hash, receipt and continuation delta; did not repeat remote verification."
+  },
+  "accepted_h6": {
+    "contract": "docs/audit-p0/maps-connection-contracts.md",
+    "contract_sha256": "1582d4687589a9392b75303a10796ef26ffa0306421449d7c7881b717b7cdff3",
+    "corrections": "Both independent reviews accepted independent stored access intent with effective confirmation gating, and explicit still-live finite-to-unknown lifetime correction with all routing flags false. H7 manual records do not change these claims or eligibility."
+  },
+  "owner_delta_check": {
+    "command": "git diff aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD --name-only -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      181,
+      182,
+      183
+    ],
+    "command_count": 3,
+    "shared_dispatcher": 90,
+    "dispatcher_recounted": false,
+    "read_dependencies": [
+      93
+    ],
+    "selected_inspection": "Reuse H4 HTTP093 inspect=lifecycle with one exact passage/current-edge metadata target and bounded retained safe receipt; no new route or command row.",
+    "primary": "C10",
+    "dependencies": [
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12",
+      "C13"
+    ],
+    "excluded_from_acceptance": [
+      "Already accepted H1–H6 command selectors and shared090",
+      "184–192 and086",
+      "Full automatic movement, producer sequencing, fan-out, population and expiry algorithms",
+      "Routing, navigation, Politics and browser-local command families"
+    ]
+  },
+  "handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "accepted_interfaces_read": [
+    "docs/audit-p0/command-contracts.md",
+    "docs/audit-p0/maps-lifecycle-contracts.md",
+    "docs/audit-p0/maps-import-contracts.md",
+    "docs/audit-p0/maps-tracking-contracts.md",
+    "docs/audit-p0/maps-roster-contracts.md",
+    "docs/audit-p0/maps-card-contracts.md",
+    "docs/audit-p0/maps-connection-contracts.md",
+    "docs/audit-p0/maps-connection-verification.json",
+    "docs/audit-p0/signature-command-contracts.md",
+    "docs/audit-p0/http-surface.tsv",
+    "docs/audit-p0/command-coverage-checkpoint.json"
+  ],
+  "preparation": "h7-task-brief.md ACTIVE, h7-preflight-notes.md, independent h7-source-notes.md and h7-integration-notes.md read. Preparation observations are not independent verdicts on this frozen draft. No unfinished H6 draft read before activation.",
+  "source_anchors_read": [
+    {
+      "path": "server/universe-jspace.mjs",
+      "anchors": [
+        "passage366–380",
+        "recordPassage123–132",
+        "project409–433",
+        "command648–777",
+        "archive/forget222–270",
+        "capacity517–521",
+        "native passage import945–950"
+      ]
+    },
+    {
+      "path": "server/universe-jspace-tracking.mjs",
+      "anchors": [
+        "producer eligibility/sample69–91",
+        "baseline93–99",
+        "subscriptions/frontier32–68",
+        "observeLocation278–359"
+      ]
+    },
+    {
+      "path": "server/universe.mjs",
+      "anchors": [
+        "forgetLinks/forgetBoundSignatures190–215",
+        "expiry/observeTravel/selected location owning interfaces"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-panels.tsx",
+      "anchors": [
+        "utcInput/utcValue22–24",
+        "actual JSpacePassages134–140"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "anchors": [
+        "missing selection157",
+        "perform/command170–182",
+        "actual passage control/panel333–348"
+      ]
+    }
+  ],
+  "existing_tests_read_not_run": [
+    "tests/kairo/universe-jspace.test.mjs104–114,205–243 and portable passage controls",
+    "tests/kairo/jspace-tracking.test.mjs relevant optional passage/recipient controls",
+    "tests/kairo/jspace-retention.test.mjs",
+    "tests/kairo/universe-jspace-reads.test.mjs187–239",
+    "tests/jspace-ui-workflows.mjs397–401,458,477–480"
+  ],
+  "evidence_limits": [
+    "Current sampled fixture enables consent after one endpoint; it does not prove H4 both-endpoints-post-consent.",
+    "Ordinary known/unknown totals are not proof of fractional/extreme exact aggregate arithmetic or new API representation.",
+    "Partial service correction does not prove actual full-field browser save preserves occurrence seconds and stored longer text/type ID.",
+    "Actual browser passage segment covers add/reverse add, not edit/review/cancel/remove or held acknowledgments.",
+    "Current dedupe has more than surviving row keys; no replay defect is asserted from deletion alone, and future frontier/retirement guarantees remain pending.",
+    "Imported sampled previous time has a separate keyless historical preservation boundary; no reproduced defect or closed-finding reopening."
+  ],
+  "selected_decisions": [
+    "Strict exact add/save/remove forms under H4 one-map CAS/latest receipt; nonreused passage and H6 edge/link incarnations, canonical dependency, no per-passage lane or absent upsert.",
+    "Manual records/corrections remain available on exact extant unconfirmed/disabled/inaccessible/unknown-lifetime wormholes, unlike sampled unique-active-confirmed inference. No connectivity, lifetime, mass-state, signature or navigation promotion.",
+    "Patch/default/null/empty rules and deliberate direct retarget/reverse preserve supported correction; immutable original claim/raw sampled evidence remains separate. Only current edge is operative retirement/count dependency; raw original IDs are historical and cannot cascade deletion or resolve/rebind.",
+    "Explicit monotone review:true versus ordinary correction, first review time retained, repeated review/no-op preserves row times and undo; effective passage changes clear undo and are nonundoable.",
+    "Exact untouched occurrence and creation provenance; explicit UTC/calendar-valid correction versus minute editor display. Import preserves unknown historical times without fabricating now. P0-04 clock policy remains prerequisite.",
+    "Retain all positive finite numeric masses≤1e13 including fractions/subnormals. Accounting value is canonical shortest round-trip decimal of parsed Number, not recovery of original lexical precision. Bounded coefficient/scale integer accumulation returns exact decimal-string total shared by API/UI; no floating resummation or implicit display rounding.",
+    "Representation bounds: scale≤324, row expansion≤340chars, aggregate coefficient≤341digits and fixed total≤342chars for1000rows and total≤1e16. P0-04 measured cost remains pending; stable date/ID order, unknown counts and no remaining mass inference.",
+    "Raw sampled producer/source/recipient/capture identity and previous/current systems/times remain immutable; manual source spoof rejected, corrected mass/ship claims never become collector truth. Imported sampled history retains previous time without local sample key and has no live producer authority.",
+    "Bounded recipient-qualified accepted-delivery frontier commits with baseline/passage effects; deletion/correction never rewinds it, failed recipient does not consume delivery or replay other recipients. Generation retirement/restart prevents old packet relabeling; no eternal sample/tombstone/edit journal or full inference acceptance.",
+    "Map/provenance/reference/frontier/undo/receipt atomicity at actual outer commit; H6/H5 current-edge retirement and no192 resurrection. Passage-only commands do not write G4/navigation. Immutable saved outcome separate from application/projection/reload.",
+    "H4 passive093 one initial read, no count/value/absence attribution or POST replay; actual editor/selection/request/draft ABA and cancel/remove-while-editing ownership, safe occurrence/text/mass alignment and true drain.",
+    "All MAP-PASS/P0-03/P0-04/dependency implementation gates remain pending; next H8 observations184/185."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/maps-passage-contracts.md",
+    "sha256": "0a575217134732171d8c075527e24b8a9ca488aae4941d7996f0b9c76e6c9a9e"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality; no findings.",
+      "reviewed_contract_sha256": "a299a91c934202b71a941249ece5d3e2ca134f7082f2c4ce42b8dc79284cd6e2",
+      "reviewed_receipt_sha256": "f1d927f4fbb64bb8cfc1d2d6b89d8ba916dd1a787d708e1e8cb00c0868bbdf89"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality; no findings.",
+      "reviewed_contract_sha256": "a299a91c934202b71a941249ece5d3e2ca134f7082f2c4ce42b8dc79284cd6e2",
+      "reviewed_receipt_sha256": "f1d927f4fbb64bb8cfc1d2d6b89d8ba916dd1a787d708e1e8cb00c0868bbdf89"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after both full reviews; implementation, behavioral and numerical gates remain pending."
+    }
+  },
+  "author_static_checks": {
+    "scope": "JSON parse/contract hash, relative links/fragments, exact181–183 manifest selectors, conditional count arithmetic, whitespace and empty executable-owner delta; actual commands/output and final two-file hashes in scratch h7-author-report.md.",
+    "limit": "Documentation-only static checks; no product/browser/performance tests, independent numeric oracle or implementation helpers run/written."
+  },
+  "acceptance": {
+    "MAP-PASS-01": "pending",
+    "MAP-PASS-02": "pending",
+    "MAP-PASS-03": "pending",
+    "MAP-PASS-04": "pending",
+    "MAP-PASS-05": "pending",
+    "MAP-PASS-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "coverage_reconciliation": {
+    "retired_commands": 2,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Source/design assignment only;090 and companion reads not recounted; historical denominator unchanged.",
+    "previously_contracted": 82,
+    "previously_remaining": 39,
+    "newly_contracted": 3,
+    "current_contracted": 85,
+    "remaining": 36
+  },
+  "next_bounded_unit": "P0-02H8 observations: selectors184 observation.save and185 observation.remove, including their owning D-scan/three-line timer preparation and finite selected import. Reuse H4 map authority; settle strict row/system/claim/timestamp semantics, retained history and undo compatibility, exact preview/selection/partial-outcome ownership and bounded parser costs.186–192,086 and wider movement/population/route/navigation/Politics/browser-local obligations remain pending.",
+  "limits": [
+    "Only assigned H7 contract/receipt and scratch h7-author-report.md written during active drafting; root owns shared continuation and banking.",
+    "No product tests/edits/helpers/index changes/commits/pushes; frozen bytes remain unchanged until concrete review feedback.",
+    "Preserve historical receipts/final audit/74closed findings/performance and approved fresh-data0.8.0 policy; no legacy migration/recovery obligation.",
+    "P0-03/P0-04 and accepted dependency implementations precede code; no automatic telemetry or Stream-toast consolidation.",
+    "Native Windows/DPAPI/live EVE/OBS/extended use outside automated acceptance.",
+    "Main/merge/version/tag/publication/PR-ready/release progression unauthorized."
+  ],
+  "reviewed_substantive_sha256": "a299a91c934202b71a941249ece5d3e2ca134f7082f2c4ce42b8dc79284cd6e2",
+  "status_metadata_delta": "Opening acceptance sentence only after both independent full reviews.",
+  "bank": {
+    "status": "Commit containing this receipt; exact remote identity/read-back recorded in PR and following continuation.",
+    "parent": "18a6e6efaa381e1ead1a32ce1326891ee1a9938e",
+    "parent_tree": "ed3268b80d63ae37fd058616d449508ec9bc62f8",
+    "ci": "Documentation-only [skip ci]; tested executable remains aa2bc453, Build101."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "18a6e6efaa381e1ead1a32ce1326891ee1a9938e",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "previous_bank_readback": "H6 exact commit/tree/parent and all6 remote file bytes/path entries, exact PR body/head/main/open/draft and clean checkout verified.",
+    "source_delta": "aa2bc453..18a6e6e contains35 documentation/evidence paths including AGENTS.md; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 220,
+    "actual_ID_partition": "85contracted+2retired+36remaining+71other=194; pass",
+    "final_contract_sha256": "0a575217134732171d8c075527e24b8a9ca488aae4941d7996f0b9c76e6c9a9e",
+    "substantive_hash_reconstruction": "pass; opening acceptance sentence only beyond reviewed v1",
+    "older_receipt_delta": "H6 status/bank identity only; substantive/historical proof unchanged",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; no product/browser/performance run."
+  }
+}
