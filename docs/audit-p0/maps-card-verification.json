@@ -1,0 +1,354 @@
+{
+  "unit": "P0-02H5",
+  "status": "Independently reviewed source/design; this commit is the documentation bank. No implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_card_author",
+  "assessed_source": "b517da2d95a624aaf1fcc7919a4815a9c1bf1f79",
+  "assessed_tree": "79bad7e5e8ae8ebe1277bcf64c609e6c63972e7c",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101 inherited source-bound evidence only; no H5 runtime proof",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Exact remote H4 commit/tree/parent and all six files/PR verification supplied by coordinator. Author checked local HEAD/tree and empty executable-owner delta; did not independently repeat remote readback."
+  },
+  "owner_delta_check": {
+    "command": "git diff aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD --name-only -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      174,
+      175,
+      176,
+      177,
+      178
+    ],
+    "command_count": 5,
+    "shared_dispatcher": 90,
+    "dispatcher_recounted": false,
+    "read_dependencies": [
+      80,
+      81,
+      82,
+      85,
+      93
+    ],
+    "selected_inspection": "Reuse H4 HTTP093 inspect=lifecycle with bounded exact active/archive identity and safe result metadata. No new command row.",
+    "primary": "C10",
+    "dependencies": [
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12",
+      "C13"
+    ],
+    "excluded_from_acceptance": [
+      "179/180 H6 canonical connection controls",
+      "181–192 and086",
+      "broader movement/component population/routing/optimal layout/scientific projection",
+      "navigation/Politics/browser-local families"
+    ]
+  },
+  "handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "accepted_interfaces_read": {
+    "first": [
+      "docs/audit-p0/maps-roster-contracts.md",
+      "docs/audit-p0/maps-roster-verification.json"
+    ],
+    "shared_and_relevant_sections": [
+      "docs/audit-p0/command-contracts.md",
+      "docs/audit-p0/maps-lifecycle-contracts.md",
+      "docs/audit-p0/maps-import-contracts.md",
+      "docs/audit-p0/maps-tracking-contracts.md",
+      "docs/audit-p0/operations-control-contracts.md",
+      "docs/audit-p0/intel-command-contracts.md",
+      "docs/audit-p0/signature-command-contracts.md",
+      "docs/audit-p0/upgrade-command-contracts.md",
+      "docs/audit-p0/place-command-contracts.md",
+      "docs/audit-p0/http-surface.tsv",
+      "docs/audit-p0/command-coverage-checkpoint.json"
+    ]
+  },
+  "source_anchors_read": [
+    {
+      "path": "server/index.mjs",
+      "anchors": [
+        "090 dispatch/body; private boundary via shared owner contract"
+      ]
+    },
+    {
+      "path": "server/universe-jspace.mjs",
+      "anchors": [
+        "LIMITS/clean/coordinate/system inputs",
+        "node/restoreNode/archiveNodes/markDetached",
+        "forgetMapConnections/forgetConnections",
+        "capacity",
+        "saveConnection shared-link interface",
+        "addGroup",
+        "command648–777 positions/remove/undo/postcommit"
+      ]
+    },
+    {
+      "path": "server/universe.mjs",
+      "anchors": [
+        "Maps adapter",
+        "forgetLinks/forgetBoundSignatures/deleteLink"
+      ]
+    },
+    {
+      "path": "server/universe-navigation.mjs",
+      "anchors": [
+        "forgetConnections/forgetMissingConnections"
+      ]
+    },
+    {
+      "path": "components/kairo/map-group-placement.mjs",
+      "anchors": [
+        "prepareMapGroup membership/placement/preview edges"
+      ]
+    },
+    {
+      "path": "lib/universe-schematic-layout.mjs",
+      "anchors": [
+        "complete helper: normalization/source fallback/pairwise separation/finite intermediates"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-map-geometry.mjs",
+      "anchors": [
+        "card constants/bounds/camera transforms/draggedChainPositions and adjacent pure geometry"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace.tsx",
+      "anchors": [
+        "request/perform/command",
+        "moveNodes",
+        "stageGroup/confirmPlacement",
+        "addSystem/reference-add",
+        "removeDiagram/undoRemoval/undoNotice",
+        "quickNode/nodeAction"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-model.mjs",
+      "anchors": [
+        "createLayoutSaveScope"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-workspace-panels.tsx",
+      "anchors": [
+        "EffectiveOwnerPicker",
+        "JSpaceNodeEditor and connection interface"
+      ]
+    },
+    {
+      "path": "components/kairo/jspace-map.tsx",
+      "anchors": [
+        "placementEdges/placement input",
+        "persistPositions/pendingPositions/interaction scope",
+        "pointer/keyboard movement"
+      ]
+    }
+  ],
+  "preparation_notes": {
+    "coordinator": "h5-preflight-notes.md read as preliminary and verified against actual owners",
+    "independent_source": "h5-source-notes.md read after own draft preparation",
+    "independent_integration": "h5-integration-notes.md read after own draft preparation",
+    "limit": "Prep notes are observations, not final reviews or acceptance."
+  },
+  "tests_read_not_run": [
+    "tests/kairo/universe-jspace.test.mjs",
+    "tests/kairo/jspace-retention.test.mjs",
+    "tests/kairo/maps-permanent-links.test.mjs",
+    "tests/kairo/map-group-placement.test.mjs",
+    "tests/kairo/universe-schematic-layout.test.mjs",
+    "tests/kairo/jspace-map-geometry.test.mjs",
+    "tests/kairo/universe-jspace-http.test.mjs",
+    "tests/maps-expansion-ui.mjs",
+    "tests/jspace-ui-workflows.mjs"
+  ],
+  "test_limits": [
+    "Relevant owning sections read, not suites executed.",
+    "maps-permanent-links directly exercises174 and rollback/locked-existing/shared-reference/stale-base controls, but currently accepts an ignored caller connections field; not strict protocol evidence.",
+    "maps-expansion-ui is actual group staging/cancel/confirm browser path; its empty-map and within1-unit assertions do not prove mixed-existing edge completeness, exact rounding or dependency races.",
+    "jspace-ui-workflows holds first position fetch before server dispatch and verifies ordered two drags; no lost-ack/server commit proof.",
+    "Retention canonical deletion/code-reuse tests are predominantly connection-owner controls, not H5 receipt/outer-publication acceptance.",
+    "No existing test establishes new active/archive incarnations, exact mode/schema, unknown outcome, atomic G4 associations, aggregate bounds or drain."
+  ],
+  "preflight_interfaces": [
+    {
+      "interface": "H5 x H4/shared",
+      "ruling": "Reuse exact envelope/map CAS/no-op/receipt/continuation/actual outer commit;090 not counted again."
+    },
+    {
+      "interface": "H5 x H1/H2/H3",
+      "ruling": "Active/archive lifetime identity and historical context; fresh active restoration without renewed source age/coverage or source/interactive consent change."
+    },
+    {
+      "interface": "H5 x G4/H6/navigation",
+      "ruling": "Exact bound incident/canonical/G4 bases and safe external association; atomic owned retirement/route invalidation; shared network authority untouched. Other selectors pending."
+    },
+    {
+      "interface": "H5 x C11/C12",
+      "ruling": "Full coordinate pairs, explicit quantization, exact set/group recipe and finite intermediates; actual staging/editor/search/drag/removal/undo observer generations."
+    },
+    {
+      "interface": "H5 x P0-03/P0-04",
+      "ruling": "Meaningful integrated feedback and finite measured input/generated/archive/undo/queue/drain budgets before implementation; broader algorithms pending."
+    }
+  ],
+  "selected_decisions": [
+    "Explicit node.save add/edit/restore modes and current active/archive slot preconditions; restore allocates fresh active identity while preserving historical context.",
+    "One map CAS remains authoritative; no per-card revision lanes or historical receipt journal.",
+    "Complete writable field table with omitted/empty/null semantics, raw text/tag bounds and lossless per-tag string values preserving commas/untouched boundaries; local claimed owner, lock policy and server-only source/prune/delivery metadata.",
+    "Full coordinate pairs; raw inclusive±100000, Math.round(v*100)/100 with +0 canonicalization; defaults and no-op/grace semantics explicit.",
+    "Known-space complete region/constellation classification identical browser/server; exact missing set/archive basis and all-member gate/shared-reference recipe.",
+    "Complete new/restored/existing/link counts and generated links include existing-to-existing edges; all-present link-only change versus no-op explicit.",
+    "Preserve deterministic whole-group complete schematic/physical/grid proposals with disclosed proposal_source bound to immutable recipe and catalog/group policy; manual direct-client source explicit. Strict membership, no mixed coordinate spaces/member filtering/clipping; same finite intermediate/output/rounding/capacity checks for every source; supplied coordinates commit exactly.",
+    "Exact active removal set plus canonical dependency/G4 base; derive complete incident union, preserve shared links/unrelated history/Places, retire exact bound live/trash observations and invalidate route references atomically.",
+    "Changed child authority receives safe H5 outer-token/base/result association; parent/map/archive/canonical/undo/receipt/reference effects share actual outer transaction.",
+    "Field-scoped inverse and exact produced archive references only; card-only future restoration uses fresh active identities and cannot restore dead links/child receipts/observation age/consent.192 still pending.",
+    "Immutable position set/pairs; known-predecessor continuation only, no execution-time filtering/rebase; unknown pauses dependent gestures.",
+    "Actual UI editor/selection/placement/card/archive/request generation; allowlisted payload, alias/tag preservation, bounded085 picker dependency, version-owned ghosts and undo notices.",
+    "Passive H4 metadata inspection only for unknown; same coordinates/counts/absence are not attribution, no automatic mutation repeat; actual occupancy drains."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/maps-card-contracts.md",
+    "sha256": "34929bb71210aebe2f30df12c71d67d9d04553178cf7011b06dc43b7dd70fb62"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality after scoped round1 re-review; H5-SR-01 and H5-I1 addressed, no open findings.",
+      "reviewed_contract_sha256": "aad6e34be34215f888e117e9c3f73e40740cd21a2a322a1f153e211ec11f23cf",
+      "reviewed_receipt_sha256": "71927114c19971650d6a38fe4ef6242afc79b119275836eea870370d663c92c8",
+      "full_review_contract_sha256": "b8b904b9d355ad147fc421845acd96e1651016c24047017618458e4c1c79bc70",
+      "full_review_receipt_sha256": "2bb2e7912efa4e11267948c04bd19977bc4280f0e08316270a8a07b3ea0df189"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality after scoped round1 re-review; H5-SR-01 and H5-I1 addressed, no open findings.",
+      "reviewed_contract_sha256": "aad6e34be34215f888e117e9c3f73e40740cd21a2a322a1f153e211ec11f23cf",
+      "reviewed_receipt_sha256": "71927114c19971650d6a38fe4ef6242afc79b119275836eea870370d663c92c8",
+      "full_review_contract_sha256": "b8b904b9d355ad147fc421845acd96e1651016c24047017618458e4c1c79bc70",
+      "full_review_receipt_sha256": "2bb2e7912efa4e11267948c04bd19977bc4280f0e08316270a8a07b3ea0df189"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after both full and scoped reviews; implementation, behavioral and numerical gates remain pending."
+    }
+  },
+  "author_static_checks": {
+    "receipt_json": "valid; reparse after write",
+    "contract_sha256": "matches exact bytes",
+    "relative_links_checked": 31,
+    "missing_links": [],
+    "manifest_scope": "Exact174–178 POST nested selectors, five rows;090 excluded from new count",
+    "count_arithmetic": "80+2+41=123;123+71=194; conditional upon independent acceptance",
+    "whitespace": "Both assigned files checked directly; git diff --check run",
+    "self_review": "Observed/selected separation; full field/null/pair/bounds defaults; mode and fresh archive restore identity; K-space membership/all-member edges; exact incident/G4 atomicity/outer publication; no-op/undo/consent exclusions; actual UI/evidence limitations; pending broad algorithms/budgets; v2 scoped lossless per-tag values/raw bounds/delimiter oracles and supported disclosed deterministic whole-group fallback/source-binding/every-source numeric oracles",
+    "limit": "Documentation static checks only, not product/browser/performance evidence"
+  },
+  "acceptance": {
+    "MAP-CARD-01": "pending",
+    "MAP-CARD-02": "pending",
+    "MAP-CARD-03": "pending",
+    "MAP-CARD-04": "pending",
+    "MAP-CARD-05": "pending",
+    "MAP-CARD-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "coverage_reconciliation": {
+    "previously_contracted": 75,
+    "retired_commands": 2,
+    "remaining_before_acceptance": 46,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Source/design assignment only;090 already accepted and not counted again. Companion reads add no command rows; historical denominator unchanged.",
+    "newly_contracted": 5,
+    "current_contracted": 80,
+    "remaining": 41
+  },
+  "next_bounded_unit": "P0-02H6 connection controls: selectors179 connection.save and180 connection.remove. Reuse H4 dispatcher/map authority and H5 card/archive/incident interfaces; trace strict edge/canonical identity, per-kind fields, explicit lifetime intent, exact signature binding, atomic retirement and actual draw/editor/quick-condition/public-adoption/remove ownership. H7 then covers passages181–183;184–192,086 and wider movement/population/route/navigation/Politics/browser-local obligations remain pending.",
+  "limits": [
+    "Author wrote only assigned maps-card contract/receipt and scratch h5-author-report.md; coordinator owns shared continuation.",
+    "No product changes/tests/helpers/commits/pushes/main/merge/version/tag/publication/PR-ready action.",
+    "Preserve all historical receipts/final audit/74 closed findings and performance evidence.",
+    "Fresh-data0.8.0: no legacy preservation/migration/recovery obligation, fresh synthetic correctness remains required.",
+    "No telemetry, Stream-toast consolidation or separate tooling project.",
+    "Native Windows/DPAPI/live EVE/OBS/extended use outside automation.",
+    "P0-03/P0-04 measured numerical budgets and accepted dependency implementation remain gates."
+  ],
+  "bank": {
+    "status": "Commit containing this receipt; exact remote identity/read-back recorded in PR and following continuation.",
+    "parent": "b517da2d95a624aaf1fcc7919a4815a9c1bf1f79",
+    "parent_tree": "79bad7e5e8ae8ebe1277bcf64c609e6c63972e7c",
+    "ci": "Documentation-only [skip ci]; tested executable remains aa2bc453, Build101."
+  },
+  "correction_round_1": {
+    "previous_contract_sha256": "b8b904b9d355ad147fc421845acd96e1651016c24047017618458e4c1c79bc70",
+    "previous_receipt_sha256": "2bb2e7912efa4e11267948c04bd19977bc4280f0e08316270a8a07b3ea0df189",
+    "findings": [
+      {
+        "id": "H5-SR-01",
+        "coordinator_alias": "H5-S1",
+        "author_disposition": "Corrected for re-review: per-tag string-array editor preserves literal commas and untouched tag boundaries; actual raw values bounded before normalization; delimiter roundtrip/unrelated save/edit-different-tag and20/21-item/40/41-unit acceptance oracles. No tag character restriction.",
+        "independent_disposition": "ADDRESSED; maps_source_review and maps_integration_review, exact v2 contract aad6e34be34215f888e117e9c3f73e40740cd21a2a322a1f153e211ec11f23cf"
+      },
+      {
+        "id": "H5-I1",
+        "author_disposition": "Corrected for re-review: retain whole-group complete physical/grid presentation fallback; exact proposal_source disclosed and bound to recipe/catalog/group policy; strict membership and same finite intermediate/output/rounding/capacity controls for every source. No covert substitution/filter/clipping.",
+        "independent_disposition": "ADDRESSED; maps_source_review and maps_integration_review, exact v2 contract aad6e34be34215f888e117e9c3f73e40740cd21a2a322a1f153e211ec11f23cf"
+      }
+    ],
+    "scope": "Only two review gaps and matching operation field/acceptance/receipt/report; no independent acceptance claimed.",
+    "static_delta_check": "Precise v1-to-v2 diffs checked against coordinator h5-v1-maps-card-* copies; command/output retained in author report.",
+    "product_test_runs": 0,
+    "independent_status": "Both source and integrated scoped spec/quality re-reviews accepted;2 addressed,0 open; documentation only."
+  },
+  "reviewed_substantive_sha256": "aad6e34be34215f888e117e9c3f73e40740cd21a2a322a1f153e211ec11f23cf",
+  "status_metadata_delta": "Opening acceptance sentence only after the independently re-reviewed scoped corrections.",
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "b517da2d95a624aaf1fcc7919a4815a9c1bf1f79",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "previous_bank_readback": "H4 exact commit/tree/parent and all6 remote file bytes/path entries, exact PR body/head/main/open/draft and clean checkout verified.",
+    "source_delta": "aa2bc453..b517da2 contains31 documentation/evidence paths including AGENTS.md; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 217,
+    "actual_ID_partition": "80contracted+2retired+41remaining+71other=194; pass",
+    "final_contract_sha256": "34929bb71210aebe2f30df12c71d67d9d04553178cf7011b06dc43b7dd70fb62",
+    "substantive_hash_reconstruction": "pass; opening acceptance sentence only beyond reviewed v2",
+    "older_receipt_delta": "H4 status/bank identity only; substantive/historical proof unchanged",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; no product/browser/performance run."
+  }
+}
