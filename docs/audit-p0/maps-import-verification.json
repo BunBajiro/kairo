@@ -1,0 +1,235 @@
+{
+  "unit": "P0-02H2",
+  "status": "Independently reviewed source/design; this commit is the documentation bank. No implementation or behavioral acceptance.",
+  "assessed_at_utc": "2026-10-26",
+  "author": "maps_import_author",
+  "assessed_source": "dc8ba01604f78dd7e2bd4b658da1d2077813c054",
+  "assessed_tree": "7890b5154221fbef318dfe7e373c2ddd0f742274",
+  "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
+  "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
+  "tested_checkpoint": "Build101; inherited source-bound evidence only, not new H2 proof",
+  "coordinator_recovered_state": {
+    "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "version": "0.8.0-rc.17",
+    "limit": "Remote identity supplied by coordinator; author independently checked local HEAD/tree and source delta only."
+  },
+  "owner_delta_check": {
+    "command": "git diff --name-only aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5 HEAD -- server components tests lib",
+    "exit_code": 0,
+    "output": ""
+  },
+  "scope": {
+    "command_ids": [
+      88,
+      89
+    ],
+    "command_count": 2,
+    "export_companion_ids": [
+      92
+    ],
+    "inspection_dependencies": [
+      81,
+      93
+    ],
+    "primary": "C10",
+    "dependencies": [
+      "C01",
+      "C03",
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12",
+      "C13"
+    ],
+    "pending": [
+      "HTTP-083 active tracking",
+      "HTTP-090 dispatcher/selectors170–192",
+      "HTTP-086 destinations and broader graph/navigation/Politics",
+      "browser-local groups",
+      "P0-03 diagnostics/toasts",
+      "P0-04 measured budgets"
+    ]
+  },
+  "mandatory_handoffs_read": [
+    "AGENTS.md",
+    "docs/AUDIT-EXECUTION-HANDOFF.md",
+    "docs/COMPREHENSIVE-AUDIT-PLAN.md",
+    "docs/AUDIT-LEDGER.md",
+    "docs/AUDIT-PLANNING-HANDOFF.md",
+    "docs/MARKET-RECOVERY.md",
+    "docs/REVIEW-BUILD.md",
+    "docs/BUILD97-VERIFICATION.json"
+  ],
+  "contract_interfaces_read": [
+    "command-contracts.md",
+    "command-coverage-checkpoint.json",
+    "http-surface.tsv",
+    "maps-lifecycle-contracts.md",
+    "maps-lifecycle-verification.json",
+    "intel-command-contracts.md",
+    "signature-command-contracts.md",
+    "upgrade-command-contracts.md",
+    "place-command-contracts.md"
+  ],
+  "source_read": [
+    "server/index.mjs",
+    "server/universe-jspace.mjs",
+    "server/universe-operations.mjs",
+    "server/universe.mjs",
+    "server/universe-jspace-scopes.mjs",
+    "server/universe-jspace-tracking.mjs",
+    "components/kairo/jspace-workspace.tsx"
+  ],
+  "existing_tests_read_not_run": [
+    "tests/kairo/universe-jspace.test.mjs",
+    "tests/kairo/jspace-operational-export.test.mjs",
+    "tests/kairo/universe-operations.test.mjs",
+    "tests/kairo/universe-jspace-http.test.mjs",
+    "tests/kairo/universe-map-portable-links-review.test.mjs",
+    "tests/kairo/universe-signature-observation-review.test.mjs",
+    "tests/jspace-ui-workflows.mjs"
+  ],
+  "preflight_interfaces": [
+    {
+      "interface": "H2 internal",
+      "ruling": "Two command/query rows and one export companion, bounded portable transfer, no restore/migration project."
+    },
+    {
+      "interface": "H2 x H1",
+      "ruling": "Shared membership CAS, fresh destination birth, independent source birth, exact outer-commit child associations and whole-scope retirement remain authoritative; duplicate stays separate from HTTP serialization."
+    },
+    {
+      "interface": "H2 x G3/G4/G5",
+      "ruling": "Imported historical records do not import live command/delivery/alert/route authority; G3 manual lanes distinct from content generation, G4/G5 external-writer receipts share parent commit."
+    },
+    {
+      "interface": "H2 x C11/C12",
+      "ruling": "Strict parser/reference/graph/input-byte and actual file/preview/import/export ownership scoped here; broader routing/layout/browser-local families not accepted."
+    },
+    {
+      "interface": "H2 x P0-03/P0-04",
+      "ruling": "No telemetry/Stream-toast consolidation; aggregate numerical limits/clock rules remain measured prerequisites."
+    },
+    {
+      "interface": "Author x integration",
+      "ruling": "Author writes two new docs/report only; coordinator owns shared ledger/counts and banking; existing approved audit remains authority."
+    }
+  ],
+  "selected_decisions": [
+    "Strict paired native-v1/support-adapter Wanderer-v1 field tables; current descriptive export metadata is recognized and validated without importing authority.",
+    "Separate raw4,100,000 HTTP envelope,4,000,000 document and parsed/imported/output/aggregate limits; no unrestricted roundtrip or silently raised cap.",
+    "Pure stateless same-recipe/dependency preview with no native Ansiblex cleanup; IDs minted at final commit only.",
+    "Indexed exact reference and duplicate validation, legitimate parallel topology, consistent canonical aliases, distinct unresolved historical signature binding without same-code replacement attachment.",
+    "Fully validated atomic new-map birth with quota/membership/map/child receipts; no malformed subset, capacity trim or nested early publication.",
+    "Historical provenance/ages and missing signatures; demote owned links in both directions; exact eligible local configured Ansiblex can remain shared without imported access authority.",
+    "Coherent bounded private export, explicit Wanderer note inclusion and declared losses, complete failure on unresolved required identity/corruption, truthful partial transport/download outcome.",
+    "Generation-owned file/paste/preview/import/export callbacks, one passive H1 receipt inspection for unknown import, no automatic replay."
+  ],
+  "contract": {
+    "path": "docs/audit-p0/maps-import-contracts.md",
+    "sha256": "41a6aaf0c067279113bea68a19d893ce9144318d2c8ac8e3d52f6af6925a7af0"
+  },
+  "reviews": {
+    "source": {
+      "reviewer": "maps_source_review",
+      "status": "Accepted spec compliance and documentation quality; final advisory wording clarification accepted, no remaining findings.",
+      "reviewed_contract_sha256": "95d63556211ece5bcfbb54b87d5301ab5c74695c23d15a01bb4f7326e205ee88",
+      "reviewed_receipt_sha256": "fffd58d979792fb9d33961be04156259a23203ee7dfd1cb13431a172b1e3af72"
+    },
+    "integrated": {
+      "reviewer": "maps_integration_review",
+      "status": "Accepted spec compliance and documentation quality; final advisory wording clarification accepted, no remaining findings.",
+      "reviewed_contract_sha256": "95d63556211ece5bcfbb54b87d5301ab5c74695c23d15a01bb4f7326e205ee88",
+      "reviewed_receipt_sha256": "fffd58d979792fb9d33961be04156259a23203ee7dfd1cb13431a172b1e3af72"
+    },
+    "coordinator": {
+      "reviewer": "root",
+      "status": "Accepted bounded source/design after source/integrated review; implementation, field-table, behavioral and numerical gates remain pending."
+    }
+  },
+  "author_static_checks": {
+    "receipt_json": "valid",
+    "contract_sha256": "matches exact bytes",
+    "relative_links_checked": 20,
+    "missing_links": [],
+    "count_arithmetic": "69+2+52=123;123+71=194",
+    "limit": "Documentation-only checks; no new runtime/browser/performance proof"
+  },
+  "acceptance": {
+    "MAP-PORT-01": "pending",
+    "MAP-PORT-02": "pending",
+    "MAP-PORT-03": "pending",
+    "MAP-PORT-04": "pending",
+    "MAP-PORT-05": "pending",
+    "MAP-PORT-06": "pending",
+    "implementation": "none",
+    "product_test_runs": 0,
+    "browser_test_runs": 0,
+    "performance_measurements": 0,
+    "confirmed_findings": 0
+  },
+  "limits": [
+    "Workspace-only; no commit/push/banking by author.",
+    "No main push, merge, version bump, tag, publication or PR-ready action.",
+    "Preserve historical receipts,74 closed findings and verified performance.",
+    "Clean-slate0.8.0 permits prior-version incompatibility; supported portable schema correctness and fresh synthetic runtime recovery remain required.",
+    "Native Windows/DPAPI, live EVE/OBS and extended use remain outside automation.",
+    "No automatic telemetry, Stream-toast consolidation or new tooling project.",
+    "Exact schema implementation tables and measured numerical budgets require review before code; no blanket third-party application compatibility claim."
+  ],
+  "next_bounded_unit": "P0-02H3 active tracking: HTTP-083 only. Trace selected active pilot, source baseline/reader ownership, passive inspection, cancellation/UI and source lifetime through actual tracking/source owners and tests. Preserve H1 source incarnation and H2 transfer boundaries. Keep dispatcher090/selectors170–192, destinations086, broader graph/navigation/Politics and browser-local groups pending.",
+  "clarification_round1": {
+    "prior_contract_sha256": "77fdebb3aea66bd117480087a22cfa88315b2f9dc2744a12477eec49a4e468ca",
+    "prior_receipt_sha256": "d997988f83eb3ae2a613530b49a612765ee0da7d56bc5a14f337b8d63e039f8c",
+    "advisory_reviewer": "maps_integration_review",
+    "advisory": "Preview prohibition of indexes could be read as excluding pure ephemeral lookup indexes.",
+    "disposition": "Changed only indexes to runtime index mutation/publication in preview prohibition; indexed intermediate preparation remains permitted. Nonblocking wording clarification, no redesign or behavioral evidence.",
+    "clarified_contract_sha256": "95d63556211ece5bcfbb54b87d5301ab5c74695c23d15a01bb4f7326e205ee88",
+    "status": "Both reviewers accepted the exact clarified contract and receipt; no remaining findings. Original reviews had no blocking findings.",
+    "reviewers": [
+      "maps_source_review",
+      "maps_integration_review"
+    ]
+  },
+  "reviewed_substantive_sha256": "95d63556211ece5bcfbb54b87d5301ab5c74695c23d15a01bb4f7326e205ee88",
+  "status_metadata_delta": "Opening acceptance sentence only; substantive contract unchanged from final independent reviews.",
+  "coverage_reconciliation": {
+    "previously_contracted": 67,
+    "newly_contracted": 2,
+    "current_contracted": 69,
+    "retired_commands": 2,
+    "remaining": 52,
+    "command_query_effect_rows": 123,
+    "companion_boundary_rows": 71,
+    "manifest_rows": 194,
+    "historical_checkpoint_changed": false,
+    "limit": "Source/design assignment only;092 is a companion, not an additional command row. Historical checkpoint unchanged; read effects/non-HTTP obligations remain."
+  },
+  "bank": {
+    "status": "Commit containing this receipt; exact remote identity/read-back recorded in PR and following continuation.",
+    "parent": "dc8ba01604f78dd7e2bd4b658da1d2077813c054",
+    "parent_tree": "7890b5154221fbef318dfe7e373c2ddd0f742274",
+    "ci": "Documentation-only [skip ci]; tested executable remains aa2bc453, Build101."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "dc8ba01604f78dd7e2bd4b658da1d2077813c054",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "previous_bank_readback": "H1 exact commit/tree/parent and all7 remote file bytes/path entries, exact PR body/head/main/open/draft and clean checkout verified.",
+    "source_delta": "aa2bc453..dc8ba01 contains25 documentation/evidence paths including AGENTS.md; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 188,
+    "actual_ID_partition": "69contracted+2retired+52remaining+71other=194; pass",
+    "final_contract_sha256": "41a6aaf0c067279113bea68a19d893ce9144318d2c8ac8e3d52f6af6925a7af0",
+    "substantive_hash_reconstruction": "pass; opening acceptance sentence only",
+    "older_receipt_delta": "H1 status/bank identity only; substantive/historical proof unchanged",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; no product/browser/performance run."
+  }
+}
