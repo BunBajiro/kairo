@@ -1,4 +1,6 @@
-# Pause checkpoint: H11 undo is unreviewed WIP
+# Historical pause checkpoint: H11 undo
+
+**Superseded by the completed H11 source/design reviews:** see the [current receipt](maps-undo-verification.json), [execution handoff](../AUDIT-EXECUTION-HANDOFF.md) and [ledger](../AUDIT-LEDGER.md). The text below records the pause at [`aa428e3`](https://github.com/BunBajiro/kairo/commit/aa428e3238b18ff91b0461928bbf13aa167ab71f); its WIP hashes and pending statuses apply to files at that exact commit, not current HEAD. Both full H11 reviews were subsequently completed; all implementation/runtime gates remain pending.
 
 Paused at Bun's request for sleep on 26 October 2026. **No further audit unit is active.** The [H11 first draft](maps-undo-contracts.md) and [author receipt](maps-undo-verification.json) are preserved byte for byte, with explicit UNREVIEWED WIP labels. This pause bank is not H11 source/design acceptance. [Pause integrity receipt](maps-undo-pause.json).
 

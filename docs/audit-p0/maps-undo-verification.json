@@ -1,10 +1,10 @@
 {
   "unit": "P0-02H11",
-  "status": "UNREVIEWED WIP paused at user request; author self-review/static validation and both independent full reviews unfinished. No acceptance, implementation or behavioral proof.",
+  "status": "Independently reviewed source/design; this commit is the documentation bank. No implementation or behavioral acceptance.",
   "assessed_at_utc": "2026-10-26",
   "author": "maps_undo_author",
-  "assessed_source": "e82478ea18470cfb6b4b89ea3db06a46aa93adeb",
-  "assessed_tree": "9563208fdac997d473275172312a5269efab3843",
+  "assessed_source": "aa428e3238b18ff91b0461928bbf13aa167ab71f",
+  "assessed_tree": "1906afad7f319d350d734a9a6d1fcd6816ce30b0",
   "tested_executable_source": "aa2bc453cdc5e6c4f86d0a01aa7a2d6c5c97d0b5",
   "tested_executable_tree": "c19bcc3ebad8ef7d87c748bfa3c3481b78ca02e9",
   "tested_checkpoint": "Build101 inherited source-bound evidence only; documentation HEAD is not tested executable.",
@@ -12,7 +12,7 @@
     "main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
     "pr": "12 open/draft",
     "version": "0.8.0-rc.17",
-    "limit": "Root supplied H10 exact commit/tree/parent, six remote bytes/path entries, exact PR/main/open/draft and clean checkout verification. Author checked local HEAD/tree and empty executable-owner delta; remote checks not repeated. Root-owned shared continuation may be modified concurrently."
+    "limit": "Root freshly supplied verified pause branch/main/open-draft PR, clean isolated worktree and exact four remote/local pause/H11 files with frozen WIP hashes and no newer work. Author read durable continuation first and checked local HEAD/tree/original Git WIP blobs and empty executable-owner delta; remote verification not repeated."
   },
   "accepted_h10": {
     "contract": "docs/audit-p0/maps-signature-contracts.md",
@@ -157,30 +157,43 @@
     "All H4-H10 exclusions remain; H8 historical ages and H9 author/context/fixed TTL preserved, G4 original-ID trash restoration separate.",
     "One actual outer transaction owns inverse/archive/required exact resource-reference-child-nav retirement/entry/predecessor/activity/authority/receipt; callbacks and timers only after commit.",
     "Known saved result separate from application/current projection; exact safe receipt may outlive entry. One bounded passive inspection, no private payload/value/absence inference, replay or per-entry polling.",
-    "Toolbar/notice capture exact target/base/request/selection lifetime; known removal only, exact returned fresh-card selection while still owned; newer dirty drafts/gestures survive old completions and remounts. Actual occupancy survives close/timeout."
+    "Toolbar/notice capture exact target/base/request/selection lifetime; known removal only, exact returned fresh-card selection while still owned; newer dirty drafts/gestures survive old completions and remounts. Actual occupancy survives close/timeout.",
+    "Direct G4 collection writes alone do not clear unrelated Maps history; affected references/retirement remain exact-owner obligations, distinct from H10 effective wrapper history-clears.",
+    "Explicit lock qualification preserves annotation-on-locked, own move+lock inverse and unchanged creation-owned lock reversal, with current metadata/grace preserved; independent incompatible lock change blocks and ordinary locked removal remains forbidden.",
+    "Inverse inspection target is mutually exclusive with other family target selectors; bounded current top/latest receipt only."
   ],
   "contract": {
     "path": "docs/audit-p0/maps-undo-contracts.md",
-    "sha256": "7ef432edb946d4569942d28e96606e5c52cefd1e5d8b054151839656b464dd30"
+    "sha256": "a51d2527cf61040427d7e0b7ac635bba284d25532ace26a66d8bd15bf52d8a50"
   },
   "reviews": {
     "source": {
       "reviewer": "maps_source_review",
-      "status": "pending full frozen-byte spec compliance and quality review"
+      "status": "Accepted spec compliance and documentation quality.",
+      "reviewed_contract_sha256": "7ae77f4648b1719dc3339462ab71788163e4fcb1c37bc52ab0f306b9604dce02",
+      "reviewed_receipt_sha256": "5e0869ca33545507bcbc544071fb0795ab566d851d4141decfffc9d7b8a5d07b",
+      "outcome": "Full independent spec compliance and documentation quality accepted; no findings or advisories. Reviewed complete H11 including paused WIP, not only resumed delta. Explicit predecessor/fresh/archive/coverage/temporary-child/lock-grace and narrow G4 clarifications accepted; actual source/UI evidence checked. No runtime/algorithm/performance acceptance.",
+      "findings": [],
+      "open_findings": []
     },
     "integrated": {
       "reviewer": "maps_integration_review",
-      "status": "pending full frozen-byte spec compliance and quality review"
+      "status": "Accepted spec compliance and documentation quality.",
+      "reviewed_contract_sha256": "7ae77f4648b1719dc3339462ab71788163e4fcb1c37bc52ab0f306b9604dce02",
+      "reviewed_receipt_sha256": "5e0869ca33545507bcbc544071fb0795ab566d851d4141decfffc9d7b8a5d07b",
+      "outcome": "Full independent spec compliance and documentation quality accepted; no findings or advisories. Reviewed complete H11 including paused WIP, not only resumed delta. Explicit predecessor/fresh/archive/coverage/temporary-child/lock-grace and narrow G4 clarifications accepted; actual source/UI evidence checked. No runtime/algorithm/performance acceptance.",
+      "findings": [],
+      "open_findings": []
     },
     "coordinator": {
       "reviewer": "root",
-      "status": "pending independent reviews and integration/exact-tree banking"
+      "status": "Accepted bounded source/design after both full independent reviews and source/interface reconciliation; final metadata/tree review remains separate before banking."
     }
   },
   "author_static_checks": {
-    "completed": "Local HEAD/tree and empty executable-owner delta read before drafting; receipt JSON serialized/parsed and contract hash synchronized at pause.",
-    "unfinished": "Full relative link/fragment, exact manifest192, actual conditional exhaustive94+2+27+71 partition, whitespace, final delta and complete author self-review remain pending.",
-    "limit": "No product/browser/performance tests, helper files, independent review or completion claimed. Resume from explicit WIP freeze."
+    "status": "Completed author documentation validation; final exact output and hashes in scratch h11-resumed-author-report.md.",
+    "scope": "JSON parse and contract SHA256; all32 relative Markdown links (zero fragment targets);41 receipt paths including8 test paths; exact manifest192 op=undo; actual disjoint exhaustive conditional94+2+27+71 ID partition; whitespace; final executable-owner delta. Original WIP Git blobs match pause receipt.",
+    "limit": "Documentation-only; no product/browser/performance tests. Initial manifest assertion used undo instead of actual op=undo; corrected check and successful final rerun recorded at author freeze. Both reviews were pending at that freeze; their later outcomes are recorded above."
   },
   "acceptance": {
     "MAP-UNDO-01": "pending",
@@ -198,22 +211,88 @@
   "coverage_reconciliation": {
     "previously_contracted": 93,
     "previously_remaining": 28,
-    "conditional_newly_contracted": 1,
-    "conditional_contracted": 94,
     "retired_commands": 2,
-    "conditional_remaining": 27,
     "command_query_effect_rows": 123,
     "companion_boundary_rows": 71,
     "manifest_rows": 194,
     "historical_checkpoint_changed": false,
-    "limit": "Conditional source/design count only; both reviews and root acceptance pending. No originating-operation or090 recount."
+    "limit": "Source/design count only; originating operations/090/read companions not recounted; historical denominator unchanged.",
+    "newly_contracted": 1,
+    "current_contracted": 94,
+    "remaining": 27
   },
-  "next_bounded_unit": "P0-02I1 queries086/138/139, one-pair direct queries only; Navigation mutation/batch/JDC/fuel/send and other remaining families stay pending.",
+  "next_bounded_unit": "P0-02I1 destinations/route/jump calculations086/138/139: strict input, bounded passive evidence snapshot, truthful calculated result and actual086 consumer ownership. Direct138/139 each use one endpoint pair; Navigation batch/JDC/fuel/persistence/waypoint send stays separate.",
   "limits": [
     "Only assigned H11 contract/receipt and scratch report authored; root owns shared continuation/exact-tree bank. No edits after freeze absent concrete review feedback.",
     "No product/tests/helpers/shared/index edits/commits/pushes/agents.",
     "Preserve historical final audit/74closed findings/receipts/performance, fresh-data0.8.0 without legacy migration/recovery obligations and current synthetic runtime recovery.",
     "H8 P3s/P0-03/P0-04/dependency implementation before code.",
     "No telemetry/Stream consolidation/native Windows DPAPI/live EVE OBS/extended-use acceptance or release progression."
-  ]
+  ],
+  "resume": {
+    "pause_bank": "aa428e3238b18ff91b0461928bbf13aa167ab71f",
+    "pause_tree": "1906afad7f319d350d734a9a6d1fcd6816ce30b0",
+    "continuation_read_first": "docs/audit-p0/maps-undo-continuation.md",
+    "pause_receipt": "docs/audit-p0/maps-undo-pause.json",
+    "preserved_wip_contract_sha256": "7ef432edb946d4569942d28e96606e5c52cefd1e5d8b054151839656b464dd30",
+    "preserved_wip_receipt_sha256": "c740e570e180874befde46880a613633b74ffa25e1c2257053febd68b233ef16",
+    "report": "Scratch h11-resumed-author-report.md; prior h11-author-report.md and pause bank retained unchanged."
+  },
+  "author_self_review": {
+    "status": "Complete for author submission, not independent acceptance.",
+    "corrections_from_wip": [
+      "Clarified scoped direct G4 collection/reference effects separately from effective H6/H7/H10 map history-clears; unrelated direct G4 writes preserve unrelated inverse history.",
+      "Explicit H5/H11 lock qualification: locked annotation, exact move+lock inverse, unchanged creation-owned locked card including archive/group, exact compatible lock predecessor and incompatible lock rejection; ordinary177/178 locked removal restriction preserved. Fresh grace only for qualified true-to-false unlock or card restoration, never metadata/ordinary position or historical age renewal.",
+      "Reject inverse inspection combined with other family targets; no fan-out.",
+      "Added pending oracle cases for lock and G4 distinctions; no runtime proof claimed."
+    ],
+    "confirmed_constraints": [
+      "Coverage-only legacy source path cannot make map CAS sufficient; selected unsafe creation retirement is atomic with evidence and advances map/top authority.",
+      "Field/archive inverses preserve latest monotone metadata; true absence has no hidden archive/tombstone owner.",
+      "Exact retained predecessor and temporary Rally dependency preserve ordinary qualified LIFO; no resurrected creation ancestor, missing created edge or equal independent replacement.",
+      "Fixed TTL includes absent-row restoration entries; bounded writer maintenance owns retirement, not rejected192/passive inspection.",
+      "Actual outer commit, current eligible dependencies, private bounded payload, safe identity-only result and true drain ownership remain distinct from postcommit application/projection and UI selection/draft ownership."
+    ]
+  },
+  "reviewed_substantive_sha256": "7ae77f4648b1719dc3339462ab71788163e4fcb1c37bc52ab0f306b9604dce02",
+  "status_metadata_delta": {
+    "from": "**Author-complete source/design draft; both independent full reviews pending. No source/design acceptance, implementation or behavioral acceptance.**",
+    "to": "**Independently reviewed source/design; implementation and behavioral acceptance pending.**",
+    "limit": "Opening acceptance sentence only beyond independently reviewed final freeze; substantive contract unchanged."
+  },
+  "review_freeze": {
+    "contract_file": "h11-v1-maps-undo-contracts.md",
+    "receipt_file": "h11-v1-maps-undo-verification.json",
+    "limit": "Scratch basenames identify review artifacts; current contract reconstructs exact reviewed substantive bytes by reversing the recorded opening sentence. Durable outcome and hashes below; scratch is not a resume dependency."
+  },
+  "bank": {
+    "status": "Commit containing this receipt; exact remote identity/readback recorded in PR12 and following continuation.",
+    "parent": "aa428e3238b18ff91b0461928bbf13aa167ab71f",
+    "parent_tree": "1906afad7f319d350d734a9a6d1fcd6816ce30b0",
+    "ci": "Documentation-only [skip ci]; tested executable remains Build101 aa2bc453."
+  },
+  "recovery": {
+    "date": "2026-10-26",
+    "remote_branch": "aa428e3238b18ff91b0461928bbf13aa167ab71f",
+    "remote_main": "239794774320fcdebaa1d76ce8a77c5c25cfc48c",
+    "pr": "12 open/draft",
+    "verification": "Fresh fetch and exact remote/local four pause/H11 files, frozen WIP Git hashes, clean isolated checkout and unchanged executable owners; pause tree/branch/main matched. Previous pause bank had independent nine-path integrity/exact remote readback.",
+    "source_delta": "Build101-to-pause has48 documentation/AGENTS paths only; no executable/test/config/dependency changes."
+  },
+  "integration_static_checks": {
+    "changed_paths": 6,
+    "relative_links_and_fragments": 282,
+    "actual_disjoint_exhaustive_partition": [
+      94,
+      2,
+      27,
+      71
+    ],
+    "final_contract_sha256": "a51d2527cf61040427d7e0b7ac635bba284d25532ace26a66d8bd15bf52d8a50",
+    "substantive_reconstruction": "Opening acceptance sentence only beyond final independently reviewed freeze",
+    "historical_preservation": "Pause receipt/frozen Git version, H10/H8 receipts, immutable coverage checkpoint and I1 preparation unchanged; historical pause continuation receives a current-status banner only",
+    "executable_test_config_dependency_changes": "none",
+    "whitespace": "pass",
+    "limit": "Documentation checks only; all runtime/browser/performance proof pending."
+  }
 }
